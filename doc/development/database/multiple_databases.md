@@ -219,6 +219,19 @@ suitable for backfilling a `sharding_key`. In such cases the team owning the
 table will need to create the necessary merge requests to add the
 `sharding_key` manually.
 
+##### Exempting certain tables from having sharding keys
+
+Certain tables can be exempted from having sharding keys by adding
+
+```yaml
+exempt_from_sharding: true
+```
+
+to the table's database dictionary file. This is currently the case for JiHu specific tables, because these tables do not contain any data for the
+`.com` database. This was implemented in [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905).
+
+When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
+
 ### The impact of `gitlab_schema`
 
 The usage of `gitlab_schema` has a significant impact on the application.

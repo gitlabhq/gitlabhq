@@ -110,7 +110,7 @@ Use Zuora custom metadata (introduced in iteration 2) to resolve `ProductRatePla
 
 ### Iteration 1
 
-**[Iteration 1] Product Catalog is in sync with Zuora**
+**(Iteration 1) Product Catalog is in sync with Zuora**
 
 - Cron job to refresh the Product Catalog every day as a first iteration and add immediate value.
 - Create a Finance Systems issue to request:
@@ -123,7 +123,7 @@ Use Zuora custom metadata (introduced in iteration 2) to resolve `ProductRatePla
       | ProductRatePlanChargeTier | CatalogProductRatePlanChargeTierUpdate |
   - New callout under the `Billing` component for when records from the Zuora Product Catalog are added, deleted or updated.
 - Create a new controller in CustomersDot based on `ActionController::Metal` to not include redundant middlewares, callbacks, additional Rails stuff and make this controller as fast as possible.
-  
+
   ```ruby
   module Zuora
     class WebHooksController < ActionController::Metal
@@ -140,7 +140,7 @@ Use Zuora custom metadata (introduced in iteration 2) to resolve `ProductRatePla
 
 Ensure a debouncing strategy for `SyncProductCatalogJob` in case we get too many Product Catalog update notifications in a short period of time. Initially we can delay its execution for 5 minutes and ensure no new job is enqueued if one is already in the queue.
 
-**[Iteration 2] Transfer CustomersDot's classification knowledge to the Zuora Product Catalog**
+**(Iteration 2) Transfer CustomersDot's classification knowledge to the Zuora Product Catalog**
 
 _All these changes require a Finance Systems issue._
 
@@ -157,7 +157,7 @@ NOTE:
 There is a [current effort](https://gitlab.com/gitlab-com/business-technology/enterprise-apps/intake/-/issues/44) to add some of these fields to Zuora so we might be able to reuse these. If we are reusing these we need to double check that the value in Zuora and CustomersDot classification are aligned
 for each.
 
-**[Iteration 3] Use this Zuora custom metadata to resolve `ProductRatePlan`s directly from the Zuora Catalog**
+**(Iteration 3) Use this Zuora custom metadata to resolve `ProductRatePlan`s directly from the Zuora Catalog**
 
 - Create scopes to fetch `Zuora::Product`s and `Zuora::ProductRatePlan`s based on the metadata introduced in Iteration 2. Possible scopes:
   - `self_managed`

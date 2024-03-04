@@ -97,6 +97,22 @@ If your job is failing at the build step with the message "Project couldn't be b
 
 The solution is to use [pre-compilation](index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
 
+## SpotBugs Error: `java.lang.OutOfMemoryError`
+
+When a SAST job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory.
+
+To try to resolve this issue you can:
+
+- Choose a lower [level of effort](index.md#security-scanner-configuration).
+- Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
+- [Tag a larger runner](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64) in your `spotbugs-sast` job.
+
+### Links
+
+- [Overhauling memory tuning in OpenJDK containers updates](https://developers.redhat.com/articles/2023/03/07/overhauling-memory-tuning-openjdk-containers-updates)
+- [OpenJDK Configuration & Tuning](https://wiki.openjdk.org/display/zgc/Main#Main-Configuration&Tuning)
+- [Garbage First Garbage Collector Tuning](https://www.oracle.com/technical-resources/articles/java/g1gc.html)
+
 ## SpotBugs message: `Exception analyzing ... using detector ...` followed by a Java stack trace
 
 If your job log contains a message of the form "Exception analyzing ... using detector ..." followed by a Java stack trace, this is **not** a failure of the SAST pipeline. SpotBugs has determined that the exception is [recoverable](https://github.com/spotbugs/spotbugs/blob/5ebd4439f6f8f2c11246b79f58c44324718d39d8/spotbugs/src/main/java/edu/umd/cs/findbugs/FindBugs2.java#L1200), logged it, and resumed analysis.
