@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe NoteDiffFile do
+RSpec.describe NoteDiffFile, feature_category: :code_review_workflow do
+  let(:diff_note) { create(:diff_note_on_commit) }
+  let(:note_diff_file) { diff_note.note_diff_file }
+
   describe 'associations' do
     it { is_expected.to belong_to(:diff_note) }
   end
@@ -12,9 +15,6 @@ RSpec.describe NoteDiffFile do
   end
 
   describe '.referencing_sha' do
-    let!(:diff_note) { create(:diff_note_on_commit) }
-
-    let(:note_diff_file) { diff_note.note_diff_file }
     let(:project) { diff_note.project }
 
     it 'finds note diff files by project and sha' do
@@ -35,6 +35,30 @@ RSpec.describe NoteDiffFile do
       found = described_class.referencing_sha(Gitlab::Git::SHA1_BLANK_SHA, project_id: project.id)
 
       expect(found).to be_empty
+    end
+  end
+
+  describe '#diff_export' do
+    let_it_be(:encoded) { "b\xC3\xA5r" }
+    let_it_be(:expected) { "bår" }
+
+    before do
+      note_diff_file.update!(diff: encoded)
+    end
+
+    context 'when diff can be encoded' do
+      it 'force encodes the diff to UTF-8' do
+        expect(note_diff_file.diff_export).to eq(expected)
+        expect(note_diff_file.diff_export.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+
+    context 'when diff cannot be encoded' do
+      it 'returns the raw diff' do
+        allow(note_diff_file).to receive(:force_encode_utf8).with(encoded).and_raise(ArgumentError)
+
+        expect(note_diff_file.diff_export).to eq(encoded)
+      end
     end
   end
 end

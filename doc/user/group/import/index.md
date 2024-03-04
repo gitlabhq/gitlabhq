@@ -67,7 +67,7 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 - In GitLab 16.1 and earlier, you should **not** use direct transfer with
   [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
-- Because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
+- In GitLab 16.9 and earlier, because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
   `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
   is missing, but the note and the merge request are still imported.
 
@@ -501,6 +501,28 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 
 You can also see all migrated entities with any failures related to them using an
 [API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
+
+### Remove cancelled imports
+
+Sometime you might have to cancel an import. Cancelled imports don't clean up after themselves so you must delete
+the imported items yourself. To delete the import by direct transfer that was most recently run:
+
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Find the last import by running the following command. Replace `USER_ID` with the user ID of the user that ran the
+   cancelled import:
+
+   ```ruby
+   bulk_import = BulkImport.find_by(user_id: USER_ID).last
+   ```
+
+1. Delete the last import, including all items associated with it, by running the following command:
+
+   ```ruby
+   bulk_import.destroy!
+   ```
+
+Any items associated with the import by direct transfer, including merge requests, projects, and issues, should be
+deleted.
 
 ### Stale imports
 

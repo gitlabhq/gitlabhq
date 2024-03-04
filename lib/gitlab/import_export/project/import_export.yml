@@ -69,6 +69,7 @@ tree:
         - events:
           - :push_event_payload
         - :suggestions
+        - :note_diff_file
       - merge_request_diff:
         - merge_request_diff_commits:
           - :commit_author
@@ -770,6 +771,14 @@ included_attributes:
     - :close_auto_resolve_prometheus_alert
   work_item_type:
     - :base_type
+  note_diff_file:
+    - :new_file
+    - :renamed_file
+    - :deleted_file
+    - :a_mode
+    - :b_mode
+    - :new_path
+    - :old_path
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -1112,6 +1121,10 @@ excluded_attributes:
     - :icon_name
     - :namespace_id
     - :updated_at
+  note_diff_file:
+    - :id
+    - :diff_note_id
+    - :diff
 
 methods:
   project:
@@ -1144,6 +1157,8 @@ methods:
     - :list_type
   issues:
     - :state
+  note_diff_file:
+    - :diff_export
 
 # Add in this list the nested associations that are used to export the parent
 # association, but are not present in the tree list. In other words, the associations

@@ -1095,3 +1095,11 @@ TimeTracking::TimelogCategories:
   - description
   - billable
   - billing_rate
+NoteDiffFile:
+  - new_file
+  - renamed_file
+  - deleted_file
+  - a_mode
+  - b_mode
+  - new_path
+  - old_path

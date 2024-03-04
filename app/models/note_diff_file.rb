@@ -2,6 +2,7 @@
 
 class NoteDiffFile < ApplicationRecord
   include DiffFile
+  include Gitlab::EncodingHelper
 
   scope :referencing_sha, -> (oids, project_id:) do
     joins(:diff_note).where(notes: { project_id: project_id, commit_id: oids })
@@ -22,5 +23,11 @@ class NoteDiffFile < ApplicationRecord
       diff_refs: original_position.diff_refs,
       unique_identifier: id
     )
+  end
+
+  def diff_export
+    force_encode_utf8(diff)
+  rescue ArgumentError
+    diff
   end
 end

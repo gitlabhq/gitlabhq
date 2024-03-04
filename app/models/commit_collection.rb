@@ -24,15 +24,24 @@ class CommitCollection
     commits.each(&block)
   end
 
-  def committers(with_merge_commits: false)
-    emails = if with_merge_commits
-               commits.filter_map(&:committer_email).uniq
-             else
-               without_merge_commits.filter_map(&:committer_email).uniq
-             end
+  def committers(with_merge_commits: false, lazy: false)
+    return committers_lazy(with_merge_commits: with_merge_commits).flatten if lazy
 
-    User.by_any_email(emails)
+    User.by_any_email(committers_emails(with_merge_commits: with_merge_commits))
   end
+
+  def committers_lazy(with_merge_commits: false)
+    emails = committers_emails(with_merge_commits: with_merge_commits)
+
+    emails.map do |email|
+      BatchLoader.for(email.downcase).batch(default_value: []) do |committer_emails, loader|
+        User.by_any_email(committer_emails).each do |user|
+          loader.call(user.email) { |memo| memo << user }
+        end
+      end
+    end
+  end
+  alias_method :add_committers_to_batch_loader, :committers_lazy
 
   def committer_user_ids
     committers.pluck(:id)
@@ -142,5 +151,13 @@ class CommitCollection
     end
 
     self
+  end
+
+  private
+
+  def committers_emails(with_merge_commits: false)
+    return commits.filter_map(&:committer_email).uniq if with_merge_commits
+
+    without_merge_commits.filter_map(&:committer_email).uniq
   end
 end

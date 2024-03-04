@@ -534,6 +534,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
               expect(award_emoji.name).to eq('tada')
             end
+
+            it 'has diff note diff file' do
+              merge_request_note = match_mr1_note('MR1 diff note')
+              note_diff_file = merge_request_note.note_diff_file
+
+              expect(note_diff_file.diff).to eq("@@ -14,3 +14,18 @@\n 1")
+            end
           end
         end
 

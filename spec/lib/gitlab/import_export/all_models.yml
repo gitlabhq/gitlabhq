@@ -1104,3 +1104,5 @@ timelog_category:
   - description
   - billable
   - billing_rate
+note_diff_file:
+  - diff_note

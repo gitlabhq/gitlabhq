@@ -33,7 +33,16 @@ class MergeRequestDiff < ApplicationRecord
     -> { order(:merge_request_diff_id, :relative_order) },
     inverse_of: :merge_request_diff
 
-  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff
+  has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }, inverse_of: :merge_request_diff do
+    def with_users
+      ActiveRecord::Associations::Preloader.new(
+        records: self,
+        associations: [:commit_author, :committer]
+      ).call
+
+      self
+    end
+  end
 
   sha_attribute :patch_id_sha
 
@@ -802,7 +811,9 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def load_commits(limit: nil, load_from_gitaly: false, page: nil)
-    diff_commits = page.present? ? merge_request_diff_commits.page(page).per(limit) : merge_request_diff_commits.limit(limit)
+    diff_commits = merge_request_diff_commits
+    diff_commits = diff_commits.page(page).per(limit) if page.present?
+    diff_commits = diff_commits.limit(limit) if limit.present?
 
     if load_from_gitaly
       commits = Gitlab::Git::Commit.batch_by_oid(repository, diff_commits.map(&:sha))
