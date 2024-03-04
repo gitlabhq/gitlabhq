@@ -13,6 +13,7 @@ import {
 } from 'ee_else_ce/ci/runner/runner_search_utils';
 import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query.graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
+import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
 import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
@@ -30,6 +31,7 @@ import { pausedTokenConfig } from '../components/search_tokens/paused_token_conf
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { versionTokenConfig } from '../components/search_tokens/version_token_config';
+import { creatorTokenConfig } from '../components/search_tokens/creator_token_config';
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -115,10 +117,33 @@ export default {
       return !this.runnersLoading && !this.runners.items.length;
     },
     searchTokens() {
+      const preloadedUsers = [];
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: gon.current_user_id,
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
       return [
         pausedTokenConfig,
         statusTokenConfig,
         versionTokenConfig,
+        {
+          ...creatorTokenConfig,
+          fetchUsers: (search) => {
+            return this.$apollo
+              .query({
+                query: usersSearchAllQuery,
+                variables: { search },
+              })
+              .then(({ data }) => data.users.nodes);
+          },
+          defaultUsers: [],
+          preloadedUsers,
+        },
         {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,

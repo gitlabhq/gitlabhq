@@ -42698,7 +42698,7 @@ msgstr ""
 msgid "Runners|Administrator"
 msgstr ""
 
-msgid "Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud"
+msgid "Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud."
 msgstr ""
 
 msgid "Runners|After you complete the steps below, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager automatically creates temporary runners."
@@ -42839,6 +42839,9 @@ msgstr ""
 msgid "Runners|Created by %{user} %{timeAgo}"
 msgstr ""
 
+msgid "Runners|Creator"
+msgstr ""
+
 msgid "Runners|Delete"
 msgstr ""
 
@@ -42925,7 +42928,7 @@ msgstr ""
 msgid "Runners|Fleet dashboard"
 msgstr ""
 
-msgid "Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type.%{linkEnd}"
+msgid "Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}."
 msgstr ""
 
 msgid "Runners|Get started with runners"
@@ -43214,7 +43217,7 @@ msgstr ""
 msgid "Runners|Revision"
 msgstr ""
 
-msgid "Runners|Run the following on your command line. You might be prompted to sign in to Google"
+msgid "Runners|Run the following on your command line. You might be prompted to sign in to Google."
 msgstr ""
 
 msgid "Runners|Runner"
@@ -43373,7 +43376,7 @@ msgstr ""
 msgid "Runners|Step 1"
 msgstr ""
 
-msgid "Runners|Step 1: Configure Google Cloud project"
+msgid "Runners|Step 1: Configure your Google Cloud project"
 msgstr ""
 
 msgid "Runners|Step 1: Specify environment"
@@ -43450,7 +43453,7 @@ msgstr ""
 msgid "Runners|These runners are assigned to this project."
 msgstr ""
 
-msgid "Runners|These setup instructions use your specifications and follow the best practices for performance and security"
+msgid "Runners|These setup instructions use your specifications and follow the best practices for performance and security."
 msgstr ""
 
 msgid "Runners|This group currently has 1 stale runner."
@@ -43509,7 +43512,7 @@ msgstr ""
 msgid "Runners|To view the runner, go to %{runnerListName}."
 msgstr ""
 
-msgid "Runners|To view the setup instructions, complete the previous form"
+msgid "Runners|To view the setup instructions, complete the previous form."
 msgstr ""
 
 msgid "Runners|To view the setup instructions, complete the previous form. The instructions help you set up an autoscaling fleet of runners to execute your CI/CD jobs in Google Cloud."
@@ -43548,7 +43551,7 @@ msgstr ""
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."
 msgstr ""
 
-msgid "Runners|Use a text editor to create a main.tf file with the following Terraform configuration"
+msgid "Runners|Use a text editor to create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration."
 msgstr ""
 
 msgid "Runners|Use the dashboard to view performance statistics of your runner fleet."
@@ -45456,6 +45459,15 @@ msgid "SecurityOrchestration|You can't unprotect this branch because its protect
 msgstr ""
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
+msgstr ""
+
+msgid "SecurityOrchestration|You must select one or more compliance frameworks to which this policy should apply."
+msgstr ""
+
+msgid "SecurityOrchestration|You must select one or more projects to be excluded from this policy."
+msgstr ""
+
+msgid "SecurityOrchestration|You must select one or more projects to which this policy should apply."
 msgstr ""
 
 msgid "SecurityOrchestration|a license scanner found license violations"

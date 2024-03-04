@@ -52,6 +52,32 @@ const runnerJobCountData = {
   },
 };
 
+const usersData = {
+  data: {
+    users: {
+      nodes: [
+        {
+          id: 'gid://gitlab/User/1',
+          avatarUrl: '/avatar.jpg',
+          webUrl: '/root',
+          name: 'Admin Istrator',
+          username: 'root',
+          __typename: 'UserCore',
+        },
+        {
+          id: 'gid://gitlab/User/2',
+          avatarUrl: '/root',
+          webUrl: '/user2',
+          name: 'Billy West',
+          username: 'user2',
+          __typename: 'UserCore',
+        },
+      ],
+      __typename: 'UserCoreConnection',
+    },
+  },
+};
+
 // Other mock data
 
 // Mock searches and their corresponding urls
@@ -336,6 +362,23 @@ export const mockSearchExamples = [
       first: RUNNER_PAGE_SIZE,
     },
   },
+  {
+    name: 'creator username',
+    urlQuery: '?creator[]=root',
+    search: {
+      runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
+      filters: [{ type: 'creator', value: { data: 'root', operator: '=' } }],
+      pagination: {},
+      sort: CREATED_DESC,
+    },
+    graphqlVariables: {
+      creator: 'root',
+      membership: DEFAULT_MEMBERSHIP,
+      sort: CREATED_DESC,
+      first: RUNNER_PAGE_SIZE,
+    },
+  },
 ];
 
 export const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
@@ -385,4 +428,5 @@ export {
   runnerFormData,
   runnerCreateResult,
   runnerForRegistration,
+  usersData,
 };

@@ -884,7 +884,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/protected_environments_required_approvals_average_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/user_cap_setting_enabled_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage_data_counters/epic_activity_unique_counter_spec.rb'
-    - 'ee/spec/lib/gitlab/usage_data_counters/licenses_list_spec.rb'
     - 'ee/spec/lib/gitlab/usage_data_counters/streaming_audit_event_type_counter_spec.rb'
     - 'ee/spec/lib/gitlab/user_access_spec.rb'
     - 'ee/spec/lib/gitlab/visibility_level_spec.rb'

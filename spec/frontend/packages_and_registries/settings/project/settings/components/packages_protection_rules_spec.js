@@ -166,6 +166,20 @@ describe('Packages protection rules project settings', () => {
         );
       });
 
+      it('show alert when GraphQL request fails', async () => {
+        const protectionRuleQueryResolverRejectedErrorMessage = 'Error protectionRuleQueryResolver';
+        const packagesProtectionRuleQueryResolver = jest
+          .fn()
+          .mockRejectedValue(new Error(protectionRuleQueryResolverRejectedErrorMessage));
+
+        createComponent({ packagesProtectionRuleQueryResolver });
+
+        await waitForPromises();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(protectionRuleQueryResolverRejectedErrorMessage);
+      });
+
       describe('when button "Previous" is clicked', () => {
         const packagesProtectionRuleQueryResolver = jest
           .fn()

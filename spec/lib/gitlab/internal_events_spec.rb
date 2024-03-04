@@ -30,39 +30,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  shared_context 'with mapped additional properties' do
-    let(:additional_properties) do
-      {
-        author: 'author_name',
-        age: 28
-      }
-    end
-
-    let(:aditional_event_config) { {} }
-
-    before do
-      config = {
-        action: event_name,
-        additional_properties: {
-          author: {
-            external_key: 'label'
-          },
-          age: {
-            external_key: 'value'
-          }
-        }.merge(aditional_event_config)
-      }
-      wrong_config = config.deep_merge(properties: { author: { external_key: 'property' } })
-      event_definition1 = Gitlab::Tracking::EventDefinition.new('path', config)
-      event_definition2 = Gitlab::Tracking::EventDefinition.new('path', wrong_config.merge(action: "action2"))
-      event_definition3 = Gitlab::Tracking::EventDefinition.new('path', wrong_config.merge(action: "action3"))
-      event_definitions = [event_definition3, event_definition1, event_definition2]
-      allow(Gitlab::Tracking::EventDefinition).to receive(:definitions).and_return(event_definitions)
-
-      described_class.instance_variable_set(:@_event_definitions, nil)
-    end
-  end
-
   def expect_redis_hll_tracking(value_override = nil, property_name_override = nil)
     expected_value = value_override || unique_value
     expected_property_name = property_name_override || property_name
@@ -204,42 +171,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       )
 
       expect_snowplow_tracking(nil, additional_properties)
-    end
-
-    context "when additional properties have mapped names" do
-      include_context 'with mapped additional properties'
-
-      it 'is sent to Snowplow' do
-        described_class.track_event(
-          event_name,
-          additional_properties: additional_properties,
-          user: user,
-          project: project
-        )
-
-        expect_snowplow_tracking(nil, { label: 'author_name', value: 28 })
-      end
-
-      context "when there's an additional attribute config without external_key" do
-        let(:aditional_event_config) do
-          {
-            another_attribute: {
-              description: 'lorem ipsum'
-            }
-          }
-        end
-
-        it 'is sent to Snowplow' do
-          described_class.track_event(
-            event_name,
-            additional_properties: additional_properties,
-            user: user,
-            project: project
-          )
-
-          expect_snowplow_tracking(nil, { label: 'author_name', value: 28 })
-        end
-      end
     end
   end
 
@@ -543,17 +474,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
 
           track_event
-        end
-
-        context "when additional properties have mapped names" do
-          include_context 'with mapped additional properties'
-
-          it 'passes unmapped additional_properties to Product Analytics Ruby SDK', :aggregate_failures do
-            expect(sdk_client).to receive(:identify).with(user.id)
-            expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
-
-            track_event
-          end
         end
       end
 

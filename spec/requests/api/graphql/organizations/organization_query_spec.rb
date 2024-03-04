@@ -125,19 +125,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         create(:group) { |g| g.add_developer(user) } # outside organization
       end
 
-      context 'when resolve_organization_groups feature flag is disabled' do
-        before do
-          stub_feature_flags(resolve_organization_groups: false)
-        end
-
-        it 'returns no groups' do
-          request_organization
-
-          expect(graphql_data_at(:organization)).not_to be_nil
-          expect(graphql_data_at(:organization, :groups, :nodes)).to be_empty
-        end
-      end
-
       it 'does not return ancestors of authorized groups' do
         request_organization
 

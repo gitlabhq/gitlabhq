@@ -27,12 +27,11 @@ module RuboCop
         include RangeHelp
 
         MSG = 'The date of this file (`%<basename>s`) must not be in the future.'
+        BAD_FORMAT_MSG = 'The filename format of (`%<basename>s`) must be of format: YYYYMMDDHHMMSS_some_name.rb.'
 
         def on_new_investigation
           file_path = processed_source.file_path
           basename = File.basename(file_path)
-
-          return unless date_named_file?(basename)
 
           for_bad_filename(basename) { |range, msg| add_offense(range, message: msg) }
         end
@@ -40,19 +39,29 @@ module RuboCop
         private
 
         DATE_LENGTH = 14
-        STARTS_WITH_DATE_REGEX = /^\d{#{DATE_LENGTH}}_/
-
-        def date_named_file?(basename)
-          basename.match?(STARTS_WITH_DATE_REGEX)
-        end
+        FILE_NAME_REGEX = /^\d{#{DATE_LENGTH}}_[a-z0-9]+(?:[0-9a-z_]*)[a-z0-9]+\.rb$/
 
         def for_bad_filename(basename)
+          message = if incorrect_filename_format?(basename)
+                      BAD_FORMAT_MSG
+                    elsif future_date?(basename)
+                      MSG
+                    end
+
+          return unless message
+
+          yield source_range(processed_source.buffer, 1, 0), format(message, basename: basename)
+        end
+
+        def incorrect_filename_format?(basename)
+          !basename.match?(FILE_NAME_REGEX)
+        end
+
+        def future_date?(basename)
           # match ActiveRecord https://api.rubyonrails.org/classes/ActiveRecord/Migration.html
           now = Time.now.utc.strftime('%Y%m%d%H%M%S') # length is 14
 
-          return if basename.first(DATE_LENGTH) <= now
-
-          yield source_range(processed_source.buffer, 1, 0), format(MSG, basename: basename)
+          basename.first(DATE_LENGTH) > now
         end
       end
     end

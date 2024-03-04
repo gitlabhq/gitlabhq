@@ -333,9 +333,10 @@ Rails/InverseOf:
 Rails/MigrationTimestamp:
   Enabled: true
   Include:
-    - 'db/migrate/*.rb'
-    - 'db/post_migrate/*.rb'
-    - 'ee/db/geo/migrate/*.rb'
+    - db/migrate/*.rb
+    - db/post_migrate/*.rb
+    - ee/db/geo/migrate/*.rb
+    - ee/db/geo/post_migrate/*.rb
 
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update

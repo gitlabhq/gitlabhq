@@ -44,6 +44,7 @@ import {
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
   PARAM_KEY_VERSION,
+  PARAM_KEY_CREATOR,
   STATUS_ONLINE,
   DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
@@ -51,6 +52,8 @@ import {
 import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query.graphql';
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
+import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
+
 import { captureException } from '~/ci/runner/sentry_utils';
 
 import {
@@ -61,6 +64,7 @@ import {
   mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
+  usersData,
 } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
@@ -69,6 +73,7 @@ const mockRunnersCount = runnersCountData.data.runners.count;
 const mockRunnersHandler = jest.fn();
 const mockRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
+const mockUsersSearchAllHandler = jest.fn();
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
@@ -110,6 +115,7 @@ describe('AdminRunnersApp', () => {
       [allRunnersQuery, mockRunnersHandler],
       [allRunnersCountQuery, mockRunnersCountHandler],
       [runnerJobCountQuery, mockRunnerJobCountHandler],
+      [usersSearchAllQuery, mockUsersSearchAllHandler],
     ];
 
     wrapper = mountFn(AdminRunnersApp, {
@@ -138,12 +144,14 @@ describe('AdminRunnersApp', () => {
     mockRunnersHandler.mockResolvedValue(allRunnersData);
     mockRunnersCountHandler.mockResolvedValue(runnersCountData);
     mockRunnerJobCountHandler.mockResolvedValue(runnerJobCountData);
+    mockUsersSearchAllHandler.mockResolvedValue(usersData);
   });
 
   afterEach(() => {
     mockRunnersHandler.mockReset();
     mockRunnersCountHandler.mockReset();
     mockRunnerJobCountHandler.mockReset();
+    mockUsersSearchAllHandler.mockReset();
     showToast.mockReset();
   });
 
@@ -245,28 +253,78 @@ describe('AdminRunnersApp', () => {
     });
   });
 
-  it('sets tokens in the filtered search', () => {
-    createComponent();
+  describe('filtered search configuration', () => {
+    it('sets tokens in the filtered search', () => {
+      createComponent();
 
-    expect(findRunnerFilteredSearchBar().props('tokens')).toEqual([
-      expect.objectContaining({
-        type: PARAM_KEY_PAUSED,
-        options: expect.any(Array),
-      }),
-      expect.objectContaining({
-        type: PARAM_KEY_STATUS,
-        options: expect.any(Array),
-      }),
-      expect.objectContaining({
-        type: PARAM_KEY_VERSION,
-        title: 'Version starts with',
-      }),
-      expect.objectContaining({
-        type: PARAM_KEY_TAG,
-        recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
-      }),
-      upgradeStatusTokenConfig,
-    ]);
+      expect(findRunnerFilteredSearchBar().props('tokens')).toEqual([
+        expect.objectContaining({
+          type: PARAM_KEY_PAUSED,
+          options: expect.any(Array),
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_STATUS,
+          options: expect.any(Array),
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_VERSION,
+          title: 'Version starts with',
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_CREATOR,
+          title: 'Creator',
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_TAG,
+          recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
+        }),
+        upgradeStatusTokenConfig,
+      ]);
+    });
+
+    describe('creator suggestions', () => {
+      const [loggedInUser, otherUser] = usersData.data.users.nodes;
+
+      const getCreatorToken = () =>
+        findRunnerFilteredSearchBar()
+          .props('tokens')
+          .filter((t) => t?.type === PARAM_KEY_CREATOR)[0];
+
+      beforeEach(() => {
+        // simulate logged in user
+        window.gon = {
+          current_user_id: loggedInUser.id,
+          current_user_fullname: loggedInUser.name,
+          current_username: loggedInUser.username,
+          current_user_avatar_url: loggedInUser.avatarUrl,
+        };
+
+        createComponent();
+      });
+
+      it('preloads logged in user', () => {
+        expect(getCreatorToken()).toMatchObject({
+          defaultUsers: [],
+          preloadedUsers: [
+            {
+              id: gon.current_user_id,
+              name: gon.current_user_fullname,
+              username: gon.current_username,
+              avatar_url: gon.current_user_avatar_url,
+            },
+          ],
+        });
+      });
+
+      it('requests and shows creator suggestions', async () => {
+        const suggestions = await getCreatorToken().fetchUsers('search');
+
+        expect(mockUsersSearchAllHandler).toHaveBeenCalledTimes(1);
+        expect(mockUsersSearchAllHandler).toHaveBeenCalledWith({ first: null, search: 'search' });
+
+        expect(suggestions).toEqual([loggedInUser, otherUser]);
+      });
+    });
   });
 
   describe('Single runner row', () => {

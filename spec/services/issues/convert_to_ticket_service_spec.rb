@@ -46,7 +46,6 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
     let(:email) { nil }
     let(:service) { described_class.new(target: issue, current_user: user, email: email) }
 
-    let(:error_feature_flag) { "Feature flag convert_to_ticket_quick_action is not enabled for this project." }
     let(:error_underprivileged) { _("You don't have permission to manage this issue.") }
     let(:error_already_ticket) { s_("ServiceDesk|Cannot convert to ticket because it is already a ticket.") }
     let(:error_invalid_email) do
@@ -97,16 +96,6 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
           it_behaves_like 'a failed service execution'
         end
       end
-    end
-
-    context 'when feature flag convert_to_ticket_quick_action is disabled' do
-      let(:error_message) { error_feature_flag }
-
-      before do
-        stub_feature_flags(convert_to_ticket_quick_action: false)
-      end
-
-      it_behaves_like 'a failed service execution'
     end
   end
 end

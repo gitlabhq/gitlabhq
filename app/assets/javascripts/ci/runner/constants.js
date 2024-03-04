@@ -75,6 +75,7 @@ export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 // List
+export const I18N_CREATOR = s__('Runners|Creator');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );
@@ -133,6 +134,7 @@ export const RUNNER_TAG_BG_CLASS = 'gl-bg-blue-100';
 // - Used for URL params names
 // - GlFilteredSearch tokens type
 
+export const PARAM_KEY_CREATOR = 'creator';
 export const PARAM_KEY_STATUS = 'status';
 export const PARAM_KEY_PAUSED = 'paused';
 export const PARAM_KEY_RUNNER_TYPE = 'runner_type';

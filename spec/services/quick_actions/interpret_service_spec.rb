@@ -2665,16 +2665,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
-
-      context 'with feature flag convert_to_ticket_quick_action disabled' do
-        before do
-          stub_feature_flags(convert_to_ticket_quick_action: false)
-        end
-
-        it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
-        end
-      end
     end
 
     context 'severity command' do

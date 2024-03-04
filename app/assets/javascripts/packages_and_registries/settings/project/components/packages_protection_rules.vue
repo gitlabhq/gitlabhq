@@ -56,7 +56,6 @@ export default {
   },
   data() {
     return {
-      fetchSettingsError: false,
       packageProtectionRules: [],
       protectionRuleFormVisibility: false,
       packageProtectionRulesQueryPayload: { nodes: [], pageInfo: {} },
@@ -123,7 +122,7 @@ export default {
         return data.project?.packagesProtectionRules ?? this.packageProtectionRulesQueryPayload;
       },
       error(e) {
-        this.fetchSettingsError = e;
+        this.alertErrorMessage = e.message;
       },
     },
   },

@@ -12,19 +12,12 @@ describe('CiResourceDetails', () => {
   const defaultProps = {
     resourcePath: 'twitter/project-1',
   };
-  const defaultProvide = {
-    glFeatures: { ciCatalogComponentsTab: true },
-  };
 
-  const createComponent = ({ provide = {}, mountFn = shallowMount, props = {} } = {}) => {
+  const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
     wrapper = mountFn(CiResourceDetails, {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        ...defaultProvide,
-        ...provide,
       },
       stubs: {
         GlTabs,
@@ -36,62 +29,42 @@ describe('CiResourceDetails', () => {
   const findCiResourceComponents = () => wrapper.findComponent(CiResourceComponents);
   const findExperimentBadge = () => wrapper.findComponent(ExperimentBadge);
 
+  describe('UI', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('passes the right props to the readme component', () => {
+      expect(findCiResourceReadme().props().resourceId).toBe(defaultProps.resourceId);
+    });
+  });
+
   describe('tabs', () => {
-    describe('when feature flag `ci_catalog_components_tab` is enabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+    beforeEach(() => {
+      createComponent();
+    });
 
-      it('renders the readme and components tab', () => {
-        expect(findAllTabs()).toHaveLength(2);
-        expect(findCiResourceComponents().exists()).toBe(true);
-        expect(findCiResourceReadme().exists()).toBe(true);
-      });
+    it('renders the readme and components tabs', () => {
+      expect(findAllTabs()).toHaveLength(2);
+      expect(findCiResourceComponents().exists()).toBe(true);
+      expect(findCiResourceReadme().exists()).toBe(true);
+    });
 
-      it('renders an Experiment Badge', async () => {
-        createComponent({ mountFn: mount });
-        await waitForPromises();
-
-        expect(findExperimentBadge().exists()).toBe(true);
+    it('passes lazy attribute to all tabs', () => {
+      findAllTabs().wrappers.forEach((tab) => {
+        expect(tab.attributes().lazy).not.toBeUndefined();
       });
     });
 
-    describe('when feature flag `ci_catalog_components_tab` is disabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: { glFeatures: { ciCatalogComponentsTab: false } },
-        });
-      });
+    it('renders an Experiment Badge for the components tab', async () => {
+      createComponent({ mountFn: mount });
+      await waitForPromises();
 
-      it('renders only readme tab as default', () => {
-        expect(findCiResourceReadme().exists()).toBe(true);
-        expect(findCiResourceComponents().exists()).toBe(false);
-        expect(findAllTabs()).toHaveLength(1);
-      });
-
-      it('does not render an Experiment Badge', () => {
-        expect(findExperimentBadge().exists()).toBe(false);
-      });
+      expect(findExperimentBadge().exists()).toBe(true);
     });
 
-    describe('UI', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('passes lazy attribute to all tabs', () => {
-        findAllTabs().wrappers.forEach((tab) => {
-          expect(tab.attributes().lazy).not.toBeUndefined();
-        });
-      });
-
-      it('passes the right props to the readme component', () => {
-        expect(findCiResourceReadme().props().resourceId).toBe(defaultProps.resourceId);
-      });
-
-      it('passes the right props to the components tab', () => {
-        expect(findCiResourceComponents().props().resourceId).toBe(defaultProps.resourceId);
-      });
+    it('passes the right props to the components tab', () => {
+      expect(findCiResourceComponents().props().resourceId).toBe(defaultProps.resourceId);
     });
   });
 });

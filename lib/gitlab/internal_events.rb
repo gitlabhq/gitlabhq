@@ -21,9 +21,7 @@ module Gitlab
       def track_event(event_name, category: nil, send_snowplow_event: true, additional_properties: {}, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
-        mapped_additional_properties = map_additional_properties(event_name, additional_properties)
-
-        validate_properties!(mapped_additional_properties, kwargs)
+        validate_properties!(additional_properties, kwargs)
 
         project = kwargs[:project]
         kwargs[:namespace] ||= project.namespace if project
@@ -32,7 +30,7 @@ module Gitlab
         increase_weekly_total_counter(event_name)
         update_unique_counters(event_name, kwargs)
 
-        trigger_snowplow_event(event_name, category, mapped_additional_properties, kwargs) if send_snowplow_event
+        trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
 
         if Feature.enabled?(:internal_events_for_product_analytics)
           send_application_instrumentation_event(event_name, additional_properties, kwargs)
@@ -180,42 +178,6 @@ module Gitlab
         GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: SNOWPLOW_EMITTER_BUFFER_SIZE)
       end
       strong_memoize_attr :gitlab_sdk_client
-
-      def map_additional_properties(event_name, additional_properties)
-        return {} if additional_properties.empty?
-
-        properties_mapping = additional_properties_mapping(event_name)
-
-        additional_properties.transform_keys do |key|
-          properties_mapping.fetch(key, key)
-        end
-      end
-
-      def additional_properties_mapping(event_name)
-        definition = event_definitions.find do |definition|
-          definition.attributes[:action] == event_name
-        end
-
-        return unless definition
-
-        mapping = definition.attributes.fetch(:additional_properties, {}).filter_map do |name, config|
-          external_key = config[:external_key]
-          next unless external_key
-
-          [external_key.to_sym, name]
-        end.to_h
-
-        base_property_mapping.merge(mapping).invert
-      end
-
-      def base_property_mapping
-        keys = ALLOWED_ADDITIONAL_PROPERTIES.keys
-        keys.zip(keys).to_h
-      end
-
-      def event_definitions
-        @_event_definitions ||= Gitlab::Tracking::EventDefinition.definitions
-      end
     end
   end
 end

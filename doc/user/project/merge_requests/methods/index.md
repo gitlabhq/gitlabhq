@@ -186,6 +186,9 @@ NOTE:
 Projects that use the fast-forward merge strategy can't
 [filter merge requests](../index.md#filter-the-list-of-merge-requests)
 by deployment date, because no merge commit is created.
+Features that rely on the deployment-MR relationship do not work when fast-forward merges are
+enabled.
+This bug is tracked in [issue 398611](https://gitlab.com/gitlab-org/gitlab/-/issues/398611).
 
 When you visit the merge request page with `Fast-forward merge`
 method selected, you can accept it **only if a fast-forward merge is possible**.

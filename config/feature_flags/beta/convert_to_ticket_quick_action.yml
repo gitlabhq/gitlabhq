@@ -1,9 +1,0 @@
----
-name: convert_to_ticket_quick_action
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433376
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139553
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17488
-milestone: '16.9'
-group: group::respond
-type: beta
-default_enabled: false

@@ -13,12 +13,6 @@ module Resolvers
 
       alias_method :organization, :object
 
-      def resolve_groups(**args)
-        return Group.none if Feature.disabled?(:resolve_organization_groups, current_user)
-
-        super
-      end
-
       def finder_params(args)
         extra_args = { organization: organization, include_ancestors: false, all_available: false }
 

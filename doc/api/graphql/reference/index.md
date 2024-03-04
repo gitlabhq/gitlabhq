@@ -8510,10 +8510,6 @@ Input type: `VulnerabilitiesDismissInput`
 
 ### `Mutation.vulnerabilitiesRemoveAllFromProject`
 
-DETAILS:
-**Introduced** in GitLab 16.7.
-**Status**: Experiment.
-
 Input type: `VulnerabilitiesRemoveAllFromProjectInput`
 
 #### Arguments
@@ -25063,8 +25059,19 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="pipelinesecurityreportfindingstatecomment"></a>`stateComment` | [`String`](#string) | Comment for the state of the security report finding. |
 | <a id="pipelinesecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindinguserpermissions"></a>`userPermissions` | [`PipelineSecurityReportFindingPermissions!`](#pipelinesecurityreportfindingpermissions) | Permissions for the current user on the resource. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
 | <a id="pipelinesecurityreportfindingvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability related to the security report finding. |
+
+### `PipelineSecurityReportFindingPermissions`
+
+Check permissions for the current user on a vulnerability finding.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinesecurityreportfindingpermissionsadminvulnerability"></a>`adminVulnerability` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_vulnerability` on this resource. |
 
 ### `PipelineTrigger`
 
