@@ -207,24 +207,24 @@ Only public and internal projects are discoverable in the CI/CD Catalog.
 
 To publish a component project in the CI/CD catalog, you must:
 
-1. Set the project as a catalog resource.
+1. Set the project as a catalog project.
 1. Publish a new release.
 
-#### Set a component project as a catalog resource
+#### Set a component project as a catalog project
 
 To make published versions of a component project visible in the CI/CD catalog,
-you must set the project as a catalog resource.
+you must set the project as a catalog project.
 
 Prerequisites:
 
 - You must have the Owner role in the project.
 
-To set the project as a catalog resource:
+To set the project as a catalog project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Turn on the **CI/CD Catalog resource** toggle.
+1. Turn on the **CI/CD Catalog project** toggle.
 
 The project only becomes findable in the catalog after you publish a new release.
 
@@ -236,7 +236,7 @@ However, publishing a component's releases in the catalog makes it discoverable 
 Prerequisites:
 
 - The project must:
-  - Be set as a [catalog resource](#set-a-component-project-as-a-catalog-resource).
+  - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
   - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description) defined.
   - Have a `README.md` file in the root directory for the commit SHA of the tag being released.
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
@@ -269,7 +269,7 @@ is published to the CI/CD catalog. Tags must use semantic versioning, for exampl
 
 ### Unpublish a component project
 
-To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-resource)
+To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-project)
 toggle in the project settings.
 
 WARNING:
@@ -558,11 +558,11 @@ You can learn more by following a practical example for [migrating the Go CI/CD 
 ### `content not found` message
 
 You might receive an error message similar to the following when using the `~latest`
-version qualifier to reference a component hosted by a [catalog resource](#set-a-component-project-as-a-catalog-resource):
+version qualifier to reference a component hosted by a [catalog project](#set-a-component-project-as-a-catalog-project):
 
 ```plaintext
 This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found`
 ```
 
 The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/429707)
-in GitLab 16.7. It now refers to the latest published version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).
+in GitLab 16.7. It now refers to the latest published version of the catalog project. To resolve this issue, [create a new release](#publish-a-new-release).

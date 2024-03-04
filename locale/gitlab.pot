@@ -10545,10 +10545,10 @@ msgstr ""
 msgid "CiCatalog|Back to the CI/CD Catalog"
 msgstr ""
 
-msgid "CiCatalog|CI/CD Catalog resource"
+msgid "CiCatalog|CI/CD Catalog project"
 msgstr ""
 
-msgid "CiCatalog|CI/CD catalog resource"
+msgid "CiCatalog|CI/CD Catalog resource"
 msgstr ""
 
 msgid "CiCatalog|Component ID not found, or you do not have permission to access component."
@@ -10617,10 +10617,10 @@ msgstr ""
 msgid "CiCatalog|There was a problem fetching the CI/CD Catalog setting."
 msgstr ""
 
-msgid "CiCatalog|There was an error fetching CI/CD Catalog resources."
+msgid "CiCatalog|There was an error fetching CI/CD Catalog projects."
 msgstr ""
 
-msgid "CiCatalog|There was an error fetching the CI/CD Catalog resource count."
+msgid "CiCatalog|There was an error fetching the CI/CD Catalog project count."
 msgstr ""
 
 msgid "CiCatalog|This project is no longer a CI/CD Catalog resource."
@@ -34061,7 +34061,7 @@ msgstr ""
 msgid "ObservabilityMetrics|Name"
 msgstr ""
 
-msgid "ObservabilityMetrics|No data found for the selected metric."
+msgid "ObservabilityMetrics|No data found for the selected time range %{time}"
 msgstr ""
 
 msgid "ObservabilityMetrics|Search"
@@ -42937,7 +42937,7 @@ msgstr ""
 msgid "Runners|Google Cloud project ID"
 msgstr ""
 
-msgid "Runners|Google Cloud provisioning is disabled for this project"
+msgid "Runners|Google Cloud provisioning is disabled for %{container_type}"
 msgstr ""
 
 msgid "Runners|Group"
@@ -47407,6 +47407,9 @@ msgid "SlackIntegration|Generated for %{host} by GitLab %{version}."
 msgstr ""
 
 msgid "SlackIntegration|GitLab for Slack"
+msgstr ""
+
+msgid "SlackIntegration|GitLab for Slack app configured on the group or instance level and can only be modified there."
 msgstr ""
 
 msgid "SlackIntegration|GitLab for Slack was successfully installed."

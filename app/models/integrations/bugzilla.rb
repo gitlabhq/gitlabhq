@@ -28,7 +28,7 @@ module Integrations
       'bugzilla'
     end
 
-    def attribution_notice
+    def self.attribution_notice
       _('The Bugzilla logo is a trademark of the Mozilla Foundation in the U.S. and other countries.')
     end
   end

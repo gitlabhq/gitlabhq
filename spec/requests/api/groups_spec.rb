@@ -169,6 +169,66 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when using the visibility filter' do
+      let_it_be(:group_1) { create(:group, :private) }
+      let_it_be(:group_2) { create(:group, :internal) }
+      let_it_be(:group_3) { create(:group, :public) }
+      let_it_be(:group_4) { create(:group, :private) }
+      let_it_be(:group_5) { create(:group, :public) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      before_all do
+        group_1.add_owner(user1)
+        group_2.add_owner(user1)
+        group_3.add_owner(user1)
+        group_4.add_owner(user1)
+        group_5.add_owner(user1)
+      end
+
+      it 'filters based on private visibility param' do
+        get api("/groups", user1), params: { visibility: 'private' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_1.id, group_4.id)
+      end
+
+      it 'filters based on internal visibility param' do
+        get api("/groups", user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_2.id)
+      end
+
+      it 'filters based on public visibility param' do
+        get api("/groups", user1), params: { visibility: 'public' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_3.id, group_5.id)
+      end
+
+      it 'filters based on no visibility param passed' do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_1.id, group_2.id, group_3.id, group_4.id, group_5.id)
+      end
+
+      it 'filters based on unknown visibility param' do
+        get api("/groups", user1), params: { visibility: 'something' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('visibility does not have a valid value')
+      end
+    end
+
     context 'pagination strategies' do
       let_it_be(:group_1) { create(:group, name: '1_group') }
       let_it_be(:group_2) { create(:group, name: '2_group') }

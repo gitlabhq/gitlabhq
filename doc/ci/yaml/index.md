@@ -2630,7 +2630,7 @@ test-job:
 Command or script to execute as the container's entry point.
 
 When the Docker container is created, the `entrypoint` is translated to the Docker `--entrypoint` option.
-The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/engine/reference/builder/#entrypoint),
+The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/reference/dockerfile/#entrypoint),
 where each shell token is a separate string in the array.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -2686,8 +2686,8 @@ arm-sql-job:
 
 **Additional details**:
 
-- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
-- `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
+- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
+- `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
 
 #### `image:pull_policy`
 

@@ -2237,6 +2237,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.by_name' do
+    let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
+
+    it 'includes correct projects' do
+      expect(described_class.by_name(project1.name)).to eq([project1])
+      expect(described_class.by_name(project2.name.chop)).to match_array([project1, project2])
+    end
+  end
+
   describe '.with_slack_application_disabled' do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }

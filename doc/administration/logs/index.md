@@ -655,10 +655,10 @@ Example log entries for `/var/log/gitlab/gitaly/current`:
 
 ## Gitaly logs
 
-This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
+This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](https://smarden.org/runit/).
 `runit` is packaged with the Linux package and a brief explanation of its purpose
 is available [in the Linux package documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
-[Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in
+[Log files are rotated](https://smarden.org/runit/svlogd.8.html), renamed in
 Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`

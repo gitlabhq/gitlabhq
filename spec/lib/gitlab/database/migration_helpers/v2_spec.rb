@@ -574,4 +574,56 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
       expect(recorder.log).to include(/ALTER TABLE "_test_undo_change_column_type_concurrently" DROP COLUMN "name_for_type_change"/)
     end
   end
+
+  describe '#rename_index_with_schema' do
+    let(:table_name) { :_test_rename_index_with_schema }
+    let(:schema_table_name) { [schema, table_name].compact.join('.') }
+    let(:index_name) { :_test_rename_index_with_schema_index }
+    let(:new_index_name) { :_test_rename_index_with_schema_index_new_101 }
+
+    before do
+      migration.connection.execute(<<~SQL)
+        DROP TABLE IF EXISTS #{schema_table_name};
+        CREATE TABLE #{schema_table_name} (
+          id bigint NOT NULL PRIMARY KEY,
+          user_id bigint
+        );
+        CREATE INDEX #{index_name} ON #{schema_table_name} USING btree (user_id);
+      SQL
+    end
+
+    context 'when schema is nil' do
+      let(:schema) { nil }
+
+      it 'renames the index' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          migration.rename_index_with_schema(table_name, index_name, new_index_name, schema: schema)
+        end
+        expect(recorder.log).to include(/ALTER INDEX "_test_rename_index_with_schema_index" RENAME TO "_test_rename_index_with_schema_index_new_101"/m)
+        expect(migration.indexes(schema_table_name).map(&:name)).to include("_test_rename_index_with_schema_index_new_101")
+      end
+    end
+
+    context 'when schema is not nil' do
+      let(:schema) { :gitlab_partitions_dynamic }
+
+      it 'renames the index' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          migration.rename_index_with_schema(table_name, index_name, new_index_name, schema: schema)
+        end
+        expect(recorder.log).to include(/ALTER INDEX "gitlab_partitions_dynamic"."_test_rename_index_with_schema_index" RENAME TO "_test_rename_index_with_schema_index_new_101"/m)
+        expect(migration.indexes(schema_table_name).map(&:name)).to include("_test_rename_index_with_schema_index_new_101")
+      end
+
+      context 'when table_name has schema' do
+        it 'renames the index' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            migration.rename_index_with_schema(schema_table_name, index_name, new_index_name)
+          end
+          expect(recorder.log).to include(/ALTER INDEX "gitlab_partitions_dynamic"."_test_rename_index_with_schema_index" RENAME TO "_test_rename_index_with_schema_index_new_101"/m)
+          expect(migration.indexes(schema_table_name).map(&:name)).to include("_test_rename_index_with_schema_index_new_101")
+        end
+      end
+    end
+  end
 end

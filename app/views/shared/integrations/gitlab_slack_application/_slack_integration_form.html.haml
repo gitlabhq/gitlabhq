@@ -1,5 +1,7 @@
 - slack_integration = integration.slack_integration
 - if slack_integration
+  - inherited = integration.inherit_from_id.present?
+  - destroy_button_modal = inherited ? {} : { data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?') } }
   %table.gl-table.gl-w-full
     %thead
       %tr
@@ -22,9 +24,10 @@
           - if integration.project_level?
             = render Pajamas::ButtonComponent.new(href: edit_project_settings_slack_path(integration.parent)) do
               = _('Edit')
-          = render Pajamas::ButtonComponent.new(method: :delete, category: 'secondary', variant: "danger", href: slack_integration_destroy_path(integration.parent), icon: 'remove', button_options: { aria: { label: s_('Remove') }, data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?') }})
+          .destroy-button-container{ inherited ? { title: s_('SlackIntegration|GitLab for Slack app configured on the group or instance level and can only be modified there.'), data: { toggle: 'tooltip' } } : {} }
+            = render Pajamas::ButtonComponent.new(method: :delete, category: 'secondary', variant: "danger", href: slack_integration_destroy_path(integration.parent), icon: 'remove', disabled: inherited, button_options: { aria: { label: s_('Remove') }, **destroy_button_modal})
   .gl-my-5
-    = render Pajamas::ButtonComponent.new(href: add_to_slack_link(integration.parent, slack_app_id)) do
+    = render Pajamas::ButtonComponent.new(href: add_to_slack_link(integration.parent, slack_app_id), disabled: inherited) do
       = s_('SlackIntegration|Reinstall GitLab for Slack app…')
   %p
     = html_escape(s_('SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}.')) % { linkStart: %(<a href="#{help_page_path('user/project/integrations/gitlab_slack_application', anchor: 'reinstall-the-gitlab-for-slack-app')}">).html_safe, linkEnd: '</a>'.html_safe}

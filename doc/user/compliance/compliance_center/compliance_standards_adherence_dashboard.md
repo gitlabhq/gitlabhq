@@ -80,6 +80,8 @@ information, see [Merge request approval rules](../../project/merge_requests/app
 
 ## SOC 2 standard
 
+> - At least one non-author approval SOC 2 check [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433201) in GitLab 16.10.
+
 The SOC 2 standard consists of one rule:
 
 - At least one non-author approval.

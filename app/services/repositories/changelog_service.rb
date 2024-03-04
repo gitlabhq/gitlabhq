@@ -88,7 +88,7 @@ module Repositories
       # the number of SQL queries needed to get this data.
       mrs_finder = MergeRequests::OldestPerCommitFinder.new(@project)
       release = Gitlab::Changelog::Release
-        .new(version: @version, date: @date, config: config)
+        .new(version: @version, date: @date, config: config, project: @project)
 
       commits =
         ChangelogCommitsFinder.new(project: @project, from: from, to: @to)

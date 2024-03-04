@@ -40,15 +40,16 @@ _quarantine:
   extends:
     - .qa
     - .rules:test:manual-except-default-branch
-  needs:
-    - job: trigger-omnibus
-      optional: true
   stage: test
   variables:
-    RSPEC_REPORT_OPTS: "--format html --out tmp/rspec-${CI_JOB_NAME}.htm --color --format documentation"
     QA_RSPEC_TAGS: --tag quarantine
   after_script:
     - echo "After script overridden in _quarantine job"
+  artifacts:
+    when: always
+    expire_in: 1 day
+    paths:
+      - gitlab-qa-run-*/**/test-metrics-*.json
 
 # ------------------------------------------
 # FF changes

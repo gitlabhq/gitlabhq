@@ -92,7 +92,7 @@ module Integrations
       original_value.nil? ? (new_record? || url_is_saas?) : original_value
     end
 
-    def attribution_notice
+    def self.attribution_notice
       'Copyright © 2024 JetBrains s.r.o. JetBrains TeamCity and the JetBrains TeamCity logo are registered trademarks of JetBrains s.r.o.'
     end
 

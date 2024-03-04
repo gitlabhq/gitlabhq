@@ -36,7 +36,7 @@ module Integrations
       super.select { %w[project_url issues_url].include?(_1.name) }
     end
 
-    def attribution_notice
+    def self.attribution_notice
       'Copyright © 2024 JetBrains s.r.o. JetBrains YouTrack and the JetBrains YouTrack logo are registered trademarks of JetBrains s.r.o.'
     end
   end

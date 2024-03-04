@@ -12,6 +12,7 @@ RSpec.describe Integrations::SlackInstallation::InstanceService, :enable_admin_m
     let(:installation_alias) { '_gitlab-instance' }
     let(:integration) { Integrations::GitlabSlackApplication.for_instance.first }
     let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_admin_application_settings_slack_url }
+    let(:enqueues_propagation_worker) { true }
 
     def create_gitlab_slack_application_integration!
       Integrations::GitlabSlackApplication.create!(instance: true)

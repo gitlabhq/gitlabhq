@@ -20,6 +20,8 @@ module API
         use :statistics_params
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
@@ -38,7 +40,7 @@ module API
           :owned, :min_access_level,
           :include_parent_descendants,
           :repository_storage,
-          :search
+          :search, :visibility
         )
 
         find_params[:parent] = if params[:top_level_only]

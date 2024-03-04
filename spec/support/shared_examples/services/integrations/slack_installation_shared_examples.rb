@@ -150,6 +150,18 @@ RSpec.shared_examples_for Integrations::SlackInstallation::BaseService do
       end
     end
 
+    it 'handles propagation correctly' do
+      allow(PropagateIntegrationWorker).to receive(:perform_async)
+
+      service.execute
+
+      if enqueues_propagation_worker
+        expect(PropagateIntegrationWorker).to have_received(:perform_async).with(integration.id)
+      else
+        expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
+      end
+    end
+
     context 'when the team has other Slack installation records' do
       let_it_be_with_reload(:other_installation) { create(:slack_integration, team_id: team_id) }
       let_it_be_with_reload(:other_legacy_installation) { create(:slack_integration, :legacy, team_id: team_id) }

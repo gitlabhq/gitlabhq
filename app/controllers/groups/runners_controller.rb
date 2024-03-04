@@ -7,7 +7,7 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 
   before_action do
-    push_frontend_feature_flag(:google_cloud_runner_provisioning, @project, type: :beta)
+    push_frontend_feature_flag(:google_cloud_runner_provisioning, @project&.root_ancestor, type: :beta)
   end
 
   feature_category :runner

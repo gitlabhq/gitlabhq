@@ -17,6 +17,7 @@ RSpec.describe Integrations::SlackInstallation::GroupService, feature_category: 
     let(:installation_alias) { group.full_path }
     let(:integration) { Integrations::GitlabSlackApplication.for_group(group).first }
     let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_group_settings_slack_url(group) }
+    let(:enqueues_propagation_worker) { true }
 
     def create_gitlab_slack_application_integration!
       Integrations::GitlabSlackApplication.create!(group: group)

@@ -7,7 +7,7 @@ RSpec.describe 'User manages the group-level GitLab for Slack app integration', 
 
   include_context 'group integration activation'
 
-  let_it_be(:integration) do
+  let_it_be_with_reload(:integration) do
     create(:gitlab_slack_application_integration, :group, group: group,
       slack_integration: build(:slack_integration)
     )
@@ -46,21 +46,41 @@ RSpec.describe 'User manages the group-level GitLab for Slack app integration', 
     end
   end
 
-  it 'allows the user to unlink the GitLab for Slack app' do
-    visit_slack_application_form
-
-    within_testid 'integration-settings-form' do
-      page.find('a.btn-danger').click
+  context 'when an integration is inherited' do
+    let_it_be(:instance_integration) do
+      create(:gitlab_slack_application_integration, :instance, slack_integration: build(:slack_integration))
     end
 
-    within_modal do
-      expect(page).to have_content('Are you sure you want to unlink this Slack Workspace from this integration?')
-      click_button('Remove')
+    before do
+      integration.update!(inherit_from_id: instance_integration.id)
     end
 
-    wait_for_requests
+    it 'does not allow the user to unlink the GitLab for Slack app' do
+      visit_slack_application_form
 
-    expect(page).to have_content('Install GitLab for Slack app')
+      within_testid 'integration-settings-form' do
+        expect(page).to have_css('a.btn-danger[disabled]')
+      end
+    end
+  end
+
+  context 'when an integration is not inherited' do
+    it 'allows the user to unlink the GitLab for Slack app' do
+      visit_slack_application_form
+
+      within_testid 'integration-settings-form' do
+        page.find('a.btn-danger').click
+      end
+
+      within_modal do
+        expect(page).to have_content('Are you sure you want to unlink this Slack Workspace from this integration?')
+        click_button('Remove')
+      end
+
+      wait_for_requests
+
+      expect(page).to have_content('Install GitLab for Slack app')
+    end
   end
 
   it 'shows the trigger form fields' do

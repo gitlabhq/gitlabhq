@@ -6,7 +6,8 @@
     "uploadTime",
     "updateTime",
     "image",
-    "digest"
+    "digest",
+    "uri"
   ],
   "properties": {
     "name": {

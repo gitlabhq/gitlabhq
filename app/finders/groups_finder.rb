@@ -111,6 +111,7 @@ class GroupsFinder < UnionFinder
     groups = by_custom_attributes(groups)
     groups = filter_group_ids(groups)
     groups = exclude_group_ids(groups)
+    groups = by_visibility(groups)
     by_search(groups)
   end
 
@@ -119,6 +120,12 @@ class GroupsFinder < UnionFinder
     return groups unless organization
 
     groups.in_organization(organization)
+  end
+
+  def by_visibility(groups)
+    return groups unless params[:visibility]
+
+    groups.by_visibility_level(params[:visibility])
   end
 
   def by_parent(groups)

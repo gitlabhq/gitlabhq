@@ -67,7 +67,7 @@ RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_compos
       it 'marks the project as a CI/CD Catalog' do
         visit project_path(project_with_ci_components)
 
-        expect(page).to have_content('CI/CD catalog resource')
+        expect(page).to have_content('CI/CD Catalog project')
       end
 
       context 'and there are no releases' do

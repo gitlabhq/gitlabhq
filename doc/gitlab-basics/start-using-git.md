@@ -36,7 +36,7 @@ prompt, command shell, and command line). Here are some options:
   - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3&viewFallbackFrom=powershell-7).
+  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/overview).
   - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
 - For Linux users:
   - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).

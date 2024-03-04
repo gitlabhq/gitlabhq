@@ -6,8 +6,8 @@ module Gitlab
     class Release
       attr_reader :version
 
-      def initialize(version:, date:, config:)
-        @version = version
+      def initialize(version:, date:, config:, project: nil)
+        @version = Feature.enabled?(:update_changelog_logic, project) ? version.to_s.delete_prefix('v') : version
         @date = date
         @config = config
         @entries = Hash.new { |h, k| h[k] = [] }
@@ -74,11 +74,11 @@ module Gitlab
         # The release header can't be changed using the Liquid template, as we
         # need this to be in a known format. Without this restriction, we won't
         # know where to insert a new release section in an existing changelog.
-        "## #{@version} (#{release_date})\n\n#{markdown}\n\n"
+        "## #{version} (#{release_date})\n\n#{markdown}\n\n"
       end
 
       def header_start_pattern
-        /^##\s*#{Regexp.escape(@version)}/
+        /^##\s*#{Regexp.escape(version)}/
       end
 
       private

@@ -202,6 +202,23 @@ module Gitlab
           execute("TRUNCATE TABLE #{quoted_tables}")
         end
 
+        # Rename an index that exists in a different schema other than current_schema() `public`,
+        # for example, an index under schema `gitlab_partitions_dynamic`
+        #
+        # table_name - The table name that old_index_name is under,
+        #               e.g. `gitlab_partitions_dynamic.ci_builds_101` or `ci_builds`
+        #               schema name in the table name will be used unless the `schema` argument is given
+        # schema - The schema name that old_index_name is under
+        def rename_index_with_schema(table_name, old_index_name, new_index_name, schema: nil)
+          if schema.blank?
+            schema, table_name_without_schema = table_name.to_s.scan(/[^".]+|"[^"]*"/)
+            schema = nil if table_name_without_schema.nil?
+          end
+
+          old_index_name_with_schema = [schema, old_index_name].compact.join('.')
+          execute "ALTER INDEX #{quote_table_name(old_index_name_with_schema)} RENAME TO #{quote_table_name(new_index_name)}"
+        end
+
         private
 
         def setup_renamed_column(calling_operation, table, old_column, new_column, type:, batch_column_name:, type_cast_function: nil)

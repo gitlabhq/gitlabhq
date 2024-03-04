@@ -64,6 +64,8 @@ module Integrations
 
         update_other_installations!(installation)
 
+        PropagateIntegrationWorker.perform_async(integration.id) unless integration.project_level?
+
         ServiceResponse.success
       end
 

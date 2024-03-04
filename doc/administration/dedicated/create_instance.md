@@ -221,7 +221,7 @@ Consider the following notes:
 
 - The Dedicated instance is not expected to be down the entire duration of the maintenance window. Occasionally, a small period of downtime (on the order of a few tens of seconds) can occur while compute resources restart after they are upgraded. If it occurs, this small period of downtime typically happens during the first half of the maintenance window. Long-running connections may be interrupted during this period. To mitigate this, clients should implement strategies like automatic recovery and retry. Longer periods of downtime during the maintenance window are rare, and GitLab provides notice if longer downtime is anticipated.
 - In case of a performance degradation or downtime during the scheduled maintenance window,
-  the impact to [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) is not counted.
+  the impact to [the system SLA](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) is not counted.
 - The weekly scheduled maintenance window can be postponed into another window within the same week.
   This option needs to be agreed with the assigned Customer Success Manager at least one week in advance.
 - The scheduled weekly maintenance window is different from
@@ -243,7 +243,7 @@ For example, GitLab 16.9 released on 2024-02-15. Therefore, tenant instances in 
 
 In an event of a platform outage, degradation or a security event requiring urgent action,
 emergency maintenance will be carried out per
-[the emergency change processes](https://about.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
+[the emergency change processes](https://handbook.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
 
 The emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
 Dedicated tenant instance. Communication with the customer will be provided on best effort basis

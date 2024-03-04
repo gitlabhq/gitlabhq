@@ -263,6 +263,10 @@ class Integration < ApplicationRecord
     raise NotImplementedError
   end
 
+  def self.attribution_notice
+    # no-op
+  end
+
   def self.event_names
     supported_events.map { |event| IntegrationsHelper.integration_event_field_name(event) }
   end
@@ -515,6 +519,10 @@ class Integration < ApplicationRecord
 
   def to_param
     self.class.to_param
+  end
+
+  def attribution_notice
+    self.class.attribution_notice
   end
 
   def sections

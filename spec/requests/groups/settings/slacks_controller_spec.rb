@@ -19,6 +19,7 @@ RSpec.describe Groups::Settings::SlacksController, feature_category: :integratio
     let(:slack_auth_path) { slack_auth_group_settings_slack_path(group) }
     let(:destroy_path) { group_settings_slack_path(group) }
     let(:service) { Integrations::SlackInstallation::GroupService }
+    let(:propagates_on_destroy) { true }
     let(:flag_protected) { true }
 
     let(:redirect_url) do

@@ -30,6 +30,8 @@ module Integrations
     def destroy
       slack_integration.destroy
 
+      PropagateIntegrationWorker.perform_async(integration.id) unless integration.project_level?
+
       redirect_to_integration_page
     end
 

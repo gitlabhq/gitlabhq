@@ -25,6 +25,7 @@ RSpec.describe Projects::Settings::SlacksController, feature_category: :integrat
     let(:slack_auth_path) { slack_auth_project_settings_slack_path(project) }
     let(:destroy_path) { project_settings_slack_path(project) }
     let(:service) { Integrations::SlackInstallation::ProjectService }
+    let(:propagates_on_destroy) { false }
     let(:flag_protected) { false }
 
     def create_integration

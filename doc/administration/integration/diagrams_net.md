@@ -44,7 +44,7 @@ docker run -it --rm --name="draw" -p 8080:8080 -p 8443:8443 jgraph/drawio
 Make note of the hostname of the server running the container, to be used as the diagrams.net URL
 when you enable the integration.
 
-For more information, see [Run your own diagrams.net server with Docker](https://www.diagrams.net/blog/diagrams-docker-app).
+For more information, see [Run your own diagrams.net server with Docker](https://www.drawio.com/blog/diagrams-docker-app).
 
 ## Enable Diagrams.net integration
 

@@ -39,7 +39,7 @@ In addition, Geo also supports [BuildKit cache images](https://github.com/moby/b
 ### Docker
 
 For more information on supported registry storage drivers see
-[Docker registry storage drivers](https://docs.docker.com/registry/storage-drivers/)
+[Docker registry storage drivers](https://docs.docker.com/registry/)
 
 Read the [Load balancing considerations](https://docs.docker.com/registry/deploying/#load-balancing-considerations)
 when deploying the Registry, and how to set up the storage driver for the GitLab integrated

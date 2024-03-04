@@ -233,14 +233,14 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Configure Microsoft Azure
 
-The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
+The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
 To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app,
 you need the following information:
 
 - A tenant ID. You may already have one. For more information, see the
   [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
+  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
 Example configuration block for Linux package installations:
@@ -269,7 +269,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
+Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
 
 ### Configure Microsoft Azure Active Directory B2C
 
@@ -278,7 +278,7 @@ configuration to work with [Azure Active Directory B2C](https://learn.microsoft.
 For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
   [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga) documentation to obtain the
   client ID and client secret for your app.

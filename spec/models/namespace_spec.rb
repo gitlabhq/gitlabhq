@@ -455,6 +455,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.by_name' do
+      it 'includes correct namespaces' do
+        expect(described_class.by_name(namespace1.name)).to eq([namespace1])
+        expect(described_class.by_name(namespace2.name.chop)).to match_array([namespace1, namespace2])
+      end
+    end
+
     describe '.sorted_by_similarity_and_parent_id_desc' do
       it 'returns exact matches and top level groups first' do
         expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace1.path)).to eq([namespace1, namespace2, namespace2sub, namespace1sub, namespace])

@@ -1242,6 +1242,26 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe 'by_visibility_level' do
+      let_it_be(:group1) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+      let_it_be(:group2) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+      context 'when visibility is present' do
+        it 'returns groups with the specified visibility level' do
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PUBLIC)).to contain_exactly(group, group1)
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PRIVATE)).to contain_exactly(private_group, group2)
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::INTERNAL)).to contain_exactly(internal_group, group3)
+        end
+      end
+
+      context 'when visibility is not present' do
+        it 'returns all groups' do
+          expect(described_class.by_visibility_level(nil)).to include(group1, group2, group3)
+        end
+      end
+    end
+
     describe 'excluding_groups' do
       let!(:another_group) { create(:group) }
 

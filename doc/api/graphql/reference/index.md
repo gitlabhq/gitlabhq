@@ -9951,75 +9951,6 @@ The edge type for [`CiProjectVariable`](#ciprojectvariable).
 | <a id="ciprojectvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="ciprojectvariableedgenode"></a>`node` | [`CiProjectVariable`](#ciprojectvariable) | The item at the end of the edge. |
 
-#### `CiRunnerCloudProvisioningMachineTypeConnection`
-
-The connection type for [`CiRunnerCloudProvisioningMachineType`](#cirunnercloudprovisioningmachinetype).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningmachinetypeconnectionedges"></a>`edges` | [`[CiRunnerCloudProvisioningMachineTypeEdge]`](#cirunnercloudprovisioningmachinetypeedge) | A list of edges. |
-| <a id="cirunnercloudprovisioningmachinetypeconnectionnodes"></a>`nodes` | [`[CiRunnerCloudProvisioningMachineType]`](#cirunnercloudprovisioningmachinetype) | A list of nodes. |
-| <a id="cirunnercloudprovisioningmachinetypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `CiRunnerCloudProvisioningMachineTypeEdge`
-
-The edge type for [`CiRunnerCloudProvisioningMachineType`](#cirunnercloudprovisioningmachinetype).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningmachinetypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="cirunnercloudprovisioningmachinetypeedgenode"></a>`node` | [`CiRunnerCloudProvisioningMachineType`](#cirunnercloudprovisioningmachinetype) | The item at the end of the edge. |
-
-#### `CiRunnerCloudProvisioningRegionConnection`
-
-The connection type for [`CiRunnerCloudProvisioningRegion`](#cirunnercloudprovisioningregion).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningregionconnectionedges"></a>`edges` | [`[CiRunnerCloudProvisioningRegionEdge]`](#cirunnercloudprovisioningregionedge) | A list of edges. |
-| <a id="cirunnercloudprovisioningregionconnectionnodes"></a>`nodes` | [`[CiRunnerCloudProvisioningRegion]`](#cirunnercloudprovisioningregion) | A list of nodes. |
-| <a id="cirunnercloudprovisioningregionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `CiRunnerCloudProvisioningRegionEdge`
-
-The edge type for [`CiRunnerCloudProvisioningRegion`](#cirunnercloudprovisioningregion).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningregionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="cirunnercloudprovisioningregionedgenode"></a>`node` | [`CiRunnerCloudProvisioningRegion`](#cirunnercloudprovisioningregion) | The item at the end of the edge. |
-
-#### `CiRunnerCloudProvisioningZoneConnection`
-
-The connection type for [`CiRunnerCloudProvisioningZone`](#cirunnercloudprovisioningzone).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningzoneconnectionedges"></a>`edges` | [`[CiRunnerCloudProvisioningZoneEdge]`](#cirunnercloudprovisioningzoneedge) | A list of edges. |
-| <a id="cirunnercloudprovisioningzoneconnectionnodes"></a>`nodes` | [`[CiRunnerCloudProvisioningZone]`](#cirunnercloudprovisioningzone) | A list of nodes. |
-| <a id="cirunnercloudprovisioningzoneconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `CiRunnerCloudProvisioningZoneEdge`
-
-The edge type for [`CiRunnerCloudProvisioningZone`](#cirunnercloudprovisioningzone).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningzoneedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="cirunnercloudprovisioningzoneedgenode"></a>`node` | [`CiRunnerCloudProvisioningZone`](#cirunnercloudprovisioningzone) | The item at the end of the edge. |
-
 #### `CiRunnerConnection`
 
 The connection type for [`CiRunner`](#cirunner).
@@ -16591,29 +16522,6 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 | ---- | ---- | ----------- |
 | <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.0. Will be removed in 17.0. |
 
-### `CiRunnerCloudProvisioningMachineType`
-
-Machine type used for runner cloud provisioning.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningmachinetypedescription"></a>`description` | [`String`](#string) | Description of the machine type. |
-| <a id="cirunnercloudprovisioningmachinetypename"></a>`name` | [`GoogleCloudMachineType`](#googlecloudmachinetype) | Name of the machine type. |
-| <a id="cirunnercloudprovisioningmachinetypezone"></a>`zone` | [`GoogleCloudZone`](#googlecloudzone) | Zone of the machine type. |
-
-### `CiRunnerCloudProvisioningRegion`
-
-Region used for runner cloud provisioning.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningregiondescription"></a>`description` | [`String`](#string) | Description of the region. |
-| <a id="cirunnercloudprovisioningregionname"></a>`name` | [`GoogleCloudRegion`](#googlecloudregion) | Name of the region. |
-
 ### `CiRunnerCloudProvisioningStep`
 
 Step used to provision the runner to Google Cloud.
@@ -16626,17 +16534,6 @@ Step used to provision the runner to Google Cloud.
 | <a id="cirunnercloudprovisioningsteplanguageidentifier"></a>`languageIdentifier` | [`String`](#string) | Identifier of the language used for the instructions field. This identifier can be any of the identifiers specified in the [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers). |
 | <a id="cirunnercloudprovisioningsteptitle"></a>`title` | [`String`](#string) | Title of the step. |
 
-### `CiRunnerCloudProvisioningZone`
-
-Zone used for runner cloud provisioning.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningzonedescription"></a>`description` | [`String`](#string) | Description of the zone. |
-| <a id="cirunnercloudprovisioningzonename"></a>`name` | [`GoogleCloudZone`](#googlecloudzone) | Name of the zone. |
-
 ### `CiRunnerGoogleCloudProvisioning`
 
 Information used for runner Google Cloud provisioning.
@@ -16646,25 +16543,8 @@ Information used for runner Google Cloud provisioning.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnergooglecloudprovisioningprojectsetupshellscript"></a>`projectSetupShellScript` | [`String`](#string) | Instructions for setting up a Google Cloud project. |
-| <a id="cirunnergooglecloudprovisioningregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
 
 #### Fields with arguments
-
-##### `CiRunnerGoogleCloudProvisioning.machineTypes`
-
-Machine types available for provisioning a runner.
-
-Returns [`CiRunnerCloudProvisioningMachineTypeConnection`](#cirunnercloudprovisioningmachinetypeconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnergooglecloudprovisioningmachinetypeszone"></a>`zone` | [`GoogleCloudZone!`](#googlecloudzone) | Zone to retrieve machine types for. |
 
 ##### `CiRunnerGoogleCloudProvisioning.provisioningSteps`
 
@@ -16680,22 +16560,6 @@ Returns [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep).
 | <a id="cirunnergooglecloudprovisioningprovisioningstepsregion"></a>`region` | [`GoogleCloudRegion!`](#googlecloudregion) | Name of the region to provision the runner in. |
 | <a id="cirunnergooglecloudprovisioningprovisioningstepsrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
 | <a id="cirunnergooglecloudprovisioningprovisioningstepszone"></a>`zone` | [`GoogleCloudZone!`](#googlecloudzone) | Name of the zone to provision the runner in. |
-
-##### `CiRunnerGoogleCloudProvisioning.zones`
-
-Zones available for provisioning a runner.
-
-Returns [`CiRunnerCloudProvisioningZoneConnection`](#cirunnercloudprovisioningzoneconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnergooglecloudprovisioningzonesregion"></a>`region` | [`GoogleCloudRegion`](#googlecloudregion) | Region to retrieve zones for. Returns all zones if not specified. |
 
 ### `CiRunnerManager`
 
@@ -19971,6 +19835,7 @@ Represents a docker artifact of Google Artifact Registry.
 | <a id="googlecloudartifactregistrydockerimagetags"></a>`tags` | [`[String!]`](#string) | Tags attached to the image. |
 | <a id="googlecloudartifactregistrydockerimageupdatetime"></a>`updateTime` | [`Time`](#time) | Time when the image was last updated. |
 | <a id="googlecloudartifactregistrydockerimageuploadtime"></a>`uploadTime` | [`Time`](#time) | Time when the image was uploaded. |
+| <a id="googlecloudartifactregistrydockerimageuri"></a>`uri` | [`String!`](#string) | Google Cloud URI to access the image. |
 
 ### `GoogleCloudArtifactRegistryDockerImageDetails`
 
@@ -20985,6 +20850,23 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupreleasessort"></a>`sort` | [`GroupReleaseSort`](#groupreleasesort) | Sort group releases by given criteria. |
+
+##### `Group.runnerCloudProvisioning`
+
+Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouprunnercloudprovisioningcloudprojectid"></a>`cloudProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the cloud project. |
+| <a id="grouprunnercloudprovisioningprovider"></a>`provider` | [`CiRunnerCloudProvider!`](#cirunnercloudprovider) | Identifier of the cloud provider. |
 
 ##### `Group.runners`
 

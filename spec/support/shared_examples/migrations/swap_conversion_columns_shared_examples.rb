@@ -22,7 +22,7 @@ SQL_TYPE_OPTIONS_TO_CHANGE =
     limit
   ].freeze
 
-RSpec.shared_examples 'swap conversion columns' do |table_name:, from:, to:|
+RSpec.shared_examples 'swap conversion columns' do |table_name:, from:, to:, before_type: nil, after_type: nil|
   it 'correctly swaps conversion columns' do
     before_from_column = before_to_column = before_indexes = before_foreign_keys = nil
     after_from_column = after_to_column = after_indexes = after_foreign_keys = nil
@@ -101,6 +101,7 @@ RSpec.shared_examples 'swap conversion columns' do |table_name:, from:, to:|
         next if after_from_column.nil?
 
         # For migrate down
+        expect(before_from_column.sql_type_metadata.sql_type).to eq(before_type) if before_type
         expect_column_type_is_changed_but_others_remain_unchanged.call
       }
 
@@ -110,6 +111,7 @@ RSpec.shared_examples 'swap conversion columns' do |table_name:, from:, to:|
         after_indexes = find_indexes
         after_foreign_keys = find_foreign_keys
 
+        expect(after_from_column.sql_type_metadata.sql_type).to eq(after_type) if after_type
         expect_column_type_is_changed_but_others_remain_unchanged.call
       }
     end

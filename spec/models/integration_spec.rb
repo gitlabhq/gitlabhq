@@ -168,6 +168,10 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '.attribution_notice' do
+    it { expect(described_class.attribution_notice).to be_nil }
+  end
+
   describe '#operating?' do
     it 'is false when the integration is not active' do
       expect(build(:integration).operating?).to eq(false)

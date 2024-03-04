@@ -92,12 +92,22 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
   describe 'DELETE destroy' do
     subject(:delete_destroy) { delete destroy_path }
 
-    it 'destroys the record and redirects back to #edit' do
-      integration = create_integration
+    let!(:integration) { create_integration }
 
+    it 'destroys the record and redirects back to #edit' do
       expect { delete_destroy }.to change { integration.reload.slack_integration }.to(nil)
       expect(response).to have_gitlab_http_status(:found)
       expect(response).to redirect_to(redirect_url)
+    end
+
+    it 'enqueues a worker job' do
+      if propagates_on_destroy
+        expect(PropagateIntegrationWorker).to receive(:perform_async).with(integration.id)
+      else
+        expect(PropagateIntegrationWorker).not_to receive(:perform_async)
+      end
+
+      delete_destroy
     end
 
     context 'when the flag is disabled' do
@@ -107,8 +117,6 @@ RSpec.shared_examples_for Integrations::SlackControllerSettings do
       end
 
       it 'responds with status :not_found' do
-        integration = create_integration
-
         expect { delete_destroy }
           .not_to change { integration.reload.slack_integration }
           .from(kind_of(SlackIntegration))

@@ -130,25 +130,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers::Swapping, feature_category: :
 
   describe '#swap_indexes' do
     let(:table) { :_test_swap_indexes }
+    let(:schema) { nil }
+    let(:schema_table) { [schema, table].compact.join('.') }
     let(:index1) { :index_on_integer }
     let(:index2) { :index_on_bigint }
 
     before do
       connection.execute(<<~SQL)
-        CREATE TABLE #{table} (
+        CREATE TABLE #{schema_table} (
           integer_column integer NOT NULL,
           bigint_column bigint DEFAULT 0 NOT NULL
         );
 
-        CREATE INDEX #{index1} ON #{table} USING btree (integer_column);
+        CREATE INDEX #{index1} ON #{schema_table} USING btree (integer_column);
 
-        CREATE INDEX #{index2} ON #{table} USING btree (bigint_column);
+        CREATE INDEX #{index2} ON #{schema_table} USING btree (bigint_column);
       SQL
     end
 
     shared_examples_for 'swapping indexes correctly' do
       specify do
-        expect { migration_context.swap_indexes(table, index1, index2) }
+        expect { migration_context.swap_indexes(table, index1, index2, schema: schema) }
           .to change { find_index_by(index1).columns }.from(['integer_column']).to(['bigint_column'])
           .and change { find_index_by(index2).columns }.from(['bigint_column']).to(['integer_column'])
       end
@@ -163,10 +165,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers::Swapping, feature_category: :
       it_behaves_like 'swapping indexes correctly'
     end
 
+    context 'for schema' do
+      let(:schema) { :gitlab_partitions_dynamic }
+
+      it_behaves_like 'swapping indexes correctly'
+    end
+
     private
 
     def find_index_by(name)
-      connection.indexes(table).find { |c| c.name == name.to_s }
+      connection.indexes(schema_table).find { |c| c.name == name.to_s }
     end
   end
 end

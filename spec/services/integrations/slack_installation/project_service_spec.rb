@@ -17,6 +17,7 @@ RSpec.describe Integrations::SlackInstallation::ProjectService, feature_category
     let(:installation_alias) { project.full_path }
     let(:integration) { project.gitlab_slack_application_integration }
     let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_project_settings_slack_url(project) }
+    let(:enqueues_propagation_worker) { false }
 
     def create_gitlab_slack_application_integration!
       project.create_gitlab_slack_application_integration!

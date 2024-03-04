@@ -574,6 +574,8 @@ RSpec.shared_examples 'work items milestone' do
     include_context 'with work_items_beta', true
 
     it 'passes axe automated accessibility testing in closed state' do
+      find(work_item_milestone_selector)
+
       expect(page).to be_axe_clean.within(work_item_milestone_selector)
     end
 

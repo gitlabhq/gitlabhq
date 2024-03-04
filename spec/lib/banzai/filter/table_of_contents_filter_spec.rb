@@ -65,11 +65,6 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
         expect(doc.css('h1 a').first.attr('href')).to eq '#title-with-spaces'
       end
 
-      it 'removes a product suffix' do
-        doc = filter(header(1, "Title with spaces (ULTIMATE)"))
-        expect(doc.css('h1 a').first.attr('href')).to eq '#title-with-spaces'
-      end
-
       it 'appends a unique number to duplicates' do
         doc = filter(header(1, 'One') + header(2, 'One'))
 

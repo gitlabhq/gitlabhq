@@ -6,7 +6,6 @@
     }
   ],
   "required": [
-    "uri",
     "imageSizeBytes",
     "buildTime",
     "mediaType",

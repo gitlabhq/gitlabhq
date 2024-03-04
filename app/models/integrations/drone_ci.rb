@@ -124,7 +124,7 @@ module Integrations
       original_value.nil? ? (new_record? || url_is_saas?) : original_value
     end
 
-    def attribution_notice
+    def self.attribution_notice
       'Drone CI icon and logo by Harness Inc. are licensed under CC NC-ND 4.0.'
     end
 

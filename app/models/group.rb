@@ -196,6 +196,10 @@ class Group < Namespace
 
   scope :excluding_groups, ->(groups) { where.not(id: groups) }
 
+  scope :by_visibility_level, ->(visibility) do
+    where(visibility_level: Gitlab::VisibilityLevel.level_value(visibility)) if visibility.present?
+  end
+
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })
