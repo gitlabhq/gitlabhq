@@ -917,7 +917,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/analytics/cycle_analytics/aggregation_context_spec.rb'
     - 'ee/spec/models/analytics/devops_adoption/enabled_namespace_spec.rb'
     - 'ee/spec/models/analytics/devops_adoption/snapshot_spec.rb'
-    - 'ee/spec/models/analytics/issues_analytics_spec.rb'
     - 'ee/spec/models/analytics/language_trend/repository_language_spec.rb'
     - 'ee/spec/models/app_sec/fuzzing/api/ci_configuration_spec.rb'
     - 'ee/spec/models/app_sec/fuzzing/coverage/corpus_spec.rb'

@@ -87,6 +87,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
   beforeEach(() => {
     gon.current_username = TEST_USERNAME;
+    gon.features = { webIdeSettingsSync: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
 
     confirmAction.mockImplementation(
@@ -133,6 +134,9 @@ describe('ide/init_gitlab_web_ide', () => {
           userPreferences: TEST_USER_PREFERENCES_PATH,
           feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
           signIn: TEST_SIGN_IN_PATH,
+        },
+        featureFlags: {
+          settingsSync: gon.features.webIdeSettingsSync,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',

@@ -16,39 +16,27 @@ module Gitlab
       # schedules a job which parses peek profile data and adds them
       # to a structured log
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      # rubocop:disable CodeReuse/ActiveRecord -- needed because of `.exists?` method
+      # usage (which is actually not AR method)
       def enqueue_stats_job(request_id)
         return unless Feature.enabled?(:performance_bar_stats, type: :ops)
 
+        cache_existed = @client.exists?(GitlabPerformanceBarStatsWorker::STATS_KEY)
         @client.sadd?(GitlabPerformanceBarStatsWorker::STATS_KEY, request_id)
 
-        # We skip transaction check as the transaction check fails the system spec for
-        # spec/features/user_can_display_performance_bar_spec.rb.
-        # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441535
-        uuid = Gitlab::ExclusiveLease.skipping_transaction_check do
-          Gitlab::ExclusiveLease.new(
-            GitlabPerformanceBarStatsWorker::LEASE_KEY,
-            timeout: GitlabPerformanceBarStatsWorker::LEASE_TIMEOUT
-          ).try_obtain
-        end
-
-        return unless uuid
+        return if cache_existed
 
         # stats key should be periodically processed and deleted by
         # GitlabPerformanceBarStatsWorker but if it doesn't happen for
         # some reason, we set expiration for the stats key to avoid
         # keeping millions of request ids which would be already expired
         # anyway
-        # rubocop:disable Gitlab/ModuleWithInstanceVariables
         @client.expire(
           GitlabPerformanceBarStatsWorker::STATS_KEY,
           GitlabPerformanceBarStatsWorker::STATS_KEY_EXPIRE
         )
-
-        GitlabPerformanceBarStatsWorker.perform_in(
-          GitlabPerformanceBarStatsWorker::WORKER_DELAY,
-          uuid
-        )
       end
+      # rubocop:enable CodeReuse/ActiveRecord
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end

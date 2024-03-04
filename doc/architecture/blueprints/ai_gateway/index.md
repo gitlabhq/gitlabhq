@@ -129,13 +129,18 @@ endpoint, while several features that summarize issues or merge
 requests could use the same endpoint but make the distinction on what
 information is provided in the payload.
 
-The end goal is to build an API that exposes AI for building
-features without having to touch the AI-gateway. This is analogous to
-how we built Gitaly, adding features to Gitaly where it was needed,
-and reusing existing endpoints when that was possible. We had some
-cost to pay up-front in the case where we needed to implement a new
-endpoint (RPC), but pays off in the long run when most of the required
-functionality is implemented.
+Our goal is to minimize code that we can't update on a customer's behalf, which means avoiding hard-coding AI-related logic in the GitLab monolith codebase:
+
+- We want to minimize the time required for customers to adopt our latest features, and
+- We want to retain the flexibility to make changes in our product without breaking support for a long-tail of older instances.
+- We want to be able to serve all GitLab distributions (.com SaaS, Self-managed, and Dedicated) with minimal complexity. 
+- We want to isolate AI capabilities to reduce risk and have a unified control plane. 
+- We want to provide a unified implementation that can support our "best-in-class" multi-model ensemble approach allowing us to easily support many AI models and AI vendors. 
+- We want a single point for controlling and measuring cost.
+- As much as possible, we want to track metrics (usage statistics, failures to respond, usage pattern, question categories, etc.) in the gateway rather than distributed across many points. (Of course some metrics can only be captured on the client side.)
+
+Having the business logic in GitLab-Rails requires customers to upgrade their GitLab instances, which affects the first point. Some of the on-premises users can't upgrade their instances immediately due to their company policy.
+For example, if we had a bug in a prompt template in GitLab-Rails and fixed it in 16.6, and customers are using 16.5 and the next upgrade is scheduled in 3 months, they have to use the buggy feature for 3 months.
 
 **This does not mean that prompts need to be built inside the
 AI-gateway.** But if prompts are part of the payload to a single

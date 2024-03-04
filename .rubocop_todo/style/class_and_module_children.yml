@@ -430,7 +430,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/analytics/devops_adoption.rb'
     - 'ee/app/models/analytics/devops_adoption/enabled_namespace.rb'
     - 'ee/app/models/analytics/devops_adoption/snapshot.rb'
-    - 'ee/app/models/analytics/issues_analytics.rb'
     - 'ee/app/models/analytics/language_trend.rb'
     - 'ee/app/models/analytics/language_trend/repository_language.rb'
     - 'ee/app/models/concerns/geo/replicable_registry.rb'

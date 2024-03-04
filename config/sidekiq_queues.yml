@@ -333,8 +333,6 @@
   - 1
 - - github_importer
   - 1
-- - gitlab_performance_bar_stats
-  - 1
 - - gitlab_subscriptions_add_on_purchases_bulk_refresh_user_assignments
   - 1
 - - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment

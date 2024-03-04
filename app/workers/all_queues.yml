@@ -570,6 +570,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:gitlab_performance_bar_stats
+  :worker_name: GitlabPerformanceBarStatsWorker
+  :feature_category: :metrics
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:gitlab_service_ping
   :worker_name: GitlabServicePingWorker
   :feature_category: :service_ping
@@ -3125,15 +3134,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: gitlab_performance_bar_stats
-  :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: google_cloud_create_cloudsql_instance
   :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker

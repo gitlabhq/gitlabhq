@@ -709,6 +709,9 @@ Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker'] ||= {}
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['job_class'] = 'Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker'
+Settings.cron_jobs['performance_bar_stats'] ||= {}
+Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
+Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
