@@ -218,21 +218,21 @@ export const scopedSearchOptions = (state, getters) => {
 };
 
 export const scopedSearchGroup = (state, getters) => {
-  let name = sprintf(COMMAND_PALETTE_SEARCH_SCOPE_HEADER, { searchTerm: state.search });
+  let name = sprintf(COMMAND_PALETTE_SEARCH_SCOPE_HEADER, { searchTerm: state.search }, false);
   const items = getters.scopedSearchOptions?.length > 0 ? getters.scopedSearchOptions : [];
 
   switch (state.commandChar) {
     case COMMAND_PALETTE_PAGES_CHAR:
-      name = sprintf(COMMAND_PALETTE_PAGES_SCOPE_HEADER, { searchTerm: state.search });
+      name = sprintf(COMMAND_PALETTE_PAGES_SCOPE_HEADER, { searchTerm: state.search }, false);
       break;
     case COMMAND_PALETTE_USERS_CHAR:
-      name = sprintf(COMMAND_PALETTE_USERS_SCOPE_HEADER, { searchTerm: state.search });
+      name = sprintf(COMMAND_PALETTE_USERS_SCOPE_HEADER, { searchTerm: state.search }, false);
       break;
     case COMMAND_PALETTE_PROJECTS_CHAR:
-      name = sprintf(COMMAND_PALETTE_PROJECTS_SCOPE_HEADER, { searchTerm: state.search });
+      name = sprintf(COMMAND_PALETTE_PROJECTS_SCOPE_HEADER, { searchTerm: state.search }, false);
       break;
     case COMMAND_PALETTE_FILES_CHAR:
-      name = sprintf(COMMAND_PALETTE_FILES_SCOPE_HEADER, { searchTerm: state.search });
+      name = sprintf(COMMAND_PALETTE_FILES_SCOPE_HEADER, { searchTerm: state.search }, false);
       break;
     default:
       break;
