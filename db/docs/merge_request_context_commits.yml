@@ -8,3 +8,4 @@ description: Store context commit related data for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23701
 milestone: '12.8'
 gitlab_schema: gitlab_main_cell
+

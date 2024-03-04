@@ -35,7 +35,7 @@ describe('ProjectRegisterRunnerApp', () => {
   const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
 
-  const createComponent = (googleCloudRunnerProvisioning = false) => {
+  const createComponent = (googleCloudSupportFeatureFlag = false) => {
     wrapper = shallowMountExtended(ProjectRegisterRunnerApp, {
       propsData: {
         runnerId: mockRunnerId,
@@ -43,7 +43,7 @@ describe('ProjectRegisterRunnerApp', () => {
       },
       provide: {
         glFeatures: {
-          googleCloudRunnerProvisioning,
+          googleCloudSupportFeatureFlag,
         },
       },
     });

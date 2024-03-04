@@ -39,7 +39,7 @@ export default {
   computed: {
     showGoogleCloudRegistration() {
       return (
-        this.glFeatures.googleCloudRunnerProvisioning && this.platform === GOOGLE_CLOUD_PLATFORM
+        this.glFeatures.googleCloudSupportFeatureFlag && this.platform === GOOGLE_CLOUD_PLATFORM
       );
     },
   },

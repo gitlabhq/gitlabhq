@@ -149,6 +149,8 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             project.releases.each do |release|
               create(:ci_catalog_resource_version, catalog_resource: resource, release: release)
             end
+            project.catalog_resource.versions.first.update!(version: '1.0.0')
+            project.catalog_resource.versions.last.update!(version: '2.0.0')
           end
 
           it 'returns the component content of the latest catalog resource version', :aggregate_failures do

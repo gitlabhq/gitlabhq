@@ -95,7 +95,6 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
-  validates :version, format: { with: Gitlab::Regex.prefixed_semver_regex }, if: :golang?
   validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
     if: -> { composer_tag_version? || npm? || terraform_module? }
@@ -223,6 +222,7 @@ class Packages::Package < ApplicationRecord
 
   def self.inheritance_column_to_class_map = {
     ml_model: 'Packages::MlModel::Package',
+    golang: 'Packages::Go::Package',
     rubygems: 'Packages::Rubygems::Package'
   }.freeze
 

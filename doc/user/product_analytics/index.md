@@ -98,7 +98,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Analytics**.
-1. Expand **Configure** and enter the configuration values.
+1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
 
 ### Data retention

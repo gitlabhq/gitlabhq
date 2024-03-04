@@ -564,5 +564,5 @@ version qualifier to reference a component hosted by a [catalog project](#set-a-
 This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found`
 ```
 
-The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/429707)
-in GitLab 16.7. It now refers to the latest published version of the catalog project. To resolve this issue, [create a new release](#publish-a-new-release).
+The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)
+in GitLab 16.11. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).

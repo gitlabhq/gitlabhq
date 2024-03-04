@@ -7,12 +7,25 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 
+  shared_examples 'it validates recipients' do
+    let(:opts) { { to: ['example@example.com', 'example2@example.com'] } }
+
+    # The error is only raised when delivery occurs
+    it 'raises an error when delivering now' do
+      expect { subject.deliver_now }.to raise_error(Gitlab::Email::MultipleRecipientsError)
+    end
+  end
+
+  let(:opts) { {} }
+
   describe "#confirmation_instructions" do
-    subject { described_class.confirmation_instructions(user, 'faketoken', {}) }
+    subject { described_class.confirmation_instructions(user, 'faketoken', opts) }
+
+    let(:user) { create(:user, created_at: 1.minute.ago) }
+
+    it_behaves_like 'it validates recipients'
 
     context "when confirming a new account" do
-      let(:user) { create(:user, created_at: 1.minute.ago) }
-
       it "shows the expected text" do
         expect(subject.body.encoded).to have_text "Welcome"
         expect(subject.body.encoded).not_to have_text user.email
@@ -21,8 +34,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
 
     context "when confirming the unconfirmed_email" do
       subject { described_class.confirmation_instructions(user, user.confirmation_token, { to: user.unconfirmed_email }) }
-
-      let(:user) { create(:user) }
 
       before do
         user.update!(email: 'unconfirmed-email@example.com')
@@ -46,13 +57,14 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#password_change_by_admin' do
-    subject { described_class.password_change_by_admin(user) }
+    subject { described_class.password_change_by_admin(user, opts) }
 
     let_it_be(:user) { create(:user) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'it validates recipients'
 
     it 'is sent to the user' do
       is_expected.to deliver_to user.email
@@ -72,13 +84,14 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
   end
 
   describe '#user_admin_approval' do
-    subject { described_class.user_admin_approval(user) }
+    subject { described_class.user_admin_approval(user, opts) }
 
     let_it_be(:user) { create(:user) }
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'it validates recipients'
 
     it 'is sent to the user' do
       is_expected.to deliver_to user.email
@@ -103,7 +116,6 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
 
   describe '#reset_password_instructions' do
     let_it_be(:user) { create(:user) }
-    let(:opts) { {} }
 
     subject do
       described_class.reset_password_instructions(user, 'faketoken', opts)
@@ -112,6 +124,7 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like 'a user cannot unsubscribe through footer link'
+    it_behaves_like 'it validates recipients'
 
     it 'is sent to the user' do
       is_expected.to deliver_to user.email
@@ -154,9 +167,10 @@ RSpec.describe DeviseMailer, feature_category: :user_management do
     let(:content_self_managed) { 'If you did not initiate this change, please contact your administrator immediately.' }
     let_it_be(:user) { create(:user) }
 
-    subject { described_class.email_changed(user, {}) }
+    subject { described_class.email_changed(user, opts) }
 
     it_behaves_like 'an email sent from GitLab'
+    it_behaves_like 'it validates recipients'
 
     it 'is sent to the user' do
       is_expected.to deliver_to user.email

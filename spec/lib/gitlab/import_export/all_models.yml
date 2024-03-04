@@ -70,6 +70,7 @@ issues:
 - issue_customer_relations_contacts
 - email
 - issuable_resource_links
+- synced_epic
 work_item_type:
 - issues
 - namespace

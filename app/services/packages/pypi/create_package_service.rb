@@ -18,9 +18,7 @@ module Packages
             keywords: params[:keywords]&.truncate(::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH)
           )
 
-          unless meta.valid?
-            raise ActiveRecord::RecordInvalid, meta
-          end
+          raise ActiveRecord::RecordInvalid, meta unless meta.valid?
 
           params.delete(:md5_digest) if Gitlab::FIPS.enabled?
 

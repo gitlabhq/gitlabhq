@@ -23491,6 +23491,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Virtual size"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
 msgstr ""
 
@@ -23519,6 +23522,9 @@ msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM). Simplify and secure your usage, without the need to manage accounts or keys."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Manage your artifacts in Google Artifact Registry."
@@ -42937,7 +42943,7 @@ msgstr ""
 msgid "Runners|Google Cloud project ID"
 msgstr ""
 
-msgid "Runners|Google Cloud provisioning is disabled for %{container_type}"
+msgid "Runners|Google Cloud provisioning is disabled for this top-level namespace"
 msgstr ""
 
 msgid "Runners|Group"
@@ -52773,6 +52779,9 @@ msgstr ""
 msgid "Tracing|Traces"
 msgstr ""
 
+msgid "Tracing|You must select a Service and Operation first."
+msgstr ""
+
 msgid "Tracing|longer than"
 msgstr ""
 
@@ -58781,9 +58790,6 @@ msgid "cannot be changed to %{new_type} when the work item is a legacy epic sync
 msgstr ""
 
 msgid "cannot be changed to %{new_type} with these child item types."
-msgstr ""
-
-msgid "cannot be destroyed because this is a synced work item for a legacy epic"
 msgstr ""
 
 msgid "cannot be enabled"

@@ -71,13 +71,13 @@ module Gitlab
         check_circular_dependencies
       end
 
+      # Overridden in EE
       def validate_job!(name, job)
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
         validate_job_needs!(name, job)
         validate_dynamic_child_pipeline_dependencies!(name, job)
         validate_job_environment!(name, job)
-        validate_job_identity!(name, job)
       end
 
       def validate_job_stage!(name, job)
@@ -191,31 +191,6 @@ module Gitlab
         end
       end
 
-      def validate_job_identity!(name, job)
-        return if job[:identity].blank?
-
-        unless ::Gitlab::Saas.feature_available?(:google_cloud_support)
-          error!("#{name} job: #{s_('GoogleCloudPlatformService|The google_cloud_support feature is not available')}")
-        end
-
-        unless ::Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?(
-          :ci_yaml_support_for_identity_provider, type: :beta
-        )
-          error!("#{name} job: ci_yaml_support_for_identity_provider feature flag is not enabled for this project")
-        end
-
-        integration = project.google_cloud_platform_workload_identity_federation_integration
-        if integration.nil?
-          error!("#{name} job: #{s_('GoogleCloudPlatformService|The Google Cloud Identity and Access Management ' \
-                                    'integration is not configured for this project')}")
-        end
-
-        unless integration.active?
-          error!("#{name} job: #{s_('GoogleCloudPlatformService|The Google Cloud Identity and Access Management ' \
-                                    'integration is not enabled for this project')}")
-        end
-      end
-
       def check_circular_dependencies
         jobs = @jobs.values.to_h do |job|
           name = job[:name].to_s
@@ -252,3 +227,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::YamlProcessor.prepend_mod

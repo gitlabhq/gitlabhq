@@ -67,14 +67,21 @@ function test_url() {
 function section_start () {
   local section_title="${1}"
   local section_description="${2:-$section_title}"
+  local collapsed="${3:-true}"
 
-  echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+  echo -e "section_start:`date +%s`:${section_title}[collapsed=${collapsed}]\r\e[0K${section_description}"
 }
 
 function section_end () {
   local section_title="${1}"
 
   echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+}
+
+function rspec_section() {
+  section_start "rspec" "RSpec" "false"
+  "$@"
+  section_end "rspec"
 }
 
 function bundle_install_script() {

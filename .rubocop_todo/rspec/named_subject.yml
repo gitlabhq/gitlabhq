@@ -3359,7 +3359,6 @@ RSpec/NamedSubject:
     - 'spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'
     - 'spec/services/packages/protection/create_rule_service_spec.rb'
     - 'spec/services/packages/protection/delete_rule_service_spec.rb'
-    - 'spec/services/packages/pypi/create_package_service_spec.rb'
     - 'spec/services/packages/remove_tag_service_spec.rb'
     - 'spec/services/packages/rpm/parse_package_service_spec.rb'
     - 'spec/services/packages/rpm/repository_metadata/build_filelist_xml_service_spec.rb'

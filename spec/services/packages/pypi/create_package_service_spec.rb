@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, feature_category: :package_registry do
@@ -23,13 +24,13 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
   end
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute }
+    subject(:execute_service) { described_class.new(project, user, params).execute }
 
     let(:created_package) { Packages::Package.pypi.last }
 
     context 'without an existing package' do
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.name).to eq 'foo'
         expect(created_package.version).to eq '1.0'
@@ -44,7 +45,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
 
     context 'with FIPS mode', :fips_mode do
       it 'does not generate file_md5' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.name).to eq 'foo'
         expect(created_package.version).to eq '1.0'
@@ -63,7 +64,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
 
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.pypi_metadatum.required_python).to eq ''
       end
@@ -82,7 +83,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
 
       it 'creates the package' do
-        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+        expect { execute_service }.to change { Packages::Package.pypi.count }.by(1)
 
         expect(created_package.pypi_metadatum.metadata_version).to eq('2.3')
         expect(created_package.pypi_metadatum.author_email).to eq('cschultz@example.com, snoopy@peanuts.com')
@@ -156,7 +157,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
         end
 
         it 'does not create a pypi package' do
-          expect { subject }
+          expect { execute_service }
             .to change { Packages::Package.pypi.count }.by(0)
             .and change { Packages::PackageFile.count }.by(0)
         end
@@ -167,7 +168,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           end
 
           it 'creates a new package' do
-            expect { subject }
+            expect { execute_service }
               .to change { Packages::Package.pypi.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
@@ -189,7 +190,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
         end
 
         it 'adds the file' do
-          expect { subject }
+          expect { execute_service }
             .to change { Packages::Package.pypi.count }.by(0)
             .and change { Packages::PackageFile.count }.by(1)
 

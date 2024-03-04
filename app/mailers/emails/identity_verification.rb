@@ -2,7 +2,11 @@
 
 module Emails
   module IdentityVerification
+    include Gitlab::Email::SingleRecipientValidator
+
     def verification_instructions_email(email, token:)
+      validate_single_recipient_in_email!(email)
+
       @token = token
       @expires_in_minutes = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES
       @password_link = edit_user_settings_password_url

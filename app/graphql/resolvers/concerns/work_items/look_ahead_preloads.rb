@@ -51,6 +51,7 @@ module WorkItems
           project: [:project_feature, :group]
         },
         :author,
+        :work_item_type,
         *super
       ]
     end

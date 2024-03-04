@@ -320,7 +320,7 @@ rspec fast_spec_helper:
   script:
     - fast_spec_helper_specs=$(git grep -l -E '^require.*fast_spec_helper')
     # Load fast_spec_helper as well just in case there are no specs available.
-    - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
+    - rspec_section bin/rspec --dry-run spec/fast_spec_helper.rb ${fast_spec_helper_specs}
 
 rspec unit clickhouse:
   extends:
@@ -1236,7 +1236,7 @@ rspec-ee system pg16 es8:
   stage: test
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
+    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 
 rspec fail-fast:
   extends:
@@ -1315,7 +1315,7 @@ fail-pipeline-early:
     - job: "detect-previous-failed-tests"
   script:
     - !reference [.base-script, script]
-    - rspec_rerun_previous_failed_tests "${PREVIOUS_FAILED_TESTS_FILE}"
+    - rspec_section rspec_rerun_previous_failed_tests ${PREVIOUS_FAILED_TESTS_FILE}
 
 rspec rspec-pg14-rerun-previous-failed-tests:
   extends:

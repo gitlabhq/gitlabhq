@@ -94,7 +94,6 @@ module Ci
         update!(latest_released_at: versions.latest&.released_at)
       end
 
-      # Required for Gitlab::VisibilityLevel module
       def visibility_level_field
         :visibility_level
       end

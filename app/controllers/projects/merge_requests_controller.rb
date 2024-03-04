@@ -642,6 +642,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       diff_head: true
     )
   end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless action_name == 'diffs' && @merge_request&.merge_request_diff.present?
+
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.diffs_files_count'] = @merge_request.merge_request_diff.files_count
+  end
 end
 
 Projects::MergeRequestsController.prepend_mod_with('Projects::MergeRequestsController')

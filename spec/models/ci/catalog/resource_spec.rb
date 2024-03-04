@@ -293,11 +293,21 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_refind(:january_release) do
-      create(:release, :with_catalog_resource_version, project: project, tag: 'v1', released_at: '2023-01-01T00:00:00Z')
+      release = create(:release, :with_catalog_resource_version, project: project, tag: 'v1',
+        released_at: '2023-01-01T00:00:00Z')
+
+      release.catalog_resource_version.update!(version: '1.0.0')
+
+      release
     end
 
     let_it_be_with_refind(:february_release) do
-      create(:release, :with_catalog_resource_version, project: project, tag: 'v2', released_at: '2023-02-01T00:00:00Z')
+      release = create(:release, :with_catalog_resource_version, project: project, tag: 'v2',
+        released_at: '2023-02-01T00:00:00Z')
+
+      release.catalog_resource_version.update!(version: '2.0.0')
+
+      release
     end
 
     it 'has the expected latest_released_at value' do
@@ -308,6 +318,8 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       it 'updates the latest_released_at value' do
         march_release = create(:release, :with_catalog_resource_version, project: project, tag: 'v3',
           released_at: '2023-03-01T00:00:00Z')
+
+        march_release.catalog_resource_version.update!(version: '3.0.0')
 
         expect(resource.reload.latest_released_at).to eq(march_release.released_at)
       end
@@ -323,7 +335,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
     context 'when the released_at value of a release is updated' do
       it 'updates the latest_released_at value' do
-        january_release.update!(released_at: '2024-01-01T00:00:00Z')
+        january_release.update!(released_at: '2024-03-01T00:00:00Z')
+
+        january_release.catalog_resource_version.update!(version: '4.0.0')
 
         expect(resource.reload.latest_released_at).to eq(january_release.released_at)
       end

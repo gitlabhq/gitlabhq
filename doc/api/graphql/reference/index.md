@@ -16005,7 +16005,6 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourceversionsname"></a>`name` | [`String`](#string) | Name of the version. |
-| <a id="cicatalogresourceversionssort"></a>`sort` | [`CiCatalogResourceVersionSort`](#cicatalogresourceversionsort) | Sort versions by given criteria. |
 
 ### `CiCatalogResourceComponent`
 
@@ -19876,7 +19875,7 @@ Represents a repository of Google Artifact Registry.
 
 ##### `GoogleCloudArtifactRegistryRepository.artifacts`
 
-Google Artifact Registry repository artifacts. Returns `null` if `gcp_artifact_registry` feature flag is disabled or GitLab.com feature is unavailable.
+Google Artifact Registry repository artifacts. Returns `null` if `google_cloud_support_feature_flag` feature flag is disabled or GitLab.com feature is unavailable.
 
 Returns [`GoogleCloudArtifactRegistryArtifactConnection`](#googlecloudartifactregistryartifactconnection).
 
@@ -20853,7 +20852,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 DETAILS:
 **Introduced** in GitLab 16.10.
@@ -25144,7 +25143,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if `gcp_artifact_registry` feature flag is disabled. |
+| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if `google_cloud_support_feature_flag` feature flag is disabled. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
 | <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
@@ -26434,7 +26433,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 DETAILS:
 **Introduced** in GitLab 16.9.
@@ -30659,17 +30658,6 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="cicatalogresourcesortstar_count_asc"></a>`STAR_COUNT_ASC` | Star count by ascending order. |
 | <a id="cicatalogresourcesortstar_count_desc"></a>`STAR_COUNT_DESC` | Star count by descending order. |
-
-### `CiCatalogResourceVersionSort`
-
-Values for sorting catalog resource versions.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cicatalogresourceversionsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
-| <a id="cicatalogresourceversionsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
-| <a id="cicatalogresourceversionsortreleased_at_asc"></a>`RELEASED_AT_ASC` | Released at by ascending order. |
-| <a id="cicatalogresourceversionsortreleased_at_desc"></a>`RELEASED_AT_DESC` | Released at by descending order. |
 
 ### `CiConfigIncludeType`
 

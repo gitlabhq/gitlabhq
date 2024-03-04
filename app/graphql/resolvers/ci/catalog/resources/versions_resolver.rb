@@ -7,22 +7,30 @@ module Resolvers
         class VersionsResolver < BaseResolver
           type Types::Ci::Catalog::Resources::VersionType.connection_type, null: true
 
-          # This allows a maximum of 1 call to the field that uses this resolver. If the
-          # field is evaluated on more than one node, it causes performance degradation.
-          extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
-
           argument :name, GraphQL::Types::String,
             required: false,
             description: 'Name of the version.'
 
-          argument :sort, Types::Ci::Catalog::Resources::VersionSortEnum,
-            required: false,
-            description: 'Sort versions by given criteria.'
-
           alias_method :catalog_resource, :object
 
-          def resolve(name: nil, sort: nil)
-            ::Ci::Catalog::Resources::VersionsFinder.new(catalog_resource, current_user, name: name, sort: sort).execute
+          def resolve(name: nil)
+            if name
+              ::Ci::Catalog::Resources::Version.for_catalog_resources(catalog_resource).by_name(name)
+            else
+              fetch_catalog_resources_versions
+            end
+          end
+
+          private
+
+          def fetch_catalog_resources_versions
+            BatchLoader::GraphQL.for(catalog_resource).batch(default_value: []) do |catalog_resources, loader|
+              versions = ::Ci::Catalog::Resources::Version.versions_for_catalog_resources(catalog_resources)
+
+              versions.group_by(&:catalog_resource).each do |catalog_resource, resource_versions|
+                loader.call(catalog_resource, resource_versions)
+              end
+            end
           end
         end
       end

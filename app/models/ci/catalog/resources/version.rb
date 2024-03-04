@@ -24,11 +24,7 @@ module Ci
         scope :for_catalog_resources, ->(catalog_resources) { where(catalog_resource_id: catalog_resources) }
         scope :preloaded, -> { includes(:catalog_resource, project: [:route, { namespace: :route }], release: :author) }
         scope :by_name, ->(name) { joins(:release).merge(Release.where(tag: name)) }
-
-        scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
-        scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
-        scope :order_by_released_at_asc, -> { reorder(released_at: :asc) }
-        scope :order_by_released_at_desc, -> { reorder(released_at: :desc) }
+        scope :with_semver, -> { where.not(semver_major: nil) }
 
         delegate :sha, :author_id, to: :release
 
@@ -38,39 +34,13 @@ module Ci
 
         class << self
           def latest
-            order_by_released_at_desc.first
+            with_semver.order_by_semantic_version_desc.first
           end
 
-          # This query uses LATERAL JOIN to find the latest version for each catalog resource. To avoid
-          # joining the `catalog_resources` table, we build an in-memory table using the resource ids.
-          # Example:
-          # SELECT ...
-          # FROM (VALUES (CATALOG_RESOURCE_ID_1),(CATALOG_RESOURCE_ID_2)) catalog_resources (id)
-          # INNER JOIN LATERAL (...)
-          def latest_for_catalog_resources(catalog_resources)
+          def versions_for_catalog_resources(catalog_resources)
             return none if catalog_resources.empty?
 
-            catalog_resources_table = Ci::Catalog::Resource.arel_table
-            catalog_resources_id_list = catalog_resources.map { |resource| "(#{resource.id})" }.join(',')
-
-            join_query = Ci::Catalog::Resources::Version
-              .where(catalog_resources_table[:id].eq(arel_table[:catalog_resource_id]))
-              .order_by_released_at_desc
-              .limit(1)
-
-            Ci::Catalog::Resources::Version
-              .from("(VALUES #{catalog_resources_id_list}) #{catalog_resources_table.name} (id)")
-              .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{table_name} ON TRUE")
-          end
-
-          def order_by(order)
-            case order.to_s
-            when 'created_asc' then order_by_created_at_asc
-            when 'created_desc' then order_by_created_at_desc
-            when 'released_at_asc' then order_by_released_at_asc
-            else
-              order_by_released_at_desc
-            end
+            for_catalog_resources(catalog_resources).with_semver.order_by_semantic_version_desc
           end
         end
 
@@ -97,8 +67,6 @@ module Ci
 
         private
 
-        # This column is denormalized from `releases`. It is first synced when a new version
-        # is created. Any updates to the column are synced via Release model callback.
         def sync_with_release
           self.released_at = release.released_at
         end

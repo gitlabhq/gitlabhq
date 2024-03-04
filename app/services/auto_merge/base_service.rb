@@ -113,5 +113,9 @@ module AutoMerge
     def track_exception(error, merge_request)
       Gitlab::ErrorTracking.track_exception(error, merge_request_id: merge_request&.id)
     end
+
+    def logger
+      @logger ||= Gitlab::AppLogger
+    end
   end
 end

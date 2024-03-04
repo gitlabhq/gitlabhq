@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     googleCloudProvisioningEnabled() {
-      return this.glFeatures.googleCloudRunnerProvisioning;
+      return this.glFeatures.googleCloudSupportFeatureFlag;
     },
   },
   methods: {

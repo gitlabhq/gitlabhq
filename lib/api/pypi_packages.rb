@@ -84,7 +84,7 @@ module API
       def present_html(content)
         # Adjusts grape output format
         # to be HTML
-        content_type "text/html; charset=utf-8"
+        content_type 'text/html; charset=utf-8'
         env['api.format'] = :binary
 
         body content
@@ -293,7 +293,10 @@ module API
         post do
           project = project!(action: :read_project)
           authorize_upload!(project)
-          bad_request!('File is too large') if project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
+
+          if project.actual_limits.exceeded?(:pypi_max_file_size, params[:content].size)
+            bad_request!('File is too large')
+          end
 
           track_package_event('push_package', :pypi, project: project, namespace: project.namespace)
 

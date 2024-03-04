@@ -1,9 +1,0 @@
----
-name: google_cloud_integration_onboarding
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437288
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870
-rollout_issue_url:
-milestone: '16.9'
-group: group::authentication
-type: beta
-default_enabled: false

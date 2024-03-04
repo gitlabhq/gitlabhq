@@ -246,4 +246,13 @@ class Projects::CommitController < Projects::ApplicationController
       .execute
       .find_by_id(params[:target_project_id])
   end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless action_name == 'show' && @diffs.present?
+
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.diffs_files_count'] = @diffs.size
+  end
 end

@@ -22,21 +22,13 @@ module AutoMerge
 
     def cancel(merge_request)
       super do
-        if block_given?
-          yield
-        else
-          SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, project, current_user)
-        end
+        SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, project, current_user)
       end
     end
 
     def abort(merge_request, reason)
       super do
-        if block_given?
-          yield
-        else
-          SystemNoteService.abort_merge_when_pipeline_succeeds(merge_request, project, current_user, reason)
-        end
+        SystemNoteService.abort_merge_when_pipeline_succeeds(merge_request, project, current_user, reason)
       end
     end
 
@@ -58,10 +50,6 @@ module AutoMerge
 
     def notify(merge_request)
       notification_service.async.merge_when_pipeline_succeeds(merge_request, current_user) if merge_request.saved_change_to_auto_merge_enabled?
-    end
-
-    def logger
-      @logger ||= Gitlab::AppLogger
     end
   end
 end

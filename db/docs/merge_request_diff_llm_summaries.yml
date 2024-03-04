@@ -15,3 +15,12 @@ allow_cross_transactions:
 - gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: merge_request_diff_id
+        table: merge_request_diffs
+        sharding_key: project_id
+        belongs_to: merge_request_diff

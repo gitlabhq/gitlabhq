@@ -26,7 +26,7 @@ describe('RunnerPlatformsRadioGroup', () => {
   const createComponent = ({
     props = {},
     mountFn = shallowMountExtended,
-    googleCloudRunnerProvisioning = false,
+    googleCloudSupportFeatureFlag = false,
     ...options
   } = {}) => {
     wrapper = mountFn(RunnerPlatformsRadioGroup, {
@@ -36,7 +36,7 @@ describe('RunnerPlatformsRadioGroup', () => {
       },
       provide: {
         glFeatures: {
-          googleCloudRunnerProvisioning,
+          googleCloudSupportFeatureFlag,
         },
       },
       ...options,
@@ -97,12 +97,12 @@ describe('RunnerPlatformsRadioGroup', () => {
     });
   });
 
-  describe('with googleCloudRunnerProvisioning flag enabled', () => {
+  describe('with googleCloudSupportFeatureFlag flag enabled', () => {
     it('contains google cloud platform option', () => {
       createComponent({
         props: {},
         mountFn: shallowMountExtended,
-        googleCloudRunnerProvisioning: true,
+        googleCloudSupportFeatureFlag: true,
         slots: {
           'cloud-options': 'Google cloud',
         },
