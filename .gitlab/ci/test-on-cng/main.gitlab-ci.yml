@@ -32,7 +32,9 @@ workflow:
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
+    QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
   before_script:
+    - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - export GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
     - source scripts/qa/cng_deploy/cng-kind.sh
@@ -44,6 +46,10 @@ workflow:
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
   after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        echo "SUITE_FAILED=true" >> "$QA_SUITE_STATUS_ENV_FILE"
+      fi
     - source scripts/qa/cng_deploy/cng-kind.sh
     - echo -e "\e[0Ksection_start:`date +%s`:log_deploy[collapsed=true]\r\e[0KDeployment info"
     - save_install_logs
@@ -53,8 +59,10 @@ workflow:
     when: always
     reports:
       junit: qa/tmp/rspec-*.xml
+      dotenv: $QA_SUITE_STATUS_ENV_FILE
     paths:
       - "*.log"
+      - qa/tmp/test-metrics-*.json
       - qa/tmp/allure-results
 
 # ==========================================

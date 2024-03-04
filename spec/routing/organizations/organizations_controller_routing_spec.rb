@@ -20,6 +20,11 @@ RSpec.describe Organizations::OrganizationsController, :routing, feature_categor
       .to route_to('organizations/organizations#index')
   end
 
+  it 'routes to #activity' do
+    expect(get("/-/organizations/#{organization.path}/activity"))
+      .to route_to('organizations/organizations#activity', organization_path: organization.path)
+  end
+
   it 'routes to #groups_and_projects' do
     expect(get("/-/organizations/#{organization.path}/groups_and_projects"))
       .to route_to('organizations/organizations#groups_and_projects', organization_path: organization.path)

@@ -115,43 +115,12 @@ module Ci
     validates :ref, presence: true
 
     scope :unstarted, -> { where(runner_id: nil) }
-
-    scope :with_any_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-      )
-    end
-
-    scope :with_downloadable_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1)
-          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-          .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
-      )
-    end
-
-    scope :with_erasable_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1)
-          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-        .where(file_type: Ci::JobArtifact.erasable_file_types)
-      )
-    end
-
-    scope :in_pipelines, ->(pipelines) do
-      where(pipeline: pipelines)
-    end
-
-    scope :with_existing_job_artifacts, ->(query) do
-      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").merge(query))
-    end
-
+    scope :with_any_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build) }
+    scope :with_downloadable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.downloadable) }
+    scope :with_erasable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.erasable) }
+    scope :with_existing_job_artifacts, ->(query) { where_exists(Ci::JobArtifact.scoped_build.erasable.merge(query)) }
     scope :without_archived_trace, -> { where_not_exists(Ci::JobArtifact.scoped_build.trace) }
-
-    scope :with_artifacts, ->(artifact_scope) do
-      with_existing_job_artifacts(artifact_scope)
-        .eager_load_job_artifacts
-    end
+    scope :with_artifacts, ->(artifact_scope) { with_existing_job_artifacts(artifact_scope).eager_load_job_artifacts }
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }

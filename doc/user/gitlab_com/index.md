@@ -254,6 +254,7 @@ the default value [is the same as for self-managed instances](../../administrati
 | [Maximum download file size when importing from source GitLab instances by direct transfer](../../administration/settings/import_and_export_settings.md#maximum-download-file-size-for-imports-by-direct-transfer) | 5 GiB              |
 | Maximum attachment size                                                                                                                                                                                            | 100 MiB            |
 | [Maximum decompressed file size for imported archives](../../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives)                                           | 25 GiB             |
+| [Maximum push size](../../administration/settings/account_and_limit_settings.md#max-push-size)                                           | 5 GB             |
 
 If you are near or over the repository size limit, you can either:
 

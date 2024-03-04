@@ -128,6 +128,14 @@ module QA
             page.within_frame(iframe, &block)
           end
 
+          def within_vscode_duo_chat(&block)
+            within_vscode_editor do
+              within_frame(all(:frame, class: 'webview', visible: false).last) do
+                within_frame(:frame, &block)
+              end
+            end
+          end
+
           def switch_to_original_window
             page.driver.browser.switch_to.window(page.driver.browser.window_handles.first)
           end
@@ -156,7 +164,7 @@ module QA
             end
 
             Support::WaitForRequests.wait_for_requests(finish_loading_wait: 30)
-            Support::Waiter.wait_until(max_duration: 10, reload_page: page, retry_on_exception: true) do
+            Support::Waiter.wait_until(max_duration: 60, reload_page: page, retry_on_exception: true) do
               within_vscode_editor do
                 # Check for webide file_explorer element
                 has_file_explorer?
@@ -301,6 +309,12 @@ module QA
               within_file_editor do
                 page.text.lines.count
               end
+            end
+          end
+
+          def open_duo_chat
+            within_vscode_editor do
+              click_element('a[aria-label="GitLab Duo Chat"]', wait: 60)
             end
           end
 
