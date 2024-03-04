@@ -17,10 +17,10 @@ status: proposed
 
 ## Philosophy
 
-- **Cell-local by default**: All services should be cell-local, and not global, unless there are documented and good reasons why they aren't cell-local.
+- **Cell-local by default**: All services should be cell-local, and not global, unless there are documented, and good reasons why they aren't cell-local.
   If we keep things cell-local, communication between the cell and service stays internal, the service has to run at a smaller scale, and the blast radius is much smaller.
   Example, Gitaly and GitLab Registry are cell-local.
-- **homogeneous environments**: For now, every GitLab cell should look the same. Bootstrapping and provisioning should be done in an automated way.
+- **Homogeneous environments**: For now, every GitLab cell should look the same. Bootstrapping and provisioning should be done in an automated way.
   For the first iteration all Cells are the same size, there are benefits of running different sizes but this adds complexity and scope.
 - **Fresh start, but not so much**: Brand new GitLab instances are created, so it's tempting to redo everything. We have to balance the existing infrastructure, dedicated tooling, and time.
 - **All operations get rolled out the same**: Configuration changes, Feature Flags, Deployments, and operational tasks ideally go through the same process of rolling out a change.
@@ -156,6 +156,9 @@ frame "Google Cloud Platform" <<gcp>> {
         registry
         ---
         sidekiq
+        ---
+        kas
+        ---
         ]
 
        rectangle "Storage" as cell1Storage {
@@ -179,6 +182,9 @@ frame "Google Cloud Platform" <<gcp>> {
         registry
         ---
         sidekiq
+        ---
+        kas
+        ---
         ]
 
        rectangle "Storage" as cell2Storage {
@@ -203,6 +209,84 @@ frame "Google Cloud Platform" <<gcp>> {
 [RoutingService]-[thickness=3]->cell2gke
 @enduml
 ```
+
+- <details>
+  <summary> KAS: Select to Expand </summary>
+
+  ```plantuml
+  @startuml
+
+  skinparam frame {
+    borderColor<<customer>> #F4B400
+  }
+  skinparam frame {
+    borderColor<<gcp>> #4285F4
+  }
+  skinparam cloud {
+    borderColor<<cloudflare>> #F48120
+  }
+
+  together {
+    frame "cluster 1" <<customer>> {
+        component "agentk" as cluster1AgentK
+    }
+
+    frame "cluster 2" <<customer>> {
+        component "agentk" as cluster2AgentK
+    }
+
+    frame "cluster 3" <<customer>> {
+        component "agentk" as cluster3AgentK
+    }
+
+    frame "workstation" <<customer>> {
+        component "kubectl"
+    }
+  }
+
+
+  cloud wss://kas.gitlab.com <<cloudflare>> as kas.gitlab.com {
+      component "routing service"
+  }
+
+  cluster1AgentK <..d..> kas.gitlab.com
+  cluster2AgentK <..d..> kas.gitlab.com
+  cluster3AgentK <--d--> kas.gitlab.com
+  kubectl <--d--> kas.gitlab.com
+
+  together {
+    frame "gprd-gitlab-cell-1" <<gcp>> {
+      component kas as kasCell1
+      component webservice as webserviceCell1
+      component redis as redisCell1
+      collections "gitaly(s)" as gitalyCell1
+
+      kasCell1 <-d-> webserviceCell1
+      kasCell1 <-d-> redisCell1
+      kasCell1 <-d-> gitalyCell1
+    }
+
+    frame "gprd-gitlab-cell-2" <<gcp>> {
+      component kas as kasCell2
+      component webservice as webserviceCell2
+      component redis as redisCell2
+      collections "gitaly(s)" as gitalyCell2
+
+      kasCell2 <-d-> webserviceCell2
+      kasCell2 <-d-> redisCell2
+      kasCell2 <-d-> gitalyCell2
+    }
+  }
+
+  "routing service" <--d--> kasCell1
+  "routing service" <--d--> kasCell1
+  "routing service" <..d..> kasCell2
+  "routing service" <..d..> kasCell2
+
+  @enduml
+  ```
+
+  </details>
 
 ## Large Domains
 

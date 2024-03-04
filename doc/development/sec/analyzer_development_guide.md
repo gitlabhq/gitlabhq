@@ -234,7 +234,42 @@ After the above steps have been completed, the automatic release process execute
 **Never delete a Git tag that has been pushed** as there is a good
 chance that the tag will be used and/or cached by the Go package registry.
 
-## Location of Container Images
+## Development of new analyzers
+
+We occasionally need to build out new analyzer projects to support new frameworks and tools.
+In doing so we should follow [our engineering Open Source guidelines](https://handbook.gitlab.com/handbook/engineering/open-source/),
+including licensing and [code standards](../../development/go_guide/index.md).
+
+In addition, to write a custom analyzer that will integrate into the GitLab application
+a minimal featureset is required:
+
+### Checklist
+
+#### Underlying tool
+
+- [ ] Has [permissive software license](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software)
+- [ ] Headless execution (CLI tool)
+- [ ] Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+- [ ] Compatible projects can be detected based on filenames or extensions
+- [ ] Offline execution (no Internet access) or can be configured to use custom proxies and/or CA certificates
+
+#### Dockerfile
+
+The `Dockerfile` should use an unprivileged user with the name `GitLab`. The reason this is necessary is to provide compatibility with Red Hat OpenShift instances, which don't allow containers to run as an admin (root) user. There are certain limitations to keep in mind when running a container as an unprivileged user, such as the fact that any files that need to be written on the Docker filesystem will require the appropriate permissions for the `GitLab` user. Please see the following merge request for more details: [Use GitLab user instead of root in Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/merge_requests/130).
+
+#### Minimal vulnerability data
+
+Please see [our security-report-schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json) for a full list of required fields.
+
+The [security-report-schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas) repository contains JSON schemas that list the required fields for each report type:
+
+- [Container Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json)
+- [DAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dast-report-format.json)
+- [Dependency Scanning](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json)
+- [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
+- [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
+
+### Location of Container Images
 
 In order to
 [restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),

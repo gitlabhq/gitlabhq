@@ -215,6 +215,72 @@ To use private runners:
 
 Code Quality now runs in standard Docker mode.
 
+### Run Code Quality rootless with private runners
+
+If you are using private runners and would like to run the Code Quality scans [in rootless Docker mode](https://docs.docker.com/engine/security/rootless/) code quality requires some special changes to allow it to run properly. This may require having a runner dedicated to running only code quality jobs because changes in socket binding may cause problems in other jobs. 
+
+To use a rootless private runner:
+
+1. Register a new runner:
+
+   Replace `/run/user/<gitlab-runner-user>/docker.sock` with the path to the local `docker.sock` for the `gitlab-runner` user. 
+
+   ```shell
+   $ gitlab-runner register --executor "docker" \
+     --docker-image="docker:latest" \
+     --url "https://gitlab.com/" \
+     --description "cq-rootless" \
+     --tag-list "cq-rootless" \
+     --locked="false" \
+     --access-level="not_protected" \
+     --docker-volumes "/cache" \
+     --docker-volumes "/tmp/builds:/tmp/builds" \
+     --docker-volumes "/run/user/<gitlab-runner-user>/docker.sock:/run/user/<gitlab-runner-user>/docker.sock" \
+     --token "<project_token>" \
+     --non-interactive \
+     --builds-dir "/tmp/builds" \
+     --env "DOCKER_HOST=unix:///run/user/<gitlab-runner-user>/docker.sock"
+     --docker-host "unix:///run/user/<gitlab-runner-user>/docker.sock"
+   ```
+
+   The resulting configuration:
+
+   ```toml
+   [[runners]]
+     name = "cq-rootless"
+     url = "https://gitlab.com/"
+     token = "<project_token>"
+     executor = "docker"
+     builds_dir = "/tmp/builds"
+     environment = ["DOCKER_HOST=unix:///run/user/<gitlab-runner-user>/docker.sock"]
+     [runners.docker]
+       tls_verify = false
+       image = "docker:latest"
+       privileged = false
+       disable_entrypoint_overwrite = false
+       oom_kill_disable = false
+       disable_cache = false
+       volumes = ["/cache", "/run/user/<gitlab-runner-user>/docker.sock:/run/user/<gitlab-runner-user>/docker.sock", "/tmp/builds:/tmp/builds"]
+       shm_size = 0
+       host = "unix:///run/user/<gitlab-runner-user>/docker.sock"
+     [runners.cache]
+       [runners.cache.s3]
+       [runners.cache.gcs]
+   ```
+
+1. Apply the following overrides to the `code_quality` job created by the template:
+
+   ```yaml
+   code_quality:
+     services:
+     variables:
+       DOCKER_SOCKET_PATH: /run/user/997/docker.sock
+     tags:
+       - cq-rootless
+   ```
+
+Code Quality now runs in standard Docker mode and rootless.
+
 ## Disable Code Quality
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable

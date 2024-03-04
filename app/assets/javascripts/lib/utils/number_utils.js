@@ -1,4 +1,4 @@
-import { languageCode, formatNumber, sprintf, __ } from '~/locale';
+import { formatNumber, sprintf, __ } from '~/locale';
 import { BYTES_IN_KIB, THOUSAND } from './constants';
 
 /**
@@ -70,10 +70,10 @@ export function bytesToGiB(number) {
  *
  * @param {number} size
  * @param {number} [digits=2] - The number of digits to appear after the decimal point
- * @param {string} [locale=GITLAB_FALLBACK_LANGUAGE]
+ * @param {string} locale
  * @returns {string[]}
  */
-export function numberToHumanSizeSplit({ size, digits = 2, locale = languageCode() } = {}) {
+export function numberToHumanSizeSplit({ size, digits = 2, locale } = {}) {
   const abs = Math.abs(size);
   const digitsOptions = { minimumFractionDigits: digits, maximumFractionDigits: digits };
   const formatNumberWithLocaleAndDigits = (n) => formatNumber(n, digitsOptions, locale);
@@ -97,10 +97,10 @@ export function numberToHumanSizeSplit({ size, digits = 2, locale = languageCode
  *
  * @param {number} size
  * @param {number} [digits=2] - The number of digits to appear after the decimal point
- * @param {string} [locale=GITLAB_FALLBACK_LANGUAGE]
+ * @param {string} locale
  * @returns {string}
  */
-export function numberToHumanSize(size, digits = 2, locale = languageCode()) {
+export function numberToHumanSize(size, digits = 2, locale) {
   const [humanSize, label] = numberToHumanSizeSplit({ size, digits, locale });
 
   switch (label) {
