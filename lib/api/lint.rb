@@ -25,6 +25,8 @@ module API
       get ':id/ci/lint', urgency: :low do
         authorize_read_code!
 
+        not_found! 'Repository' if user_project.empty_repo?
+
         sha = params[:sha] || user_project.repository.root_ref_sha
 
         not_found! 'Commit' unless user_project.commit(sha).present?
