@@ -196,58 +196,46 @@ describe('~/code_review', () => {
         getDerivedMergeRequestInformation.mockImplementationOnce(() => ({}));
       });
 
-      it('does not subscribe if the feature flag mergeRequestDiffGeneratedSubscription is disabled', async () => {
-        await start(callArgs);
-
-        expect(apolloSubscribeSpy).not.toHaveBeenCalled();
+      beforeEach(() => {
+        setHTMLFixture('<div class="js-changes-tab-count" data-gid="1">-</div>');
       });
 
-      describe('with mergeRequestDiffGeneratedSubscription feature flag enabled', () => {
-        beforeEach(() => {
-          setHTMLFixture('<div class="js-changes-tab-count" data-gid="1">-</div>');
+      afterEach(() => {
+        window.gon.features = {};
+        resetHTMLFixture();
+      });
 
-          window.gon.features = {
-            mergeRequestDiffGeneratedSubscription: true,
-          };
-        });
+      it('does not subscribe if the page is not a merge request', async () => {
+        await start(callArgs);
 
-        afterEach(() => {
-          window.gon.features = {};
-          resetHTMLFixture();
-        });
+        expect(apolloSubscribeSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ variables: { issuableId: '1' } }),
+        );
+        expect(observable.subscribe).toHaveBeenCalled();
+      });
 
-        it('does not subscribe if the page is not a merge request', async () => {
-          await start(callArgs);
+      it('does not emit an event when mergeRequestDiffGenerated is null', async () => {
+        await start(callArgs);
 
-          expect(apolloSubscribeSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ variables: { issuableId: '1' } }),
-          );
-          expect(observable.subscribe).toHaveBeenCalled();
-        });
+        observable.next({ data: { mergeRequestDiffGenerated: null } });
 
-        it('does not emit an event when mergeRequestDiffGenerated is null', async () => {
-          await start(callArgs);
+        expect(emitSpy).not.toHaveBeenCalled();
+      });
 
-          observable.next({ data: { mergeRequestDiffGenerated: null } });
+      it('emits an event', async () => {
+        await start(callArgs);
 
-          expect(emitSpy).not.toHaveBeenCalled();
-        });
+        observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
 
-        it('emits an event', async () => {
-          await start(callArgs);
+        expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, { totalCount: 1 });
+      });
 
-          observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
+      it('unsubscribes from subscription', async () => {
+        await start(callArgs);
 
-          expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, { totalCount: 1 });
-        });
+        observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
 
-        it('unsubscribes from subscription', async () => {
-          await start(callArgs);
-
-          observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
-
-          expect(unsubscribeSpy).toHaveBeenCalled();
-        });
+        expect(unsubscribeSpy).toHaveBeenCalled();
       });
     });
   });

@@ -224,9 +224,10 @@ You can override the merge request approval rules for a project by either:
 
 Prerequisites:
 
-- You must have administrator access.
-  [Issue 439388](https://gitlab.com/gitlab-org/gitlab/-/issues/439388) tracks fixing this bug and
-  lowering the minimum required role.
+- You must have administrator access or all of the following must be true:
+  - You must have at least the Developer role or the project must accept contributions from external members.
+  - You must be the author of the merge request.
+  - The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests) is disabled.
 
 To override approvers of a merge request:
 

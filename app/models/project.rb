@@ -2896,12 +2896,24 @@ class Project < ApplicationRecord
   end
 
   def default_branch_protected?
+    if Feature.enabled?(:default_branch_protection_defaults, self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+
+      return !branch_protection.developer_can_push?
+    end
+
     branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
 
     branch_protection.fully_protected? || branch_protection.developer_can_merge? || branch_protection.developer_can_initial_push?
   end
 
   def initial_push_to_default_branch_allowed_for_developer?
+    if Feature.enabled?(:default_branch_protection_defaults, self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+
+      return branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
+    end
+
     branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
 
     !branch_protection.any? || branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?

@@ -29,7 +29,7 @@ With GitLab Duo Code Suggestions, you get:
   code based on the context of your comment and the rest of your code.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[Watch a video overview](https://youtu.be/xQUlrbIWo8o). Or [view a click-through demo](https://gitlab.navattic.com/code-suggestions).
+[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 
 ## Use Code Suggestions

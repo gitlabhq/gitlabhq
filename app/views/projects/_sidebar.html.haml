@@ -1,5 +1,8 @@
 - has_project_shortcut_buttons = !current_user || current_user.project_shortcut_buttons
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
+- anchor_buttons = @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+- statistics_empty_buttons = @project.empty_repo_statistics_buttons
+- statistics_buttons = @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
 %aside.project-page-sidebar
   .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50{ class: 'gl-pt-2!' }
@@ -39,24 +42,24 @@
               alt: 'Project badge' }>
 
   -# Invite members
-  - if @project.empty_repo?
+  - if @project.empty_repo? && can_admin_project_member?(@project)
     .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
-      = render "invite_members_empty_project" if can_admin_project_member?(@project)
+      = render "invite_members_empty_project"
 
   -# Buttons
-  - if can?(current_user, :read_code, @project) && !@project.empty_repo?
+  - if can?(current_user, :read_code, @project) && !@project.empty_repo? && anchor_buttons.any?
     .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
       %nav.project-stats
-        = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
+        = render 'stat_anchor_list', anchors: anchor_buttons
 
   -# Buttons
-  - if has_project_shortcut_buttons
+  - if has_project_shortcut_buttons && (@project.empty_repo? ? statistics_empty_buttons.any? : statistics_buttons.any?)
     .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
       .project-buttons.gl-mb-2.js-show-on-project-root{ data: { testid: 'project-buttons' } }
         - if @project.empty_repo?
-          = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
+          = render 'stat_anchor_list', anchors: statistics_empty_buttons, project_buttons: true
         - else
-          = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout), project_buttons: true
+          = render 'stat_anchor_list', anchors: statistics_buttons, project_buttons: true
 
   -# Project created
   .project-page-sidebar-block.gl-py-4

@@ -28,11 +28,11 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 
 | Service                                  | Nodes | Configuration           | GCP              | AWS           | Azure     |
 |------------------------------------------|-------|-------------------------|------------------|---------------|-----------|
-| External load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  | `F8s v2`  |
+| External load balancer<sup>3</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
 | Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
 | PostgreSQL<sup>1</sup>                   | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`  | `D32s v3` |
 | PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
-| Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  | `F8s v2`  |
+| Internal load balancer<sup>3</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16`  | `c5.4xlarge`  | `F16s v2` |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
 | Gitaly<sup>5</sup>                       | 3     | 64 vCPU, 240 GB memory<sup>6</sup> | `n1-standard-64` | `m5.16xlarge` | `D64s v3` |
@@ -42,6 +42,8 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 | GitLab Rails<sup>7</sup>                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  | `F32s v2` |
 | Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
 | Object storage<sup>4</sup>               | -     | -                       | -                | -             | -         |
+
+**Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -248,21 +250,13 @@ The following list includes descriptions of each server and its assigned IP:
 
 ## Configure the external load balancer
 
-In a multi-node GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you'll need an external load balancer to route
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation. It is expected however that any
-reputable load balancer should work and as such this section will focus on the specifics of
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
-
-### Balancing algorithm
-
-You should use a least-connection load balancing algorithm or equivalent
-wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
 
 ### Readiness checks
 
@@ -375,10 +369,14 @@ for details on managing SSL certificates and configuring NGINX.
 
 ## Configure the internal load balancer
 
-The Internal Load Balancer is used to balance any internal connections the GitLab environment requires
+In a multi-node GitLab configuration, you'll need an internal load balancer to route
+traffic for select internal components if configured
 such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
 
-It's a separate node from the External Load Balancer and shouldn't have any access externally.
+The specifics on which load balancer to use, or its exact configuration
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
+what to configure for your load balancer of choice.
 
 The following IP will be used as an example:
 
@@ -431,14 +429,6 @@ backend praefect
 ```
 
 Refer to your preferred Load Balancer's documentation for further guidance.
-
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2318,13 +2308,15 @@ services where applicable):
 | Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
 | PostgreSQL<sup>1</sup>                   | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge`  |
 | PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
-| Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`   | `c5.2xlarge`  |
+| Internal load balancer<sup>3</sup>       | 1     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge`  |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`   |
 | Gitaly<sup>5</sup>                       | 3     | 64 vCPU, 240 GB memory<sup>6</sup> | `n1-standard-64` | `m5.16xlarge` |
 | Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`   | `c5.xlarge`   |
 | Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`    |
 | Object storage<sup>4</sup>               | -     | -                      | -                | -             |
+
+**Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

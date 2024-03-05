@@ -109,15 +109,8 @@ module ExtractsRef
   def extract_raw_ref(id)
     return ['', ''] unless repository_container
 
-    sha_regex =
-      if Feature.enabled?(:ref_extract_sha256, Feature.current_request)
-        /^(\h{40}\h{24}?)(.*)/
-      else
-        /^(\h{40})(.+)/
-      end
-
     # If the ref appears to be a SHA, we're done, just split the string
-    return $~.captures if id =~ sha_regex
+    return $~.captures if id =~ /^(\h{40}\h{24}?)(.*)/
 
     # No slash means we must have a ref and no path
     return [id, ''] unless id.include?('/')

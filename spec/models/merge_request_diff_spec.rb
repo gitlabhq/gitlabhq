@@ -61,20 +61,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request.create_merge_request_diff
     end
 
-    context 'when merge_request_diff_generated_subscription flag is disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_generated_subscription: false)
-      end
-
-      it 'does not call GraphqlTriggers.merge_request_diff_generated' do
-        merge_request = create(:merge_request, :skip_diff_creation)
-
-        expect(GraphqlTriggers).not_to receive(:merge_request_diff_generated)
-
-        merge_request.create_merge_request_diff
-      end
-    end
-
     context 'when diff_type is merge_head' do
       let_it_be(:merge_request) { create(:merge_request) }
 

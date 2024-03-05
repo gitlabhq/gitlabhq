@@ -14,9 +14,19 @@ module ViteGdk
 
     return unless enabled
 
+    # From https://vitejs.dev/config/server-options
+    host = config['host'] || 'localhost'
+    port = Integer(config['port'] || 3808)
+    hmr_config = config['hmr'] || {}
+    hmr_host = hmr_config['host'] || host
+    hmr_port = hmr_config['clientPort'] || hmr_config['port'] || port
+    hmr_ws_protocol = hmr_config['protocol'] || 'ws'
+    ViteRuby.env['VITE_HMR_HOST'] = hmr_host
+    ViteRuby.env['VITE_HMR_WS_URL'] = "#{hmr_ws_protocol}://#{hmr_host}:#{hmr_port}"
+
     ViteRuby.configure(
-      host: config.fetch('host', 'localhost'),
-      port: Integer(config.fetch('port', 3038))
+      host: host,
+      port: port
     )
   end
 

@@ -5,7 +5,6 @@ Style/SymbolProc:
     - 'app/controllers/profiles_controller.rb'
     - 'app/models/ci/pipeline.rb'
     - 'app/models/container_repository.rb'
-    - 'app/models/deployment.rb'
     - 'app/models/discussion.rb'
     - 'app/models/environment.rb'
     - 'app/models/integrations/prometheus.rb'

@@ -91,18 +91,6 @@ RSpec.shared_examples 'extracts refs' do
         )
       end
 
-      context 'when feature flag "ref_extract_sha256" is disabled' do
-        before do
-          stub_feature_flags(ref_extract_sha256: false)
-        end
-
-        it 'cannot extract a valid commit SHA256 ref' do
-          expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c')).to eq(
-            %w[34627760127d5ff2a644771225af09bbd79f28a5 4a0a4c03c1881bf2c26dc13c]
-          )
-        end
-      end
-
       it 'falls back to a primitive split for an invalid ref' do
         expect(extract_ref('stable')).to eq(['stable', ''])
       end
@@ -140,18 +128,6 @@ RSpec.shared_examples 'extracts refs' do
         expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c/CHANGELOG')).to eq(
           %w[34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c CHANGELOG]
         )
-      end
-
-      context 'when feature flag "ref_extract_sha256" is disabled' do
-        before do
-          stub_feature_flags(ref_extract_sha256: false)
-        end
-
-        it 'cannot extract a valid commit SHA256 ref' do
-          expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c/CHANGELOG')).to eq(
-            ['34627760127d5ff2a644771225af09bbd79f28a5', '4a0a4c03c1881bf2c26dc13c/CHANGELOG']
-          )
-        end
       end
 
       it 'falls back to a primitive split for an invalid ref' do

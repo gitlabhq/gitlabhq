@@ -462,7 +462,7 @@ It's a pull mirror pulling from [GitLab JH](https://jihulab.com/gitlab-cn/gitlab
 mirroring all branches, overriding divergent refs, triggering no pipelines
 when mirror is updated.
 
-The pulling user is [`@gitlab-jh-bot`](https://gitlab.com/gitlab-jh-bot), who
+The pulling user is [`@gitlab-jh-validation-bot`](https://gitlab.com/gitlab-jh-validation-bot), who
 is a maintainer in the project. The credentials can be found in the 1password
 engineering vault.
 
@@ -478,7 +478,7 @@ mirroring specific branches: `(master|main-jh)`, overriding
 divergent refs, triggering no pipelines when mirror is updated.
 
 The pulling user is [`@gitlab-jh-validation-bot`](https://gitlab.com/gitlab-jh-validation-bot), who is a maintainer in the project, and also a
-reporter in the
+maintainer in the
 [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab).
 The credentials can be found in the 1password engineering vault.
 

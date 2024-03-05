@@ -1,9 +1,0 @@
----
-name: ref_extract_sha256
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419905
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144853
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442021
-milestone: '16.10'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

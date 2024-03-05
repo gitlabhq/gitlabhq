@@ -1295,8 +1295,7 @@ class Repository
   end
 
   def empty_tree_id
-    return Gitlab::Git::SHA1_EMPTY_TREE_ID unless exists? &&
-      Feature.enabled?(:dynamic_empty_tree_id, project)
+    return Gitlab::Git::SHA1_EMPTY_TREE_ID unless exists?
 
     case object_format
     when FORMAT_SHA1

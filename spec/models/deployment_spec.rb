@@ -5,27 +5,45 @@ require 'spec_helper'
 RSpec.describe Deployment, feature_category: :continuous_delivery do
   subject { build(:deployment) }
 
-  it { is_expected.to belong_to(:project).required }
-  it { is_expected.to belong_to(:environment).required }
-  it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:deployable) }
-  it { is_expected.to have_one(:deployment_cluster) }
-  it { is_expected.to have_many(:deployment_merge_requests) }
-  it { is_expected.to have_many(:merge_requests).through(:deployment_merge_requests) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:environment) { create(:environment, project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline_b) { create(:ci_pipeline, project: project) }
+  let_it_be(:deployable) { create(:ci_build, project: project, pipeline: pipeline) }
+  let_it_be(:deployment) { create(:deployment, project: project, environment: environment, deployable: deployable) }
 
-  it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
-  it { is_expected.to delegate_method(:commit).to(:project) }
-  it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
-  it { is_expected.to delegate_method(:kubernetes_namespace).to(:deployment_cluster).as(:kubernetes_namespace) }
-  it { is_expected.to delegate_method(:cluster).to(:deployment_cluster) }
+  # environments
+  let_it_be(:production) { create(:environment, :production, project: project) }
+  let_it_be(:staging) { create(:environment, :staging, project: project) }
+  let_it_be(:testing) { create(:environment, :testing, project: project) }
 
-  it { is_expected.to validate_presence_of(:ref) }
-  it { is_expected.to validate_presence_of(:sha) }
+  describe 'associations' do
+    it { is_expected.to belong_to(:project).required }
+    it { is_expected.to belong_to(:environment).required }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:deployable) }
+    it { is_expected.to have_one(:deployment_cluster) }
+    it { is_expected.to have_many(:deployment_merge_requests) }
+    it { is_expected.to have_many(:merge_requests).through(:deployment_merge_requests) }
+  end
+
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
+    it { is_expected.to delegate_method(:commit).to(:project) }
+    it { is_expected.to delegate_method(:commit_title).to(:commit).as(:try) }
+    it { is_expected.to delegate_method(:kubernetes_namespace).to(:deployment_cluster).as(:kubernetes_namespace) }
+    it { is_expected.to delegate_method(:cluster).to(:deployment_cluster) }
+  end
+
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:ref) }
+    it { is_expected.to validate_presence_of(:sha) }
+  end
 
   it_behaves_like 'having unique enum values'
 
   describe '#manual_actions' do
-    let(:deployment) { create(:deployment) }
+    let(:deployment) { build(:deployment) }
 
     it 'delegates to environment_manual_actions' do
       expect(deployment.deployable).to receive(:other_manual_actions).and_call_original
@@ -35,7 +53,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#scheduled_actions' do
-    let(:deployment) { create(:deployment) }
+    let(:deployment) { build(:deployment) }
 
     it 'delegates to environment_scheduled_actions' do
       expect(deployment.deployable).to receive(:other_scheduled_actions).and_call_original
@@ -46,9 +64,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   describe 'modules' do
     it_behaves_like 'AtomicInternalId' do
-      let_it_be(:project) { create(:project, :repository) }
       let_it_be(:deployable) { create(:ci_build, project: project) }
-      let_it_be(:environment) { create(:environment, project: project) }
 
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:deployment, deployable: deployable, environment: environment) }
@@ -60,90 +76,29 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     it { is_expected.to include_module(EachBatch) }
   end
 
-  describe '.stoppable' do
-    subject { described_class.stoppable }
-
-    context 'when deployment is stoppable' do
-      let!(:deployment) { create(:deployment, :success, on_stop: 'stop-review') }
-
-      it { is_expected.to eq([deployment]) }
-    end
-
-    context 'when deployment is not stoppable' do
-      let!(:deployment) { create(:deployment, :failed) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
-  describe '.for_iid' do
-    subject { described_class.for_iid(project, iid) }
-
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:deployment) { create(:deployment, project: project) }
-
-    let(:iid) { deployment.iid }
-
-    it 'finds the deployment' do
-      is_expected.to contain_exactly(deployment)
-    end
-
-    context 'when iid does not match' do
-      let(:iid) { non_existing_record_id }
-
-      it 'does not find the deployment' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.for_environment_name' do
-    subject { described_class.for_environment_name(project, environment_name) }
-
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:production) { create(:environment, :production, project: project) }
-    let_it_be(:staging) { create(:environment, :staging, project: project) }
-    let_it_be(:other_project) { create(:project, :repository) }
-    let_it_be(:other_production) { create(:environment, :production, project: other_project) }
-
-    let(:environment_name) { production.name }
-
-    context 'when deployment belongs to the environment' do
-      let!(:deployment) { create(:deployment, project: project, environment: production) }
-
-      it { is_expected.to eq([deployment]) }
-    end
-
-    context 'when deployment belongs to the same project but different environment name' do
-      let!(:deployment) { create(:deployment, project: project, environment: staging) }
-
-      it { is_expected.to be_empty }
-    end
-
-    context 'when deployment belongs to the same environment name but different project' do
-      let!(:deployment) { create(:deployment, project: other_project, environment: other_production) }
-
-      it { is_expected.to be_empty }
-    end
-  end
-
   describe '.success' do
     subject { described_class.success }
 
     context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success) }
+      before do
+        deployment.update!(status: :success, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to eq([deployment]) }
     end
 
     context 'when deployment status is created' do
-      let(:deployment) { create(:deployment, :created) }
+      before do
+        deployment.update!(status: :created)
+      end
 
       it { is_expected.to be_empty }
     end
 
     context 'when deployment status is running' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running)
+      end
 
       it { is_expected.to be_empty }
     end
@@ -175,7 +130,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'when deployment succeeded' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running)
+      end
 
       it 'has correct status' do
         freeze_time do
@@ -206,7 +163,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'when deployment failed' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running)
+      end
 
       it 'has correct status' do
         freeze_time do
@@ -237,7 +196,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'when deployment was canceled' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running)
+      end
 
       it 'has correct status' do
         freeze_time do
@@ -267,7 +228,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'when deployment was skipped' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running, finished_at: nil)
+      end
 
       it 'has correct status' do
         deployment.skip!
@@ -294,7 +257,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'when deployment is blocked' do
-      let(:deployment) { create(:deployment, :created) }
+      before do
+        deployment.update!(status: :created, finished_at: nil)
+      end
 
       it 'has correct status' do
         deployment.block!
@@ -317,8 +282,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     describe 'synching status to Jira' do
-      let_it_be(:project) { create(:project, :repository) }
-
       let(:deployment) { create(:deployment, project: project) }
       let(:worker) { ::JiraConnect::SyncDeploymentsWorker }
 
@@ -363,13 +326,12 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#older_than_last_successful_deployment?' do
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:environment) { create(:environment, project: project) }
-
     subject { deployment.older_than_last_successful_deployment? }
 
     context 'when deployment is current deployment' do
-      let(:deployment) { create(:deployment, :success, project: project) }
+      before do
+        deployment.update!(status: :success, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -422,13 +384,17 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     subject { deployment.success? }
 
     context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success) }
+      before do
+        deployment.update!(status: :success, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'when deployment status is failed' do
-      let(:deployment) { create(:deployment, :failed) }
+      before do
+        deployment.update!(status: :failed, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to be_falsy }
     end
@@ -438,13 +404,17 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     subject { deployment.status_name }
 
     context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success) }
+      before do
+        deployment.update!(status: :success, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to eq(:success) }
     end
 
     context 'when deployment status is failed' do
-      let(:deployment) { create(:deployment, :failed) }
+      before do
+        deployment.update!(status: :failed, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to eq(:failed) }
     end
@@ -454,74 +424,168 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     subject { deployment.deployed_at }
 
     context 'when deployment status is created' do
-      let(:deployment) { create(:deployment) }
-
       it { is_expected.to be_nil }
     end
 
     context 'when deployment status is success' do
-      let(:deployment) { create(:deployment, :success) }
+      before do
+        deployment.update!(status: :success, finished_at: Time.zone.now)
+      end
 
       it { is_expected.to eq(deployment.read_attribute(:finished_at)) }
     end
 
     context 'when deployment status is running' do
-      let(:deployment) { create(:deployment, :running) }
+      before do
+        deployment.update!(status: :running)
+      end
 
       it { is_expected.to be_nil }
     end
   end
 
-  describe '.archivables_in' do
-    subject { described_class.archivables_in(project, limit: limit) }
+  describe 'scopes' do
+    let_it_be_with_reload(:deployment_2) { create(:deployment, project: project) }
+    let_it_be_with_reload(:deployment_3) { create(:deployment, project: project) }
 
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:deployment_1) { create(:deployment, project: project) }
-    let_it_be(:deployment_2) { create(:deployment, project: project) }
-    let_it_be(:deployment_3) { create(:deployment, project: project) }
+    describe '.stoppable' do
+      subject { described_class.stoppable }
 
-    let(:limit) { 100 }
+      context 'when deployment is stoppable' do
+        before do
+          deployment.update!(status: :success, finished_at: Time.zone.now, on_stop: 'stop-review')
+        end
 
-    context 'when there are no archivable deployments in the project' do
-      it 'returns nothing' do
-        expect(subject).to be_empty
+        it { is_expected.to eq([deployment]) }
+      end
+
+      context 'when deployment is not stoppable' do
+        before do
+          deployment.update!(status: :failed, finished_at: Time.zone.now)
+        end
+
+        it { is_expected.to be_empty }
       end
     end
 
-    context 'when there are archivable deployments in the project' do
+    describe '.find_successful_deployment!' do
       before do
-        stub_const("::Deployment::ARCHIVABLE_OFFSET", 1)
+        deployment.update!(status: :success, finished_at: Time.zone.now)
       end
 
-      it 'returns all archivable deployments' do
-        expect(subject.count).to eq(2)
-        expect(subject).to contain_exactly(deployment_1, deployment_2)
+      it 'returns a successful deployment' do
+        expect(described_class.find_successful_deployment!(deployment.iid)).to eq(deployment)
       end
 
-      context 'with limit' do
-        let(:limit) { 1 }
+      it 'raises when no deployment is found' do
+        expect { described_class.find_successful_deployment!(-1) }
+          .to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
 
-        it 'takes the limit into account' do
-          expect(subject.count).to eq(1)
-          expect(subject.take).to be_in([deployment_1, deployment_2])
+    describe '.jobs' do
+      subject { described_class.jobs }
+
+      it 'retrieves jobs for the deployments' do
+        is_expected.to match_array([deployment.deployable, deployment_2.deployable, deployment_3.deployable])
+      end
+
+      it 'does not fetch the null deployable_ids' do
+        deployment_3.update!(deployable_id: nil, deployable_type: nil)
+
+        is_expected.to match_array([deployment.deployable, deployment_2.deployable])
+      end
+    end
+
+    describe '.archivables_in' do
+      subject(:archivables_in) { described_class.archivables_in(project, limit: limit) }
+
+      let(:limit) { 100 }
+
+      context 'when there are no archivable deployments in the project' do
+        it { is_expected.to be_empty }
+      end
+
+      context 'when there are archivable deployments in the project' do
+        before do
+          stub_const("::Deployment::ARCHIVABLE_OFFSET", 1)
+        end
+
+        it 'returns all archivable deployments' do
+          expect(archivables_in.count).to eq(2)
+          expect(archivables_in).to contain_exactly(deployment, deployment_2)
+        end
+
+        context 'with limit' do
+          let(:limit) { 1 }
+
+          it 'takes the limit into account' do
+            expect(archivables_in.count).to eq(1)
+            expect(archivables_in.take).to be_in([deployment, deployment_2])
+          end
         end
       end
     end
-  end
 
-  describe 'scopes' do
-    describe 'last_for_environment' do
-      let(:production) { create(:environment) }
-      let(:staging) { create(:environment) }
-      let(:testing) { create(:environment) }
+    describe '.for_iid' do
+      subject { described_class.for_iid(project, iid) }
 
-      let!(:deployments) do
-        [
-          create(:deployment, environment: production),
-          create(:deployment, environment: staging),
-          create(:deployment, environment: production)
-        ]
+      let(:iid) { deployment.iid }
+
+      it 'finds the deployment' do
+        is_expected.to contain_exactly(deployment)
       end
+
+      context 'when iid does not match' do
+        let(:iid) { non_existing_record_id }
+
+        it 'does not find the deployment' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    describe '.for_environment_name' do
+      subject { described_class.for_environment_name(project, environment_name) }
+
+      let_it_be(:other_project) { create(:project, :repository) }
+      let_it_be(:other_production) { create(:environment, :production, project: other_project) }
+
+      let(:environment_name) { production.name }
+
+      context 'when deployment belongs to the environment' do
+        before do
+          deployment.update!(environment: production)
+        end
+
+        it { is_expected.to eq([deployment]) }
+      end
+
+      context 'when deployment belongs to the same project but different environment name' do
+        before do
+          deployment.update!(environment: staging)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'when deployment belongs to the same environment name but different project' do
+        before do
+          deployment.update!(project: other_project, environment: other_production)
+        end
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    describe '.last_for_environment' do
+      before do
+        deployment.update!(environment: production)
+        deployment_2.update!(environment: staging)
+        deployment_3.update!(environment: production)
+      end
+
+      let(:deployments) { [deployment, deployment_2, deployment_3] }
 
       it 'retrieves last deployments for environments' do
         last_deployments = described_class.last_for_environment([staging, production, testing])
@@ -531,78 +595,81 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    describe 'active' do
-      subject { described_class.active }
+    describe '.active' do
+      subject(:active) { described_class.active }
+
+      before do
+        deployment.update!(status: :created)
+        deployment_2.update!(status: :running)
+        deployment_3.update!(status: :failed)
+      end
 
       it 'retrieves the active deployments' do
-        deployment1 = create(:deployment, status: :created)
-        deployment2 = create(:deployment, status: :running)
-        create(:deployment, status: :failed)
         create(:deployment, status: :canceled)
         create(:deployment, status: :skipped)
         create(:deployment, status: :blocked)
 
-        is_expected.to contain_exactly(deployment1, deployment2)
+        is_expected.to contain_exactly(deployment, deployment_2)
       end
     end
 
-    describe 'older_than' do
-      let(:deployment) { create(:deployment) }
-
-      subject { described_class.older_than(deployment) }
+    describe '.older_than' do
+      subject(:older_than) { described_class.older_than(deployment_3) }
 
       it 'retrives the correct older deployments' do
-        older_deployment1 = create(:deployment)
-        older_deployment2 = create(:deployment)
-        deployment
-        create(:deployment)
-
-        is_expected.to contain_exactly(older_deployment1, older_deployment2)
+        is_expected.to contain_exactly(deployment, deployment_2)
       end
     end
 
     describe '.finished_before' do
-      let!(:deployment1) { create(:deployment, finished_at: 1.day.ago) }
-      let!(:deployment2) { create(:deployment, finished_at: Time.current) }
+      before do
+        deployment.update!(finished_at: 1.day.ago)
+        deployment_2.update!(finished_at: Time.current)
+      end
 
       it 'filters deployments by finished_at' do
-        expect(described_class.finished_before(1.hour.ago))
-          .to eq([deployment1])
+        expect(described_class.finished_before(1.hour.ago)).to eq([deployment])
       end
     end
 
     describe '.finished_after' do
-      let!(:deployment1) { create(:deployment, finished_at: 1.day.ago) }
-      let!(:deployment2) { create(:deployment, finished_at: Time.current) }
+      before do
+        deployment.update!(finished_at: 1.day.ago)
+        deployment_2.update!(finished_at: Time.current)
+      end
 
       it 'filters deployments by finished_at' do
-        expect(described_class.finished_after(1.hour.ago))
-          .to eq([deployment2])
+        expect(described_class.finished_after(1.hour.ago)).to eq([deployment_2])
       end
     end
 
     describe '.ordered' do
-      let!(:deployment1) { create(:deployment, status: :running) }
-      let!(:deployment2) { create(:deployment, status: :success, finished_at: Time.current) }
-      let!(:deployment3) { create(:deployment, status: :canceled, finished_at: 1.day.ago) }
-      let!(:deployment4) { create(:deployment, status: :success, finished_at: 2.days.ago) }
+      before do
+        deployment.update!(status: :running)
+        deployment_2.update!(status: :success, finished_at: Time.current)
+        deployment_3.update!(status: :canceled, finished_at: 1.day.ago)
+      end
+
+      let!(:deployment_4) { create(:deployment, status: :success, finished_at: 2.days.ago) }
 
       it 'sorts by finished at' do
-        expect(described_class.ordered).to eq([deployment1, deployment2, deployment3, deployment4])
+        expect(described_class.ordered).to eq([deployment, deployment_2, deployment_3, deployment_4])
       end
     end
 
     describe '.ordered_as_upcoming' do
-      let!(:deployment1) { create(:deployment, status: :running) }
-      let!(:deployment2) { create(:deployment, status: :blocked) }
-      let!(:deployment3) { create(:deployment, status: :created) }
+      before do
+        deployment.update!(status: :running)
+        deployment_2.update!(status: :blocked)
+        deployment_3.update!(status: :created)
+      end
 
       it 'sorts by ID DESC' do
-        expect(described_class.ordered_as_upcoming).to eq([deployment3, deployment2, deployment1])
+        expect(described_class.ordered_as_upcoming).to match_array([deployment_3, deployment_2, deployment])
       end
     end
 
-    describe 'visible' do
+    describe '.visible' do
       subject { described_class.visible }
 
       it 'retrieves the visible deployments' do
@@ -627,14 +694,14 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    describe 'finished' do
+    describe '.finished' do
       subject { described_class.finished }
 
       before do
         # unfinished deployments
-        create(:deployment, status: :running)
-        create(:deployment, status: :blocked)
-        create(:deployment, status: :skipped)
+        deployment.update!(status: :running)
+        deployment_2.update!(status: :blocked)
+        deployment_3.update!(status: :skipped)
       end
 
       # finished deployments
@@ -647,7 +714,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    describe 'upcoming' do
+    describe '.upcoming' do
       subject { described_class.upcoming }
 
       it 'retrieves the upcoming deployments' do
@@ -662,13 +729,10 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    describe 'last_deployment_group_for_environment' do
+    describe '.last_deployment_group_for_environment' do
       def subject_method(environment)
         described_class.last_deployment_group_for_environment(environment)
       end
-
-      let!(:project) { create(:project, :repository) }
-      let!(:environment) { create(:environment, project: project) }
 
       shared_examples_for 'find last deployment group for environment' do
         context 'when there are no deployments and jobs' do
@@ -678,7 +742,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
 
         context 'when there are no successful jobs' do
-          let(:pipeline) { create(:ci_pipeline, project: project) }
           let(:job) { create(factory_type, :created, project: project, pipeline: pipeline) }
 
           before do
@@ -691,14 +754,12 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
 
         context 'when there are deployments for multiple pipelines' do
-          let(:pipeline_a) { create(:ci_pipeline, project: project) }
-          let(:pipeline_b) { create(:ci_pipeline, project: project) }
-          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline) }
           let(:job_b) { create(factory_type, :failed, project: project, pipeline: pipeline_b) }
-          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
-          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline_a) }
+          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline) }
+          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline) }
 
-          # Successful deployments for pipeline_a
+          # Successful deployments for pipeline
           let!(:deployment_a) do
             create(:deployment, :success, project: project, environment: environment, deployable: job_a)
           end
@@ -708,7 +769,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           end
 
           before do
-            # Failed deployment for pipeline_a
+            # Failed deployment for pipeline
             create(:deployment, :failed, project: project, environment: environment, deployable: job_d)
 
             # Failed deployment for pipeline_b
@@ -716,25 +777,23 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           end
 
           it 'returns the successful deployment jobs for the last deployment pipeline' do
-            expect(subject_method(environment).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+            expect(subject_method(environment.reload).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
           end
         end
 
         context 'when there are many environments' do
           let(:environment_b) { create(:environment, project: project) }
 
-          let(:pipeline_a) { create(:ci_pipeline, project: project) }
-          let(:pipeline_b) { create(:ci_pipeline, project: project) }
           let(:pipeline_c) { create(:ci_pipeline, project: project) }
           let(:pipeline_d) { create(:ci_pipeline, project: project) }
 
-          # Builds for first environment: 'environment' with pipeline_a and pipeline_b
-          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          # Builds for first environment: 'environment' with pipeline and pipeline_b
+          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline) }
           let(:job_b) { create(factory_type, :failed, project: project, pipeline: pipeline_b) }
-          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
-          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline_a) }
+          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline) }
+          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline) }
           let!(:stop_env_a) do
-            create(factory_type, :manual, project: project, pipeline: pipeline_a, name: 'stop_env_a')
+            create(factory_type, :manual, project: project, pipeline: pipeline, name: 'stop_env_a')
           end
 
           # Builds for second environment: 'environment_b' with pipeline_c and pipeline_d
@@ -746,7 +805,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             create(factory_type, :manual, project: project, pipeline: pipeline_c, name: 'stop_env_b')
           end
 
-          # Successful deployments for 'environment' from pipeline_a
+          # Successful deployments for 'environment' from pipeline
           let!(:deployment_a) do
             create(:deployment, :success, project: project, environment: environment, deployable: job_a)
           end
@@ -767,7 +826,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
           end
 
           before do
-            # Failed deployment for 'environment' from pipeline_a and pipeline_b
+            # Failed deployment for 'environment' from pipeline and pipeline_b
             create(:deployment, :failed, project: project, environment: environment, deployable: job_d)
             create(:deployment, :failed, project: project, environment: environment, deployable: job_b)
 
@@ -792,20 +851,19 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             expect(subject_method(environments.second).pluck(:id))
               .to contain_exactly(deployment_c.id, deployment_d.id)
 
-            expect(subject_method(environments.first).map(&:stop_action).compact)
+            expect(subject_method(environments.first).filter_map(&:stop_action))
               .to contain_exactly(stop_env_a)
 
             expect { subject_method(environments.second).map(&:stop_action) }
               .not_to exceed_query_limit(0)
 
-            expect(subject_method(environments.second).map(&:stop_action).compact)
+            expect(subject_method(environments.second).filter_map(&:stop_action))
               .to contain_exactly(stop_env_b)
           end
         end
 
-        context 'When last deployment for environment is a retried job' do
-          let(:pipeline) { create(:ci_pipeline, project: project) }
-          let(:environment_b) { create(:environment, project: project) }
+        context 'when last deployment for environment is a retried job' do
+          let(:environment_b) { environment }
 
           let(:job_a) do
             create(factory_type, :success, project: project, pipeline: pipeline, environment: environment.name)
@@ -844,10 +902,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    describe 'last_finished_deployment_group_for_environment' do
-      let_it_be(:project) { create(:project, :repository) }
-      let!(:environment) { create(:environment, project: project) }
-
+    describe '.last_finished_deployment_group_for_environment' do
       subject { described_class.last_finished_deployment_group_for_environment(environment) }
 
       context 'when there are no deployments and jobs' do
@@ -857,7 +912,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       shared_examples_for 'find last finished deployment for environment' do
         context 'when there are no finished jobs' do
           before do
-            pipeline = create(:ci_pipeline, project: project)
             job = create(processable_type, :created, project: project, pipeline: pipeline)
             create(:deployment, :created, environment: environment, project: project, deployable: job)
           end
@@ -866,28 +920,25 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         end
 
         context 'when there are deployments for multiple pipelines' do
-          let(:pipeline_a) { create(:ci_pipeline, project: project) }
-          let(:pipeline_b) { create(:ci_pipeline, project: project) }
-
-          # finished deployments for pipeline_a
+          # finished deployments for pipeline
           let!(:deployment_a_success) do
-            job = create(processable_type, :success, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :success, project: project, pipeline: pipeline)
             create(:deployment, :success, project: project, environment: environment, deployable: job)
           end
 
           let!(:deployment_a_failed) do
-            job = create(processable_type, :failed, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :failed, project: project, pipeline: pipeline)
             create(:deployment, :failed, project: project, environment: environment, deployable: job)
           end
 
           let!(:deployment_a_canceled) do
-            job = create(processable_type, :canceled, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :canceled, project: project, pipeline: pipeline)
             create(:deployment, :canceled, project: project, environment: environment, deployable: job)
           end
 
           before do
-            # running deployment for pipeline_a
-            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline_a)
+            # running deployment for pipeline
+            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline)
             create(:deployment, :running, project: project, environment: environment, deployable: job_a_running)
 
             # running deployment for pipeline_b
@@ -903,7 +954,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
         context 'when last finished deployment is a retried job' do
           before do
-            pipeline = create(:ci_pipeline, project: project)
             job = create(processable_type, :success, project: project,
               pipeline: pipeline, environment: environment.name)
             create(:deployment, :success, project: project, environment: environment, deployable: job)
@@ -930,25 +980,21 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             described_class.last_finished_deployment_group_for_environment(env)
           end
 
-          let_it_be(:environment) { create(:environment, project: project) }
           let_it_be(:environment_2) { create(:environment, project: project) }
-
-          let_it_be(:pipeline_a) { create(:ci_pipeline, project: project) }
-          let_it_be(:pipeline_b) { create(:ci_pipeline, project: project) }
           let_it_be(:pipeline_c) { create(:ci_pipeline, project: project) }
           let_it_be(:pipeline_d) { create(:ci_pipeline, project: project) }
 
-          # stop jobs in pipeline_a
+          # stop jobs in pipeline
           let_it_be(:stop_job_a_success) do
-            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_success')
+            create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'stop_a_success')
           end
 
           let_it_be(:stop_job_a_failed) do
-            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_failed')
+            create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'stop_a_failed')
           end
 
           let_it_be(:stop_job_a_canceled) do
-            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_canceled')
+            create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'stop_a_canceled')
           end
 
           # stop jobs in pipeline_c
@@ -964,21 +1010,21 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_c_canceled')
           end
 
-          # finished deployments for 'environment' from pipeline_a
+          # finished deployments for 'environment' from pipeline
           let_it_be(:deployment_a_success) do
-            job = create(processable_type, :success, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :success, project: project, pipeline: pipeline)
             create(:deployment, :success, project: project, environment: environment,
               deployable: job, on_stop: 'stop_a_success')
           end
 
           let_it_be(:deployment_a_failed) do
-            job = create(processable_type, :failed, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :failed, project: project, pipeline: pipeline)
             create(:deployment, :failed, project: project, environment: environment,
               deployable: job, on_stop: 'stop_a_failed')
           end
 
           let_it_be(:deployment_a_canceled) do
-            job = create(processable_type, :canceled, project: project, pipeline: pipeline_a)
+            job = create(processable_type, :canceled, project: project, pipeline: pipeline)
             create(:deployment, :canceled, project: project, environment: environment,
               deployable: job, on_stop: 'stop_a_canceled')
           end
@@ -1004,7 +1050,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
           before_all do
             # running deployments
-            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline_a)
+            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline)
             create(:deployment, :running, project: project, environment: environment, deployable: job_a_running)
 
             job_b_running = create(processable_type, :running, project: project, pipeline: pipeline_b)
@@ -1022,7 +1068,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             subject_method(environment)
             subject_method(environment_2)
 
-            expect(subject_method(environment).pluck(:id))
+            expect(subject_method(environment.reload).pluck(:id))
               .to contain_exactly(deployment_a_success.id, deployment_a_failed.id, deployment_a_canceled.id)
 
             expect { subject_method(environment_2).pluck(:id) }.not_to exceed_query_limit(0)
@@ -1030,13 +1076,13 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
             expect(subject_method(environment_2).pluck(:id))
               .to contain_exactly(deployment_c_success.id, deployment_c_failed.id, deployment_c_canceled.id)
 
-            expect(subject_method(environment).map(&:stop_action).compact)
+            expect(subject_method(environment).filter_map(&:stop_action))
               .to contain_exactly(stop_job_a_success, stop_job_a_failed, stop_job_a_canceled)
 
             expect { subject_method(environment_2).map(&:stop_action) }
               .not_to exceed_query_limit(0)
 
-            expect(subject_method(environment_2).map(&:stop_action).compact)
+            expect(subject_method(environment_2).filter_map(&:stop_action))
               .to contain_exactly(stop_job_c_success, stop_job_c_failed, stop_job_c_canceled)
           end
 
@@ -1069,43 +1115,38 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         let_it_be(:processable_type) { :ci_bridge }
       end
     end
-  end
 
-  describe 'latest_for_sha' do
-    subject { described_class.latest_for_sha(sha) }
+    describe '.latest_for_sha' do
+      subject { described_class.latest_for_sha(sha) }
 
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:commits) { project.repository.commits('master', limit: 2) }
-    let_it_be(:deployments) { commits.reverse.map { |commit| create(:deployment, project: project, sha: commit.id) } }
+      let_it_be(:commits) { project.repository.commits('master', limit: 2) }
+      let_it_be(:deployments) { commits.reverse.map { |commit| create(:deployment, project: project, sha: commit.id) } }
 
-    let(:sha) { commits.map(&:id) }
-
-    it 'finds the latest deployment with sha' do
-      is_expected.to eq(deployments.last)
-    end
-
-    context 'when sha is old' do
-      let(:sha) { commits.last.id }
+      let(:sha) { commits.map(&:id) }
 
       it 'finds the latest deployment with sha' do
-        is_expected.to eq(deployments.first)
+        is_expected.to eq(deployments.last)
       end
-    end
 
-    context 'when sha is nil' do
-      let(:sha) { nil }
+      context 'when sha is old' do
+        let(:sha) { commits.last.id }
 
-      it 'returns nothing' do
-        is_expected.to be_nil
+        it 'finds the latest deployment with sha' do
+          is_expected.to eq(deployments.first)
+        end
+      end
+
+      context 'when sha is nil' do
+        let(:sha) { nil }
+
+        it { is_expected.to be_nil }
       end
     end
   end
 
   describe '#includes_commit?' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
-    let(:deployment) do
-      create(:deployment, environment: environment, sha: project.commit.id)
+    before do
+      deployment.update!(environment: environment, sha: project.commit.id)
     end
 
     context 'when there is no project commit' do
@@ -1138,7 +1179,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     subject { deployment.stop_action }
 
     shared_examples_for 'stop action for a job' do
-      let(:job) { create(factory_type) } # rubocop:disable Rails/SaveBang
+      let(:job) { create(factory_type) } # rubocop:disable Rails/SaveBang -- It is for FactoryBot.save
 
       context 'when no other actions' do
         let(:deployment) { FactoryBot.build(:deployment, deployable: job) }
@@ -1221,47 +1262,10 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
   end
 
-  describe '.find_successful_deployment!' do
-    it 'returns a successful deployment' do
-      deploy = create(:deployment, :success)
-
-      expect(described_class.find_successful_deployment!(deploy.iid)).to eq(deploy)
-    end
-
-    it 'raises when no deployment is found' do
-      expect { described_class.find_successful_deployment!(-1) }
-        .to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
-
-  describe '.jobs' do
-    let!(:deployment1) { create(:deployment) }
-    let!(:deployment2) { create(:deployment) }
-    let!(:deployment3) { create(:deployment) }
-
-    subject { described_class.jobs }
-
-    it 'retrieves jobs for the deployments' do
-      is_expected.to match_array(
-        [deployment1.deployable, deployment2.deployable, deployment3.deployable])
-    end
-
-    it 'does not fetch the null deployable_ids' do
-      deployment3.update!(deployable_id: nil, deployable_type: nil)
-
-      is_expected.to match_array(
-        [deployment1.deployable, deployment2.deployable])
-    end
-  end
-
   describe '#job' do
-    let!(:deployment) { create(:deployment) }
-
     subject { deployment.job }
 
-    it 'retrieves job for the deployment' do
-      is_expected.to eq(deployment.deployable)
-    end
+    it { is_expected.to eq(deployment.deployable) }
 
     it 'returns nil when the associated job is not found' do
       deployment.update!(deployable_id: nil, deployable_type: nil)
@@ -1273,9 +1277,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   describe '#previous_deployment' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:production) { create(:environment, :production, project: project) }
-    let_it_be(:staging) { create(:environment, :staging, project: project) }
     let_it_be(:production_deployment_1) { create(:deployment, :success, project: project, environment: production) }
     let_it_be(:production_deployment_2) { create(:deployment, :success, project: project, environment: production) }
     let_it_be(:production_deployment_3) { create(:deployment, :failed, project: project, environment: production) }
@@ -1356,7 +1357,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   describe '#create_ref' do
     let(:deployment) { build(:deployment) }
 
-    subject { deployment.create_ref }
+    subject(:create_ref) { deployment.create_ref }
 
     it 'creates a ref using the sha' do
       expect(deployment.project.repository).to receive(:create_ref).with(
@@ -1364,12 +1365,12 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         "refs/environments/#{deployment.environment.name}/deployments/#{deployment.iid}"
       )
 
-      subject
+      create_ref
     end
   end
 
   describe '#playable_job' do
-    subject { deployment.playable_job }
+    subject(:playable_job) { deployment.playable_job }
 
     context 'when there is a deployable job' do
       let(:deployment) { create(:deployment, deployable: job) }
@@ -1377,34 +1378,24 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       context 'when the deployable job is build and playable' do
         let(:job) { create(:ci_build, :playable) }
 
-        it 'returns that job' do
-          is_expected.to eq(job)
-        end
+        it { is_expected.to eq(job) }
       end
 
       context 'when the deployable job is bridge and playable' do
         let(:job) { create(:ci_bridge, :playable) }
 
-        it 'returns that job' do
-          is_expected.to eq(job)
-        end
+        it { is_expected.to eq(job) }
       end
 
       context 'when the deployable job is not playable' do
         let(:job) { create(:ci_build) }
 
-        it 'returns nil' do
-          is_expected.to be_nil
-        end
+        it { is_expected.to be_nil }
       end
     end
 
     context 'when there is no deployable job' do
-      let(:deployment) { create(:deployment) }
-
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
+      it { is_expected.to be_nil }
     end
   end
 
@@ -1434,8 +1425,8 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    context 'tracks an exception if an invalid status transition is detected' do
-      it do
+    context 'when an invalid status transition is detected' do
+      it 'tracks an exception' do
         expect(Gitlab::ErrorTracking)
         .to receive(:track_exception)
         .with(instance_of(described_class::StatusUpdateError), deployment_id: deploy.id)
@@ -1443,7 +1434,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         expect(deploy.update_status('running')).to eq(false)
       end
 
-      it do
+      it 'tracks an exception' do
         deploy.update_status('success')
 
         expect(Gitlab::ErrorTracking)
@@ -1462,7 +1453,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       expect(deploy.update_status('recreate')).to eq(false)
     end
 
-    context 'mapping status to event' do
+    context 'when mapping status to event' do
       using RSpec::Parameterized::TableSyntax
 
       where(:status, :method) do
@@ -1496,8 +1487,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   describe '#sync_status_with' do
     subject { deployment.sync_status_with(job) }
-
-    let_it_be(:project) { create(:project, :repository) }
 
     shared_examples_for 'sync status with a job' do
       let(:deployment) { create(:deployment, project: project, status: deployment_status) }
@@ -1677,8 +1666,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#tags' do
-    let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:deployment) { create(:deployment, project: project) }
+    let(:deployment) { build(:deployment, project: project) }
 
     subject { deployment.tags }
 
@@ -1693,7 +1681,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   describe '#valid_sha' do
     it 'does not add errors for a valid SHA' do
-      project = create(:project, :repository)
       deploy = build(:deployment, project: project)
 
       expect(deploy).to be_valid
@@ -1709,7 +1696,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   describe '#valid_ref' do
     it 'does not add errors for a valid ref' do
-      project = create(:project, :repository)
       deploy = build(:deployment, project: project)
 
       expect(deploy).to be_valid
@@ -1724,42 +1710,38 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#tier_in_yaml' do
+    let(:deployment) { build(:deployment) }
+
+    subject(:tier_in_yaml) { deployment.tier_in_yaml }
+
     context 'when deployable is nil' do
       before do
-        subject.deployable = nil
+        deployment.deployable = nil
       end
 
-      it 'returns nil' do
-        expect(subject.tier_in_yaml).to be_nil
-      end
+      it { is_expected.to be_nil }
     end
 
     context 'when deployable is present' do
       context 'when tier is specified' do
-        let(:deployable) { create(:ci_build, :success, :environment_with_deployment_tier) }
+        let(:deployable) { build(:ci_build, :success, :environment_with_deployment_tier) }
 
         before do
-          subject.deployable = deployable
+          deployment.deployable = deployable
         end
 
-        it 'returns the tier' do
-          expect(subject.tier_in_yaml).to eq('testing')
-        end
+        it { is_expected.to eq('testing') }
 
         context 'when deployable is a bridge job' do
-          let(:deployable) { create(:ci_bridge, :success, :environment_with_deployment_tier) }
+          let(:deployable) { build(:ci_bridge, :success, :environment_with_deployment_tier) }
 
-          it 'returns the tier' do
-            expect(subject.tier_in_yaml).to eq('testing')
-          end
+          it { is_expected.to eq('testing') }
         end
 
         context 'when tier is not specified' do
-          let(:deployable) { create(:ci_build, :success) }
+          let(:deployable) { build(:ci_build, :success) }
 
-          it 'returns nil' do
-            expect(subject.tier_in_yaml).to be_nil
-          end
+          it { is_expected.to be_nil }
         end
       end
     end
@@ -1767,9 +1749,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
   describe '.fast_destroy_all' do
     it 'cleans path_refs for destroyed environments' do
-      project = create(:project, :repository)
-      environment = create(:environment, project: project)
-
       destroyed_deployments = create_list(:deployment, 2, :success, environment: environment, project: project)
       other_deployments = create_list(:deployment, 2, :success, environment: environment, project: project)
 
@@ -1787,8 +1766,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     it 'does not trigger N+1 queries' do
-      project = create(:project, :repository)
-      environment = create(:environment, project: project)
       create(:deployment, environment: environment, project: project)
 
       control = ActiveRecord::QueryRecorder.new { project.deployments.fast_destroy_all }
@@ -1800,8 +1777,6 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
     context 'when repository was already removed' do
       it 'removes deployment without any errors' do
-        project = create(:project, :repository)
-        environment = create(:environment, project: project)
         deployment = create(:deployment, environment: environment, project: project)
 
         Repositories::DestroyService.new(project.repository).execute
@@ -1814,14 +1789,12 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#update_merge_request_metrics!' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:environment) { build(:environment, environment_tier, project: project) }
-    let!(:deployment) { create(:deployment, :success, project: project, environment: environment) }
-    let!(:merge_request) { create(:merge_request, :simple, :merged_last_month, project: project) }
+    let_it_be(:merge_request) { create(:merge_request, :simple, :merged_last_month, project: project) }
 
     context 'with production environment' do
-      let(:environment_tier) { :production }
+      before do
+        deployment.update!(status: :success, finished_at: Time.current, environment: production)
+      end
 
       it 'updates merge request metrics for production-grade environment' do
         expect { deployment.update_merge_request_metrics! }
@@ -1831,7 +1804,9 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
 
     context 'with staging environment' do
-      let(:environment_tier) { :staging }
+      before do
+        deployment.update!(status: :success, finished_at: Time.current, environment: staging)
+      end
 
       it 'updates merge request metrics for production-grade environment' do
         expect { deployment.update_merge_request_metrics! }

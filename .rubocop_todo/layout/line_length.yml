@@ -319,7 +319,6 @@ Layout/LineLength:
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/issue_contact.rb'
     - 'app/models/deploy_key.rb'
-    - 'app/models/deployment.rb'
     - 'app/models/diff_note.rb'
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'

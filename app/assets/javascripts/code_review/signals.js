@@ -46,7 +46,7 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
           preparationSubscriber.unsubscribe();
         }
       });
-    } else if (window.gon?.features?.mergeRequestDiffGeneratedSubscription) {
+    } else {
       signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
     }
   }
@@ -76,9 +76,7 @@ export async function start({
   signalBus = required('signalBus'),
   apolloClient = createApolloClient(),
 } = {}) {
-  if (window.gon?.features?.mergeRequestDiffGeneratedSubscription) {
-    observeMergeRequestDiffGenerated({ signaler: signalBus, apollo: apolloClient });
-  }
+  observeMergeRequestDiffGenerated({ signaler: signalBus, apollo: apolloClient });
 
   await observeMergeRequestFinishingPreparation({ signaler: signalBus, apollo: apolloClient });
 }

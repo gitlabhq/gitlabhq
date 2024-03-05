@@ -10,8 +10,11 @@ module Projects
     def initialize(project)
       @project = project
 
-      @default_branch_protection = Gitlab::Access::BranchProtection
-        .new(project.namespace.default_branch_protection)
+      @default_branch_protection = if Feature.enabled?(:default_branch_protection_defaults, project)
+                                     Gitlab::Access::DefaultBranchProtection.new(project)
+                                   else
+                                     Gitlab::Access::BranchProtection.new(project.namespace.default_branch_protection)
+                                   end
     end
 
     def execute

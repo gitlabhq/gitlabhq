@@ -4118,14 +4118,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
-
-        context 'when "dynamic_empty_tree_id" feature flag is disabled' do
-          before do
-            stub_feature_flags(dynamic_empty_tree_id: false)
-          end
-
-          it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
-        end
       end
     end
 

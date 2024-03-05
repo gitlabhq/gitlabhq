@@ -37,7 +37,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/concerns/shardable.rb'
     - 'app/models/concerns/timebox.rb'
     - 'app/models/custom_emoji.rb'
-    - 'app/models/deployment.rb'
     - 'app/models/design_management/action.rb'
     - 'app/models/design_management/design.rb'
     - 'app/models/design_management/version.rb'

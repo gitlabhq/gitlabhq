@@ -35,6 +35,7 @@ module StubConfiguration
   def stub_not_protect_default_branch
     stub_application_setting(
       default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    stub_application_setting(default_branch_protection_defaults: Gitlab::Access::BranchProtection.protection_none)
   end
 
   def stub_config_setting(messages)

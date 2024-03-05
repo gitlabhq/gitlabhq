@@ -1,9 +1,0 @@
----
-name: dynamic_empty_tree_id
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441465
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144494
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441784
-milestone: '16.10'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

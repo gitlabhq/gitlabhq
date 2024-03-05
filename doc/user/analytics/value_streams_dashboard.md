@@ -168,6 +168,8 @@ For example, the parameter `query=gitlab-org/gitlab-ui,gitlab-org/plan-stage` di
 
 ### Using YAML configuration
 
+> - Schema for group Analytics Dashboards [changed](#schema-for-group-analytics-dashboards) in GitLab 16.10.
+
 To customize the default content of the page, you need to create a YAML configuration file in a project of your choice. In this file you can define various settings and parameters, such as title, description, and number of panels and labels filters. The file is schema-driven and managed with version control systems like Git. This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
 Query parameters can still be used to override the YAML configuration.
 
@@ -190,7 +192,7 @@ After you have set up the project, set up the configuration file:
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 
 ```yaml
-# title - Change the title of the Value Streams Dashboard. [optional]
+# title - Change the title of the Value Streams Dashboard.
 title: 'Custom Dashboard title'
 
 # description - Change the description of the Value Streams Dashboard. [optional]
@@ -238,6 +240,84 @@ panels:
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of editing label filters in the configuration file, see [GitLab Value Streams Dashboard - Label filters demo](https://www.youtube.com/watch?v=4qDAHCxCfik).
+
+#### Schema for group Analytics Dashboards
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com, this feature is not available.
+
+To render a [Value Streams Dashboard as a custom Analytics Dashboard](analytics_dashboards.md#view-group-dashboards), you must update new and existing [YAML schemas](analytics_dashboards.md). The updated fields provide more flexibility in the display and layout of the dashboard panels.
+
+|Field|Description|
+|---|---|
+| `title` | Custom name for the panel |
+|`queryOverrides` (formerly `data`) | Overrides data query parameters specific to each visualization. |
+|`namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
+| `visualization` | The type of visualization to be rendered. Supported options are `dora_chart`, `dora_performers_score`, and `usage_overview`. |
+| `gridAttributes` | The size and positioning of the panel |
+| `xPos` (subfield of `gridAttributes`) | Horizontal position of the panel |
+| `yPos` (subfield of `gridAttributes`) | Vertical position of the panel |
+| `width` (subfield of `gridAttributes`) | Width of the panel (max. 12) |
+| `height` (subfield of `gridAttributes`) | Height of the panel |
+
+```yaml
+# title - Change the title of the Value Streams Dashboard. [optional]
+title: 'Custom Dashboard title'
+
+# description - Change the description of the Value Streams Dashboard. [optional]
+description: 'Custom description'
+
+# panels - List of panels that contain panel settings.
+#   title - Change the title of the panel.
+#   queryOverrides.namespace - The Group or Project path to use for the chart panel
+#   options.exclude_metrics - Hide rows by metric ID from the chart panel.
+#   options.filter_labels -
+#     Only show results for data that matches the queried label(s). If multiple labels are provided,
+#     only a single label needs to match for the data to be included in the results.
+#     Compatible metrics (other metrics will be automatically excluded):
+#       * lead_time
+#       * cycle_time
+#       * issues
+#       * issues_completed
+#       * merge_request_throughput
+panels:
+  - title: 'Group usage overview'
+    visualization: usage_overview
+    queryOverrides:
+      namespace: group
+    gridAttributes:
+      yPos: 1
+      xPos: 1
+      height: 1
+      width: 12
+  - title: 'Group dora comparison'
+    visualization: dora_chart
+    queryOverrides:
+      namespace: group
+    gridAttributes:
+      yPos: 2
+      xPos: 1
+      height: 12
+      width: 12
+    options:
+      filter_labels:
+        - in_development
+        - in_review
+  - title: 'My project dora comparison'
+    visualization: dora_chart
+    queryOverrides:
+      namespace: group/my-project
+    gridAttributes:
+      yPos: 26
+      xPos: 1
+      height: 12
+      width: 12
+    options:
+      exclude_metrics:
+        - deployment_frequency
+        - change_failure_rate
+```
 
 ### Filter the DevSecOps metrics comparison panel by labels
 

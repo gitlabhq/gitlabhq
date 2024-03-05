@@ -21,7 +21,6 @@ Style/HashAsLastArrayItem:
     - 'app/models/customer_relations/contact.rb'
     - 'app/models/customer_relations/organization.rb'
     - 'app/models/deploy_key.rb'
-    - 'app/models/deployment.rb'
     - 'app/models/issue.rb'
     - 'app/models/merge_request.rb'
     - 'app/models/milestone.rb'

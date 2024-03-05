@@ -270,8 +270,6 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def trigger_diff_generated_subscription
-    return unless Feature.enabled?(:merge_request_diff_generated_subscription, merge_request.project)
-
     GraphqlTriggers.merge_request_diff_generated(merge_request)
   end
 
