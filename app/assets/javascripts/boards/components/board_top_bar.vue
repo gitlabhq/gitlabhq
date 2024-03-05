@@ -129,12 +129,16 @@ export default {
       <div
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"
       >
-        <toggle-labels />
-        <toggle-epics-swimlanes
-          v-if="swimlanesFeatureAvailable && isSignedIn"
-          :is-swimlanes-on="isSwimlanesOn"
-          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
-        />
+        <div
+          class="gl-display-flex gl-flex-direction-row gl-sm-align-items-flex-start gl-xs-justify-content-end gl-flex-wrap gl-md-flex-nowrap"
+        >
+          <toggle-labels />
+          <toggle-epics-swimlanes
+            v-if="swimlanesFeatureAvailable && isSignedIn"
+            :is-swimlanes-on="isSwimlanesOn"
+            @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+          />
+        </div>
         <config-toggle @showBoardModal="setCurrentForm" />
         <board-add-new-column-trigger
           v-if="canAdminList"

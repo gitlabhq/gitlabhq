@@ -72,15 +72,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           end
         end
 
-        shared_examples "not initializing sidekiq SLIs" do
-          it 'does not initialize sidekiq SLIs' do
-            expect(Gitlab::Metrics::SidekiqSlis)
-              .not_to receive(initialize_sli_method)
-
-            described_class.initialize_process_metrics
-          end
-        end
-
         context 'initializing execution and queueing SLIs' do
           before do
             allow(Gitlab::SidekiqConfig)
@@ -113,40 +104,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
               .to receive(:initialize_queueing_slis!).with(expected_labels)
 
             described_class.initialize_process_metrics
-          end
-        end
-
-        context 'when the sidekiq_job_completion_metric_initialize feature flag is disabled' do
-          before do
-            stub_feature_flags(sidekiq_job_completion_metric_initialize: false)
-          end
-
-          it 'sets the concurrency metric' do
-            expect(concurrency_metric).to receive(:set).with({}, Sidekiq.default_configuration[:concurrency].to_i)
-
-            described_class.initialize_process_metrics
-          end
-
-          it 'does not initialize sidekiq_jobs_completion_seconds' do
-            allow(Gitlab::SidekiqConfig)
-              .to receive(:current_worker_queue_mappings)
-                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
-
-            expect(completion_seconds_metric).not_to receive(:get)
-
-            described_class.initialize_process_metrics
-          end
-
-          context 'sidekiq execution SLIs' do
-            let(:initialize_sli_method) { :initialize_execution_slis! }
-
-            it_behaves_like 'not initializing sidekiq SLIs'
-          end
-
-          context 'sidekiq queueing SLIs' do
-            let(:initialize_sli_method) { :initialize_queueing_slis! }
-
-            it_behaves_like 'not initializing sidekiq SLIs'
           end
         end
       end

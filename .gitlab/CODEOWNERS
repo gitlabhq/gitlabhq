@@ -491,7 +491,7 @@ lib/gitlab/checks/**
 /doc/administration/git_protocol.md @msedlakjakubowski
 /doc/administration/gitaly/ @eread
 /doc/administration/housekeeping.md @eread
-/doc/administration/inactive_project_deletion.md @eread
+/doc/administration/inactive_project_deletion.md @lciutacu
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
@@ -670,7 +670,7 @@ lib/gitlab/checks/**
 /doc/api/markdown.md @msedlakjakubowski
 /doc/api/member_roles.md @jglassman1
 /doc/api/members.md @jglassman1
-/doc/api/merge_request_approvals.md @msedlakjakubowski
+/doc/api/merge_request_approvals.md @aqualls
 /doc/api/merge_request_context_commits.md @aqualls
 /doc/api/merge_requests.md @aqualls
 /doc/api/merge_trains.md @marcel.amirault @lyspin
@@ -759,9 +759,12 @@ lib/gitlab/checks/**
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
 /doc/ci/interactive_web_terminal/ @fneill
-/doc/ci/jobs/ @marcel.amirault
+/doc/ci/jobs/ci_job_token.md @marcel.amirault
 /doc/ci/jobs/index.md @marcel.amirault @lyspin
+/doc/ci/jobs/job_artifacts.md @marcel.amirault
+/doc/ci/jobs/job_artifacts_troubleshooting.md @marcel.amirault
 /doc/ci/jobs/job_control.md @marcel.amirault @lyspin
+/doc/ci/jobs/job_troubleshooting.md @marcel.amirault @lyspin
 /doc/ci/pipelines/pipeline_security.md @marcel.amirault
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @fneill
@@ -771,6 +774,7 @@ lib/gitlab/checks/**
 /doc/ci/ssh_keys/ @marcel.amirault
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
+/doc/ci/testing/code_quality_troubleshooting.md @rdickenson
 /doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
@@ -779,10 +783,10 @@ lib/gitlab/checks/**
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/govern/authentication/approvers
-/doc/development/cells/ @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/cells/ @abdwdd @alexpooley @manojmj
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
-/doc/development/database/ @gitlab-org/maintainers/database
+/doc/development/database/ @abdwdd @alexpooley @manojmj
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @sselhorn
 /doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -792,11 +796,11 @@ lib/gitlab/checks/**
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
-/doc/development/image_scaling.md @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/navigation_sidebar.md @gitlab-org/manage/foundations/engineering
 /doc/development/omnibus.md @gitlab-org/distribution
-/doc/development/organization/ @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/ @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/custom_roles.md @gitlab-org/govern/authorization/approvers
@@ -855,6 +859,7 @@ lib/gitlab/checks/**
 /doc/tutorials/dependency_scanning.md @rdickenson
 /doc/tutorials/export_sbom.md @rdickenson
 /doc/tutorials/fuzz_testing/ @rdickenson
+/doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
@@ -862,6 +867,7 @@ lib/gitlab/checks/**
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/scan_execution_policy/ @rdickenson
 /doc/tutorials/scan_result_policy/ @rdickenson
+/doc/tutorials/scrum_events/ @msedlakjakubowski
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
@@ -880,9 +886,11 @@ lib/gitlab/checks/**
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/gitlab_duo_chat.md @sselhorn
+/doc/user/gitlab_duo_examples.md @sselhorn
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
+/doc/user/group/compliance_pipelines.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @msedlakjakubowski
 /doc/user/group/devops_adoption/ @lciutacu

@@ -24914,6 +24914,8 @@ CREATE INDEX index_environments_cluster_agent_id ON environments USING btree (cl
 
 CREATE INDEX index_environments_for_name_search_within_folder ON environments USING btree (project_id, lower(ltrim((name)::text, ((environment_type)::text || '/'::text))) varchar_pattern_ops, state);
 
+CREATE INDEX index_environments_name_without_type ON environments USING btree (project_id, lower(ltrim(ltrim((name)::text, (environment_type)::text), '/'::text)) varchar_pattern_ops, state);
+
 CREATE INDEX index_environments_on_merge_request_id ON environments USING btree (merge_request_id);
 
 CREATE INDEX index_environments_on_name_varchar_pattern_ops ON environments USING btree (name varchar_pattern_ops);
