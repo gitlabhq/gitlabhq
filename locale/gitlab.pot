@@ -53992,9 +53992,6 @@ msgstr ""
 msgid "UsageQuota|Job artifacts created by CI/CD."
 msgstr ""
 
-msgid "UsageQuota|Learn more about usage quotas"
-msgstr ""
-
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr ""
 
@@ -54151,7 +54148,7 @@ msgstr ""
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"
 msgstr ""
 
-msgid "UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project"
+msgid "UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project."
 msgstr ""
 
 msgid "UsageQuota|Usage of resources across your projects"

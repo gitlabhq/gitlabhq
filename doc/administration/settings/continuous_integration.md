@@ -207,7 +207,7 @@ The default is `150`.
 
 ## Maximum downstream pipeline trigger rate
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10 [with feature flag](../feature_flags.md) named `ci_rate_limit_downstream_pipelines`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
 
 The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
 (for a given project, user, and commit) can be set at the instance level.

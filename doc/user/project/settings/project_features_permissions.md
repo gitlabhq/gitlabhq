@@ -137,8 +137,9 @@ You can assign a topic to several projects.
 
 For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
 
-Topics assigned to a project are listed in the **Project overview**, below the project name and activity information.
+Topics assigned to a project are displayed in the **Project overview** and [**Projects**](../working_with_projects.md#view-all-projects-for-the-instance) lists, below the project information description.
 
+NOTE:
 Only users with access to the project can see the topics assigned to that project,
 but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
 Do not include sensitive information in the name of a topic.
@@ -149,27 +150,29 @@ To explore project topics:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Explore**.
-1. On the left sidebar, select **Topics**.
-1. To view projects associated with a topic, select a topic.
-
-The **Explore topics** page shows a list of projects with this topic.
+1. On the left sidebar, select **Topics**. The **Explore topics** page displays a list of all project topics.
+1. Optional. To filter topics by name, in the search box, enter your search criteria.
+1. To view the projects associated with a topic, select a topic.
+   You can also access a topic page with the URL `https://gitlab.com/explore/projects/topics/<topic-name>`.
 
 ### Filter and sort topics
 
-You can filter the list of projects that have a certain topic by:
+On the project topic page, you can filter the list of projects that have that topic by:
 
 - Name
 - Language
-- Owner
-- Archive status
 - Visibility
+- Owner
+- Archived projects
 
-You can sort the projects by:
+You can also sort the projects by:
 
-- Date created
-- Date updated
+- Date 
 - Name
 - Number of stars
+
+- To filter projects by name, in the search box, enter your search criteria.
+- To sort projects by other criteria, from the dropdown lists, select an option.
 
 ### Subscribe to a topic
 

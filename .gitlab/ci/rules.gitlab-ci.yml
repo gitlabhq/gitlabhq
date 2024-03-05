@@ -140,6 +140,9 @@
 .if-foss-default-branch: &if-foss-default-branch
   if: '$CI_PROJECT_PATH == "gitlab-org/gitlab-foss" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
 
+.if-not-dot-com-gitlab-org-and-not-jihulab: &if-not-dot-com-gitlab-org-and-not-jihulab
+  if: '($CI_SERVER_HOST != "gitlab.com" || $CI_PROJECT_NAMESPACE != "gitlab-org") && ($CI_SERVER_HOST != "jihulab.com" || $CI_PROJECT_NAMESPACE != "gitlab-cn")'
+
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
@@ -1044,7 +1047,7 @@
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
       when: never
-    - <<: *if-not-ee
+    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
@@ -1056,6 +1059,9 @@
         - ".gitlab/ci/caching.gitlab-ci.yml"
         - "scripts/gitlab_component_helpers.sh"
         - "lib/tasks/gitlab/assets.rake"
+      when: manual
+      allow_failure: true
+    - if: '$ENABLE_CACHE_ASSETS == "true"'
       when: manual
       allow_failure: true
 

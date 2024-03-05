@@ -84,7 +84,7 @@ export const parseGetStorageResults = (data) => {
   };
 };
 
-export const parseProvideData = (el) => {
+export const parseNamespaceProvideData = (el) => {
   if (!el) {
     return {};
   }

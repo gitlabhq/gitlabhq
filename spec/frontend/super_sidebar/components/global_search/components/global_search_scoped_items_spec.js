@@ -1,5 +1,5 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -29,7 +29,7 @@ describe('GlobalSearchScopedItems', () => {
       },
     });
 
-    wrapper = shallowMount(GlobalSearchScopedItems, {
+    wrapper = mount(GlobalSearchScopedItems, {
       store,
       propsData: {
         ...props,

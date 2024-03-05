@@ -94,14 +94,14 @@ class Event < ApplicationRecord
   scope :created_between, ->(start_time, end_time) { where(created_at: start_time..end_time) }
   scope :count_by_dates, ->(date_interval) { group("DATE(created_at + #{date_interval})").count }
 
-  scope :contributions, ->(target_types: nil) do
+  scope :contributions, -> do
     contribution_actions = [actions[:pushed], actions[:commented]]
     target_contribution_actions = [actions[:created], actions[:closed], actions[:merged], actions[:approved]]
 
     where(
       'action IN (?) OR (target_type IN (?) AND action IN (?))',
       contribution_actions,
-      target_types || contributable_target_types, target_contribution_actions
+      CONTRIBUTABLE_TARGET_TYPES, target_contribution_actions
     )
   end
 
@@ -142,10 +142,6 @@ class Event < ApplicationRecord
       else
         Event
       end
-    end
-
-    def contributable_target_types
-      CONTRIBUTABLE_TARGET_TYPES
     end
 
     def limit_recent(limit = 20, offset = nil)

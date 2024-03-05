@@ -8,13 +8,19 @@ source scripts/packages/helpers.sh
 export CURL_TOKEN_HEADER="${CURL_TOKEN_HEADER:-"JOB-TOKEN"}"
 
 export GITLAB_COM_CANONICAL_PROJECT_ID="278964" # https://gitlab.com/gitlab-org/gitlab
+export GITLAB_COM_CANONICAL_FOSS_PROJECT_ID="13083" # https://gitlab.com/gitlab-org/gitlab-foss
 export JIHULAB_COM_CANONICAL_PROJECT_ID="13953" # https://jihulab.com/gitlab-cn/gitlab
 export CANONICAL_PROJECT_ID="${GITLAB_COM_CANONICAL_PROJECT_ID}"
 
 # By default, we only want to store/retrieve packages from GitLab.com...
 export API_V4_URL="https://gitlab.com/api/v4"
 
-# Unless we're in the JiHu project, which needs to use its own package registry
+# If it's a FOSS repository, it needs to use FOSS package registry
+if [[ ! -d "ee/" ]]; then
+  export CANONICAL_PROJECT_ID="${GITLAB_COM_CANONICAL_FOSS_PROJECT_ID}"
+fi
+
+# If it's in the JiHu project, it needs to use its own package registry
 if [[ "${CI_SERVER_HOST}" = "jihulab.com" ]]; then
   export API_V4_URL="${CI_API_V4_URL}"
   export CANONICAL_PROJECT_ID="${JIHULAB_COM_CANONICAL_PROJECT_ID}"

@@ -5,7 +5,7 @@ import {
   GlAvatar,
   GlAlert,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -37,7 +37,7 @@ describe('GlobalSearchAutocompleteItems', () => {
       },
     });
 
-    wrapper = shallowMount(GlobalSearchAutocompleteItems, {
+    wrapper = mount(GlobalSearchAutocompleteItems, {
       store,
       propsData: {
         ...props,

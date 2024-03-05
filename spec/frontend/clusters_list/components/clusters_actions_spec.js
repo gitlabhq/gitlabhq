@@ -5,7 +5,7 @@ import {
   GlTooltip,
   GlButtonGroup,
 } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ClustersActions from '~/clusters_list/components/clusters_actions.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { INSTALL_AGENT_MODAL_ID, CLUSTERS_ACTIONS } from '~/clusters_list/constants';
@@ -36,7 +36,7 @@ describe('ClustersActionsComponent', () => {
   const findConnectClusterLink = () => wrapper.findByTestId('connect-cluster-link');
 
   const createWrapper = (provideData = {}) => {
-    wrapper = shallowMountExtended(ClustersActions, {
+    wrapper = mountExtended(ClustersActions, {
       provide: {
         ...defaultProvide,
         ...provideData,

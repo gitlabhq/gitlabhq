@@ -13,16 +13,16 @@
 .row
   .col-sm-12
     %p.gl-text-secondary
-      = s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project').html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe, project_name: @project.name } + '.'
+      = safe_format(s_('UsageQuota|Usage of project resources across the %{strong_start}%{project_name}%{strong_end} project.'),
+        { project_name: @project.name },
+        tag_pair(tag.strong, :strong_start, :strong_end))
       %a{ href: help_page_path('user/usage_quotas'), target: '_blank', rel: 'noopener noreferrer' }
-        = s_('UsageQuota|Learn more about usage quotas') + '.'
+        = s_('UsageQuota|Learn more about usage quotas.')
 
-= gl_tabs_nav({ id: 'js-project-usage-quotas-tabs' }) do
-  = gl_tab_link_to '#storage-quota-tab', item_active: true do
-    = s_('UsageQuota|Storage')
-  = render_if_exists 'projects/usage_quotas/transfer_tab_link'
-
-.tab-content
-  .tab-pane.active#storage-quota-tab
-    #js-project-storage-count-app{ data: { project_path: @project.full_path } }
+#js-usage-quotas-view
+  .gl-font-lg.gl--flex-center
+    %span.gl-mr-1= s_('UsageQuota|Loading Usage Quotas tabs')
+    = render Pajamas::SpinnerComponent.new(inline: true, size: :md)
+  #js-storage-usage-app{ data: { project_path: @project.full_path } }
   = render_if_exists 'projects/usage_quotas/transfer_tab_content'
+

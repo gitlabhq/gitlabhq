@@ -1,11 +1,11 @@
 ---
 status: ongoing
 creation-date: "2022-11-25"
-authors: [ "@theoretick" ]
-coach: "@DylanGriffith"
+authors: [ "@theoretick", "@vbhat161", "@ahmed.hemdan" ]
+coach: [ "@theoretick" ]
 approvers: [ "@connorgilbert", "@amarpatel" ]
 owning-stage: "~devops::secure"
-participating-stages: []
+participating-stages: [ "~devops::systems" ]
 ---
 
 <!-- vale gitlab.FutureTense = NO -->

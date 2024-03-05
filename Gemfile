@@ -215,7 +215,7 @@ gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive 
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.14.3', feature_category: :team_planning
-gem 'deckar01-task_list', '2.3.3', feature_category: :team_planning
+gem 'deckar01-task_list', '2.3.4', feature_category: :team_planning
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'commonmarker', '~> 0.23.10', feature_category: :team_planning
 gem 'kramdown', '~> 2.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -504,7 +504,7 @@ group :test do
   gem 'rspec_profiling', '~> 0.0.8', feature_category: :tooling
   gem 'rspec-benchmark', '~> 0.6.0', feature_category: :tooling
   gem 'rspec-parameterized', '~> 1.0', require: false, feature_category: :tooling
-  gem 'os', '~> 1.1', feature_category: :tooling
+  gem 'os', '~> 1.1', '>= 1.1.4', feature_category: :tooling
 
   gem 'capybara', '~> 3.40' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'capybara-screenshot', '~> 1.0.26' # rubocop:todo Gemfile/MissingFeatureCategory

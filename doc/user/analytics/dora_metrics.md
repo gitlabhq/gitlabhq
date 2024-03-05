@@ -115,12 +115,13 @@ High change failure rate may indicate an inefficient deployment process or insuf
 ### How change failure rate is calculated
 
 In GitLab, change failure rate is measured as the percentage of deployments that cause an incident in production in the given time period.
-GitLab calculates this as the number of incidents divided by the number of deployments to a production environment. This assumes:
+GitLab calculates change failure rate as the number of incidents divided by the number of deployments to a production environment. This calculation assumes:
 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
-- All incidents are related to a production environment.
-- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only one production deployment, and any production deployment is related to no
-  more than one incident.
+- All incidents are production incidents, regardless of the environment.
+- Change failure rate is used primarily as high-level stability tracking, which is why in a given day, all incidents and deployments are aggregated into a joined daily rate. Adding specific relations between deployments and incidents is proposed in [issue 444295](https://gitlab.com/gitlab-org/gitlab/-/issues/444295).
+
+For example, if you have 10 deployments (considering one deployment per day) with two incidents on the first day and one incident on the last day, then your change failure rate is 0.3.
 
 ### How to improve change failure rate
 

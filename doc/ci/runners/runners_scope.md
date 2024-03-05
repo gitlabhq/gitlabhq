@@ -661,6 +661,6 @@ you must have the Owner role for the
 project.
 
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. On the details page you should see a row for **IP Address**.
+1. Select the runner name and find the **IP Address** row.
 
 ![Project runner IP address](img/project_runner_ip_address.png)

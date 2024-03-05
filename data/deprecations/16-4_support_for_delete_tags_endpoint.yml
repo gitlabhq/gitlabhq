@@ -6,7 +6,7 @@
   stage: Package  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1094  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
+    The Docker Registry HTTP API V2 Spec, later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
 
     Tag deletion is an important function, so we added a tag deletion operation to the GitLab container registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
 

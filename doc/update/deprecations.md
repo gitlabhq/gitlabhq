@@ -37,14 +37,14 @@ For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
 - For more information about authoring deprecations, check the the deprecation item guidance:
-  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs
+  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 
 For deprecation reviewers (Technical Writers only):
 
 - To update the deprecation doc, run: `bin/rake gitlab:docs:compile_deprecations`
 - To verify the deprecations doc is up to date, run: `bin/rake gitlab:docs:check_deprecations`
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
-  https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-docs
+  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
 {::options parse_block_html="true" /}
@@ -1233,7 +1233,7 @@ set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:20`.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1094).
 </div>
 
-The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
+The Docker Registry HTTP API V2 Spec, later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
 
 Tag deletion is an important function, so we added a tag deletion operation to the GitLab container registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
 
@@ -1529,7 +1529,7 @@ The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) a
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/9065).
 </div>
 
-GitLab follows an [annual upgrade cadence for PostgreSQL](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/postgresql-upgrade-cadence.html).
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/).
 
 Support for PostgreSQL 13 is scheduled for removal in GitLab 17.0.
 In GitLab 17.0, PostgreSQL 14 becomes the minimum required PostgreSQL version.
@@ -2346,7 +2346,7 @@ As a result, the following Rake tasks that relied on legacy code have also been 
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772).
 </div>
 
-The version of [Grafana bundled with Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/grafana.html) is
+The version of Grafana bundled with Omnibus GitLab is
 [deprecated and disabled](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#deprecation-of-bundled-grafana)
 in 16.0 and will be removed in 16.3. If you are using the bundled Grafana, you must migrate to either:
 
@@ -2647,7 +2647,7 @@ All Container Scanning variables that are prefixed by `DOCKER_` in variable name
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/842).
 </div>
 
-The container registry [pull-through cache](https://docs.docker.com/registry/recipes/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
+The container registry [pull-through cache](https://docs.docker.com/docker-hub/mirror/) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0. The pull-through cache is part of the upstream [Docker Distribution project](https://github.com/distribution/distribution). However, we are removing the pull-through cache in favor of the GitLab Dependency Proxy, which allows you to proxy and cache container images from Docker Hub. Removing the pull-through cache allows us also to remove the upstream client code without sacrificing functionality.
 
 </div>
 
@@ -3207,7 +3207,7 @@ The full GitLab Helm Chart 7.0 upgrade steps will be available in the [upgrade d
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390417).
 </div>
 
-The [Managed Licenses API](https://docs.gitlab.com/ee/api/managed_licenses.html) is now deprecated and is scheduled for removal in GitLab 16.0.
+The Managed Licenses API is now deprecated and is scheduled for removal in GitLab 16.0.
 
 </div>
 
@@ -3239,7 +3239,7 @@ The [**Maximum number of active pipelines per project** limit](https://docs.gitl
 </div>
 
 By displaying data stored in a Prometheus instance, GitLab allows users to view performance metrics. GitLab also displays visualizations of these metrics in dashboards. The user can connect to a previously-configured external Prometheus instance, or set up Prometheus as a GitLab Managed App.
-However, since certificate-based integration with Kubernetes clusters is deprecated in GitLab, the metrics functionality in GitLab that relies on Prometheus is also deprecated. This includes the metrics visualizations in dashboards. GitLab is working to develop a single user experience based on [Opstrace](https://about.gitlab.com/press/releases/2021-12-14-gitlab-acquires-opstrace-to-expand-its-devops-platform-with-open-source-observability-solution.html). An [issue exists](https://gitlab.com/groups/gitlab-org/-/epics/6976) for you to follow work on the Opstrace integration.
+However, since certificate-based integration with Kubernetes clusters is deprecated in GitLab, the metrics functionality in GitLab that relies on Prometheus is also deprecated. This includes the metrics visualizations in dashboards. GitLab is working to develop a single user experience based on [Opstrace](https://about.gitlab.com/press/releases/2021-12-14-gitlab-acquires-opstrace-to-expand-its-devops-platform-with-open-source-observability-solution/). An [issue exists](https://gitlab.com/groups/gitlab-org/-/epics/6976) for you to follow work on the Opstrace integration.
 
 </div>
 
@@ -3367,7 +3367,7 @@ We are deprecating the `operations_access_level` field in the Projects API. This
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/5255).
 </div>
 
-The [Rake task for importing bare repositories](https://docs.gitlab.com/ee/raketasks/import.html) `gitlab:import:repos` is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
+The Rake task for importing bare repositories (`gitlab:import:repos`) is deprecated in GitLab 15.8 and will be removed in GitLab 16.0.
 
 This Rake task imports a directory tree of repositories into a GitLab instance. These repositories must have been
 managed by GitLab previously, because the Rake task relies on the specific directory structure or a specific custom Git setting in order to work (`gitlab.fullpath`).
@@ -3383,7 +3383,7 @@ Alternatives to using the `gitlab:import:repos` Rake task include:
 - Migrating projects using either [an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html) or
   [direct transfer](https://docs.gitlab.com/ee/user/group/import/#migrate-groups-by-direct-transfer-recommended) migrate repositories as well.
 - Importing a [repository by URL](https://docs.gitlab.com/ee/user/project/import/repo_by_url.html).
-- Importing a [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
+- Importing [repositories from a non-GitLab source](https://docs.gitlab.com/ee/user/project/import/).
 
 </div>
 
@@ -3667,7 +3667,7 @@ This change affects the following REST and GraphQL API endpoints:
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/4894).
 </div>
 
-The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
+The Phabricator task importer is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
 
 </div>
 
@@ -3748,7 +3748,7 @@ You can use the vulnerabilityFindingDismiss GraphQL mutation to set the status o
 
 Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts self-managed customers that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
-Supporting both GitLab's container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://about.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
+Supporting both GitLab's container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://handbook.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
 
 This change will not impact your ability to pull and push container images to external registries using pipelines.
 
@@ -3861,7 +3861,7 @@ To avoid confusion and duplication, the `environment_tier` parameter is deprecat
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334018).
 </div>
 
-The `started` iteration state in the [iterations GraphQL API](https://https://docs.gitlab.com/ee/api/graphql/reference/index.html#iterationstate)
+The `started` iteration state in the [iterations GraphQL API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#iterationstate)
 and [iterations REST API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is deprecated.
 
 The GraphQL API version will be removed in GitLab 16.0. This state is being replaced with the `current` state (already available)
@@ -4084,7 +4084,7 @@ This is not expected to cause any incompatibilities with the previous version of
 GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
 We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
-Streamlining the set of analyzers will also enable faster [iteration](https://about.gitlab.com/handbook/values/#iteration), better [results](https://about.gitlab.com/handbook/values/#results), and greater [efficiency](https://about.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
+Streamlining the set of analyzers will also enable faster [iteration](https://handbook.gitlab.com/handbook/values/#iteration), better [results](https://handbook.gitlab.com/handbook/values/#results), and greater [efficiency](https://handbook.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
 
 In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 
@@ -4098,7 +4098,7 @@ This change was originally planned for GitLab 15.0 and was postponed to GitLab 1
 These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.
 After these analyzers reach End of Support, no further updates will be provided.
-We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 
 We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 This change will make it simpler to scan Java code; compilation will no longer be required.
@@ -4938,7 +4938,7 @@ For more information, check the [summary section of the deprecation issue](https
 
 The [required pipeline configuration](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#required-pipeline-configuration) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
 
-This change to move the feature to GitLab's Ultimate tier is intended to help our features better align with our [pricing philosophy](https://about.gitlab.com/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
+This change to move the feature to GitLab's Ultimate tier is intended to help our features better align with our [pricing philosophy](https://handbook.gitlab.com/handbook/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
 
 This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
 [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration).

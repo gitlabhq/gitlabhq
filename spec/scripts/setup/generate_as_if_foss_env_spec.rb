@@ -36,6 +36,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         'compile-production-assets',
         'compile-storybook',
         'compile-test-assets',
+        'cache-assets:test',
         'eslint',
         'generate-apollo-graphql-schema',
         'graphql-schema-dump',
@@ -82,6 +83,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_COMPILE_PRODUCTION_ASSETS: 'true',
         ENABLE_COMPILE_STORYBOOK: 'true',
         ENABLE_COMPILE_TEST_ASSETS: 'true',
+        ENABLE_CACHE_ASSETS: 'true',
         ENABLE_ESLINT: 'true',
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
         ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
@@ -118,6 +120,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_COMPILE_PRODUCTION_ASSETS=true
         ENABLE_COMPILE_STORYBOOK=true
         ENABLE_COMPILE_TEST_ASSETS=true
+        ENABLE_CACHE_ASSETS=true
         ENABLE_ESLINT=true
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true
         ENABLE_GRAPHQL_SCHEMA_DUMP=true

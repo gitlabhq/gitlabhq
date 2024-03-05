@@ -19,7 +19,10 @@ import {
   MOCK_REVIEWERS,
 } from './autocomplete_mock_data';
 
-jest.mock('~/emoji');
+jest.mock('~/emoji', () => ({
+  initEmojiMap: () => jest.fn(),
+  getAllEmoji: () => [{ name: 'thumbsup' }],
+}));
 
 describe('defaultSorter', () => {
   it('returns items as is if query is empty', () => {
@@ -151,6 +154,8 @@ describe('AutocompleteHelper', () => {
   afterEach(() => {
     mock.restore();
 
+    delete gl.GfmAutoComplete;
+
     jest.spyOn(Date, 'now').mockImplementation(() => dateNowOld);
   });
 
@@ -211,5 +216,14 @@ describe('AutocompleteHelper', () => {
     expect(autocompleteHelper.dataSourceUrls.members).toBe(
       '/gitlab-org/gitlab-test/-/autocomplete_sources/members',
     );
+  });
+
+  it("loads emoji if dataSources doesn't exist", async () => {
+    autocompleteHelper = new AutocompleteHelper({});
+
+    const dataSource = autocompleteHelper.getDataSource('emoji');
+    const results = await dataSource.search('');
+
+    expect(results).toEqual([{ emoji: { name: 'thumbsup' }, fieldValue: 'thumbsup' }]);
   });
 });

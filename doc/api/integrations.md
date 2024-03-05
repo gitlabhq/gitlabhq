@@ -293,11 +293,14 @@ Get the Buildkite integration settings for a project.
 GET /projects/:id/integrations/buildkite
 ```
 
-## Campfire
+## Campfire Classic
 
-### Set up Campfire
+You can integrate with Campfire Classic. Note that Campfire Classic is an old product that is
+[no longer sold](https://gitlab.com/gitlab-org/gitlab/-/issues/329337) by Basecamp.
 
-Set up the Campfire integration for a project.
+### Set up Campfire Classic
+
+Set up the Campfire Classic integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/campfire
@@ -307,21 +310,21 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**. |
+| `token`       | string  | true     | API authentication token from Campfire Classic. To get the token, sign in to Campfire Classic and select **My info**. |
 | `subdomain`   | string  | false    | `.campfirenow.com` subdomain when you're signed in. |
-| `room`        | string  | false    | ID portion of the Campfire room URL. |
+| `room`        | string  | false    | ID portion of the Campfire Classic room URL. |
 
-### Disable Campfire
+### Disable Campfire Classic
 
-Disable the Campfire integration for a project. Integration settings are reset.
+Disable the Campfire Classic integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/campfire
 ```
 
-### Get Campfire settings
+### Get Campfire Classic settings
 
-Get the Campfire integration settings for a project.
+Get the Campfire Classic integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/campfire

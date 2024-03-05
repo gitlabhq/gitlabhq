@@ -80,23 +80,6 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
 
           it_behaves_like 'creates a log entry', 'child'
         end
-
-        context 'when FF `ci_rate_limit_downstream_pipelines` is disabled' do
-          before do
-            stub_feature_flags(ci_rate_limit_downstream_pipelines: false)
-          end
-
-          it 'schedules the downstream pipeline worker' do
-            service.execute
-
-            expect { execute }.to change { ::Ci::CreateDownstreamPipelineWorker.jobs.size }.by(1)
-            expect(bridge).not_to be_failed
-            expect(execute).to be_success
-            expect(execute.message).to eq('Downstream pipeline enqueued')
-          end
-
-          it_behaves_like 'creates a log entry'
-        end
       end
 
       context 'when the limit is not exceeded' do

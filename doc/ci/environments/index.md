@@ -1003,11 +1003,15 @@ See [Deployment-only access to protected environments](protected_environments.md
 
 ### The job with `action: stop` doesn't run
 
-In some cases, environments do not [stop when a branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
+In some cases, environments do not stop despite an `on_stop` job being configured. This happens when the job
+with the `action: stop` is not in a runnable state due to its `stages:` or `needs:` configuration.
 
-For example, the environment might start in a stage that also has a job that failed.
+For example:
+
+- The environment might start in a stage that also has a job that failed.
 Then the jobs in later stages job don't start. If the job with the `action: stop`
 for the environment is also in a later stage, it can't start and the environment isn't deleted.
+- The job with the `action: stop` might have a dependency on a job that has not yet completed.
 
 To ensure the `action: stop` can always run when needed, you can:
 

@@ -28,7 +28,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 Please review:
 
 - The definitions of ["Deprecation", "End of Support", and "Removal"](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
-- The [guidelines for deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+- The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - The process for [creating a deprecation announcement](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).

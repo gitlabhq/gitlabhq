@@ -225,12 +225,14 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects in a group can be forked.
-Optionally, on [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
+In [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-This setting is removed from the SAML setting page, and migrated to the
-group settings page. In the interim period, both of these settings are taken into consideration.
-If even one is set to `true`, then the group does not allow outside forks.
+Prerequisites:
+
+- This setting is enabled on the top-level group only.
+- All subgroups inherit this setting from the top-level group, and it cannot be
+  changed at the subgroup level.
 
 To prevent projects from being forked outside the group:
 

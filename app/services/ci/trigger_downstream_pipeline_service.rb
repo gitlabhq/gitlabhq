@@ -15,7 +15,7 @@ module Ci
         return ServiceResponse.success(message: 'Does not trigger a downstream pipeline')
       end
 
-      if rate_limit_throttled? && enforce_rate_limit?
+      if rate_limit_throttled?
         bridge.drop!(:reached_downstream_pipeline_trigger_rate_limit)
 
         return ServiceResponse.error(message: 'Reached downstream pipeline trigger rate limit')
@@ -48,10 +48,6 @@ module Ci
         downstream_type: bridge.triggers_child_pipeline? ? 'child' : 'multi-project',
         message: 'Activated downstream pipeline trigger rate limit'
       )
-    end
-
-    def enforce_rate_limit?
-      ::Feature.enabled?(:ci_rate_limit_downstream_pipelines, project, type: :gitlab_com_derisk)
     end
   end
 end

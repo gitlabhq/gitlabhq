@@ -11,6 +11,23 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :team_planning 
     expect(doc.xpath('.//li//task-button').count).to eq(2)
   end
 
+  it 'ignores checkbox on following line' do
+    doc = filter(
+      <<~HTML
+        <ul data-sourcepos="1:1-3:11">
+          <li data-sourcepos="1:1-3:11">one
+            <ul data-sourcepos="2:3-3:11">
+              <li data-sourcepos="2:3-3:11">foo
+                [ ] bar</li>
+            </ul>
+          </li>
+        </ul>
+      HTML
+    )
+
+    expect(doc.xpath('.//li//input').count).to eq(0)
+  end
+
   describe 'inapplicable list items' do
     shared_examples 'a valid inapplicable task list item' do |html|
       it "behaves correctly for `#{html}`" do

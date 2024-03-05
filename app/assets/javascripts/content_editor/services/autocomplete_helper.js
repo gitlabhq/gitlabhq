@@ -120,7 +120,7 @@ export default class AutocompleteHelper {
   constructor({ dataSourceUrls, sidebarMediator }) {
     this.dataSourceUrls = !isEmpty(dataSourceUrls)
       ? dataSourceUrls
-      : gl.GfmAutoComplete?.dataSources;
+      : gl.GfmAutoComplete?.dataSources || {};
 
     this.sidebarMediator = sidebarMediator;
 
