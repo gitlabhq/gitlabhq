@@ -1477,6 +1477,32 @@ Input type: `AiAgentCreateInput`
 | <a id="mutationaiagentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiagentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.aiAgentUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `AiAgentUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentupdateagentid"></a>`agentId` | [`AiAgentID!`](#aiagentid) | ID of the agent. |
+| <a id="mutationaiagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentupdatename"></a>`name` | [`String`](#string) | Name of the agent. |
+| <a id="mutationaiagentupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the agent belongs. |
+| <a id="mutationaiagentupdateprompt"></a>`prompt` | [`String`](#string) | Prompt for the agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentupdateagent"></a>`agent` | [`AiAgent`](#aiagent) | Agent after mutation. |
+| <a id="mutationaiagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.alertSetAssignees`
 
 Input type: `AlertSetAssigneesInput`
@@ -3933,6 +3959,31 @@ Input type: `DiscussionToggleResolveInput`
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.duoUserFeedback`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `DuoUserFeedbackInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationduouserfeedbackagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent to answer the chat. |
+| <a id="mutationduouserfeedbackaimessageid"></a>`aiMessageId` | [`String!`](#string) | ID of the AI Message. |
+| <a id="mutationduouserfeedbackclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationduouserfeedbackextendedfeedback"></a>`extendedFeedback` | [`String`](#string) | Freeform user feedback. |
+| <a id="mutationduouserfeedbackselectedfeedbackoptions"></a>`selectedFeedbackOptions` | [`[String!]`](#string) | User selected feedback options. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationduouserfeedbackclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationduouserfeedbackerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.echoCreate`
 
@@ -14873,6 +14924,7 @@ Extra metadata for AI message.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aimessageextrashasfeedback"></a>`hasFeedback` | [`Boolean`](#boolean) | Whether the user has provided feedback for the mesage. |
 | <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
 
 ### `AlertManagementAlert`

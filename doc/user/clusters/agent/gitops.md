@@ -90,7 +90,7 @@ unnecessary pulls from GitLab.
 
 The agent for Kubernetes automatically detects Flux `GitRepository` objects that
 reference GitLab projects in the instance the agent is connected to,
-and configures a [`Receiver`](https://fluxcd.io/flux/components/notification/receiver/) for the instance.
+and configures a [`Receiver`](https://fluxcd.io/flux/components/notification/receivers/) for the instance.
 When the agent for Kubernetes detects a `git push` to a repository it has access to, the `Receiver` is triggered
 and Flux reconciles the cluster with any changes to the repository.
 
@@ -167,7 +167,7 @@ Support for automating deploy token creation, rotation, and reporting is propose
 
 ### Flux to GitLab notification
 
-If you configure Flux to synchronize from a Git source, [Flux can register an external job status](https://fluxcd.io/flux/components/notification/provider/#git-commit-status-updates) in GitLab pipelines.
+If you configure Flux to synchronize from a Git source, [Flux can register an external job status](https://fluxcd.io/flux/components/notification/providers/#git-commit-status-updates) in GitLab pipelines.
 
 To get external job statuses from Flux, you can use:
 

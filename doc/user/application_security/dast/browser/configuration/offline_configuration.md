@@ -40,10 +40,10 @@ These scanners are [periodically updated](../../../index.md#vulnerability-scanne
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/engine/reference/commandline/save/),
-[`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
-[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and
-[`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/),
+[`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
+[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and
+[`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
 
 ## Set DAST CI/CD job variables to use local DAST analyzers
 

@@ -1939,6 +1939,9 @@ msgstr ""
 msgid "AIAgents|New agent"
 msgstr ""
 
+msgid "AIAgents|The requested agent was not found."
+msgstr ""
+
 msgid "AIAgent|AI Agent: %{agentId}"
 msgstr ""
 
@@ -1954,10 +1957,16 @@ msgstr ""
 msgid "AIAgent|Create agent"
 msgstr ""
 
+msgid "AIAgent|Edit Ai Agent"
+msgstr ""
+
 msgid "AIAgent|Prompt (optional)"
 msgstr ""
 
 msgid "AIAgent|Try out your agent"
+msgstr ""
+
+msgid "AIAgent|Update agent"
 msgstr ""
 
 msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
@@ -8152,6 +8161,11 @@ msgstr ""
 msgid "Billing|%{user} was successfully approved"
 msgstr ""
 
+msgid "Billing|%{value} user selected"
+msgid_plural "Billing|%{value} users selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Billing|Add seats"
 msgstr ""
 
@@ -10143,6 +10157,9 @@ msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
 msgid "Check your sign-up restrictions"
+msgstr ""
+
+msgid "Checkbox"
 msgstr ""
 
 msgid "Checkin reminder has been enabled."
@@ -23437,7 +23454,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Copy image URI"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Copy image name"
+msgid "GoogleArtifactRegistry|Copy image path"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Created"
@@ -43519,6 +43536,9 @@ msgid "Runners|To view the setup instructions, complete the previous form."
 msgstr ""
 
 msgid "Runners|To view the setup instructions, complete the previous form. The instructions help you set up an autoscaling fleet of runners to execute your CI/CD jobs in Google Cloud."
+msgstr ""
+
+msgid "Runners|To view the setup instructions, make sure all form fields are completed and correct."
 msgstr ""
 
 msgid "Runners|Token expiry"

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Abuse
-  class TrustScore < ApplicationRecord
+  class TrustScore < MainClusterwide::ApplicationRecord
     self.table_name = 'abuse_trust_scores'
 
     enum source: Enums::Abuse::Source.sources

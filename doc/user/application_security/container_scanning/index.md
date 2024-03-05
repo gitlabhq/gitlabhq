@@ -595,8 +595,8 @@ and you may be able to make occasional updates on your own.
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
-[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
+[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
 
 #### Set container scanning CI/CD variables to use local container scanner analyzers
 
@@ -651,7 +651,7 @@ If you use the GitLab [Container Registry](../../packages/container_registry/ind
 the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables)
 are set automatically and you can skip this configuration.
 
-This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/container-registry/):
+This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/artifact-registry):
 
 ```yaml
 include:
@@ -679,7 +679,7 @@ Scanning images in external private registries is not supported when [FIPS mode]
 
 #### Create and use a Trivy Java database mirror
 
-When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
+When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart/) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
 
 ```yaml
 mirror trivy java db:

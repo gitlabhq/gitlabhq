@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Abuse
-  class Event < ApplicationRecord
+  class Event < MainClusterwide::ApplicationRecord
     self.table_name = 'abuse_events'
 
     validates :category, presence: true

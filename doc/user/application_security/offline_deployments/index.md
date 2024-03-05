@@ -129,7 +129,7 @@ include:
 The pipeline downloads the Docker images needed for the Security Scanners and saves them as
 [job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [container registry](../../packages/container_registry/index.md)
 of the project where the pipeline is executed. These archives can be transferred to another location
-and [loaded](https://docs.docker.com/engine/reference/commandline/load/) in a Docker daemon.
+and [loaded](https://docs.docker.com/reference/cli/docker/image/load/) in a Docker daemon.
 This method requires a runner with access to both `gitlab.com` (including
 `registry.gitlab.com`) and the local offline instance. This runner must run in
 [privileged mode](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode)

@@ -322,6 +322,6 @@ GitLab has a [Microsoft Azure Active Directory integration](#microsoft-azure-act
 with users in more than 150 groups. This integration uses the Microsoft Graph API to obtain all user memberships and is
 not limited to 150 groups.
 
-Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/azure/active-directory/hybrid/connect/how-to-connect-fed-group-claims#configure-the-azure-ad-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
+Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
 
 ![Manage Group Claims](img/Azure-manage-group-claims.png).

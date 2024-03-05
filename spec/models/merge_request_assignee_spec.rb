@@ -37,5 +37,19 @@ RSpec.describe MergeRequestAssignee do
         expect(assignees.first.merge_request_id).to eq project_merge_request.merge_request_assignees.first.merge_request_id
       end
     end
+
+    context 'for_assignee' do
+      let_it_be(:another_user) { create(:user) }
+      let_it_be(:merge_request_assignee) { create(:merge_request, source_project: project, source_branch: 'another-branch-1', assignee_ids: [another_user.id]) }
+
+      let(:assignees) { described_class.for_assignee(user) }
+
+      it 'returns merge request assignees for a given assignee' do
+        expect(described_class.count).to eq 3
+        expect(assignees.count).to eq 2
+        expect(assignees.first.user_id).to eq user.id
+        expect(assignees.last.user_id).to eq user.id
+      end
+    end
   end
 end

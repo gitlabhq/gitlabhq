@@ -7,7 +7,28 @@
       "type": "object"
     },
     "violations": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "any_merge_request": {
+          "type": "object",
+          "properties": {
+            "commits": {
+              "oneOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "errors": {
       "type": "array",

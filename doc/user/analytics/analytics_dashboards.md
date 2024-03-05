@@ -44,7 +44,7 @@ When [product analytics](../product_analytics/index.md) is enabled and onboarded
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
-For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/). To leave feedback about bugs or functionality:
+For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/). To leave feedback about bugs or functionality:
 
 - Comment on issue [391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.

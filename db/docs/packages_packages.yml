@@ -1,6 +1,7 @@
 ---
 table_name: packages_packages
 classes:
+- Packages::Go::Package
 - Packages::MlModel::Package
 - Packages::Package
 - Packages::Rubygems::Package

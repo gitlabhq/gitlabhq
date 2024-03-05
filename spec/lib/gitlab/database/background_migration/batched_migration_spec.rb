@@ -65,6 +65,28 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '#confirm_finalized!' do
+    context 'when an invalid transition is applied' do
+      %i[paused active failed finalizing].each do |state|
+        it 'raises an exception' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect { batched_migration.confirm_finalize! }.to raise_error(StateMachines::InvalidTransition, /Cannot transition status/)
+        end
+      end
+    end
+
+    context 'when a valid transition is applied' do
+      %i[finished].each do |state|
+        it 'moves to finalized' do
+          batched_migration = create(:batched_background_migration, state)
+
+          expect(batched_migration.confirm_finalize!).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#pause!' do
     context 'when an invalid transition is applied' do
       %i[finished failed finalizing].each do |state|

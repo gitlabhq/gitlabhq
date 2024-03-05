@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class IssueAssignee < ApplicationRecord
+  include EachBatch
+
   extend SuppressCompositePrimaryKeyWarning
 
   belongs_to :issue

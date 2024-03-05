@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AbuseReport < ApplicationRecord
+class AbuseReport < MainClusterwide::ApplicationRecord
   include CacheMarkdownField
   include Sortable
   include Gitlab::FileTypeDetection

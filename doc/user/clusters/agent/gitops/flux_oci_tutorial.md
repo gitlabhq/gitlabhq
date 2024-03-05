@@ -143,7 +143,7 @@ To configure, create an [`OCIRepository`](https://fluxcd.io/flux/components/sour
      targetNamespace: default
    ```
 
-   This file adds a [Kustomization](https://fluxcd.io/flux/components/kustomize/kustomization/) resource that tells Flux to sync the manifests in the artifact fetched from the registry.
+   This file adds a [Kustomization](https://fluxcd.io/flux/components/kustomize/kustomizations/) resource that tells Flux to sync the manifests in the artifact fetched from the registry.
 
 1. Commit the new files and push.
 

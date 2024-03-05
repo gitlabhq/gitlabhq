@@ -66,7 +66,7 @@ If available, you can add user-friendly group names instead. When setting up Azu
 1. Enter a group name. You can specify a name up to 256 characters long.
 1. To ensure the attribute is part of the assertion, select **Emit group names for cloud-only groups**.
 
-[Azure AD limits the number of groups that can be sent in a SAML response to 150](https://support.esri.com/en-us/knowledge-base/000022190). If a user is a member of more than 150 groups, Azure does not include that user's group claim in the SAML response.
+[Azure AD limits the number of groups that can be sent in a SAML response to 150](https://support.esri.com/en-us/knowledge-base/when-azure-ad-is-the-saml-identify-provider-the-group-a-000022190). If a user is a member of more than 150 groups, Azure does not include that user's group claim in the SAML response.
 
 ## Google Workspace
 

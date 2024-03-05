@@ -138,7 +138,7 @@ To install `agentk`:
    ```
 
    Although this step does not follow GitOps principles, it simplifies configuration for new Flux users.
-   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides).
+   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides/).
 
 1. Commit and push the following file to `clusters/testing/agentk.yaml`, replacing the values of
    `.spec.values.config.kasAddress` and `.spec.values.config.secretName` with your saved `kas` address and secret `name`:

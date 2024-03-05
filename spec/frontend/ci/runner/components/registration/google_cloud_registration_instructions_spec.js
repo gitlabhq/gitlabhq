@@ -89,6 +89,9 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const projectInstructionsResolver = jest.fn().mockResolvedValue(mockProjectRunnerCloudSteps);
   const groupInstructionsResolver = jest.fn().mockResolvedValue(mockGroupRunnerCloudSteps);
 
+  const error = new Error('GraphQL error: One or more validations have failed');
+  const errorResolver = jest.fn().mockRejectedValue(error);
+
   const defaultHandlers = [[runnerForRegistrationQuery, runnerWithTokenResolver]];
   const defaultProps = {
     runnerId: mockRunnerId,
@@ -163,7 +166,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(findClipboardButton().exists()).toBe(false);
   });
 
-  it('Shows an alert when the form is not valid', async () => {
+  it('Shows an alert when the form has empty fields', async () => {
     createComponent();
 
     findInstructionsButton().vm.$emit('click');
@@ -171,6 +174,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
     await waitForPromises();
 
     expect(findAlert().exists()).toBe(true);
+    expect(findAlert().text()).toBe('To view the setup instructions, complete the previous form.');
   });
 
   it('Hides an alert when the form is valid', async () => {
@@ -220,5 +224,25 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(findModalBashInstructions().text()).not.toBeNull();
     expect(findModalTerrarformInstructions().text()).not.toBeNull();
     expect(findModalTerrarformApplyInstructions().text).not.toBeNull();
+  });
+
+  it('Does not display a modal with text when validation errors occur', async () => {
+    createComponent(mountExtended, [[provisionGoogleCloudRunnerQueryProject, errorResolver]]);
+
+    findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
+    findRegionInput().vm.$emit('input', 'us-central1xxx');
+    findZoneInput().vm.$emit('input', 'us-central181263');
+
+    await waitForPromises();
+
+    expect(errorResolver).toHaveBeenCalled();
+
+    expect(findAlert().text()).toContain(
+      'To view the setup instructions, make sure all form fields are completed and correct.',
+    );
+
+    expect(findModalBashInstructions().exists()).toBe(false);
+    expect(findModalTerrarformInstructions().exists()).toBe(false);
+    expect(findModalTerrarformApplyInstructions().exists()).toBe(false);
   });
 });

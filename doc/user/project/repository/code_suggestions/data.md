@@ -15,7 +15,7 @@ Code Suggestions is powered by a generative AI model.
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
 This API connection securely transmits a context window from your IDE/editor to the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
-GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Code Models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) and [Anthropic Claude](https://www.anthropic.com/product) for Code Suggestions.
+GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Code Models](https://cloud.google.com/vertex-ai/generative-ai/docs/code/code-models-overview) and [Anthropic Claude](https://www.anthropic.com/product) for Code Suggestions.
 
 [View data retention policies](../../../ai_features.md#data-retention).
 
@@ -42,5 +42,5 @@ GitLab does not train generative AI models based on private (non-public) data. T
 
 For more information on GitLab Code Suggestions data [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
-- Google Vertex AI Codey APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
-- Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
+- Google Vertex AI Codey APIs [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai).
+- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution).

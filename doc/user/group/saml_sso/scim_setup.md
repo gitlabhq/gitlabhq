@@ -60,7 +60,7 @@ Prerequisites:
 - [Group single sign-on](index.md) is configured.
 
 The SAML application created during [single sign-on](index.md) set up for
-[Azure Active Directory](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
+[Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
 NOTE:

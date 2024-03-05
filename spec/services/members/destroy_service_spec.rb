@@ -25,7 +25,7 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     before do
       type = member.is_a?(GroupMember) ? 'Group' : 'Project'
       expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, member.user_id, member.source_id, type)
-      expect(MembersDestroyer::UnassignIssuablesWorker).to receive(:perform_async).with(member.user_id, member.source_id, type) if opts[:unassign_issuables]
+      expect(MembersDestroyer::UnassignIssuablesWorker).to receive(:perform_async).with(member.user_id, member.source_id, type, current_user.id) if opts[:unassign_issuables]
     end
 
     it 'destroys the member' do

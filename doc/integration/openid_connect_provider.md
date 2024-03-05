@@ -15,7 +15,7 @@ to sign in to other services.
 
 ## Introduction to OpenID Connect
 
-[OpenID Connect](https://openid.net/developers/how-connect-works/) \(OIDC) is a simple identity layer on top of the
+[OpenID Connect](https://openid.net/developers/how-connect-works/) (OIDC) is a simple identity layer on top of the
 OAuth 2.0 protocol. It allows clients to:
 
 - Verify the identity of the end-user based on the authentication performed by GitLab.

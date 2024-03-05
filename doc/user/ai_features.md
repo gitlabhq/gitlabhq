@@ -221,25 +221,25 @@ language model referenced above.
 
 | Feature | Large Language Model |
 |---|---|
-| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) |
+| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
 | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) |Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
-| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
+| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
-| [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | GitLab creates a machine learning model for each project, which is used to generate reviewers    [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10) |
-| [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
-| [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
-| [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text)    Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) if degraded performance |
-| [Vulnerability resolution](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-generation) |
-| [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) |
-| [GitLab Duo Chat](gitlab_duo_chat.md) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)    Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) |
-| [Root cause analysis](#root-cause-analysis) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
+| [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
+| [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)    Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) if degraded performance |
+| [Vulnerability resolution](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-generation) |
+| [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
+| [GitLab Duo Chat](gitlab_duo_chat.md) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)    Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings) |
+| [Root cause analysis](#root-cause-analysis) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | Statistical forecasting |
 
 ## Data usage
 
-GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function. GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Models](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview#genai-models) and [Anthropic Claude](https://www.anthropic.com/product).
+GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function. GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models) and [Anthropic Claude](https://www.anthropic.com/product).
 
 ### Progressive enhancement
 
@@ -281,8 +281,8 @@ GitLab does not train generative AI models based on private (non-public) data. T
 
 For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
-- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
-- Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
+- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai).
+- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution).
 
 ### Model accuracy and quality
 

@@ -13,6 +13,7 @@ import {
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
+import { fetchPolicies } from '~/lib/graphql';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
@@ -96,7 +97,12 @@ export default {
       ),
     },
     copyCommands: __('Copy commands'),
-    alertBody: s__('Runners|To view the setup instructions, complete the previous form.'),
+    emptyFieldsAlertMessage: s__(
+      'Runners|To view the setup instructions, complete the previous form.',
+    ),
+    invalidFieldsAlertMessage: s__(
+      'Runners|To view the setup instructions, make sure all form fields are completed and correct.',
+    ),
     invalidFormButton: s__('Runners|Go to first invalid form field'),
     externalLink: __('(external link)'),
   },
@@ -197,6 +203,7 @@ export default {
     },
     project: {
       query: provisionGoogleCloudRunnerProject,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
       variables() {
         return {
           fullPath: this.projectPath,
@@ -207,12 +214,15 @@ export default {
           runnerToken: this.token,
         };
       },
-      result({ data }) {
-        this.provisioningSteps = data.project.runnerCloudProvisioning?.provisioningSteps;
-        this.setupBashScript = data.project.runnerCloudProvisioning?.projectSetupShellScript;
+      result({ data, error }) {
+        if (!error) {
+          this.showAlert = false;
+          this.provisioningSteps = data.project.runnerCloudProvisioning?.provisioningSteps;
+          this.setupBashScript = data.project.runnerCloudProvisioning?.projectSetupShellScript;
+        }
       },
       error(error) {
-        captureException({ error, component: this.$options.name });
+        this.handleError(error);
       },
       skip() {
         return !this.projectPath || this.invalidFields.length > 0;
@@ -230,12 +240,15 @@ export default {
           runnerToken: this.token,
         };
       },
-      result({ data }) {
-        this.provisioningSteps = data.group.runnerCloudProvisioning?.provisioningSteps;
-        this.setupBashScript = data.group.runnerCloudProvisioning?.projectSetupShellScript;
+      result({ data, error }) {
+        if (!error) {
+          this.showAlert = false;
+          this.provisioningSteps = data.group.runnerCloudProvisioning?.provisioningSteps;
+          this.setupBashScript = data.group.runnerCloudProvisioning?.projectSetupShellScript;
+        }
       },
       error(error) {
-        captureException({ error, component: this.$options.name });
+        this.handleError(error);
       },
       skip() {
         return !this.groupPath || this.invalidFields.length > 0;
@@ -319,6 +332,14 @@ export default {
     goToFirstInvalidField() {
       if (this.invalidFields.length > 0) {
         this.$refs[this.invalidFields[0]].$el.focus();
+      }
+    },
+    handleError(error) {
+      if (error.message.includes('GraphQL error')) {
+        this.showAlert = true;
+      }
+      if (error.networkError) {
+        captureException({ error, component: this.$options.name });
       }
     },
   },
@@ -543,7 +564,12 @@ export default {
       class="gl-mb-4"
       @primaryAction="goToFirstInvalidField"
     >
-      {{ $options.i18n.alertBody }}
+      <template v-if="invalidFields.length > 0">
+        {{ $options.i18n.emptyFieldsAlertMessage }}
+      </template>
+      <template v-else>
+        {{ $options.i18n.invalidFieldsAlertMessage }}
+      </template>
     </gl-alert>
     <gl-button
       data-testid="show-instructions-button"

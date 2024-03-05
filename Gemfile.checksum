@@ -525,7 +525,7 @@
 {"name":"redcarpet","version":"3.6.0","platform":"ruby","checksum":"8ad1889c0355ff4c47174af14edd06d62f45a326da1da6e8a121d59bdcd2e9e9"},
 {"name":"redis","version":"5.0.8","platform":"ruby","checksum":"3b770ea597850b26d6a9718fa184241e53e6c8a7ae0486ee8bfaefd29f26f3d8"},
 {"name":"redis-actionpack","version":"5.4.0","platform":"ruby","checksum":"f10cf649ab05914716d63334d7f709221ecc883b87cf348f90ecfe0c35ea3540"},
-{"name":"redis-client","version":"0.20.0","platform":"ruby","checksum":"239ac38fe4f0b62c8d2d8641989319b736b7dd40eebec868fd874a14686bdc8c"},
+{"name":"redis-client","version":"0.21.0","platform":"ruby","checksum":"03c39f0f2081681741c9e2b9e7e88927a0f69d715d6e0645caa9c7888f908aeb"},
 {"name":"redis-cluster-client","version":"0.7.5","platform":"ruby","checksum":"12fd1c9eda17157a5cd2ce46afba13a024c28d24922092299a8daa9f46e4e78a"},
 {"name":"redis-clustering","version":"5.0.8","platform":"ruby","checksum":"8e2f3de3b1a700668eeac59125636e01be6ecd985e635a4d5649c47d71f6e166"},
 {"name":"redis-namespace","version":"1.10.0","platform":"ruby","checksum":"2c1c6ea7c6c5e343e75b9bee3aa4c265e364a5b9966507397467af2bb3758d94"},
