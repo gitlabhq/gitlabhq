@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Pushover do
+RSpec.describe Integrations::Pushover, feature_category: :integrations do
   include StubRequests
+
+  it_behaves_like Integrations::HasAvatar
 
   describe 'Validations' do
     context 'when integration is active' do
@@ -60,14 +62,6 @@ RSpec.describe Integrations::Pushover do
       pushover.execute(sample_data)
 
       expect(WebMock).to have_requested(:post, 'https://8.8.8.8/1/messages.json').once
-    end
-  end
-
-  describe '#avatar_url' do
-    it 'returns the avatar image path' do
-      expect(subject.avatar_url).to eq(
-        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/pushover.svg')
-      )
     end
   end
 end

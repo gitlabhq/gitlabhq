@@ -19,6 +19,7 @@ import {
   I18N_DEFAULT_ERROR_MESSAGE,
   INTEGRATION_FORM_TYPE_SLACK,
   INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY,
+  INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -599,6 +600,28 @@ describe('IntegrationForm', () => {
           }
         },
       );
+    });
+  });
+
+  describe('Google Cloud IAM', () => {
+    const helpHtml = 'Foo Help';
+
+    beforeEach(() => {
+      createComponent({
+        provide: { helpHtml },
+        customStateProps: {
+          sections: [mockSectionConnection],
+          type: INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM,
+        },
+      });
+    });
+
+    it('show help text', () => {
+      expect(findHelpHtml().text()).toBe(helpHtml);
+    });
+
+    it('show section', () => {
+      expect(findAllSections()).toHaveLength(1);
     });
   });
 });

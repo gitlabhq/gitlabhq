@@ -199,17 +199,17 @@ Prerequisites:
    # The contents of this file are included only for GitLab.com URLs
    [includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
 
-   # Edit this line to point to your alternate configuration file
+   # Edit this line to point to your alternative configuration file
    path = ~/.gitconfig-gitlab
    ```
 
-1. In your alternate `.gitconfig-gitlab` file, add the configuration overrides to
+1. In your alternative `.gitconfig-gitlab` file, add the configuration overrides to
    use when you're committing to a GitLab repository. All settings from your
    main `~/.gitconfig` file are retained unless you explicitly override them.
    In this example,
 
    ```ini
-   # Alternate ~/.gitconfig-gitlab file
+   # Alternative ~/.gitconfig-gitlab file
    # These values are used for repositories matching the string 'gitlab.com',
    # and override their corresponding values in ~/.gitconfig
 

@@ -302,8 +302,6 @@ GEM
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
     attr_required (1.0.1)
-    autoprefixer-rails (10.2.5.1)
-      execjs (> 0)
     awesome_print (1.9.2)
     awrence (1.2.1)
     aws-eventstream (1.3.0)
@@ -1830,7 +1828,6 @@ DEPENDENCIES
   asciidoctor-plantuml (~> 0.0.16)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 3.2.4)!
-  autoprefixer-rails (= 10.2.5.1)
   awesome_print
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.191.3)

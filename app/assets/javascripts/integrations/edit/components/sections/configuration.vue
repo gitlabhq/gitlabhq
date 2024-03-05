@@ -10,6 +10,11 @@ export default {
     DynamicField,
   },
   props: {
+    fieldClass: {
+      type: String,
+      required: false,
+      default: null,
+    },
     fields: {
       type: Array,
       required: false,
@@ -33,6 +38,7 @@ export default {
       v-for="field in fields"
       :key="`${currentKey}-${field.name}`"
       v-bind="field"
+      :field-class="fieldClass"
       :is-validated="isValidated"
     />
   </div>

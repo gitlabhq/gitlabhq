@@ -11,6 +11,7 @@ import {
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY,
+  INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM,
   INTEGRATION_FORM_TYPE_SLACK,
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
@@ -75,8 +76,15 @@ export default {
     isGoogleCloudArtifactRegistryIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY;
     },
+    isGoogleCloudIAMIntegration() {
+      return this.propsSource.type === INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM;
+    },
     showHelpHtml() {
-      if (this.isSlackIntegration || this.isGoogleCloudArtifactRegistryIntegration) {
+      if (
+        this.isSlackIntegration ||
+        this.isGoogleCloudArtifactRegistryIntegration ||
+        this.isGoogleCloudIAMIntegration
+      ) {
         return this.helpHtml;
       }
       return !this.hasSections && this.helpHtml;

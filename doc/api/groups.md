@@ -1431,7 +1431,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
 
-Creates a service account user with an auto-generated email address and username.
+Creates a service account user. You can specify username and name. If you do not specify these attributes, the default name is `Service account user` and the username is automatically generated.
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -1440,6 +1440,13 @@ POST /groups/:id/service_accounts
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
 ```
+
+Supported attributes:
+
+| Attribute                  | Type           | Required                  | Description                                                                    |
+|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
+| `name`       | string | no | Name of the user |
+| `username`   | string | no | Username of the user |
 
 Example response:
 

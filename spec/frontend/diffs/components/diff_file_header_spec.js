@@ -468,7 +468,9 @@ describe('DiffFileHeader component', () => {
 
     it('uses local anchor for link as last resort', () => {
       createComponent();
-      expect(findTitleLink().attributes('href')).toMatch(/^#diff-content/);
+      expect(findTitleLink().attributes('href')).toMatch(
+        new RegExp(`#diff-content-${diffFile.file_hash}$`),
+      );
     });
 
     describe('when local anchor for link is clicked', () => {

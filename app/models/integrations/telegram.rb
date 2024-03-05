@@ -2,6 +2,7 @@
 
 module Integrations
   class Telegram < BaseChatNotification
+    include HasAvatar
     TELEGRAM_HOSTNAME = "https://api.telegram.org/bot%{token}/sendMessage"
 
     field :token,
@@ -64,10 +65,6 @@ module Integrations
 
     def self.supported_events
       super - ['deployment']
-    end
-
-    def avatar_url
-      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/telegram.svg')
     end
 
     private

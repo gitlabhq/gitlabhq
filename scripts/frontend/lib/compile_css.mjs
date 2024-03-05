@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import autoprefixer from 'autoprefixer';
+import postcss from 'postcss';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
@@ -163,10 +165,16 @@ function resolveCompilationTargets() {
   return Object.fromEntries([...result.entries()].map((entry) => entry.reverse()));
 }
 
+function createPostCSSProcessor() {
+  return postcss([autoprefixer()]);
+}
+
 export async function compileAllStyles({ shouldWatch = false }) {
   const reverseDependencies = {};
 
   const compilationTargets = resolveCompilationTargets();
+
+  const processor = createPostCSSProcessor();
 
   const sassCompilerOptions = {
     loadPaths: resolveLoadPaths(),
@@ -176,6 +184,8 @@ export async function compileAllStyles({ shouldWatch = false }) {
     // post-processing steps, because we would compress
     // _after_ things like auto-prefixer, etc. happened
     style: shouldWatch ? 'expanded' : 'compressed',
+    sourceMap: shouldWatch,
+    sourceMapIncludeSources: shouldWatch,
   };
 
   let fileWatcher = null;
@@ -186,7 +196,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
 
   async function compileSCSSFile(source, dest) {
     console.log(`\tcompiling source ${source} to ${dest}`);
-    const content = compile(source, sassCompilerOptions);
+    let content = compile(source, sassCompilerOptions);
     if (fileWatcher) {
       for (const dependency of content.loadedUrls) {
         if (dependency.protocol === 'file:') {
@@ -197,9 +207,20 @@ export async function compileAllStyles({ shouldWatch = false }) {
         }
       }
     }
+    content = await processor.process(content.css, {
+      from: source,
+      map: content.sourceMap
+        ? {
+            from: source,
+            prev: content.sourceMap,
+            inline: true,
+            sourcesContent: true,
+          }
+        : false,
+    });
     // Create target folder if it doesn't exist
     await mkdir(path.dirname(dest), { recursive: true });
-    return writeFile(dest, content.css, 'utf-8');
+    await writeFile(dest, content.css, 'utf-8');
   }
 
   if (fileWatcher) {

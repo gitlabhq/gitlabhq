@@ -18,6 +18,11 @@ export default {
     SafeHtml,
   },
   props: {
+    fieldClass: {
+      type: String,
+      required: false,
+      default: null,
+    },
     choices: {
       type: Array,
       required: false,
@@ -150,6 +155,7 @@ export default {
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"
+    :class="fieldClass"
   >
     <template v-if="!isCheckbox" #description>
       <span v-safe-html="help"></span>

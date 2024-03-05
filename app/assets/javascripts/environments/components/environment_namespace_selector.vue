@@ -117,7 +117,7 @@ export default {
       :searchable="true"
       @search="onNamespaceSearch"
       @select="onChange"
-      @reset="onChange"
+      @reset="onChange(null)"
     >
       <template v-if="shouldRenderSelectButton" #footer>
         <gl-button

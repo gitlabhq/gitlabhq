@@ -35,6 +35,7 @@ export const integrationFormSections = {
   APPLE_APP_STORE: 'apple_app_store',
   GOOGLE_PLAY: 'google_play',
   GOOGLE_CLOUD_ARTIFACT_REGISTRY: 'google_cloud_artifact_registry',
+  GOOGLE_CLOUD_IAM: 'google_cloud_iam',
 };
 
 export const integrationFormSectionComponents = {
@@ -47,6 +48,7 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
   [integrationFormSections.GOOGLE_CLOUD_ARTIFACT_REGISTRY]:
     'IntegrationSectionGoogleCloudArtifactRegistry',
+  [integrationFormSections.GOOGLE_CLOUD_IAM]: 'IntegrationSectionGoogleCloudIAM',
 };
 
 export const integrationTriggerEvents = {
@@ -123,6 +125,8 @@ export const placeholderForType = {
 
 export const INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY =
   'google_cloud_platform_artifact_registry';
+export const INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_IAM =
+  'google_cloud_platform_workload_identity_federation';
 export const INTEGRATION_FORM_TYPE_JIRA = 'jira';
 export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';
 

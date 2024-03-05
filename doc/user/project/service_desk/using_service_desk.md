@@ -57,6 +57,10 @@ To create a Service Desk ticket from the UI:
 1. Reload the page so the UI reflects the type change.
 1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a walkthrough, see [Create Service Desk tickets via the UI and API (GitLab 16.10)](https://youtu.be/ibUGNc2wifQ).
+<!-- Video published on 2024-03-05 -->
+
 ## As a responder to the issue
 
 For responders to the issue, everything works just like other GitLab issues.

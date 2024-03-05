@@ -3,6 +3,7 @@
 require "spec_helper"
 
 RSpec.describe Integrations::Telegram, feature_category: :integrations do
+  it_behaves_like Integrations::HasAvatar
   it_behaves_like "chat integration", "Telegram" do
     let(:payload) do
       {
@@ -48,14 +49,6 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
         expect(integration).to be_valid
         expect(integration.webhook).to eq("https://api.telegram.org/bot123456:ABC-DEF1234/sendMessage")
       end
-    end
-  end
-
-  describe '#avatar_url' do
-    it 'returns the avatar image path' do
-      expect(subject.avatar_url).to eq(
-        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/telegram.svg')
-      )
     end
   end
 end

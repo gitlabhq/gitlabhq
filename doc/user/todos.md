@@ -24,9 +24,9 @@ You can use the To-Do List to track [actions](#actions-that-create-to-do-items) 
 
 To access your To-Do List:
 
-On the left sidebar, at the top, select To-Do list (**{task-done}**).
+On the left sidebar, at the top, select **To-Do list** (**{task-done}**).
 
-## Search the To-Do List
+### Search the To-Do List
 
 You can search your To-Do List by `to do` and `done`.
 
@@ -106,7 +106,7 @@ You can manually add an item to your To-Do List.
 
 1. In the upper-right corner, select  **Add a to do** (**{todo-add}**).
 
-## Create a to-do item by mentioning someone
+### Create a to-do item by mentioning someone
 
 You can create a to-do item by mentioning someone anywhere except for a code block. Mentioning a user many times in one message only creates one to-do item.
 
@@ -125,6 +125,17 @@ Hey @erin, this is what they said:
 Hi, please message @frank :incoming_envelope:
 ```
 ````
+
+### Re-add a done to-do item
+
+If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
+
+1. On the left sidebar, at the top, select To-Do list (**{task-done}**).
+1. At the top, select **Done**.
+1. [Find the to-do item](#search-the-to-do-list) you want to re-add.
+1. Next to this to-do item, select **Re-add this to-do item** **{redo}**.
+
+The to-do item is now visible in the **To Do** tab of the To-Do list.
 
 ## Actions that mark a to-do item as done
 
@@ -163,7 +174,7 @@ There are two ways to do this:
 - In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
 - In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** (**{todo-done}**).
 
-## Mark all to-do items as done
+### Mark all to-do items as done
 
 You can mark all your to-do items as done at the same time.
 

@@ -32,6 +32,8 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json)
   end
 
+  it_behaves_like Integrations::HasAvatar
+
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { jira_integration }
   end
@@ -1391,14 +1393,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           expect(jira_integration).not_to be_configured
         end
       end
-    end
-  end
-
-  describe '#avatar_url' do
-    it 'returns the avatar image path' do
-      expect(subject.avatar_url).to eq(
-        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
-      )
     end
   end
 end

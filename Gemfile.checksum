@@ -31,7 +31,6 @@
 {"name":"ast","version":"2.4.2","platform":"ruby","checksum":"1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12"},
 {"name":"atlassian-jwt","version":"0.2.1","platform":"ruby","checksum":"2fd2d87418773f2e140c038cb22e049069708aff2bd0a423a7e1740574e97823"},
 {"name":"attr_required","version":"1.0.1","platform":"ruby","checksum":"024e10393bd30901e1adf6769bd756b873a5ef7da60f86f8f11066116b5742bc"},
-{"name":"autoprefixer-rails","version":"10.2.5.1","platform":"ruby","checksum":"3711d67f1112361c7628847ac192d8aa6f3b8abe47527aee8a69dc8985e798ee"},
 {"name":"awesome_print","version":"1.9.2","platform":"ruby","checksum":"e99b32b704acff16d768b3468680793ced40bfdc4537eb07e06a4be11133786e"},
 {"name":"awrence","version":"1.2.1","platform":"ruby","checksum":"dd1d214c12a91f449d1ef81d7ee3babc2816944e450752e7522c65521872483e"},
 {"name":"aws-eventstream","version":"1.3.0","platform":"ruby","checksum":"f1434cc03ab2248756eb02cfa45e900e59a061d7fbdc4a9fd82a5dd23d796d3f"},

@@ -7,6 +7,7 @@ module Integrations
     include ApplicationHelper
     include ActionView::Helpers::AssetUrlHelper
     include Gitlab::Utils::StrongMemoize
+    include HasAvatar
 
     PROJECTS_PER_PAGE = 50
     JIRA_CLOUD_HOST = '.atlassian.net'
@@ -402,10 +403,6 @@ module Integrations
 
     def personal_access_token_authorization?
       jira_auth_type == AUTH_TYPE_PAT
-    end
-
-    def avatar_url
-      ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
     end
 
     def testable?

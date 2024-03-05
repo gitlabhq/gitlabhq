@@ -23514,6 +23514,9 @@ msgstr ""
 msgid "GoogleCloudPlatformService|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Connect to Google Cloud with workload identity federation for secure access without accounts or keys."
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
 msgstr ""
 
@@ -23524,6 +23527,9 @@ msgid "GoogleCloudPlatformService|Google Artifact Registry"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Google Cloud IAM"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Google Cloud project ID"
@@ -23539,6 +23545,9 @@ msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Identify the Google Cloud project with the workload identity pool and provider. %{linkStart}Where are my project ID and project number?%{linkEnd}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
@@ -23584,6 +23593,9 @@ msgid "GoogleCloudPlatformService|The google_cloud_support feature is not availa
 msgstr ""
 
 msgid "GoogleCloudPlatformService|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Workload identity federation"
 msgstr ""
 
 msgid "GoogleCloud|Cancel"

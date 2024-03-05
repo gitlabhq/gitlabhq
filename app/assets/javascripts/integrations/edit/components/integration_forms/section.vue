@@ -41,6 +41,10 @@ export default {
       import(
         /* webpackChunkName: 'IntegrationSectionGoogleCloudArtifactRegistry' */ 'ee_component/integrations/edit/components/sections/google_cloud_artifact_registry.vue'
       ),
+    IntegrationSectionGoogleCloudIAM: () =>
+      import(
+        /* webpackChunkName: 'IntegrationSectionGoogleCloudIAM' */ 'ee_component/integrations/edit/components/sections/google_cloud_iam.vue'
+      ),
   },
   directives: {
     SafeHtml,
