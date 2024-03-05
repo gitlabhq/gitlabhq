@@ -654,14 +654,21 @@ class Project < ApplicationRecord
     )
   end
 
-  scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
+  scope :sorted_by_similarity_desc, -> (search, full_path_only: false) do
+    rules = if full_path_only
+              [{ column: arel_table["path"], multiplier: 1 }]
+            else
+              [
+                { column: arel_table["path"], multiplier: 1 },
+                { column: arel_table["name"], multiplier: 0.7 },
+                { column: arel_table["description"], multiplier: 0.2 }
+              ]
+            end
+
     order_expression = Gitlab::Database::SimilarityScore.build_expression(
       search: search,
-      rules: [
-        { column: arel_table["path"], multiplier: 1 },
-        { column: arel_table["name"], multiplier: 0.7 },
-        { column: arel_table["description"], multiplier: 0.2 }
-      ])
+      rules: rules
+    )
 
     order = Gitlab::Pagination::Keyset::Order.build(
       [

@@ -2650,10 +2650,16 @@
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
-# The following rules needs to be the same as the one for .review:rules:start-review-app-pipeline
-# except that:
-# - all rules have `when: manual` and `allow_failure: true` here
-.review:rules:review-stop-merge-requests:
+.review:rules:review-cleanup:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *ci-review-patterns
+      when: manual
+      allow_failure: true
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
+      allow_failure: true
+
+.review:rules:review-stop:
   rules:
     - <<: *if-not-ee
       when: never
@@ -2662,6 +2668,10 @@
     - <<: *if-merge-request-labels-run-review-app
       when: manual
       allow_failure: true
+    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
+      when: never
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: manual
@@ -2690,16 +2700,6 @@
       changes: *code-patterns
       when: manual
       allow_failure: true
-
-.review:rules:review-cleanup:
-  rules:
-    - !reference [".review:rules:review-stop-merge-requests", rules]
-    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
-      allow_failure: true
-
-.review:rules:review-stop:
-  rules:
-    - !reference [".review:rules:review-stop-merge-requests", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       when: manual
       allow_failure: true

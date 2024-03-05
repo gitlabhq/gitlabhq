@@ -50,7 +50,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def status
-    @fine_grained = Gitlab::GithubImport.fine_grained_token?(session[access_token_key])
+    @fine_grained = Gitlab::GithubImport.fine_grained_personal_token?(session[access_token_key])
 
     client_repos
 

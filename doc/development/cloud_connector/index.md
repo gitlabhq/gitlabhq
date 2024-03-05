@@ -30,6 +30,12 @@ To connect a feature using Cloud Connector:
 
 #### GitLab Rails
 
+1. Call `CloudConnector::AccessService.new.access_token(scopes: [...])` with the list of scopes your feature requires and include
+this token in the `Authorization` HTTP header field.
+The backend service must validate this token and any scopes it carries when receiving the request.
+If you need to embed additional claims in the token specific to your use case, you can pass these
+in the `extra_claims` argument. **Scopes and other claims passed here will only be included in self-issued tokens on GitLab.com.**
+Refer to [CustomersDot](#customersdot) to see how custom claims are handled for self-managed instances.
 1. Ensure your request sends the required headers to the [backend service](#backend-service).
 
    These headers are:
@@ -37,7 +43,7 @@ To connect a feature using Cloud Connector:
    - `X-Gitlab-Instance-Id`: A globally unique instance ID string.
    - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
    - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
-   - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token.
+   - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
 
    Some of these headers can be injected by merging the result of the `API::Helpers::CloudConnector#cloud_connector_headers`
    method to your payload.
@@ -46,14 +52,11 @@ The following example is for a request that includes the `new_feature_scope` sco
 Here we assume your backend service is called `foo` and is already reachable at `https://cloud.gitlab.com/foo`.
 We also assume that the backend service exposes the feature using a `/new_feature_endpoint` endpoint.
 This allows clients to access the feature at `https://cloud.gitlab.com/foo/new_feature_endpoint`.
-Call `CloudConnector::AccessService.access_token` with the list of scopes your feature requires and include
-this token in the `Authorization` HTTP header field.
-The backend service must validate this token and any scopes it carries when receiving the request.
 
 ```ruby
 include API::Helpers::CloudConnector
 
-token = ::CloudConnector::AccessService.new.access_token([:new_feature_scope])
+token = ::CloudConnector::AccessService.new.access_token(scopes: [:new_feature_scope])
 
 Gitlab::HTTP.post(
   "https://cloud.gitlab.com/foo/new_feature_endpoint",
@@ -91,13 +94,17 @@ To add a new feature bound to a scope:
     For example:
 
     ```yaml
-   defaults: &defaults
-        services:
-            new_feature_scope:
-                service_start_time: 2024-02-15 00:00:00 UTC
-                min_gitlab_version: '16.8'
-                bundled_with: 'duo_pro'
+    defaults: &defaults
+      services:
+        new_feature_scope:
+          service_start_time: 2024-02-15 00:00:00 UTC
+            min_gitlab_version: '16.8'
+            bundled_with: 'duo_pro'
     ```
+
+1. **Optional:** If the backend service the token is used for requires additional claims to be embedded in the
+   service access token, contact [#g_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
+   since we do not currently have interfaces in place to self-service this.
 
 #### Backend service
 

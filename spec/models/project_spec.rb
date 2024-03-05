@@ -2181,6 +2181,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.sorted_by_similarity_desc' do
+    let_it_be(:project_a) { create(:project, path: 'similar-1', name: 'similar-1', description: 'A similar project') }
+    let_it_be_with_reload(:project_b) { create(:project, path: 'similar-2', name: 'similar-2', description: 'A related project') }
+    let_it_be(:project_c) { create(:project, path: 'different-path', name: 'different-name', description: 'A different project') }
+
+    let(:search_term) { 'similar' }
+
+    subject(:relation) { described_class.sorted_by_similarity_desc(search_term) }
+
+    context 'when sorting with full similarity' do
+      it 'sorts projects based on path, name, and description similarity' do
+        expect(relation).to eq([project_a, project_b, project_c])
+      end
+    end
+
+    context 'when sorting with path-only similarity' do
+      let(:search_term) { 'diff' }
+
+      subject(:relation) { described_class.sorted_by_similarity_desc(search_term, full_path_only: true) }
+
+      it 'sorts projects based on path similarity only' do
+        expect(relation).to eq([project_c, project_b, project_a])
+      end
+    end
+  end
+
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 

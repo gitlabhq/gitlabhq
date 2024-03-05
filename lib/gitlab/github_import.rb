@@ -2,8 +2,12 @@
 
 module Gitlab
   module GithubImport
-    def self.fine_grained_token?(token)
+    def self.fine_grained_personal_token?(token)
       token&.start_with?('github_pat')
+    end
+
+    def self.classic_personal_token?(token)
+      token&.start_with?('ghp_')
     end
 
     def self.refmap

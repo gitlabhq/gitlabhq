@@ -214,7 +214,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       end
     end
 
-    context 'with fine_grained access token' do
+    context 'with fine_grained personal access token' do
       let(:client_auth_success) { true }
       let(:provider_token) { 'github_pat_23542334' }
 
@@ -224,6 +224,32 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(session[:"#{provider}_access_token"]).to be(provider_token)
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:fine_grained)).to be true
+      end
+    end
+
+    context 'with classic personal access token' do
+      let(:client_auth_success) { true }
+      let(:provider_token) { 'ghp_23542334' }
+
+      it 'sets fine_grained to false' do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be(provider_token)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:fine_grained)).to be false
+      end
+    end
+
+    context 'with non-classic personal access token' do
+      let(:client_auth_success) { true }
+      let(:provider_token) { 'ghu_23542334' }
+
+      it 'sets fine grained to false' do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be(provider_token)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:fine_grained)).to be false
       end
     end
 

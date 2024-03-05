@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Import::GithubService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:token) { 'complex-token' }
-  let_it_be(:access_params) { { github_access_token: 'github-complex-token' } }
+  let_it_be(:access_params) { { github_access_token: 'ghp_complex-token' } }
 
   let(:settings) { instance_double(Gitlab::GithubImport::Settings) }
   let(:user_namespace_path) { user.namespace_path }
@@ -328,6 +328,29 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       end
     end
 
+    context 'when a non-classic access token is used' do
+      let(:access_params) { { github_access_token: 'ghu_token' } }
+
+      before do
+        allow(subject).to receive(:repo).and_return(repository_double)
+      end
+
+      it 'does not validate scopes' do
+        expect(subject).not_to receive(:validate_scopes)
+
+        subject.execute(access_params, :github)
+      end
+
+      it 'does not log or return a warning message' do
+        expect(Gitlab::Import::Logger).not_to receive(:info).with({
+          message: 'Fine grained GitHub personal access token used.'
+        }).and_call_original
+
+        expect(subject.execute(access_params, :github))
+          .to include(nil_warning)
+      end
+    end
+
     context 'when the collaborator import option is true' do
       let(:optional_stages) { { collaborators_import: true } }
       let(:scopes) { ['repo', 'read:user'] }
@@ -499,6 +522,14 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       project: project_double,
       warning: "Fine-grained personal access tokens are not officially supported. " \
                "It is recommended to use a classic token instead."
+    }
+  end
+
+  def nil_warning
+    {
+      status: :success,
+      project: project_double,
+      warning: nil
     }
   end
 

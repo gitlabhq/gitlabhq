@@ -40951,6 +40951,9 @@ msgstr ""
 msgid "Raw blob requests"
 msgstr ""
 
+msgid "Re-add this to-do item"
+msgstr ""
+
 msgid "Re-authentication period expired or never requested. Please try again"
 msgstr ""
 

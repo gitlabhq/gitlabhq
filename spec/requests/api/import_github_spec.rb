@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::ImportGithub, feature_category: :importers do
-  let(:token) { "asdasd12345" }
+  let(:token) { "ghp_asdasd12345" }
   let(:provider) { :github }
   let(:access_params) { { github_access_token: token } }
   let(:provider_username) { user.username }
@@ -160,6 +160,28 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
         expect(json_response).to be_a Hash
         expect(json_response['name']).to eq(project.name)
         expect(json_response['import_warning']).to eq("Fine-grained personal access tokens are not officially supported. It is recommended to use a classic token instead.")
+      end
+    end
+
+    context 'with a non-classic token' do
+      let(:token) { 'ghu_asdasd12345' }
+
+      it 'proceeds with the import' do
+        allow(Gitlab::LegacyGithubImport::ProjectCreator)
+          .to receive(:new).with(provider_repo, provider_repo[:name], user.namespace, user, type: provider, **access_params)
+          .and_return(double(execute: project))
+
+        post api("/import/github", user), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id,
+          optional_stages: { collaborators_import: true }
+        }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to be_a Hash
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['import_warning']).to eq(nil)
       end
     end
 

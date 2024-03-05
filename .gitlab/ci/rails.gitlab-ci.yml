@@ -1315,7 +1315,7 @@ fail-pipeline-early:
     - job: "detect-previous-failed-tests"
   script:
     - !reference [.base-script, script]
-    - rspec_section rspec_rerun_previous_failed_tests ${PREVIOUS_FAILED_TESTS_FILE}
+    - rspec_section rspec_rerun_previous_failed_tests "${PREVIOUS_FAILED_TESTS_FILE}"
 
 rspec rspec-pg14-rerun-previous-failed-tests:
   extends:

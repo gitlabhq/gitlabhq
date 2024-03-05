@@ -64,6 +64,6 @@
           = gl_loading_icon(inline: true)
           = sprite_icon('redo', css_class: 'js-todo-button-icon')
       - else
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Add a to do')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Add a to do') do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Re-add this to-do item')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Re-add this to-do item') do
           = gl_loading_icon(inline: true)
-          = sprite_icon('todo-add', css_class: 'js-todo-button-icon')
+          = sprite_icon('redo', css_class: 'js-todo-button-icon')

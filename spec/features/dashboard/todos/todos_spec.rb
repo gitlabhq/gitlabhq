@@ -303,7 +303,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
     describe 'restoring the todo' do
       before do
         within first('.todo') do
-          find_by_testid('todo-add-icon').click
+          find_by_testid('redo-icon').click
         end
       end
 

@@ -51,6 +51,29 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
+  describe '.review:rules:start-review-app-pipeline' do
+    let(:base_rules) { config.dig('.review:rules:start-review-app-pipeline', 'rules') }
+
+    context 'with .review:rules:review-stop' do
+      let(:derived_rules) { config.dig('.review:rules:review-stop', 'rules') }
+
+      it 'has the same rules as the base, but automatic jobs changed to manual' do
+        base_rules.zip(derived_rules).each do |(base, derived)|
+          # .review:rules:review-stop don't set variables
+          base.delete('variables')
+          base_with_manual_and_allowed_to_fail =
+            if base['when'] == 'never'
+              base
+            else
+              base.merge('when' => 'manual', 'allow_failure' => true)
+            end
+
+          expect(derived).to eq(base_with_manual_and_allowed_to_fail)
+        end
+      end
+    end
+  end
+
   describe '.rails:rules:ee-and-foss-default-rules' do
     let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
 

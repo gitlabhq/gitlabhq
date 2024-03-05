@@ -290,7 +290,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
 
         let_it_be(:nodes) do
           # Note: sorted_by_similarity_desc scope internally supports the generic keyset order.
-          Project.sorted_by_similarity_desc('test', include_in_select: true)
+          Project.sorted_by_similarity_desc('test')
         end
 
         let_it_be(:descending_nodes) { nodes.to_a }

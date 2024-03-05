@@ -16,14 +16,15 @@ module Import
       return context_error if context_error
 
       if provider == :github # we skip scope validation for Gitea importer calls
+        token = access_params[:github_access_token]
 
-        if Gitlab::GithubImport.fine_grained_token?(access_params[:github_access_token])
+        if Gitlab::GithubImport.fine_grained_personal_token?(token)
           Gitlab::GithubImport::Logger.info(
             message: 'Fine grained GitHub personal access token used.'
           )
           warning = s_('GithubImport|Fine-grained personal access tokens are not officially supported. ' \
                        'It is recommended to use a classic token instead.')
-        else
+        elsif Gitlab::GithubImport.classic_personal_token?(token)
           scope_error = validate_scopes
           return scope_error if scope_error
         end
