@@ -16,6 +16,7 @@ import { s__, __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
+import provisionGoogleCloudRunnerGroup from '../../graphql/register/provision_google_cloud_runner_group.query.graphql';
 import provisionGoogleCloudRunnerProject from '../../graphql/register/provision_google_cloud_runner_project.query.graphql';
 import {
   I18N_FETCH_ERROR,
@@ -159,6 +160,8 @@ export default {
       provisioningSteps: [],
       setupBashScript: '',
       showAlert: false,
+      group: null,
+      project: null,
     };
   },
   apollo: {
@@ -213,6 +216,29 @@ export default {
       },
       skip() {
         return !this.projectPath || this.invalidFields.length > 0;
+      },
+    },
+    group: {
+      query: provisionGoogleCloudRunnerGroup,
+      variables() {
+        return {
+          fullPath: this.groupPath,
+          cloudProjectId: this.projectId,
+          region: this.region,
+          zone: this.zone,
+          machineType: this.machineType,
+          runnerToken: this.token,
+        };
+      },
+      result({ data }) {
+        this.provisioningSteps = data.group.runnerCloudProvisioning?.provisioningSteps;
+        this.setupBashScript = data.group.runnerCloudProvisioning?.projectSetupShellScript;
+      },
+      error(error) {
+        captureException({ error, component: this.$options.name });
+      },
+      skip() {
+        return !this.groupPath || this.invalidFields.length > 0;
       },
     },
   },

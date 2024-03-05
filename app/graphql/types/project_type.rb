@@ -704,6 +704,17 @@ module Types
       alpha: { milestone: '16.9' },
       null: true
 
+    field :available_deploy_keys, Types::AccessLevels::DeployKeyType.connection_type,
+      resolver: Resolvers::Projects::DeployKeyResolver,
+      description: 'List of available deploy keys',
+      extras: [:lookahead],
+      null: true,
+      authorize: :admin_project do
+        argument :title_query, GraphQL::Types::String,
+          required: false,
+          description: 'Term by which to search deploy key titles'
+      end
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end

@@ -9,10 +9,12 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import provisionGoogleCloudRunnerQueryProject from '~/ci/runner/graphql/register/provision_google_cloud_runner_project.query.graphql';
+import provisionGoogleCloudRunnerQueryGroup from '~/ci/runner/graphql/register/provision_google_cloud_runner_group.query.graphql';
 import {
   runnerForRegistration,
   mockAuthenticationToken,
-  googleCloudRunnerProvisionResponse,
+  projectRunnerCloudProvisioningSteps,
+  groupRunnerCloudProvisioningSteps,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -34,10 +36,18 @@ const mockRunnerWithoutTokenResponse = {
   },
 };
 
-const mockGoogleCloudRunnerProvisionResponse = {
+const mockProjectRunnerCloudSteps = {
   data: {
     project: {
-      ...googleCloudRunnerProvisionResponse,
+      ...projectRunnerCloudProvisioningSteps,
+    },
+  },
+};
+
+const mockGroupRunnerCloudSteps = {
+  data: {
+    group: {
+      ...groupRunnerCloudProvisioningSteps,
     },
   },
 };
@@ -64,20 +74,36 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
+  const fillInGoogleForm = () => {
+    findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
+    findRegionInput().vm.$emit('input', 'us-central1');
+    findZoneInput().vm.$emit('input', 'us-central1');
+
+    findInstructionsButton().vm.$emit('click');
+
+    return waitForPromises();
+  };
+
   const runnerWithTokenResolver = jest.fn().mockResolvedValue(mockRunnerResponse);
   const runnerWithoutTokenResolver = jest.fn().mockResolvedValue(mockRunnerWithoutTokenResponse);
-  const googleCloudRunnerResolver = jest
-    .fn()
-    .mockResolvedValue(mockGoogleCloudRunnerProvisionResponse);
+  const projectInstructionsResolver = jest.fn().mockResolvedValue(mockProjectRunnerCloudSteps);
+  const groupInstructionsResolver = jest.fn().mockResolvedValue(mockGroupRunnerCloudSteps);
 
   const defaultHandlers = [[runnerForRegistrationQuery, runnerWithTokenResolver]];
+  const defaultProps = {
+    runnerId: mockRunnerId,
+    projectPath: 'test/project',
+  };
 
-  const createComponent = (mountFn = shallowMountExtended, handlers = defaultHandlers) => {
+  const createComponent = (
+    mountFn = shallowMountExtended,
+    handlers = defaultHandlers,
+    props = defaultProps,
+  ) => {
     wrapper = mountFn(GoogleCloudRegistrationInstructions, {
       apolloProvider: createMockApollo(handlers),
       propsData: {
-        runnerId: mockRunnerId,
-        projectPath: 'test/project',
+        ...props,
       },
     });
   };
@@ -149,7 +175,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
 
   it('Hides an alert when the form is valid', async () => {
     createComponent(mountExtended, [
-      [provisionGoogleCloudRunnerQueryProject, googleCloudRunnerResolver],
+      [provisionGoogleCloudRunnerQueryProject, projectInstructionsResolver],
     ]);
 
     findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
@@ -164,20 +190,32 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(findAlert().exists()).toBe(false);
   });
 
-  it('Shows a modal with the correspondent scripts', async () => {
+  it('Shows a modal with the correspondent scripts for a project', async () => {
     createComponent(shallowMountExtended, [
-      [provisionGoogleCloudRunnerQueryProject, googleCloudRunnerResolver],
+      [provisionGoogleCloudRunnerQueryProject, projectInstructionsResolver],
     ]);
 
-    findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
-    findRegionInput().vm.$emit('input', 'us-central1');
-    findZoneInput().vm.$emit('input', 'us-central1');
+    await fillInGoogleForm();
 
-    findInstructionsButton().vm.$emit('click');
+    expect(projectInstructionsResolver).toHaveBeenCalled();
+    expect(groupInstructionsResolver).not.toHaveBeenCalled();
 
-    await waitForPromises();
+    expect(findModalBashInstructions().text()).not.toBeNull();
+    expect(findModalTerrarformInstructions().text()).not.toBeNull();
+    expect(findModalTerrarformApplyInstructions().text).not.toBeNull();
+  });
 
-    expect(googleCloudRunnerResolver).toHaveBeenCalled();
+  it('Shows a modal with the correspondent scripts for a group', async () => {
+    createComponent(
+      shallowMountExtended,
+      [[provisionGoogleCloudRunnerQueryGroup, groupInstructionsResolver]],
+      { runnerId: mockRunnerId, groupPath: 'groups/test' },
+    );
+
+    await fillInGoogleForm();
+
+    expect(groupInstructionsResolver).toHaveBeenCalled();
+    expect(projectInstructionsResolver).not.toHaveBeenCalled();
 
     expect(findModalBashInstructions().text()).not.toBeNull();
     expect(findModalTerrarformInstructions().text()).not.toBeNull();

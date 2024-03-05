@@ -4752,30 +4752,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#eager_fetch_ref!' do
-    let(:project) { create(:project, :repository) }
-
-    # We use build instead of create to test that an IID is allocated
-    subject { build(:merge_request, source_project: project) }
-
-    it 'fetches the ref and expires the ancestor cache' do
-      expect(subject).to receive(:expire_ancestor_cache).and_call_original
-      expect(subject.iid).to be_nil
-
-      expect { subject.eager_fetch_ref! }.to change { subject.iid.to_i }.by(1)
-
-      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
-    end
-
-    it 'only fetches the ref once after saved' do
-      expect(subject.target_project.repository).to receive(:fetch_source_branch!).once.and_call_original
-
-      subject.save!
-
-      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
-    end
-  end
-
   describe 'removing a merge request' do
     it 'refreshes the number of open merge requests of the target project' do
       project = subject.target_project

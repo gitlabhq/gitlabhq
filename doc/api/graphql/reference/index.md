@@ -9052,6 +9052,29 @@ Some of the types in the schema exist solely to model connections. Each connecti
 has a distinct, named type, with a distinct named edge type. These are listed separately
 below.
 
+#### `AccessLevelDeployKeyConnection`
+
+The connection type for [`AccessLevelDeployKey`](#accessleveldeploykey).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accessleveldeploykeyconnectionedges"></a>`edges` | [`[AccessLevelDeployKeyEdge]`](#accessleveldeploykeyedge) | A list of edges. |
+| <a id="accessleveldeploykeyconnectionnodes"></a>`nodes` | [`[AccessLevelDeployKey]`](#accessleveldeploykey) | A list of nodes. |
+| <a id="accessleveldeploykeyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AccessLevelDeployKeyEdge`
+
+The edge type for [`AccessLevelDeployKey`](#accessleveldeploykey).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="accessleveldeploykeyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="accessleveldeploykeyedgenode"></a>`node` | [`AccessLevelDeployKey`](#accessleveldeploykey) | The item at the end of the edge. |
+
 #### `AchievementConnection`
 
 The connection type for [`Achievement`](#achievement).
@@ -25376,6 +25399,22 @@ Returns [`[AutocompletedUser!]`](#autocompleteduser).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectautocompleteuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or public email. |
+
+##### `Project.availableDeployKeys`
+
+List of available deploy keys.
+
+Returns [`AccessLevelDeployKeyConnection`](#accessleveldeploykeyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectavailabledeploykeystitlequery"></a>`titleQuery` | [`String`](#string) | Term by which to search deploy key titles. |
 
 ##### `Project.board`
 

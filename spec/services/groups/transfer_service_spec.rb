@@ -141,6 +141,39 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
+  context 'transferring labels' do
+    let(:new_parent_group) { create(:group, :private) }
+    let(:parent_group) { create(:group) }
+    let(:group) { create(:group, parent: parent_group) }
+    let(:project) { create(:project, group: group) }
+
+    before do
+      group.add_owner(user)
+      parent_group.add_owner(user)
+      new_parent_group.add_owner(user)
+    end
+
+    context 'when the feature flag "group_labels_transfer" is disabled' do
+      before do
+        stub_feature_flags(group_labels_transfer: false)
+      end
+
+      it 'does not use Labels::TransferService' do
+        expect(Labels::TransferService).not_to receive(:new)
+
+        transfer_service.execute(new_parent_group)
+      end
+    end
+
+    it 'delegates transfer to Labels::TransferService' do
+      expect_next_instance_of(Labels::TransferService, user, project.group, project) do |labels_transfer_service|
+        expect(labels_transfer_service).to receive(:execute).once.and_call_original
+      end
+
+      transfer_service.execute(new_parent_group)
+    end
+  end
+
   describe '#execute' do
     context 'when transforming a group into a root group' do
       let_it_be_with_reload(:group) { create(:group, :public, :nested) }

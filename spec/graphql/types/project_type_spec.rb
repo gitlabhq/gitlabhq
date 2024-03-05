@@ -43,7 +43,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
-      protectable_branches
+      protectable_branches available_deploy_keys
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -1215,6 +1215,61 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
         it 'returns all the branch names' do
           expect(protectable_branches).to match_array(branch_names)
+        end
+      end
+    end
+  end
+
+  describe 'available_deploy_keys' do
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            availableDeployKeys{
+              nodes{
+                id
+                title
+                user {
+                  username
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:project) { create :project }
+    let_it_be(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
+    let_it_be(:maintainer) { create(:user) }
+    let(:available_deploy_keys) { subject.dig('data', 'project', 'availableDeployKeys', 'nodes') }
+
+    context 'when there are deploy keys' do
+      before_all do
+        project.add_maintainer(maintainer)
+      end
+
+      context 'and the current user has access' do
+        let(:current_user) { maintainer }
+
+        it 'returns the deploy keys' do
+          expect(available_deploy_keys[0]).to include({
+            'id' => deploy_key.to_global_id.to_s,
+            'title' => deploy_key.title,
+            'user' => {
+              'username' => deploy_key.user.username
+            }
+          })
+        end
+      end
+
+      context 'and the current user does not have access' do
+        let(:current_user) { create(:user) }
+
+        it 'does not return any deploy keys' do
+          expect(available_deploy_keys).to be_nil
         end
       end
     end

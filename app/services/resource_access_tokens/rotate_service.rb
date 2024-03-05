@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-module ProjectAccessTokens
+module ResourceAccessTokens
   class RotateService < ::PersonalAccessTokens::RotateService
     extend ::Gitlab::Utils::Override
 
     def initialize(current_user, token, resource = nil)
       @current_user = current_user
       @token = token
-      @project = resource
+      @resource = resource
     end
 
     def execute(params = {})
       super
     end
 
-    attr_reader :project
+    attr_reader :resource
 
     private
 
@@ -44,15 +44,34 @@ module ProjectAccessTokens
     end
 
     def valid_access_level?
-      return true if current_user.can_admin_all_resources?
-      return false unless current_user.can?(:manage_resource_access_tokens, project)
+      return true if admin_all_resources?
+      return false unless can_manage_tokens?
 
-      token_access_level = project.team.max_member_access(token.user.id).to_i
-      current_user_access_level = project.team.max_member_access(current_user.id).to_i
+      token_access_level <= current_user_access_level
+    end
 
-      return true if token_access_level.to_i <= current_user_access_level
+    def admin_all_resources?
+      current_user.can_admin_all_resources?
+    end
 
-      false
+    def can_manage_tokens?
+      current_user.can?(:manage_resource_access_tokens, resource)
+    end
+
+    def token_access_level
+      if resource.is_a? Project
+        resource.team.max_member_access(token.user.id).to_i
+      else
+        resource.max_member_access_for_user(token.user).to_i
+      end
+    end
+
+    def current_user_access_level
+      if resource.is_a? Project
+        resource.team.max_member_access(current_user.id).to_i
+      else
+        resource.max_member_access_for_user(current_user).to_i
+      end
     end
   end
 end

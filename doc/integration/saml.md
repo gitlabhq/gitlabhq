@@ -716,7 +716,7 @@ Some IdPs have documentation on how to use them as the IdP in SAML configuration
 For example:
 
 - [Active Directory Federation Services (ADFS)](https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
-- [Auth0](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-identity-provider)
+- [Auth0](https://auth0.com/docs/authenticate/single-sign-on/outbound-single-sign-on/configure-auth0-saml-identity-provider)
 
 If you have any questions on configuring your IdP in a SAML configuration, contact
 your provider's support.

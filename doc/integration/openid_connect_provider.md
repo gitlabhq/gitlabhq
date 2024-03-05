@@ -15,7 +15,7 @@ to sign in to other services.
 
 ## Introduction to OpenID Connect
 
-[OpenID Connect](https://openid.net/connect/) \(OIDC) is a simple identity layer on top of the
+[OpenID Connect](https://openid.net/developers/how-connect-works/) \(OIDC) is a simple identity layer on top of the
 OAuth 2.0 protocol. It allows clients to:
 
 - Verify the identity of the end-user based on the authentication performed by GitLab.
@@ -25,7 +25,7 @@ OIDC performs many of the same tasks as OpenID 2.0, but is API-friendly and usab
 mobile applications.
 
 On the client side, you can use [OmniAuth::OpenIDConnect](https://github.com/omniauth/omniauth_openid_connect) for Rails
-applications, or any of the other available [client implementations](https://openid.net/developers/libraries/#connect).
+applications, or any of the other available [client implementations](https://openid.net/developers/certified-openid-connect-implementations/).
 
 The GitLab implementation uses the [doorkeeper-openid_connect](https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect website") gem, refer
 to its README for more details about which parts of the specifications

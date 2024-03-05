@@ -20841,6 +20841,9 @@ msgstr ""
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
 msgstr ""
 
+msgid "Failed to fetch Namespace: %{fullPath}"
+msgstr ""
+
 msgid "Failed to fetch the iteration for this issue. Please try again."
 msgstr ""
 

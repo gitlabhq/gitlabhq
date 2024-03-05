@@ -387,7 +387,7 @@ export const mockAuthenticationToken = 'MOCK_AUTHENTICATION_TOKEN';
 export const newRunnerPath = '/runners/new';
 export const runnerInstallHelpPage = 'https://docs.example.com/runner/install/';
 
-export const googleCloudRunnerProvisionResponse = {
+export const projectRunnerCloudProvisioningSteps = {
   __typename: 'Project',
   id: 'gid://gitlab/Project/1',
   runnerCloudProvisioning: {
@@ -405,6 +405,29 @@ export const googleCloudRunnerProvisionResponse = {
         title: 'Apply the Terraform script',
         languageIdentifier: 'shell',
         instructions: '#!/bin/bash\n\nterraform plan...',
+      },
+    ],
+  },
+};
+
+export const groupRunnerCloudProvisioningSteps = {
+  __typename: 'Group',
+  id: 'gid://gitlab/Group/24',
+  runnerCloudProvisioning: {
+    __typename: 'CiRunnerGoogleCloudProvisioning',
+    projectSetupShellScript: '#!/bin/bash echo "hello world!"',
+    provisioningSteps: [
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Save the Terraform script to a file',
+        languageIdentifier: 'terraform',
+        instructions: 'mock instructions...',
+      },
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Apply the Terraform script',
+        languageIdentifier: 'shell',
+        instructions: 'mock instructions...',
       },
     ],
   },

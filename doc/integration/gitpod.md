@@ -30,7 +30,7 @@ To use the GitLab Gitpod integration, it must be enabled for your GitLab instanc
   1. It's [enabled in their user settings](#enable-gitpod-in-your-user-settings).
 
 For more information about Gitpod, see the Gitpod [features](https://www.gitpod.io/) and
-[documentation](https://www.gitpod.io/docs/).
+[documentation](https://www.gitpod.io/docs).
 
 ## Enable Gitpod in your user settings
 

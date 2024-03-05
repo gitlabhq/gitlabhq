@@ -12,7 +12,7 @@ DETAILS:
 
 You can enable the Microsoft Azure OAuth 2.0 OmniAuth provider and sign in to
 GitLab with your Microsoft Azure credentials. You can configure the provider that uses
-[the earlier Azure Active Directory v1.0 endpoint](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/v1-protocols-oauth-code),
+[the earlier Azure Active Directory v1.0 endpoint](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/v1-protocols-oauth-code),
 or the provider that uses the v2.0 endpoint.
 
 NOTE:
@@ -177,7 +177,7 @@ an Azure application and get a client ID and secret key.
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
 1. If you have multiple Azure Active Directory tenants, switch to the desired tenant. Note the tenant ID.
-1. [Register an application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+1. [Register an application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
    and provide the following information:
    - The redirect URI, which requires the URL of the Azure OAuth callback of your GitLab
      installation. For example:
@@ -195,7 +195,7 @@ In some Microsoft documentation, the terms are named `Application ID` and
 
 ## Add API permissions (scopes)
 
-If you're using the v2.0 endpoint, after you create the application, [configure it to expose a web API](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-expose-web-apis).
+If you're using the v2.0 endpoint, after you create the application, [configure it to expose a web API](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-expose-web-apis).
 Add the following delegated permissions under the Microsoft Graph API:
 
 - `email`
@@ -263,7 +263,7 @@ Alternatively, add the `User.Read.All` application permission.
      ]
      ```
 
-     For [alternative Azure clouds](https://learn.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     For [alternative Azure clouds](https://learn.microsoft.com/en-us/entra/identity-platform/authentication-national-cloud),
      configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
 
      ```ruby
@@ -303,7 +303,7 @@ Alternatively, add the `User.Read.All` application permission.
                  tenant_id: "<tenant_id>" } }
      ```
 
-     For [alternative Azure clouds](https://learn.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud),
+     For [alternative Azure clouds](https://learn.microsoft.com/en-us/entra/identity-platform/authentication-national-cloud),
      configure `base_azure_url` under the `args` section. For example, for Azure Government Community Cloud (GCC):
 
      ```yaml
@@ -315,7 +315,7 @@ Alternatively, add the `User.Read.All` application permission.
                  base_azure_url: "https://login.microsoftonline.us" } }
      ```
 
-   You can also optionally add the `scope` for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow) parameter to the `args` section. The default is `openid profile email`.
+   You can also optionally add the `scope` for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow) parameter to the `args` section. The default is `openid profile email`.
 
 1. Save the configuration file.
 
