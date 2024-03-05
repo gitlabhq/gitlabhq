@@ -108,12 +108,12 @@ by following the [Production Readiness Review process](https://handbook.gitlab.c
 ### GA features
 
 Generally Available features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
-must complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness)
+must complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/)
 and complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
 
 ### Provide earlier access
 
-Our [mission is "everyone can contribute"](https://about.gitlab.com/company/mission/),
+Our [mission is "everyone can contribute"](https://handbook.gitlab.com/handbook/company/mission/),
 and that is only possible if people outside the company can try a feature. We get higher quality (more diverse) feedback
 if people from different organizations try something, so give users the ability to opt in to Experimental
 features when there is enough value.

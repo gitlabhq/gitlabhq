@@ -18,6 +18,7 @@ class ProjectExportJob < ApplicationRecord
   }.freeze
 
   scope :prunable, -> { where("updated_at < ?", EXPIRES_IN.ago) }
+  scope :order_by_updated_at, -> { order(:updated_at, :id) }
 
   state_machine :status, initial: :queued do
     event :start do

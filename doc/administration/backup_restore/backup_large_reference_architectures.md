@@ -103,81 +103,72 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
 
 ### Configure backup of Git repositories
 
-NOTE:
-There is a feature proposal to add the ability to back up repositories directly from Gitaly to object storage. See [epic 10077](https://gitlab.com/groups/gitlab-org/-/epics/10077).
+If using Cloud native hybrid, provision a VM running the GitLab Linux package:
 
-- Linux package (Omnibus):
+1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories.
+   Adding support for Gitaly server-side backups to `backup-utility` is proposed in
+   [issue 438393](https://gitlab.com/gitlab-org/gitlab/-/issues/438393), which would
+   remove the need to provision a VM.
+1. Configure the node as another GitLab Rails node as defined in your [reference architecture](../reference_architectures/index.md).
+   As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster. Find
+   your reference architecture and see the **Configure GitLab Rails** section for an example of how to set the server up. You might need to translate
+   some [Helm chart values](https://docs.gitlab.com/charts/charts/globals.html) to the equivalent ones for Linux package installations.
+   Note that [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
+   It must be a GitLab Rails node.
+1. Ensure the GitLab application isn't running on this node by disabling most services:
 
-  We will continue to use the [backup command](backup_gitlab.md#backup-command) to back up Git repositories.
+   1. Edit `/etc/gitlab/gitlab.rb` to ensure the following services are disabled.
+      `roles(['application_role'])` disables Redis, PostgreSQL, and Consul, and
+      is the basis of the reference architecture Rails node definition.
 
-  If utilization is low enough, you can run it from an existing GitLab Rails node. Otherwise, spin up another node.
+      ```ruby
+      roles(['application_role'])
+      gitlab_workhorse['enable'] = false
+      puma['enable'] = false
+      sidekiq['enable'] = false
+      gitlab_kas['enable'] = false
+      gitaly['enable'] = false
+      prometheus_monitoring['enable'] = false
+      ```
 
-- Cloud native hybrid:
+   1. Reconfigure GitLab:
 
-  [The `backup-utility` command in a `toolbox` pod fails when there is a large amount of data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1352989908). In this case, you must run the [backup command](backup_gitlab.md#backup-command) to back up Git repositories, and you must run it in a VM running the GitLab Linux package:
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
 
-  1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories. Note that
-     [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
-  1. Configure the node as another **GitLab Rails (webservice)** node as defined in your [reference architecture](../reference_architectures/index.md).
-     As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster. Find your reference architecture and see the "Configure GitLab Rails" section of an example how to set the server up. You might need to translate some [Helm chart values](https://docs.gitlab.com/charts/charts/globals.html) to the Linux package equivalent ones.
-  1. Ensure the GitLab application isn't running on this node by disabling most services:
+   1. The only service that should be left is `logrotate`. To verify that `logrotate` is the only remaining service, run:
 
-     1. Edit `/etc/gitlab/gitlab.rb` to ensure the following services are disabled.
-        `roles(['application_role'])` disables Redis, PostgreSQL, and Consul, and
-        is the basis of the reference architecture Rails node definition.
+      ```shell
+      gitlab-ctl status
+      ```
 
-        ```ruby
-        roles(['application_role'])
-        gitlab_workhorse['enable'] = false
-        puma['enable'] = false
-        sidekiq['enable'] = false
-        gitlab_kas['enable'] = false
-        gitaly['enable'] = false
-        prometheus_monitoring['enable'] = false
-        ```
-
-     1. Reconfigure GitLab:
-
-        ```shell
-        sudo gitlab-ctl reconfigure
-        ```
-
-     1. The only service that should be left is `logrotate`, you can verify with:
-
-        ```shell
-        gitlab-ctl status
-        ```
-
-     There is [a feature request](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6823) for a role in the Linux package
-     that meets these requirements.
+   [Issue 6823](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6823) proposes to add a role in the Linux package that meets these requirements.
 
 To back up the Git repositories:
 
-1. Ensure that the GitLab Rails node has enough attached storage to store Git repositories and an archive of the Git repositories. Additionally, the contents of forked repositories are duplicated into their forks during backup.
-   For example, if you have 5 GB worth of Git repositories and two forks of a 1 GB repository, then you require at least 14 GB of attached storage to account for:
-   - 7 GB of Git data.
-   - A 7 GB archive file of all Git data.
-1. SSH into the GitLab Rails node.
-1. [Configure uploading backups to remote cloud storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage).
-1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) for this bucket, or use a bucket in the same account and region as your production data object storage buckets, and ensure this bucket is included in your [preexisting AWS Backup](#configure-backup-of-object-storage-data).
-1. Run the [backup command](backup_gitlab.md#backup-command), skipping PostgreSQL data:
+1. [Configure a server-side backup destination in all Gitaly nodes](../gitaly/configure_gitaly.md#configure-server-side-backups).
+1. Add the destination bucket to your [backups of object storage data](#configure-backup-of-object-storage-data).
+1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable, and skip PostgreSQL data:
 
    ```shell
-   sudo gitlab-backup create SKIP=db
+   sudo gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db
    ```
 
-   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the filename will end in `_gitlab_backup.tar`](index.md#backup-id).
+   This causes Gitaly nodes to upload the Git data and some metadata to remote storage. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the `gitlab-backup` command does not back up object storage by default.
 
-   Since we configured uploading backups to remote cloud storage, the tar file will be uploaded to the remote region and deleted from disk.
-
-1. Note the [backup ID](index.md#backup-id) of the backup file for the next step. For example, if the backup archive name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`, the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
-1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and the backup ID of the source backup file. Using the example ID from the previous step, the command is:
+1. Note the [backup ID](index.md#backup-id) of the backup, which is needed for the next step. For example, if the backup command outputs
+   `2024-02-22 02:17:47 UTC -- Backup 1708568263_2024_02_22_16.9.0-ce is done.`, then the backup ID is `1708568263_2024_02_22_16.9.0-ce`.
+1. Check that the full backup created data in the backup bucket.
+1. Run the [backup command](backup_gitlab.md#backup-command) again, this time specifying [incremental backup of Git repositories](backup_gitlab.md#incremental-repository-backups), and a backup ID. Using the example ID from the previous step, the command is:
 
    ```shell
-   sudo gitlab-backup create SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1493107454_2018_04_25_10.6.4-ce
+   sudo gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1708568263_2024_02_22_16.9.0-ce
    ```
 
-1. Check that the incremental backup succeeded and uploaded to object storage.
+   The value of `PREVIOUS_BACKUP` is not used by this command, but it is required by the command. There is an issue for removing this unnecessary requirement, see [issue 429141](https://gitlab.com/gitlab-org/gitlab/-/issues/429141).
+
+1. Check that the incremental backup succeeded, and added data to object storage.
 1. [Configure cron to make daily backups](backup_gitlab.md#configuring-cron-to-make-daily-backups). Edit the crontab for the `root` user:
 
    ```shell
@@ -185,10 +176,11 @@ To back up the Git repositories:
    crontab -e
    ```
 
-1. There, add the following line to schedule the backup for everyday at 2 AM:
+1. There, add the following lines to schedule the backup for everyday of every month at 2 AM. To limit the number of increments needed to restore a backup, a full backup of Git repositories will be taken on the first of each month, and the rest of the days will take an incremental backup.:
 
    ```plaintext
-   0 2 * * * /opt/gitlab/bin/gitlab-backup create SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1493107454_2018_04_25_10.6.4-ce CRON=1
+   0 2 1 * * /opt/gitlab/bin/gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db CRON=1
+   0 2 2-31 * * /opt/gitlab/bin/gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1708568263_2024_02_22_16.9.0-ce CRON=1
    ```
 
 ### Configure backup of configuration files

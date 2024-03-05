@@ -291,7 +291,7 @@ you of GitLab activity.
 #### Configure SMTP
 
 In this tutorial, you'll set up an [SMTP](https://docs.gitlab.com/omnibus/settings/smtp.html)
-server and use the [Mailgun](https://mailgun.com) SMTP provider.
+server and use the [Mailgun](https://www.mailgun.com/) SMTP provider.
 
 First, start by creating an encrypted file that will contain the login
 credentials, and then configure SMTP for the Linux package:

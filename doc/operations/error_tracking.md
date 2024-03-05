@@ -174,7 +174,7 @@ Prerequisites:
 To enable the Sentry integration:
 
 1. Sign up to Sentry.io or [deploy your own](#deploying-sentry) Sentry instance.
-1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/guides/integrate-frontend/create-new-project/).
+1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/integrate-frontend/create-new-project/).
    For each GitLab project that you want to integrate, you should create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).
    For the SaaS version of Sentry, you can find or generate the auth token at [https://sentry.io/api/](https://sentry.io/api/).
@@ -201,7 +201,7 @@ You can now visit **Monitor > Error Tracking** in your project's sidebar to
 ### Sentry's GitLab integration
 
 You might also want to enable Sentry's GitLab integration by following the steps
-in the [Sentry documentation](https://docs.sentry.io/product/integrations/gitlab/).
+in the [Sentry documentation](https://docs.sentry.io/product/integrations/source-code-mgmt/gitlab/).
 
 ### Enable GitLab Runner
 

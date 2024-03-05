@@ -12,7 +12,7 @@ issues, epics, and more.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [GitLab Agile Project Management](https://levelup.gitlab.com/courses/gitlab-agile-project-management-s2) | Learn how to use planning features to manage your projects in this self-paced course. | **{star}** |
+| [GitLab Agile Project Management](https://university.gitlab.com/courses/gitlab-agile-project-management-s2) | Learn how to use planning features to manage your projects in this self-paced course. | **{star}** |
 | [Build a protected workflow for your project](protected_workflow/index.md) | Set up a workflow for your teams, and enforce protections with approval rules. | |
 | [Run an agile iteration](agile_sprint/index.md) | Use group, projects, and iterations to run an agile development iteration. | |
 | [Use GitLab to facilitate Scrum](scrum_events/index.md) | Learn to run core Scrum ceremonies and workflows in GitLab. | |

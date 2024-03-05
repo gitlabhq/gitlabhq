@@ -12,7 +12,7 @@ and running quickly.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [GitLab with Git Essentials](https://levelup.gitlab.com/courses/gitlab-with-git-essentials-s2)  |  Learn the basics of Git and GitLab in this self-paced course. | **{star}** |
+| [GitLab with Git Essentials](https://university.gitlab.com/courses/gitlab-with-git-essentials-s2)  |  Learn the basics of Git and GitLab in this self-paced course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for DevOps](https://www.youtube.com/watch?v=7q9Y1Cv-ib0) (12m 34s) | Use GitLab through the entire DevOps lifecycle, from planning to monitoring. | **{star}** |
 | [Use the left sidebar to navigate GitLab](left_sidebar/index.md) |  Start navigating the GitLab UI. | **{star}** |
 | [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GLFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |

@@ -144,7 +144,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
 
 - **cert-manager** (optional, for TLS/HTTPS)
 
-  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/installation/supported-releases/),
+  To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/releases/),
   a native Kubernetes certificate management controller that helps with issuing
   certificates. Installing cert-manager on your cluster issues a
   [Let's Encrypt](https://letsencrypt.org/) certificate and ensures the

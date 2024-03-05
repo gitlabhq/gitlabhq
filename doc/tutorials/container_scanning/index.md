@@ -106,7 +106,7 @@ reports vulnerabilities:
 1. In the root directory of your project, select the existing `Dockerfile` file.
 1. Select **Edit**.
 1. Replace `FROM hello-world:latest` with a different Docker image for the
-   [`FROM`](https://docs.docker.com/engine/reference/builder/#from) instruction. The best Docker images to demonstrate
+   [`FROM`](https://docs.docker.com/reference/dockerfile/#from) instruction. The best Docker images to demonstrate
    container scanning have:
    - Operating system packages. For example, from Debian, Ubuntu, Alpine, or Red Hat.
    - Programming language packages. For example, NPM packages or Python packages.
