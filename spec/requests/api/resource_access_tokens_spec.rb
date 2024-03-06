@@ -579,6 +579,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         let(:error_message) { 'boom!' }
         let(:personal_token_service) { PersonalAccessTokens::RotateService }
         let(:project_token_service) { ProjectAccessTokens::RotateService }
+        let(:group_token_service) { GroupAccessTokens::RotateService }
 
         before do
           resource.add_maintainer(project_bot)
@@ -586,6 +587,10 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           if source_type == 'project'
             allow_next_instance_of(project_token_service) do |service|
+              allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+            end
+          elsif source_type == 'group'
+            allow_next_instance_of(group_token_service) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
             end
           else
