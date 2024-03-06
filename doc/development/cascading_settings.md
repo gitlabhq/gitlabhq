@@ -41,8 +41,6 @@ Settings are not cascading by default. To define a cascading setting, take the f
    class AddDelayedProjectRemovalCascadingSetting < Gitlab::Database::Migration[2.1]
      include Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings
 
-     enable_lock_retries!
-
      def up
        add_cascading_namespace_setting :delayed_project_removal, :boolean, default: false, null: false
      end

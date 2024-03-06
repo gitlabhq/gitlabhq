@@ -148,7 +148,7 @@ module Gitlab
 
           key = event_name
           legacy_event_with_property_name = used_in_aggregate_metric && legacy_events.include?(event_name)
-          if Feature.enabled?(:redis_hll_property_name_tracking, type: :wip) && property_name && !legacy_event_with_property_name
+          if property_name && !legacy_event_with_property_name
             key = "#{key}-#{formatted_property_name(property_name)}"
           end
 

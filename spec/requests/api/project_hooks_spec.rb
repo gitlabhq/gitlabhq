@@ -60,6 +60,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
         deployment_events
         releases_events
         emoji_events
+        resource_access_token_events
       ]
     end
 

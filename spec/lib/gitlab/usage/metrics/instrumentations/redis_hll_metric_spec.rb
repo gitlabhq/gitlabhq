@@ -29,11 +29,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
 
   context "with events attribute defined" do
     let(:expected_value) { 2 }
-    let(:flag_enabled) { true }
 
     before do
-      stub_feature_flags(redis_hll_property_name_tracking: flag_enabled)
-
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 1.week.ago, property_name: 'user')
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 2, time: 2.weeks.ago, property_name: 'user')
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 2.weeks.ago, property_name: 'user')
@@ -41,13 +38,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
     end
 
     it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
-
-    context "with feature flag disabled" do
-      let(:expected_value) { 3 }
-      let(:flag_enabled) { false }
-
-      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
-    end
 
     context "with events having different `unique` values" do
       let(:expected_value) { 3 }

@@ -98,10 +98,6 @@ module Gitlab
         unique_properties = EventDefinitions.unique_properties(event_name)
         return if unique_properties.empty?
 
-        if Feature.disabled?(:redis_hll_property_name_tracking, type: :wip)
-          unique_properties = handle_legacy_property_names(unique_properties, event_name)
-        end
-
         unique_properties.each do |property_name|
           unless kwargs[property_name]
             message = "#{event_name} should be triggered with a named parameter '#{property_name}'."
@@ -113,18 +109,6 @@ module Gitlab
 
           UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value, property_name: property_name)
         end
-      end
-
-      def handle_legacy_property_names(unique_properties, event_name)
-        # make sure we're not incrementing the user_id counter with project_id value
-        return [:user] if event_name.to_s == 'user_visited_dashboard'
-
-        return unique_properties if unique_properties.length == 1
-
-        # in case a new event got defined with multiple unique_properties, raise an error
-        raise Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration,
-          "The same event cannot have several unique properties defined. " \
-          "Event: #{event_name}, unique values: #{unique_properties}"
       end
 
       def trigger_snowplow_event(event_name, category, additional_properties, kwargs)

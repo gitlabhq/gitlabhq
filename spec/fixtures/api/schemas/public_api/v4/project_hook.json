@@ -23,7 +23,8 @@
     "alert_status",
     "disabled_until",
     "emoji_events",
-    "custom_webhook_template"
+    "custom_webhook_template",
+    "resource_access_token_events"
   ],
   "optional": [
     "url_variables"
@@ -97,6 +98,9 @@
       "type": "boolean"
     },
     "emoji_events": {
+      "type": "boolean"
+    },
+    "resource_access_token_events": {
       "type": "boolean"
     },
     "alert_status": {

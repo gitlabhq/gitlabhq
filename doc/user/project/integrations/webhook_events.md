@@ -30,6 +30,7 @@ Event type                                   | Trigger
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created, updated, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
+[Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
 
 **Events triggered for group webhooks only:**
 
@@ -2046,5 +2047,79 @@ Payload example:
     "state": "opened",
     "severity": "unknown"
   }
+}
+```
+
+## Project and group access token events
+
+[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
+
+An access token event is triggered when a [project or group access token](../../../security/token_overview.md) will expire in seven days or less.
+
+The available values for `event_name` in the payload are:
+
+- `expiring`
+
+Request header:
+
+```plaintext
+X-Gitlab-Event:  Resource Access Token Hook
+```
+
+Payload example for project:
+
+```json
+{
+  "object_kind": "access_token",
+  "project_id": 7,
+  "project": {
+    "id": 7,
+    "name": "Flight",
+    "description": "Eum dolore maxime atque reprehenderit voluptatem.",
+    "web_url": "https://example.com/flightjs/Flight",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://git@example.com/flightjs/Flight.git",
+    "git_http_url": "https://example.com/flightjs/Flight.git",
+    "namespace": "Flightjs",
+    "visibility_level": 0,
+    "path_with_namespace": "flightjs/Flight",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "https://example.com/flightjs/Flight",
+    "url": "ssh://git@example.com/flightjs/Flight.git",
+    "ssh_url": "ssh://git@example.com/flightjs/Flight.git",
+    "http_url": "https://example.com/flightjs/Flight.git"
+  },
+  "object_attributes": {
+    "user_id": 90,
+    "created_at": "2024-02-05T03:13:44.855Z",
+    "id": 25,
+    "name": "acd",
+    "expires_at": "2024-01-26",
+  },
+  "event_name": "expiring_access_token"
+}
+```
+
+Payload example for group:
+
+```json
+{
+  "object_kind": "access_token",
+  "group_id": 35,
+  "group": {
+    "group_name": "Twitter",
+    "group_path": "twitter",
+    "full_path": "twitter",
+    "group_id": 35
+  },
+  "object_attributes": {
+    "user_id": 90,
+    "created_at": "2024-01-24 16:27:40 UTC",
+    "id": 25,
+    "name": "acd",
+    "expires_at": "2024-01-26",
+  },
+  "event_name": "expiring_access_token"
 }
 ```

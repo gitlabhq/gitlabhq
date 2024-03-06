@@ -10,17 +10,14 @@
 = render 'shared/milestones/header', milestone: @milestone
 = render 'shared/milestones/description', milestone: @milestone
 
-= render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
-
-- if can?(current_user, :read_issue, @project) && @milestone.total_issues_count == 0
-  = render Pajamas::AlertComponent.new(dismissible: false,
-                                       alert_options: { class: 'gl-mt-3 gl-mb-5',
-                                                        data: { testid: 'no-issues-alert' }}) do |c|
+- if @milestone.complete? && @milestone.active?
+  = render Pajamas::AlertComponent.new(variant: :success,
+    alert_options: { data: { testid: 'all-issues-closed-alert' }},
+    dismissible: false) do |c|
     - c.with_body do
-      = _('Assign some issues to this milestone.')
-- else
-  = render 'shared/milestones/milestone_complete_alert', milestone: @milestone do
-    = _('All issues for this milestone are closed. You may close this milestone now.')
+      = _('All issues for this milestone are closed. You may close this milestone now.')
+
+= render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 
 = render 'shared/milestones/tabs', milestone: @milestone
 = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153

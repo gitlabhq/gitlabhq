@@ -1,8 +1,0 @@
----
-name: redis_hll_property_name_tracking
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137890
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432866
-milestone: '16.9'
-type: wip
-group: group::analytics instrumentation
-default_enabled: false

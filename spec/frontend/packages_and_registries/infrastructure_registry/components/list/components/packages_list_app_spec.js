@@ -13,6 +13,7 @@ import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/cons
 
 import * as packageUtils from '~/packages_and_registries/shared/utils';
 import InfrastructureSearch from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_search.vue';
+import InfrastructureTitle from '~/packages_and_registries/infrastructure_registry/list/components/infrastructure_title.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 jest.mock('~/lib/utils/common_utils');
@@ -33,6 +34,7 @@ describe('packages_list_app', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
+  const findInfrastructureTitle = () => wrapper.findComponent(InfrastructureTitle);
 
   const createStore = ({ isGroupPage = false, filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
@@ -158,6 +160,10 @@ describe('packages_list_app', () => {
       expect(heading().text()).toBe('You have no Terraform modules in your project');
     });
 
+    it('does not show infrastructure registry title', () => {
+      expect(findInfrastructureTitle().exists()).toBe(false);
+    });
+
     describe('when group page', () => {
       beforeEach(() => {
         createStore({ isGroupPage: true });
@@ -199,6 +205,10 @@ describe('packages_list_app', () => {
 
       it('exists', () => {
         expect(findInfrastructureSearch().exists()).toBe(true);
+      });
+
+      it('shows infrastructure registry title', () => {
+        expect(findInfrastructureTitle().exists()).toBe(true);
       });
 
       it('on update fetches data from the store', () => {

@@ -91,14 +91,12 @@
           .gl-spinner.gl-spinner-md
 
       - if profile_tabs.empty?
-        .svg-content
-          = image_tag 'illustrations/profile_private_mode.svg'
-        .text-content.text-center
-          %h4
-            - if @user.blocked?
-              = s_('UserProfile|This user is blocked')
-            - else
-              = s_('UserProfile|This user has a private profile')
+        - if @user.blocked?
+          = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-access-md.svg',
+            title: s_('UserProfile|This user is blocked'))
+        - else
+          = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-private-md.svg',
+            title: s_('UserProfile|This user has a private profile'))
     .user-profile-sidebar
       .profile-header.gl-pb-5.gl-pt-3.gl-overflow-y-auto.gl-sm-pr-4
         .gl-vertical-align-top.gl-text-left.gl-max-w-80.gl-overflow-wrap-anywhere

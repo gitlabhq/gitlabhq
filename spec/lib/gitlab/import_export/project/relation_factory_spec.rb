@@ -65,6 +65,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'wiki_page_events' => true,
         'releases_events' => false,
         'emoji_events' => false,
+        'resource_access_token_events' => false,
         'token' => token
       }
     end

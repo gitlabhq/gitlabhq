@@ -25,7 +25,6 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       click_button 'Create milestone'
 
-      expect(find_by_testid('no-issues-alert')).to have_content('Assign some issues to this milestone.')
       expect(page).to have_content('Nov 16, 2016–Dec 16, 2016')
     end
 

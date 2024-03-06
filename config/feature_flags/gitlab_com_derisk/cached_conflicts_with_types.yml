@@ -1,9 +1,0 @@
----
-name: cached_conflicts_with_types
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439695
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145107
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442303
-milestone: '16.10'
-group: group::code review
-type: gitlab_com_derisk
-default_enabled: false

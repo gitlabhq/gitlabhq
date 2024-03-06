@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
   include Database::TableSchemaHelpers
 
   let(:migration) do
-    ActiveRecord::Migration.new.extend(described_class)
+    Gitlab::Database::Migration[2.0].new.extend(described_class)
   end
 
   before do
@@ -346,7 +346,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
 
   describe '#with_lock_retries' do
     let(:model) do
-      ActiveRecord::Migration.new.extend(described_class)
+      Gitlab::Database::Migration::V2_0.new.extend(described_class)
     end
 
     let(:buffer) { StringIO.new }
@@ -380,7 +380,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
       model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
 
-    it 'defaults to disallowing subtransactions' do
+    it 'defaults to disallowing sub-transactions' do
       with_lock_retries = double
       expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: false)).and_return(with_lock_retries)
       expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
@@ -393,9 +393,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
         allow(model).to receive(:transaction_open?).and_return(true)
       end
 
-      context 'when lock retries are enabled' do
+      context 'with WithLockRetries already used' do
         before do
-          allow(model).to receive(:enable_lock_retries?).and_return(true)
+          allow(model).to receive(:with_lock_retries_used?).and_return(true)
         end
 
         it 'does not use Gitlab::Database::WithLockRetries and executes the provided block directly' do
@@ -405,13 +405,24 @@ RSpec.describe Gitlab::Database::MigrationHelpers::V2, feature_category: :databa
         end
       end
 
-      context 'when lock retries are not enabled' do
+      context 'without WithLockRetries being used' do
         before do
-          allow(model).to receive(:enable_lock_retries?).and_return(false)
+          allow(model).to receive(:with_lock_retries_used?).and_return(false)
         end
 
-        it 'raises an error' do
-          expect { model.with_lock_retries(env: env, logger: in_memory_logger) {} }.to raise_error /can not be run inside an already open transaction/
+        let(:error_msg) do
+          <<~MESSAGE
+            with_lock_retries can not be run inside an already open transaction.
+
+            Lock retries are enabled by default for transactional migrations, so this can be run without `with_lock_retries`.
+            For more details, see: https://docs.gitlab.com/ee/development/migration_style_guide.html#transactional-migrations
+          MESSAGE
+        end
+
+        it 'raises an exception' do
+          expect do
+            model.with_lock_retries(env: env, logger: in_memory_logger) {}
+          end.to raise_error(error_msg)
         end
       end
     end

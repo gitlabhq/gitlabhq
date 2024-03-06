@@ -916,6 +916,9 @@ msgstr ""
 msgid "%{linkStart}Advanced search%{linkEnd} is enabled."
 msgstr ""
 
+msgid "%{link_start}Add a start date and due date%{link_end} to view a burndown chart."
+msgstr ""
+
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
@@ -3029,9 +3032,6 @@ msgid "Add reaction"
 msgstr ""
 
 msgid "Add request manually"
-msgstr ""
-
-msgid "Add start and due date"
 msgstr ""
 
 msgid "Add suggestion to batch"
@@ -8199,10 +8199,25 @@ msgstr ""
 msgid "Billing|An error occurred while removing a billable member."
 msgstr ""
 
+msgid "Billing|Are you sure you want to continue?"
+msgstr ""
+
+msgid "Billing|Assign seat"
+msgstr ""
+
+msgid "Billing|Assign seats"
+msgstr ""
+
 msgid "Billing|Awaiting member signup"
 msgstr ""
 
 msgid "Billing|Cannot remove user"
+msgstr ""
+
+msgid "Billing|Confirm bulk seat allocation"
+msgstr ""
+
+msgid "Billing|Confirm bulk seat unassignment"
 msgstr ""
 
 msgid "Billing|Direct memberships"
@@ -8246,6 +8261,12 @@ msgstr ""
 msgid "Billing|Project invite"
 msgstr ""
 
+msgid "Billing|Remove seat"
+msgstr ""
+
+msgid "Billing|Remove seats"
+msgstr ""
+
 msgid "Billing|Remove user %{username} from your subscription"
 msgstr ""
 
@@ -8254,6 +8275,16 @@ msgstr ""
 
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
+
+msgid "Billing|This action will assign a GitLab Duo Pro seat to 1 user"
+msgid_plural "Billing|This action will assign a GitLab Duo Pro seat to %d users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Billing|This action will remove GitLab Duo Pro seat from 1 user"
+msgid_plural "Billing|This action will remove GitLab Duo Pro seats from %d users"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Billing|To ensure all members can access the group when your trial ends, you can upgrade to a paid tier."
 msgstr ""
@@ -16790,9 +16821,6 @@ msgstr ""
 msgid "Denied authorization of chat nickname %{user_name}."
 msgstr ""
 
-msgid "Denied licenses must be removed or approved."
-msgstr ""
-
 msgid "Deny"
 msgstr ""
 
@@ -23433,16 +23461,31 @@ msgid_plural "GoogleArtifactRegistry|%d more tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "GoogleArtifactRegistry|After the policies have been created, select %{strongStart}Save changes%{strongEnd} to continue."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifact details."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Built"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Configuration instructions"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Configure Google Cloud IAM policies"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Configure in settings"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Copy command"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Copy digest"
@@ -23487,10 +23530,19 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Push new ones from your CI/CD pipeline."
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Replace %{codeStart}your_access_token%{codeEnd} with a new %{linkStart}personal access token%{linkEnd} with the %{strongStart}read_api%{strongEnd} scope. This token gets information from your Google Cloud IAM integration in GitLab."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Replace %{codeStart}your_google_cloud_project_id%{codeEnd} with your Google Cloud project ID."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Repository"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Repository: %{repository}"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Run the following command to setup IAM read and write policies in your Google Cloud project."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Tags"
@@ -23506,6 +23558,12 @@ msgid "GoogleArtifactRegistry|View them in %{strong_start}Deploy &gt; Google Art
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Virtual size"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|You might be prompted to sign into Google."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Your Google Cloud project must have specific Identity and Access Management (IAM) policies to use the Artifact Registry repository in this GitLab project."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
@@ -52811,6 +52869,9 @@ msgstr ""
 msgid "Tracing|Service"
 msgstr ""
 
+msgid "Tracing|Showing %{count} traces"
+msgstr ""
+
 msgid "Tracing|Status"
 msgstr ""
 
@@ -56174,6 +56235,9 @@ msgstr ""
 msgid "Webhooks|A wiki page is created or updated."
 msgstr ""
 
+msgid "Webhooks|An access token is going to expire in the next 7 days. %{help_link}?"
+msgstr ""
+
 msgid "Webhooks|An emoji is awarded or revoked. %{help_link}?"
 msgstr ""
 
@@ -56253,6 +56317,9 @@ msgid "Webhooks|Name (optional)"
 msgstr ""
 
 msgid "Webhooks|Pipeline events"
+msgstr ""
+
+msgid "Webhooks|Project or group access token events"
 msgstr ""
 
 msgid "Webhooks|Regular expression"
@@ -56472,6 +56539,9 @@ msgid "Which API requests are affected?"
 msgstr ""
 
 msgid "Which emoji events trigger webhooks"
+msgstr ""
+
+msgid "Which project or group access token events trigger webhooks"
 msgstr ""
 
 msgid "While it's rare to have no vulnerabilities, it can happen. In any event, we ask that you please double check your settings to make sure you've set up your dashboard correctly."

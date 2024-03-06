@@ -645,6 +645,14 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  # This scope to be used only for bot_users since for
+  # regular users this may lead to memory allocation issues
+  scope :with_personal_access_tokens_and_resources, -> do
+    includes(:personal_access_tokens)
+    .includes(:groups)
+    .includes(:projects)
+  end
+
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings

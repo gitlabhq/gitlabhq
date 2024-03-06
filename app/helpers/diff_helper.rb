@@ -244,7 +244,7 @@ module DiffHelper
   def conflicts_with_types
     return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
 
-    cached_conflicts_with_types(enabled: Feature.enabled?(:cached_conflicts_with_types, merge_request.project)) do
+    cached_conflicts_with_types do
       conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: true) # rubocop:disable CodeReuse/ServiceClass
 
       {}.tap do |h|
@@ -271,9 +271,7 @@ module DiffHelper
 
   private
 
-  def cached_conflicts_with_types(enabled: false)
-    return yield unless enabled
-
+  def cached_conflicts_with_types
     cache_key = "merge_request_#{merge_request.id}_conflicts_with_types"
     cache = Rails.cache.read(cache_key)
     source_branch_sha = merge_request.source_branch_sha

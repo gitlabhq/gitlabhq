@@ -790,18 +790,6 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
         )
       end
 
-      context 'when cached_conflicts_with_types is disabled' do
-        before do
-          stub_feature_flags(cached_conflicts_with_types: false)
-        end
-
-        it 'still calls MergeRequests::Conflicts::ListService' do
-          expect(MergeRequests::Conflicts::ListService).to receive(:new)
-
-          helper.conflicts_with_types
-        end
-      end
-
       context 'when source branch SHA changes' do
         before do
           allow(merge_request).to receive(:source_branch_sha).and_return('123abc')

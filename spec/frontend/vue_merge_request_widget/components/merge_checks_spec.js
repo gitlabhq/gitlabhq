@@ -140,7 +140,6 @@ describe('Merge request merge checks component', () => {
     ${'conflict'}                 | ${'conflict'}
     ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
     ${'need_rebase'}              | ${'need_rebase'}
-    ${'policies_denied'}          | ${'default'}
   `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 

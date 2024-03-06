@@ -97,7 +97,11 @@ export default {
 
 <template>
   <div>
-    <infrastructure-title :help-url="$options.terraformRegistryHelpUrl" :count="packagesCount" />
+    <infrastructure-title
+      v-if="packagesCount > 0"
+      :help-url="$options.terraformRegistryHelpUrl"
+      :count="packagesCount"
+    />
     <infrastructure-search v-if="packagesCount > 0" @update="requestPackagesList" />
 
     <package-list @page:changed="onPageChanged" @package:delete="onPackageDeleteRequest">

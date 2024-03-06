@@ -3,8 +3,7 @@
 # This file has been generated using the script included in
 # the description of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137890
 #
-# It is only safe to regenerate it using the same script if the
-# :redis_hll_property_name_tracking feature flag is disabled on prod environment.
+# It is not safe to regenerate it using the same script
 ---
 agent_users_using_ci_tunnel-user: agent_users_using_ci_tunnel
 ci_template_included-project: ci_template_included
@@ -117,7 +116,6 @@ user_viewed_dashboard_list-user: user_viewed_dashboard_list
 user_viewed_instrumentation_directions-user: user_viewed_instrumentation_directions
 user_viewed_visualization_designer-user: user_viewed_visualization_designer
 user_visited_dashboard-user: user_visited_dashboard
-user_visited_dashboard-project: user_visited_dashboard
 value_streams_dashboard_change_failure_rate_link_clicked-user: value_streams_dashboard_change_failure_rate_link_clicked
 value_streams_dashboard_contributor_count_link_clicked-user: value_streams_dashboard_contributor_count_link_clicked
 value_streams_dashboard_cycle_time_link_clicked-user: value_streams_dashboard_cycle_time_link_clicked

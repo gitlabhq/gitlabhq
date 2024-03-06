@@ -41,22 +41,10 @@ cache-workhorse:
 cache-assets:test:
   extends: .cache-assets-base
 
-cache-assets:test as-if-foss:
-  extends:
-    - cache-assets:test
-    - .as-if-foss
-    - .caching:rules:cache-assets-as-if-foss
-
 cache-assets:production:
   extends:
     - .cache-assets-base
     - .production
-
-cache-assets:production as-if-foss:
-  extends:
-    - cache-assets:production
-    - .as-if-foss
-    - .caching:rules:cache-assets-as-if-foss
 
 packages-cleanup:
   extends:

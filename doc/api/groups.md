@@ -1578,7 +1578,8 @@ GET /groups/:id/hooks/:hook_id
   "alert_status": "executable",
   "disabled_until": null,
   "url_variables": [ ],
-  "created_at": "2012-10-12T17:04:47Z"
+  "created_at": "2012-10-12T17:04:47Z",
+  "resource_access_token_events": true
 }
 ```
 
@@ -1610,6 +1611,7 @@ POST /groups/:id/hooks
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
+| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
 
 ### Edit group hook
 
@@ -1641,6 +1643,7 @@ PUT /groups/:id/hooks/:hook_id
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
 | `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
+| `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
 
 ### Delete group hook
 

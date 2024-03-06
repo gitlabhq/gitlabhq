@@ -609,6 +609,7 @@ ProjectHook:
 - repository_update_events
 - releases_events
 - emoji_events
+- resource_access_token_events
 ProtectedBranch:
 - id
 - project_id

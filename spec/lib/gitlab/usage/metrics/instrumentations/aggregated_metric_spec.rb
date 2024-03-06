@@ -7,8 +7,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
   using RSpec::Parameterized::TableSyntax
 
   before do
-    stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
-
     redis_counter_class = Gitlab::UsageDataCounters::HLLRedisCounter
 
     # weekly AND 1 weekly OR 2
@@ -43,13 +41,11 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
       )
   end
 
-  where(:data_source, :time_frame, :attribute, :expected_value, :property_name_flag_enabled) do
-    'redis_hll' | '28d' | 'user_id'    | 3   | true
-    'redis_hll' | '28d' | 'user_id'    | 4   | false
-    'redis_hll' | '28d' | 'project_id' | 4   | false
-    'redis_hll' | '7d'  | 'user_id'    | 2   | true
-    'redis_hll' | '7d'  | 'project_id' | 1   | true
-    'database'  | '7d'  | 'user_id'    | 3.0 | true
+  where(:data_source, :time_frame, :attribute, :expected_value) do
+    'redis_hll' | '28d' | 'user_id'    | 3
+    'redis_hll' | '7d'  | 'user_id'    | 2
+    'redis_hll' | '7d'  | 'project_id' | 1
+    'database'  | '7d'  | 'user_id'    | 3.0
   end
 
   with_them do
@@ -80,7 +76,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
   end
 
   context "with not allowed aggregate attribute" do
-    let(:property_name_flag_enabled) { true }
     let(:metric_definition) do
       {
         data_source: 'redis_hll',

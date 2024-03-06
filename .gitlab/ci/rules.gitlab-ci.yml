@@ -1065,11 +1065,6 @@
       when: manual
       allow_failure: true
 
-.caching:rules:cache-assets-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".caching:rules:cache-assets", "rules"]
-
 .caching:rules:packages-cleanup:
   rules:
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable

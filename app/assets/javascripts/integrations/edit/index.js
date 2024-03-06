@@ -19,6 +19,7 @@ function parseDatasetToProps(data) {
   const {
     id,
     type,
+    projectId,
     commentDetail,
     projectKey,
     learnMorePath,
@@ -36,6 +37,7 @@ function parseDatasetToProps(data) {
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
     artifactRegistryPath,
+    personalAccessTokensPath,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -69,6 +71,7 @@ function parseDatasetToProps(data) {
     testPath,
     resetPath,
     formPath,
+    personalAccessTokensPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -96,6 +99,7 @@ function parseDatasetToProps(data) {
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
     id: parseInt(id, 10),
+    projectId: parseInt(projectId, 10),
     redirectTo,
     shouldUpgradeSlack,
     upgradeSlackUrl,

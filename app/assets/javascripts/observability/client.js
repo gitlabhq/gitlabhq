@@ -225,7 +225,10 @@ function tracingFilterObjToQueryParams(filterObj) {
  *
  * @returns Array<Trace> : A list of traces
  */
-async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sortBy } = {}) {
+async function fetchTraces(
+  tracingUrl,
+  { filters = {}, pageToken, pageSize, sortBy, abortController } = {},
+) {
   const params = tracingFilterObjToQueryParams(filters);
   if (pageToken) {
     params.append('page_token', pageToken);
@@ -242,6 +245,7 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sort
     const { data } = await axios.get(tracingUrl, {
       withCredentials: true,
       params,
+      signal: abortController?.signal,
     });
     if (!Array.isArray(data.traces)) {
       throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -252,13 +256,14 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sort
   }
 }
 
-async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {} } = {}) {
+async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {}, abortController } = {}) {
   const params = tracingFilterObjToQueryParams(filters);
 
   try {
     const { data } = await axios.get(tracingAnalyticsUrl, {
       withCredentials: true,
       params,
+      signal: abortController?.signal,
     });
     return data.results ?? [];
   } catch (e) {
@@ -354,7 +359,7 @@ function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   });
 }
 
-function addMetricsDateRangeFilterToQueryParams(dateRangeFilter, params) {
+function addDateRangeFilterToQueryParams(dateRangeFilter, params) {
   if (!dateRangeFilter || !params) return;
 
   const { value, endDate, startDate } = dateRangeFilter;
@@ -401,7 +406,7 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
     }
 
     if (dateRange) {
-      addMetricsDateRangeFilterToQueryParams(dateRange, params);
+      addDateRangeFilterToQueryParams(dateRange, params);
     }
 
     if (groupBy) {
@@ -446,16 +451,21 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
   }
 }
 
-export async function fetchLogs(logsSearchUrl, { pageToken, pageSize } = {}) {
+export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = {} } = {}) {
   try {
     const params = new URLSearchParams();
+
+    const { dateRange } = filters;
+    if (dateRange) {
+      addDateRangeFilterToQueryParams(dateRange, params);
+    }
+
     if (pageToken) {
       params.append('page_token', pageToken);
     }
     if (pageSize) {
       params.append('page_size', pageSize);
     }
-
     const { data } = await axios.get(logsSearchUrl, {
       withCredentials: true,
       params,

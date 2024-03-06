@@ -92,5 +92,18 @@ module Integrations
 
       Gitlab::DataBuilder::Emoji.build(award_emoji, current_user, 'award')
     end
+
+    def access_tokens_events_data
+      resource_access_token = PersonalAccessToken.new(
+        id: 1,
+        name: 'pat_for_webhook_event',
+        user: project.bots.first,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now,
+        expires_at: 2.days.from_now
+      )
+
+      Gitlab::DataBuilder::ResourceAccessToken.build(resource_access_token, :expiring, project)
+    end
   end
 end

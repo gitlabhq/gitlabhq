@@ -121,7 +121,7 @@ the following preparations into account.
   - Ensure the `db:check-schema` job has run successfully and no unexpected schema changes are introduced in a rollback. This job may only trigger a warning if the schema was changed.
   - Verify that the previously mentioned jobs continue to succeed whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
-- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
+- [Lock retries](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) are enabled by default for all transactional migrations. For non-transactional migrations review the relevant [documentation](migration_style_guide.md#usage-with-non-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
 - When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
   test its execution using `CREATE INDEX CONCURRENTLY` in [Database Lab](database/database_lab.md) and add the execution time to the MR description:

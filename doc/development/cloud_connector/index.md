@@ -20,13 +20,16 @@ for a list of terms used throughout the document.
 A GitLab Rails instance accesses backend services by means of a Cloud Connector Service Access Token.
 This is a token provided by the GitLab Rails application and holds information about which backend services and features in these services it can access.
 
-To connect a feature using Cloud Connector:
+The following sections cover the necessary steps to expose features both from existing and newly built
+backend services through Cloud Connector.
+
+### Connect a feature to an existing service
+
+To connect a feature in an existing backend service to Cloud Connector:
 
 1. [Complete the steps in GitLab Rails](#gitlab-rails)
 1. [Complete the steps in CustomersDot](#customersdot)
 1. [Complete the steps in the backend service](#backend-service)
-
-### Connect a feature to an existing service
 
 #### GitLab Rails
 
@@ -139,6 +142,114 @@ and the [FastAPI](https://fastapi.tiangolo.com/) framework.
    ...
    ```
 
-##### Testing
+### Connect a new backend service to Cloud Connector
+
+To integrate a new backend service that isn't already accessible by Cloud Connector features:
+
+1. [Set up JWT validation](#set-up-jwt-validation).
+1. [Make it available at `cloud.gitlab.com`](#add-a-new-cloud-connector-route).
+
+#### Set up JWT validation
+
+As mentioned in the [backend service section](#backend-service) for services that already use
+Cloud Connector, each service must verify that the JWT sent by a GitLab instance is legitimate.
+
+To accomplish this, a backend service must:
+
+1. [Maintain a JSON Web Key Set (JWKS)](#maintain-jwks-for-token-validation).
+1. [Validate JWTs with keys in this set](#validate-jwts-with-jwks).
+
+For a detailed explanation of the mechanism behind this, refer to
+[Architecture: Access control](architecture.md#access-control).
+
+We strongly suggest to use existing software libraries to handle JWKS and JWT authentication.
+Examples include:
+
+- [`go-jwt`](https://github.com/golang-jwt/)
+- [`ruby-jwt`](https://github.com/jwt/ruby-jwt)
+- [`python-jose`](https://github.com/mpdavis/python-jose)
+
+##### Maintain JWKS for token validation
+
+JWTs are cryptographically signed by the token authority when first issued.
+GitLab instances then attach the JWTs in requests made to backend services.
+
+To validate JWT service access tokens, the backend service must first obtain the JWKS
+containing the public validation key that corresponds to the private signing key used
+to sign the token. Because both GitLab.com and CustomersDot issue tokens,
+the backend service must fetch the JWKS from both.
+
+To fetch the JWKS, use the OIDC discovery endpoints exposed by GitLab.com and CustomersDot.
+For each of these token authorities:
+
+1. `GET /.well-known/openid-configuration`
+
+   Example response:
+
+   ```json
+   {
+     "issuer": "https://customers.gitlab.com/",
+     "jwks_uri": "https://customers.gitlab.com/oauth/discovery/keys",
+     "id_token_signing_alg_values_supported": [
+       "RS256"
+     ]
+   }
+   ```
+
+1. `GET <jwks_uri>`
+
+   Example response:
+
+   ```json
+   {
+     "keys": [
+       {
+         "kty": "RSA",
+         "n": "sGy_cbsSmZ_Y4XV80eK_ICmz46XkyWVf6O667-mhDcN5FcSfPW7gqhyn7s052fWrZYmJJZ4PPyh6ZzZ_gZAaQM7Oe2VrpbFdCeJW0duR51MZj52FwShLfi-NOBz2GH9XuUsRBKnXt7wwKQTabH4WW7XL23Hi0eDjc9dyQmsr2-AbH05yVsrgvEYSsWiCGEgobPgNc51DwBoIcsJ-kFN591aO_qAkbpf1j7yAuAVG7TUxaditQhyZKkourPXXyx1R-u0Lx9UJyAV8ySqFxq3XDE_pg6ZuJ7M0zS0XnGI82g3Js5zAughrQyJMhKd8j5c8UfSGxhRBQh58QNl3UwoMjQ",
+         "e": "AQAB",
+         "kid": "ZoObkdsnUfqW_C_EfXp9DM6LUdzl0R-eXj6Hrb2lrNU",
+         "use": "sig",
+         "alg": "RS256"
+       }
+     ]
+   }
+   ```
+
+1. Cache the response. We suggest to let the cache expire once a day.
+
+The keys obtained this way can be used to validate JWTs issued by the respective token authority.
+Exactly how this works depends on the programming language and libraries used. General instructions
+can be found in [Locate JSON Web Key Sets](https://auth0.com/docs/secure/tokens/json-web-tokens/locate-json-web-key-sets).
+Backend services may merge responses from both token authorities into a single cached result set.
+
+##### Validate JWTs with JWKS
+
+To validate a JWT:
+
+1. Read the token string from the HTTP `Authorization` header.
+1. Validate it using a JWT library object and the JWKS [obtained previously](#maintain-jwks-for-token-validation).
+
+When validating a token, ensure that:
+
+1. The token signature is correct.
+1. The `aud` claim equals or contains the backend service (this field can be a string or an array).
+1. The `iss` claim matches the issuer URL of the key used to validate it.
+1. The `scopes` claim covers the functionality exposed by the requested endpoint (see [Backend service](#backend-service)).
+
+#### Add a new Cloud Connector route
+
+All Cloud Connector features must be accessed through `cloud.gitlab.com`, a global load-balancer that
+routes requests into backend services based on paths prefixes. For example, AI features must be requested
+from `cloud.gitlab.com/ai/<AI-specific-path>`. The load-balancer then routes `<AI-specific-path>` to the AI gateway.
+
+To connect a new backend service to Cloud Connector, you must claim a new path-prefix to route requests to your
+service. For example, if you connect `foo-service`, a new route must be added that routes `cloud.gitlab.com/foo`
+to `foo-service`.
+
+Adding new routes requires access to production infrastructure configuration. If you require a new route to be
+added, open an issue in the [`gitlab-org/gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
+and assign it to the Cloud Connector group.
+
+## Testing
 
 An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#setup).

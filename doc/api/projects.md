@@ -2813,7 +2813,8 @@ GET /projects/:id/hooks/:hook_id
   "alert_status": "executable",
   "disabled_until": null,
   "url_variables": [ ],
-  "created_at": "2012-10-12T17:04:47Z"
+  "created_at": "2012-10-12T17:04:47Z",
+  "resource_access_token_events": true
 }
 ```
 
@@ -2844,6 +2845,7 @@ POST /projects/:id/hooks
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
 | `token`                      | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki events. |
+| `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
 
 ### Edit project hook
 
@@ -2873,6 +2875,7 @@ PUT /projects/:id/hooks/:hook_id
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
 | `token`                      | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki page events. |
+| `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
 
 ### Delete project hook
 

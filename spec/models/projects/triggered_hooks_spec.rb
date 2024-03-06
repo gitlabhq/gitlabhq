@@ -41,6 +41,28 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
     run_hooks(:push_hooks, data)
   end
 
+  context 'with access token hooks' do
+    let_it_be(:resource_access_token_hook) { create(:project_hook, project: project, resource_access_token_events: true) }
+
+    it 'executes hook' do
+      expect_hook_execution(resource_access_token_hook, data, 'resource_access_token_hooks')
+
+      run_hooks(:resource_access_token_hooks, data)
+    end
+
+    context 'when access_tokens_webhooks feature flag is disabled' do
+      before do
+        stub_feature_flags(access_tokens_webhooks: false)
+      end
+
+      it 'does not execute the hook' do
+        expect(WebHookService).not_to receive(:new)
+
+        run_hooks(:resource_access_token_hooks, data)
+      end
+    end
+  end
+
   context 'with emoji hooks' do
     let_it_be(:emoji_hook) { create(:project_hook, project: project, emoji_events: true) }
 
@@ -57,18 +79,6 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
 
       it 'does not execute the hook' do
         expect(WebHookService).not_to receive(:new)
-
-        run_hooks(:emoji_hooks, data)
-      end
-    end
-
-    context 'when emoji_webhooks feature flag is enabled for the project' do
-      before do
-        stub_feature_flags(emoji_webhooks: emoji_hook.project)
-      end
-
-      it 'executes the hook' do
-        expect_hook_execution(emoji_hook, data, 'emoji_hooks')
 
         run_hooks(:emoji_hooks, data)
       end

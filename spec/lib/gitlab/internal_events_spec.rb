@@ -322,60 +322,13 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     context 'when there are multiple unique keys' do
       let(:property_names) { [:project, :user] }
 
-      before do
-        stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
-      end
+      it 'all of them are used when logging to RedisHLL', :aggregate_failures do
+        described_class.track_event(event_name, user: user, project: project)
 
-      context "with the property_name tracking feature flag enabled" do
-        let(:property_name_flag_enabled) { true }
-
-        it 'all of them are used when logging to RedisHLL', :aggregate_failures do
-          described_class.track_event(event_name, user: user, project: project)
-
-          expect_redis_tracking
-          expect_redis_hll_tracking(user.id, :user)
-          expect_redis_hll_tracking(project.id, :project)
-          expect_snowplow_tracking
-        end
-      end
-
-      context "with the property_name tracking feature flag disabled" do
-        let(:property_name_flag_enabled) { false }
-
-        context "with multiple property_names defined" do
-          it 'logs an error', :aggregate_failures do
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
-              Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration, anything
-            )
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
-          end
-        end
-
-        context "with single property_names defined" do
-          let(:property_names) { [:project] }
-
-          it 'logs to RedisHLL only once' do
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
-          end
-        end
-
-        context "when event_name is user_visited_dashboard" do
-          let(:event_name) { 'user_visited_dashboard' }
-
-          it 'logs to RedisHLL only once with user_id' do
-            # make it defined also on FOSS tests
-            allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with(event_name).and_return(true)
-
-            described_class.track_event(event_name, user: user, project: project)
-
-            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
-              .with(event_name, values: user.id, property_name: :user)
-          end
-        end
+        expect_redis_tracking
+        expect_redis_hll_tracking(user.id, :user)
+        expect_redis_hll_tracking(project.id, :project)
+        expect_snowplow_tracking
       end
     end
 

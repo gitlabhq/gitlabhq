@@ -1433,6 +1433,26 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.with_personal_access_tokens_and_resources' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:user3) { create(:user) }
+
+      subject(:users) { described_class.with_personal_access_tokens_and_resources }
+
+      it 'includes expiring personal access tokens' do
+        expect(users.first.personal_access_tokens).to be_loaded
+      end
+
+      it 'includes groups' do
+        expect(users.first.groups).to be_loaded
+      end
+
+      it 'includes projects' do
+        expect(users.first.projects).to be_loaded
+      end
+    end
+
     describe '.active_without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }

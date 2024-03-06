@@ -18,7 +18,8 @@ module TriggerableHooks
     release_hooks: :releases_events,
     member_hooks: :member_events,
     subgroup_hooks: :subgroup_events,
-    emoji_hooks: :emoji_events
+    emoji_hooks: :emoji_events,
+    resource_access_token_hooks: :resource_access_token_events
   }.freeze
 
   extend ActiveSupport::Concern

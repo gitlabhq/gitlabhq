@@ -55,6 +55,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     let(:fields) do
       [
         :id,
+        :project_id,
         :show_active,
         :activated,
         :activate_disabled,

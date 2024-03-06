@@ -92,7 +92,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     let(:productivity_category) { 'productivity' }
     let(:analytics_category) { 'analytics' }
     let(:other_category) { 'other' }
-    let(:property_name_flag_enabled) { false }
 
     let(:known_events) do
       [
@@ -109,7 +108,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     before do
       skip_default_enabled_yaml_check
       allow(described_class).to receive(:known_events).and_return(known_events)
-      stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
     end
 
     describe '.track_event' do
@@ -209,53 +207,25 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
             described_class.track_event(event_name, values: entity1)
           end
         end
-
-        context "with the file including overrides" do
-          let(:overrides_file_content) { "#{event_name}1: new_key2\n#{event_name}: new_key" }
-
-          context "when the event is included in overrides file" do
-            it "tracks the events using overridden Redis key" do
-              expected_key = "{hll_counters}_new_key-2020-23"
-              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
-
-              described_class.track_event(:g_analytics_contribution, values: entity1)
-            end
-          end
-
-          context "when the event is not included in overrides file" do
-            let(:not_overridden_name) { "g_compliance_dashboard" }
-
-            it "tracks the events using original Redis key" do
-              expected_key = "{hll_counters}_#{not_overridden_name}-2020-23"
-              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
-
-              described_class.track_event(not_overridden_name, values: entity1, property_name: :user)
-            end
-          end
-        end
       end
 
       describe "property_name" do
-        context "with enabled feature flag" do
-          let(:property_name_flag_enabled) { true }
+        context "with a property_name for an overridden event" do
+          context "with a property_name sent as a symbol" do
+            it "tracks the events using the Redis key override" do
+              expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
+              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
 
-          context "with a property_name for an overridden event" do
-            context "with a property_name sent as a symbol" do
-              it "tracks the events using the Redis key override" do
-                expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
-                expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
-
-                described_class.track_event(event_overridden_for_user, values: entity1, property_name: :user)
-              end
+              described_class.track_event(event_overridden_for_user, values: entity1, property_name: :user)
             end
+          end
 
-            context "with a property_name sent in string format" do
-              it "tracks the events using the Redis key override" do
-                expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
-                expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
+          context "with a property_name sent in string format" do
+            it "tracks the events using the Redis key override" do
+              expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
+              expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
 
-                described_class.track_event(event_overridden_for_user, values: entity1, property_name: 'user.id')
-              end
+              described_class.track_event(event_overridden_for_user, values: entity1, property_name: 'user.id')
             end
           end
 
@@ -299,28 +269,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
                 described_class.track_event(no_slot, values: entity1)
               end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
             end
-          end
-        end
-
-        context "with disabled feature flag" do
-          it "uses old Redis key for overridden events" do
-            expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
-            expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
-
-            described_class.track_event(event_overridden_for_user, values: entity1, property_name: 'user')
-          end
-
-          it "uses old Redis key for new events" do
-            expected_key = "{hll_counters}_#{no_slot}-2020-23"
-            expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))
-
-            described_class.track_event(no_slot, values: entity1, property_name: 'project')
-          end
-
-          it "raises an error for new events when no property_name sent" do
-            expect do
-              described_class.track_event(no_slot, values: entity1)
-            end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
           end
         end
       end
@@ -393,93 +341,61 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       end
 
       describe "property_names" do
-        before do
-          stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
-        end
-
-        context "with enabled feature flag" do
-          let(:property_name_flag_enabled) { true }
-
-          context "with a property_name for an overridden event" do
-            context "with a property_name sent as a symbol" do
-              it "tracks the events using the Redis key override" do
-                expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
-                expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-                described_class.unique_events(event_names: [event_overridden_for_user], property_name: :user, start_date: 7.days.ago, end_date: Date.current)
-              end
-            end
-
-            context "with a property_name sent in string format" do
-              it "tracks the events using the Redis key override" do
-                expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
-                expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-                described_class.unique_events(event_names: [event_overridden_for_user], property_name: 'user.id', start_date: 7.days.ago, end_date: Date.current)
-              end
-            end
-          end
-
-          context "with a property_name for an overridden event that doesn't include this property_name" do
-            it "tracks the events using a Redis key with the property_name" do
-              expected_key = "{hll_counters}_#{no_slot}-user-2020-22"
+        context "with a property_name for an overridden event" do
+          context "with a property_name sent as a symbol" do
+            it "tracks the events using the Redis key override" do
+              expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
               expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
 
-              described_class.unique_events(event_names: [no_slot], property_name: 'user', start_date: 7.days.ago, end_date: Date.current)
+              described_class.unique_events(event_names: [event_overridden_for_user], property_name: :user, start_date: 7.days.ago, end_date: Date.current)
             end
           end
 
-          context "with a property_name for a new event" do
-            it "tracks the events using a Redis key with the property_name" do
-              expected_key = "{hll_counters}_#{no_slot}-project-2020-22"
+          context "with a property_name sent in string format" do
+            it "tracks the events using the Redis key override" do
+              expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
               expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
 
-              described_class.unique_events(event_names: [no_slot], property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
-            end
-          end
-
-          context "with a property_name for a legacy event" do
-            it "raises an error with an instructive message" do
-              expect do
-                described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
-              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
-            end
-          end
-
-          context "with no property_name for a overridden event" do
-            it "raises an error with an instructive message" do
-              expect do
-                described_class.unique_events(event_names: [event_overridden_for_user], start_date: 7.days.ago, end_date: Date.current)
-              end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
-            end
-          end
-
-          context "with no property_name for a new event" do
-            it "raises an error with an instructive message" do
-              expect do
-                described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)
-              end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
+              described_class.unique_events(event_names: [event_overridden_for_user], property_name: 'user.id', start_date: 7.days.ago, end_date: Date.current)
             end
           end
         end
 
-        context "with disabled feature flag" do
-          let(:property_name_flag_enabled) { false }
-
-          it "uses old Redis key for overridden events" do
-            expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
+        context "with a property_name for an overridden event that doesn't include this property_name" do
+          it "tracks the events using a Redis key with the property_name" do
+            expected_key = "{hll_counters}_#{no_slot}-user-2020-22"
             expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
 
-            described_class.unique_events(event_names: [event_overridden_for_user], property_name: 'user', start_date: 7.days.ago, end_date: Date.current)
+            described_class.unique_events(event_names: [no_slot], property_name: 'user', start_date: 7.days.ago, end_date: Date.current)
           end
+        end
 
-          it "uses old Redis key for new events" do
-            expected_key = "{hll_counters}_#{no_slot}-2020-22"
+        context "with a property_name for a new event" do
+          it "tracks the events using a Redis key with the property_name" do
+            expected_key = "{hll_counters}_#{no_slot}-project-2020-22"
             expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
 
             described_class.unique_events(event_names: [no_slot], property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
           end
+        end
 
+        context "with a property_name for a legacy event" do
+          it "raises an error with an instructive message" do
+            expect do
+              described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
+            end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
+          end
+        end
+
+        context "with no property_name for a overridden event" do
+          it "raises an error with an instructive message" do
+            expect do
+              described_class.unique_events(event_names: [event_overridden_for_user], start_date: 7.days.ago, end_date: Date.current)
+            end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
+          end
+        end
+
+        context "with no property_name for a new event" do
           it "raises an error with an instructive message" do
             expect do
               described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)

@@ -53,8 +53,7 @@ module Gitlab
         #
         # In order to retry the block, the method wraps the block into a transaction.
         #
-        # When called inside an open transaction it will execute the block directly if lock retries are enabled
-        # with `enable_lock_retries!` at migration level, otherwise it will raise an error.
+        # When called inside an open transaction it will execute the block directly.
         #
         # ==== Examples
         #   # Invoking without parameters
@@ -85,17 +84,20 @@ module Gitlab
         # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
         def with_lock_retries(*args, **kwargs, &block)
           if transaction_open?
-            if enable_lock_retries?
-              Gitlab::AppLogger.warn 'Lock retries already enabled, executing the block directly'
+            if with_lock_retries_used?
+              Gitlab::AppLogger.warn 'WithLockRetries used already, executing the block directly'
               yield
             else
               raise <<~EOF
-              #{__callee__} can not be run inside an already open transaction
+              #{__callee__} can not be run inside an already open transaction.
 
-              Use migration-level lock retries instead, see https://docs.gitlab.com/ee/development/migration_style_guide.html#retry-mechanism-when-acquiring-database-locks
+              Lock retries are enabled by default for transactional migrations, so this can be run without `#{__callee__}`.
+              For more details, see: https://docs.gitlab.com/ee/development/migration_style_guide.html#transactional-migrations
               EOF
             end
           else
+            with_lock_retries_used!
+
             super(*args, **kwargs.merge(allow_savepoints: false), &block)
           end
         end

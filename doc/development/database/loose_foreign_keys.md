@@ -204,8 +204,6 @@ trigger needs to be configured only once. If the model already has at least one
 class TrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-  enable_lock_retries!
-
   def up
     track_record_deletions(:projects)
   end
@@ -273,8 +271,6 @@ Migration for removing the trigger:
 ```ruby
 class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
-
-  enable_lock_retries!
 
   def up
     untrack_record_deletions(:projects)

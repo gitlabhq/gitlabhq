@@ -75,6 +75,10 @@ class PersonalAccessToken < ApplicationRecord
     fuzzy_search(query, [:name])
   end
 
+  def hook_attrs
+    Gitlab::HookData::ResourceAccessTokenBuilder.new(self).build
+  end
+
   protected
 
   def validate_scopes
