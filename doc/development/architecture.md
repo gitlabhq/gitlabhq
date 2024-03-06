@@ -767,7 +767,7 @@ returns a `401` response along with a header detailing where to get an
 authentication token, in this case the GitLab instance. The client then
 requests a pull or push auth token from GitLab and retries the original request
 to the registry. For more information, see
-[token authentication](https://docs.docker.com/registry/spec/auth/token/).
+[token authentication](https://distribution.github.io/distribution/spec/auth/token/).
 
 An external registry can also be configured to use GitLab as an auth endpoint.
 

@@ -4703,8 +4703,8 @@ arm-sql-job:
 
 **Additional details**:
 
-- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
-- `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
+- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
+- `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
 
 #### `services:pull_policy`
 

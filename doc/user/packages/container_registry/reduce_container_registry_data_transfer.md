@@ -84,7 +84,7 @@ Another useful strategy is to ensure that you remove all transient build depende
 empty the operating system package manager cache before and after installing a package.
 
 When building your images, make sure you only copy the relevant files. For Docker, using a
-[`.dockerignore`](https://docs.docker.com/engine/reference/builder/#dockerignore-file)
+[`.dockerignore`](https://docs.docker.com/reference/dockerfile/#dockerignore-file)
 helps ensure that the build process ignores irrelevant files.
 
 You can use other third-party tools to minify your images, such as [DockerSlim](https://github.com/docker-slim/docker-slim).

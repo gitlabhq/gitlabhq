@@ -388,7 +388,7 @@ The different supported drivers are:
 | `filesystem` | Uses a path on the local file system |
 | `azure`      | Microsoft Azure Blob Storage         |
 | `gcs`        | Google Cloud Storage                 |
-| `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes). |
+| `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes). |
 
 Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the container registry,
 we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations,
@@ -487,7 +487,7 @@ To configure the `s3` storage driver for a Linux package installation:
    To avoid using static credentials, use an
    [IAM role](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
    and omit `accesskey` and `secretkey`. Make sure that your IAM profile follows
-   [the permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).
+   [the permissions documented by Docker](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes).
 
    ```ruby
    registry['storage'] = {
@@ -825,7 +825,7 @@ In the examples below we set the Registry's port to `5010`.
 :::TabTitle Self-compiled (source)
 
 1. Open the configuration file of your Registry server and edit the
-   [`http:addr`](https://docs.docker.com/registry/configuration/#http) value:
+   [`http:addr`](https://distribution.github.io/distribution/about/configuration/#http) value:
 
    ```yaml
    http:
@@ -854,7 +854,7 @@ container registry may be unavailable or have [inherent risks](../../user/packag
 
 For the integration to work, the external registry must be configured to
 use a JSON Web Token to authenticate with GitLab. The
-[external registry's runtime configuration](https://docs.docker.com/registry/configuration/#token)
+[external registry's runtime configuration](https://distribution.github.io/distribution/about/configuration/#token)
 **must** have the following entries:
 
 ```yaml
@@ -955,7 +955,7 @@ You can configure the container registry to send webhook notifications in
 response to events happening in the registry.
 
 Read more about the container registry notifications configuration options in the
-[Docker Registry notifications documentation](https://docs.docker.com/registry/notifications/).
+[Docker Registry notifications documentation](https://distribution.github.io/distribution/about/notifications/).
 
 You can configure multiple endpoints for the container registry.
 
@@ -1363,7 +1363,7 @@ The flow described by the diagram above:
 1. The API signs the token with the registry key and hands it to the Docker client
 1. The Docker client now logs in again with the token received from the API. It can now push and pull Docker images.
 
-Reference: <https://docs.docker.com/registry/spec/auth/token/>
+Reference: <https://distribution.github.io/distribution/spec/auth/token/>
 
 ### Communication between GitLab and Registry
 
@@ -1401,7 +1401,7 @@ Make sure everything continues to work as expected before replicating it in prod
 ### Docker Distribution Registry
 
 The [Docker Distribution Registry](https://docs.docker.com/registry/) was donated to the CNCF
-and is now known as the [Distribution Registry](https://github.com/distribution/distribution).
+and is now known as the [Distribution Registry](https://distribution.github.io/distribution).
 This registry is the open source implementation that the GitLab container registry is based on.
 The GitLab container registry is compatible with the basic functionality provided by the Distribution Registry,
 including all the supported storage backends. To migrate to the GitLab container registry
@@ -1417,7 +1417,7 @@ Before diving in to the following sections, here's some basic troubleshooting:
 
 1. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See
-   [the sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
+   [the sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/)
    for more details.
 
 1. Check the Registry logs (for example `/var/log/gitlab/registry/current`) and the GitLab production logs
@@ -1438,7 +1438,7 @@ thus the error above.
 
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work by
-[instructing the Docker daemon to trust the self-signed certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates),
+[instructing the Docker daemon to trust the self-signed certificates](https://distribution.github.io/distribution/about/insecure/#use-self-signed-certificates),
 mounting the Docker daemon and setting `privileged = false` in the GitLab Runner
 `config.toml` file. Setting `privileged = true` takes precedence over the Docker daemon:
 
@@ -1679,7 +1679,7 @@ curl "localhost:5001/debug/vars"
 ### Access old schema v1 Docker images
 
 Support for the Docker registry API V1,
-including [schema V1 image manifests](https://docs.docker.com/registry/spec/manifest-v2-1/),
+including [schema V1 image manifests](https://distribution.github.io/distribution/spec/deprecated-schema-v1/),
 was:
 
 - [Deprecated in GitLab 13.7](https://about.gitlab.com/releases/2020/12/22/gitlab-13-7-released/#deprecate-pulls-that-use-v1-of-the-docker-registry-api)
@@ -1688,7 +1688,7 @@ was:
 It's no longer possible to push or pull v1 images from the GitLab container registry.
 
 If you had v1 images in the GitLab container registry, but you did not upgrade them (following the
-[steps Docker recommends](https://docs.docker.com/registry/spec/deprecated-schema-v1/))
+[steps Docker recommends](https://distribution.github.io/distribution/spec/deprecated-schema-v1/))
 ahead of the GitLab 13.9 upgrade, these images are no longer accessible. If you try to pull them,
 this error appears:
 
@@ -1756,7 +1756,7 @@ Make sure to start by backing up the original registry binary, and restore it af
 
 #### Images upgrade
 
-Follow the [steps that Docker recommends to upgrade v1 images](https://docs.docker.com/registry/spec/deprecated-schema-v1/).
+Follow the [steps that Docker recommends to upgrade v1 images](https://distribution.github.io/distribution/spec/deprecated-schema-v1/).
 The most straightforward option is to pull those images and push them once again to the registry,
 using a Docker client version above v1.12. Docker converts images automatically before pushing them
 to the registry. Once done, all your v1 images should now be available as v2 images.
@@ -1854,14 +1854,14 @@ case, since we know that since the login succeeded, we probably need to look
 at the communication between the client and the Registry.
 
 The REST API between the Docker client and Registry is described
-[in the Docker documentation](https://docs.docker.com/registry/spec/api/). Usually, one would just
+[in the Docker documentation](https://distribution.github.io/distribution/spec/api/). Usually, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
 wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
 One way would be to disable HTTPS by setting up an
-[insecure Registry](https://docs.docker.com/registry/insecure/). This could introduce a
+[insecure Registry](https://distribution.github.io/distribution/about/insecure/). This could introduce a
 security hole and is only recommended for local testing. If you have a
 production system and can't or don't want to do this, there is another way:
 use mitmproxy, which stands for Man-in-the-Middle Proxy.
@@ -1942,7 +1942,7 @@ The above image shows:
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html).
-The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
+The solution: check the [IAM permissions again](https://distribution.github.io/distribution/storage-drivers/s3/).
 Once the right permissions were set, the error goes away.
 
 ### Missing `gitlab-registry.key` prevents container repository deletion

@@ -143,7 +143,7 @@ It may take multiple runs to delete all tags.
 
 WARNING:
 GitLab self-managed installations support third-party container registries that comply with the
-[Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
+[Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
 specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
 workaround to delete tags when interacting with third-party container registries. Refer to
 issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)

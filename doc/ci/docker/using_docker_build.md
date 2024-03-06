@@ -457,7 +457,7 @@ For complex Docker-in-Docker setups like Code Quality checks using Code Climate,
 
 When the Docker daemon starts inside the service container, it uses
 the default configuration. You might want to configure a
-[registry mirror](https://docs.docker.com/registry/recipes/mirror/) for
+[registry mirror](https://docs.docker.com/docker-hub/mirror/) for
 performance improvements and to ensure you do not exceed Docker Hub rate limits.
 
 ##### The service in the `.gitlab-ci.yml` file

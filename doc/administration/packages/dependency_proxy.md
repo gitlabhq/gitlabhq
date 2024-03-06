@@ -252,7 +252,7 @@ sudo find /var/opt/gitlab/gitlab-rails/shared/dependency_proxy -type f | grep -v
 
 ## Changing the JWT expiration
 
-The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
+The Dependency Proxy follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
 issuing the client a JWT to use for the pull requests. The token expiration time is a configurable
 using the application setting `container_registry_token_expire_delay`. It can be changed from the
 rails console:

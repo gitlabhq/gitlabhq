@@ -19,7 +19,7 @@ To enable the container registry for your GitLab instance, see the [administrato
 NOTE:
 If you pull Docker container images from Docker Hub, you can use the
 [GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images) to avoid
-rate limits and speed up your pipelines. For more information about the Docker Registry, see  <https://docs.docker.com/registry/introduction/>.
+rate limits and speed up your pipelines. For more information about the Docker Registry, see [the documentation](https://distribution.github.io/distribution/about/).
 
 ## View the container registry
 
@@ -168,7 +168,7 @@ this setting. However, disabling the container registry disables all Container R
 
 > - OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
 
-The container registry supports the [Docker V2](https://docs.docker.com/registry/spec/manifest-v2-2/)
+The container registry supports the [Docker V2](https://distribution.github.io/distribution/spec/manifest-v2-2/)
 and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)
 image formats. Additionally, the container registry [conforms to the OCI distribution specification](https://conformance.opencontainers.org/#gitlab-container-registry).
 

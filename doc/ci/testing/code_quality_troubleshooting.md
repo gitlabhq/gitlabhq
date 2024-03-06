@@ -128,7 +128,7 @@ $ docker pull --quiet "$CODE_QUALITY_IMAGE"
 Error response from daemon: Get https://gitlab.example.com/v2/: x509: certificate signed by unknown authority
 ```
 
-To fix this, configure the Docker daemon to [trust certificates](https://docs.docker.com/registry/insecure/#use-self-signed-certificates)
+To fix this, configure the Docker daemon to [trust certificates](https://distribution.github.io/distribution/about/insecure/#use-self-signed-certificates)
 by putting the certificate inside of the `/etc/docker/certs.d` directory.
 
 This Docker daemon is exposed to the subsequent Code Quality Docker container in the

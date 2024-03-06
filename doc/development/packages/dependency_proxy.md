@@ -26,17 +26,17 @@ flowchart TD
 From the user's perspective, the GitLab instance is just a container registry that they are interacting with to
 pull images by using `docker login gitlab.com`
 
-When you use `docker login gitlab.com`, the Docker client uses the [v2 API](https://docs.docker.com/registry/spec/api/)
+When you use `docker login gitlab.com`, the Docker client uses the [v2 API](https://distribution.github.io/distribution/spec/api/)
 to make requests.
 
 To support authentication, we must include one route:
 
-- [API Version Check](https://docs.docker.com/registry/spec/api/#api-version-check)
+- [API Version Check](https://distribution.github.io/distribution/spec/api/#api-version-check)
 
 To support `docker pull` requests, we must include two additional routes:
 
-- [Pulling an image manifest](https://docs.docker.com/registry/spec/api/#pulling-an-image-manifest)
-- [Pulling an image layer (blob)](https://docs.docker.com/registry/spec/api/#pulling-a-layer)
+- [Pulling an image manifest](https://distribution.github.io/distribution/spec/api/#pulling-an-image-manifest)
+- [Pulling an image layer (blob)](https://distribution.github.io/distribution/spec/api/#pulling-a-layer)
 
 These routes are defined in [`gitlab-org/gitlab/config/routes/group.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/3f76455ac9cf90a927767e55c837d6b07af818df/config/routes/group.rb#L164-175).
 

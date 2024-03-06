@@ -42,7 +42,7 @@ While some of these may become goals for future iterations, they are currently o
 - Create, update and delete operations.
 - Connecting to multiple (top-level) GAR repositories under the same project.
 - Support for [repository formats](https://cloud.google.com/artifact-registry/docs/supported-formats) beyond container images.
-- Support for other [Identity and Access Management (IAM)](https://cloud.google.com/iam) permissions/credentials beyond [service accounts](https://cloud.google.com/iam/docs/service-account-overview).
+- Support for other [Identity and Access Management (IAM)](https://cloud.google.com/security/products/iam) permissions/credentials beyond [service accounts](https://cloud.google.com/iam/docs/service-account-overview).
 - GAR [cleanup policies](https://cloud.google.com/artifact-registry/docs/repositories/cleanup-policy).
 - Filtering the images list by their attributes (name or value). The current [GAR API](https://cloud.google.com/artifact-registry/docs/reference/rpc/google.devtools.artifactregistry.v1#listdockerimagesrequest) does not support filtering.
 - [Artifact analysis and vulnerability scanning](https://cloud.google.com/artifact-registry/docs/analysis).
@@ -82,7 +82,7 @@ Regarding the GAR integration, since there is no equivalent entities for GitLab 
 
 GAR provides three APIs: Docker API, REST API, and RPC API.
 
-The [Docker API](https://cloud.google.com/artifact-registry/docs/reference/docker-api) is based on the [Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api), now superseded by the [OCI Distribution Specification API](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) (from now on referred to as OCI API). This API is used for pushing/pulling images to/from GAR and also provides some discoverability operations. Refer to [Alternative Solutions](#alternative-solutions) for the reasons why we don't intend to use it.
+The [Docker API](https://cloud.google.com/artifact-registry/docs/reference/docker-api) is based on the [Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/), now superseded by the [OCI Distribution Specification API](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) (from now on referred to as OCI API). This API is used for pushing/pulling images to/from GAR and also provides some discoverability operations. Refer to [Alternative Solutions](#alternative-solutions) for the reasons why we don't intend to use it.
 
 Among the proprietary GAR APIs, the [REST API](https://cloud.google.com/artifact-registry/docs/reference/rest) provides basic functionality for managing repositories. This includes [`list`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages/list) and [`get`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages/get) operations for container image repositories, which could be used for this integration. Both operations return the same data structure, represented by the [`DockerImage`](https://cloud.google.com/artifact-registry/docs/reference/rest/v1/projects.locations.repositories.dockerImages#DockerImage) object, so both provide the same level of detail.
 
@@ -108,7 +108,7 @@ This integration will include a dedicated page named "Google Artifact Registry,"
 
 One alternative solution considered was to use the Docker/OCI API provided by GAR, as it is a common standard for container registries. This approach would have allowed GitLab to reuse [existing logic](https://gitlab.com/gitlab-org/gitlab/-/blob/20df77103147c0c8ff1c22a888516eba4bab3c46/lib/container_registry/client.rb) for connecting to container registries, which could potentially speed up development. However, there were several drawbacks to this approach:
 
-- **Authentication Complexity**: The API requires authentication tokens, which need to be requested at the [login endpoint](https://docs.docker.com/registry/spec/auth/token). These tokens have limited validity, adding complexity to the authentication process. Handling expiring tokens would have been necessary.
+- **Authentication Complexity**: The API requires authentication tokens, which need to be requested at the [login endpoint](https://distribution.github.io/distribution/spec/auth/token/). These tokens have limited validity, adding complexity to the authentication process. Handling expiring tokens would have been necessary.
 
 - **Limited Focus**: The API is solely focused on container registry objects, which does not align with the goal of creating a flexible integration framework for adopting additional GAR artifacts (e.g. package registry formats) down the road.
 

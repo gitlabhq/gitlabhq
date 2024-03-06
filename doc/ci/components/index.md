@@ -155,20 +155,18 @@ the pipeline's configuration.
 
 In order of highest priority first, the component version can be:
 
-- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
+- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`. Use a commit SHA
+  to pin a component to a specific version that is not [published in the CI/CD catalog](#publish-a-new-release).
 - A tag, for example: `1.0`. If a tag and commit SHA exist with the same name,
   the commit SHA takes precedence over the tag.
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest`, which is a special version that always points to the most recent
-  [release published in the CI/CD Catalog](#publish-a-new-release).
+- `~latest`, which is a special version that always points to the latest semantic version
+  published in the CI/CD Catalog. Use `~latest` only if you want to use
+  the absolute latest version at all times, which could include breaking changes.
 
-NOTE:
-The `~latest` version keyword always returns the most recent published release, not the release with
-the latest semantic version. For example, if you first release `2.0.0`, and later release
-a patch fix like `1.5.1`, then `~latest` returns the `1.5.1` release.
-[Issue #427286](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) proposes to
-change this behavior.
+You can use any [version](#component-versions) supported by the component, but using a
+version published to the CI/CD catalog is recommended.
 
 ## CI/CD Catalog
 
