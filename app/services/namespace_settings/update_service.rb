@@ -59,21 +59,25 @@ module NamespaceSettings
     end
 
     def validate_resource_access_token_creation_allowed_param
-      return if settings_params[:resource_access_token_creation_allowed].nil?
-
-      unless can?(current_user, :admin_group, group)
-        settings_params.delete(:resource_access_token_creation_allowed)
-        group.namespace_settings.errors.add(:resource_access_token_creation_allowed, _('can only be changed by a group admin.'))
-      end
+      validate_settings_param_for_admin(
+        param_key: :resource_access_token_creation_allowed,
+        user_policy: :admin_group
+      )
     end
 
-    def validate_settings_param_for_root_group(param_key:, user_policy:)
+    def validate_settings_param_for_admin(param_key:, user_policy:)
       return if settings_params[param_key].nil?
 
       unless can?(current_user, user_policy, group)
         settings_params.delete(param_key)
         group.namespace_settings.errors.add(param_key, _('can only be changed by a group admin.'))
       end
+    end
+
+    def validate_settings_param_for_root_group(param_key:, user_policy:)
+      return if settings_params[param_key].nil?
+
+      validate_settings_param_for_admin(param_key: param_key, user_policy: user_policy)
 
       unless group.root?
         settings_params.delete(param_key)

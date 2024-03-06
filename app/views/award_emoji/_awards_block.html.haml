@@ -16,8 +16,8 @@
 
     - if can?(current_user, :award_emoji, awardable)
       .award-menu-holder.js-award-holder
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'award-control has-tooltip js-add-award btn-icon gl-relative', data: { title: _('Add reaction') }, aria: { label: _('Add reaction') } }) do
-          = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral gl-button-icon gl-icon')
-          = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
-          = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3')
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'add-reaction-button award-control has-tooltip js-add-award btn-icon gl-relative', data: { title: _('Add reaction') }, aria: { label: _('Add reaction') } }) do
+          = sprite_icon('slight-smile', css_class: 'reaction-control-icon-neutral award-control-icon-neutral gl-button-icon gl-icon')
+          = sprite_icon('smiley', css_class: 'reaction-control-icon-positive award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
+          = sprite_icon('smile', css_class: 'reaction-control-icon-super-positive award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3')
     = yield

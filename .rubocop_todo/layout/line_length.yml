@@ -543,7 +543,6 @@ Layout/LineLength:
     - 'app/services/packages/debian/update_distribution_service.rb'
     - 'app/services/packages/go/create_package_service.rb'
     - 'app/services/packages/go/sync_packages_service.rb'
-    - 'app/services/packages/maven/find_or_create_package_service.rb'
     - 'app/services/packages/maven/metadata/append_package_file_service.rb'
     - 'app/services/packages/maven/metadata/sync_service.rb'
     - 'app/services/packages/nuget/search_service.rb'

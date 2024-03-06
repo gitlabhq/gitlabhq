@@ -6547,9 +6547,6 @@ msgstr ""
 msgid "Archived in this version"
 msgstr ""
 
-msgid "Archived project! Repository and other project resources are read-only"
-msgstr ""
-
 msgid "Archived projects"
 msgstr ""
 
@@ -51400,6 +51397,9 @@ msgstr ""
 msgid "This is a security log of authentication events involving your account."
 msgstr ""
 
+msgid "This is an archived project. Repository and other project resources are read-only."
+msgstr ""
+
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr ""
 
@@ -58680,9 +58680,6 @@ msgid "approval"
 msgid_plural "approvals"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "archived"
-msgstr ""
 
 msgid "archived:"
 msgstr ""

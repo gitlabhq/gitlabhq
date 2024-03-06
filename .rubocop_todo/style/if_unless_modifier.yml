@@ -285,7 +285,6 @@ Style/IfUnlessModifier:
     - 'app/services/packages/debian/update_distribution_service.rb'
     - 'app/services/packages/go/create_package_service.rb'
     - 'app/services/packages/go/sync_packages_service.rb'
-    - 'app/services/packages/maven/find_or_create_package_service.rb'
     - 'app/services/packages/nuget/update_package_from_metadata_service.rb'
     - 'app/services/post_receive_service.rb'
     - 'app/services/projects/container_repository/gitlab/delete_tags_service.rb'

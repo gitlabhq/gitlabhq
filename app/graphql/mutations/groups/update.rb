@@ -44,3 +44,5 @@ module Mutations
     end
   end
 end
+
+Mutations::Groups::Update.prepend_mod_with('Mutations::Groups::Update')

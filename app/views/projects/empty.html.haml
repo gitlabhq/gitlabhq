@@ -7,7 +7,6 @@
 = render 'clusters_deprecation_alert'
 
 = render "home_panel"
-= render "archived_notice", project: @project
 
 - if Feature.enabled?(:project_overview_reorg)
   - add_page_specific_style 'page_bundles/project'

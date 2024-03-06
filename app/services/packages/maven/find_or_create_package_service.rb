@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   module Maven
     class FindOrCreatePackageService < BaseService
@@ -12,8 +13,8 @@ module Packages
           ::Packages::Maven::PackageFinder.new(current_user, project, path: path)
           .execute&.last
 
-        unless Namespace::PackageSetting.duplicates_allowed?(package)
-          return ServiceResponse.error(message: 'Duplicate package is not allowed') if target_package_is_duplicate?(package)
+        if !Namespace::PackageSetting.duplicates_allowed?(package) && target_package_is_duplicate?(package)
+          return ServiceResponse.error(message: 'Duplicate package is not allowed')
         end
 
         unless package

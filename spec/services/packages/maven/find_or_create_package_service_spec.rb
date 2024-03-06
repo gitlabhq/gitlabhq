@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
@@ -16,7 +17,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
   describe '#execute' do
     using RSpec::Parameterized::TableSyntax
 
-    subject { service.execute }
+    subject(:execute_service) { service.execute }
 
     shared_examples 'reuse existing package' do
       it { expect { subject }.not_to change { Packages::Package.count } }
@@ -54,7 +55,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       end
     end
 
-    context 'path with version' do
+    context 'with path including version' do
       # Note that "path with version" and "file type maven metadata xml" only exists for snapshot versions
       # In other words, we will never have an metadata xml upload on a path with version for a non snapshot version
       where(:package_exist, :file_type, :snapshot_version, :shared_example_name) do
@@ -80,11 +81,11 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       end
     end
 
-    context 'path without version' do
+    context 'with path not including version' do
       let(:param_path) { path }
       let(:version) { nil }
 
-      context 'maven-metadata.xml file' do
+      context 'and maven-metadata.xml file' do
         let(:file_name) { 'maven-metadata.xml' }
 
         context 'with existing package' do
@@ -92,7 +93,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
 
           it_behaves_like 'reuse existing package'
 
-          context 'marked as pending_destruction' do
+          context 'and marked as pending_destruction' do
             before do
               existing_package.pending_destruction!
             end
@@ -114,7 +115,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { { path: param_path, file_name: file_name, build: build } }
 
       it 'creates a build_info' do
-        expect { subject }.to change { Packages::BuildInfo.count }.by(1)
+        expect { execute_service }.to change { Packages::BuildInfo.count }.by(1)
       end
 
       context 'with multiple files for the same package and the same pipeline' do

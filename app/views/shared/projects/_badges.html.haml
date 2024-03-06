@@ -1,0 +1,4 @@
+- css_class = local_assigns.fetch(:css_class, '')
+
+- if project.archived
+  = render Pajamas::BadgeComponent.new(_('Archived'), variant: 'info', class: css_class)

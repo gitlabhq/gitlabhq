@@ -495,6 +495,12 @@ module ProjectsHelper
     configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket"))
   end
 
+  def show_archived_project_banner?(project)
+    return false unless project.present? && project.saved?
+
+    project.archived?
+  end
+
   def show_inactive_project_deletion_banner?(project)
     return false unless project.present? && project.saved?
     return false unless delete_inactive_projects?

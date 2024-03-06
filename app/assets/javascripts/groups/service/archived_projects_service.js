@@ -49,6 +49,7 @@ export default class ArchivedProjectsService {
           updated_at: project.updated_at,
           marked_for_deletion: Boolean(project.marked_for_deletion_at),
           last_activity_at: project.last_activity_at,
+          archived: project.archived,
         };
       }),
       headers,

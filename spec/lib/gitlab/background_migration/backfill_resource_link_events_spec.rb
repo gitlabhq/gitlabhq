@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, schema: 20230426085615, feature_category: :team_planning do
+RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, schema: 20230616082958, feature_category: :team_planning do
   include MigrationHelpers::WorkItemTypesHelper
 
   let(:users) { table(:users) }

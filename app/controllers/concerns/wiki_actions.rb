@@ -79,7 +79,9 @@ module WikiActions
     strong_memoize(:pages_list) do
       Kaminari.paginate_array(
         # only include pages not starting with 'templates/'
-        wiki_pages.reject { |page| page.slug.start_with?('templates/') }
+        wiki
+          .list_pages(direction: params[:direction])
+          .reject { |page| page.slug.start_with?('templates/') }
       ).page(params[:page])
     end
   end
@@ -88,7 +90,9 @@ module WikiActions
     strong_memoize(:templates_list) do
       Kaminari.paginate_array(
         # only include pages starting with 'templates/'
-        wiki_pages.select { |page| page.slug.start_with?('templates/') }
+        wiki
+          .list_pages(direction: params[:direction])
+          .select { |page| page.slug.start_with?('templates/') }
       ).page(params[:page])
     end
   end
@@ -287,14 +291,6 @@ module WikiActions
     @sidebar_error = e
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
-  def wiki_pages
-    strong_memoize(:wiki_pages) do
-      Kaminari.paginate_array(
-        wiki.list_pages(direction: params[:direction])
-      ).page(params[:page])
-    end
-  end
 
   def wiki_params
     params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)

@@ -5294,7 +5294,6 @@
 - './spec/lib/gitlab/background_migration/backfill_note_discussion_id_spec.rb'
 - './spec/lib/gitlab/background_migration/backfill_project_feature_package_registry_access_level_spec.rb'
 - './spec/lib/gitlab/background_migration/backfill_project_repositories_spec.rb'
-- './spec/lib/gitlab/background_migration/backfill_snippet_repositories_spec.rb'
 - './spec/lib/gitlab/background_migration/backfill_topics_title_spec.rb'
 - './spec/lib/gitlab/background_migration/backfill_vulnerability_reads_cluster_agent_spec.rb'
 - './spec/lib/gitlab/background_migration/base_job_spec.rb'

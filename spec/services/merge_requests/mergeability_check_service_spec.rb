@@ -268,10 +268,8 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
       it_behaves_like 'unmergeable merge request'
 
-      it 'reloads merge head diff' do
-        expect_next_instance_of(MergeRequests::ReloadMergeHeadDiffService) do |service|
-          expect(service).to receive(:execute)
-        end
+      it 'does not reload merge head diff' do
+        expect(MergeRequests::ReloadMergeHeadDiffService).not_to receive(:new)
 
         subject
       end

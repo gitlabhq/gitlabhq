@@ -60,7 +60,7 @@ RSpec.describe 'projects/empty' do
     it 'shows archived notice' do
       render
 
-      expect(rendered).to have_content('Archived project!')
+      expect(rendered).to have_content('Archived')
     end
   end
 

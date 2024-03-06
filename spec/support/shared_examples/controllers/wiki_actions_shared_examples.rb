@@ -81,11 +81,11 @@ RSpec.shared_examples 'wiki controller actions' do
     it_behaves_like 'recovers from git errors' do
       subject(:request) { get :pages, params: routing_params.merge(id: wiki_title) }
 
-      let(:method_name) { :wiki_pages }
+      let(:method_name) { :pages_list }
     end
 
     it 'assigns the page collections' do
-      expect(assigns(:wiki_pages)).to contain_exactly(an_instance_of(WikiPage))
+      expect(assigns(:pages_list)).to contain_exactly(an_instance_of(WikiPage))
       expect(assigns(:wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
     end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package_registry do
@@ -66,7 +67,7 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
       it_behaves_like 'assigns the package creator'
     end
 
-    context 'path is missing' do
+    context 'without path' do
       let(:params) do
         {
           name: path,

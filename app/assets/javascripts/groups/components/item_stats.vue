@@ -1,6 +1,4 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
-import isProjectPendingRemoval from 'ee_else_ce/groups/mixins/is_project_pending_removal';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ITEM_TYPE } from '../constants';
@@ -10,9 +8,7 @@ export default {
   components: {
     TimeAgoTooltip,
     ItemStatsValue,
-    GlBadge,
   },
-  mixins: [isProjectPendingRemoval],
   props: {
     item: {
       type: Object,
@@ -57,9 +53,6 @@ export default {
 
 <template>
   <div class="stats gl-text-gray-500">
-    <div v-if="isProjectPendingRemoval">
-      <gl-badge class="gl-mr-2" variant="warning">{{ __('pending deletion') }}</gl-badge>
-    </div>
     <item-stats-value
       v-if="displayValue(item.subgroupCount)"
       :title="__('Subgroups')"

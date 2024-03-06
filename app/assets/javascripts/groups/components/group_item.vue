@@ -97,9 +97,6 @@ export default {
     isGroup() {
       return this.group.type === ITEM_TYPE.GROUP;
     },
-    isGroupPendingRemoval() {
-      return this.group.type === ITEM_TYPE.GROUP && this.group.pendingRemoval;
-    },
     visibilityIcon() {
       return VISIBILITY_TYPE_ICON[this.group.visibility];
     },
@@ -260,7 +257,7 @@ export default {
                 </div>
               </gl-popover>
             </template>
-            <user-access-role-badge v-if="group.permission" size="sm" class="gl-mr-3">
+            <user-access-role-badge v-if="group.permission" size="sm" class="gl-mr-2">
               {{ group.permission }}
             </user-access-role-badge>
             <gl-label
@@ -280,15 +277,18 @@ export default {
             </span>
           </div>
         </div>
-        <div v-if="isGroupPendingRemoval">
-          <gl-badge variant="warning">{{ __('pending deletion') }}</gl-badge>
+        <div v-if="group.pendingRemoval">
+          <gl-badge variant="warning">{{ __('Pending deletion') }}</gl-badge>
+        </div>
+        <div v-else-if="group.archived">
+          <gl-badge variant="info">{{ __('Archived') }}</gl-badge>
         </div>
         <div
           class="metadata gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
         >
           <item-stats
             :item="group"
-            class="group-stats gl-mt-2 gl-display-none gl-md-display-flex gl-align-items-center"
+            class="group-stats gl-display-none gl-md-display-flex gl-align-items-center"
           />
           <item-actions
             v-if="showActionsMenu"

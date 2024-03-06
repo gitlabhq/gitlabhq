@@ -281,6 +281,8 @@ To use a rootless private runner:
 
 Code Quality now runs in standard Docker mode and rootless.
 
+The same configuration is required if your goal is to [use rootless Podman to run Docker](https://docs.gitlab.com/runner/executors/docker.html#use-podman-to-run-docker-commands) with code quality. Make sure to replace `/run/user/<gitlab-runner-user>/docker.sock` with the correct `podman.sock` path in your system, for example: `/run/user/<gitlab-runner-user>/podman/podman.sock`.
+
 ## Disable Code Quality
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable

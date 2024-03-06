@@ -65,4 +65,24 @@ RSpec.shared_examples 'User views wiki templates' do
       end
     end
   end
+
+  context 'when listing more templates than allowed items per page' do
+    let(:items_per_page) { 1 }
+
+    before do
+      allow(Kaminari.config).to receive(:default_per_page).and_return(items_per_page)
+
+      visit(wiki_path(wiki, action: :templates))
+    end
+
+    it 'shows pagination controls' do
+      page.within('.gl-pagination') do
+        expect(page).to have_link("Prev")
+        expect(page).to have_link("1")
+        expect(page).to have_link("2")
+        expect(page).to have_link("3")
+        expect(page).to have_link("Next")
+      end
+    end
+  end
 end

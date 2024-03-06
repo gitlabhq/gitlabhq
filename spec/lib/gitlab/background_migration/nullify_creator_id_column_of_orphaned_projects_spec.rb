@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::NullifyCreatorIdColumnOfOrphanedProjects,
-  feature_category: :groups_and_projects, schema: 20230216060333 do
+  feature_category: :groups_and_projects do
   let(:users) { table(:users) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
