@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.7 (2024-03-06)
+
+### Fixed (1 change)
+
+- [Use the backup database connection while restoring timeouts](gitlab-org/security/gitlab@796d1a2904fee95a7a1f9f4eb7bcfb4f431bf720)
+
+### Security (1 change)
+
+- [Reset approvals when reopening a MR](gitlab-org/security/gitlab@4be38a72793e54c0f7f653be0e2b744d22dc1e0e) ([merge request](gitlab-org/security/gitlab!3829))
+
 ## 16.7.6 (2024-02-20)
 
 ### Fixed (2 changes)
