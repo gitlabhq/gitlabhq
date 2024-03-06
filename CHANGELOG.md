@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.2 (2024-03-06)
+
+### Fixed (2 changes)
+
+- [Backport 145801 (Fix CI linter error when repository is empty) to 16.9](gitlab-org/security/gitlab@3387113650f62739955a47de59f7c17dbe7e9509)
+- [Fix container repositories checksum mismatch errors](gitlab-org/security/gitlab@7dce926636d80e26c4e99ac74c09c3795063151a) **GitLab Enterprise Edition**
+
+### Security (2 changes)
+
+- [Restrict group token rotation for custom roles](gitlab-org/security/gitlab@c7eafe2b214d8a5c739fe116899540133daebef3) ([merge request](gitlab-org/security/gitlab!3905))
+- [Reset approvals when reopening a MR](gitlab-org/security/gitlab@4c3fbb6674de3dfc01332a25959167ba1085e5bb) ([merge request](gitlab-org/security/gitlab!3897))
+
 ## 16.9.1 (2024-02-20)
 
 ### Fixed (2 changes)
