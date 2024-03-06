@@ -438,7 +438,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tag(tag)
-    if migrated? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+    if can_access_the_gitlab_api?
       page = tags_page(name: tag, page_size: 1)
 
       page[:tags].first
@@ -452,11 +452,20 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tags
-    return [] unless manifest && manifest['tags']
-
     strong_memoize(:tags) do
-      manifest['tags'].sort.map do |tag|
-        ContainerRegistry::Tag.new(self, tag)
+      if can_access_the_gitlab_api? && Feature.enabled?(:fetch_tags_from_registry_api, project)
+        result = []
+        each_tags_page do |array_of_tags|
+          result << array_of_tags
+        end
+
+        result.flatten
+      else
+        next [] unless manifest && manifest['tags']
+
+        manifest['tags'].sort.map do |tag|
+          ContainerRegistry::Tag.new(self, tag)
+        end
       end
     end
   end
@@ -644,6 +653,10 @@ class ContainerRepository < ApplicationRecord
   end
 
   private
+
+  def can_access_the_gitlab_api?
+    migrated? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+  end
 
   def finish_import_as(reason)
     self.migration_skipped_reason = reason

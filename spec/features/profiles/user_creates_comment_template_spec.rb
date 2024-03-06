@@ -23,7 +23,7 @@ RSpec.describe 'Profile > Comment templates > User creates comment template', :j
 
     wait_for_requests
 
-    expect(page).to have_content('My comment templates')
+    expect(page).to have_content('Comment templates')
     expect(page).to have_content('test')
     expect(page).to have_content('Test content')
   end

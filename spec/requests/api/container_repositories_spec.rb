@@ -70,18 +70,92 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
           stub_container_registry_tags(repository: repository.path, tags: %w[rootA latest], with_manifest: true)
         end
 
-        it 'returns a repository and its tags' do
-          subject
+        shared_examples 'returning a repository and its tags' do
+          it 'returns a repository and its tags' do
+            subject
 
-          expect(json_response['id']).to eq(repository.id)
-          expect(response.body).to include('tags')
-          expect(json_response['tags']).to eq(repository.tags.map do |tag|
-            {
-              "location" => tag.location,
-              "name" => tag.name,
-              "path" => tag.path
-            }
-          end)
+            expect(json_response['id']).to eq(repository.id)
+            expect(response.body).to include('tags')
+            expect(json_response['tags']).to eq(repository.tags.map do |tag|
+              {
+                "location" => tag.location,
+                "name" => tag.name,
+                "path" => tag.path
+              }
+            end)
+          end
+        end
+
+        it_behaves_like 'returning a repository and its tags'
+
+        context 'when the repository is migrated', :saas do
+          context 'when the GitLab API is supported' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+            end
+
+            context 'when the Gitlab API returns tags' do
+              include_context 'with the container registry GitLab API returning tags'
+
+              before do
+                allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                  allow(client).to receive(:tags).and_return(response_body)
+                end
+              end
+
+              it 'returns instantiated tags from the response' do
+                expect_any_instance_of(ContainerRepository) do |repository|
+                  expect(repository).to receive(:each_tags_page).and_call_original
+                end
+
+                subject
+
+                expect(json_response['id']).to eq(repository.id)
+                expect(response.body).to include('tags')
+                expect(json_response['tags'].count).to eq(2)
+                expect(json_response['tags']).to eq(tags_response.map do |response|
+                  {
+                    "name" => response[:name],
+                    "path" => "#{repository.path}:#{response[:name]}",
+                    "location" => "#{repository.location}:#{response[:name]}"
+                  }
+                end)
+              end
+            end
+
+            context 'when the Gitlab API does not return any tags' do
+              before do
+                allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                  allow(client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+                end
+              end
+
+              it 'returns an instantiated tag from the response' do
+                subject
+
+                expect(json_response['id']).to eq(repository.id)
+                expect(response.body).to include('tags')
+                expect(json_response['tags'].count).to eq(0)
+                expect(json_response['tags']).to be_empty
+              end
+            end
+
+            context 'when the feature fetch_tags_from_registry_api is disabled' do
+              before do
+                stub_feature_flags(fetch_tags_from_registry_api: false)
+              end
+
+              it_behaves_like 'returning a repository and its tags'
+            end
+          end
+
+          context 'when the GitLab API is not supported' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+            end
+
+            it_behaves_like 'returning a repository and its tags'
+          end
         end
 
         context 'with a network error' do

@@ -67,15 +67,16 @@ module ProtectedRefAccess
     type == :role
   end
 
-  def check_access(current_user)
+  def check_access(current_user, current_project = project)
     return false if current_user.nil? || no_access?
     return current_user.admin? if admin_access?
 
-    return false if Feature.enabled?(:check_membership_in_protected_ref_access) && !project.member?(current_user)
+    return false if Feature.enabled?(:check_membership_in_protected_ref_access) &&
+      (current_project && !current_project.member?(current_user))
 
     yield if block_given?
 
-    user_can_access?(current_user)
+    user_can_access?(current_user, current_project)
   end
 
   private
@@ -88,9 +89,18 @@ module ProtectedRefAccess
     role? && access_level == Gitlab::Access::NO_ACCESS
   end
 
-  def user_can_access?(current_user)
-    current_user.can?(:push_code, project) &&
-      project.team.max_member_access(current_user.id) >= access_level
+  def user_can_access?(current_user, current_project)
+    # NOTE: A user could be a group member which would be inherited in
+    # projects, however, the same user can have direct membership to a project
+    # with a higher role. For this reason we need to check group-level rules
+    # against the current project when merging an MR or pushing changes to a
+    # protected branch.
+    if current_project
+      current_user.can?(:push_code, current_project) &&
+        current_project.team.max_member_access(current_user.id) >= access_level
+    elsif protected_branch_group
+      protected_branch_group.max_member_access_for_user(current_user) >= access_level
+    end
   end
 end
 

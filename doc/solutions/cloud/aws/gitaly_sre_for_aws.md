@@ -9,7 +9,7 @@ description: Doing SRE for Gitaly instances on AWS.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 ## Gitaly SRE considerations
 

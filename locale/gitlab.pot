@@ -7906,9 +7906,6 @@ msgstr ""
 msgid "BillingPlans|Dynamic Application Security Testing"
 msgstr ""
 
-msgid "BillingPlans|End of availability for the Bronze Plan"
-msgstr ""
-
 msgid "BillingPlans|Enterprise Agile Planning"
 msgstr ""
 
@@ -8063,9 +8060,6 @@ msgid "BillingPlans|Value Stream Management"
 msgstr ""
 
 msgid "BillingPlans|Vulnerability Management"
-msgstr ""
-
-msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
 msgstr ""
 
 msgid "BillingPlans|You can retain access to the %{plan} features by upgrading below."
@@ -32263,9 +32257,6 @@ msgid "Must be 90 days or more."
 msgstr ""
 
 msgid "My awesome group"
-msgstr ""
-
-msgid "My comment templates"
 msgstr ""
 
 msgid "My company or team"

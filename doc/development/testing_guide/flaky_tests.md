@@ -194,6 +194,14 @@ bin/rspec --tag ~quarantine
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
 
+#### Find quarantined tests by feature category
+
+To find all quarantined tests for a feature category, use `ripgrep`:
+
+```shell
+rg -l --multiline -w "(?s)feature_category:\s+:global_search.+quarantine:"
+```
+
 ### Jest
 
 For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:

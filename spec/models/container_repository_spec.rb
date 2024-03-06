@@ -589,8 +589,77 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tags' do
-    it 'returns non-empty tags list' do
-      expect(repository.tags).not_to be_empty
+    shared_examples 'returning the non-empty tags list' do
+      it 'returns non-empty tags list' do
+        expect(repository.tags).not_to be_empty
+      end
+    end
+
+    context 'when the repository is migrated', :saas do
+      context 'when Gitlab API is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        end
+
+        context 'when the Gitlab API returns tags' do
+          include_context 'with the container registry GitLab API returning tags'
+
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return(response_body)
+            allow(repository).to receive(:each_tags_page).and_call_original
+          end
+
+          it 'returns an instantiated tag from the response' do
+            tags = repository.tags
+
+            expect(repository).to have_received(:each_tags_page)
+            expect(tags).to match_array([
+              have_attributes(
+                repository: repository,
+                name: tags_response[0][:name],
+                digest: tags_response[0][:digest],
+                total_size: tags_response[0][:size_bytes]
+              ),
+              have_attributes(
+                repository: repository,
+                name: tags_response[1][:name],
+                digest: tags_response[1][:digest],
+                total_size: tags_response[1][:size_bytes]
+              )
+            ])
+          end
+        end
+
+        context 'when the Gitlab API does not return any tags' do
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+          end
+
+          it 'returns an empty array' do
+            expect(repository.tags).to be_empty
+          end
+        end
+
+        context 'when the feature fetch_tags_from_registry_api is disabled' do
+          before do
+            stub_feature_flags(fetch_tags_from_registry_api: false)
+          end
+
+          it_behaves_like 'returning the non-empty tags list'
+        end
+      end
+
+      context 'when the Gitlab API is not supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it_behaves_like 'returning the non-empty tags list'
+      end
+    end
+
+    context 'when the repository is not migrated' do
+      it_behaves_like 'returning the non-empty tags list'
     end
   end
 

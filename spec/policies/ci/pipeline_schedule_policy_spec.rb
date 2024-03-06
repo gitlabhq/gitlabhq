@@ -7,8 +7,8 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
 
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository, create_tag: tag_ref_name) }
-  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+  let_it_be_with_refind(:project) { create(:project, :repository, create_tag: tag_ref_name) }
+  let_it_be_with_refind(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
   let_it_be(:tag_ref_name) { "v1.0.0" }
 
   let(:policy) do
@@ -23,7 +23,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
         %w[refs/heads/master master].each do |branch_ref|
           context "with #{branch_ref}" do
             let_it_be(:branch_ref_name) { "master" }
-            let_it_be(:pipeline_schedule) do
+            let_it_be_with_refind(:pipeline_schedule) do
               create(:ci_pipeline_schedule, :nightly, project: project, ref: branch_ref)
             end
 
@@ -200,7 +200,7 @@ RSpec.describe Ci::PipelineSchedulePolicy, :models, :clean_gitlab_redis_cache, f
       context 'for tag' do
         %w[refs/tags/v1.0.0 v1.0.0].each do |tag_ref|
           context "with #{tag_ref}" do
-            let_it_be(:pipeline_schedule) do
+            let_it_be_with_refind(:pipeline_schedule) do
               create(:ci_pipeline_schedule, :nightly, project: project, ref: tag_ref)
             end
 

@@ -275,9 +275,8 @@ and the analysis is tracked as a Snowplow event.
 The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
 
 - All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
-- The following are yet to be implemented:
+- The following is yet to be implemented:
   - "is_proper_sentence"
-  - "asked_on_the_same_page"
 - The following are deprecated:
   - "number_of_questions_in_history"
   - "length_of_questions_in_history"

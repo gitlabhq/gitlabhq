@@ -42,7 +42,7 @@ There are several other benefits to enabling Service Ping:
 In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
 GitLab Enterprise Edition can receive paid features by registering with GitLab and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
-tier. Users can continue to access the features in a paid tier without sharing usage data.
+tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).  
 
 NOTE:
 Registration is not required for participation.

@@ -28,7 +28,7 @@ module Users
       registration_enabled_callout: 25,
       new_user_signups_cap_reached: 26,          # EE-only
       unfinished_tag_cleanup_callout: 27,
-      eoa_bronze_plan_banner: 28,                # EE-only
+      # 28 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146309
       pipeline_needs_banner: 29,
       pipeline_needs_hover_tip: 30,
       web_ide_ci_environments_guidance: 31,

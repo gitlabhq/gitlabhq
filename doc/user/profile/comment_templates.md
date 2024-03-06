@@ -54,7 +54,7 @@ To go to your comment templates:
 1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
-1. Scroll to **My comment templates**.
+1. Scroll to **Comment templates**.
 
 ## Edit or delete comment templates
 
@@ -63,6 +63,6 @@ To edit or delete a previously comment template:
 1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
-1. Scroll to **My comment templates**, and identify the comment template you want to edit.
+1. Scroll to **Comment templates**, and identify the comment template you want to edit.
 1. To edit, select **Edit** (**{pencil}**).
 1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.

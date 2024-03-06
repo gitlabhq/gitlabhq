@@ -76,11 +76,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
     let(:pre_restore_warning) { '' }
     let(:post_restore_warning) { '' }
-    let(:target) do
-      instance_double(::Backup::Targets::Target,
-        pre_restore_warning: pre_restore_warning,
-        post_restore_warning: post_restore_warning)
-    end
+    let(:target) { instance_double(::Backup::Targets::Target) }
 
     let(:backup_tasks) do
       { 'terraform_state' => terraform_state }
@@ -92,6 +88,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       allow_next_instance_of(Backup::Metadata) do |metadata|
         allow(metadata).to receive(:load_from_file).and_return(backup_information)
       end
+
+      allow(terraform_state).to receive(:pre_restore_warning).and_return(pre_restore_warning)
+      allow(terraform_state).to receive(:post_restore_warning).and_return(post_restore_warning)
     end
 
     it 'runs the provided task' do
@@ -953,8 +952,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
                           .tap { |task| allow(task).to receive(:target).and_return(target2) }
     end
 
-    let(:target1) { instance_double(Backup::Targets::Target, pre_restore_warning: nil, post_restore_warning: nil) }
-    let(:target2) { instance_double(Backup::Targets::Target, pre_restore_warning: nil, post_restore_warning: nil) }
+    let(:target1) { instance_double(Backup::Targets::Target) }
+    let(:target2) { instance_double(Backup::Targets::Target) }
     let(:backup_tasks) do
       { 'lfs' => lfs, 'pages' => pages }
     end

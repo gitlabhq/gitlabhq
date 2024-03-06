@@ -365,8 +365,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
     let(:sdk_client) { instance_double('GitlabSDK::Client') }
-    let(:event_kwargs) { { user: user, project: project } }
+    let(:event_kwargs) { { user: user, project: project, send_snowplow_event: send_snowplow_event } }
     let(:additional_properties) { {} }
+    let(:send_snowplow_event) { true }
 
     before do
       described_class.clear_memoization(:gitlab_sdk_client)
@@ -438,6 +439,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       context 'when GITLAB_ANALYTICS_URL is nil' do
         let(:url) { nil }
+
+        it_behaves_like 'does not send a Product Analytics event'
+      end
+
+      context 'when send_snowplow_event is false' do
+        let(:send_snowplow_event) { false }
 
         it_behaves_like 'does not send a Product Analytics event'
       end

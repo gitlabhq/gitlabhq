@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Responding to security incidents
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 When a security incident occurs, you should follow the processes defined by your organization. The GitLab SIRT team created this guide:
 
 - For administrators and maintainers of self-managed GitLab instances and groups on GitLab.com.
@@ -24,10 +20,6 @@ Use the suggestions/recommendations mentioned in this guide at your own risk.
 ## Common breach scenarios
 
 ### Credential exposure to public internet
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
 
 This scenario refers to security events where sensitive authentication or authorization information has been exposed to the Internet due to misconfigurations or human errors. Such information might include:
 
@@ -57,20 +49,12 @@ Security incidents related to credentials exposure can vary in severity from low
 
 #### Event types
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
 - Review the available [audit events](../administration/audit_events.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../administration/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
 
 ### Suspected compromised user account
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
 
 #### Response
 
@@ -83,10 +67,6 @@ If you suspect that a user account or bot account has been compromised, you shou
 - After completing an investigation and mitigating impacts, unblock the user.
 
 #### Event types
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
 
 Review the [audit events](../administration/audit_events.md) available to you to identify any suspicious account behavior. For example:
 
@@ -103,10 +83,6 @@ Review the [audit events](../administration/audit_events.md) available to you to
 - Changes to email addresses or notifications.
 
 ### CI/CD-related security incidents
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
 
@@ -141,10 +117,6 @@ When secrets stored as CI variables are not [masked](../ci/variables/index.md#ma
 
 ### Suspected compromised instance
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 Self-managed GitLab customers and administrators are responsible for:
 
 - The security of their underlying infrastructure.
@@ -173,17 +145,9 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 #### Event types
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
-
 Review [system access audit events](../administration/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
 ### Misconfigured project or group settings
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Security incidents can occur as a result of improperly configured project or group settings, potentially leading to unauthorized access to sensitive or proprietary data. These incidents may include but are not limited to:
 
@@ -202,10 +166,6 @@ If you suspect unauthorized modifications to project settings, consider taking t
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
 #### Event types
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
 
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
 - Look for specific audit events of [compliance management](../administration/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_types.md#groups-and-projects).

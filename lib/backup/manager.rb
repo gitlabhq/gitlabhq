@@ -33,8 +33,6 @@ module Backup
     def run_create_task(task)
       build_backup_information
 
-      destination_dir = backup_path.join(task.destination_path)
-
       unless task.enabled?
         puts_time "Dumping #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
@@ -46,7 +44,7 @@ module Backup
       end
 
       puts_time "Dumping #{task.human_name} ... ".color(:blue)
-      task.target.dump(destination_dir, backup_id)
+      task.backup!(backup_path, backup_id)
       puts_time "Dumping #{task.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
@@ -66,8 +64,6 @@ module Backup
     def run_restore_task(task)
       read_backup_information
 
-      destination_dir = backup_path.join(task.destination_path)
-
       unless task.enabled?
         puts_time "Restoring #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
@@ -75,16 +71,17 @@ module Backup
 
       puts_time "Restoring #{task.human_name} ... ".color(:blue)
 
-      warning = task.target.pre_restore_warning
+      warning = task.pre_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      task.target.restore(destination_dir, backup_id)
+      task.restore!(backup_path, backup_id)
+
       puts_time "Restoring #{task.human_name} ... ".color(:blue) + "done".color(:green)
 
-      warning = task.target.post_restore_warning
+      warning = task.post_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue

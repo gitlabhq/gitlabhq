@@ -124,6 +124,12 @@ browser's console in the developers tools:
 atob(decodeURI("<paste_SAML_response_here>"))
 ```
 
+On MacOS, you can decode the clipboard data by running:
+
+```plaintext
+pbpaste | base64 -D
+```
+
 You should get the SAML response in XML format as output.
 
 ## Configuration errors

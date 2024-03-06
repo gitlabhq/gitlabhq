@@ -134,7 +134,7 @@ for example:
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0
+  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0.0
     inputs:
       stage: build
 ```
@@ -146,7 +146,7 @@ In this example:
 - `my-org/security-components` is the full path of the project containing the component.
 - `secret-detection` is the component name that is defined as either a single file `templates/secret-detection.yml`
   or as a directory `templates/secret-detection/` containing a `template.yml`.
-- `1.0` is the [version](#component-versions) of the component.
+- `1.0.0` is the [version](#component-versions) of the component.
 
 When GitLab creates a new pipeline, the component's configuration is fetched and added to
 the pipeline's configuration.
@@ -157,7 +157,7 @@ In order of highest priority first, the component version can be:
 
 - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`. Use a commit SHA
   to pin a component to a specific version that is not [published in the CI/CD catalog](#publish-a-new-release).
-- A tag, for example: `1.0`. If a tag and commit SHA exist with the same name,
+- A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
   the commit SHA takes precedence over the tag.
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
@@ -167,6 +167,19 @@ In order of highest priority first, the component version can be:
 
 You can use any [version](#component-versions) supported by the component, but using a
 version published to the CI/CD catalog is recommended.
+
+#### Use semantic versioning
+
+When tagging and [releasing new versions](#publish-a-new-release) of components,
+you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
+for communicating that a change is a major, minor, patch, or other kind of change.
+
+For example:
+
+- `1.0.0`
+- `2.1.3`
+- `1.0.0-alpha`
+- `3.0.0-rc1`
 
 ## CI/CD Catalog
 
@@ -243,7 +256,9 @@ Prerequisites:
 To publish a new version of the component to the catalog:
 
 1. Add a job to the project's `.gitlab-ci.yml` file that uses the [`release`](../yaml/index.md#release)
-   keyword to create the new release. For example:
+   keyword to create the new release when a tag is created.
+   You should configure the tag pipeline to [test the components](#test-the-component) before
+   running the release job. For example:
 
    ```yaml
    create-release:
@@ -259,11 +274,9 @@ To publish a new version of the component to the catalog:
 
 1. Create a [new tag](../../user/project/repository/tags/index.md#create-a-tag) for the release,
    which should trigger a tag pipeline that contains the job responsible for creating the release.
-   You should configure the tag pipeline to [test the components](#test-the-component) before
-   running the release job.
 
 After the release job completes successfully, the release is created and the new version
-is published to the CI/CD catalog. Tags must use semantic versioning, for example `1.0.0`.
+is published to the CI/CD catalog.
 
 ### Unpublish a component project
 
@@ -279,6 +292,19 @@ To publish the component project in the catalog again, you need to [publish a ne
 ## Best practices
 
 This section describes some best practices for creating high quality component projects.
+
+### Manage dependencies
+
+While it's possible for a component to use other components in turn, make sure to carefully select the dependencies. To manage dependencies, you should:
+
+- Keep dependencies to a minimum. A small amount of duplication is usually better than having dependencies.
+- Rely on local dependencies whenever possible. For example, using [`include:local`](../../ci/yaml/index.md#includelocal) is a good way
+  to ensure the same Git SHA is used across multiple files.
+- When depending on components from other projects, pin their version to a release from the catalog rather than using moving target
+  versions such as `~latest` or a Git reference. Using a release or Git SHA guarantees that you are fetching the same revision
+  all the time and that consumers of your component get consistent behavior.
+- Update your dependencies regularly by pinning them to newer releases. Then publish a new release of your components with updated
+  dependencies.
 
 ### Write a clear `README.md`
 
@@ -473,7 +499,7 @@ For example, to create a component with `stage` configuration that can be define
   stages: [verify, deploy]
 
   include:
-    - component: $CI_SERVER_FQDN/gitlab-org/ruby-test@1.0
+    - component: $CI_SERVER_FQDN/myorg/ruby/test@1.0.0
       inputs:
         stage: verify
   ```
@@ -506,7 +532,7 @@ For example, use `inputs` instead of variables to configure a scanner's output f
 
   ```yaml
   include:
-    - component: $CI_SERVER_FQDN/my-scanner@1.0
+    - component: $CI_SERVER_FQDN/path/to/project/my-scanner@1.0.0
       inputs:
         scanner-output: yaml
   ```
@@ -516,22 +542,6 @@ In other cases, CI/CD variables might still be preferred. For example:
 - Use [predefined variables](../variables/predefined_variables.md) to automatically configure
   a component to match a user's project.
 - Ask users to store sensitive values as [masked or protected CI/CD variables in project settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
-
-### Use semantic versioning
-
-When tagging and [releasing new versions](#publish-a-new-release) of components,
-you should use [semantic versioning](https://semver.org). Semantic versioning is the standard
-for communicating that a change is a major, minor, patch, or other kind of change.
-
-You should use at least the `major.minor` format, as this is widely understood. For example,
-`2.0` or `2.1`.
-
-Other examples of semantic versioning:
-
-- `1.0.0`
-- `2.1.3`
-- `1.0.0-alpha`
-- `3.0.0-rc1`
 
 ## Convert a CI/CD template to a component
 

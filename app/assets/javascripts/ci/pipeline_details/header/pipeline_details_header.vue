@@ -231,6 +231,9 @@ export default {
     shortId() {
       return this.pipeline?.commit?.shortId || '';
     },
+    commitSha() {
+      return this.pipeline?.commit?.sha || '';
+    },
     commitPath() {
       return this.pipeline?.commit?.webPath || '';
     },
@@ -462,9 +465,10 @@ export default {
           </div>
           <div class="gl-display-inline-block gl-mb-3">
             <clipboard-button
-              :text="shortId"
+              :text="commitSha"
               category="tertiary"
               :title="$options.i18n.clipboardTooltip"
+              data-testid="commit-copy-sha"
               size="small"
             />
             <span v-if="inProgress" data-testid="pipeline-created-time-ago">

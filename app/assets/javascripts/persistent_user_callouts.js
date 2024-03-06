@@ -7,7 +7,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-token-expiry-callout',
   '.js-registration-enabled-callout',
   '.js-new-user-signups-cap-reached',
-  '.js-eoa-bronze-plan-banner',
   '.js-security-newsletter-callout',
   '.js-approaching-seat-count-threshold',
   '.js-storage-pre-enforcement-alert',

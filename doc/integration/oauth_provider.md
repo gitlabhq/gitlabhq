@@ -75,7 +75,7 @@ To create a new application for a group:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 To create an application for your GitLab instance:
 
@@ -152,7 +152,7 @@ application are also deleted.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `hash_oauth_secrets`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+On GitLab.com, this feature is available.
 
 By default, GitLab stores OAuth application secrets in the database in hashed format. These secrets are only available to users immediately after creating OAuth applications. In
 earlier versions of GitLab, application secrets are stored as plain text in the database.

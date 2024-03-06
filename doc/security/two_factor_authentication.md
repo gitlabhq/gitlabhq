@@ -143,7 +143,7 @@ enabled, 2FA is **not** required for those individually added members.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 You can disable 2FA for a single user or all users.
 
