@@ -58,7 +58,7 @@ reiterating the importance of HTTPS.
 
 ## Issuing Certificates
 
-GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digicert.com/quovadis.html) format, issued by
+GitLab Pages accepts certificates provided in the [PEM](https://knowledge.digicert.com/quovadis) format, issued by
 [Certificate Authorities](https://en.wikipedia.org/wiki/Certificate_authority) or as
 [self-signed certificates](https://en.wikipedia.org/wiki/Self-signed_certificate). [Self-signed certificates are typically not used](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/self-signed-certificates-secure-so-why-ban/)
 for public websites for security reasons and to ensure that browsers trust your site's certificate.
@@ -74,7 +74,7 @@ to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most of browsers, it's open
 source, and free to use. See [GitLab Pages integration with Let's Encrypt](../custom_domains_ssl_tls_certification/lets_encrypt_integration.md) to enable HTTPS on your custom domain.
 
-Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/ssl/),
+Similarly popular are [certificates issued by Cloudflare](https://www.cloudflare.com/application-services/products/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
 Their certs are valid up to 15 years. See the tutorial on
 [how to add a Cloudflare Certificate to your GitLab Pages website](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/).

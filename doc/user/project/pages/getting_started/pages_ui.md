@@ -29,7 +29,7 @@ a pipeline deploys your Pages website.
   - Generates static sites or a client-rendered single-page application (SPA),
     like [Eleventy](https://www.11ty.dev), [Astro](https://astro.build), or [Jekyll](https://jekyllrb.com).
   - Contains a framework configured for static output, such as [Next.js](https://nextjs.org),
-    [Nuxt.js](https://nuxtjs.org), or [SvelteKit](https://kit.svelte.dev).
+    [Nuxt](https://nuxt.com), or [SvelteKit](https://kit.svelte.dev).
 - GitLab Pages must be enabled for the project. (To enable, go to **Settings > General**,
   expand **Visibility, project features, permissions**, and turn on the **Pages** toggle.)
 

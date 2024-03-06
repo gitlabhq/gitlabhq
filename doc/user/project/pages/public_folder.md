@@ -93,7 +93,7 @@ export default {
 
 NOTE:
 GitLab Pages supports only static sites. For Next.js, you can use
-Next's [Static HTML export functionality](https://nextjs.org/docs/advanced-features/static-html-export).
+Next's [Static HTML export functionality](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports).
 
 With the release of [Next.js 13](https://nextjs.org/blog/next-13) a lot has changed on how Next.js works.
 It is recommended to use the following `next.config.js` so all static assets can be exported properly:
@@ -157,7 +157,7 @@ Pages, rename the `public` folder to a collision-free alternative first:
    ```
 
 1. Configure your Nuxt.js application for
-   [Static Site Generation](https://nuxtjs.org/docs/features/deployment-targets/#static-hosting).
+   [Static Site Generation](https://nuxt.com/docs/getting-started/deployment#static-hosting).
 
 ## Vite
 

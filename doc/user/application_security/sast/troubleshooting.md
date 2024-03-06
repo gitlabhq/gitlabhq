@@ -123,7 +123,30 @@ If, on the other hand, the class being analyzed is part of your project, conside
 
 ## Flawfinder encoding error
 
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+
+You can configure the `before_script` section in each `.gitlab-ci.yml` file, or use a [pipeline execution policy action](../policies/scan-execution-policies.md#pipeline-execution-policy-action) to install the encoder and run the converter command. For example, you can add a `before_script` section to the `flawfinder-sast-0` job generated from the execution policy to convert all files with a `.cpp` extension.
+
+### Example pipeline execution policy YAML
+
+```yaml
+---
+scan_execution_policy:
+- name: SAST
+  description: 'Run SAST on C++ application'
+  enabled: true
+  rules:
+  - type: pipeline
+    branch_type: all
+  actions:
+  - scan: sast
+  - scan: custom
+    ci_configuration: |-
+      flawfinder-sast-0:
+          before_script:
+            - pip install cvt2utf
+            - cvt2utf convert "$PWD" -i cpp
+```
 
 ## Semgrep slowness, unexpected results, or other errors
 

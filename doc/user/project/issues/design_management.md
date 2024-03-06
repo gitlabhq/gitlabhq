@@ -282,7 +282,7 @@ and [project](../working_with_projects.md#view-project-activity) activity pages.
 You can use the GitLab-Figma plugin to upload your designs from Figma directly to your issues
 in GitLab.
 
-To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356)
+To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
 and connect to GitLab through a personal access token.
 
 For more information, see the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).

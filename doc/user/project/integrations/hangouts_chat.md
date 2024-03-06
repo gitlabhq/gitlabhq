@@ -33,7 +33,7 @@ To configure the integration in Google Chat:
 1. Next to the webhook URL, select the vertical ellipsis (**{ellipsis_v}**) > **Copy link**.
 
 For more information about webhooks, see the
-[Google Chat documentation](https://developers.google.com/chat/how-tos/webhooks).
+[Google Chat documentation](https://developers.google.com/workspace/chat/quickstart/webhooks).
 
 ### In GitLab
 

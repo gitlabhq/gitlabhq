@@ -19,6 +19,9 @@ requirements or needs additional oversight. The label can optionally enforce
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks.
 
+NOTE:
+If a project is moved outside of its existing top-level group, its framework is removed.
+
 ## Create, edit, or delete a compliance framework
 
 ### From compliance frameworks report

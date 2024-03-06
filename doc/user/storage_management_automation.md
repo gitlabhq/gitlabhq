@@ -1199,5 +1199,5 @@ Use the following projects to test storage usage with [cost factors for forks](u
 
 The following resources are not officially supported. Ensure to test scripts and tutorials before running destructive cleanup commands that may not be reverted.
 
-- Forum topic: [Storage management automation resources](https://forum.gitlab.com/t/storage-management-automation-resources/)
+- Forum topic: [Storage management automation resources](https://forum.gitlab.com/t/storage-management-automation-resources/91184)
 - Script: [GitLab Storage Analyzer](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-storage-analyzer), unofficial project by the [GitLab Developer Evangelism team](https://gitlab.com/gitlab-de/). You find similar code examples in this documentation how-to here.

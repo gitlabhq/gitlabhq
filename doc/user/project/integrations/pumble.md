@@ -19,7 +19,7 @@ You can configure GitLab to send notifications to a Pumble channel:
 
 ## Create a webhook for your Pumble channel
 
-1. Follow the steps in [Incoming Webhooks for Pumble](https://pumble.com/help/integrations/custom-apps/incoming-webhooks-for-pumble/) in the Pumble documentation.
+1. Follow the steps in [Incoming Webhooks for Pumble](https://pumble.com/help/integrations/add-pumble-apps/incoming-webhooks-for-pumble/) in the Pumble documentation.
 1. Copy the webhook URL.
 
 ## Configure settings in GitLab
