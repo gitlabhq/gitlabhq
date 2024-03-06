@@ -356,8 +356,6 @@ class User < MainClusterwide::ApplicationRecord
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_save :ensure_namespace_correct # in case validation is skipped
-  before_save :set_color_mode_id, if: :theme_id_changed?
-  before_save :set_theme_id, if: :color_mode_id_changed?
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -1406,18 +1404,6 @@ class User < MainClusterwide::ApplicationRecord
     read_attribute(:last_name) || begin
       name.split(' ').drop(1).join(' ') unless name.blank?
     end
-  end
-
-  def set_color_mode_id
-    self.color_mode_id = if theme_id == 11
-                           Gitlab::ColorModes::APPLICATION_DARK
-                         else
-                           Gitlab::ColorModes::APPLICATION_DEFAULT
-                         end
-  end
-
-  def set_theme_id
-    self.theme_id = 11 if color_mode_id == Gitlab::ColorModes::APPLICATION_DARK
   end
 
   def color_mode_id

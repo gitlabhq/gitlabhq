@@ -7,6 +7,7 @@ module Gitlab
     module Cli
       module Shell
         autoload :Command, 'gitlab/backup/cli/shell/command'
+        autoload :Pipeline, 'gitlab/backup/cli/shell/pipeline'
       end
     end
   end

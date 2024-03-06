@@ -628,6 +628,11 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    context 'color_mode_id' do
+      it { is_expected.to allow_value(*Gitlab::ColorModes.valid_ids).for(:color_mode_id) }
+      it { is_expected.not_to allow_value(Gitlab::ColorModes.available_modes.size + 1).for(:color_mode_id) }
+    end
+
     shared_examples 'username validations' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)
@@ -1580,40 +1585,6 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.email).to eq secondary.email
         expect(user.unconfirmed_email).to eq nil
         expect(user.confirmed?).to be_truthy
-      end
-    end
-
-    describe '#set_color_mode_id' do
-      context 'when theme_id is changed to 11' do
-        let_it_be(:user) { create(:user, theme_id: 5) }
-
-        it 'sets color_mode_id to 2' do
-          user.theme_id = 11
-          user.save!
-          expect(user.attributes["color_mode_id"]).to eq 2
-        end
-      end
-
-      context 'when theme_id changed to a value other than 11' do
-        let_it_be(:user) { create(:user, theme_id: 11) }
-
-        it 'sets color_mode_id to 1' do
-          user.theme_id = 5
-          user.save!
-          expect(user.attributes["color_mode_id"]).to eq 1
-        end
-      end
-    end
-
-    describe '#set_theme_id' do
-      context 'when color_mode_id is changed to 2' do
-        let_it_be(:user) { create(:user, theme_id: 5) }
-
-        it 'sets theme_id to 2' do
-          user.color_mode_id = 2
-          user.save!
-          expect(user.attributes["theme_id"]).to eq 11
-        end
       end
     end
   end

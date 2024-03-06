@@ -14,7 +14,7 @@ module Gitlab
     def self.available_modes
       [
         Mode.new(APPLICATION_DEFAULT, s_('ColorMode|Light'), 'gl-light'),
-        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (alpha)'), 'gl-dark')
+        Mode.new(APPLICATION_DARK, s_('ColorMode|Dark (Experiment)'), 'gl-dark')
       ]
     end
 
@@ -34,6 +34,13 @@ module Gitlab
     # Returns a Mode
     def self.default
       by_id(1)
+    end
+
+    # Iterate through each Mode
+    #
+    # Yields the Mode object
+    def self.each(&block)
+      available_modes.each(&block)
     end
 
     # Get the Mode for the specified user, or the default

@@ -29,6 +29,9 @@ export default {
     integrationViews: {
       default: [],
     },
+    colorModes: {
+      default: [],
+    },
     themes: {
       default: [],
     },
@@ -48,14 +51,6 @@ export default {
       schemeOnCreate: null,
     };
   },
-  computed: {
-    applicationThemes() {
-      return this.themes.reduce((themes, theme) => {
-        const { id, ...rest } = theme;
-        return { ...themes, [id]: rest };
-      }, {});
-    },
-  },
   created() {
     this.formEl.addEventListener('ajax:beforeSend', this.handleLoading);
     this.formEl.addEventListener('ajax:success', this.handleSuccess);
@@ -70,12 +65,18 @@ export default {
   },
   methods: {
     darkModeSelected() {
-      const theme = this.getSelectedTheme();
-      return theme ? theme.css_class === 'gl-dark' : null;
+      const mode = this.getSelectedColorMode();
+      return mode ? mode.css_class === 'gl-dark' : null;
+    },
+    getSelectedColorMode() {
+      const modeId = new FormData(this.formEl).get('user[color_mode_id]');
+      const mode = this.colorModes.find((item) => item.id === Number(modeId));
+      return mode ?? null;
     },
     getSelectedTheme() {
       const themeId = new FormData(this.formEl).get('user[theme_id]');
-      return this.applicationThemes[themeId] ?? null;
+      const theme = this.themes.find((item) => item.id === Number(themeId));
+      return theme ?? null;
     },
     getSelectedScheme() {
       return new FormData(this.formEl).get('user[color_scheme_id]');

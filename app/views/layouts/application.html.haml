@@ -1,5 +1,5 @@
 - page_classes = page_class << @html_class
-- page_classes = [user_application_theme, page_classes.flatten.compact]
+- page_classes = [user_application_color_mode, user_application_theme, page_classes.flatten.compact]
 - body_classes = [user_tab_width, @body_class, client_class_list, *custom_diff_color_classes]
 - ff_simplified_labels_classes = Feature.enabled?(:simplified_labels, current_user) ? 'ff-simplified-labels-enabled' : ''
 - ff_simplified_badges_classes = Feature.enabled?(:simplified_badges, current_user) ? 'ff-simplified-badges-enabled' : ''

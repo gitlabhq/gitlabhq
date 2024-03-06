@@ -102,6 +102,7 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
             bio: 1,
             can_create_group: 1,
             color_scheme_id: 1,
+            color_mode_id: 1,
             email: 1,
             external: 1,
             force_random_password: 1,

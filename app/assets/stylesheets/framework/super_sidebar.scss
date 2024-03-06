@@ -84,7 +84,7 @@ $command-palette-spacing: px-to-rem(14px);
     --super-sidebar-user-bar-button-color: #{$user-bar-button-color};
     --super-sidebar-user-bar-button-border-color: #{$t-white-a-16};
     --super-sidebar-user-bar-button-hover-bg: #{$t-white-a-24};
-    --super-sidebar-user-bar-button-hover-color: #{$white};
+    --super-sidebar-user-bar-button-hover-color: #{$user-bar-button-color};
     --super-sidebar-user-bar-button-active-bg: #{$t-white-a-36};
 
     --super-sidebar-user-bar-button-icon-color: #{$user-bar-button-icon-color};
@@ -105,6 +105,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-blue-900,
     $notification-dot: $theme-blue-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-blue-50,
+      $user-bar-button-color: $theme-blue-900,
+      $user-bar-button-icon-color: $theme-blue-900,
+      $context-header: $theme-blue-500,
+      $active-indicator: $theme-blue-500,
+      $notification-dot: $theme-blue-500,
+    );
+  }
 }
 
 .ui-gray {
@@ -117,6 +129,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $gray-900,
     $notification-dot: $gray-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $gray-50,
+      $user-bar-button-color: $gray-900,
+      $user-bar-button-icon-color: $gray-900,
+      $context-header: $gray-500,
+      $active-indicator: $gray-500,
+      $notification-dot: $gray-500,
+    );
+  }
 }
 
 .ui-green {
@@ -129,6 +153,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-green-900,
     $notification-dot: $theme-green-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-green-50,
+      $user-bar-button-color: $theme-green-900,
+      $user-bar-button-icon-color: $theme-green-900,
+      $context-header: $theme-green-500,
+      $active-indicator: $theme-green-500,
+      $notification-dot: $theme-green-500,
+    );
+  }
 }
 
 .ui-indigo {
@@ -141,6 +177,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-indigo-900,
     $notification-dot: $theme-indigo-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-indigo-50,
+      $user-bar-button-color: $theme-indigo-900,
+      $user-bar-button-icon-color: $theme-indigo-900,
+      $context-header: $theme-indigo-500,
+      $active-indicator: $theme-indigo-500,
+      $notification-dot: $theme-indigo-500,
+    );
+  }
 }
 
 .ui-light-blue {
@@ -153,6 +201,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-light-blue-900,
     $notification-dot: $theme-light-blue-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-light-blue-100,
+      $user-bar-button-color: $theme-light-blue-900,
+      $user-bar-button-icon-color: $theme-light-blue-900,
+      $context-header: $theme-light-blue-500,
+      $active-indicator: $theme-light-blue-500,
+      $notification-dot: $theme-light-blue-500,
+    );
+  }
 }
 
 .ui-light-green {
@@ -165,6 +225,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-green-900,
     $notification-dot: $theme-green-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-green-100,
+      $user-bar-button-color: $theme-green-900,
+      $user-bar-button-icon-color: $theme-green-900,
+      $context-header: $theme-green-500,
+      $active-indicator: $theme-green-500,
+      $notification-dot: $theme-green-500,
+    );
+  }
 }
 
 .ui-light-indigo {
@@ -177,6 +249,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-indigo-900,
     $notification-dot: $theme-indigo-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-indigo-200,
+      $user-bar-button-color: $theme-indigo-900,
+      $user-bar-button-icon-color: $theme-indigo-900,
+      $context-header: $theme-indigo-500,
+      $active-indicator: $theme-indigo-500,
+      $notification-dot: $theme-indigo-500,
+    );
+  }
 }
 
 .ui-light-red {
@@ -189,6 +273,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-light-red-900,
     $notification-dot: $theme-light-red-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-light-red-50,
+      $user-bar-button-color: $theme-light-red-900,
+      $user-bar-button-icon-color: $theme-light-red-900,
+      $context-header: $theme-light-red-500,
+      $active-indicator: $theme-light-red-500,
+      $notification-dot: $theme-light-red-500,
+    );
+  }
 }
 
 .ui-red {
@@ -201,6 +297,18 @@ $command-palette-spacing: px-to-rem(14px);
     $active-indicator: $theme-red-900,
     $notification-dot: $theme-red-900,
   );
+
+  &.gl-dark {
+    @include super-sidebar-theme(
+      $background: $gray-10,
+      $user-bar-background: $theme-red-50,
+      $user-bar-button-color: $theme-red-900,
+      $user-bar-button-icon-color: $theme-red-900,
+      $context-header: $theme-red-500,
+      $active-indicator: $theme-red-500,
+      $notification-dot: $theme-red-500,
+    );
+  }
 }
 
 .super-sidebar {

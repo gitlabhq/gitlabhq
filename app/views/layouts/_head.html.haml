@@ -25,7 +25,7 @@
   - diffs_colors = user_diffs_colors
   = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
-  - if user_application_theme == 'gl-dark'
+  - if user_application_dark_mode?
     %meta{ name: 'color-scheme', content: 'dark light' }
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles

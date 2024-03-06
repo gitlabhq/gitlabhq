@@ -153,6 +153,7 @@ module Users
         :avatar,
         :bio,
         :can_create_group,
+        :color_mode_id,
         :color_scheme_id,
         :email,
         :external,

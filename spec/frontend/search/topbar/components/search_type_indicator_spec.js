@@ -17,6 +17,10 @@ describe('SearchTypeIndicator', () => {
     preloadStoredFrequentItems: jest.fn(),
   };
 
+  const getterSpies = {
+    currentScope: jest.fn(() => 'blobs'),
+  };
+
   const createComponent = (initialState = {}) => {
     const store = new Vuex.Store({
       state: {
@@ -24,6 +28,7 @@ describe('SearchTypeIndicator', () => {
         ...initialState,
       },
       actions: actionSpies,
+      getters: getterSpies,
     });
 
     wrapper = shallowMountExtended(SearchTypeIndicator, {
@@ -61,6 +66,7 @@ describe('SearchTypeIndicator', () => {
     'search type indicator for $searchType $searchLevel $scope',
     ({ searchType, repository, showSearchTypeIndicator, scope, searchLevel }) => {
       beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => scope);
         createComponent({
           query: { repository_ref: repository, scope },
           searchType,
@@ -104,6 +110,7 @@ describe('SearchTypeIndicator', () => {
     ${'zoekt'}    | ${'/help/user/search/exact_code_search'}
   `('documentation link for $searchType', ({ searchType, docsLink }) => {
     beforeEach(() => {
+      getterSpies.currentScope = jest.fn(() => 'blobs');
       createComponent({
         query: { repository_ref: 'master', scope: 'blobs' },
         searchType,
@@ -131,6 +138,20 @@ describe('SearchTypeIndicator', () => {
     });
     it('has correct link', () => {
       expect(findSyntaxDocsLink().attributes('href')).toBe(syntaxdocsLink);
+    });
+  });
+
+  describe('Indicator is not using url query as source of truth', () => {
+    beforeEach(() => {
+      createComponent({
+        query: { repository_ref: 'master', scope: 'project' },
+        searchType: 'zoekt',
+        searchLevel: 'project',
+        defaultBranchName: 'master',
+      });
+    });
+    it('has correct link', () => {
+      expect(findIndicator('zoekt-enabled').exists()).toBe(true);
     });
   });
 });

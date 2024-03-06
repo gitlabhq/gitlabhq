@@ -29,7 +29,7 @@ All AI features are experimental.
 
 ## Test self-managed AI features locally
 
-See [below](#test-ai-features-with-ai-gateway-locally)
+Skip to [AI Gateway Setup](#test-ai-features-with-ai-gateway-locally)
 
 ## Test SaaS-only AI features locally
 
@@ -64,20 +64,6 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
 1. Enable the specific feature flag for the feature you want to test
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework
 1. Setup [AI Gateway](#test-ai-features-with-ai-gateway-locally)
-
-### Temporary workaround to avoid AI Gateway setup
-
-NOTE:
-You need to setup AI Gateway since GitLab 16.8.
-It's a recommended way to test AI features. Sending requests directly to LLMs could lead to unnoticed bugs.
-Use this workaround with caution.
-
-To setup direct requests to LLMs you have to:
-
-1. Disable a feature flag `gitlab_duo_chat_requests_to_ai_gateway`.
-1. Set the required access token. To receive an access token:
-   1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For Anthropic, create [an access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new).
 
 ### Configure GCP Vertex access
 
@@ -198,11 +184,10 @@ View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
 
 In order to develop an AI feature that is compatible with both SaaS and Self-managed GitLab instances,
 the feature must request to the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md) instead of directly requesting to the 3rd party model providers.
-Therefore, a different setup is required from the [SaaS-only AI features](#test-saas-only-ai-features-locally).
 
 ### Setup
 
-1. Setup CustomersDot:
+1. Setup CustomersDot (optional, not required for Chat feature):
    1. Install CustomersDot: [internal video tutorial](https://youtu.be/_8wOMa_yGSw)
       - This video loosely follows [official installation steps](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md)
       - It also offers guidance on how to create a self-managed subscription. You will receive a *cloud activation code* in return.
@@ -212,7 +197,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
    1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation) as a separate GDK instance.
    1. Run `gdk config set license.customer_portal_url 'http://localhost:5000'`
    1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#local-interface).
-   1. Follow [Instruct your local CustomersDot instance to use the GitLab application](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md#instruct-your-local-customersdot-instance-to-use-the-gitlab-application)
+   1. Follow [Instruct your local CustomersDot instance to use the GitLab application](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md#instruct-your-local-customersdot-instance-to-use-the-gitlab-application) if you installed CustomersDot.
    1. Activate GitLab Enterprise license
        - To test Self Managed instances, follow [Cloud Activation steps](../../administration/license.md#activate-gitlab-ee) using the cloud activation code you received earlier.
        - To test SaaS, follow [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) with your license file.
@@ -232,20 +217,8 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
      ```
 
 1. Set up AI Gateway: [internal video tutorial](https://youtu.be/ePoHqvw78oQ)
-    1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-    1. Ensure that the following environment variables are set in the `.env` file:
-
-       ```shell
-       AIGW_AUTH__BYPASS_EXTERNAL=true
-       ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
-       ```
-
-    1. (Optional) [Configure OIDC](#set-oidc-provider-in-ai-gateway) if needed.
-    1. Run `poetry run ai_gateway`.
-    1. Visit OpenAPI playground (`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
-       If something went wrong, check `modelgateway_debug.log` if it contains error information.
-
-You are set, and should be able to verify AI feature by calling the following in GitLab-Rails console:
+    1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/README.md#how-to-run-the-server-locally).
+    1. Verify AI feature by calling the following in the rails console:
 
 ```ruby
 Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
@@ -291,21 +264,24 @@ Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: "\n\nHuman: Hi, ho
 
    If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
 
-### Set OIDC provider in AI Gateway
+### Temporary workaround to avoid AI Gateway setup
 
-1. Configure AI Gateway:
-   1. [Set the OIDC provider URLs](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#set-oidc-providers).
-      Make sure to adapt to the domain you use.
-      Note that you can choose to only set either GitLab SaaS instance or CDot as a provider.
-   1. Restart AI Gateway.
-1. If GitLab instance is set as a provider, you need to configure GDK to run in SaaS mode:
-   1. Export the following environment variables:
+NOTE:
+You need to setup AI Gateway since GitLab 16.8.
+It's a recommended way to test AI features. Sending requests directly to LLMs could lead to unnoticed bugs.
+Use this workaround with caution.
 
-      ```shell
-      export GITLAB_SIMULATE_SAAS=1 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
-      ```
+To setup direct requests to LLMs you have to:
 
-   1. Restart GDK.
+1. Disable the feature flag.
+
+     ```shell
+     echo "Feature.disable(:gitlab_duo_chat_requests_to_ai_gateway)" | rails c
+     ```
+
+1. Set the required access token. To receive an access token:
+    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
+    1. For Anthropic, create [an access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new).
 
 ## Experimental REST API
 
@@ -365,7 +341,7 @@ to send the response.
 The API requests to AI providers are handled in a background job. We therefore do not keep the request alive and the Frontend needs to match the request to the response from the subscription.
 
 WARNING:
-Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this intereference, we introduced the `clientSubscriptionId`.
+Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this interference, we introduced the `clientSubscriptionId`.
 
 To match a response on the `aiCompletionResponse` subscription, you can provide a `clientSubscriptionId` to the `aiAction` mutation.
 

@@ -1,6 +1,8 @@
 import { s__ } from '~/locale';
 
 export const I18N = {
+  pageTitle: s__('BranchRules|Branch rules details'),
+  deleteRule: s__('BranchRules|Delete rule'),
   manageProtectionsLinkTitle: s__('BranchRules|Manage in protected branches'),
   targetBranch: s__('BranchRules|Target branch'),
   branchNameOrPattern: s__('BranchRules|Branch name or pattern'),
@@ -42,6 +44,11 @@ export const I18N = {
     'BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file.',
   ),
   noData: s__('BranchRules|No data to display'),
+  deleteRuleModalTitle: s__('BranchRules|Delete branch rule?'),
+  deleteRuleModalText: s__(
+    'BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone.',
+  ),
+  deleteRuleModalDeleteText: s__('BranchRules|Delete branch rule'),
 };
 
 export const BRANCH_PARAM_NAME = 'branch';
@@ -62,3 +69,5 @@ export const NOT_REQUIRED_ICON = 'status-failed';
 
 export const REQUIRED_ICON_CLASS = 'gl-fill-green-500';
 export const NOT_REQUIRED_ICON_CLASS = 'gl-text-red-500';
+
+export const DELETE_RULE_MODAL_ID = 'delete-branch-rule-modal';

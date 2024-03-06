@@ -11,6 +11,7 @@ FactoryBot.define do
     confirmation_token { nil }
     can_create_group { true }
     color_scheme_id { 1 }
+    color_mode_id { 1 }
 
     after(:build) do |user, evaluator|
       # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.

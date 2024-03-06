@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Themes, lib: true do
   describe '.by_id' do
     it 'returns a Theme by its ID' do
       expect(described_class.by_id(1).name).to eq 'Indigo'
-      expect(described_class.by_id(3).name).to eq 'Light Gray'
+      expect(described_class.by_id(3).name).to eq 'Neutral'
     end
   end
 

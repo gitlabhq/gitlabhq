@@ -8775,6 +8775,9 @@ msgstr ""
 msgid "BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone."
+msgstr ""
+
 msgid "BranchRules|Branch"
 msgstr ""
 
@@ -8803,6 +8806,15 @@ msgid "BranchRules|Create wildcard"
 msgstr ""
 
 msgid "BranchRules|Create wildcard: %{searchTerm}"
+msgstr ""
+
+msgid "BranchRules|Delete branch rule"
+msgstr ""
+
+msgid "BranchRules|Delete branch rule?"
+msgstr ""
+
+msgid "BranchRules|Delete rule"
 msgstr ""
 
 msgid "BranchRules|Does not allow force push"
@@ -8863,6 +8875,9 @@ msgid "BranchRules|Select Branch or create wildcard"
 msgstr ""
 
 msgid "BranchRules|Something went wrong while creating branch rule."
+msgstr ""
+
+msgid "BranchRules|Something went wrong while deleting branch rule."
 msgstr ""
 
 msgid "BranchRules|Status checks"
@@ -12359,7 +12374,7 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-msgid "ColorMode|Dark (alpha)"
+msgid "ColorMode|Dark (Experiment)"
 msgstr ""
 
 msgid "ColorMode|Light"
@@ -32576,9 +32591,6 @@ msgstr ""
 msgid "NavigationTheme|Blue"
 msgstr ""
 
-msgid "NavigationTheme|Dark Mode (alpha)"
-msgstr ""
-
 msgid "NavigationTheme|Gray"
 msgstr ""
 
@@ -32591,9 +32603,6 @@ msgstr ""
 msgid "NavigationTheme|Light Blue"
 msgstr ""
 
-msgid "NavigationTheme|Light Gray"
-msgstr ""
-
 msgid "NavigationTheme|Light Green"
 msgstr ""
 
@@ -32601,6 +32610,9 @@ msgid "NavigationTheme|Light Indigo"
 msgstr ""
 
 msgid "NavigationTheme|Light Red"
+msgstr ""
+
+msgid "NavigationTheme|Neutral"
 msgstr ""
 
 msgid "NavigationTheme|Red"
@@ -37646,10 +37658,19 @@ msgstr ""
 msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
 msgstr ""
 
+msgid "Preferences|Appearance"
+msgstr ""
+
 msgid "Preferences|Automatically add new list items"
 msgstr ""
 
 msgid "Preferences|Behavior"
+msgstr ""
+
+msgid "Preferences|Choose the appearance of the application."
+msgstr ""
+
+msgid "Preferences|Choose the navigation theme."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see by default on your homepage."
@@ -37665,9 +37686,6 @@ msgid "Preferences|Color for added lines"
 msgstr ""
 
 msgid "Preferences|Color for removed lines"
-msgstr ""
-
-msgid "Preferences|Color theme"
 msgstr ""
 
 msgid "Preferences|Configure how dates and times display for you."
@@ -37686,9 +37704,6 @@ msgid "Preferences|Customize the appearance of the syntax."
 msgstr ""
 
 msgid "Preferences|Customize the behavior of the system layout and default views."
-msgstr ""
-
-msgid "Preferences|Customize the color of GitLab."
 msgstr ""
 
 msgid "Preferences|Customize the colors of removed and added lines in diffs."
@@ -37743,6 +37758,9 @@ msgid "Preferences|Layout width"
 msgstr ""
 
 msgid "Preferences|Must be a number between %{min} and %{max}"
+msgstr ""
+
+msgid "Preferences|Navigation theme"
 msgstr ""
 
 msgid "Preferences|Preview"

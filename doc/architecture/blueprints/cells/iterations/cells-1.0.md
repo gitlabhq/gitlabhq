@@ -490,8 +490,8 @@ The table below is a comparison between the existing GitLab.com features, and no
 
 1. Are GitLab Pages cluster-wide or Cell-local?
 
-   If GitLab Pages are not essential we would not support them in for Cells 1.0.
-   This is to be defined.
+   GitLab Pages was determined to be non-essential for Cells 1.0, so we would not support them for Cells 1.0.
+   The discussion about this can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/434972#note_1763737452).
 
    If GitLab Pages are meant to support the `.gitlab.io` domain:
 
