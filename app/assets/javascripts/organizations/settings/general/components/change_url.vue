@@ -96,7 +96,7 @@ export default {
   <div>
     <form-errors-alert v-model="errors" />
     <gl-card
-      class="gl-new-card"
+      class="gl-new-card gl-mt-0"
       header-class="gl-new-card-header gl-flex-direction-column"
       body-class="gl-new-card-body gl-px-5 gl-py-4"
     >

@@ -14,7 +14,7 @@ import (
 )
 
 func TestNewListener(t *testing.T) {
-	const unixSocket = "testdata/sock"
+	const unixSocket = "../../testdata/sock"
 
 	require.NoError(t, os.RemoveAll(unixSocket))
 
@@ -61,8 +61,8 @@ func pingClient(t *testing.T, c net.Conn) {
 
 func TestNewListener_TLS(t *testing.T) {
 	const (
-		certFile = "testdata/localhost.crt"
-		keyFile  = "testdata/localhost.key"
+		certFile = "../../testdata/localhost.crt"
+		keyFile  = "../../testdata/localhost.key"
 	)
 
 	cfg := config.ListenerConfig{Addr: "127.0.0.1:0",

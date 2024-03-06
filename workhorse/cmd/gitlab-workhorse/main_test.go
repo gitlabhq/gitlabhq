@@ -35,9 +35,9 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
-const testRepoRoot = "testdata/repo"
-const testDocumentRoot = "testdata/public"
-const testAltDocumentRoot = "testdata/alt-public"
+const testRepoRoot = "../../testdata/repo"
+const testDocumentRoot = "../../testdata/public"
+const testAltDocumentRoot = "../../testdata/alt-public"
 
 var absDocumentRoot string
 
@@ -405,7 +405,7 @@ func doSendDataRequest(t *testing.T, path string, command, literalJSON string) (
 
 func TestArtifactsGetSingleFile(t *testing.T) {
 	// We manually created this zip file in the gitlab-workhorse Git repository
-	archivePath := `testdata/artifacts-archive.zip`
+	archivePath := `../../testdata/artifacts-archive.zip`
 	fileName := "myfile"
 	fileContents := "MY FILE"
 	resourcePath := `/namespace/project/builds/123/artifacts/file/` + fileName
@@ -421,7 +421,7 @@ func TestArtifactsGetSingleFile(t *testing.T) {
 }
 
 func TestImageResizing(t *testing.T) {
-	imageLocation := `testdata/image.png`
+	imageLocation := `../../testdata/image.png`
 	requestedWidth := 40
 	imageFormat := "image/png"
 	jsonParams := fmt.Sprintf(`{"Location":"%s","Width":%d, "ContentType":"%s"}`, imageLocation, requestedWidth, imageFormat)

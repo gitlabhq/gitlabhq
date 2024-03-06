@@ -14705,7 +14705,8 @@ CREATE TABLE raw_usage_data (
     recorded_at timestamp with time zone NOT NULL,
     sent_at timestamp with time zone,
     payload jsonb NOT NULL,
-    version_usage_data_id_value bigint
+    version_usage_data_id_value bigint,
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE raw_usage_data_id_seq
@@ -26530,6 +26531,8 @@ CREATE INDEX index_push_rules_on_organization_id ON push_rules USING btree (orga
 
 CREATE INDEX index_push_rules_on_project_id ON push_rules USING btree (project_id);
 
+CREATE INDEX index_raw_usage_data_on_organization_id ON raw_usage_data USING btree (organization_id);
+
 CREATE UNIQUE INDEX index_raw_usage_data_on_recorded_at ON raw_usage_data USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_redirect_routes_on_path ON redirect_routes USING btree (path);
@@ -27269,6 +27272,10 @@ CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occu
 CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON vulnerability_occurrences USING btree (project_id, report_type, encode(project_fingerprint, 'hex'::text));
 
 CREATE INDEX index_vulnerability_occurrences_for_override_uuids_logic ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint);
+
+CREATE INDEX index_vulnerability_occurrences_on_initial_pipeline_id ON vulnerability_occurrences USING btree (initial_pipeline_id);
+
+CREATE INDEX index_vulnerability_occurrences_on_latest_pipeline_id ON vulnerability_occurrences USING btree (latest_pipeline_id);
 
 CREATE INDEX index_vulnerability_occurrences_on_location_image ON vulnerability_occurrences USING gin (((location -> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 7]));
 
@@ -29929,6 +29936,9 @@ ALTER TABLE ONLY bulk_import_exports
 
 ALTER TABLE ONLY ci_builds
     ADD CONSTRAINT fk_8d588a7095 FOREIGN KEY (commit_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY raw_usage_data
+    ADD CONSTRAINT fk_8e21125854 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_8e4456f90f FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

@@ -6,7 +6,9 @@ require './spec/support/sidekiq_middleware'
 # job via NewMergeRequestWorker, but this method will
 # force the after_create actions to happen inline.
 def flush_after_commit_queue(merge_request)
-  Sidekiq::Testing.inline! do
+  # To prevent idle in transaction timeouts, defer the creation of the
+  # NewMergeRequestWorker in a real Sidekiq job.
+  Sidekiq::Testing.disable! do
     Gitlab::ExclusiveLease.skipping_transaction_check do
       # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
       # hook won't run until after the fixture is loaded. That is too late

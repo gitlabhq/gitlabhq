@@ -9,7 +9,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-pt-5">
     <organization-settings />
     <advanced-settings />
   </div>

@@ -14,7 +14,7 @@ import {
   UNAVAILABLE_USER_FEATURE_TEXT,
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy.query.graphql';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 
 import {
   expirationPolicyPayload,

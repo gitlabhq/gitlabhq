@@ -2609,7 +2609,7 @@
 .review-change-pattern: &review-change-pattern
   APP_CHANGE_TRIGGER: "true"
 
-# The following rules needs to be the same as the one for .review:rules:review-cleanup
+# The following rules needs to be the same as the one for .review:rules:review-stop
 # except that:
 # - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
 # - several rules have `variables: *review-change-pattern` here
