@@ -1151,4 +1151,13 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
     end
   end
+
+  describe '#tar_version' do
+    it 'returns a version matching expected format' do
+      tar_version = subject.send(:tar_version)
+
+      expect(tar_version).to be_a(String)
+      expect(tar_version).to match(/tar \(GNU tar\) [0-9]\.[0-9]+/)
+    end
+  end
 end

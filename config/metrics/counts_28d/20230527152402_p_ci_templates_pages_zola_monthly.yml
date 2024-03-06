@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_pages_zola_monthly
 description: Count of pipelines using the Zola Pages template
 product_section: ''
 product_stage: ''
-product_group: ''
+product_group: pipeline_authoring
 value_type: number
 status: active
 milestone: "16.1"

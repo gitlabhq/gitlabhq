@@ -135,4 +135,34 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
       end
     end
   end
+
+  describe described_class::ScalarValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      'string' | true
+      :symbol  | true
+      true     | true
+      false    | true
+      2        | true
+      2.2      | true
+      []       | false
+      {}       | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, scalar: %i[foo bar]
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+        expect(instance.errors.messages_for(:config)).to contain_exactly('must be a scalar') unless valid_result
+      end
+    end
+  end
 end

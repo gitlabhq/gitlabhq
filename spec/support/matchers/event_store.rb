@@ -72,7 +72,14 @@ module RSpec
       return if actual.blank? || expected.blank?
 
       values_match?(actual.keys, expected.keys) &&
-        actual.keys.all? { |key| values_match?(expected[key], actual[key]) }
+        actual.keys.all? do |key|
+          case expected[key]
+          when Array
+            values_match?(expected[key].sort, actual[key].sort)
+          else
+            values_match?(expected[key], actual[key])
+          end
+        end
     end
 
     def published_events_description

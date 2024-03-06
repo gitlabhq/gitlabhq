@@ -7,4 +7,6 @@ feature_categories:
 - subscription_management
 classes:
 - GitlabSubscriptions::AddOnPurchase
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

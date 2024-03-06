@@ -10,6 +10,9 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
 
     let(:expected_config) do
       {
+        variables: {
+          ALLOW_FAILURE: false
+        },
         'my-job-build': {
           stage: 'build',
           script: [

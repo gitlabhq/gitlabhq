@@ -389,8 +389,7 @@ module Backup
     end
 
     def tar_version
-      tar_version, _ = Gitlab::Popen.popen(%w[tar --version])
-      tar_version.dup.force_encoding('locale').split("\n").first
+      Gitlab::Backup::Cli::Utils::Tar.new.version
     end
 
     def backup_file?(file)

@@ -46,7 +46,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
   end
 
   def decoded_cursor(cursor)
-    Gitlab::Json.parse(Base64Bp.urlsafe_decode64(cursor))
+    Gitlab::Json.parse(Base64.urlsafe_decode64(cursor))
   end
 
   before do
@@ -299,7 +299,7 @@ RSpec.describe Gitlab::Graphql::Pagination::Keyset::Connection do
       end
 
       context 'when an invalid cursor is provided' do
-        let(:arguments) { { before: Base64Bp.urlsafe_encode64('invalidcursor', padding: false) } }
+        let(:arguments) { { before: Base64.urlsafe_encode64('invalidcursor', padding: false) } }
 
         it 'raises an error' do
           expect { subject.sliced_nodes }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)

@@ -59141,7 +59141,7 @@ msgstr ""
 msgid "ciReport|No code quality issues found"
 msgstr ""
 
-msgid "ciReport|Parsing schema failed. Check the output of the scanner."
+msgid "ciReport|Parsing schema failed. Check the validity of your .gitlab-ci.yml content."
 msgstr ""
 
 msgid "ciReport|RPS"

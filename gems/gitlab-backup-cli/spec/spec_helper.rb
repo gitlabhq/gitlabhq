@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require "gitlab/backup/cli"
+require 'tmpdir'
+require 'fileutils'
+
+# Load spec support code
+Dir['spec/support/**/*.rb'].each { |f| load f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

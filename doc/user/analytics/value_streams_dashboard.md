@@ -97,7 +97,7 @@ These scoring are based on Google's classifications in the [DORA 2022 Accelerate
 
 #### Filter the DORA Performers score by project topics
 
-When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/settings/project_features_permissions.md#project-topics).
+When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/project_topics.md).
 
 ```yaml
 panels:

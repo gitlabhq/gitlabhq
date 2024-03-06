@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Variables do
+RSpec.describe Gitlab::Ci::Config::Entry::Variables, feature_category: :pipeline_composition do
   let(:config) { {} }
   let(:metadata) { {} }
 
@@ -103,8 +103,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
 
   context 'when value is a boolean' do
     let(:config) { { 'VAR1' => true } }
+    let(:result) { { 'VAR1' => 'true' } }
 
-    it_behaves_like 'invalid config', /must be either a string or a hash/
+    it_behaves_like 'valid config'
   end
 
   context 'when entry config value has unallowed value key-value pair and value is a string' do

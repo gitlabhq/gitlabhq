@@ -6,6 +6,8 @@ import postcss from 'postcss';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
+import tailwindcss from 'tailwindcss/lib/plugin.js';
+import tailwindConfig from '../../../config/tailwind.config.js';
 import IS_EE from '../../../config/helpers/is_ee_env.js';
 import IS_JH from '../../../config/helpers/is_jh_env.js';
 /* eslint-enable import/extensions */
@@ -165,8 +167,11 @@ function resolveCompilationTargets() {
   return Object.fromEntries([...result.entries()].map((entry) => entry.reverse()));
 }
 
-function createPostCSSProcessor() {
-  return postcss([autoprefixer()]);
+function createPostCSSProcessors() {
+  return {
+    tailwind: postcss([tailwindcss(tailwindConfig), autoprefixer()]),
+    default: postcss([autoprefixer()]),
+  };
 }
 
 export async function compileAllStyles({ shouldWatch = false }) {
@@ -174,7 +179,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
 
   const compilationTargets = resolveCompilationTargets();
 
-  const processor = createPostCSSProcessor();
+  const processors = createPostCSSProcessors();
 
   const sassCompilerOptions = {
     loadPaths: resolveLoadPaths(),
@@ -194,6 +199,22 @@ export async function compileAllStyles({ shouldWatch = false }) {
     fileWatcher = watch([]);
   }
 
+  async function postProcessCSS(content, source) {
+    const processor = content.css.includes('@apply') ? processors.tailwind : processors.default;
+
+    return processor.process(content.css, {
+      from: source,
+      map: content.sourceMap
+        ? {
+            from: source,
+            prev: content.sourceMap,
+            inline: true,
+            sourcesContent: true,
+          }
+        : false,
+    });
+  }
+
   async function compileSCSSFile(source, dest) {
     console.log(`\tcompiling source ${source} to ${dest}`);
     let content = compile(source, sassCompilerOptions);
@@ -207,17 +228,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
         }
       }
     }
-    content = await processor.process(content.css, {
-      from: source,
-      map: content.sourceMap
-        ? {
-            from: source,
-            prev: content.sourceMap,
-            inline: true,
-            sourcesContent: true,
-          }
-        : false,
-    });
+    content = await postProcessCSS(content, source);
     // Create target folder if it doesn't exist
     await mkdir(path.dirname(dest), { recursive: true });
     await writeFile(dest, content.css, 'utf-8');

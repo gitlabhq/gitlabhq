@@ -1047,8 +1047,9 @@
           "oneOf": [
             {
               "type": [
-                "string",
-                "number"
+                "boolean",
+                "number",
+                "string"
               ]
             },
             {
@@ -1091,8 +1092,9 @@
           "oneOf": [
             {
               "type": [
-                "string",
-                "number"
+                "boolean",
+                "number",
+                "string"
               ]
             },
             {
@@ -1119,8 +1121,9 @@
       "patternProperties": {
         ".*": {
           "type": [
-            "string",
-            "number"
+            "boolean",
+            "number",
+            "string"
           ]
         },
         "additionalProperties": false

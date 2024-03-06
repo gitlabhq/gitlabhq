@@ -32,6 +32,9 @@ spec:
 
 ---
 
+variables:
+  ALLOW_FAILURE: $[[ inputs.allow_failure ]]
+
 "$[[ inputs.job_prefix ]]-build":
   stage: $[[ inputs.job_stage ]]
   script:
