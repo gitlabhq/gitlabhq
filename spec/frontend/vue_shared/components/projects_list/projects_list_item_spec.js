@@ -2,6 +2,7 @@ import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -53,7 +54,7 @@ describe('ProjectsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
-  const findInactiveBadge = () => wrapper.findByTestId('inactive-badge');
+  const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -133,42 +134,10 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  describe('project is marked as inactive', () => {
-    describe('archived', () => {
-      beforeEach(() => {
-        createComponent({
-          propsData: {
-            project: {
-              ...project,
-              archived: true,
-            },
-          },
-        });
-      });
+  it('renders inactive badge', () => {
+    createComponent();
 
-      it('renders badge correctly', () => {
-        expect(findInactiveBadge().props('variant')).toBe('info');
-        expect(findInactiveBadge().text()).toBe('Archived');
-      });
-    });
-
-    describe('pending deletion', () => {
-      beforeEach(() => {
-        createComponent({
-          propsData: {
-            project: {
-              ...project,
-              markedForDeletionOn: '2024-01-01',
-            },
-          },
-        });
-      });
-
-      it('renders badge correctly', () => {
-        expect(findInactiveBadge().props('variant')).toBe('warning');
-        expect(findInactiveBadge().text()).toBe('Pending deletion');
-      });
-    });
+    expect(findInactiveBadge().exists()).toBe(true);
   });
 
   it('renders stars count', () => {

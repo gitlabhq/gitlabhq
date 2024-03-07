@@ -151,7 +151,8 @@ as self-managed instances.
 ### Decisions
 
 - [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
-- [002: Run scan within subprocess](decisions/002_run_scan_within_subprocess.md)
+- [002: Store the Secret Detection Gem in the same repository](decisions/002_store_the_secret_detection_gem_in_the_same_repository.md)
+- [003: Run scan within subprocess](decisions/003_run_scan_within_subprocess.md)
 
 ## Challenges
 
@@ -303,7 +304,7 @@ The private SD gem offers the following support in addition to running scan on m
 The Ruleset file referred during the Pre-receive Secret Detection scan is
 located [here](https://gitlab.com/gitlab-org/gitlab/-/blob/2da1c72dbc9df4d9130262c6b79ea785b6bb14ac/gems/gitlab-secret_detection/lib/gitleaks.toml).
 
-More details about the Gem can be found in the [README](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/README.md) file.
+More details about the Gem can be found in the [README](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/README.md) file. Also see [ADR 002](decisions/002_store_the_secret_detection_gem_in_the_same_repository.md) for more on how the Gem code is stored and distributed.
 
 ### Phase 2 - Standalone pre-receive service
 

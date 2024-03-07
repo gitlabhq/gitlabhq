@@ -78,6 +78,10 @@ class ServiceResponse
     Array.wrap(message)
   end
 
+  def cause
+    ActiveSupport::StringInquirer.new(reason.to_s)
+  end
+
   private
 
   attr_writer :status, :message, :http_status, :payload, :reason

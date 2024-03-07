@@ -87,9 +87,6 @@ To assign topics to a project:
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
 
-NOTE:
-The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
-
 ## Administer topics
 
 Instance administrators can administer all project topics from the

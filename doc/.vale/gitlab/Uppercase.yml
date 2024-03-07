@@ -186,10 +186,12 @@ exceptions:
   - RHEL
   - RPC
   - RPM
+  - RPO
   - RPS
   - RSA
   - RSS
   - RTC
+  - RTO
   - RVM
   - SAAS
   - SAML
@@ -254,6 +256,7 @@ exceptions:
   - VCS
   - VPC
   - VPN
+  - WAF
   - WEBP
   - WIP
   - WSL

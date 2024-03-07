@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../feature_flags.md) named
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named
 `google_cloud_support_feature_flag`. This feature is in [Beta](../../../policy/experiment-beta-support.md).
 
 FLAG:
@@ -31,7 +31,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab project.
 - You must have the [permissions needed](https://cloud.google.com/iam/docs/granting-changing-revoking-access#required-permissions) to manage access to the Google Cloud project with the Artifact Registry repository.
-- A workload identity federation (WLIF) pool and provider must be configured to authenticate to Google Cloud.
+- A [workload identity federation](../../../integration/google_cloud_iam.md) (WLIF) pool and provider must be configured to authenticate to Google Cloud.
 - A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration: 
   - [Docker](https://cloud.google.com/artifact-registry/docs/supported-formats) format.
   - [Standard](https://cloud.google.com/artifact-registry/docs/repositories/create-repos) mode. Other repository formats and modes are not supported.
@@ -79,7 +79,7 @@ You can use these environment variables to interact with the Artifact Registry, 
 ### Authenticate with the Google Artifact Registry
 
 You can configure a pipeline to authenticate with the Google Artifact Registry during pipeline
-execution. GitLab uses the configured workload identity pool IAM policies
+execution. GitLab uses the configured [workload identity pool](../../../integration/google_cloud_iam.md) IAM policies
 and populates the `GOOGLE_APPLICATION_CREDENTIALS` and `CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE`
 environment credentials. These environment credentials are automatically detected by client tools,
 like [gcloud CLI](https://cloud.google.com/sdk/gcloud) and [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md).
@@ -98,8 +98,8 @@ provide the steps to create the following IAM policies in your Google Cloud proj
 To create these IAM policies manually, use the following `gcloud` commands. Replace these values:
 
 - `<your_google_cloud_project_id>` with the [ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) of the Google Cloud project where the Artifact Registry repository is located.
-- `<your_workload_identity_pool_id>` with the ID of the workload identity pool. This is the same value used for the Google Cloud IAM integration.
-- `<your_google_cloud_project_number>` with the [number](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) of the Google Cloud project where the workload identity pool is located. This is the same value used for the Google Cloud IAM integration.
+- `<your_workload_identity_pool_id>` with the ID of the workload identity pool. This is the same value used for the [Google Cloud IAM integration](../../../integration/google_cloud_iam.md).
+- `<your_google_cloud_project_number>` with the [number](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) of the Google Cloud project where the workload identity pool is located. This is the same value used for the [Google Cloud IAM integration](../../../integration/google_cloud_iam.md).
 
 ```shell
 gcloud projects add-iam-policy-binding '<your_google_cloud_project_id>' \
@@ -111,7 +111,7 @@ gcloud projects add-iam-policy-binding '<your_google_cloud_project_id>' \
   --role='roles/artifactregistry.writer'
 ```
 
-For a list of available claims, see OIDC custom claims.
+For a list of available claims, see [OIDC custom claims](../../../integration/google_cloud_iam.md#oidc-custom-claims).
 
 ### Examples
 

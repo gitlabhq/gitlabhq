@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
@@ -32,8 +33,6 @@ export default {
     forks: __('Forks'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
-    pendingDeletion: __('Pending deletion'),
-    archived: __('Archived'),
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
@@ -54,6 +53,7 @@ export default {
     TimeAgoTooltip,
     DeleteModal,
     ListActions,
+    ProjectListItemInactiveBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -202,26 +202,6 @@ export default {
     isActionDeleteLoading() {
       return this.project.actionLoadingStates[ACTION_DELETE];
     },
-    isPendingDeletion() {
-      return Boolean(this.project.markedForDeletionOn);
-    },
-    inactiveBadge() {
-      if (this.isPendingDeletion) {
-        return {
-          variant: 'warning',
-          text: this.$options.i18n.pendingDeletion,
-        };
-      }
-
-      if (this.project.archived) {
-        return {
-          variant: 'info',
-          text: this.$options.i18n.archived,
-        };
-      }
-
-      return null;
-    },
   },
   methods: {
     topicPath(topic) {
@@ -353,13 +333,7 @@ export default {
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
         <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
-          <gl-badge
-            v-if="inactiveBadge"
-            :variant="inactiveBadge.variant"
-            size="sm"
-            data-testid="inactive-badge"
-            >{{ inactiveBadge.text }}</gl-badge
-          >
+          <project-list-item-inactive-badge :project="project" />
           <gl-link
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"

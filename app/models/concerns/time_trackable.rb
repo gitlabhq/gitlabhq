@@ -10,6 +10,8 @@
 module TimeTrackable
   extend ActiveSupport::Concern
 
+  include Gitlab::Utils::StrongMemoize
+
   included do
     attr_reader :time_spent, :time_spent_user, :spent_at, :summary
 
@@ -22,6 +24,23 @@ module TimeTrackable
 
     has_many :timelogs, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
     after_initialize :set_time_estimate_default_value
+    after_save :clear_memoized_total_time_spent
+  end
+
+  def clear_memoized_total_time_spent
+    clear_memoization(:total_time_spent)
+  end
+
+  def reset
+    clear_memoized_total_time_spent
+
+    super
+  end
+
+  def reload(*args)
+    clear_memoized_total_time_spent
+
+    super(*args)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -54,6 +73,7 @@ module TimeTrackable
     # (some issuable might have total time spent that's negative because a validation was missing.)
     sum.clamp(-Timelog::MAX_TOTAL_TIME_SPENT, Timelog::MAX_TOTAL_TIME_SPENT)
   end
+  strong_memoize_attr :total_time_spent
 
   def human_total_time_spent
     Gitlab::TimeTrackingFormatter.output(total_time_spent)

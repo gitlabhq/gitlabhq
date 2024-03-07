@@ -23,42 +23,52 @@ Using the GitLab UI, the GitHub importer always imports from the
 `github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
 [GitLab Import API](#use-the-api) GitHub endpoint.
 
-When importing projects:
-
-- If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and
-  assignee. The project creator is usually the user that initiated the import process. A note on the issue mentioning the
-  original GitHub author is added.
-- Reviewers assigned to GitHub pull requests that do not exist in GitLab are not imported. In this case, the import
-  creates comments describing that non-existent users were added as reviewers and approvers. However, the actual
-  reviewer status and approval are not applied to the merge request in GitLab.
-- You can change the target namespace and target repository name before you import.
-- The organization the repository belongs to must not impose restrictions of a [third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions) on the GitLab instance you import to.
+You can change the target namespace and target repository name before you import.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
 ## Prerequisites
 
+To import projects from GitHub, you must enable the
+[GitHub import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+If that import source is not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
+by default on GitLab.com.
+
+### Permissions and roles
+
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
-To import projects from GitHub:
+To use the GitHub importer, you must have:
 
-- [GitHub import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
-  must be enabled. If not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
-  by default on GitLab.com.
-- You must have at least the Maintainer role on the destination group to import to.
+- Access to the GitHub project to import.
+- At least the Maintainer role on the destination GitLab group to import to.
+
+Also, the organization the GitHub repository belongs to must not impose restrictions of a
+[third-party application access policy](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions)
+on the GitLab instance you import to.
+
+### Accounts for user contribution mapping
+
+For user contribution mapping between GitHub and GitLab to work:
+
 - Each GitHub author and assignee in the repository must have a
-  [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
-  on GitHub that matches their GitLab email address (regardless of how the account was created). If their email address
-  from GitHub is set as their secondary email address in GitLab, they must confirm it.
+  [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address).
+- The GitHub user's email address must match their GitLab email address.
+- If a user's email address in GitHub is set as their secondary email address in GitLab, they must confirm it.
 
-  When issues and pull requests are being imported, the importer attempts to find their GitHub authors and assignees in
-  the database of the GitLab instance. Pull requests are called _merge requests_ in GitLab. For the importer to succeed,
-  matching email addresses are required.
-- GitHub accounts must have a GitHub public-facing email address so that all comments and contributions can be properly mapped to
-  the same user in GitLab. GitHub Enterprise does not require this field to be populated so you might have to add it on existing accounts.
+GitHub Enterprise does not require a public email address, so you might have to add it to existing accounts.
 
-### Known issues
+If the above requirements are not met, the importer can't map the particular user's contributions. In that case:
+
+- The project creator is set as the author and assignee of issues and merge requests. The project creator is usually the
+  user that initiated the import process. For some contributions that have a description or note such as pull requests,
+  issue, notes, the importer amends the text with details of who originally created the contribution.
+- Reviewers and approvals added on pull requests in GitHub cannot be imported. In this case, the importer creates comments
+  describing that non-existent users were added as reviewers and approvers. However, the actual reviewer status and
+  approval are not applied to the merge request in GitLab.
+
+## Known issues
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
   This occurs because of a limitation of the GitHub API that doesn't include `in_reply_to_id` for comments before 2017.

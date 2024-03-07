@@ -511,10 +511,14 @@ If an OKR is closed with a locked discussion, then you cannot reopen it until th
 
 ## Two-column layout
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/446064) to feature flag named `work_items_beta` in GitLab 16.10. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
+On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_beta`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
@@ -522,7 +526,10 @@ When enabled, OKRs use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-![OKR two column view](img/objective_two_column_view_v16_7.png)
+This feature is in [Beta](../policy/experiment-beta-support.md).
+If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442090).
+
+![OKR two column view](img/objective_two_column_view_v16_10.png)
 
 ## Linked items in OKRs
 

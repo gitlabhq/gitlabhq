@@ -35,6 +35,8 @@ To connect a feature in an existing backend service to Cloud Connector:
 
 1. Call `CloudConnector::AccessService.new.access_token(scopes: [...])` with the list of scopes your feature requires and include
 this token in the `Authorization` HTTP header field.
+Note that this can return `nil` if there is no valid token available. If there is no token, the call to Cloud Connector will
+not pass authorization, so it is recommended to return early.
 The backend service must validate this token and any scopes it carries when receiving the request.
 If you need to embed additional claims in the token specific to your use case, you can pass these
 in the `extra_claims` argument. **Scopes and other claims passed here will only be included in self-issued tokens on GitLab.com.**
@@ -60,6 +62,7 @@ This allows clients to access the feature at `https://cloud.gitlab.com/foo/new_f
 include API::Helpers::CloudConnector
 
 token = ::CloudConnector::AccessService.new.access_token(scopes: [:new_feature_scope])
+return unauthorized! if token.nil?
 
 Gitlab::HTTP.post(
   "https://cloud.gitlab.com/foo/new_feature_endpoint",

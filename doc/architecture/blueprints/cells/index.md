@@ -348,6 +348,8 @@ The following list of impacted features only represents placeholders that still 
 
 ### What's the difference between Cells architecture and GitLab Dedicated?
 
+We've captured individual thoughts and differences between Cells and Dedicated over [here](infrastructure/diff-between-dedicated.md)
+
 The new Cells architecture is meant to scale GitLab.com.
 The way to achieve this is by moving Organizations into Cells, but different Organizations can still share server resources, even if the application provides isolation from other Organizations.
 But all of them still operate under the existing GitLab SaaS domain name `gitlab.com`.

@@ -59,6 +59,10 @@ module Integrations
     # We should use username/password for Jira Server and email/api_token for Jira Cloud,
     # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
+    before_save :copy_project_key_to_project_keys,
+      if: -> {
+        Feature.disabled?(:jira_multiple_project_keys, project&.group)
+      }
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
     enum comment_detail: {
@@ -130,6 +134,10 @@ module Integrations
       help: -> { s_('JiraService|Use a prefix to match Jira issue keys.') }
 
     field :jira_issue_transition_id, api_only: true
+
+    field :project_keys,
+      required: false,
+      api_only: true
 
     # TODO: we can probably just delegate as part of
     # https://gitlab.com/gitlab-org/gitlab/issues/29404
@@ -689,6 +697,10 @@ module Integrations
       else
         data_fields.deployment_server!
       end
+    end
+
+    def copy_project_key_to_project_keys
+      data_fields.project_keys = [project_key]
     end
 
     def jira_cloud?

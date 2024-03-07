@@ -6,7 +6,6 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-
 # CI/CD YAML syntax reference
 
 DETAILS:
@@ -2496,19 +2495,25 @@ job1:
 ### `identity`
 
 DETAILS:
-**Status:** Experiment
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
 
 FLAG:
-On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
+
+This feature is in [Beta](../../policy/experiment-beta-support.md).
+To join the list of users testing this feature, join the [waitlist](https://forms.gle/XdxdTxC7DXj4NSaz9).
 
 Use `identity` to authenticate with third party services using identity federation.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
 
-**Possible inputs**: An identifier. Supported providers: `google_cloud` (Google Cloud).
+**Possible inputs**: An identifier. Supported providers:
+
+- `google_cloud`: Google Cloud. Must be configured with the [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
 **Example of `identity`**:
 
@@ -2522,6 +2527,7 @@ job_with_workload_identity:
 **Related topics**:
 
 - [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+- [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
 ### `id_tokens`
 
