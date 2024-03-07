@@ -17,7 +17,6 @@ On a server that handles many runners, this polling can lead to a number of perf
 
 - Longer queuing times.
 - Higher CPU usage on the GitLab instance.
-- Unbalanced load distribution, with one runner executing more jobs than other runners.
 
 To mitigate these issues, you should enable long polling.
 

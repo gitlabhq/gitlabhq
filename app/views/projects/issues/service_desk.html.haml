@@ -11,7 +11,7 @@
     service_desk_email_address: @project.service_desk_address,
     can_admin_issues: can?(current_user, :admin_issue, @project).to_s,
     can_edit_project_settings: can?(current_user, :admin_project, @project).to_s,
-    service_desk_callout_svg_path: image_path('service_desk_callout.svg'),
+    service_desk_callout_svg_path: image_path('illustrations/service-desk-sm.svg'),
     service_desk_settings_path: edit_project_path(@project, anchor: 'js-service-desk'),
     service_desk_help_path: help_page_path('user/project/service_desk/index'),
     is_service_desk_supported: Gitlab::ServiceDesk.supported?.to_s,

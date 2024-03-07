@@ -18,6 +18,10 @@ export default {
       type: String,
       required: true,
     },
+    version: {
+      type: String,
+      required: true,
+    },
   },
   i18n: {
     tabs: {
@@ -33,14 +37,14 @@ export default {
 <template>
   <gl-tabs>
     <gl-tab :title-link-class="$options.tabClass" lazy>
-      <!-- This template is simply to add the line height class. 
+      <!-- This template is simply to add the line height class.
       We can remove this when we remove the experiment badge and use the title prop. -->
       <template #title>
         <div class="gl-line-height-20">
           {{ $options.i18n.tabs.readme }}
         </div>
       </template>
-      <ci-resource-readme :resource-path="resourcePath" />
+      <ci-resource-readme :resource-path="resourcePath" :version="version" />
     </gl-tab>
     <gl-tab :title-link-class="$options.tabClass" lazy>
       <template #title>

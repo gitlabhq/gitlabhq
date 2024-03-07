@@ -47,7 +47,7 @@ GitLab uses a similar concept to agents called [runners](https://docs.gitlab.com
 which use [executors](https://docs.gitlab.com/runner/executors/) to run builds.
 
 Examples of executors are shell, Docker, or Kubernetes. You can choose to use GitLab [SaaS runners](../runners/index.md)
-or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.md).
+or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.html).
 
 ### Workflow
 

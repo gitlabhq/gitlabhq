@@ -24,7 +24,7 @@ To meet GitLab for Open Source Program requirements, first add an OSI-approved o
 To add a license to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/license/) into the `LICENSE` file. GitLab defaults to **All rights reserved** if users do not perform this action.
+1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/license) into the `LICENSE` file. GitLab defaults to **All rights reserved** if users do not perform this action.
 
 ![Add license](img/add-license.png)
 

@@ -134,7 +134,7 @@ gem 'net-ldap', '~> 0.17.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # API
 gem 'grape', '~> 2.0.0', feature_category: :api
-gem 'grape-entity', '~> 0.10.0', feature_category: :api
+gem 'grape-entity', '~> 0.10.2', feature_category: :api
 gem 'grape-swagger', '~> 2.0.1', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
@@ -559,7 +559,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.9.1', feature_category: :gitaly
+gem 'gitaly', '~> 16.10.0-rc1', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.4.0', feature_category: :deployment_management

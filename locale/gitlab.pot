@@ -10602,9 +10602,6 @@ msgstr ""
 msgid "CiCatalog|CI/CD Catalog project"
 msgstr ""
 
-msgid "CiCatalog|CI/CD Catalog resource"
-msgstr ""
-
 msgid "CiCatalog|Component ID not found, or you do not have permission to access component."
 msgstr ""
 
@@ -10647,16 +10644,16 @@ msgstr ""
 msgid "CiCatalog|Released %{timeAgo} by %{author}"
 msgstr ""
 
-msgid "CiCatalog|Remove from the CI/CD catalog"
+msgid "CiCatalog|Remove component project from the CI/CD Catalog?"
 msgstr ""
 
-msgid "CiCatalog|Remove project from the CI/CD Catalog?"
+msgid "CiCatalog|Remove from the CI/CD catalog"
 msgstr ""
 
 msgid "CiCatalog|Search must be at least 3 characters"
 msgstr ""
 
-msgid "CiCatalog|Set project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
 msgid "CiCatalog|The CI/CD components in this project can be published in the CI/CD Catalog by creating a release. We recommend using the %{linkStart}release%{linkEnd} keyword in a CI/CD job to release new component versions for the Catalog."
@@ -10677,16 +10674,16 @@ msgstr ""
 msgid "CiCatalog|There was an error fetching the CI/CD Catalog project count."
 msgstr ""
 
-msgid "CiCatalog|This project is no longer a CI/CD Catalog resource."
+msgid "CiCatalog|This project is no longer a CI/CD Catalog project."
 msgstr ""
 
-msgid "CiCatalog|This project is now a CI/CD Catalog resource."
+msgid "CiCatalog|This project is now a CI/CD Catalog project."
 msgstr ""
 
-msgid "CiCatalog|Unable to remove project as a CI/CD Catalog resource."
+msgid "CiCatalog|Unable to remove project as a CI/CD Catalog project."
 msgstr ""
 
-msgid "CiCatalog|Unable to set project as a CI/CD Catalog resource."
+msgid "CiCatalog|Unable to set project as a CI/CD Catalog project."
 msgstr ""
 
 msgid "CiCatalog|Unreleased"
@@ -30691,7 +30688,7 @@ msgstr ""
 msgid "MemberRole|Failed to delete role."
 msgstr ""
 
-msgid "MemberRole|Failed to delete role. %{message}"
+msgid "MemberRole|Failed to delete role. %{error}"
 msgstr ""
 
 msgid "MemberRole|Failed to fetch roles."

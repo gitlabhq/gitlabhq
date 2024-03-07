@@ -1645,10 +1645,18 @@ For this reason, in GitLab 17.0, we are renaming the `require_password_to_approv
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/389467).
 </div>
 
-Required Pipeline Configuration will be removed in the 17.0 release. This impacts self-managed users on the Ultimate license.
+Required pipeline configuration will be removed in GitLab 17.0. This impacts self-managed users on the Ultimate tier.
 
-We recommend replacing this with an alternative [compliance solution](https://docs.gitlab.com/ee/user/group/compliance_frameworks.html#compliance-pipelines)
-that is available now. We recommend this alternative solution because it provides greater flexibility, allowing required pipelines to be assigned to specific compliance framework labels.
+You should replace required pipeline configuration with either:
+
+- [Security policies scoped to compliance frameworks](https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html#security-policy-scopes), which are experimental.
+- [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html), which are available now.
+
+We recommend these alternative solutions because they provides greater flexibility, allowing required pipelines to be assigned to specific
+compliance framework labels.
+
+Note: Compliance pipelines will be deprecated in the future and migrated to security policies. For more information, see the
+[migration and deprecation epic](https://gitlab.com/groups/gitlab-org/-/epics/11275).
 
 </div>
 

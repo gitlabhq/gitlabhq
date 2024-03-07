@@ -15,12 +15,14 @@ export default {
       type: String,
       required: true,
     },
+    version: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       readmeHtml: null,
-      version: '',
-      useLatestVersion: true,
     };
   },
   apollo: {
@@ -29,14 +31,11 @@ export default {
       variables() {
         return {
           fullPath: this.resourcePath,
-          latest_version: this.useLatestVersion,
           version: this.version,
         };
       },
       update(data) {
-        return this.useLatestVersion
-          ? data?.ciCatalogResource?.latestVersion?.readmeHtml
-          : data?.ciCatalogResource?.versions?.nodes[0]?.readmeHtml || null;
+        return data?.ciCatalogResource?.versions?.nodes[0]?.readmeHtml || null;
       },
       error() {
         createAlert({ message: this.$options.i18n.loadingError });

@@ -94,7 +94,9 @@ describe('VersionRow', () => {
 
   describe('left action template', () => {
     it('does not render checkbox if not permitted', () => {
-      createComponent({ packageEntity: { ...packageVersion, canDestroy: false } });
+      createComponent({
+        packageEntity: { ...packageVersion, userPermissions: { destroyPackage: false } },
+      });
 
       expect(findBulkDeleteAction().exists()).toBe(false);
     });
@@ -124,7 +126,9 @@ describe('VersionRow', () => {
 
   describe('delete button', () => {
     it('does not exist when package cannot be destroyed', () => {
-      createComponent({ packageEntity: { ...packageVersion, canDestroy: false } });
+      createComponent({
+        packageEntity: { ...packageVersion, userPermissions: { destroyPackage: false } },
+      });
 
       expect(findDeleteDropdownItem().exists()).toBe(false);
     });

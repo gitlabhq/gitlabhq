@@ -100,7 +100,7 @@ describe('CiResourcesListItem', () => {
   describe('components', () => {
     describe('when there are no components', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+        createComponent({ props: { resource: { ...resource, versions: null } } });
       });
 
       it('does not render the component names', () => {
@@ -110,9 +110,7 @@ describe('CiResourcesListItem', () => {
 
     describe('when there are components', () => {
       beforeEach(() => {
-        createComponent({
-          props: { resource: { ...resource, latestVersion: { ...componentList, ...release } } },
-        });
+        createComponent();
       });
 
       it('renders the component name template', () => {
@@ -129,7 +127,7 @@ describe('CiResourcesListItem', () => {
   describe('release time', () => {
     describe('when there is no release data', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+        createComponent({ props: { resource: { ...resource, versions: null } } });
       });
 
       it('does not render the release', () => {
@@ -144,7 +142,7 @@ describe('CiResourcesListItem', () => {
 
     describe('when there is release data', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: { ...release } } } });
+        createComponent();
       });
 
       it('renders the user link', () => {

@@ -55,7 +55,7 @@ export default {
       return this.pipelineStatus?.text;
     },
     latestVersion() {
-      return this.resource.latestVersion;
+      return this.resource?.versions?.nodes[0] || {};
     },
     versionBadgeText() {
       return this.latestVersion.name;

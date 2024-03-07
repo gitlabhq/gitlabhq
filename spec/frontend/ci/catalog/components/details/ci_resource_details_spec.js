@@ -11,6 +11,7 @@ describe('CiResourceDetails', () => {
 
   const defaultProps = {
     resourcePath: 'twitter/project-1',
+    version: '1.0.1',
   };
 
   const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
@@ -63,8 +64,25 @@ describe('CiResourceDetails', () => {
       expect(findExperimentBadge().exists()).toBe(true);
     });
 
-    it('passes the right props to the components tab', () => {
-      expect(findCiResourceComponents().props().resourceId).toBe(defaultProps.resourceId);
+    describe('Inner tab components', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('passes lazy attribute to all tabs', () => {
+        findAllTabs().wrappers.forEach((tab) => {
+          expect(tab.attributes().lazy).not.toBeUndefined();
+        });
+      });
+
+      it('passes the right props to the readme component', () => {
+        expect(findCiResourceReadme().props().resourceId).toBe(defaultProps.resourceId);
+        expect(findCiResourceReadme().props().version).toBe(defaultProps.version);
+      });
+
+      it('passes the right props to the components tab', () => {
+        expect(findCiResourceComponents().props().resourceId).toBe(defaultProps.resourceId);
+      });
     });
   });
 });

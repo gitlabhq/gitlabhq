@@ -284,6 +284,23 @@ module Gitlab
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :merge_conflict
+          raise Gitlab::Git::Repository::CreateTreeError, 'CONFLICT'
+        when :changes_already_applied
+          raise Gitlab::Git::Repository::CreateTreeError, 'EMPTY'
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :not_ancestor
+          raise Gitlab::Git::CommitError, 'branch diverged'
+        else
+          raise e
+        end
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [])

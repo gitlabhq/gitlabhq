@@ -31,6 +31,8 @@ Workhorse acts as a kind of "waiting room" where CI runners can sit
 and wait for new CI jobs. Because of Go's efficiency we can fit a lot
 of runners in the waiting room at little cost. Without this waiting
 room mechanism we would have to add a lot more Rails server capacity.
+See [the long polling documentation](../../ci/runners/long_polling.md)
+for more details.
 
 ## 3. File uploads and downloads
 

@@ -351,7 +351,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       is_expected.not_to include(environment_a)
     end
 
-    context 'when query is test-app' do
+    context 'when query string is the full environment name within a folder' do
       let(:query) { 'test-app' }
 
       it 'returns a found name' do
@@ -359,11 +359,27 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       end
     end
 
-    context 'when query is test-app-a' do
+    context 'when query string has characters not in the environment' do
       let(:query) { 'test-app-a' }
 
       it 'returns empty array' do
         is_expected.to be_empty
+      end
+    end
+
+    context 'when the environment folder is the same as the starting characters of the environment name' do
+      let!(:environment) { create(:environment, name: 'test/test-app', project: project) }
+
+      it 'returns a found name' do
+        is_expected.to contain_exactly(environment)
+      end
+    end
+
+    context 'when the environment folder has characters in the starting characters of the environment name' do
+      let!(:environment) { create(:environment, name: 'atr/test-app', project: project) }
+
+      it 'returns a found name' do
+        is_expected.to contain_exactly(environment)
       end
     end
 

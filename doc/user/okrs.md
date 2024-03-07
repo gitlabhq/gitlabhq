@@ -55,7 +55,7 @@ To know if your OKR makes sense, you can use this sentence:
 <!-- vale gitlab.FutureTense = YES -->
 
 To learn how to create better OKRs and how we use them at GitLab, see the
-[Objectives and Key Results handbook page](https://about.gitlab.com/company/okrs/).
+[Objectives and Key Results handbook page](https://handbook.gitlab.com/handbook/company/okrs/).
 
 ## Create an objective
 

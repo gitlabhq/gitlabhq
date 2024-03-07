@@ -13,7 +13,6 @@ jest.mock('~/alert');
 Vue.use(VueApollo);
 
 const versionedReadmeHtml = '<h1>This is version one readme</h1>';
-const latestReadmeHtml = '<h1>This is the lastest version readme</h1>';
 const resourceId = 'gid://gitlab/Ci::Catalog::Resource/1';
 
 describe('CiResourceReadme', () => {
@@ -34,15 +33,14 @@ describe('CiResourceReadme', () => {
             },
           ],
         },
-        latestVersion: {
-          id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
-          readmeHtml: latestReadmeHtml,
-        },
       },
     },
   };
 
-  const defaultProps = { resourcePath: readmeMockData.data.ciCatalogResource.webPath };
+  const defaultProps = {
+    resourcePath: readmeMockData.data.ciCatalogResource.webPath,
+    version: readmeMockData.data.ciCatalogResource.versions.nodes[0].name,
+  };
 
   const createComponent = ({ props = {}, data = {} } = {}) => {
     const handlers = [[getCiCatalogResourceReadme, mockReadmeResponse]];
@@ -54,7 +52,6 @@ describe('CiResourceReadme', () => {
       },
       data() {
         return {
-          useLatestVersion: true,
           ...data,
         };
       },
@@ -76,7 +73,7 @@ describe('CiResourceReadme', () => {
 
     it('renders only a loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(wrapper.html()).not.toContain(latestReadmeHtml);
+      expect(wrapper.html()).not.toContain(versionedReadmeHtml);
     });
   });
 
@@ -88,22 +85,13 @@ describe('CiResourceReadme', () => {
       await waitForPromises();
     });
 
-    it('renders the latest version readme', () => {
+    it('renders a versioned readme', () => {
       expect(findLoadingIcon().exists()).toBe(false);
-      expect(wrapper.html()).toContain(latestReadmeHtml);
+      expect(wrapper.html()).toContain(versionedReadmeHtml);
     });
 
     it('does not render an error', () => {
       expect(createAlert).not.toHaveBeenCalled();
-    });
-
-    describe('versioned readme', () => {
-      it('renders a versioned readme', async () => {
-        createComponent({ data: { useLatestVersion: false, version: '1.0.1' } });
-        await waitForPromises();
-
-        expect(wrapper.html()).toContain(versionedReadmeHtml);
-      });
     });
   });
 

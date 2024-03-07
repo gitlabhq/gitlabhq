@@ -42,7 +42,7 @@ export default {
       return this.latestVersion.author.webUrl;
     },
     componentNames() {
-      const components = this.resource.latestVersion?.components?.nodes;
+      const components = this.latestVersion?.components?.nodes;
       return components?.map((component) => component.name).join(', ') || null;
     },
     detailsPageHref() {
@@ -67,7 +67,7 @@ export default {
       return Boolean(this.latestVersion?.createdAt);
     },
     latestVersion() {
-      return this.resource?.latestVersion || {};
+      return this.resource?.versions?.nodes[0] || [];
     },
     name() {
       return this.latestVersion?.name || this.$options.i18n.unreleased;

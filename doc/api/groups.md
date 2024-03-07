@@ -127,12 +127,15 @@ GET /groups?statistics=true
       "snippets_size": 50,
       "uploads_size": 0
     },
-    "wiki_access_level": "private"
+    "wiki_access_level": "private",
+    "duo_features_enabled": true,
+    "lock_duo_features_enabled": false,
   }
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 You can search for groups by name or path, see below.
 
@@ -205,7 +208,8 @@ GET /groups/:id/subgroups
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 ## List a group's descendant groups
 
@@ -292,7 +296,8 @@ GET /groups/:id/descendant_groups
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 ## List a group's projects
 
@@ -735,6 +740,8 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 - `marked_for_deletion_on`
 - `membership_lock`
 - `wiki_access_level`
+- `duo_features_enabled`
+- `lock_duo_features_enabled`
 
 Additional response attributes:
 
@@ -747,6 +754,8 @@ Additional response attributes:
   "marked_for_deletion_on": "2020-04-03",
   "membership_lock": false,
   "wiki_access_level": "disabled",
+  "duo_features_enabled": true,
+  "lock_duo_features_enabled": false,
   ...
 }
 ```
@@ -1042,6 +1051,8 @@ PUT /groups/:id
 | `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.|
 | `math_rendering_limits_enabled`                         | boolean | no       | Indicates if math rendering limits are used for this group.|
 | `lock_math_rendering_limits_enabled`                    | boolean | no       | Indicates if math rendering limits are locked for all descendent groups.|
+| `duo_features_enabled`                                  | boolean | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
+| `lock_duo_features_enabled`                             | boolean | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1128,7 +1139,8 @@ Example response:
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and`lock_duo_features_enabled` attributes.
 
 ### Disable the results limit
 

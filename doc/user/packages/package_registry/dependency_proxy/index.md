@@ -63,7 +63,7 @@ which package format you use.
 | [GitLab](../../maven_repository/index.md)                                                                                                | **{check-circle}** Yes      |
 | [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | **{check-circle}** Yes      |
 | [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | **{check-circle}** Yes      |
-| [Sonatype Nexus](https://help.sonatype.com/repomanager3/nexus-repository-administration/formats/maven-repositories)                      | **{check-circle}** Yes      |
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | **{check-circle}** Yes      |
 | [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | **{dotted-circle}** No      |
 
 ::EndTabs

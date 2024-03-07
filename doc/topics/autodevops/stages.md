@@ -47,7 +47,7 @@ Auto Build builds an application using a project's `Dockerfile` if present. If n
 [Cloud Native Buildpacks](https://buildpacks.io) to detect and build the
 application into a Docker image. The feature uses the
 [`pack` command](https://github.com/buildpacks/pack).
-The default [builder](https://buildpacks.io/docs/concepts/components/builder/)
+The default [builder](https://buildpacks.io/docs/for-app-developers/concepts/builder/)
 is `heroku/buildpacks:18` but a different builder can be selected using
 the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
@@ -91,7 +91,7 @@ buildjob:
     BUILDPACK_VOLUMES: /mnt/1:/etc/foo:ro|/mnt/2:/opt/foo:ro|/mnt/3:/var/opt/foo:rw
 ```
 
-Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/tools/pack/cli/pack_build/).
+Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/cli/pack_build/).
 
 <!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
 

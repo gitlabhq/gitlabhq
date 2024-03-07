@@ -276,5 +276,5 @@ If the Browser SDK is not sending events, or behaving in an unexpected way, take
 1. Verify that the `appId` and host values in the options object are correct.
 1. Check if any browser privacy settings, extensions, or ad blockers are interfering with the Browser SDK.
 
-For more information and assistance, see the [Snowplow documentation](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/browser-tracker/browser-tracker-v3-reference/)
+For more information and assistance, see the [Snowplow documentation](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/web-tracker/)
 or contact the [Analytics Instrumentation team](https://handbook.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/#team-members).

@@ -109,7 +109,7 @@ describe('packages_list_row', () => {
   describe('delete dropdown', () => {
     it('does not exist when package cannot be destroyed', () => {
       mountComponent({
-        packageEntity: { ...packageWithoutTags, canDestroy: false },
+        packageEntity: { ...packageWithoutTags, userPermissions: { destroyPackage: false } },
       });
 
       expect(findDeleteDropdown().exists()).toBe(false);
@@ -131,7 +131,7 @@ describe('packages_list_row', () => {
   describe('delete button', () => {
     it('does not exist when package cannot be destroyed', () => {
       mountComponent({
-        packageEntity: { ...packageWithoutTags, canDestroy: false },
+        packageEntity: { ...packageWithoutTags, userPermissions: { destroyPackage: false } },
       });
 
       expect(findDeleteButton().exists()).toBe(false);

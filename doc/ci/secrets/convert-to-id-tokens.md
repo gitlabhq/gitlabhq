@@ -184,7 +184,7 @@ However, as we have moved this validation to the role level, this configuration 
 
 Vault has two different [KV Secrets Engines](https://developer.hashicorp.com/vault/docs/secrets/kv) and the version you are using impacts how you define secrets in CI/CD.
 
-Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount-) article on HashiCorp's support portal to check your Vault server.
+Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc/en-us/articles/4404288741139-Which-Version-is-my-Vault-KV-Mount) article on HashiCorp's support portal to check your Vault server.
 
 Also, if needed you can review the CI/CD documentation for:
 

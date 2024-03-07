@@ -200,8 +200,8 @@ The following languages and dependency managers are supported:
       <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
       <td>
         <ul>
-            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile"><code>Pipfile</code></a></li>
-            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile-lock"><code>Pipfile.lock</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile.html#example-pipfile"><code>Pipfile</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile.html#example-pipfile-lock"><code>Pipfile.lock</code></a></li>
         </ul>
       </td>
       <td>N</td>

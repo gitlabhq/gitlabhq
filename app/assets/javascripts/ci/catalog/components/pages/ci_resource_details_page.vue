@@ -67,6 +67,9 @@ export default {
     versions() {
       return this.resourceAdditionalDetails?.versions?.nodes || [];
     },
+    version() {
+      return this.resourceAdditionalDetails?.versions?.nodes[0]?.name || '';
+    },
     pipelineStatus() {
       return (
         this.resourceAdditionalDetails?.versions?.nodes[0]?.commit?.pipelines?.nodes[0]
@@ -102,7 +105,7 @@ export default {
         :pipeline-status="pipelineStatus"
         :resource="resourceSharedData"
       />
-      <ci-resource-details :resource-path="cleanFullPath" />
+      <ci-resource-details :resource-path="cleanFullPath" :version="version" />
     </div>
   </div>
 </template>

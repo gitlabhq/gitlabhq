@@ -1477,7 +1477,7 @@ Some text to show that the reference links can follow later.
 
 &#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
 &#91;1]: https://slashdot.org
-&#91;link text itself]: https://www.reddit.com
+&#91;link text itself]: https://about.gitlab.com/
 </code></pre>
 
 - This line shows an [inline-style link](https://www.google.com)
@@ -1499,7 +1499,7 @@ Do not change to reference style links.
 
 - This line is a [reference-style link, see below](https://www.mozilla.org/en-US/)
 - You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
-- Or leave it empty and use the [link text itself](https://www.reddit.com), see below.
+- Or leave it empty and use the [link text itself](https://about.gitlab.com/), see below.
 
 Some text to show that the reference links can follow later.
 

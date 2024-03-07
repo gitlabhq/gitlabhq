@@ -135,7 +135,7 @@ module IssuesHelper
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
-      empty_state_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
+      empty_state_svg_path: image_path('illustrations/empty-state/empty-service-desk-md.svg'),
       full_path: namespace.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,

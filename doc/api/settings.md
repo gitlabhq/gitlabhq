@@ -150,6 +150,8 @@ these parameters:
 - `security_approval_policies_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
+- `duo_features_enabled`
+- `lock_duo_features_enabled`
 
 ```json
 {
@@ -161,6 +163,8 @@ these parameters:
   "default_project_deletion_protection": false,
   "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
+  "duo_features_enabled": true,
+  "lock_duo_features_enabled": false,
   ...
 }
 ```
@@ -301,12 +305,16 @@ these parameters:
 - `security_approval_policies_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
+- `duo_features_enabled`
+- `lock_duo_features_enabled`
 
 Example responses:
 
 ```json
   "file_template_project_id": 1,
-  "geo_node_allowed_ips": "0.0.0.0/0, ::/0"
+  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "duo_features_enabled": true,
+  "lock_duo_features_enabled": false,
 ```
 
 ## List of settings that can be accessed via API calls
@@ -641,6 +649,8 @@ listed in the descriptions of the relevant settings.
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
 | `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous Direct Transfer batches to process. |
 | `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
+| `duo_features_enabled`                   | boolean          | no                                   | Indicates whether GitLab Duo features are enabled for this instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
+| `lock_duo_features_enabled`              | boolean          | no                                   | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 
 ### Configure inactive project deletion
 

@@ -32,7 +32,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 To create and use an SSH key in GitLab CI/CD:
 
-1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
+1. [Create a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair) locally with `ssh-keygen`.
 1. Add the private key as a [file type CI/CD variable](../variables/index.md#for-a-project) to
    your project. The variable value must end in a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
    at the end of the last line of the SSH key before saving it in the CI/CD settings.

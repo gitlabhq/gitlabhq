@@ -251,7 +251,7 @@ export default {
     <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
-          v-if="packageEntity.canDestroy"
+          v-if="packageEntity.userPermissions.destroyPackage"
           v-gl-modal="'delete-modal'"
           variant="danger"
           category="primary"
@@ -277,7 +277,7 @@ export default {
 
           <package-files
             v-if="showFiles"
-            :can-delete="packageEntity.canDestroy"
+            :can-delete="packageEntity.userPermissions.destroyPackage"
             :package-id="packageEntity.id"
             :package-type="packageType"
             :project-path="projectPath"
@@ -319,7 +319,7 @@ export default {
         >
           <template #default="{ deletePackages }">
             <package-versions-list
-              :can-destroy="packageEntity.canDestroy"
+              :can-destroy="packageEntity.userPermissions.destroyPackage"
               :count="packageVersionsCount"
               :is-mutation-loading="versionsMutationLoading"
               :is-request-forwarding-enabled="isRequestForwardingEnabled"

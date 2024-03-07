@@ -262,9 +262,9 @@ test:
 
 ## PHP
 
-This example uses [PHPUnit](https://phpunit.de/) with the `--log-junit` flag.
+This example uses [PHPUnit](https://phpunit.de/index.html) with the `--log-junit` flag.
 You can also add this option using
-[XML](https://docs.phpunit.de/en/10.2/configuration.html#the-junit-element)
+[XML](https://docs.phpunit.de/en/11.0/configuration.html#the-junit-element)
 in the `phpunit.xml` configuration file.
 
 ```yaml

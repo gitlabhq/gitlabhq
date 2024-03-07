@@ -31,9 +31,9 @@ To leave feedback about Product Analytics bugs or functionality:
 
 Product analytics uses several tools:
 
-- [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](../../integration/clickhouse.md) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
+- [**Cube**](https://cube.dev/docs/product/introduction) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 

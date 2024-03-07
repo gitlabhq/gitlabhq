@@ -42,7 +42,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       expect(findGlEmptyState().props()).toMatchObject({
         title: infoBannerTitle,
         svgPath: defaultProvide.emptyStateSvgPath,
-        contentClass: 'gl-max-w-80!',
       });
     });
 
@@ -78,7 +77,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         svgPath: defaultProvide.emptyStateSvgPath,
         primaryButtonText: noIssuesSignedOutButtonText,
         primaryButtonLink: defaultProvide.signInPath,
-        contentClass: 'gl-max-w-80!',
       });
     });
 

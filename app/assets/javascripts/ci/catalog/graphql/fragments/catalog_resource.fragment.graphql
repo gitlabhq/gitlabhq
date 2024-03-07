@@ -6,22 +6,23 @@ fragment CatalogResourceFields on CiCatalogResource {
   description
   starCount
   starrersPath
-  latestVersion {
-    id
-    components {
-      nodes {
+  versions(first: 1) {
+    nodes {
+      id
+      components {
+        nodes {
+          id
+          name
+        }
+      }
+      name
+      path
+      createdAt
+      author {
         id
         name
+        webUrl
       }
-    }
-    name
-    path
-    createdAt
-    author {
-      id
-      name
-      username
-      webUrl
     }
   }
 }

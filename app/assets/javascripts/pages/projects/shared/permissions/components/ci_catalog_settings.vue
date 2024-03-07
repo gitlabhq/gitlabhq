@@ -14,18 +14,18 @@ const i18n = {
     'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
   ),
   setCatalogResourceMutationError: s__(
-    'CiCatalog|Unable to set project as a CI/CD Catalog resource.',
+    'CiCatalog|Unable to set project as a CI/CD Catalog project.',
   ),
   removeCatalogResourceMutationError: s__(
-    'CiCatalog|Unable to remove project as a CI/CD Catalog resource.',
+    'CiCatalog|Unable to remove project as a CI/CD Catalog project.',
   ),
-  setCatalogResourceMutationSuccess: s__('CiCatalog|This project is now a CI/CD Catalog resource.'),
+  setCatalogResourceMutationSuccess: s__('CiCatalog|This project is now a CI/CD Catalog project.'),
   removeCatalogResourceMutationSuccess: s__(
-    'CiCatalog|This project is no longer a CI/CD Catalog resource.',
+    'CiCatalog|This project is no longer a CI/CD Catalog project.',
   ),
-  ciCatalogLabel: s__('CiCatalog|CI/CD Catalog resource'),
+  ciCatalogLabel: s__('CiCatalog|CI/CD Catalog project'),
   ciCatalogHelpText: s__(
-    'CiCatalog|Set project as a CI/CD Catalog resource. %{linkStart}What is the CI/CD Catalog?%{linkEnd}',
+    'CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}',
   ),
   modal: {
     actionPrimary: {
@@ -37,7 +37,7 @@ const i18n = {
     body: s__(
       "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}.",
     ),
-    title: s__('CiCatalog|Remove project from the CI/CD Catalog?'),
+    title: s__('CiCatalog|Remove component project from the CI/CD Catalog?'),
   },
   readMeHelpText: s__(
     'CiCatalog|The project will be findable in the CI/CD Catalog after the project has at least one release.',

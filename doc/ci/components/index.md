@@ -92,7 +92,7 @@ You should also:
 - Configure the project's `.gitlab-ci.yml` to [test the components](#test-the-component)
   and [release new versions](#publish-a-new-release).
 - Add a `LICENSE.md` file with a license of your choice that covers the usage of your component.
-  For example the [MIT](https://opensource.org/license/mit/) or [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0#apply)
+  For example the [MIT](https://opensource.org/license/mit) or [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0#apply)
   open source licenses.
 
 For example:

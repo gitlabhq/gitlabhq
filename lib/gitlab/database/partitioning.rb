@@ -91,10 +91,12 @@ module Gitlab
           end
         end
 
-        def table_without_model(table_name:, partitioned_column:, strategy:, limit_connection_names: nil)
+        def table_without_model(
+          table_name:, partitioned_column:, strategy:, limit_connection_names: nil,
+          **strategy_args)
           Class.new(TableWithoutModel).tap do |klass|
             klass.table_name = table_name
-            klass.partitioned_by(partitioned_column, strategy: strategy)
+            klass.partitioned_by(partitioned_column, strategy: strategy, **strategy_args)
             klass.limit_connection_names = limit_connection_names
           end
         end

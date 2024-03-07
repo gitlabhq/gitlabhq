@@ -16,7 +16,7 @@ describe('CiResourceComponents', () => {
   let wrapper;
   let mockComponentsResponse;
 
-  const components = mockComponents.data.ciCatalogResource.latestVersion.components.nodes;
+  const components = mockComponents.data.ciCatalogResource.versions.nodes[0].components.nodes;
 
   const resourcePath = 'twitter/project-1';
 
