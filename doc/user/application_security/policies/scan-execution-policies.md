@@ -15,7 +15,11 @@ DETAILS:
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 > - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
 > - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
+> - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Disabled by default.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 Group, subgroup, or project owners can use scan execution policies to require that security scans
 run on a specified schedule or with the project pipeline. The security scan runs with multiple
 project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
@@ -234,6 +238,25 @@ Note the following:
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
 - Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+- Preconfigured values are used for the following CI/CD variables in any project on which a scan
+  execution policy is enforced. Their values can be overridden, but **only** if they are declared in
+  a policy. They **cannot** be overridden by group or project CI/CD variables:
+
+  ```plaintext
+  DS_EXCLUDED_PATHS: spec, test, tests, tmp
+  SAST_EXCLUDED_PATHS: spec, test, tests, tmp
+  SECRET_DETECTION_EXCLUDED_PATHS: ''
+  SECRET_DETECTION_HISTORIC_SCAN: false
+  SAST_DISABLED_ANALYZERS: ''
+  DS_DISABLED_ANALYZERS: ''
+  ```
+
+  In GitLab 16.9 and earlier:
+
+  - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
+    be overridden by group or project CI/CD variables.
+  - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
+    ignored, regardless of where they were defined: policy, group, or project.  
 
 ## Example security policies project
 

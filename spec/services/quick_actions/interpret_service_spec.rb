@@ -3036,7 +3036,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       it 'includes current milestone name' do
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Removes %"9.10" milestone.'])
+        expect(explanations).to eq(["Removes /#{project.full_path}%\"9.10\" milestone."])
       end
     end
 

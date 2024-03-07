@@ -92,6 +92,8 @@ export default {
       variables() {
         return {
           id: this.organizationGid,
+          search: this.search,
+          sort: this.sort,
           ...this.pagination,
         };
       },
@@ -104,13 +106,6 @@ export default {
           nodes: formatProjects(nodes),
           pageInfo,
         };
-      },
-      result() {
-        this.$emit('page-change', {
-          endCursor: this.pagination.after,
-          startCursor: this.pagination.before,
-          hasPreviousPage: this.pageInfo.hasPreviousPage,
-        });
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -140,6 +135,9 @@ export default {
         last: this.startCursor && this.perPage,
         before: this.startCursor,
       };
+    },
+    sort() {
+      return `${this.sortName}_${this.sortDirection}`;
     },
     isLoading() {
       return this.$apollo.queries.projects.loading;

@@ -83,7 +83,7 @@ module Gitlab
 
         desc { _('Set milestone') }
         explanation do |milestone|
-          _("Sets the milestone to %{milestone_reference}.") % { milestone_reference: milestone.to_reference } if milestone
+          _("Sets the milestone to %{milestone_reference}.") % { milestone_reference: milestone.to_reference(full: true, absolute_path: true) } if milestone
         end
         execution_message do |milestone|
           _("Set the milestone to %{milestone_reference}.") % { milestone_reference: milestone.to_reference } if milestone
@@ -105,10 +105,10 @@ module Gitlab
 
         desc { _('Remove milestone') }
         explanation do
-          _("Removes %{milestone_reference} milestone.") % { milestone_reference: quick_action_target.milestone.to_reference(format: :name) }
+          _("Removes %{milestone_reference} milestone.") % { milestone_reference: quick_action_target.milestone.to_reference(full: true, absolute_path: true) }
         end
         execution_message do
-          _("Removed %{milestone_reference} milestone.") % { milestone_reference: quick_action_target.milestone.to_reference(format: :name) }
+          _("Removed %{milestone_reference} milestone.") % { milestone_reference: quick_action_target.milestone.to_reference }
         end
         types Issue, MergeRequest
         condition do

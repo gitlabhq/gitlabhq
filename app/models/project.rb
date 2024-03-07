@@ -1658,9 +1658,9 @@ class Project < ApplicationRecord
   end
 
   # `from` argument can be a Namespace or Project.
-  def to_reference_base(from = nil, full: false)
+  def to_reference_base(from = nil, full: false, absolute_path: false)
     if full || cross_namespace_reference?(from)
-      full_path
+      absolute_path ? "/#{full_path}" : full_path
     elsif cross_project_reference?(from)
       path
     end

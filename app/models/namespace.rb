@@ -329,9 +329,12 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def to_reference_base(from = nil, full: false)
-    return full_path if full || cross_namespace_reference?(from)
-    return path if cross_project_reference?(from)
+  def to_reference_base(from = nil, full: false, absolute_path: false)
+    if full || cross_namespace_reference?(from)
+      absolute_path ? "/#{full_path}" : full_path
+    elsif cross_project_reference?(from)
+      path
+    end
   end
 
   def to_reference(*)

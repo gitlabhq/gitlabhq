@@ -330,10 +330,16 @@ If you have at least the Maintainer role, you can remove a state file.
 
 ### Remove a state file by using the API
 
-You can remove a state file by making a request to the REST API. For example:
+You can remove a state file by making a request to the REST API using a personal access token:
 
 ```shell
 curl --header "Private-Token: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
+```
+
+You can also use [CI/CD job token](../../../ci/jobs/ci_job_token.md) and basic authentication:
+
+```shell
+curl --user "gitlab-ci-token:$CI_JOB_TOKEN" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
 You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutationterraformstatedelete).

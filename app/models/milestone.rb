@@ -251,15 +251,17 @@ class Milestone < ApplicationRecord
   #
   #   Milestone.first.to_reference                           # => "%1"
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-foss%1"
+  #   Milestone.first
+  #     .to_reference(project, full: true, absolute_path: true) # => "/gitlab-org/gitlab-foss%1"
   #
-  def to_reference(from = nil, format: :name, full: false)
+  def to_reference(from = nil, format: :name, full: false, absolute_path: false)
     format_reference = timebox_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if project
-      "#{project.to_reference_base(from, full: full)}#{reference}"
+      "#{project.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
     else
-      "#{group.to_reference_base(from, full: full)}#{reference}"
+      "#{group.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
     end
   end
 

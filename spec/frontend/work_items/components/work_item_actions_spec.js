@@ -115,6 +115,7 @@ describe('WorkItemActions component', () => {
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
+    hideSubscribe = undefined,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -137,6 +138,7 @@ describe('WorkItemActions component', () => {
         workItemType,
         workItemReference,
         workItemCreateNoteEmail,
+        hideSubscribe,
       },
       provide: {
         isGroup: false,
@@ -330,8 +332,14 @@ describe('WorkItemActions component', () => {
       isLoggedIn.mockReturnValue(true);
     });
 
-    it('renders toggle button', () => {
-      expect(findNotificationsToggle().exists()).toBe(true);
+    it.each`
+      scenario                                     | hideSubscribe
+      ${'does not show notification subscription'} | ${true}
+      ${'shows notification subscription'}         | ${false}
+      ${'shows notification subscription'}         | ${undefined}
+    `('$scenario when hideSubscribe is set to $hideSubscribe', ({ hideSubscribe }) => {
+      createComponent({ hideSubscribe });
+      expect(findNotificationsToggle().exists()).toBe(!hideSubscribe);
     });
 
     it.each`

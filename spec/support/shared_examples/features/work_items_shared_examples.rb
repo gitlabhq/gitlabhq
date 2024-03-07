@@ -3,6 +3,7 @@
 RSpec.shared_context 'with work_items_beta' do |flag|
   before do
     stub_feature_flags(work_items_beta: flag)
+    stub_feature_flags(notifications_todos_buttons: false)
 
     page.refresh
     wait_for_all_requests
@@ -486,6 +487,7 @@ RSpec.shared_examples 'work items description' do
 
         before do
           project.add_developer(other_user)
+          stub_feature_flags(notifications_todos_buttons: false)
         end
 
         it 'shows conflict message when description changes', :aggregate_failures do
@@ -626,14 +628,21 @@ end
 
 RSpec.shared_examples 'work items notifications' do
   it 'displays toast when notification is toggled' do
-    click_button _('More actions'), match: :first
+    if Feature.enabled?(:notifications_todos_buttons)
+      def notification_button
+        find('button[data-testid="subscribe-button"]')
+      end
+      notification_button.click
+      expect(page).to have_selector('svg[data-testid="notifications"]')
+    else
+      click_button _('More actions'), match: :first
+      within_testid('notifications-toggle-form') do
+        expect(page).not_to have_button(class: 'gl-toggle is-checked')
 
-    within_testid('notifications-toggle-form') do
-      expect(page).not_to have_button(class: 'gl-toggle is-checked')
+        click_button(class: 'gl-toggle')
 
-      click_button(class: 'gl-toggle')
-
-      expect(page).to have_button(class: 'gl-toggle is-checked')
+        expect(page).to have_button(class: 'gl-toggle is-checked')
+      end
     end
 
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))

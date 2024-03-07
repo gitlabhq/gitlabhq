@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
+  before do
+    stub_feature_flags(notifications_todos_buttons: false)
+  end
+
   include ListboxHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -20,6 +24,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
   context 'for signed in user' do
     before do
+      stub_feature_flags(notifications_todos_buttons: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       project.add_developer(user)
       sign_in(user)
@@ -73,6 +78,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     context 'when work_items_beta is enabled' do
       before do
         stub_feature_flags(work_items_beta: true)
+        stub_feature_flags(notifications_todos_buttons: false)
 
         page.refresh
         wait_for_all_requests

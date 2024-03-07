@@ -3,6 +3,8 @@
 
 query getOrganizationProjects(
   $id: OrganizationsOrganizationID!
+  $search: String
+  $sort: String
   $first: Int
   $last: Int
   $before: String
@@ -10,7 +12,14 @@ query getOrganizationProjects(
 ) {
   organization(id: $id) {
     id
-    projects(first: $first, last: $last, before: $before, after: $after) {
+    projects(
+      search: $search
+      sort: $sort
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+    ) {
       nodes {
         ...Project
       }

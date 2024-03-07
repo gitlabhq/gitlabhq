@@ -506,7 +506,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
     end
 
     it "logs a 'User Created' message" do
-      allow(Gitlab::AppLogger).to receive(:info)
       expect(Gitlab::AppLogger).to receive(:info).with(/\AUser Created: username=new_username email=new@user.com.+\z/).and_call_original
 
       subject

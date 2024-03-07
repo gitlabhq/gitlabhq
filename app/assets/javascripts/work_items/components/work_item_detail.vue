@@ -34,6 +34,7 @@ import { findHierarchyWidgetChildren } from '../utils';
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
+import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
@@ -59,6 +60,7 @@ export default {
     GlEmptyState,
     WorkItemActions,
     WorkItemTodos,
+    WorkItemNotificationsWidget,
     WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemAwardEmoji,
@@ -180,6 +182,9 @@ export default {
     },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
+    },
+    newTodoAndNotificationsEnabled() {
+      return this.glFeatures.notificationsTodosButtons;
     },
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
@@ -485,9 +490,18 @@ export default {
               :current-user-todos="currentUserTodos"
               @error="updateError = $event"
             />
+            <work-item-notifications-widget
+              v-if="newTodoAndNotificationsEnabled"
+              :full-path="fullPath"
+              :work-item-id="workItem.id"
+              :subscribed-to-notifications="workItemNotificationsSubscribed"
+              :can-update="canUpdate"
+              @error="updateError = $event"
+            />
             <work-item-actions
               :full-path="fullPath"
               :work-item-id="workItem.id"
+              :hide-subscribe="newTodoAndNotificationsEnabled"
               :subscribed-to-notifications="workItemNotificationsSubscribed"
               :work-item-type="workItemType"
               :work-item-type-id="workItemTypeId"

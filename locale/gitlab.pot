@@ -5601,6 +5601,9 @@ msgstr ""
 msgid "Analytics|Configure Dashboard Project"
 msgstr ""
 
+msgid "Analytics|Configure analytics reports."
+msgstr ""
+
 msgid "Analytics|Continue creating"
 msgstr ""
 
@@ -5830,6 +5833,9 @@ msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
 msgid "Analytics|Usage breakdown"
+msgstr ""
+
+msgid "Analytics|Use ClickHouse for supported analytics reports. Available when %{link_start}ClickHouse is configured%{link_end}."
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
@@ -12718,7 +12724,7 @@ msgstr ""
 msgid "CompareRevisions|Tags"
 msgstr ""
 
-msgid "CompareRevisions|There isn't anything to compare."
+msgid "CompareRevisions|There isn't anything to compare"
 msgstr ""
 
 msgid "CompareRevisions|There was an error while loading the branch/tag list. Please try again."
@@ -19071,6 +19077,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable ClickHouse"
+msgstr ""
+
 msgid "Enable GitLab Error Tracking"
 msgstr ""
 
@@ -23547,7 +23556,13 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Digest"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|First, secure your usage with the %{strongStart}Google Cloud Identity and Access Management (IAM)%{strongEnd} integration. Simplify access without the need to manage accounts or keys."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Image"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Invite member to set up"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Location"
@@ -23589,10 +23604,16 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Run the following command to setup IAM read and write policies in your Google Cloud project."
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Set up Google Cloud IAM"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Tags"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Updated"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Use Google Cloud securely"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|View artifacts"
@@ -32105,9 +32126,6 @@ msgstr ""
 msgid "Modal updated"
 msgstr ""
 
-msgid "ModalButton|Add projects"
-msgstr ""
-
 msgid "Modal|Close"
 msgstr ""
 
@@ -34881,6 +34899,9 @@ msgid "OperationsDashboard|Add a project to the dashboard"
 msgstr ""
 
 msgid "OperationsDashboard|Add projects"
+msgstr ""
+
+msgid "OperationsDashboard|Cancel"
 msgstr ""
 
 msgid "OperationsDashboard|More information"
@@ -52378,6 +52399,9 @@ msgstr ""
 msgid "To further protect your account, consider configuring a two-factor authentication method: %{mfa_link}."
 msgstr ""
 
+msgid "To get a valid comparison, select two different branches."
+msgstr ""
+
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
 msgstr ""
 
@@ -58204,9 +58228,6 @@ msgid "You will receive notifications only for comments in which you were @menti
 msgstr ""
 
 msgid "You'll be charged for %{true_up_start}users over license%{true_up_end} on a quarterly or annual basis, depending on the terms of your agreement."
-msgstr ""
-
-msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
 msgid "You're about to leave GitLab"

@@ -9,7 +9,7 @@ default:
 
 pages:
   script:
-    - npm install hexo-cli -g
+    - npm install hexo-cli@4.3.1 -g
     - test -e package.json && npm install
     - hexo generate
   environment: production

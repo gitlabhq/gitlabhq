@@ -175,9 +175,10 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip.hover
-    :loading="isLoading"
+    :disabled="isLoading"
     :title="buttonLabel"
     category="secondary"
+    class="btn-icon"
     :aria-label="buttonLabel"
     @click="onToggle"
   >

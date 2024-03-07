@@ -1418,6 +1418,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
 
+      context 'when absolute_path is true' do
+        it 'returns complete path to the project with leading slash', :aggregate_failures do
+          be_full_path = eq('/sample-namespace/sample-project')
+
+          expect(project.to_reference_base(full: true, absolute_path: true)).to be_full_path
+        end
+      end
+
       context 'when same project argument' do
         it 'returns nil' do
           expect(project.to_reference_base(project)).to be_nil

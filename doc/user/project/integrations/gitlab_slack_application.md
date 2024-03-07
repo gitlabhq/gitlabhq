@@ -30,11 +30,17 @@ In GitLab 15.0 and later, the GitLab for Slack app uses
 [granular permissions](https://medium.com/slack-developer-blog/more-precision-less-restrictions-a3550006f9c3).
 Although functionality has not changed, you should [reinstall the app](#reinstall-the-gitlab-for-slack-app).
 
-### From project integration settings
+### From the project or group settings
 
-To install the GitLab for Slack app from project integration settings:
+> - Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 
-1. On the left sidebar, select **Search or go to** and find your project.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+
+To install the GitLab for Slack app from the project or group settings:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**.
@@ -167,18 +173,33 @@ To receive notifications to a private Slack channel, you must add the GitLab for
 
 The following GitLab events can trigger notifications in Slack:
 
-| Event                                                                | Description                                                   |
-|----------------------------------------------------------------------|---------------------------------------------------------------|
-| Push                                                                 | A push is made to the repository.                             |
-| Issue                                                                | An issue is created, closed, or reopened.                     |
-| Confidential issue                                                   | A confidential issue is created, closed, or reopened.         |
-| Merge request                                                        | A merge request is created, merged, closed, or reopened.      |
-| Note                                                                 | A comment is added.                                           |
-| Confidential note                                                    | An internal note or comment on a confidential issue is added. |
-| Tag push                                                             | A tag is pushed to the repository or removed.                 |
-| Pipeline                                                             | A pipeline status changes.                                    |
-| Wiki page                                                            | A wiki page is created or updated.                            |
-| Deployment                                                           | A deployment is started or finished.                          |
-| [Incident](../../../operations/incident_management/slack.md)         | An incident is created, closed, or reopened.                  |
-| [Vulnerability](../../application_security/vulnerabilities/index.md) | A new, unique vulnerability is recorded.                      |
-| Alert                                                                | A new, unique alert is recorded.                              |
+| Event                                                                 | Description                                                   |
+|-----------------------------------------------------------------------|---------------------------------------------------------------|
+| Push                                                                  | A push is made to the repository.                             |
+| Issue                                                                 | An issue is created, closed, or reopened.                     |
+| Confidential issue                                                    | A confidential issue is created, closed, or reopened.         |
+| Merge request                                                         | A merge request is created, merged, closed, or reopened.      |
+| Note                                                                  | A comment is added.                                           |
+| Confidential note                                                     | An internal note or comment on a confidential issue is added. |
+| Tag push                                                              | A tag is pushed to the repository or removed.                 |
+| Pipeline                                                              | A pipeline status changes.                                    |
+| Wiki page                                                             | A wiki page is created or updated.                            |
+| Deployment                                                            | A deployment is started or finished.                          |
+| [Group mention](#trigger-notifications-for-group-mentions) in public  | A group is mentioned in a public channel.                     |
+| [Group mention](#trigger-notifications-for-group-mentions) in private | A group is mentioned in a private channel.                    |
+| [Incident](../../../operations/incident_management/slack.md)          | An incident is created, closed, or reopened.                  |
+| [Vulnerability](../../application_security/vulnerabilities/index.md)  | A new, unique vulnerability is recorded.                      |
+| Alert                                                                 | A new, unique alert is recorded.                              |
+
+### Trigger notifications for group mentions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+
+To trigger a [notification event](#notification-events) for a group mention, use `@<group_name>` in:
+
+- Issue and merge request descriptions
+- Comments on issues, merge requests, and commits

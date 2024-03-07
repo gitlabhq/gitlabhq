@@ -152,6 +152,7 @@ these parameters:
 - `unconfirmed_users_delete_after_days`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
+- `use_clickhouse_for_analytics`
 
 ```json
 {
@@ -164,7 +165,7 @@ these parameters:
   "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
-  "lock_duo_features_enabled": false,
+  "lock_duo_features_enabled": false
   ...
 }
 ```
@@ -307,6 +308,7 @@ these parameters:
 - `unconfirmed_users_delete_after_days`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
+- `use_clickhouse_for_analytics`
 
 Example responses:
 
@@ -636,6 +638,7 @@ listed in the descriptions of the relevant settings.
 | `unique_ips_limit_time_window`           | integer          | required by: `unique_ips_limit_enabled` | How many seconds an IP is counted towards the limit. |
 | `update_runner_versions_enabled`         | boolean          | no                                   | Fetch GitLab Runner release version data from GitLab.com. For more information, see how to [determine which runners need to be upgraded](../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded). |
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab reports license usage back to GitLab, Inc. |
+| `use_clickhouse_for_analytics`           | boolean          | no                                   | Enables ClickHouse as a data source for analytics reports. ClickHouse must be configured for this setting to take effect. Available on Premium and Ultimate only. |
 | `include_optional_metrics_in_service_ping`| boolean         | no                                   | Whether or not optional metrics are enabled in Service Ping. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141540) in GitLab 16.10. |
 | `user_deactivation_emails_enabled`       | boolean          | no                                   | Send an email to users upon account deactivation. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users are external by default. |

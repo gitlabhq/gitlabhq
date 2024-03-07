@@ -38,6 +38,7 @@ function parseDatasetToProps(data) {
     jiraIssueTransitionId,
     artifactRegistryPath,
     personalAccessTokensPath,
+    workloadIdentityFederationPath,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -90,6 +91,7 @@ function parseDatasetToProps(data) {
     },
     googleCloudArtifactRegistryProps: {
       artifactRegistryPath,
+      workloadIdentityFederationPath,
     },
     learnMorePath,
     aboutPricingUrl,

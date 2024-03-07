@@ -473,7 +473,7 @@ This also applies to other third-party stateful components such as Postgres and 
 Deploying one GitLab environment over multiple data centers is not supported due to potential split brain edge cases
 if a data center were to go down. For example, several components of the GitLab setup, namely Consul, Redis Sentinel and Praefect require an odd number quorum to function correctly and splitting over multiple data centers can impact this notably.
 
-For deploying GitLab over multiple data centers or regions we offer [GitLab Geo](https://about.gitlab.com/solutions/geo/) as a comprehensive solution.
+For deploying GitLab over multiple data centers or regions we offer [GitLab Geo](../geo/index.md) as a comprehensive solution.
 
 ## Validation and test results
 

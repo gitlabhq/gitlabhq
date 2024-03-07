@@ -31,6 +31,8 @@ The following data sources are configured for analytics dashboards:
 - [Product analytics](../product_analytics/index.md)
 - [Value Stream Management](../analytics/value_streams_dashboard.md)
 
+To contribute, see [adding a new visualization data source](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
+
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
@@ -256,6 +258,8 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+To contribute, see [adding a new visualization render type](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-render-type).
 
 ## Create a custom dashboard
 

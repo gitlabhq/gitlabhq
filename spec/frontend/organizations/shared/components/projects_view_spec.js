@@ -2,6 +2,7 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import { formatProjects } from '~/organizations/shared/utils';
@@ -37,6 +38,9 @@ describe('ProjectsView', () => {
 
   const defaultPropsData = {
     listItemClass: 'gl-px-5',
+    search: 'foo',
+    sortName: SORT_ITEM_NAME.value,
+    sortDirection: SORT_DIRECTION_ASC,
   };
 
   const projects = {
@@ -136,6 +140,20 @@ describe('ProjectsView', () => {
         createComponent();
       });
 
+      it('calls GraphQL query with correct variables', async () => {
+        await waitForPromises();
+
+        expect(successHandler).toHaveBeenCalledWith({
+          id: defaultProvide.organizationGid,
+          search: defaultPropsData.search,
+          sort: 'name_asc',
+          last: null,
+          first: DEFAULT_PER_PAGE,
+          before: null,
+          after: null,
+        });
+      });
+
       it('renders `ProjectsList` component and passes correct props', async () => {
         await waitForPromises();
 
@@ -203,7 +221,7 @@ describe('ProjectsView', () => {
         });
 
         it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
+          expect(wrapper.emitted('page-change')[0]).toEqual([
             {
               endCursor: mockEndCursor,
               startCursor: null,
@@ -225,6 +243,8 @@ describe('ProjectsView', () => {
             first: DEFAULT_PER_PAGE,
             id: defaultProvide.organizationGid,
             last: null,
+            search: defaultPropsData.search,
+            sort: 'name_asc',
           });
         });
       });
@@ -263,7 +283,7 @@ describe('ProjectsView', () => {
         });
 
         it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
+          expect(wrapper.emitted('page-change')[0]).toEqual([
             {
               endCursor: null,
               startCursor: mockStartCursor,
@@ -285,6 +305,8 @@ describe('ProjectsView', () => {
             first: null,
             id: defaultProvide.organizationGid,
             last: DEFAULT_PER_PAGE,
+            search: defaultPropsData.search,
+            sort: 'name_asc',
           });
         });
       });
