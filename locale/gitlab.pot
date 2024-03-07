@@ -617,6 +617,11 @@ msgstr ""
 msgid "%{count} %{scope} for term '%{term}'"
 msgstr ""
 
+msgid "%{count} Custom role"
+msgid_plural "%{count} Custom roles"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} LOC/commit"
 msgstr ""
 
@@ -10545,6 +10550,9 @@ msgstr ""
 msgid "Choose a file"
 msgstr ""
 
+msgid "Choose a project"
+msgstr ""
+
 msgid "Choose a template"
 msgstr ""
 
@@ -10641,6 +10649,9 @@ msgstr ""
 msgid "CiCatalog|Go to the project"
 msgstr ""
 
+msgid "CiCatalog|How do I publish a component?"
+msgstr ""
+
 msgid "CiCatalog|No component available"
 msgstr ""
 
@@ -10648,6 +10659,9 @@ msgid "CiCatalog|No release available"
 msgstr ""
 
 msgid "CiCatalog|No result found"
+msgstr ""
+
+msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
 msgstr ""
 
 msgid "CiCatalog|Readme"
@@ -10671,9 +10685,6 @@ msgstr ""
 msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
-msgid "CiCatalog|The CI/CD components in this project can be published in the CI/CD Catalog by creating a release. We recommend using the %{linkStart}release%{linkEnd} keyword in a CI/CD job to release new component versions for the Catalog."
-msgstr ""
-
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
 msgstr ""
 
@@ -10695,6 +10706,9 @@ msgstr ""
 msgid "CiCatalog|This project is now a CI/CD Catalog project."
 msgstr ""
 
+msgid "CiCatalog|To publish CI/CD components to the Catalog, you must use the %{linkStart}release%{linkEnd} keyword in a CI/CD job."
+msgstr ""
+
 msgid "CiCatalog|Unable to remove project as a CI/CD Catalog project."
 msgstr ""
 
@@ -10702,6 +10716,9 @@ msgid "CiCatalog|Unable to set project as a CI/CD Catalog project."
 msgstr ""
 
 msgid "CiCatalog|Unreleased"
+msgstr ""
+
+msgid "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog."
 msgstr ""
 
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
@@ -14716,6 +14733,9 @@ msgid "Create a new project"
 msgstr ""
 
 msgid "Create a new project on GitLab. Store your files, plan your work, and collaborate on code."
+msgstr ""
+
+msgid "Create a new release"
 msgstr ""
 
 msgid "Create a new repository"
@@ -23562,6 +23582,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Image"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Interact with them from your CI/CD pipeline. %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Invite member to set up"
 msgstr ""
 
@@ -23584,9 +23607,6 @@ msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Project ID: %{projectId}"
-msgstr ""
-
-msgid "GoogleArtifactRegistry|Push new ones from your CI/CD pipeline."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Replace %{codeStart}your_access_token%{codeEnd} with a new %{linkStart}personal access token%{linkEnd} with the %{strongStart}read_api%{strongEnd} scope. This token gets information from your Google Cloud IAM integration in GitLab."
@@ -23631,10 +23651,31 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Your Google Cloud project must have specific Identity and Access Management (IAM) policies to use the Artifact Registry repository in this GitLab project."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|%{linkStart}Switch to the guided setup%{linkEnd} if you can manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|%{linkStart}Switch to the manual setup%{linkEnd} if you cannot manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|After Google Cloud workload identity federation has been set up, enter the details in the following form."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Connect to Google Cloud"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Connect to Google Cloud with workload identity federation for secure access without accounts or keys."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Connect to Google Cloud with workload identity federation. Select %{strongStart}Guided setup%{strongEnd} if you can manage workload identity federation in Google Cloud. %{linkStart}What are the required permissions?%{linkEnd}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
@@ -23661,6 +23702,9 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Guided setup"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
 msgstr ""
 
@@ -23670,6 +23714,12 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Identify the Google Cloud project with the workload identity pool and provider. %{linkStart}Where are my project ID and project number?%{linkEnd}"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Instructions"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Invite member to set up"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
 msgstr ""
 
@@ -23677,6 +23727,9 @@ msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources 
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Manage your artifacts in Google Artifact Registry."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Manual setup"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Pool ID"
@@ -23694,6 +23747,12 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Provider ID"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Replace %{codeStart}your_access_token%{codeEnd} with a %{linkStart}new personal access token%{linkEnd} with the %{strongStart}api%{strongEnd} scope. This token sets up your Google Cloud IAM integration in GitLab."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Replace %{codeStart}your_google_cloud_project_id%{codeEnd} with your Google Cloud project ID. To improve security, use a dedicated project for identity management, separate from resources and CI/CD projects. %{linkStart}Where’s my project ID?%{linkEnd}"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Repository location"
 msgstr ""
 
@@ -23701,6 +23760,12 @@ msgid "GoogleCloudPlatformService|Repository must be Docker format and Standard 
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Repository name"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Run the following command to set up and connect to your Google Cloud project with workload identity federation."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Share the following information with someone that can manage Google Cloud workload identity federation. Or %{linkStart}invite them%{linkEnd} to set up."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|The Google Cloud Identity and Access Management integration is not configured for this project"
@@ -23712,10 +23777,22 @@ msgstr ""
 msgid "GoogleCloudPlatformService|The google_cloud_support feature is not available"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|The setup instructions page"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Workload identity federation"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|You might be prompted to sign in to Google."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Your GitLab project ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Your workload identify federation (WLIF) issuer URL."
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -30723,6 +30800,9 @@ msgstr ""
 msgid "MemberRole|Create new role"
 msgstr ""
 
+msgid "MemberRole|Custom permissions"
+msgstr ""
+
 msgid "MemberRole|Custom role"
 msgstr ""
 
@@ -30733,6 +30813,9 @@ msgid "MemberRole|Delete role"
 msgstr ""
 
 msgid "MemberRole|Description"
+msgstr ""
+
+msgid "MemberRole|Edit role"
 msgstr ""
 
 msgid "MemberRole|Enter a short name."
@@ -30793,6 +30876,9 @@ msgid "MemberRole|To add a new role select 'Add new role'."
 msgstr ""
 
 msgid "MemberRole|To delete the custom role make sure no group member has this custom role"
+msgstr ""
+
+msgid "MemberRole|You can create a custom role by adding specific %{linkStart}permissions to a base role.%{linkEnd}"
 msgstr ""
 
 msgid "MemberRole|can't be changed"
@@ -40822,9 +40908,6 @@ msgstr ""
 msgid "Public projects compute cost factor"
 msgstr ""
 
-msgid "Publish the CI/CD components in this project to the CI/CD Catalog"
-msgstr ""
-
 msgid "Publish to status page"
 msgstr ""
 
@@ -45227,6 +45310,9 @@ msgstr ""
 msgid "SecurityOrchestration|Fill in branch name with project name in the format of %{boldStart}branch-name@project-path,%{boldEnd} separate with `,`"
 msgstr ""
 
+msgid "SecurityOrchestration|Filter and search projects"
+msgstr ""
+
 msgid "SecurityOrchestration|Following projects:"
 msgstr ""
 
@@ -45454,6 +45540,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy project was unlinked successfully"
 msgstr ""
 
+msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
@@ -45472,7 +45561,7 @@ msgstr ""
 msgid "SecurityOrchestration|Select scan type"
 msgstr ""
 
-msgid "SecurityOrchestration|Select security project"
+msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Select users"
@@ -45491,6 +45580,9 @@ msgid "SecurityOrchestration|Show all included projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Show more projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Show only security policies projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
@@ -50887,6 +50979,9 @@ msgstr ""
 msgid "There are no closed merge requests"
 msgstr ""
 
+msgid "There are no commits yet"
+msgstr ""
+
 msgid "There are no commits yet."
 msgstr ""
 
@@ -55518,9 +55613,6 @@ msgid "View the documentation"
 msgstr ""
 
 msgid "View the latest successful deployment to this environment"
-msgstr ""
-
-msgid "View the publishing guide"
 msgstr ""
 
 msgid "View trigger token usage examples"

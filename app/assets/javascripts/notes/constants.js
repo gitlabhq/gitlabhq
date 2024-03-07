@@ -127,3 +127,4 @@ export const MR_FILTER_OPTIONS = [
     systemNoteIcons: ['timer'],
   },
 ];
+export const MR_FILTER_TRACKING_OPENED = 'user_clicks_comment_filter_dropdown';

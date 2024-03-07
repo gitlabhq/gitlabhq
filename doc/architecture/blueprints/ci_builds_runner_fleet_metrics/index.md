@@ -73,7 +73,7 @@ For an up to date status, see [epic 10682](https://gitlab.com/groups/gitlab-org/
 
 ### Database selection
 
-In FY23, ClickHouse [was selected as GitLab standard datastore](https://about.gitlab.com/company/team/structure/working-groups/clickhouse-datastore/#context)
+In FY23, ClickHouse [was selected as GitLab standard datastore](https://handbook.gitlab.com/handbook/company/working-groups/clickhouse-datastore/#context)
 for features with big data and insert-heavy requirements.
 So we have chosen it for our CI analytics as well.
 

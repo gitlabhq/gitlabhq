@@ -675,7 +675,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         ])
 
         expect_cli_output do
-          output = plain_last_lines(300)
+          output = plain_last_lines(320)
 
           output.include?(expected_example_prompt) &&
             output.include?(expected_event1_example) &&

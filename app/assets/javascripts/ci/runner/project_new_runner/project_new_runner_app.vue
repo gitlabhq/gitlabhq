@@ -2,6 +2,7 @@
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
@@ -24,7 +25,7 @@ export default {
     RunnerPlatformsRadioGroup,
     RunnerCreateForm,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   props: {
     projectId: {
       type: String,
@@ -45,6 +46,11 @@ export default {
     onSaved(runner) {
       const params = { [PARAM_KEY_PLATFORM]: this.platform };
       const ephemeralRegisterUrl = setUrlParams(params, runner.ephemeralRegisterUrl);
+
+      this.trackEvent('click_create_project_runner_button');
+      if (this.platform === GOOGLE_CLOUD_PLATFORM) {
+        this.trackEvent('provision_project_runner_on_google_cloud');
+      }
 
       saveAlertToLocalStorage({
         message: s__('Runners|Runner created.'),

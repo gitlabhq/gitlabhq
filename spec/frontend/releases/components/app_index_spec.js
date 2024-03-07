@@ -16,7 +16,7 @@ import ReleaseSkeletonLoader from '~/releases/components/release_skeleton_loader
 import ReleasesEmptyState from '~/releases/components/releases_empty_state.vue';
 import ReleasesPagination from '~/releases/components/releases_pagination.vue';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
-import { PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
+import { i18n, PAGE_SIZE, CREATED_ASC, DEFAULT_SORT } from '~/releases/constants';
 import { deleteReleaseSessionKey } from '~/releases/release_notification_service';
 import { generateCatalogSettingsResponse } from '../mock_data';
 
@@ -105,6 +105,7 @@ describe('app_index.vue', () => {
   const findPagination = () => wrapper.findComponent(ReleasesPagination);
   const findSort = () => wrapper.findComponent(ReleasesSort);
   const findCatalogAlert = () => wrapper.findComponent(GlAlert);
+  const findNewReleaseTooltip = () => wrapper.findByTestId('new-release-btn-tooltip');
 
   // Tests
   describe('component states', () => {
@@ -446,6 +447,17 @@ describe('app_index.vue', () => {
       it('renders the CI/CD Catalog alert', () => {
         expect(findCatalogAlert().exists()).toBe(true);
       });
+
+      it('disables the new release button', () => {
+        expect(findNewReleaseButton().attributes('disabled')).toBe('true');
+      });
+
+      it('sets the correct tooltip text', () => {
+        expect(findNewReleaseTooltip().exists()).toBe(true);
+        expect(findNewReleaseTooltip().attributes('title')).toBe(
+          i18n.catalogResourceReleaseBtnTitle,
+        );
+      });
     });
 
     describe('when the project is not a catalog resource', () => {
@@ -456,6 +468,15 @@ describe('app_index.vue', () => {
 
       it('does not render the CI/CD Catalog alert', () => {
         expect(findCatalogAlert().exists()).toBe(false);
+      });
+
+      it('enables the new release button', () => {
+        expect(findNewReleaseButton().attributes('disabled')).toBe(undefined);
+      });
+
+      it('sets the correct tooltip text', () => {
+        expect(findNewReleaseTooltip().exists()).toBe(true);
+        expect(findNewReleaseTooltip().attributes('title')).toBe(i18n.defaultReleaseBtnTitle);
       });
     });
   });

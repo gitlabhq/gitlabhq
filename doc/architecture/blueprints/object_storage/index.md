@@ -37,7 +37,7 @@ underlying implementation for shared, distributed, highly-available
 
 Over time, we have built support for object storage across the
 application, solving specific problems in a
-[multitude of iterations](https://about.gitlab.com/company/team/structure/working-groups/object-storage/#company-efforts-on-uploads).
+[multitude of iterations](https://handbook.gitlab.com/handbook/company/working-groups/object-storage/#company-efforts-on-uploads).
 This has led to increased complexity across the board, from development
 (new features and bug fixes) to installation:
 

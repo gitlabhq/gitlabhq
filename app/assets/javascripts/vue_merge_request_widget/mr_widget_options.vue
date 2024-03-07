@@ -109,16 +109,20 @@ export default {
         return this.pollInterval;
       },
       result(response) {
-        if (!response.loading) {
-          this.pollInterval = this.apolloStateQueryPollingInterval;
+        // 7 is the value for when the network status is ready
+        if (response.networkStatus !== 7) return;
 
-          if (response.data?.project) {
-            this.mr.setGraphqlData(response.data.project);
-            this.loading = false;
-          }
-        } else {
-          this.checkStatus(undefined, undefined, false);
+        this.pollInterval = this.apolloStateQueryPollingInterval;
+
+        if (response.data?.project) {
+          this.mr.setGraphqlData(response.data.project);
+          this.loading = false;
         }
+
+        this.checkStatus(undefined, undefined, false);
+      },
+      error() {
+        this.pollInterval = null;
       },
       subscribeToMore: {
         document() {
@@ -275,6 +279,13 @@ export default {
         this.initPostMergeDeploymentsPolling();
       }
     },
+    'mr.ciStatus': {
+      handler(newValue) {
+        if (!newValue) return;
+
+        this.handleNotification();
+      },
+    },
   },
   mounted() {
     MRWidgetService.fetchInitialData()
@@ -363,7 +374,8 @@ export default {
       return this.service
         .checkStatus()
         .then(({ data }) => {
-          this.handleNotification(data);
+          if (!Object.keys(data).length) return;
+
           this.mr.setData(data, isRebased);
           this.setFaviconHelper();
 
@@ -444,14 +456,15 @@ export default {
           }),
         );
     },
-    handleNotification(data) {
-      if (data.ci_status === this.mr.ciStatus) return;
-      if (!data.pipeline) return;
+    handleNotification() {
+      const { pipeline } = this.mr;
 
-      const { label } = data.pipeline.details.status;
+      if (!pipeline || !Object.keys(pipeline).length) return;
+
+      const { label } = pipeline.details.status;
       const title = sprintf(__('Pipeline %{label}'), { label });
       const message = sprintf(__('Pipeline %{label} for "%{dataTitle}"'), {
-        dataTitle: data.title,
+        dataTitle: this.mr.title,
         label,
       });
 

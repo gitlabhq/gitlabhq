@@ -87,7 +87,7 @@ describe('MrWidgetOptions', () => {
         },
       },
     };
-    stateQueryHandler = jest.fn().mockResolvedValue(queryResponse);
+    stateQueryHandler = stateQueryHandler || jest.fn().mockResolvedValue(queryResponse);
 
     const queryHandlers = [
       [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
@@ -150,6 +150,7 @@ describe('MrWidgetOptions', () => {
   });
 
   afterEach(() => {
+    stateQueryHandler = null;
     gl.mrWidgetData = {};
   });
 
@@ -410,16 +411,14 @@ describe('MrWidgetOptions', () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
           eventHub.$emit('MRWidgetUpdateRequested', () => {});
           await waitForPromises();
-          // apollo query resolves twice with notifyOnNetworkStatusChange enabled, so 3 calls in total
-          expect(stateQueryHandler).toHaveBeenCalledTimes(3);
+          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
         it('refetches when "MRWidgetRebaseSuccess" event is emitted', async () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
           eventHub.$emit('MRWidgetRebaseSuccess', () => {});
           await waitForPromises();
-          // apollo query resolves twice with notifyOnNetworkStatusChange enabled, so 3 calls in total
-          expect(stateQueryHandler).toHaveBeenCalledTimes(3);
+          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
         it('should bind to SetBranchRemoveFlag', () => {
@@ -531,55 +530,89 @@ describe('MrWidgetOptions', () => {
         const mockSetGraphqlData = jest.fn();
         const mockSetData = jest.fn();
 
-        beforeEach(() => {
-          wrapper.destroy();
+        describe('when request is successful', () => {
+          beforeEach(() => {
+            wrapper.destroy();
 
-          return createComponent({
-            options: {},
-            data: {
-              pollInterval: interval,
-              startingPollInterval: interval,
-              mr: {
-                setData: mockSetData,
-                setGraphqlData: mockSetGraphqlData,
-                setGraphqlSubscriptionData: jest.fn(),
+            return createComponent({
+              options: {},
+              data: {
+                pollInterval: interval,
+                startingPollInterval: interval,
+                mr: {
+                  setData: mockSetData,
+                  setGraphqlData: mockSetGraphqlData,
+                  setGraphqlSubscriptionData: jest.fn(),
+                },
+                service: {
+                  checkStatus: mockCheckStatus,
+                },
               },
-              service: {
-                checkStatus: mockCheckStatus,
-              },
-            },
-          });
-        });
-
-        describe('normal polling behavior', () => {
-          it('responds to the GraphQL query finishing', () => {
-            expect(mockSetGraphqlData).toHaveBeenCalledWith(queryResponse.data.project);
-            expect(mockCheckStatus).toHaveBeenCalled();
-            expect(mockSetData).toHaveBeenCalledWith(data, undefined);
-            expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-          });
-        });
-
-        describe('external event control', () => {
-          describe('enablePolling', () => {
-            it('enables the Apollo query polling using the event hub', () => {
-              eventHub.$emit('EnablePolling');
-
-              expect(stateQueryHandler).toHaveBeenCalled();
-              jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
-              expect(stateQueryHandler).toHaveBeenCalledTimes(2);
             });
           });
 
-          describe('disablePolling', () => {
-            it('disables the Apollo query polling using the event hub', () => {
+          describe('normal polling behavior', () => {
+            it('responds to the GraphQL query finishing', () => {
+              expect(mockSetGraphqlData).toHaveBeenCalledWith(queryResponse.data.project);
+              expect(mockCheckStatus).toHaveBeenCalled();
+              expect(mockSetData).toHaveBeenCalledWith(data, undefined);
               expect(stateQueryHandler).toHaveBeenCalledTimes(1);
-
-              eventHub.$emit('DisablePolling');
-              jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
-
-              expect(stateQueryHandler).toHaveBeenCalledTimes(1); // no additional polling after a real interval timeout
             });
+          });
+
+          describe('external event control', () => {
+            describe('enablePolling', () => {
+              it('enables the Apollo query polling using the event hub', () => {
+                eventHub.$emit('EnablePolling');
+
+                expect(stateQueryHandler).toHaveBeenCalled();
+                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
+                expect(stateQueryHandler).toHaveBeenCalledTimes(2);
+              });
+            });
+
+            describe('disablePolling', () => {
+              it('disables the Apollo query polling using the event hub', () => {
+                expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+
+                eventHub.$emit('DisablePolling');
+                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
+
+                expect(stateQueryHandler).toHaveBeenCalledTimes(1); // no additional polling after a real interval timeout
+              });
+            });
+          });
+        });
+
+        describe('when request fails', () => {
+          beforeEach(() => {
+            wrapper.destroy();
+
+            stateQueryHandler = jest.fn().mockRejectedValueOnce({ errors: [] });
+
+            return createComponent({
+              options: {},
+              data: {
+                pollInterval: interval,
+                startingPollInterval: interval,
+                mr: {
+                  setData: mockSetData,
+                  setGraphqlData: mockSetGraphqlData,
+                  setGraphqlSubscriptionData: jest.fn(),
+                },
+                service: {
+                  checkStatus: mockCheckStatus,
+                },
+              },
+            });
+          });
+
+          it('stops polling', () => {
+            expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+
+            jest.advanceTimersByTime(20);
+
+            expect(stateQueryHandler).toHaveBeenCalledTimes(1);
           });
         });
       });

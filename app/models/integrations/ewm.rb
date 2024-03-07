@@ -27,10 +27,6 @@ module Integrations
       'ewm'
     end
 
-    def testable?
-      false
-    end
-
     def issue_url(iid)
       issues_url.gsub(':id', iid.to_s.split(' ')[-1])
     end

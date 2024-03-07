@@ -200,7 +200,7 @@ Every abstraction layer comes at the cost of limited API compared to direct acce
 1. Operational effort
    Separate service to be deployed using Docker or k8s. Uses Redis as a cache and data structure store.
 1. Developer experience
-   Good [documentation](https://cube.dev/docs)
+   Good [documentation](https://cube.dev/docs/product/introduction)
 1. Maturity
    Headless BI tools themselves are a fairly new idea, but Cube.js seems to be the leading open-source solution in this space.
    The Analytics section uses it internally for our Product Analytics stack.

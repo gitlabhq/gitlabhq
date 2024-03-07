@@ -47,7 +47,7 @@ in the upcoming years.
 ## Opportunity
 
 CI/CD data is subject to
-[time-decay](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/time-decay.html)
+[time-decay](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/time-decay/)
 because, usually, pipelines that are a few months old are not frequently
 accessed or are even not relevant anymore. Restricting access to processing
 pipelines that are older than a few months might help us to move this data out

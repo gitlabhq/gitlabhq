@@ -1,0 +1,23 @@
+---
+key_path: counts.count_total_user_clicks_comment_filter_dropdown_weekly
+description: Weekly count of times the MR comment filter dropdown is opened
+product_section: dev
+product_stage: create
+product_group: code_review
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145998
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: user_clicks_comment_filter_dropdown

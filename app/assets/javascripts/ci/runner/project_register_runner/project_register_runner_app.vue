@@ -84,6 +84,12 @@ export default {
       />
     </template>
 
-    <gl-button :href="runnersPath" variant="confirm">{{ s__('Runners|View runners') }}</gl-button>
+    <gl-button
+      :href="runnersPath"
+      variant="confirm"
+      data-event-tracking="click_view_runners_button_in_new_project_runner_form"
+    >
+      {{ s__('Runners|View runners') }}
+    </gl-button>
   </div>
 </template>
