@@ -10709,13 +10709,15 @@ CREATE TABLE member_approvals (
     reviewed_at timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    member_id bigint NOT NULL,
+    member_id bigint,
     member_namespace_id bigint NOT NULL,
     requested_by_id bigint,
     reviewed_by_id bigint,
     new_access_level integer NOT NULL,
-    old_access_level integer NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    old_access_level integer,
+    status smallint DEFAULT 0 NOT NULL,
+    user_id bigint NOT NULL,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE member_approvals_id_seq
@@ -25647,6 +25649,10 @@ CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING b
 
 CREATE UNIQUE INDEX index_member_roles_on_name_unique ON member_roles USING btree (name) WHERE (namespace_id IS NULL);
 
+CREATE INDEX index_member_approvals_on_member_role_id ON member_approvals USING btree (member_role_id);
+
+CREATE INDEX index_member_approvals_on_user_id ON member_approvals USING btree (user_id);
+
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_member_roles_on_namespace_id_name_unique ON member_roles USING btree (namespace_id, name) WHERE (namespace_id IS NOT NULL);
@@ -27709,6 +27715,8 @@ CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_nam
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
+CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level) WHERE (status = 0);
+
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
@@ -27734,8 +27742,6 @@ CREATE UNIQUE INDEX unique_instance_audit_event_destination_name ON audit_events
 CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations ON audit_events_instance_google_cloud_logging_configurations USING btree (google_project_id_name, log_id_name);
 
 CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations_name ON audit_events_instance_google_cloud_logging_configurations USING btree (name);
-
-CREATE UNIQUE INDEX unique_member_approvals_on_pending_status ON member_approvals USING btree (member_id, member_namespace_id, new_access_level) WHERE (status = 0);
 
 CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
 
@@ -29677,7 +29683,7 @@ ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
 ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
@@ -29822,6 +29828,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT fk_6154a9cb89 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY member_approvals
+    ADD CONSTRAINT fk_619f381144 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT fk_61bfa96db5 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
@@ -32474,9 +32483,6 @@ ALTER TABLE issue_search_data
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT tmp_fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;

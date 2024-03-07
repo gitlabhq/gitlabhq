@@ -4,19 +4,26 @@ FactoryBot.define do
   factory :member_approval, class: 'Members::MemberApproval' do
     requested_by { association(:user) }
     reviewed_by { association(:user) }
+    user { association(:user) }
     old_access_level { ::Gitlab::Access::GUEST }
     new_access_level { ::Gitlab::Access::DEVELOPER }
     status { ::Members::MemberApproval.statuses[:pending] }
-    member { association(:project_member) } # default
-    member_namespace_id { member.member_namespace_id }
+    member { association(:project_member, user: user) }
+    member_namespace { association(:namespace) }
 
-    # Traits for specific group members
+    trait :for_new_member do
+      member { nil }
+      old_access_level { nil }
+    end
+
     trait :for_group_member do
-      member { association(:group_member) }
+      member { association(:group_member, user: user) }
+      member_namespace { member.member_namespace }
     end
 
     trait :for_project_member do
-      member { association(:project_member) }
+      member { association(:project_member, user: user) }
+      member_namespace { member.member_namespace }
     end
 
     trait(:guest)     { old_access_level { GroupMember::GUEST } }

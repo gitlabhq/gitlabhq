@@ -2814,7 +2814,8 @@ GET /projects/:id/hooks/:hook_id
   "disabled_until": null,
   "url_variables": [ ],
   "created_at": "2012-10-12T17:04:47Z",
-  "resource_access_token_events": true
+  "resource_access_token_events": true,
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
 }
 ```
 
@@ -2846,6 +2847,7 @@ POST /projects/:id/hooks
 | `token`                      | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki events. |
 | `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
 
 ### Edit project hook
 
@@ -2876,6 +2878,7 @@ PUT /projects/:id/hooks/:hook_id
 | `token`                      | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki page events. |
 | `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
 
 ### Delete project hook
 

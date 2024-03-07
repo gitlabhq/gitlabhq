@@ -45,6 +45,10 @@ module Ci
 
     scope :live, -> { where(data_store: LIVE_STORES) }
     scope :persisted, -> { where.not(data_store: LIVE_STORES).order(:chunk_index) }
+    scope :scoped_build, -> {
+      where(arel_table[:build_id].eq(Ci::Build.arel_table[:id]))
+      .where(arel_table[:partition_id].eq(Ci::Build.arel_table[:partition_id]))
+    }
 
     class << self
       def all_stores

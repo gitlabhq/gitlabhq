@@ -25,7 +25,7 @@ require (
 	gitlab.com/gitlab-org/gitaly/v16 v16.9.1
 	gitlab.com/gitlab-org/labkit v1.21.0
 	gocloud.dev v0.36.0
-	golang.org/x/image v0.14.0
+	golang.org/x/image v0.15.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/net v0.21.0
 	golang.org/x/oauth2 v0.16.0

@@ -118,7 +118,7 @@ module API
 
             resource_not_found! unless model
 
-            if ::Ml::DestroyModelService.new(model, current_user).execute
+            if ::Ml::DestroyModelService.new(model, current_user).execute.success?
               present({})
             else
               render_api_error!('Model could not be deleted', 400)

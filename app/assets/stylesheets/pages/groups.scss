@@ -6,16 +6,6 @@
 
 .groups-list {
   @include basic-list;
-
-  li {
-    a {
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
 }
 
 .group-root-path {

@@ -98,9 +98,20 @@ module ApplicationWorker
       validate_worker_attributes!
     end
 
+    %i[perform_async perform_at perform_in].each do |name|
+      define_method(name) do |*args|
+        route_sidekiq_job do
+          super(*args)
+        end
+      end
+    end
+
     def set_queue
       queue_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(self)
       sidekiq_options queue: queue_name # rubocop:disable Cop/SidekiqOptionsQueue
+
+      store_name = ::Gitlab::SidekiqConfig::WorkerRouter.global.store(self)
+      sidekiq_options store: store_name # rubocop:disable Cop/SidekiqOptionsQueue
     end
 
     def queue_namespace(new_namespace = nil)
@@ -179,16 +190,32 @@ module ApplicationWorker
         schedule_at = bulk_schedule_at
       end
 
-      in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch) # rubocop:disable Cop/SidekiqApiUsage
+      route_sidekiq_job do
+        in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
+        end
       end
     end
 
     private
 
     def do_push_bulk(args_list)
-      in_safe_limit_batches(args_list) do |args_batch, _|
-        Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch) # rubocop:disable Cop/SidekiqApiUsage
+      route_sidekiq_job do
+        in_safe_limit_batches(args_list) do |args_batch, _|
+          Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
+        end
+      end
+    end
+
+    def route_sidekiq_job
+      return yield unless Gitlab::SidekiqSharding::Router.enabled?
+
+      redis_name, shard_redis_pool = Gitlab::SidekiqSharding::Router.get_shard_instance(get_sidekiq_options['store'])
+
+      Gitlab::ApplicationContext.with_context(sidekiq_destination_shard_redis: redis_name) do
+        Sidekiq::Client.via(shard_redis_pool) do
+          yield
+        end
       end
     end
 

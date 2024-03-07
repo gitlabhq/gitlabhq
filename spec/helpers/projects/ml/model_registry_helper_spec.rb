@@ -17,7 +17,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'projectPath' => project.full_path,
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
         'canWriteModelRegistry' => true,
-        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/api/2.0/mlflow/"
+        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/"
       })
     end
 

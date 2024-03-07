@@ -25,7 +25,7 @@ RSpec.describe Gitlab::SidekiqDeathHandler, :clean_gitlab_redis_queues do
           .to receive(:increment)
                 .with({ queue: 'test_queue', worker: 'TestWorker',
                         urgency: 'low', external_dependencies: 'yes',
-                        feature_category: 'user_profile', boundary: 'cpu' })
+                        feature_category: 'user_profile', boundary: 'cpu', destination_shard_redis: 'main' })
 
         described_class.handler({ 'class' => 'TestWorker', 'queue' => 'test_queue' }, nil)
       end
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::SidekiqDeathHandler, :clean_gitlab_redis_queues do
           .to receive(:increment)
                 .with({ queue: 'test_queue', worker: 'TestWorker',
                         urgency: '', external_dependencies: 'no',
-                        feature_category: '', boundary: '' })
+                        feature_category: '', boundary: '', destination_shard_redis: 'main' })
 
         described_class.handler({ 'class' => 'TestWorker', 'queue' => 'test_queue' }, nil)
       end

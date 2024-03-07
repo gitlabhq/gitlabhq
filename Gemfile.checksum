@@ -70,7 +70,7 @@
 {"name":"capybara","version":"3.40.0","platform":"ruby","checksum":"42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef"},
 {"name":"capybara-screenshot","version":"1.0.26","platform":"ruby","checksum":"816b9370a07752097c82a05f568aaf5d3b7f45c3db5d3aab2014071e1b3c0c77"},
 {"name":"carrierwave","version":"1.3.4","platform":"ruby","checksum":"81772dabd1830edbd7f4526d2ae2c79f974f1d48900c3f03f7ecb7c657463a21"},
-{"name":"cbor","version":"0.5.9.6","platform":"ruby","checksum":"434a147658dd1df24ec9e7b3297c1fd4f8a691c97d0e688b3049df8e728b2114"},
+{"name":"cbor","version":"0.5.9.8","platform":"ruby","checksum":"9ee097fc58d9bc5e406d112cd2d4e112c7354ec16f8b6ff34e4732c1e44b4eb7"},
 {"name":"character_set","version":"1.8.0","platform":"java","checksum":"2d94ac33d6569434cf1ba464012b5e98010f5dafbd7b750e8d7db79f4c8eb8f7"},
 {"name":"character_set","version":"1.8.0","platform":"ruby","checksum":"2b7317462adaedff0bd1576ae86d71bc5efe133a5d0b7c257021b00fe3153f51"},
 {"name":"charlock_holmes","version":"0.7.7","platform":"ruby","checksum":"1790eca3f661ffa6bbf5866c53c7191e4b8472626fc4997ff9dbe7c425e2cb43"},

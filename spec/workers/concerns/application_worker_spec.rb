@@ -24,6 +24,14 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
   let(:router) { double(:router) }
 
   before do
+    # Set up Sidekiq.default_configuration's Thread.current[:sidekiq_redis_pool].
+    # Creating a RedisConnection during spec's runtime will perform Sidekiq.info which messes with our spec expectations.
+    Sidekiq.redis(&:ping)
+
+    allow(Feature).to receive(:enabled?).and_call_original
+    allow(Feature).to receive(:enabled?).with(:route_to_main, type: :ops).and_return(true)
+    allow(router).to receive(:store).and_return('main')
+
     allow(::Gitlab::SidekiqConfig::WorkerRouter).to receive(:global).and_return(router)
     allow(router).to receive(:route).and_return('foo_bar_dummy')
   end
@@ -542,6 +550,58 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
         expect(Sidekiq::Queues[worker.queue].first).not_to include('status_expiration')
         expect(Sidekiq::Queues[worker.queue].length).to eq(1)
       end
+    end
+  end
+
+  context 'when using perform_async/in/at' do
+    let(:shard_pool) { 'dummy_pool' }
+    let(:shard_name) { 'shard_name' }
+
+    shared_examples 'uses shard router' do
+      context 'with enable_sidekiq_shard_router disabled' do
+        before do
+          allow(Gitlab::SidekiqSharding::Router).to receive(:enabled?).and_return(false)
+        end
+
+        it 'does not use the router' do
+          expect(Sidekiq::Client).not_to receive(:via)
+
+          operation
+        end
+      end
+
+      context 'with router enabled' do
+        before do
+          allow(Gitlab::SidekiqSharding::Router).to receive(:enabled?).and_return(true)
+        end
+
+        it 'routes job using Sidekiq::Client.via' do
+          expect(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).and_return([shard_name, shard_pool])
+          expect(Gitlab::ApplicationContext)
+            .to receive(:with_context).with(sidekiq_destination_shard_redis: shard_name).and_call_original
+          expect(Sidekiq::Client).to receive(:via).with(shard_pool)
+
+          operation
+        end
+      end
+    end
+
+    context 'when calling perform_async' do
+      subject(:operation) { worker.perform_async }
+
+      it_behaves_like 'uses shard router'
+    end
+
+    context 'when calling perform_in' do
+      subject(:operation) { worker.perform_in(1) }
+
+      it_behaves_like 'uses shard router'
+    end
+
+    context 'when calling perform_at' do
+      subject(:operation) { worker.perform_at(1) }
+
+      it_behaves_like 'uses shard router'
     end
   end
 end

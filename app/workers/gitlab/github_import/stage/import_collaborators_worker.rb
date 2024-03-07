@@ -47,14 +47,9 @@ module Gitlab
         end
 
         def next_stage(project)
-          if import_settings(project).prioritize_collaborators?
-            'pull_requests'
-          else
+          return 'issues_and_diff_notes' if import_settings(project).extended_events?
 
-            return 'issues_and_diff_notes' if import_settings(project).extended_events?
-
-            'pull_requests_merged_by'
-          end
+          'pull_requests_merged_by'
         end
       end
     end

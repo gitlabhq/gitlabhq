@@ -80,8 +80,28 @@ To change the layout width of your UI:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Under **Layout width**, choose **Fixed** or **Fluid**.
+1. Select **Save changes**.
+
+### Choose your home organization
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ui_for_organizations`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+If you are a member of two or more [organizations](../organization/index.md), you can choose a home organization.
+This is the organization you are in by default when you first sign in to GitLab.
+
+To choose your home organization:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Scroll to the **Behavior** section.
+1. From the **Home organization** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Choose your homepage
@@ -90,8 +110,8 @@ Control what page you view when you select the GitLab logo (**{tanuki}**). You c
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
-1. For **Homepage**, select a default.
+1. Scroll to the **Behavior** section.
+1. From the **Homepage** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Customize default content on your group overview page
@@ -107,8 +127,8 @@ To change the default content on your group overview page:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
-1. For **Group overview content**, select an option.
+1. Scroll to the **Behavior** section.
+1. From the **Group overview content** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Customize default content on your project overview page
@@ -117,8 +137,8 @@ Your project overview page is the page you view when you select **Project overvi
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
-1. For **Project overview content**, select an option.
+1. Scroll to the **Behavior** section.
+1. From the **Project overview content** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Hide shortcut buttons
@@ -129,7 +149,7 @@ To hide shortcut buttons on the project overview page:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Clear the **Show shortcut buttons above files on project overview** checkbox.
 1. Select **Save changes**.
 
@@ -141,7 +161,7 @@ To render whitespace in the Web IDE:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Select the **Render whitespace characters in the Web IDE** checkbox.
 1. Select **Save changes**.
 
@@ -160,7 +180,7 @@ To view changes to whitespace in diffs:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Select the **Show whitespace changes in diffs** checkbox.
 1. Select **Save changes**.
 
@@ -175,7 +195,7 @@ To show one file per page on the **Changes** tab:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
 
@@ -189,7 +209,7 @@ To auto-enclose characters in description and comment boxes:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Select the **Surround text selection when typing quotes or brackets** checkbox.
 1. Select **Save changes**.
 
@@ -204,7 +224,7 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. Select the **Automatically add new list items** checkbox.
 1. Select **Save changes**.
 
@@ -216,7 +236,7 @@ To adjust the default tab width:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Behavior** section.
+1. Scroll to the **Behavior** section.
 1. For **Tab width**, enter a value.
 1. Select **Save changes**.
 

@@ -137,24 +137,4 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       expect(settings.extended_events?).to eq(false)
     end
   end
-
-  describe '#prioritize_collaborators?' do
-    it 'when prioritize_collaborators is set to true' do
-      project.build_or_assign_import_data(data: { prioritize_collaborators: true })
-
-      expect(settings.prioritize_collaborators?).to eq(true)
-    end
-
-    it 'when prioritize_collaborators is set to false' do
-      project.build_or_assign_import_data(data: { prioritize_collaborators: false })
-
-      expect(settings.prioritize_collaborators?).to eq(false)
-    end
-
-    it 'when prioritize_collaborators is not present' do
-      project.build_or_assign_import_data(data: {})
-
-      expect(settings.prioritize_collaborators?).to eq(false)
-    end
-  end
 end

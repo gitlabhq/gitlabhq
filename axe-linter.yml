@@ -1,0 +1,21 @@
+global-components:
+  gl-button:
+    element: button
+    attributes:
+    - aria-*
+  gl-avatar:
+    element: img
+  gl-avatar-link:
+    element: a
+  gl-avatar-labeled:
+    element: img
+    attributes:
+    - label: alt
+  gl-toggle:
+    element: button
+    attributes:
+    - label: aria-labelledby
+    - description: aria-describedby
+  gl-link:
+    element: a
+

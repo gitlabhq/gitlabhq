@@ -390,7 +390,7 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
       ssrf_filter (~> 1.0, < 1.1.0)
-    cbor (0.5.9.6)
+    cbor (0.5.9.8)
     character_set (1.8.0)
     charlock_holmes (0.7.7)
     chef-config (18.3.0)

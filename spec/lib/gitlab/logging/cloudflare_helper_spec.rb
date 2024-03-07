@@ -19,13 +19,16 @@ RSpec.describe Gitlab::Logging::CloudflareHelper do
     end
 
     context 'with normal headers' do
-      let(:headers) { { 'Cf-Ray' => '592f0aa22b3dea38-IAD', 'Cf-Request-Id' => SecureRandom.hex } }
+      let(:headers) do
+        { 'Cf-Ray' => '592f0aa22b3dea38-IAD', 'Cf-Request-Id' => SecureRandom.hex, 'Cf-IPCountry' => 'US' }
+      end
 
       it 'adds Cf-Ray-Id and Cf-Request-Id' do
         helper.store_cloudflare_headers!(payload, request)
 
         expect(payload[:cf_ray]).to eq(headers['Cf-Ray'])
         expect(payload[:cf_request_id]).to eq(headers['Cf-Request-Id'])
+        expect(payload[:cf_ipcountry]).to eq(headers['Cf-IPCountry'])
       end
     end
 

@@ -213,22 +213,12 @@ RSpec.configure do |config|
   include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
-    # This includes the first try, i.e. tests will be run 2 times before failing.
-    config.default_retry_count = ENV.fetch('RETRIES', 1).to_i + 1
-
     # Gradually stop using rspec-retry
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
-    %i[
-      bin channels commands components config contracts controller db
-      dependencies dot_gitlab_ci experiments finders
-      graphql haml_lint helpers initializers keeps lib mailers metrics_server
-      migrations models policies presenters rack_servers requests
-      routing rubocop scripts serializers services sidekiq sidekiq_cluster
-      spam support_specs tasks tooling uploaders validators views workers
-    ].each do |type|
-      config.prepend_before(:each, type: type) do |example|
-        example.metadata[:retry] = 1
-      end
+    config.default_retry_count = 1
+    config.prepend_before(:each, type: :feature) do |example|
+      # This includes the first try, i.e. tests will be run 2 times before failing.
+      example.metadata[:retry] = ENV.fetch('RETRIES', 1).to_i + 1
     end
 
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]

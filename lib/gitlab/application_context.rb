@@ -27,7 +27,8 @@ module Gitlab
       :artifacts_dependencies_count,
       :root_caller_id,
       :merge_action_status,
-      :bulk_import_entity_id
+      :bulk_import_entity_id,
+      :sidekiq_destination_shard_redis
     ].freeze
     private_constant :KNOWN_KEYS
 
@@ -47,7 +48,8 @@ module Gitlab
       Attribute.new(:artifacts_dependencies_count, Integer),
       Attribute.new(:root_caller_id, String),
       Attribute.new(:merge_action_status, String),
-      Attribute.new(:bulk_import_entity_id, Integer)
+      Attribute.new(:bulk_import_entity_id, Integer),
+      Attribute.new(:sidekiq_destination_shard_redis, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
@@ -110,6 +112,7 @@ module Gitlab
         assign_hash_if_value(hash, :artifacts_dependencies_count)
         assign_hash_if_value(hash, :merge_action_status)
         assign_hash_if_value(hash, :bulk_import_entity_id)
+        assign_hash_if_value(hash, :sidekiq_destination_shard_redis)
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?

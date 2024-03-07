@@ -37,8 +37,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       .with(
         extended_events: true,
         optional_stages: optional_stages,
-        timeout_strategy: timeout_strategy,
-        prioritize_collaborators: true
+        timeout_strategy: timeout_strategy
       )
   end
 
@@ -100,8 +99,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(optional_stages: nil,
             extended_events: true,
-            timeout_strategy: timeout_strategy,
-            prioritize_collaborators: true
+            timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
           category: 'Import::GithubService',
@@ -127,8 +125,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .with(
             optional_stages: nil,
             extended_events: true,
-            timeout_strategy: timeout_strategy,
-            prioritize_collaborators: true
+            timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
           category: 'Import::GithubService',
@@ -164,8 +161,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             .with(
               optional_stages: nil,
               extended_events: true,
-              timeout_strategy: timeout_strategy,
-              prioritize_collaborators: true
+              timeout_strategy: timeout_strategy
             )
           expect_snowplow_event(
             category: 'Import::GithubService',
@@ -204,8 +200,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .with(
             optional_stages: optional_stages,
             extended_events: true,
-            timeout_strategy: timeout_strategy,
-            prioritize_collaborators: true
+            timeout_strategy: timeout_strategy
           )
       end
     end
@@ -221,8 +216,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .with(
             optional_stages: optional_stages,
             extended_events: true,
-            timeout_strategy: timeout_strategy,
-            prioritize_collaborators: true
+            timeout_strategy: timeout_strategy
           )
       end
     end
@@ -236,8 +230,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .with(
             optional_stages: optional_stages,
             extended_events: true,
-            timeout_strategy: timeout_strategy,
-            prioritize_collaborators: true
+            timeout_strategy: timeout_strategy
           )
       end
     end
@@ -251,20 +244,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         expect(settings)
           .to receive(:write)
           .with(a_hash_including(extended_events: false))
-
-        subject.execute(access_params, :github)
-      end
-    end
-
-    context 'when `prioritize_collaborators` feature flag is disabled' do
-      before do
-        stub_feature_flags(github_import_prioritize_collaborators: false)
-      end
-
-      it 'saves prioritize_collaborators to import_data' do
-        expect(settings)
-          .to receive(:write)
-          .with(a_hash_including(prioritize_collaborators: false))
 
         subject.execute(access_params, :github)
       end

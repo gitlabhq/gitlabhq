@@ -89,7 +89,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'replaces the assignee' do
+    it 'replaces the assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444646' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -116,7 +116,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes assignee' do
+    it 'removes assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -138,7 +138,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'does not replace the assignee in CE' do
+    it 'does not replace the assignee in CE', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -157,7 +157,8 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes the users in the list, while adding none' do
+    it 'removes the users in the list, while adding none',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)

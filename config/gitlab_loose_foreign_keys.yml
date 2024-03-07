@@ -234,6 +234,9 @@ member_approvals:
   - table: users
     column: reviewed_by_id
     on_delete: async_nullify
+  - table: users
+    column: user_id
+    on_delete: async_delete
 members:
   - table: users
     column: user_id

@@ -174,8 +174,7 @@ module Import
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
           optional_stages: params[:optional_stages],
-          extended_events: Feature.enabled?(:github_import_extended_events, current_user),
-          prioritize_collaborators: Feature.enabled?(:github_import_prioritize_collaborators, current_user)
+          extended_events: Feature.enabled?(:github_import_extended_events, current_user)
         )
     end
   end
