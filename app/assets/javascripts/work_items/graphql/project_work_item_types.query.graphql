@@ -1,7 +1,7 @@
-query projectWorkItemTypes($fullPath: ID!) {
+query projectWorkItemTypes($fullPath: ID!, $name: IssueType) {
   workspace: project(fullPath: $fullPath) {
     id
-    workItemTypes {
+    workItemTypes(name: $name) {
       nodes {
         id
         name

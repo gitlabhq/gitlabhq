@@ -47,4 +47,10 @@ RSpec.describe Gitlab::Themes, lib: true do
       expect(ids).not_to be_empty
     end
   end
+
+  describe '.valid_ids' do
+    it 'returns array of available_themes ids with DEPRECATED_DARK_THEME_ID' do
+      expect(described_class.valid_ids).to match_array [1, 6, 4, 7, 5, 8, 9, 10, 2, 3, 11]
+    end
+  end
 end

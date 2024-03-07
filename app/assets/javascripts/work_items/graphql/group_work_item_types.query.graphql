@@ -1,7 +1,7 @@
-query groupWorkItemTypes($fullPath: ID!) {
+query groupWorkItemTypes($fullPath: ID!, $name: IssueType) {
   workspace: group(fullPath: $fullPath) {
     id
-    workItemTypes {
+    workItemTypes(name: $name) {
       nodes {
         id
         name

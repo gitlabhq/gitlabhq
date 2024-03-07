@@ -124,19 +124,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       expect(page).to have_content('*.rbca')
     end
 
-    it 'shows loader on commit changes' do
-      click_link('.gitignore')
-      edit_in_single_file_editor
-      # why: We don't want the form to actually submit, so that we can assert the button's changed state
-      page.execute_script("document.querySelector('.js-edit-blob-form').addEventListener('submit', e => e.preventDefault())")
-
-      find('.file-editor', match: :first)
-      editor_set_value('*.rbca')
-      click_button('Commit changes')
-
-      expect(page).to have_button('Commit changes', disabled: true, class: 'js-commit-button-loading')
-    end
-
     it 'shows the diff of an edited file' do
       click_link('.gitignore')
       edit_in_single_file_editor

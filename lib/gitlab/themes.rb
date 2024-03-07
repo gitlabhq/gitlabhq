@@ -9,6 +9,9 @@ module Gitlab
     # Theme ID used when no `default_theme` configuration setting is provided.
     APPLICATION_DEFAULT = 3
 
+    # Theme ID previously used for dark mode theme
+    DEPRECATED_DARK_THEME_ID = 11
+
     # Struct class representing a single Theme
     Theme = Struct.new(:id, :name, :css_class, :primary_color)
 
@@ -80,7 +83,7 @@ module Gitlab
     end
 
     def self.valid_ids
-      available_themes.map(&:id)
+      available_themes.map(&:id) + [DEPRECATED_DARK_THEME_ID]
     end
 
     private

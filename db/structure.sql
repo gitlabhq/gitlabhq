@@ -4697,6 +4697,25 @@ CREATE SEQUENCE audit_events_group_external_streaming_destinations_id_seq
 
 ALTER SEQUENCE audit_events_group_external_streaming_destinations_id_seq OWNED BY audit_events_group_external_streaming_destinations.id;
 
+CREATE TABLE audit_events_group_streaming_event_type_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    audit_event_type text NOT NULL,
+    CONSTRAINT check_389708af23 CHECK ((char_length(audit_event_type) <= 255))
+);
+
+CREATE SEQUENCE audit_events_group_streaming_event_type_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_group_streaming_event_type_filters_id_seq OWNED BY audit_events_group_streaming_event_type_filters.id;
+
 CREATE SEQUENCE audit_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -18564,6 +18583,8 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations ALTER COLUMN i
 
 ALTER TABLE ONLY audit_events_group_external_streaming_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_group_external_streaming_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_group_streaming_event_type_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_amazon_s3_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
@@ -20337,6 +20358,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 
 ALTER TABLE ONLY audit_events_group_external_streaming_destinations
     ADD CONSTRAINT audit_events_group_external_streaming_destinations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT audit_events_group_streaming_event_type_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations
     ADD CONSTRAINT audit_events_instance_amazon_s3_configurations_pkey PRIMARY KEY (id);
@@ -23600,6 +23624,8 @@ CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_pro
 CREATE INDEX idx_approval_project_rules_on_sec_orchestration_config_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id);
 
 CREATE INDEX idx_audit_events_group_external_destinations_on_group_id ON audit_events_group_external_streaming_destinations USING btree (group_id);
+
+CREATE INDEX idx_audit_events_namespace_event_type_filters_on_group_id ON audit_events_group_streaming_event_type_filters USING btree (namespace_id);
 
 CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
 
@@ -27636,6 +27662,8 @@ CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON pr
 CREATE UNIQUE INDEX u_zoekt_indices_zoekt_enabled_namespace_id_and_zoekt_node_id ON zoekt_indices USING btree (zoekt_enabled_namespace_id, zoekt_node_id);
 
 CREATE UNIQUE INDEX u_zoekt_repositories_zoekt_index_id_and_project_id ON zoekt_repositories USING btree (zoekt_index_id, project_id);
+
+CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type ON audit_events_group_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
 
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
@@ -32201,6 +32229,9 @@ ALTER TABLE ONLY bulk_import_export_uploads
 ALTER TABLE ONLY vs_code_settings
     ADD CONSTRAINT fk_rails_e02b1ed535 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_e07e457a27 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_e161058b0f FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
@@ -32302,6 +32333,9 @@ ALTER TABLE ONLY packages_debian_group_distributions
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3 FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_ee6950967f FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_group_architectures
     ADD CONSTRAINT fk_rails_ef667d1b03 FOREIGN KEY (distribution_id) REFERENCES packages_debian_group_distributions(id) ON DELETE CASCADE;

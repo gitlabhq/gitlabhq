@@ -84,4 +84,23 @@ describe('BlobBundle', () => {
       expect(createAlert).toHaveBeenCalledWith({ message });
     });
   });
+
+  describe('commit button', () => {
+    const findCommitButton = () => document.querySelector('.js-commit-button');
+    const findCommitLoadingButton = () => document.querySelector('.js-commit-button-loading');
+
+    it('hides the commit button and displays the loading button when clicked', () => {
+      setHTMLFixture(
+        `<div class="js-edit-blob-form">
+          <button class="js-commit-button"></button>
+          <button class="js-commit-button-loading gl-display-none"></button>
+        </div>`,
+      );
+      blobBundle();
+      findCommitButton().click();
+
+      expect(findCommitButton().classList).toContain('gl-display-none');
+      expect(findCommitLoadingButton().classList).not.toContain('gl-display-none');
+    });
+  });
 });

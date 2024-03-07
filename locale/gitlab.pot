@@ -5110,6 +5110,9 @@ msgstr ""
 msgid "An error occurred creating the new branch."
 msgstr ""
 
+msgid "An error occurred editing the blob"
+msgstr ""
+
 msgid "An error occurred fetching the approval rules."
 msgstr ""
 
@@ -5700,6 +5703,9 @@ msgstr ""
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
+msgid "Analytics|Failed to load dashboard"
+msgstr ""
+
 msgid "Analytics|Generate with Duo"
 msgstr ""
 
@@ -5752,6 +5758,9 @@ msgid "Analytics|Pages"
 msgstr ""
 
 msgid "Analytics|Referer"
+msgstr ""
+
+msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
 msgid "Analytics|Resulting Data"
@@ -56979,9 +56988,6 @@ msgid "WorkItem|Copy %{workItemType} email address"
 msgstr ""
 
 msgid "WorkItem|Create %{workItemType}"
-msgstr ""
-
-msgid "WorkItem|Create work item"
 msgstr ""
 
 msgid "WorkItem|Dates"

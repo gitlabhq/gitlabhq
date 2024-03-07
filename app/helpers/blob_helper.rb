@@ -145,7 +145,7 @@ module BlobHelper
     @dockerfile_names ||= TemplateFinder.all_template_names(project, :dockerfiles)
   end
 
-  def blob_editor_paths(project)
+  def blob_editor_paths(project, method)
     {
       'relative-url-root' => Rails.application.config.relative_url_root,
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
@@ -153,7 +153,8 @@ module BlobHelper
       'project-id' => project.id,
       'project-path': project.full_path,
       'is-markdown' => @blob && @blob.path && Gitlab::MarkupHelper.gitlab_markdown?(@blob.path),
-      'preview-markdown-path' => preview_markdown_path(project)
+      'preview-markdown-path' => preview_markdown_path(project),
+      'form-method' => method
     }
   end
 
