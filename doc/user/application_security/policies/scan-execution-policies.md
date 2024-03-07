@@ -388,6 +388,7 @@ Note the following:
   - `.pipeline-policy-pre`at the beginning of the pipeline, before the `.pre` stage.
   - `.pipeline-policy-test` after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
   - `.pipeline-policy-post` at the very end of the pipeline, after the .post stage.
+- Jobs without a stage are assigned to the `.pipeline-policy-test` stage by default.
 
 #### Example security policies project
 

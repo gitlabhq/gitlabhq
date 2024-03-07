@@ -288,6 +288,36 @@ To review the results of an import:
 1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** or **Partially completed** status.
 1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **Details**.
 
+## Cancel a running import
+
+To cancel a running import:
+
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+   on the destination GitLab instance.
+1. Find the last import by running the following command. Replace `USER_ID` with the user ID of the user that started the import:
+
+   ```ruby
+   bulk_import = BulkImport.where(user_id: USER_ID).last
+   ```
+
+1. Cause the import and all items associated with it to fail by running the following command:
+
+   ```ruby
+   bulk_import.entities.each do |entity|
+     entity.trackers.each do |tracker|
+       tracker.batches.each(&:fail_op!)
+     end
+     entity.trackers.each(&:fail_op!)
+     entity.fail_op!
+   end
+   bulk_import.fail_op!
+   ```
+
+Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but:
+
+- Prevents the destination from asking for more projects to be exported.
+- Prevents the target from making more API calls to the source.
+
 ## Migrated group items
 
 The group items that are migrated depend on the version of GitLab you use on the destination. To determine if a
@@ -501,28 +531,6 @@ entities.where(status: [-1]).pluck(:destination_name, :destination_namespace, :s
 
 You can also see all migrated entities with any failures related to them using an
 [API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
-
-### Remove cancelled imports
-
-Sometime you might have to cancel an import. Cancelled imports don't clean up after themselves so you must delete
-the imported items yourself. To delete the import by direct transfer that was most recently run:
-
-1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Find the last import by running the following command. Replace `USER_ID` with the user ID of the user that ran the
-   cancelled import:
-
-   ```ruby
-   bulk_import = BulkImport.find_by(user_id: USER_ID).last
-   ```
-
-1. Delete the last import, including all items associated with it, by running the following command:
-
-   ```ruby
-   bulk_import.destroy!
-   ```
-
-Any items associated with the import by direct transfer, including merge requests, projects, and issues, should be
-deleted.
 
 ### Stale imports
 

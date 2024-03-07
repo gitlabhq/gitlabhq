@@ -27,44 +27,66 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
   end
 
   describe '#run_create_task' do
-    let(:terraform_state) do
-      Backup::Tasks::TerraformState.new(progress: progress, options: options)
+    describe 'other task' do
+      let(:terraform_state) do
+        Backup::Tasks::TerraformState.new(progress: progress, options: options)
+                                    .tap { |state| allow(state).to receive(:target).and_return(target) }
+      end
+
+      let(:target) { instance_double(Backup::Targets::Target) }
+      let(:backup_tasks) do
+        { 'terraform_state' => terraform_state }
+      end
+
+      it 'runs the provided task' do
+        expect(target).to receive(:dump)
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... done')
+
+        subject.run_create_task(terraform_state)
+      end
+
+      context 'when disabled' do
+        it 'does not run the task and informs the user' do
+          allow(terraform_state).to receive(:enabled).and_return(false)
+
+          expect(target).not_to receive(:dump)
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [DISABLED]')
+
+          subject.run_create_task(terraform_state)
+        end
+      end
+
+      context 'when skipped' do
+        it 'does not run the task and informs the user' do
+          stub_env('SKIP', 'terraform_state')
+
+          expect(target).not_to receive(:dump)
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [SKIPPED]')
+
+          subject.run_create_task(terraform_state)
+        end
+      end
+    end
+  end
+
+  describe 'database task' do
+    let(:backup_state) do
+      Backup::Tasks::Database.new(progress: progress, options: options)
                                    .tap { |state| allow(state).to receive(:target).and_return(target) }
     end
 
     let(:target) { instance_double(Backup::Targets::Target) }
     let(:backup_tasks) do
-      { 'terraform_state' => terraform_state }
+      backup_state
     end
 
     it 'runs the provided task' do
       expect(target).to receive(:dump)
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... ')
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... done')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... ')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... done')
 
-      subject.run_create_task(terraform_state)
-    end
-
-    context 'when disabled' do
-      it 'does not run the task and informs the user' do
-        allow(terraform_state).to receive(:enabled).and_return(false)
-
-        expect(target).not_to receive(:dump)
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [DISABLED]')
-
-        subject.run_create_task(terraform_state)
-      end
-    end
-
-    context 'when skipped' do
-      it 'does not run the task and informs the user' do
-        stub_env('SKIP', 'terraform_state')
-
-        expect(target).not_to receive(:dump)
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [SKIPPED]')
-
-        subject.run_create_task(terraform_state)
-      end
+      subject.run_create_task(backup_tasks)
     end
   end
 
