@@ -1001,6 +1001,7 @@ class Project < ApplicationRecord
     def reference_pattern
       %r{
         (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
+        (?<absolute_path>/)?
         ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }xo

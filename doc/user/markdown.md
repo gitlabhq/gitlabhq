@@ -712,9 +712,9 @@ GitLab Flavored Markdown recognizes the following:
 | Label by name (one word)                                       | `~bug`                         | `namespace/project~bug`                 | `project~bug`                      |
 | Label by name (multiple words)                                 | `~"feature request"`           | `namespace/project~"feature request"`   | `project~"feature request"`        |
 | Label by name (scoped)                                         | `~"priority::high"`            | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
-| Project milestone by ID                                        | `%123`                         | `namespace/project%123`                 | `project%123`                      |
-| Milestone by name (one word)                                   | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
-| Milestone by name (multiple words)                             | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
+| Project milestone by ID <sup>2</sup> | `%123`                         | `namespace/project%123`                 | `project%123`                      |
+| Milestone by name (one word) <sup>2</sup> | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
+| Milestone by name (multiple words) <sup>2</sup> | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
 | Commit (specific)                                              | `9ba12248`                     | `namespace/project@9ba12248`            | `project@9ba12248`                 |
 | Commit range comparison                                        | `9ba12248...b19a04f5`          | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
 | Repository file reference                                      | `[README](doc/README.md)`      |                                         |                                    |
@@ -722,14 +722,14 @@ GitLab Flavored Markdown recognizes the following:
 | [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
 | [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
 
-<ol>
-  <li>
-    <small>
-      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/384885">Introduced</a> in GitLab 16.9. Iteration cadence references are always rendered following the format <code>[cadence:&lt;ID>]</code>.
-    For example, the text reference <code>[cadence:"plan"]</code> renders as <code>[cadence:1]</code> if the referenced iterations cadence's ID is <code>1</code>.
-    </small>
-  </li>
-</ol>
+**Footnotes:**
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
+   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+   iterations cadence's ID is `1`.
+1. For milestones, prepend a `/` before `namespace/project` to specify the exact milestone,
+   removing any possible ambiguity.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is

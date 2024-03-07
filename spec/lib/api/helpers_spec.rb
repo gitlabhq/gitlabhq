@@ -866,6 +866,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       expect(Gitlab::InternalEvents).to receive(:track_event).with(
         event_name,
         send_snowplow_event: true,
+        additional_properties: {},
         user: user,
         namespace: namespace,
         project: project
@@ -882,6 +883,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       expect(Gitlab::InternalEvents).to receive(:track_event).with(
         event_name,
         send_snowplow_event: false,
+        additional_properties: {},
         user: user,
         namespace: namespace,
         project: project
@@ -892,6 +894,24 @@ RSpec.describe API::Helpers, feature_category: :shared do
         user: user,
         namespace_id: namespace.id,
         project_id: project.id
+      )
+    end
+
+    it 'passes additional_properties on to InternalEvents.track_event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(
+        event_name,
+        send_snowplow_event: true,
+        additional_properties: { label: 'label2' },
+        user: user,
+        namespace: namespace,
+        project: project
+      )
+
+      helper.track_event(event_name,
+        user: user,
+        namespace_id: namespace.id,
+        project_id: project.id,
+        additional_properties: { label: 'label2' }
       )
     end
 

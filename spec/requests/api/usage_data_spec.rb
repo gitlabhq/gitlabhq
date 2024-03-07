@@ -216,6 +216,12 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     context 'with authentication' do
       let_it_be(:namespace) { create(:namespace) }
       let_it_be(:project) { create(:project) }
+      let_it_be(:additional_properties) do
+        {
+          label: 'label3',
+          property: 'admin'
+        }
+      end
 
       before do
         stub_application_setting(usage_ping_enabled: true)
@@ -225,11 +231,42 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       context 'with correct params' do
         it 'returns status ok' do
           expect(Gitlab::InternalEvents).to receive(:track_event)
-            .with(known_event, send_snowplow_event: false, user: user, namespace: namespace, project: project)
+            .with(
+              known_event,
+              send_snowplow_event: false,
+              user: user,
+              namespace: namespace,
+              project: project,
+              additional_properties: additional_properties
+            )
 
-          post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
+          params = {
+            event: known_event,
+            namespace_id: namespace.id,
+            project_id: project.id,
+            additional_properties: additional_properties
+          }
+          post api(endpoint, user), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'with no additional_properties' do
+          it 'returns status ok' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                known_event,
+                send_snowplow_event: false,
+                user: user,
+                namespace: namespace,
+                project: project,
+                additional_properties: {}
+              )
+
+            post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

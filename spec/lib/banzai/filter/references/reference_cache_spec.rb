@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :team_planning do
-  let_it_be(:project)  { create(:project) }
+  let_it_be(:group)    { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:project)  { create(:project, group: group) }
   let_it_be(:project2) { create(:project) }
   let_it_be(:issue1)   { create(:issue, project: project) }
   let_it_be(:issue2)   { create(:issue, project: project) }
   let_it_be(:issue3)   { create(:issue, project: project2) }
+  let_it_be(:issue4)   { create(:issue, project: project2) }
   let_it_be(:doc)      { Nokogiri::HTML.fragment("#{issue1.to_reference} #{issue2.to_reference} #{issue3.to_reference(full: true)}") }
   let_it_be(:result)   { {} }
   let_it_be(:filter_class) { Banzai::Filter::References::IssueReferenceFilter }
@@ -63,15 +66,47 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
 
       describe '#parent_per_reference' do
         it 'returns a Hash containing projects grouped per parent paths' do
-          expect(cache.parent_per_reference).to match({ project.full_path => project, project2.full_path => project2 })
+          expect(cache.parent_per_reference).to include({ project.full_path => project, project2.full_path => project2 })
         end
       end
 
       describe '#records_per_parent' do
-        it 'returns a Hash containing projects grouped per parent paths' do
+        it 'returns a Hash containing records grouped per parent' do
           expect(cache.records_per_parent).to match({ project => { issue1.iid => issue1, issue2.iid => issue2 },
                                                       project2 => { issue3.iid => issue3 } })
         end
+      end
+    end
+
+    context 'when the cache is loaded with absolute references' do
+      it 'loads references grouped per parent path and absolute references' do
+        milestone1 = create(:milestone, group: group)
+        milestone2 = create(:milestone, group: subgroup)
+        milestone3 = create(:milestone, project: project)
+
+        doc_milestone = Nokogiri::HTML.fragment("/#{milestone1.to_reference(full: true)} /#{milestone2.to_reference(full: true)} #{milestone3.to_reference(full: true)}")
+        filter_milestone = Banzai::Filter::References::MilestoneReferenceFilter.new(doc_milestone, project: project)
+        cache_milestone = described_class.new(filter_milestone, { project: project }, {})
+
+        cache_milestone.load_reference_cache(filter_milestone.nodes)
+
+        expect(cache_milestone.references_per_parent).to match({
+          "/#{group.full_path}" => [{ milestone_iid: nil, milestone_name: milestone1.title, absolute_path: true }].to_set,
+          "/#{subgroup.full_path}" => [{ milestone_iid: nil, milestone_name: milestone2.title, absolute_path: true }].to_set,
+          project.full_path => [{ milestone_iid: nil, milestone_name: milestone3.title, absolute_path: false }].to_set
+        })
+
+        expect(cache_milestone.parent_per_reference).to match({
+          "/#{group.full_path}" => group,
+          "/#{subgroup.full_path}" => subgroup,
+          project.full_path => project
+        })
+
+        expect(cache_milestone.records_per_parent).to match({
+          group => { { milestone_iid: milestone1.iid, milestone_name: milestone1.title } => milestone1 },
+          subgroup => { { milestone_iid: milestone2.iid, milestone_name: milestone2.title } => milestone2 },
+          project => { { milestone_iid: milestone3.iid, milestone_name: milestone3.title } => milestone3 }
+        })
       end
     end
   end
@@ -105,8 +140,8 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
   end
 
   describe '#find_for_paths' do
-    def find_for_paths(paths)
-      cache.send(:find_for_paths, paths)
+    def find_for_paths(paths, absolute_path = false)
+      cache.send(:find_for_paths, paths, absolute_path)
     end
 
     context 'with RequestStore disabled' do
@@ -116,6 +151,14 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
 
       it 'return an empty array for paths that do not exist' do
         expect(find_for_paths(['nonexistent/project'])).to eq([])
+      end
+
+      it 'finds group and project by absolute path' do
+        project_path = "/#{project.full_path}"
+        group_path = "/#{subgroup.full_path}"
+        nonexistent_path = '/nonexistent/project'
+
+        expect(find_for_paths([project_path, group_path, nonexistent_path], true)).to match_array([project, subgroup])
       end
     end
 
@@ -166,8 +209,15 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       expect(cache.full_project_path('something', 'cool')).to eq 'something/cool'
     end
 
-    it 'returns uses default namespace and project ref when namespace nil' do
+    it 'returns default namespace and project ref when namespace nil' do
       expect(cache.full_project_path(nil, 'cool')).to eq "#{project.namespace.full_path}/cool"
+    end
+
+    it 'returns absolute paths when matched to an absolute path' do
+      match = "/something/cool".match(Project.reference_pattern)
+
+      expect(cache.full_project_path('something', 'cool', match)).to eq '/something/cool'
+      expect(cache.full_project_path(nil, 'cool', match)).to eq '/cool'
     end
   end
 

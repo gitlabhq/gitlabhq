@@ -12,13 +12,16 @@ module Gitlab
       property: [String],
       value: [Integer, Float]
     }.freeze
+    DEFAULT_ADDITIONAL_PROPERTIES = {}.freeze
 
     class << self
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
       include Gitlab::UsageDataCounters::RedisCounter
 
-      def track_event(event_name, category: nil, send_snowplow_event: true, additional_properties: {}, **kwargs)
+      def track_event(
+        event_name, category: nil, send_snowplow_event: true,
+        additional_properties: DEFAULT_ADDITIONAL_PROPERTIES, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
         validate_properties!(additional_properties, kwargs)

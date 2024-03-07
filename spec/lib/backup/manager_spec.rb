@@ -194,21 +194,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
     let(:full_backup_id) { backup_id }
     let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
-    let(:pack_tar_system_options) { { out: [pack_tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
-    let(:pack_tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, pack_tar_system_options] }
 
-    let(:lfs) do
-      Backup::Tasks::Lfs.new(progress: progress, options: options)
-                                   .tap { |task| allow(task).to receive(:target).and_return(target1) }
-    end
+    let(:lfs) { Backup::Tasks::Lfs.new(progress: progress, options: options) }
+    let(:pages) { Backup::Tasks::Pages.new(progress: progress, options: options) }
 
-    let(:pages) do
-      Backup::Tasks::Pages.new(progress: progress, options: options)
-                          .tap { |task| allow(task).to receive(:target).and_return(target2) }
-    end
-
-    let(:target1) { instance_double(Backup::Targets::Target) }
-    let(:target2) { instance_double(Backup::Targets::Target) }
     let(:backup_tasks) do
       { 'lfs' => lfs, 'pages' => pages }
     end
@@ -217,10 +206,6 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       stub_env('INCREMENTAL', incremental_env)
       allow(ApplicationRecord.connection).to receive(:reconnect!)
       allow(Gitlab::BackupLogger).to receive(:info)
-      allow(Kernel).to receive(:system).and_return(true)
-
-      allow(target1).to receive(:dump).with(backup_path.join('lfs.tar.gz'), backup_id)
-      allow(target2).to receive(:dump).with(backup_path.join('pages.tar.gz'), backup_id)
     end
 
     it 'creates a backup tar' do
@@ -228,7 +213,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         subject.create # rubocop:disable Rails/SaveBang
       end
 
-      expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+      expect(File).to exist(backup_path.join(pack_tar_file))
+
       expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
       expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
     end
@@ -243,15 +229,15 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       it 'uses the given value as tar file name' do
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+        expect(File).to exist(backup_path.join('custom_gitlab_backup.tar'))
       end
 
       context 'tar fails' do
-        before do
-          expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
-        end
-
         it 'logs a failure' do
+          allow(Open3).to receive(:pipeline).and_return(
+            [instance_double(Process::Status, success?: false, exitstatus: 1)]
+          )
+
           expect do
             subject.create # rubocop:disable Rails/SaveBang
           end.to raise_error(Backup::Error, 'Backup failed')
@@ -265,14 +251,13 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       context 'when SKIP env is set' do
         let(:expected_backup_contents) { %w[backup_information.yml lfs.tar.gz] }
 
-        before do
-          stub_env('SKIP', 'pages')
-        end
-
         it 'executes tar' do
-          subject.create # rubocop:disable Rails/SaveBang
+          stub_env('SKIP', 'pages')
 
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+          expect(lfs).to receive(:target).and_call_original
+          expect(pages).not_to receive(:target)
+
+          subject.create # rubocop:disable Rails/SaveBang
         end
       end
 
@@ -281,16 +266,15 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         let(:pages) do
           Backup::Tasks::Pages.new(progress: progress, options: options)
                               .tap do |task|
-            allow(task).to receive_messages(target: target2, destination_optional: true)
+            allow(task).to receive(:destination_optional).and_return(true)
           end
         end
 
         it 'executes tar' do
+          allow(pages).to receive_message_chain(:target, :dump)
           expect(File).to receive(:exist?).with(backup_path.join('pages.tar.gz')).and_return(false)
 
           subject.create # rubocop:disable Rails/SaveBang
-
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
         end
       end
 
@@ -312,9 +296,12 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         before do
           allow(Gitlab::BackupLogger).to receive(:info)
-          allow(Dir).to receive(:chdir).and_yield
-          allow(Dir).to receive(:glob).and_return(files)
-          allow(FileUtils).to receive(:rm)
+
+          files.each do |bkp|
+            FileUtils.touch(backup_path.join(bkp))
+          end
+
+          allow(FileUtils).to receive(:rm).and_call_original
           allow(Time).to receive(:now).and_return(Time.zone.parse('2016-1-1'))
         end
 
@@ -326,7 +313,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a skipped message' do
@@ -350,7 +339,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a done message' do
@@ -367,7 +358,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a done message' do
@@ -643,11 +636,12 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       it 'creates a non-tarred backup' do
+        expect(subject).not_to receive(:pack)
+
         travel_to(backup_time) do
           subject.create # rubocop:disable Rails/SaveBang
         end
 
-        expect(Kernel).not_to have_received(:system).with(*pack_tar_cmdline)
         expect(subject.send(:backup_information).to_h).to include(
           backup_id: backup_id,
           backup_created_at: backup_time.localtime,
@@ -752,12 +746,14 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
+          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:pack).and_call_original
+
           travel_to(backup_time) do
             subject.create # rubocop:disable Rails/SaveBang
           end
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
           expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
           expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
@@ -777,11 +773,11 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         context 'tar fails' do
-          before do
-            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
-          end
-
           it 'logs a failure' do
+            allow(Open3).to receive(:pipeline).and_return(
+              [instance_double(Process::Status, success?: false, exitstatus: 1)]
+            )
+
             expect do
               subject.create # rubocop:disable Rails/SaveBang
             end.to raise_error(Backup::Error, 'Backup failed')
@@ -845,12 +841,14 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
+          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:pack).and_call_original
+
           travel_to(backup_time) do
             subject.create # rubocop:disable Rails/SaveBang
           end
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
           expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
           expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
@@ -873,7 +871,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         context 'tar fails' do
           before do
-            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
+            allow(Open3).to receive(:pipeline).and_return(
+              [instance_double(Process::Status, success?: false, exitstatus: 1)]
+            )
           end
 
           it 'logs a failure' do

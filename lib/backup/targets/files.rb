@@ -10,8 +10,8 @@ module Backup
 
       DEFAULT_EXCLUDE = ['lost+found'].freeze
 
-      # Use the content from a PIPE instead of an actual filepath (used by tar as input or output)
-      USE_PIPE_INSTEAD_OF_FILE = '-'
+      # Use the content from stdin instead of an actual filepath (used by tar as input or output)
+      USE_STDIN = '-'
 
       attr_reader :excludes
 
@@ -54,7 +54,7 @@ module Backup
 
           archive_file = [backup_tarball, 'w', 0o600]
           tar_command = tar_utils.pack_cmd(
-            archive_file: USE_PIPE_INSTEAD_OF_FILE,
+            archive_file: USE_STDIN,
             target_directory: backup_files_realpath,
             target: '.',
             excludes: excludes)
@@ -64,7 +64,7 @@ module Backup
         else
           archive_file = [backup_tarball, 'w', 0o600]
           tar_command = tar_utils.pack_cmd(
-            archive_file: USE_PIPE_INSTEAD_OF_FILE,
+            archive_file: USE_STDIN,
             target_directory: storage_realpath,
             target: '.',
             excludes: excludes)
@@ -91,7 +91,7 @@ module Backup
 
         archive_file = backup_tarball.to_s
         tar_command = tar_utils.extract_cmd(
-          archive_file: USE_PIPE_INSTEAD_OF_FILE,
+          archive_file: USE_STDIN,
           target_directory: storage_realpath)
 
         result = shell_pipeline.new(decompress_command, tar_command).run_pipeline!(input: archive_file)

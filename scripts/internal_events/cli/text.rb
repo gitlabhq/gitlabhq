@@ -82,7 +82,7 @@ module InternalEventsCli
         Find one? Create a new metric for the event.
         Otherwise? Create a new event.
 
-      If you find a relevant event that has a different category from 'InternalEventTracking', it can be migrated to
+      If you find a relevant event that does not have the property `internal_events: true`, it can be migrated to
       Internal Events. See https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/migration.html
 
     TEXT

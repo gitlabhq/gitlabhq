@@ -1,6 +1,6 @@
 ---
 description: random event string
-category: InternalEventTracking
+internal_events: true
 action: random_name
 identifiers:
 - project

@@ -289,7 +289,7 @@ export default {
       </div>
     </fieldset>
     <template v-else>
-      <p class="gl-m-0 gl-py-1">
+      <p class="gl-m-0 gl-pb-1">
         {{ $options.i18n.startDate }}:
         <span data-testid="start-date-value" :class="{ 'gl-text-secondary': !startDate }">
           {{ startDateValue }}

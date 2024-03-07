@@ -260,18 +260,19 @@ export default {
       </span>
     </template>
     <template #readonly>
-      <gl-label
-        v-for="label in localLabels"
-        :key="label.id"
-        class="gl-mr-2 gl-mb-2"
-        :title="label.title"
-        :description="label.description"
-        :background-color="label.color"
-        :scoped="scopedLabel(label)"
-        :show-close-button="canUpdate"
-        :target="labelFilterUrl(label)"
-        @close="removeLabel(label)"
-      />
+      <div class="gl-display-flex gl-gap-2 gl-flex-wrap gl-mt-1">
+        <gl-label
+          v-for="label in localLabels"
+          :key="label.id"
+          :title="label.title"
+          :description="label.description"
+          :background-color="label.color"
+          :scoped="scopedLabel(label)"
+          :show-close-button="canUpdate"
+          :target="labelFilterUrl(label)"
+          @close="removeLabel(label)"
+        />
+      </div>
     </template>
   </work-item-sidebar-dropdown-widget-with-edit>
 </template>

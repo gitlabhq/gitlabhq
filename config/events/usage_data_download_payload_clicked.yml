@@ -1,6 +1,6 @@
 ---
 description: Counts Download Payload button clicks
-category: InternalEventTracking
+internal_events: true
 action: usage_data_download_payload_clicked
 identifiers:
 - user

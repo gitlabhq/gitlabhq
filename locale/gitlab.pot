@@ -45234,6 +45234,9 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request approval policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Merge result policy syntax changes"
+msgstr ""
+
 msgid "SecurityOrchestration|New merge request approval policy"
 msgstr ""
 
@@ -45410,6 +45413,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select users"
 msgstr ""
 
+msgid "SecurityOrchestration|Several merge result policy criteria have been deprecated. Policies using these elements will not work after GitLab 17.0 (May 10, 2024). You must edit these policies to remove the deprecated criteria."
+msgstr ""
+
 msgid "SecurityOrchestration|Severity is %{severity}."
 msgstr ""
 
@@ -45441,6 +45447,9 @@ msgid "SecurityOrchestration|Step 2: Policy details"
 msgstr ""
 
 msgid "SecurityOrchestration|Summary"
+msgstr ""
+
+msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
 msgid "SecurityOrchestration|The %{oldNameStart}Scan result policy%{oldNameEnd} is now called the %{newNameStart}Merge request approval policy%{newNameEnd} to better align with its purpose."
@@ -45635,10 +45644,19 @@ msgstr ""
 msgid "SecurityOrchestration|have no fix available"
 msgstr ""
 
+msgid "SecurityOrchestration|match_on_inclusion is replaced by %{linkStart}match_on_inclusion_license%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
+msgid "SecurityOrchestration|newly_deprecated is replaced by %{firstLinkStart}New::Needs Triage%{firstLinkEnd} and %{secondLinkStart}New::Dismissed%{secondLinkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|or from:"
+msgstr ""
+
+msgid "SecurityOrchestration|project.networkpolicies will be removed (GraphQL API associated with the network policies)"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"

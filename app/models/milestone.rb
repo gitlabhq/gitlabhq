@@ -259,7 +259,7 @@ class Milestone < ApplicationRecord
     if project
       "#{project.to_reference_base(from, full: full)}#{reference}"
     else
-      reference
+      "#{group.to_reference_base(from, full: full)}#{reference}"
     end
   end
 

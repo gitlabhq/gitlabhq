@@ -228,7 +228,7 @@ module GitalySetup
 
     Gitlab::SetupHelper::Gitaly.create_configuration(
       gitaly_dir,
-      { 'default' => storage_path, 'test_second_storage' => second_storage_path },
+      { 'default' => storage_path },
       force: true,
       options: {
         runtime_dir: runtime_dir,
@@ -237,7 +237,7 @@ module GitalySetup
     )
     Gitlab::SetupHelper::Gitaly.create_configuration(
       gitaly_dir,
-      { 'default' => storage_path, 'test_second_storage' => second_storage_path },
+      { 'test_second_storage' => second_storage_path },
       force: true,
       options: {
         runtime_dir: runtime_dir,

@@ -5,6 +5,9 @@ module Backup
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
     MANIFEST_NAME = 'backup_information.yml'
 
+    # Use the content from stdin instead of an actual filepath (used by tar as input or output)
+    USE_STDIN = '-'
+
     attr_reader :progress, :remote_storage, :options
 
     def initialize(progress, backup_tasks: nil)
@@ -237,10 +240,20 @@ module Backup
       Dir.chdir(backup_path) do
         # create archive
         puts_time "Creating backup archive: #{tar_file} ... ".color(:blue)
+
+        tar_utils = ::Gitlab::Backup::Cli::Utils::Tar.new
+        tar_command = tar_utils.pack_cmd(
+          archive_file: USE_STDIN,
+          target_directory: backup_path,
+          target: backup_contents)
+
         # Set file permissions on open to prevent chmod races.
         archive_permissions = Gitlab.config.backup.archive_permissions
-        tar_system_options = { out: [tar_file, 'w', archive_permissions] }
-        if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
+        archive_file = [tar_file, 'w', archive_permissions]
+
+        result = tar_command.run_single_pipeline!(output: archive_file)
+
+        if result.status.success?
           puts_time "Creating backup archive: #{tar_file} ... ".color(:blue) + 'done'.color(:green)
         else
           puts_time "Creating archive #{tar_file} failed".color(:red)

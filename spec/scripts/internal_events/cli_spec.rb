@@ -133,13 +133,13 @@ RSpec.describe Cli, feature_category: :service_ping do
     context 'when creating a metric from multiple events' do
       let(:events) do
         [{
-          action: '00_event1', category: 'InternalEventTracking',
+          action: '00_event1', internal_events: true,
           product_section: 'dev', product_stage: 'plan', product_group: 'optimize'
         }, {
-          action: '00_event2', category: 'InternalEventTracking',
+          action: '00_event2', internal_events: true,
           product_section: 'dev', product_stage: 'create', product_group: 'ide'
         }, {
-          action: '00_event3', category: 'InternalEventTracking',
+          action: '00_event3', internal_events: true,
           product_section: 'dev', product_stage: 'create', product_group: 'source_code'
         }]
       end
@@ -213,8 +213,7 @@ RSpec.describe Cli, feature_category: :service_ping do
     context 'when product group for event no longer exists' do
       let(:event) do
         {
-          action: '00_event1', category: 'InternalEventTracking',
-          product_section: 'other', product_stage: 'other', product_group: 'other'
+          action: '00_event1', product_section: 'other', product_stage: 'other', product_group: 'other'
         }
       end
 
@@ -344,7 +343,7 @@ RSpec.describe Cli, feature_category: :service_ping do
     end
 
     context 'when all metrics already exist' do
-      let(:event) { { action: '00_event1', category: 'InternalEventTracking' } }
+      let(:event) { { action: '00_event1' } }
       let(:metric) { { options: { 'events' => ['00_event1'] }, events: [{ 'name' => '00_event1' }] } }
 
       let(:files) do

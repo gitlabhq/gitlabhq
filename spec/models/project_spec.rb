@@ -1491,6 +1491,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
     end
+
+    describe '#reference_pattern' do
+      it 'matches a normal reference' do
+        reference = project.to_reference
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq nil
+      end
+
+      it 'matches an absolute reference' do
+        reference = "/#{project.to_reference}"
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq '/'
+      end
+    end
   end
 
   describe '#to_reference_base' do
