@@ -1852,32 +1852,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe "#copy_gitattributes" do
-    let(:repository) { mutable_repository }
-
-    it "raises an error with invalid ref" do
-      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-    end
-
-    context 'when forcing encoding issues' do
-      let(:branch_name) { "ʕ•ᴥ•ʔ" }
-
-      before do
-        repository.create_branch(branch_name)
-      end
-
-      after do
-        repository.rm_branch(branch_name, user: build(:admin))
-      end
-
-      it "doesn't raise with a valid unicode ref" do
-        expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
-
-        repository
-      end
-    end
-  end
-
   describe '#gitattribute' do
     let(:repository) { mutable_repository }
 

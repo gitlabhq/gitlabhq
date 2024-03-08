@@ -4,6 +4,7 @@ import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';
 import { CLUSTER_HEALTH_SUCCESS, CLUSTER_HEALTH_ERROR } from '~/environments/constants';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
@@ -48,6 +49,7 @@ export default {
       error: null,
       failedState: {},
       podsLoading: false,
+      activeTab: k8sResourceType.k8sPods,
     };
   },
   computed: {
@@ -71,7 +73,7 @@ export default {
     },
   },
   methods: {
-    handleClusterError(message) {
+    handleError(message) {
       this.error = message;
     },
     handleFailedState(event) {
@@ -102,8 +104,11 @@ export default {
       <kubernetes-status-bar
         :cluster-health-status="clusterHealthStatus"
         :configuration="k8sAccessConfiguration"
+        :namespace="kubernetesNamespace"
         :environment-name="environmentName"
         :flux-resource-path="fluxResourcePath"
+        :resource-type="activeTab"
+        @error="handleError"
       />
     </div>
 
@@ -112,10 +117,11 @@ export default {
     </gl-alert>
 
     <kubernetes-tabs
+      v-model="activeTab"
       :configuration="k8sAccessConfiguration"
       :namespace="kubernetesNamespace"
       class="gl-mb-5"
-      @cluster-error="handleClusterError"
+      @cluster-error="handleError"
       @loading="podsLoading = $event"
       @update-failed-state="handleFailedState"
     />

@@ -2634,16 +2634,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#copy_gitattributes" do
-    it 'returns true with a valid ref' do
-      expect(repository.copy_gitattributes('master')).to be_truthy
-    end
-
-    it 'returns false with an invalid ref' do
-      expect(repository.copy_gitattributes('invalid')).to be_falsey
-    end
-  end
-
   describe '#before_remove_tag' do
     it 'flushes the tag cache' do
       expect(repository).to receive(:expire_tags_cache).and_call_original

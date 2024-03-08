@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
+import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
@@ -12,7 +13,9 @@ import {
 } from '~/environments/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { mockKasTunnelUrl } from '../../../mock_data';
+import { kubernetesNamespace } from '../../../graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -34,6 +37,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
   const findHealthBadge = () => wrapper.findByTestId('health-badge');
   const findSyncBadge = () => wrapper.findByTestId('sync-badge');
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findConnectionStatus = () => wrapper.findComponent(KubernetesConnectionStatus);
 
   const fluxKustomizationStatusQuery = jest.fn().mockReturnValue([]);
   const fluxHelmReleaseStatusQuery = jest.fn().mockReturnValue([]);
@@ -53,18 +57,56 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
     apolloProvider = createApolloProvider(),
     clusterHealthStatus = '',
     fluxResourcePath = '',
+    namespace = kubernetesNamespace,
+    resourceType = k8sResourceType.k8sPods,
+    k8sWatchApi = false,
   } = {}) => {
     wrapper = shallowMountExtended(KubernetesStatusBar, {
+      provide: {
+        glFeatures: {
+          k8sWatchApi,
+        },
+      },
       propsData: {
         clusterHealthStatus,
         configuration,
         environmentName,
         fluxResourcePath,
+        namespace,
+        resourceType,
       },
       apolloProvider,
       stubs: { GlSprintf },
     });
   };
+
+  describe('connection status', () => {
+    describe('when the k8sWatchApi feature flag is disabled', () => {
+      it('doesnt render connection status component', () => {
+        createWrapper({ k8sWatchApi: false });
+        expect(findConnectionStatus().exists()).toBe(false);
+      });
+    });
+    describe('when the k8sWatchApi feature flag is enabled', () => {
+      beforeEach(() => {
+        createWrapper({ k8sWatchApi: true });
+      });
+      it('passes correct props to connection status component', () => {
+        const connectionStatus = findConnectionStatus();
+        expect(connectionStatus.props('configuration')).toBe(configuration);
+        expect(connectionStatus.props('namespace')).toBe(kubernetesNamespace);
+        expect(connectionStatus.props('resourceType')).toBe(k8sResourceType.k8sPods);
+      });
+
+      it('handles errors from connection status component', () => {
+        const connectionStatus = findConnectionStatus();
+        const connectionStatusError = new Error('connection status error');
+        connectionStatus.vm.$emit('error', connectionStatusError);
+
+        expect(wrapper.emitted('error')).toEqual([[connectionStatusError]]);
+      });
+    });
+  });
 
   describe('health badge', () => {
     it('shows loading icon when cluster health is not present', () => {

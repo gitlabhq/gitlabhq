@@ -7,7 +7,7 @@ export const updateMemberRole = async (
   { memberId, accessLevel, memberRoleId },
 ) => {
   try {
-    await axios.put(
+    return await axios.put(
       state.memberPath.replace(/:id$/, memberId),
       state.requestFormatter({ accessLevel, memberRoleId }),
     );

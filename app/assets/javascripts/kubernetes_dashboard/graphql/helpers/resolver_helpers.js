@@ -1,4 +1,13 @@
-import { CoreV1Api, Configuration, WatchApi, EVENT_DATA } from '@gitlab/cluster-client';
+import {
+  CoreV1Api,
+  Configuration,
+  WatchApi,
+  EVENT_DATA,
+  EVENT_TIMEOUT,
+  EVENT_ERROR,
+} from '@gitlab/cluster-client';
+import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
+import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
 
 export const handleClusterError = async (err) => {
   if (!err.response) {
@@ -35,6 +44,13 @@ export const watchWorkloadItems = ({
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 
+  updateConnectionStatus(client, {
+    configuration,
+    namespace,
+    resourceType: queryField,
+    status: connectionStatus.connecting,
+  });
+
   watcherApi
     .subscribeToStream(watchPath, { watch: true })
     .then((watcher) => {
@@ -42,11 +58,37 @@ export const watchWorkloadItems = ({
 
       watcher.on(EVENT_DATA, (data) => {
         result = data.map(mapWorkloadItem);
-
         client.writeQuery({
           query,
           variables: { configuration, namespace },
           data: { [queryField]: result },
+        });
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.connected,
+        });
+      });
+
+      watcher.on(EVENT_TIMEOUT, () => {
+        result = [];
+
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.disconnected,
+        });
+      });
+
+      watcher.on(EVENT_ERROR, () => {
+        result = [];
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.disconnected,
         });
       });
     })

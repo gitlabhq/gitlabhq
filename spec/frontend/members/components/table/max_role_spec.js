@@ -9,23 +9,27 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MaxRole from '~/members/components/table/max_role.vue';
 import { MEMBER_TYPES } from '~/members/constants';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
+import { logError } from '~/lib/logger';
+import * as utils from 'ee_else_ce/members/utils';
 import { member } from '../../mock_data';
 
 Vue.use(Vuex);
 
 jest.mock('ee_else_ce/members/guest_overage_confirm_action');
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/logger');
 
 guestOverageConfirmAction.mockReturnValue(true);
 
 describe('MaxRole', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
   let actions;
   const $toast = {
     show: jest.fn(),
   };
 
-  const createStore = ({ updateMemberRoleReturn = Promise.resolve() } = {}) => {
+  const createStore = ({ updateMemberRoleReturn = Promise.resolve({ data: {} }) } = {}) => {
     actions = {
       updateMemberRole: jest.fn(() => updateMemberRoleReturn),
     };
@@ -120,13 +124,19 @@ describe('MaxRole', () => {
         });
       });
 
+      it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
+        await findListboxItemByText('Developer').trigger('click');
+
+        expect(findListbox().props('loading')).toBe(true);
+      });
+
       describe('when updateMemberRole is successful', () => {
-        it('displays toast', async () => {
+        it('calls update handler', async () => {
+          jest.spyOn(utils, 'handleMemberRoleUpdate');
           await findListboxItemByText('Developer').trigger('click');
 
           await waitForPromises();
-
-          expect($toast.show).toHaveBeenCalledWith('Role updated successfully.');
+          expect(utils.handleMemberRoleUpdate).toHaveBeenCalledTimes(1);
         });
 
         it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
@@ -155,37 +165,26 @@ describe('MaxRole', () => {
       describe('when updateMemberRole is not successful', () => {
         const reason = 'Rejected ☹️';
 
-        beforeEach(() => {
+        beforeEach(async () => {
           createComponent({}, createStore({ updateMemberRoleReturn: Promise.reject(reason) }));
+
+          await findListboxItemByText('Developer').trigger('click');
+          await waitForPromises();
         });
 
-        it('does not display toast', async () => {
-          await findListboxItemByText('Developer').trigger('click');
-
-          await waitForPromises();
-
+        it('does not display toast', () => {
           expect($toast.show).not.toHaveBeenCalled();
         });
 
-        it('puts dropdown in loading state while waiting for `updateMemberRole` to resolve', async () => {
-          await findListboxItemByText('Developer').trigger('click');
-
-          expect(findListbox().props('loading')).toBe(true);
-        });
-
-        it('enables dropdown after `updateMemberRole` resolves', async () => {
-          await findListboxItemByText('Developer').trigger('click');
-
-          await waitForPromises();
-
+        it('enables dropdown after `updateMemberRole` resolves', () => {
           expect(findListbox().props('disabled')).toBe(false);
         });
 
-        it('logs error to Sentry', async () => {
-          await findListboxItemByText('Developer').trigger('click');
+        it('logs error to console', () => {
+          expect(logError).toHaveBeenCalledWith(reason);
+        });
 
-          await waitForPromises();
-
+        it('logs error to Sentry', () => {
           expect(Sentry.captureException).toHaveBeenCalledWith(reason);
         });
       });

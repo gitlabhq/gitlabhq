@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlBadge, GlPopover, GlSprintf, GlLink } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import {
   CLUSTER_HEALTH_SUCCESS,
@@ -15,15 +16,18 @@ import {
 } from '~/environments/constants';
 import fluxKustomizationStatusQuery from '~/environments/graphql/queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from '~/environments/graphql/queries/flux_helm_release_status.query.graphql';
+import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
 
 export default {
   components: {
+    KubernetesConnectionStatus,
     GlLoadingIcon,
     GlBadge,
     GlPopover,
     GlSprintf,
     GlLink,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     clusterHealthStatus: {
       required: false,
@@ -41,10 +45,18 @@ export default {
       required: true,
       type: String,
     },
+    namespace: {
+      required: true,
+      type: String,
+    },
     fluxResourcePath: {
       required: false,
       type: String,
       default: '',
+    },
+    resourceType: {
+      type: String,
+      required: true,
     },
   },
   apollo: {
@@ -170,6 +182,14 @@ export default {
       }
       return SYNC_STATUS_BADGES.unknown;
     },
+    isReconnectButtonShown() {
+      return this.glFeatures.k8sWatchApi;
+    },
+  },
+  methods: {
+    handleError(error) {
+      this.$emit('error', error);
+    },
   },
   i18n: {
     healthLabel: s__('Environment|Environment status'),
@@ -215,5 +235,12 @@ export default {
         </gl-popover>
       </template>
     </div>
+    <kubernetes-connection-status
+      v-if="isReconnectButtonShown"
+      :configuration="configuration"
+      :namespace="namespace"
+      :resource-type="resourceType"
+      @error="handleError"
+    />
   </div>
 </template>

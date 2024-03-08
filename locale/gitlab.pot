@@ -6390,6 +6390,9 @@ msgstr ""
 msgid "ApprovalRule|Reduce your time to merge."
 msgstr ""
 
+msgid "ApprovalRule|Required number of approvals"
+msgstr ""
+
 msgid "ApprovalRule|Resolved"
 msgstr ""
 
@@ -18821,6 +18824,9 @@ msgstr ""
 msgid "Edit application"
 msgstr ""
 
+msgid "Edit approval rule"
+msgstr ""
+
 msgid "Edit audio description"
 msgstr ""
 
@@ -19583,6 +19589,12 @@ msgstr ""
 msgid "Environments|Create an environment"
 msgstr ""
 
+msgid "Environments|Dashboard is up to date"
+msgstr ""
+
+msgid "Environments|Dashboard synced"
+msgstr ""
+
 msgid "Environments|Delete"
 msgstr ""
 
@@ -19688,6 +19700,12 @@ msgstr ""
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
+msgid "Environments|Refresh dashboard"
+msgstr ""
+
+msgid "Environments|Refresh to sync new data"
+msgstr ""
+
 msgid "Environments|Rollback environment"
 msgstr ""
 
@@ -19749,6 +19767,12 @@ msgid "Environments|Upcoming deployment"
 msgstr ""
 
 msgid "Environments|Updated"
+msgstr ""
+
+msgid "Environments|Updating"
+msgstr ""
+
+msgid "Environments|Updating dashboard"
 msgstr ""
 
 msgid "Environments|by %{avatar}"
@@ -31096,6 +31120,9 @@ msgid "Members|Revert to LDAP synced settings"
 msgstr ""
 
 msgid "Members|Reverted to LDAP group sync settings."
+msgstr ""
+
+msgid "Members|Role change request was sent to the administrator."
 msgstr ""
 
 msgid "Members|Role updated successfully."
@@ -48023,9 +48050,6 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
-msgstr ""
-
-msgid "Some members were queued for approval"
 msgstr ""
 
 msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."

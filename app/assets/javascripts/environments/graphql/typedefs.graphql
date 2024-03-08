@@ -106,6 +106,14 @@ type LocalFluxResourceStatus {
   type: String
 }
 
+type K8sResources {
+  k8sPods: K8sResource
+  k8sServices: K8sResource
+}
+type K8sResource {
+  connectionStatus: String
+}
+
 extend type Query {
   environmentApp(page: Int, scope: String): LocalEnvironmentApp
   folder(environment: NestedLocalEnvironmentInput): LocalEnvironmentFolder
@@ -117,6 +125,7 @@ extend type Query {
   isLastDeployment(environment: LocalEnvironmentInput): Boolean
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
   k8sServices(configuration: LocalConfiguration): [LocalK8sServices]
+  k8sConnection(configuration: LocalConfiguration): K8sResources
   fluxKustomizationStatus(
     configuration: LocalConfiguration
     namespace: String
@@ -134,6 +143,11 @@ extend type Mutation {
   deleteEnvironment(environment: LocalEnvironmentInput): LocalErrors
   rollbackEnvironment(environment: LocalEnvironmentInput): LocalErrors
   cancelAutoStop(autoStopUrl: String!): LocalErrors
+  reconnectToCluster(
+    configuration: LocalConfiguration
+    namespace: String
+    resourceType: String
+  ): LocalErrors
   setEnvironmentToDelete(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToRollback(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors

@@ -58,7 +58,7 @@ For other features:
   - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-users).
   - View [how to enable for GitLab.com](gitlab_duo_chat.md#for-saas-users).
 
-### Disable GitLab Duo features for a group or project
+### Disable GitLab Duo features
 
 > - [Settings to disable AI features were introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 
@@ -66,50 +66,50 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Those with the Owner role on the group or project can update these settings.
+You can disable GitLab Duo AI features for a group, project, or instance.
+When it's disabled, any attempt to use GitLab Duo features on the group, project, or instance is blocked and an error is displayed.
+GitLab Duo features are also blocked for resources in the group or project, like epics,
+issues, and vulnerabilities.
 
-To disable usage of GitLab Duo features for a specific group or project, set the
-`duo_features_enabled` setting to `false` on the group or project. By default,
-`duo_features_enabled` is `true`.
+#### For the group or project
 
-When `duo_features_enabled` is `false`, any attempt to use GitLab Duo features on
-that group or project is blocked and an error is shown. GitLab Duo
-features are also blocked for resources in the group or project, such as epics,
-issues, or vulnerabilities.
+Prerequisites:
 
-To ensure that all groups or projects in a hierarchy inherit the
-`duo_features_enabled` value of the parent, toggle the
-`lock_duo_features_enabled` setting on the parent group. By default,
-`lock_duo_features_enabled` is `false`. When `lock_duo_features_enabled` is
-`true` for a group, all groups and projects in that group inherit the value of
-`duo_features_enabled` that is set on the locked group. The child groups and
-projects cannot override that value.
+- You must have the Owner role for the group or project.
 
-To toggle `duo_features_enabled` or `lock_duo_features_enabled` for a group or
-project, use the [GitLab GraphQL API](../api/graphql/getting_started.md)
-`groupUpdate` or `projectSettingsUpdate` mutation. To view the
-`duo_features_enabled` or `lock_duo_features_enabled` setting for a group or
-project, query the group or project with the GitLab GraphQL API.
+To disable GitLab Duo:
 
-To toggle `duo_features_enabled` or `lock_duo_features_enabled` for a
-self-managed GitLab instance, use the [application settings API](../api/settings.md).
-The set the instance-level setting, you must be an instance administrator.
+1. Use the [GitLab GraphQL API](../api/graphql/getting_started.md)
+   `groupUpdate` or `projectSettingsUpdate` mutation.
+1. Disable GitLab Duo for the project or group by setting the `duo_features_enabled` setting to `false`.
+   (The default is `true`.)
+1. Optional. To make all groups or projects in the hierarchy inherit the value for a top-level group,
+   set `lock_duo_features_enabled` to `true`. (The default is `false`.)
+   The child groups and projects cannot override this value.
 
-#### Known limitations
+#### For an instance
 
-- The `duo_features_enabled` and `lock_duo_features_enabled` settings can only
-  be managed and viewed through the API. There is an
-  [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) for tracking work
-  for updating this setting from the GitLab UI.
-- When `duo_features_enabled` is set for an instance or group, all groups in that
-  hierarchy, if they have not already set `duo_features_enabled`, inherit the
-  parent value. Projects still have `duo_features_enabled` set to `true` by
-  default. There is an
-  [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/448709) for tracking work
-  to make the setting cascade to all subgroups and projects whenever a parent
-  changes the value of `duo_features_enabled`. The workaround for ensuring that
-  all children inherit the parent setting is to set `lock_duo_features_enabled` to
-  `true` on the parent.
+Prerequisites:
+
+- You must be an administrator.
+
+To disable GitLab Duo:
+
+1. Use the [application settings API](../api/settings.md).
+1. Disable GitLab Duo for the instance by setting the `duo_features_enabled` setting to `false`.
+   (The default is `true`.)
+1. Optional. To ensure this setting cannot be overridden at the group or project level,
+   set `lock_duo_features_enabled` to `true`. (The default is `false`.)
+   The child groups and projects cannot override this value.
+
+#### Future plans
+
+- An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) for making this setting
+  available in the UI.
+- An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/448709) for making the setting
+  cascade to all groups and projects. Right now the projects and groups do not
+  display the setting of the top-level group. To ensure the setting cascades,
+  ensure `lock_duo_features_enabled` is set to `true`.
 
 ## Experimental AI features and how to use them
 

@@ -105,19 +105,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
-  describe '#apply_gitattributes' do
-    let(:revision) { 'master' }
-
-    it 'sends an apply_gitattributes message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:apply_gitattributes)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return(double(:apply_gitattributes_response))
-
-      client.apply_gitattributes(revision)
-    end
-  end
-
   describe '#info_attributes' do
     it 'reads the info attributes' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

@@ -106,6 +106,42 @@ gdk start
 tail -f log/llm.log
 ```
 
+## Tracing with LangSmith
+
+Tracing is a powerful tool for understanding the behavior of your LLM application.
+LangSmith has best-in-class tracing capabilities, and it's integrated with GitLab Duo Chat. Tracing can help you track down issues like:
+
+- I'm new to GitLab Duo Chat and would like to understand what's going on under the hood.
+- Where exactly the process failed when you got an unexpected answer.
+- Which process was a bottle neck of the latency.
+- What tool was used for an ambiguous question.
+
+![LangSmith UI](img/langsmith.png)
+
+Tracing is especially useful for evaluation that runs GitLab Duo Chat against large dataset.
+LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+and [RSpec tests](#testing-gitlab-duo-chat).
+
+### Use tracing with LangSmith
+
+NOTE:
+Tracing is available in Development and Testing environment only.
+It's not available in Production environment.
+
+1. Access to [LangSmith](https://smith.langchain.com/) site and create an account.
+1. Create [an API key](https://docs.smith.langchain.com/setup#create-an-api-key).
+1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
+    
+    ```shell
+    export LANGCHAIN_TRACING_V2=true
+    export LANGCHAIN_API_KEY='<your-api-key>'
+    export LANGCHAIN_PROJECT='<your-project-name>'
+    export LANGCHAIN_ENDPOINT='api.smith.langchain.com'
+    export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
+    ```
+
+1. Restart GDK.
+
 ## Testing GitLab Duo Chat
 
 Because the success of answers to user questions in GitLab Duo Chat heavily depends

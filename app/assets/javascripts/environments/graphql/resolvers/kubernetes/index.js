@@ -1,12 +1,22 @@
-import { CoreV1Api, Configuration, WatchApi, EVENT_DATA } from '@gitlab/cluster-client';
+import {
+  CoreV1Api,
+  Configuration,
+  WatchApi,
+  EVENT_DATA,
+  EVENT_TIMEOUT,
+  EVENT_ERROR,
+} from '@gitlab/cluster-client';
 import {
   getK8sPods,
+  watchWorkloadItems,
   handleClusterError,
   buildWatchPath,
 } from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
-import { humanizeClusterErrors } from '../../helpers/k8s_integration_helper';
-import k8sPodsQuery from '../queries/k8s_pods.query.graphql';
-import k8sServicesQuery from '../queries/k8s_services.query.graphql';
+import { humanizeClusterErrors } from '../../../helpers/k8s_integration_helper';
+import k8sPodsQuery from '../../queries/k8s_pods.query.graphql';
+import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
+import { updateConnectionStatus } from './k8s_connection_status';
+import { connectionStatus, k8sResourceType } from './constants';
 
 const mapServicesItems = (items) => {
   return items.map((item) => {
@@ -28,6 +38,13 @@ const watchServices = ({ configuration, namespace, client }) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
 
+  updateConnectionStatus(client, {
+    configuration,
+    namespace,
+    resourceType: k8sResourceType.k8sServices,
+    status: connectionStatus.connecting,
+  });
+
   watcherApi
     .subscribeToStream(path, { watch: true })
     .then((watcher) => {
@@ -41,6 +58,31 @@ const watchServices = ({ configuration, namespace, client }) => {
           variables: { configuration, namespace },
           data: { k8sServices: result },
         });
+
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: k8sResourceType.k8sServices,
+          status: connectionStatus.connected,
+        });
+      });
+
+      watcher.on(EVENT_TIMEOUT, () => {
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: k8sResourceType.k8sServices,
+          status: connectionStatus.disconnected,
+        });
+      });
+
+      watcher.on(EVENT_ERROR, () => {
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: k8sResourceType.k8sServices,
+          status: connectionStatus.disconnected,
+        });
       });
     })
     .catch((err) => {
@@ -48,7 +90,32 @@ const watchServices = ({ configuration, namespace, client }) => {
     });
 };
 
-export default {
+const watchPods = ({ configuration, namespace, client }) => {
+  const query = k8sPodsQuery;
+  const watchPath = buildWatchPath({ resource: 'pods', namespace });
+  const queryField = k8sResourceType.k8sPods;
+  watchWorkloadItems({ client, query, configuration, namespace, watchPath, queryField });
+};
+
+export const kubernetesMutations = {
+  reconnectToCluster(_, { configuration, namespace, resourceType }, { client }) {
+    const errors = [];
+    try {
+      if (resourceType === k8sResourceType.k8sServices) {
+        watchServices({ configuration, namespace, client });
+      }
+      if (resourceType === k8sResourceType.k8sPods) {
+        watchPods({ configuration, namespace, client });
+      }
+    } catch (error) {
+      errors.push(error);
+    }
+
+    return errors;
+  },
+};
+
+export const kubernetesQueries = {
   k8sPods(_, { configuration, namespace }, { client }) {
     const query = k8sPodsQuery;
     const enableWatch = gon.features?.k8sWatchApi;

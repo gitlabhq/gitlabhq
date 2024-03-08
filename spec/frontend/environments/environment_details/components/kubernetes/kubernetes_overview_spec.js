@@ -5,6 +5,7 @@ import KubernetesOverview from '~/environments/environment_details/components/ku
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
 import KubernetesAgentInfo from '~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue';
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
+import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { agent, kubernetesNamespace, fluxResourcePathMock } from '../../../graphql/mock_data';
 import { mockKasTunnelUrl } from '../../../mock_data';
 
@@ -61,6 +62,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       expect(findKubernetesTabs().props()).toEqual({
         namespace: kubernetesNamespace,
         configuration,
+        value: k8sResourceType.k8sPods,
       });
     });
 
@@ -70,6 +72,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         configuration,
         environmentName: defaultProps.environmentName,
         fluxResourcePath: fluxResourcePathMock,
+        namespace: kubernetesNamespace,
+        resourceType: k8sResourceType.k8sPods,
       });
     });
 
@@ -103,15 +107,18 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       });
     });
 
-    describe('on cluster error', () => {
+    describe('on child component error', () => {
       beforeEach(() => {
         wrapper = createWrapper();
       });
 
-      it('shows alert with the error message', async () => {
+      it.each([
+        [findKubernetesTabs, 'cluster-error'],
+        [findKubernetesStatusBar, 'error'],
+      ])('shows alert with the error message', async (findFunc, emittedError) => {
         const error = 'Error message from pods';
 
-        findKubernetesTabs().vm.$emit('cluster-error', error);
+        findFunc().vm.$emit(emittedError, error);
         await nextTick();
 
         expect(findAlert().text()).toBe(error);

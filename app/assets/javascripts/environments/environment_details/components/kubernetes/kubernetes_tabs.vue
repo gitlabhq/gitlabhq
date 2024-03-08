@@ -1,7 +1,10 @@
 <script>
 import { GlTabs } from '@gitlab/ui';
+import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesServices from './kubernetes_services.vue';
+
+const tabs = [k8sResourceType.k8sPods, k8sResourceType.k8sServices];
 
 export default {
   components: {
@@ -19,11 +22,25 @@ export default {
       required: true,
       type: String,
     },
+    value: {
+      required: true,
+      type: String,
+    },
+  },
+  data() {
+    return {
+      activeTabIndex: tabs.indexOf(this.value),
+    };
+  },
+  watch: {
+    activeTabIndex(newValue) {
+      this.$emit('input', tabs[newValue]);
+    },
   },
 };
 </script>
 <template>
-  <gl-tabs>
+  <gl-tabs v-model="activeTabIndex">
     <kubernetes-pods
       :namespace="namespace"
       :configuration="configuration"

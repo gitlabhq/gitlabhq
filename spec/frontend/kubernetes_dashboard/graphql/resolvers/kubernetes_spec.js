@@ -29,13 +29,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     },
   };
 
+  const client = { writeQuery: jest.fn(), readQuery: jest.fn() };
+
   beforeEach(() => {
     mockResolvers = resolvers;
   });
 
   describe('k8sDashboardPods', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockPodsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -120,8 +120,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sDeployments', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockDeploymentsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -208,8 +206,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sStatefulSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockStatefulSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -296,8 +292,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sReplicaSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockReplicaSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -384,8 +378,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sDaemonSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockDaemonSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -468,8 +460,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sJobs', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockJobsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -550,8 +540,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sCronJobs', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockCronJobsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -632,8 +620,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sDashboardServices', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockServicesListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
