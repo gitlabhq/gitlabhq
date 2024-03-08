@@ -1536,5 +1536,5 @@ For general guidance, contact the [Application Security](https://handbook.gitlab
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))
-- [Security logging overview](https://handbook.gitlab.com/handbook/security/product-security/security-logging/)
+- [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)

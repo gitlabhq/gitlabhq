@@ -31,6 +31,9 @@ query getOrganizationGroups(
         projectsCount
         groupMembersCount
         visibility
+        userPermissions {
+          removeGroup
+        }
         maxAccessLevel {
           integerValue
         }

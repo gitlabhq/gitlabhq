@@ -214,7 +214,14 @@ describe('GroupsListItem', () => {
 
   describe('when group has actions', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        propsData: {
+          group: {
+            ...group,
+            actionLoadingStates: { [ACTION_DELETE]: false },
+          },
+        },
+      });
     });
 
     it('displays actions dropdown', () => {
@@ -240,12 +247,15 @@ describe('GroupsListItem', () => {
         expect(findConfirmationModal().props()).toMatchObject({
           visible: true,
           phrase: group.fullName,
+          confirmLoading: false,
         });
       });
 
       describe('when deletion is confirmed', () => {
         beforeEach(() => {
-          findConfirmationModal().vm.$emit('confirm');
+          findConfirmationModal().vm.$emit('confirm', {
+            preventDefault: jest.fn(),
+          });
         });
 
         it('emits `delete` event', () => {

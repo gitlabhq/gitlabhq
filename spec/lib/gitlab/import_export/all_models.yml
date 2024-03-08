@@ -533,6 +533,7 @@ project:
 - catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
+- ci_component_usages
 - external_status_checks
 - base_tags
 - project_topics

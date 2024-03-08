@@ -214,7 +214,7 @@ renaming without breaking styling.
 
 ## Using `extend` at-rule
 
-Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab.com/gitlab-org/gitlab/-/issues/323021) and [the rule doesn't work as it should](https://sass-lang.com/documentation/breaking-changes/extend-compound).
+Usage of the `extend` at-rule is prohibited due to [memory leaks](https://gitlab.com/gitlab-org/gitlab/-/issues/323021) and [the rule doesn't work as it should](https://sass-lang.com/documentation/breaking-changes/extend-compound/).
 
 ## Linting
 

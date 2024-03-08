@@ -268,6 +268,12 @@ RSpec.describe ProjectPresenter do
         )
       end
     end
+
+    describe '#pages_anchor_data' do
+      it 'does not return pages url' do
+        expect(presenter.pages_anchor_data).to be_nil
+      end
+    end
   end
 
   context 'statistics anchors' do
@@ -720,6 +726,38 @@ RSpec.describe ProjectPresenter do
         end
 
         it { expect(presenter.wiki_anchor_data).to match(expected_result) }
+      end
+    end
+
+    describe '#pages_anchor_data' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:anchor_goto_pages) do
+        have_attributes(
+          is_link: false,
+          label: a_string_ending_with('GitLab Pages'),
+          link: Gitlab::Pages::UrlBuilder
+          .new(project)
+          .pages_url(with_unique_domain: true),
+          class_modifier: 'btn-default'
+        )
+      end
+
+      where(:pages_deployed, :read_pages_content, :expected_result) do
+        true  | true  | ref(:anchor_goto_pages)
+        true  | false | nil
+        false | true  | nil
+        false | false | nil
+      end
+
+      with_them do
+        before do
+          allow(project).to receive(:pages_deployed?).and_return(pages_deployed)
+          allow(presenter).to receive(:can?).with(user, :read_pages_content,
+            project).and_return(read_pages_content)
+        end
+
+        it { expect(presenter.pages_anchor_data).to match(expected_result) }
       end
     end
   end

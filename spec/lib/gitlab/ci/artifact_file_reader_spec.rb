@@ -129,7 +129,7 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_compo
     context 'when job does not have metadata artifacts' do
       let!(:artifacts) { create(:ci_job_artifact, :archive, job: job) }
       let(:expected_error) do
-        "Job `#{job.name}` has missing artifacts metadata and cannot be extracted!"
+        "Job `#{job.name}` (#{job.id}) has missing artifacts metadata and cannot be extracted!"
       end
 
       it 'raises an error' do
@@ -139,7 +139,8 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_compo
 
     context 'when job does not have artifacts' do
       it 'raises an Error' do
-        expect { subject }.to raise_error(described_class::Error, 'Job does not have artifacts')
+        expect { subject }.to raise_error(described_class::Error,
+          "Job `#{job.name}` (#{job.id}) does not have artifacts")
       end
     end
   end

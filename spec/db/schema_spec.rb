@@ -105,6 +105,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
+    p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
     p_ci_finished_build_ch_sync_events: %w[build_id],
     p_ci_job_artifacts: %w[partition_id project_id job_id],
     p_ci_pipeline_variables: %w[partition_id],

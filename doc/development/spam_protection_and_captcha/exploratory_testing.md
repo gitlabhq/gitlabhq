@@ -43,8 +43,8 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
        `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
     1. Enable Akismet and enter your Akismet **API key**.
 1. To force an Akismet false-positive spam check, refer to the
-   [Akismet API documentation](https://akismet.com/development/api/#comment-check) and
-   [Akismet Getting Started documentation](https://docs.akismet.com/getting-started/confirm/) for more details:
+   [Akismet API documentation](https://akismet.com/developers/detailed-docs/comment-check/) and
+   [Akismet Getting Started documentation](https://akismet.com/support/getting-started/confirm/) for more details:
     1. You can use `akismet-guaranteed-spam@example.com` as the author email to force spam using the following steps:
         1. Go to user email settings: `http://gdk.test:3000/-/profile/emails`
         1. Add `akismet-guaranteed-spam@example.com` as a secondary email for the administrator user.

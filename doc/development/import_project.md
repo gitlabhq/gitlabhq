@@ -53,7 +53,7 @@ There is also an option to [import the project via GitHub](../user/project/impor
 This method takes longer to import than the other methods and depends on several factors. It's recommended to use the other methods.
 
 To test importing from GitHub Enterprise (GHE) to GitLab, you need a GHE instance. You can request a
-[GitHub Enterprise Server trial](https://docs.github.com/en/get-started/signing-up-for-github/setting-up-a-trial-of-github-enterprise-server) and install it on Google Cloud Platform.
+[GitHub Enterprise Server trial](https://docs.github.com/en/enterprise-cloud@latest/admin/overview/setting-up-a-trial-of-github-enterprise-server) and install it on Google Cloud Platform.
 
 - GitLab team members can use [Sandbox Cloud Realm](https://handbook.gitlab.com/handbook/infrastructure-standards/realms/sandbox/) for this purpose.
 - Others can request a [Google Cloud Platforms free trial](https://cloud.google.com/free).

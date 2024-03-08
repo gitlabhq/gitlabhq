@@ -49,7 +49,7 @@ describe('formatProjects', () => {
 });
 
 describe('formatGroups', () => {
-  it('correctly formats the groups', () => {
+  it('correctly formats the groups with delete permissions', () => {
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGroups(organizationGroups);
     const [firstFormattedGroup] = formattedGroups;
@@ -62,7 +62,31 @@ describe('formatGroups', () => {
         integerValue: 30,
       },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     });
+    expect(formattedGroups.length).toBe(organizationGroups.length);
+  });
+
+  it('correctly formats the groups without delete permissions', () => {
+    const nonDeletableGroup = organizationGroups[organizationGroups.length - 1];
+    const formattedGroups = formatGroups(organizationGroups);
+    const nonDeletableFormattedGroup = formattedGroups[formattedGroups.length - 1];
+
+    expect(nonDeletableFormattedGroup).toMatchObject({
+      id: getIdFromGraphQLId(nonDeletableGroup.id),
+      parent: null,
+      editPath: `${nonDeletableFormattedGroup.webUrl}/-/edit`,
+      accessLevel: {
+        integerValue: 30,
+      },
+      availableActions: [ACTION_EDIT],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
+    });
+
     expect(formattedGroups.length).toBe(organizationGroups.length);
   });
 });

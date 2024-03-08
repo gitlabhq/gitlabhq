@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
             end
 
             let(:expected_error) do
-              'Job `generator` has missing artifacts metadata and cannot be extracted!'
+              "Job `generator` (#{generator_job.id}) has missing artifacts metadata and cannot be extracted!"
             end
 
             it_behaves_like 'is invalid'

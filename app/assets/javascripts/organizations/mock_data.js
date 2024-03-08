@@ -57,6 +57,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 2,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -73,6 +76,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 1,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -89,6 +95,9 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 2,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -105,6 +114,9 @@ export const organizationGroups = [
     projectsCount: 2,
     groupMembersCount: 3,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -120,6 +132,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 10,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -136,6 +151,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 40,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -152,6 +170,9 @@ export const organizationGroups = [
     projectsCount: 30,
     groupMembersCount: 100,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -167,6 +188,9 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 1,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },
@@ -174,9 +198,7 @@ export const organizationGroups = [
   {
     id: 'gid://gitlab/Group/74',
     fullName: 'Twitter / test subgroup',
-    parent: {
-      id: 'gid://gitlab/Group/35',
-    },
+    parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/twitter/test-subgroup',
     descriptionHtml: '',
     avatarUrl: null,
@@ -184,6 +206,9 @@ export const organizationGroups = [
     projectsCount: 4,
     groupMembersCount: 4,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: false,
+    },
     maxAccessLevel: {
       integerValue: 30,
     },

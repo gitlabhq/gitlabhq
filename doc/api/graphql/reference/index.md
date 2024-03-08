@@ -21371,6 +21371,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
 | <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
+| <a id="grouppermissionsremovegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
 
 ### `GroupReleaseStats`
 

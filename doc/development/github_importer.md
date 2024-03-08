@@ -316,7 +316,7 @@ The expiration time of these keys is 24 hours. When retrieving the cache of a
 positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
-If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#conditional-requests) is made with a cached ETAG in the header once for every project.
+If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#use-conditional-requests-if-appropriate) is made with a cached ETAG in the header once for every project.
 Conditional Requests do not count towards the GitHub API rate limit.
 
 Because of this caching layer, it's possible newly registered GitLab accounts

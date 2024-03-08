@@ -14,8 +14,8 @@ module Gitlab
       def initialize(job)
         @job = job
 
-        raise Error, 'Job doesnt exist' unless @job
-        raise Error, 'Job does not have artifacts' unless @job.artifacts?
+        raise Error, "Job doesn't exist" unless @job
+        raise Error, "Job `#{@job.name}` (#{@job.id}) does not have artifacts" unless @job.artifacts?
 
         validate!
       end
@@ -42,7 +42,7 @@ module Gitlab
         end
 
         unless job.artifacts_metadata?
-          raise Error, "Job `#{job.name}` has missing artifacts metadata and cannot be extracted!"
+          raise Error, "Job `#{job.name}` (#{@job.id}) has missing artifacts metadata and cannot be extracted!"
         end
       end
 

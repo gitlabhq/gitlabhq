@@ -506,7 +506,7 @@ For tunnel installation instructions, read [Sauce Connect Proxy Installation](ht
 NOTE:
 It is highly recommended to use `GITLAB_QA_ACCESS_TOKEN` to speed up tests and reduce flakiness.
 
-`QA_REMOTE_MOBILE_DEVICE_NAME` can be any device name listed in [Supported browsers and devices](https://saucelabs.com/platform/supported-browsers-devices) under Emulators/simulators and the latest versions of Android or iOS. `QA_BROWSER` must be set to `safari` for iOS devices and `chrome` for Android devices.
+`QA_REMOTE_MOBILE_DEVICE_NAME` can be any device name listed in [Supported browsers and devices](https://saucelabs.com/products/supported-browsers-devices) under Emulators/simulators and the latest versions of Android or iOS. `QA_BROWSER` must be set to `safari` for iOS devices and `chrome` for Android devices.
 
 1. To test against a local instance with a tunnel running, in `gitlab/qa` run:
 

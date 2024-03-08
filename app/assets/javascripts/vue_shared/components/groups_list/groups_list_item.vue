@@ -99,6 +99,9 @@ export default {
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
     },
+    isActionDeleteLoading() {
+      return this.group.actionLoadingStates?.[ACTION_DELETE];
+    },
   },
   methods: {
     onActionDelete() {
@@ -212,7 +215,8 @@ export default {
       v-model="isDeleteModalVisible"
       :modal-id="modalId"
       :phrase="group.fullName"
-      @confirm="$emit('delete', group)"
+      :confirm-loading="isActionDeleteLoading"
+      @confirm.prevent="$emit('delete', group)"
     />
   </li>
 </template>

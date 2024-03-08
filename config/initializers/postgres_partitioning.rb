@@ -14,7 +14,8 @@ Gitlab::Database::Partitioning.register_models(
     BatchedGitRefUpdates::Deletion,
     Users::ProjectVisit,
     Users::GroupVisit,
-    Ci::Catalog::Resources::SyncEvent
+    Ci::Catalog::Resources::SyncEvent,
+    Ci::Catalog::Resources::Components::Usage
   ])
 
 if Gitlab.ee?

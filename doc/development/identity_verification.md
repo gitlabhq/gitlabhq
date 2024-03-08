@@ -68,9 +68,9 @@ Status update logs include the following fields:
 
 | Field  | Description |
 |---------|-------------|
-| `telesign_status` | Delivery status of the SMS. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible status codes and their descriptions. |
+| `telesign_status` | Delivery status of the SMS. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smsdeliveryreports#status-codes) for possible status codes and their descriptions. |
 | `telesign_status_updated_on` | A timestamp indicating when the SMS delivery status was last updated. |
-| `telesign_errors` | Errors that occurred during delivery. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible error codes and their descriptions. |
+| `telesign_errors` | Errors that occurred during delivery. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smsdeliveryreports#status-codes) for possible error codes and their descriptions. |
 
 ### View logs associated to a user and credit card verification
 

@@ -22,7 +22,7 @@ mean FIPS 140-2.
 
 ## Current status
 
-GitLab has completed FIPS 140-2 Compliance for the build specified in this documentation. You can find our FIPS 140-2 Attestation in our [customer assurance package](https://about.gitlab.com/security/cap/), specifically the community package.
+GitLab has completed FIPS 140-2 Compliance for the build specified in this documentation. You can find our FIPS 140-2 Attestation in our [customer assurance package](https://trust.gitlab.com/), specifically the community package.
 
 ## FIPS compliance at GitLab
 
@@ -103,7 +103,7 @@ because that is the first target environment.
 #### Set up your environment
 
 To get started, your AWS account must subscribe to a FIPS-enabled Amazon
-Machine Image (AMI) in the [AWS Marketplace console](https://aws.amazon.com/premiumsupport/knowledge-center/launch-ec2-marketplace-subscription/).
+Machine Image (AMI) in the [AWS Marketplace console](https://repost.aws/knowledge-center/launch-ec2-marketplace-subscription).
 
 This example assumes that the `Ubuntu Pro 20.04 FIPS LTS` AMI by
 `Canonical Group Limited` has been added your account. This operating
