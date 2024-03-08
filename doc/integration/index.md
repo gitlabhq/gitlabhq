@@ -34,7 +34,7 @@ You can also integrate GitLab with the following security partners:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- [Anchore](https://docs.anchore.com/current/docs/configuration/integration/ci_cd/gitlab/)
+- [Anchore](https://docs.anchore.com/current/docs/integration/ci_cd/gitlab/)
 - [Bridgecrew](https://docs.bridgecrew.io/docs/integrate-with-gitlab-self-managed)
 - [Checkmarx](https://checkmarx.atlassian.net/wiki/spaces/SD/pages/1929937052/GitLab+Integration)
 - [CodeSecure](https://codesecure.com/our-integrations/codesonar-sast-gitlab-ci-pipeline/)

@@ -69,4 +69,9 @@ namespace :knapsack do
   task :notify_long_running_specs do
     QA::Tools::LongRunningSpecReporter.execute
   end
+
+  desc "Update fallback knapsack report"
+  task :update_fallback_report do
+    QA::Tools::KnapsackReportUpdater.run
+  end
 end

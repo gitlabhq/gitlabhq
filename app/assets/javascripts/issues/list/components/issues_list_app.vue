@@ -980,68 +980,76 @@ export default {
       @select-issuable="handleSelectIssuable"
     >
       <template #nav-actions>
-        <local-storage-sync
-          v-if="gridViewFeatureEnabled"
-          :value="viewType"
-          :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
-          @input="switchViewType"
-        >
-          <gl-button-group>
-            <gl-button
-              :variant="isGridView ? 'default' : 'confirm'"
-              data-testid="list-view-type"
-              @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
-            >
-              {{ $options.i18n.listLabel }}
-            </gl-button>
-            <gl-button
-              :variant="isGridView ? 'confirm' : 'default'"
-              data-testid="grid-view-type"
-              @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
-            >
-              {{ $options.i18n.gridLabel }}
-            </gl-button>
-          </gl-button-group>
-        </local-storage-sync>
+        <div class="gl-display-flex gl-gap-3">
+          <local-storage-sync
+            v-if="gridViewFeatureEnabled"
+            :value="viewType"
+            :storage-key="$options.ISSUES_VIEW_TYPE_KEY"
+            @input="switchViewType"
+          >
+            <gl-button-group>
+              <gl-button
+                :variant="isGridView ? 'default' : 'confirm'"
+                data-testid="list-view-type"
+                @click="switchViewType($options.ISSUES_LIST_VIEW_KEY)"
+              >
+                {{ $options.i18n.listLabel }}
+              </gl-button>
+              <gl-button
+                :variant="isGridView ? 'confirm' : 'default'"
+                data-testid="grid-view-type"
+                @click="switchViewType($options.ISSUES_GRID_VIEW_KEY)"
+              >
+                {{ $options.i18n.gridLabel }}
+              </gl-button>
+            </gl-button-group>
+          </local-storage-sync>
 
-        <gl-button
-          v-if="canBulkUpdate"
-          :disabled="isBulkEditButtonDisabled"
-          @click="handleBulkUpdateClick"
-        >
-          {{ $options.i18n.editIssues }}
-        </gl-button>
-        <slot name="new-issuable-button">
-          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-            {{ $options.i18n.newIssueLabel }}
+          <gl-button
+            v-if="canBulkUpdate"
+            :disabled="isBulkEditButtonDisabled"
+            class="gl-flex-grow-1"
+            @click="handleBulkUpdateClick"
+          >
+            {{ $options.i18n.editIssues }}
           </gl-button>
-        </slot>
-        <new-resource-dropdown
-          v-if="showNewIssueDropdown"
-          :query="$options.searchProjectsQuery"
-          :query-variables="newIssueDropdownQueryVariables"
-          :extract-projects="extractProjects"
-          :group-id="groupId"
-        />
-        <gl-disclosure-dropdown
-          v-gl-tooltip.hover="$options.i18n.actionsLabel"
-          category="tertiary"
-          icon="ellipsis_v"
-          no-caret
-          :toggle-text="$options.i18n.actionsLabel"
-          text-sr-only
-          data-testid="issues-list-more-actions-dropdown"
-        >
-          <csv-import-export-buttons
-            v-if="showCsvButtons"
-            :export-csv-path="exportCsvPathWithQuery"
-            :issuable-count="currentTabCount"
+          <slot name="new-issuable-button">
+            <gl-button
+              v-if="showNewIssueLink"
+              :href="newIssuePath"
+              variant="confirm"
+              class="gl-flex-grow-1"
+            >
+              {{ $options.i18n.newIssueLabel }}
+            </gl-button>
+          </slot>
+          <new-resource-dropdown
+            v-if="showNewIssueDropdown"
+            :query="$options.searchProjectsQuery"
+            :query-variables="newIssueDropdownQueryVariables"
+            :extract-projects="extractProjects"
+            :group-id="groupId"
           />
-          <gl-disclosure-dropdown-group
-            :bordered="showCsvButtons"
-            :group="subscribeDropdownOptions"
-          />
-        </gl-disclosure-dropdown>
+          <gl-disclosure-dropdown
+            v-gl-tooltip.hover="$options.i18n.actionsLabel"
+            category="tertiary"
+            icon="ellipsis_v"
+            no-caret
+            :toggle-text="$options.i18n.actionsLabel"
+            text-sr-only
+            data-testid="issues-list-more-actions-dropdown"
+          >
+            <csv-import-export-buttons
+              v-if="showCsvButtons"
+              :export-csv-path="exportCsvPathWithQuery"
+              :issuable-count="currentTabCount"
+            />
+            <gl-disclosure-dropdown-group
+              :bordered="showCsvButtons"
+              :group="subscribeDropdownOptions"
+            />
+          </gl-disclosure-dropdown>
+        </div>
       </template>
 
       <template #timeframe="{ issuable = {} }">

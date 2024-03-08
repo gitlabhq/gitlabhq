@@ -238,7 +238,7 @@ To get started, sign in to the [Azure Portal](https://portal.azure.com). For you
 you need the following information:
 
 - A tenant ID. You may already have one. For more information, see the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.

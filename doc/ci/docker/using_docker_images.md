@@ -166,7 +166,7 @@ a useless shell layer. However, that does not work for all Docker versions.
 - For Docker 17.03 and earlier, the `entrypoint` can be set to
   `/bin/sh -c`, `/bin/bash -c`, or an equivalent shell available in the image.
 
-The syntax of `image:entrypoint` is similar to [Dockerfile `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint).
+The syntax of `image:entrypoint` is similar to [Dockerfile `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint).
 
 Let's assume you have a `super/sql:experimental` image with a SQL database
 in it. You want to use it as a base image for your job because you

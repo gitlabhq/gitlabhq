@@ -19,6 +19,7 @@ import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawe
 import { runnerForRegistration } from '../mock_data';
 
 const mockRunnerId = runnerForRegistration.data.runner.id;
+const mockProjectPath = '/group1/project1';
 const mockRunnersPath = '/group1/project1/-/settings/ci_cd';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -40,6 +41,7 @@ describe('ProjectRegisterRunnerApp', () => {
       propsData: {
         runnerId: mockRunnerId,
         runnersPath: mockRunnersPath,
+        projectPath: mockProjectPath,
       },
       provide: {
         glFeatures: {

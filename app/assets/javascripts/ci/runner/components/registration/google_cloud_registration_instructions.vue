@@ -1,16 +1,7 @@
 <script>
-import {
-  GlAlert,
-  GlButton,
-  GlFormInput,
-  GlFormGroup,
-  GlLink,
-  GlIcon,
-  GlModal,
-  GlPopover,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlIcon, GlModal, GlPopover, GlSprintf } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
@@ -19,6 +10,7 @@ import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import provisionGoogleCloudRunnerGroup from '../../graphql/register/provision_google_cloud_runner_group.query.graphql';
 import provisionGoogleCloudRunnerProject from '../../graphql/register/provision_google_cloud_runner_project.query.graphql';
+
 import {
   I18N_FETCH_ERROR,
   STATUS_ONLINE,
@@ -26,8 +18,17 @@ import {
 } from '../../constants';
 import { captureException } from '../../sentry_utils';
 
+const GC_PROJECT_PATTERN = /^[a-z][a-z0-9-]{4,28}[a-z0-9]$/; // https://cloud.google.com/resource-manager/reference/rest/v1/projects
+const GC_REGION_PATTERN = /^[a-z]+-[a-z]+\d+$/;
+const GC_ZONE_PATTERN = /^[a-z]+-[a-z]+\d+-[a-z]$/;
+const GC_MACHINE_TYPE_PATTERN = /^[a-z]([-a-z0-9]*[a-z0-9])?$/;
+
 export default {
   name: 'GoogleCloudRegistrationInstructions',
+  GC_PROJECT_PATTERN,
+  GC_REGION_PATTERN,
+  GC_ZONE_PATTERN,
+  GC_MACHINE_TYPE_PATTERN,
   i18n: {
     heading: s__('Runners|Register runner'),
     headingDescription: s__(
@@ -122,10 +123,9 @@ export default {
   },
   components: {
     ClipboardButton,
+    GoogleCloudFieldGroup,
     GlAlert,
     GlButton,
-    GlFormInput,
-    GlFormGroup,
     GlIcon,
     GlLink,
     GlModal,
@@ -150,19 +150,16 @@ export default {
   },
   data() {
     return {
-      projectId: '',
-      region: '',
-      zone: '',
-      machineType: 'n2d-standard-2',
       token: '',
       runner: null,
       showInstructionsModal: false,
       showInstructionsButtonVariant: 'default',
-      validations: {
-        projectId: false,
-        region: false,
-        zone: false,
-      },
+
+      cloudProjectId: null,
+      region: null,
+      zone: null,
+      machineType: { state: true, value: 'n2d-standard-2' },
+
       provisioningSteps: [],
       setupBashScript: '',
       showAlert: false,
@@ -204,14 +201,12 @@ export default {
     project: {
       query: provisionGoogleCloudRunnerProject,
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      skip: true,
+      manual: true,
       variables() {
         return {
           fullPath: this.projectPath,
-          cloudProjectId: this.projectId,
-          region: this.region,
-          zone: this.zone,
-          machineType: this.machineType,
-          runnerToken: this.token,
+          ...this.variables,
         };
       },
       result({ data, error }) {
@@ -224,20 +219,16 @@ export default {
       error(error) {
         this.handleError(error);
       },
-      skip() {
-        return !this.projectPath || this.invalidFields.length > 0;
-      },
     },
     group: {
       query: provisionGoogleCloudRunnerGroup,
+      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      skip: true,
+      manual: true,
       variables() {
         return {
           fullPath: this.groupPath,
-          cloudProjectId: this.projectId,
-          region: this.region,
-          zone: this.zone,
-          machineType: this.machineType,
-          runnerToken: this.token,
+          ...this.variables,
         };
       },
       result({ data, error }) {
@@ -250,12 +241,18 @@ export default {
       error(error) {
         this.handleError(error);
       },
-      skip() {
-        return !this.groupPath || this.invalidFields.length > 0;
-      },
     },
   },
   computed: {
+    variables() {
+      return {
+        runnerToken: this.token,
+        cloudProjectId: this.cloudProjectId?.value,
+        region: this.region?.value,
+        zone: this.zone?.value,
+        machineType: this.machineType?.value,
+      };
+    },
     isRunnerOnline() {
       return this.runner?.status === STATUS_ONLINE;
     },
@@ -270,8 +267,8 @@ export default {
       );
     },
     invalidFields() {
-      return Object.keys(this.validations).filter((field) => {
-        return this.validations[field] === false;
+      return ['cloudProjectId', 'region', 'zone', 'machineType'].filter((field) => {
+        return !this[field]?.state;
       });
     },
     bashInstructions() {
@@ -304,34 +301,19 @@ export default {
       if (this.invalidFields.length > 0) {
         this.showAlert = true;
       } else {
+        if (this.projectPath) {
+          this.$apollo.queries.project.start();
+        } else {
+          this.$apollo.queries.group.start();
+        }
         this.showAlert = false;
         this.showInstructionsModal = true;
       }
     },
-    validateZone() {
-      if (this.zone.length > 0) {
-        this.validations.zone = true;
-      } else {
-        this.validations.zone = false;
-      }
-    },
-    validateRegion() {
-      if (this.region.length > 0) {
-        this.validations.region = true;
-      } else {
-        this.validations.region = false;
-      }
-    },
-    validateProjectId() {
-      if (this.projectId.length > 0) {
-        this.validations.projectId = true;
-      } else {
-        this.validations.projectId = false;
-      }
-    },
+
     goToFirstInvalidField() {
       if (this.invalidFields.length > 0) {
-        this.$refs[this.invalidFields[0]].$el.focus();
+        this.$refs[this.invalidFields[0]].$el.querySelector('input').focus();
       }
     },
     handleError(error) {
@@ -427,7 +409,20 @@ export default {
     <h2 class="gl-heading-2">{{ $options.i18n.stepOneHeading }}</h2>
     <p>{{ $options.i18n.stepOneDescription }}</p>
 
-    <gl-form-group :label="$options.i18n.projectIdLabel" label-for="project-id">
+    <google-cloud-field-group
+      ref="cloudProjectId"
+      v-model="cloudProjectId"
+      name="cloudProjectId"
+      :label="$options.i18n.projectIdLabel"
+      :invalid-feedback-if-empty="s__('Runners|Project ID is required.')"
+      :invalid-feedback-if-malformed="
+        s__(
+          'Runners|Project ID must be 6 to 30 lowercase letters, digits, or hyphens. It needs to start with a lowercase letter and end with a letter or number.',
+        )
+      "
+      :regexp="$options.GC_PROJECT_PATTERN"
+      data-testid="project-id-input"
+    >
       <template #description>
         <gl-sprintf :message="$options.i18n.projectIdDescription">
           <template #link="{ content }">
@@ -442,16 +437,19 @@ export default {
           </template>
         </gl-sprintf>
       </template>
-      <gl-form-input
-        id="project-id"
-        ref="projectId"
-        v-model="projectId"
-        type="text"
-        data-testid="project-id-input"
-        @input="validateProjectId"
-      />
-    </gl-form-group>
-    <gl-form-group label-for="region-id">
+    </google-cloud-field-group>
+
+    <google-cloud-field-group
+      ref="region"
+      v-model="region"
+      name="region"
+      :invalid-feedback-if-empty="s__('Runners|Region is required.')"
+      :invalid-feedback-if-malformed="
+        s__('Runners|Region must have the correct format. Example: us-central1')
+      "
+      :regexp="$options.GC_REGION_PATTERN"
+      data-testid="region-input"
+    >
       <template #label>
         <div>
           {{ $options.i18n.regionLabel }}
@@ -471,15 +469,19 @@ export default {
           </gl-popover>
         </div>
       </template>
-      <gl-form-input
-        id="region-id"
-        ref="region"
-        v-model="region"
-        data-testid="region-input"
-        @input="validateRegion"
-      />
-    </gl-form-group>
-    <gl-form-group label-for="zone-id">
+    </google-cloud-field-group>
+
+    <google-cloud-field-group
+      ref="zone"
+      v-model="zone"
+      name="zone"
+      :invalid-feedback-if-empty="s__('Runners|Zone is required.')"
+      :invalid-feedback-if-malformed="
+        s__('Runners|Zone must have the correct format. Example: us-central1-a')
+      "
+      :regexp="$options.GC_ZONE_PATTERN"
+      data-testid="zone-input"
+    >
       <template #label>
         <div>
           {{ $options.i18n.zoneLabel }}
@@ -505,15 +507,21 @@ export default {
           <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
         </gl-link>
       </template>
-      <gl-form-input
-        id="zone-id"
-        ref="zone"
-        v-model="zone"
-        data-testid="zone-input"
-        @input="validateZone"
-      />
-    </gl-form-group>
-    <gl-form-group label-for="machine-type-id">
+    </google-cloud-field-group>
+
+    <google-cloud-field-group
+      ref="machineType"
+      v-model="machineType"
+      name="machineType"
+      :invalid-feedback-if-empty="s__('Runners|Machine type is required.')"
+      :invalid-feedback-if-malformed="
+        s__(
+          'Runners|Machine type must have the format `family-series-size`. Example: n2d-standard-2',
+        )
+      "
+      :regexp="$options.GC_MACHINE_TYPE_PATTERN"
+      data-testid="machine-type-input"
+    >
       <template #label>
         <div>
           {{ $options.i18n.machineTypeLabel }}
@@ -547,8 +555,7 @@ export default {
           </template>
         </gl-sprintf>
       </template>
-      <gl-form-input id="machine-type-id" v-model="machineType" data-testid="machine-type-input" />
-    </gl-form-group>
+    </google-cloud-field-group>
 
     <hr />
     <!-- end: step one -->
@@ -627,5 +634,11 @@ export default {
     </gl-modal>
     <hr />
     <!-- end: step two -->
+    <section v-if="isRunnerOnline">
+      <h2 class="gl-heading-2">🎉 {{ s__("Runners|You've registered a new runner!") }}</h2>
+      <p>
+        {{ s__('Runners|Your runner is online and ready to run jobs.') }}
+      </p>
+    </section>
   </div>
 </template>

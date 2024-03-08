@@ -293,7 +293,7 @@ You can learn more about how to administer GitLab.
 ### Free GitLab training
 
 - GitLab basics: Discover self-service guides on [Git and GitLab basics](../tutorials/index.md).
-- GitLab Learn: Learn new GitLab skills in a structured course at [GitLab Learn](https://about.gitlab.com/learn/).
+- GitLab University: Learn new GitLab skills in a structured course at [GitLab University](https://university.gitlab.com/learn/dashboard).
 
 ### Third-party training
 

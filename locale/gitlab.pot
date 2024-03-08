@@ -43271,6 +43271,12 @@ msgstr ""
 msgid "Runners|Machine type"
 msgstr ""
 
+msgid "Runners|Machine type is required."
+msgstr ""
+
+msgid "Runners|Machine type must have the format `family-series-size`. Example: n2d-standard-2"
+msgstr ""
+
 msgid "Runners|Machine type with preset amounts of virtual machines processors (vCPUs) and memory"
 msgstr ""
 
@@ -43404,6 +43410,12 @@ msgstr ""
 msgid "Runners|Project"
 msgstr ""
 
+msgid "Runners|Project ID is required."
+msgstr ""
+
+msgid "Runners|Project ID must be 6 to 30 lowercase letters, digits, or hyphens. It needs to start with a lowercase letter and end with a letter or number."
+msgstr ""
+
 msgid "Runners|Project runners"
 msgstr ""
 
@@ -43420,6 +43432,12 @@ msgid "Runners|Recommended"
 msgstr ""
 
 msgid "Runners|Region"
+msgstr ""
+
+msgid "Runners|Region is required."
+msgstr ""
+
+msgid "Runners|Region must have the correct format. Example: us-central1"
 msgstr ""
 
 msgid "Runners|Register"
@@ -43870,7 +43888,19 @@ msgstr ""
 msgid "Runners|You've created a new runner!"
 msgstr ""
 
+msgid "Runners|You've registered a new runner!"
+msgstr ""
+
+msgid "Runners|Your runner is online and ready to run jobs."
+msgstr ""
+
 msgid "Runners|Zone"
+msgstr ""
+
+msgid "Runners|Zone is required."
+msgstr ""
+
+msgid "Runners|Zone must have the correct format. Example: us-central1-a"
 msgstr ""
 
 msgid "Runners|active"
@@ -51984,6 +52014,9 @@ msgid "This user is the author of this %{noteable}."
 msgstr ""
 
 msgid "This user is the author of this %{workItemType}."
+msgstr ""
+
+msgid "This value is not valid."
 msgstr ""
 
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset. For details about SAST rule changes, see https://docs.gitlab.com/ee/user/application_security/sast/rules#important-rule-changes."

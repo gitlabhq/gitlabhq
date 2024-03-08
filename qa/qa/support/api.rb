@@ -113,6 +113,9 @@ module QA
       # @param [Hash] args the existing args passed to method
       # @return [Hash] args or args with merged canary cookie if it exists
       def with_canary(args)
+        canary_cookie = QA::Runtime::Env.canary_cookie
+        return args if canary_cookie.empty?
+
         args.deep_merge(cookies: QA::Runtime::Env.canary_cookie)
       end
 
