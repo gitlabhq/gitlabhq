@@ -172,6 +172,10 @@ WARNING:
 Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
 
+NOTE:
+The **merge immediately** option may not be available if your project utilizes the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) 
+merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
+
 ## Troubleshooting
 
 ### Merge request dropped from the merge train

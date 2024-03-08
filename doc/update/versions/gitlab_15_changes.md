@@ -28,6 +28,23 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
 
+- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+
+    **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 15.11                   |  All                    | None     |
+  | 16.0                    |  All                    | None     |
+  | 16.1                    |  All                    | None     |
+  | 16.2                    |  All                    | None     |
+  | 16.3                    |  All                    | None     |
+  | 16.4                    |  All                    | None     |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  16.7.0 - 16.7.6        | 16.7.7   |
+  | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
+
 ### Linux package installations
 
 In GitLab 15.11, PostgreSQL will automatically be upgraded to 13.x except for the following cases:

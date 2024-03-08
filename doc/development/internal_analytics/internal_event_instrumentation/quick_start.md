@@ -189,6 +189,30 @@ import { InternalEvents } from '~/tracking';
 InternalEvents.trackEvent('i_code_review_user_apply_suggestion');
 ```
 
+#### Additional properties
+
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+
+For Vue Mixin:
+
+```javascript
+   this.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+    label: 'push_event',
+    property: 'golang',
+    value: 20
+   });
+```
+
+For raw JavaScript:
+
+```javascript
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+    label: 'admin',
+    property: 'system',
+    value: 20
+   });
+```
+
 #### Data-track attribute
 
 This attribute ensures that if we want to track GitLab internal events for a button, we do not need to write JavaScript code on Click handler. Instead, we can just add a data-event-tracking attribute with event value and it should work. This can also be used with HAML views.

@@ -6,6 +6,12 @@ import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
 import Tracking from '~/tracking';
 
+const allowedAdditionalProps = {
+  property: 'value',
+  label: 'value',
+  value: 2,
+};
+
 jest.mock('~/api', () => ({
   trackInternalEvent: jest.fn(),
 }));
@@ -27,7 +33,7 @@ describe('InternalEvents', () => {
       InternalEvents.trackEvent(event, category);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
-      expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
+      expect(API.trackInternalEvent).toHaveBeenCalledWith(event, {});
     });
 
     it('trackEvent calls Tracking.event with correct arguments including category', () => {
@@ -38,13 +44,61 @@ describe('InternalEvents', () => {
       expect(Tracking.event).toHaveBeenCalledWith(category, event, expect.any(Object));
     });
 
-    it('trackEvent calls trackBrowserSDK with correct arguments', () => {
+    it('trackEvent calls Tracking.event with event name, category and additional properties', () => {
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event, category, allowedAdditionalProps);
+
+      expect(Tracking.event).toHaveBeenCalledWith(
+        category,
+        event,
+        expect.objectContaining({
+          context: expect.any(Object),
+          value: 2,
+          property: 'value',
+          label: 'value',
+        }),
+      );
+    });
+
+    it('trackEvent calls trackBrowserSDK with event name', () => {
       jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
 
       InternalEvents.trackEvent(event);
 
       expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event);
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event, {});
+    });
+
+    it('trackEvent calls trackBrowserSDK with event name and additional Properties', () => {
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event, undefined, allowedAdditionalProps);
+
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
+      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event, {
+        property: 'value',
+        label: 'value',
+        value: 2,
+      });
+    });
+
+    it('throws an error if unallowed additionalProperties are passed', () => {
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      const additionalProps = {
+        ...allowedAdditionalProps,
+        unallowedKey: 'value',
+      };
+
+      expect(() => {
+        InternalEvents.trackEvent(event, category, additionalProps);
+      }).toThrow(/Disallowed additional properties were provided:/);
+
+      expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
+      expect(Tracking.event).not.toHaveBeenCalled();
+      expect(API.trackInternalEvent).not.toHaveBeenCalled();
     });
   });
 
@@ -54,11 +108,19 @@ describe('InternalEvents', () => {
       template: `
     <div>
       <button data-testid="button" @click="handleButton1Click">Button</button>
+      <button data-testid="button2" @click="handleButton2Click">Button2</button>
     </div>
   `,
       methods: {
         handleButton1Click() {
           this.trackEvent(event);
+        },
+        handleButton2Click() {
+          this.trackEvent(event, undefined, {
+            property: 'value',
+            label: 'value',
+            value: 2,
+          });
         },
       },
       mixins: [InternalEvents.mixin()],
@@ -74,7 +136,20 @@ describe('InternalEvents', () => {
       await wrapper.findByTestId('button').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined);
+      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined, {});
+    });
+
+    it('this.trackEvent function calls InternalEvent`s track function with an event and additional Properties', async () => {
+      const trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
+
+      await wrapper.findByTestId('button2').trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined, {
+        property: 'value',
+        label: 'value',
+        value: 2,
+      });
     });
   });
 
@@ -207,13 +282,26 @@ describe('InternalEvents', () => {
       expect(window.glClient.track).not.toHaveBeenCalled();
     });
 
-    it('should call glClient.track with correct arguments if Tracker is enabled', () => {
+    it('should call glClient.track with event name if Tracker is enabled', () => {
       Tracker.enabled.mockReturnValue(true);
 
       InternalEvents.trackBrowserSDK(event);
 
       expect(window.glClient.track).toHaveBeenCalledTimes(1);
-      expect(window.glClient.track).toHaveBeenCalledWith(event);
+      expect(window.glClient.track).toHaveBeenCalledWith(event, {});
+    });
+
+    it('should call glClient.track with event name and additional properties if Tracker is enabled', () => {
+      Tracker.enabled.mockReturnValue(true);
+
+      InternalEvents.trackBrowserSDK(event, allowedAdditionalProps);
+
+      expect(window.glClient.track).toHaveBeenCalledTimes(1);
+      expect(window.glClient.track).toHaveBeenCalledWith(event, {
+        property: 'value',
+        label: 'value',
+        value: 2,
+      });
     });
   });
 });

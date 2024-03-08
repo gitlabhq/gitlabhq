@@ -1,5 +1,6 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { validateAdditionalProperties } from '~/tracking/utils';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 
@@ -907,10 +908,11 @@ const Api = {
     return axios.post(url, { event }, { headers });
   },
 
-  trackInternalEvent(event) {
+  trackInternalEvent(event, additionalProperties = {}) {
     if (!gon.current_user_id) {
       return null;
     }
+    validateAdditionalProperties(additionalProperties);
     const url = Api.buildUrl(this.serviceDataInternalEventPath);
     const headers = {
       'Content-Type': 'application/json',
@@ -918,7 +920,11 @@ const Api = {
 
     const { data = {} } = { ...window.gl?.snowplowStandardContext };
     const { project_id, namespace_id } = data;
-    return axios.post(url, { event, project_id, namespace_id }, { headers });
+    return axios.post(
+      url,
+      { event, project_id, namespace_id, additional_properties: additionalProperties },
+      { headers },
+    );
   },
 
   buildUrl(url) {

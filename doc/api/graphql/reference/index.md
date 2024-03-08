@@ -10450,6 +10450,29 @@ The edge type for [`ConnectedAgent`](#connectedagent).
 | <a id="connectedagentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="connectedagentedgenode"></a>`node` | [`ConnectedAgent`](#connectedagent) | The item at the end of the edge. |
 
+#### `ContainerRegistryProtectionRuleConnection`
+
+The connection type for [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryprotectionruleconnectionedges"></a>`edges` | [`[ContainerRegistryProtectionRuleEdge]`](#containerregistryprotectionruleedge) | A list of edges. |
+| <a id="containerregistryprotectionruleconnectionnodes"></a>`nodes` | [`[ContainerRegistryProtectionRule]`](#containerregistryprotectionrule) | A list of nodes. |
+| <a id="containerregistryprotectionruleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ContainerRegistryProtectionRuleEdge`
+
+The edge type for [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerregistryprotectionruleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="containerregistryprotectionruleedgenode"></a>`node` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | The item at the end of the edge. |
+
 #### `ContainerRepositoryConnection`
 
 The connection type for [`ContainerRepository`](#containerrepository).
@@ -25268,6 +25291,7 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | Container expiration policy of the project. |
 | <a id="projectcontainerregistryenabled"></a>`containerRegistryEnabled` | [`Boolean`](#boolean) | Indicates if Container Registry is enabled for the current user. |
+| <a id="projectcontainerregistryprotectionrules"></a>`containerRegistryProtectionRules` **{warning-solid}** | [`ContainerRegistryProtectionRuleConnection`](#containerregistryprotectionruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
 | <a id="projectcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the project. |
 | <a id="projectcorpuses"></a>`corpuses` | [`CoverageFuzzingCorpusConnection`](#coveragefuzzingcorpusconnection) | Find corpuses of the project. (see [Connections](#connections)) |
 | <a id="projectcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the project creation. |

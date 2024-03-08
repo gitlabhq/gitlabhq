@@ -7,6 +7,7 @@ import {
   URLS_CACHE_STORAGE_KEY,
   REFERRER_TTL,
   INTERNAL_EVENTS_SELECTOR,
+  ALLOWED_ADDITIONAL_PROPERTIES,
 } from './constants';
 
 export const addExperimentContext = (opts) => {
@@ -137,4 +138,20 @@ export const addReferrersCacheEntry = (cache, entry) => {
   const referrers = JSON.stringify([{ ...entry, timestamp: Date.now() }, ...cache]);
 
   window.localStorage.setItem(URLS_CACHE_STORAGE_KEY, referrers);
+};
+
+export const validateAdditionalProperties = (additionalProperties) => {
+  const disallowedProperties = Object.keys(additionalProperties).filter(
+    (key) => !ALLOWED_ADDITIONAL_PROPERTIES.includes(key),
+  );
+
+  if (disallowedProperties.length > 0) {
+    throw new Error(
+      `Allowed additional properties are ${ALLOWED_ADDITIONAL_PROPERTIES.join(
+        ', ',
+      )} for InternalEvents tracking.\nDisallowed additional properties were provided: ${disallowedProperties.join(
+        ', ',
+      )}.`,
+    );
+  }
 };

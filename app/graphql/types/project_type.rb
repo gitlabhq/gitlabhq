@@ -496,6 +496,13 @@ module Types
       null: true,
       description: 'Container expiration policy of the project.'
 
+    field :container_registry_protection_rules,
+      Types::ContainerRegistry::Protection::RuleType.connection_type,
+      null: true,
+      description: 'Container protection rules for the project.',
+      alpha: { milestone: '16.10' },
+      resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
+
     field :container_repositories, Types::ContainerRepositoryType.connection_type,
       null: true,
       description: 'Container repositories of the project.',

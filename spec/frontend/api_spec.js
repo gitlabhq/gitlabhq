@@ -1471,6 +1471,7 @@ describe('Api', () => {
   describe('trackInternalEvent', () => {
     const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/usage_data/track_event`;
     const event = 'i_devops_adoption';
+    const additionalProperties = { property: 'value' };
 
     const defaultContext = {
       data: {
@@ -1479,11 +1480,12 @@ describe('Api', () => {
       },
     };
 
-    const postData = {
+    const postData = (additionalProps = {}) => ({
       event,
       project_id: defaultContext.data.project_id,
       namespace_id: defaultContext.data.namespace_id,
-    };
+      additional_properties: additionalProps,
+    });
 
     const headers = {
       'Content-Type': 'application/json',
@@ -1496,14 +1498,37 @@ describe('Api', () => {
       });
 
       describe('when internal event is called', () => {
-        it('resolves the Promise', () => {
+        it('resolves the Promise without additionalProperties', () => {
           jest.spyOn(axios, 'post');
-          mock.onPost(expectedUrl, postData).replyOnce(HTTP_STATUS_OK, true);
+          mock.onPost(expectedUrl, postData()).replyOnce(HTTP_STATUS_OK, true);
 
           return Api.trackInternalEvent(event).then(({ data }) => {
             expect(data).toEqual(true);
-            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData(), { headers });
           });
+        });
+      });
+
+      describe('when internal event is called with additionalProperties', () => {
+        it('resolves the Promise with additionalProperties', () => {
+          jest.spyOn(axios, 'post');
+          mock.onPost(expectedUrl, postData(additionalProperties)).replyOnce(HTTP_STATUS_OK, true);
+
+          return Api.trackInternalEvent(event, additionalProperties).then(({ data }) => {
+            expect(data).toEqual(true);
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData(additionalProperties), {
+              headers,
+            });
+          });
+        });
+      });
+
+      describe('when internal event is called with unallowed additionalProperties', () => {
+        it('throws an error', () => {
+          expect(() => {
+            const unallowedProperties = { new_key: 'unallowed' };
+            Api.trackInternalEvent(event, unallowedProperties);
+          }).toThrow(/Disallowed additional properties were provided:/);
         });
       });
     });

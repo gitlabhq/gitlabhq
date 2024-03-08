@@ -30,6 +30,13 @@ func uploadArtifactsV4(url, contentType string, body io.Reader) (*http.Response,
 	return resp, resource, err
 }
 
+const (
+	requestBody         = "test data"
+	testRspSuccessBody  = "test success"
+	authorizeUploadPath = "/api/v4/internal/workhorse/authorize_upload"
+	authorizeSuffix     = "/authorize"
+)
+
 func testArtifactsUpload(t *testing.T, uploadArtifacts uploadArtifactsFunction) {
 	reqBody, contentType, err := multipartBodyWithFile()
 	require.NoError(t, err)
@@ -59,7 +66,7 @@ func expectSignedRequest(t *testing.T, r *http.Request) {
 
 func uploadTestServer(t *testing.T, allowedHashFunctions []string, authorizeTests func(r *http.Request), extraTests func(r *http.Request)) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/authorize") || r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
+		if strings.HasSuffix(r.URL.Path, authorizeSuffix) || r.URL.Path == authorizeUploadPath {
 			expectSignedRequest(t, r)
 
 			w.Header().Set("Content-Type", api.ResponseContentType)
@@ -186,17 +193,16 @@ func TestAcceleratedUpload(t *testing.T) {
 	for _, tt := range tests {
 		for hashSet, hashFunctions := range allowedHashFunctions {
 			t.Run(tt.resource, func(t *testing.T) {
-
 				ts := uploadTestServer(t,
 					hashFunctions,
 					func(r *http.Request) {
-						if r.URL.Path == "/api/v4/internal/workhorse/authorize_upload" {
+						if r.URL.Path == authorizeUploadPath {
 							// Nothing to validate: this is a hard coded URL
 							return
 						}
 						resource := strings.TrimRight(tt.resource, "/")
 						// Validate %2F characters haven't been unescaped
-						require.Equal(t, resource+"/authorize", r.URL.String())
+						require.Equal(t, resource+authorizeSuffix, r.URL.String())
 					},
 					func(r *http.Request) {
 						if tt.signedFinalization {
@@ -215,23 +221,7 @@ func TestAcceleratedUpload(t *testing.T) {
 						require.NoError(t, jwtErr)
 
 						uploadFields := token.Claims.(*testhelper.UploadClaims).Upload
-						require.Contains(t, uploadFields, "name")
-						require.Contains(t, uploadFields, "path")
-						require.Contains(t, uploadFields, "remote_url")
-						require.Contains(t, uploadFields, "remote_id")
-						require.Contains(t, uploadFields, "size")
-
-						if hashSet == "default" {
-							require.Contains(t, uploadFields, "md5")
-							require.Contains(t, uploadFields, "sha1")
-							require.Contains(t, uploadFields, "sha256")
-							require.Contains(t, uploadFields, "sha512")
-						} else {
-							require.NotContains(t, uploadFields, "md5")
-							require.NotContains(t, uploadFields, "sha1")
-							require.Contains(t, uploadFields, "sha256")
-							require.Contains(t, uploadFields, "sha512")
-						}
+						verifyUploadFields(t, uploadFields, hashSet)
 					})
 
 				defer ts.Close()
@@ -251,6 +241,28 @@ func TestAcceleratedUpload(t *testing.T) {
 				resp.Body.Close()
 			})
 		}
+	}
+}
+
+func verifyUploadFields(t *testing.T, fields map[string]string, hashSet string) {
+	t.Helper()
+
+	require.Contains(t, fields, "name")
+	require.Contains(t, fields, "path")
+	require.Contains(t, fields, "remote_url")
+	require.Contains(t, fields, "remote_id")
+	require.Contains(t, fields, "size")
+
+	if hashSet == "default" {
+		require.Contains(t, fields, "md5")
+		require.Contains(t, fields, "sha1")
+		require.Contains(t, fields, "sha256")
+		require.Contains(t, fields, "sha512")
+	} else {
+		require.NotContains(t, fields, "md5")
+		require.NotContains(t, fields, "sha1")
+		require.Contains(t, fields, "sha256")
+		require.Contains(t, fields, "sha512")
 	}
 }
 
@@ -336,7 +348,7 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
-				case "/api/v4/internal/workhorse/authorize_upload":
+				case authorizeUploadPath:
 					w.Header().Set("Content-Type", api.ResponseContentType)
 					io.WriteString(w, `{"TempPath":"`+os.TempDir()+`"}`)
 				default:
@@ -344,7 +356,6 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 						require.Contains(t, r.Header, upload.RewrittenFieldsHeader)
 					} else {
 						require.NotContains(t, r.Header, upload.RewrittenFieldsHeader)
-
 					}
 				}
 
@@ -368,25 +379,23 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 }
 
 func TestLfsUpload(t *testing.T) {
-	reqBody := "test data"
-	rspBody := "test success"
 	oid := "916f0027a575074ce72a331777c3478d6513f786a591bd892da1a577bf2335f9"
-	resource := fmt.Sprintf("/%s/gitlab-lfs/objects/%s/%d", testRepo, oid, len(reqBody))
+	resource := fmt.Sprintf("/%s/gitlab-lfs/objects/%s/%d", testRepo, oid, len(requestBody))
 
-	lfsApiResponse := fmt.Sprintf(
+	lfsAPIResponse := fmt.Sprintf(
 		`{"TempPath":%q, "LfsOid":%q, "LfsSize": %d}`,
-		t.TempDir(), oid, len(reqBody),
+		t.TempDir(), oid, len(requestBody),
 	)
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, r.Method, "PUT")
+		require.Equal(t, "PUT", r.Method)
 		switch r.RequestURI {
-		case resource + "/authorize":
+		case resource + authorizeSuffix:
 			expectSignedRequest(t, r)
 
 			// Instruct workhorse to accept the upload
 			w.Header().Set("Content-Type", api.ResponseContentType)
-			_, err := fmt.Fprint(w, lfsApiResponse)
+			_, err := fmt.Fprint(w, lfsAPIResponse)
 			require.NoError(t, err)
 
 		case resource:
@@ -395,13 +404,13 @@ func TestLfsUpload(t *testing.T) {
 			// Expect the request to point to a file on disk containing the data
 			require.NoError(t, r.ParseForm())
 			require.Equal(t, oid, r.Form.Get("file.sha256"), "Invalid SHA256 populated")
-			require.Equal(t, strconv.Itoa(len(reqBody)), r.Form.Get("file.size"), "Invalid size populated")
+			require.Equal(t, strconv.Itoa(len(requestBody)), r.Form.Get("file.size"), "Invalid size populated")
 
 			tempfile, err := os.ReadFile(r.Form.Get("file.path"))
 			require.NoError(t, err)
-			require.Equal(t, reqBody, string(tempfile), "Temporary file has the wrong body")
+			require.Equal(t, requestBody, string(tempfile), "Temporary file has the wrong body")
 
-			fmt.Fprint(w, rspBody)
+			fmt.Fprint(w, testRspSuccessBody)
 		default:
 			t.Fatalf("Unexpected request to upstream! %v %q", r.Method, r.RequestURI)
 		}
@@ -410,11 +419,11 @@ func TestLfsUpload(t *testing.T) {
 
 	ws := startWorkhorseServer(t, ts.URL)
 
-	req, err := http.NewRequest("PUT", ws.URL+resource, strings.NewReader(reqBody))
+	req, err := http.NewRequest("PUT", ws.URL+resource, strings.NewReader(requestBody))
 	require.NoError(t, err)
 
 	req.Header.Set("Content-Type", "application/octet-stream")
-	req.ContentLength = int64(len(reqBody))
+	req.ContentLength = int64(len(requestBody))
 
 	resp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
@@ -425,19 +434,17 @@ func TestLfsUpload(t *testing.T) {
 
 	// Expect the (eventual) response to be proxied through, untouched
 	require.Equal(t, 200, resp.StatusCode)
-	require.Equal(t, rspBody, string(rspData))
+	require.Equal(t, testRspSuccessBody, string(rspData))
 }
 
 func TestLfsUploadRouting(t *testing.T) {
-	reqBody := "test data"
-	rspBody := "test success"
 	oid := "916f0027a575074ce72a331777c3478d6513f786a591bd892da1a577bf2335f9"
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get(secret.RequestHeader) == "" {
 			w.WriteHeader(204)
 		} else {
-			fmt.Fprint(w, rspBody)
+			fmt.Fprint(w, testRspSuccessBody)
 		}
 	})
 	defer ts.Close()
@@ -465,17 +472,17 @@ func TestLfsUploadRouting(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.path, func(t *testing.T) {
-			resource := fmt.Sprintf(tc.path+"/%s/%d", oid, len(reqBody))
+			resource := fmt.Sprintf(tc.path+"/%s/%d", oid, len(requestBody))
 
 			req, err := http.NewRequest(
 				tc.method,
 				ws.URL+resource,
-				strings.NewReader(reqBody),
+				strings.NewReader(requestBody),
 			)
 			require.NoError(t, err)
 
 			req.Header.Set("Content-Type", tc.contentType)
-			req.ContentLength = int64(len(reqBody))
+			req.ContentLength = int64(len(requestBody))
 
 			resp, err := http.DefaultClient.Do(req)
 			require.NoError(t, err)
@@ -486,7 +493,7 @@ func TestLfsUploadRouting(t *testing.T) {
 
 			if tc.match {
 				require.Equal(t, 200, resp.StatusCode)
-				require.Equal(t, rspBody, string(rspData), "expect response generated by test upstream server")
+				require.Equal(t, testRspSuccessBody, string(rspData), "expect response generated by test upstream server")
 			} else {
 				require.Equal(t, 204, resp.StatusCode)
 				require.Empty(t, rspData, "normal request has empty response body")
@@ -502,7 +509,7 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 			`{"TempPath":%q, "Size": %d}`, t.TempDir(), len(reqBody),
 		)
 		switch r.RequestURI {
-		case resource + "/authorize":
+		case resource + authorizeSuffix:
 			expectSignedRequest(t, r)
 
 			// Instruct workhorse to accept the upload
@@ -516,8 +523,8 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 			// Expect the request to point to a file on disk containing the data
 			require.NoError(t, r.ParseForm())
 
-			len := strconv.Itoa(len(reqBody))
-			require.Equal(t, len, r.Form.Get("file.size"), "Invalid size populated")
+			fileLen := strconv.Itoa(len(reqBody))
+			require.Equal(t, fileLen, r.Form.Get("file.size"), "Invalid size populated")
 
 			tmpFilePath := r.Form.Get("file.path")
 			fileData, err := os.ReadFile(tmpFilePath)
@@ -534,15 +541,12 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 }
 
 func testPackageFileUpload(t *testing.T, method string, resource string) {
-	reqBody := "test data"
-	rspBody := "test success"
-
-	ts := packageUploadTestServer(t, method, resource, reqBody, rspBody)
+	ts := packageUploadTestServer(t, method, resource, requestBody, testRspSuccessBody)
 	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
-	req, err := http.NewRequest(method, ws.URL+resource, strings.NewReader(reqBody))
+	req, err := http.NewRequest(method, ws.URL+resource, strings.NewReader(requestBody))
 	require.NoError(t, err)
 
 	resp, err := http.DefaultClient.Do(req)
@@ -550,7 +554,7 @@ func testPackageFileUpload(t *testing.T, method string, resource string) {
 
 	respData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
-	require.Equal(t, rspBody, string(respData), "Temporary file has the wrong body")
+	require.Equal(t, testRspSuccessBody, string(respData), "Temporary file has the wrong body")
 	defer resp.Body.Close()
 
 	require.Equal(t, 200, resp.StatusCode)
