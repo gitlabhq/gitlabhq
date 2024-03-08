@@ -16942,6 +16942,9 @@ msgstr ""
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr ""
 
+msgid "Dependencies|Export as CSV"
+msgstr ""
+
 msgid "Dependencies|Export as JSON"
 msgstr ""
 

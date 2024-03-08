@@ -1065,10 +1065,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-3.0.1.tgz#d84597fbc0f897240c12fc0a31e492b036c70e40"
   integrity sha512-NPljRHkq4a14YzZ3YD406uaxh7s0g6eAq3L9aLOWywoqe8PkYamAvtsh7KNX6c++ihDrJ0RiU+/z7rGnhlZ5ww==
 
-"@cubejs-client/core@^0.34.37":
-  version "0.34.37"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.34.37.tgz#f293e2641456f403677306fbacc15f20ebe02ca2"
-  integrity sha512-uOLaDn8Fixpy1e8uBShekxzxArfuGFTuopz8BhSeH//p0spaxSAIj5doUJMxb1ahP30A8HGrjUnq/wXVQuR0gQ==
+"@cubejs-client/core@^0.34.60":
+  version "0.34.60"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/core/-/core-0.34.60.tgz#ff61ed4cd7afdab706854e1a8d124efd6da3ec61"
+  integrity sha512-0goUcqG7gREEP2LQ6uIGdFVQ5ojhRqRnbE9PqxfQsEsdSQcJnWU8h0BU82va5Ik7tdRzs+GrN0pbp8s1Ki4egA==
   dependencies:
     "@babel/runtime" "^7.1.2"
     core-js "^3.6.5"
@@ -1078,12 +1078,12 @@
     url-search-params-polyfill "^7.0.0"
     uuid "^8.3.2"
 
-"@cubejs-client/vue@^0.34.37":
-  version "0.34.37"
-  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.34.37.tgz#d6706edcc77db88ba3b98eb9aca60a4c0d7db783"
-  integrity sha512-nUl9obBTdhbsTM4O8NKY7G7SIOkQufE+23tQRcjbsd9faSTtcowaS3VTNNSyDzf2sIes6DaPoXL7g7DNU/s17A==
+"@cubejs-client/vue@^0.34.60":
+  version "0.34.60"
+  resolved "https://registry.yarnpkg.com/@cubejs-client/vue/-/vue-0.34.60.tgz#fec94dbcaed8e4720f1e5176106a866d13643bd3"
+  integrity sha512-JXXLTHWIoQJvNDkwcNylAoW6E5LyH+8Mnms41rnnuVEGsO9TcS20H7jbiXpAplZGW/wCzdYFKCPD1dxUPsXPDg==
   dependencies:
-    "@cubejs-client/core" "^0.34.37"
+    "@cubejs-client/core" "^0.34.60"
     core-js "^3.6.5"
     ramda "^0.27.2"
 
@@ -7275,10 +7275,10 @@ graphql@^15.7.2:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
   integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
-gridstack@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.1.0.tgz#f6da65823f0d3cfe85f0248c2d13c0eb3462884a"
-  integrity sha512-KmgSekEPa7aq4Vyfg4v8baCoRgWc9wtuli9hXnfI89ZUFfMJbn4w1bUaaMDVddvmcSdpU27xH07T17DpwHaLGQ==
+gridstack@^10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.1.1.tgz#2aa8f9ce0825230ec22b4f440ead8ea9548ed8ac"
+  integrity sha512-pUd+5Bz8KJr/O4JrjKjGoVHAPOB4G+aW3xOM8xK7FZj6msEsbELcAxKFCwm3irjjd4zglE1jdaEPp7b2TObg9w==
 
 gzip-size@^6.0.0:
   version "6.0.0"

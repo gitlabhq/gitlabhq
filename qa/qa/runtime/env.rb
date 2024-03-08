@@ -39,7 +39,7 @@ module QA
       end
 
       def additional_repository_storage
-        ENV['QA_ADDITIONAL_REPOSITORY_STORAGE']
+        ENV['QA_ADDITIONAL_REPOSITORY_STORAGE'] || 'secondary'
       end
 
       def non_cluster_repository_storage
@@ -47,7 +47,7 @@ module QA
       end
 
       def praefect_repository_storage
-        ENV['QA_PRAEFECT_REPOSITORY_STORAGE']
+        ENV['QA_PRAEFECT_REPOSITORY_STORAGE'] || 'default'
       end
 
       def interception_enabled?

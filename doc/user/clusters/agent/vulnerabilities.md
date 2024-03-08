@@ -15,11 +15,11 @@ DETAILS:
 
 ## Supported architectures
 
-Operational Container Scanning runs only on `linux/amd64` architecture due to a limitation of the [Trivy wrapper](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) image used for the scanning. To track support for `linux/arm64` see [issue 442804](https://gitlab.com/gitlab-org/gitlab/-/issues/442804).
+Starting from GitLab Agent for Kubernetes v16.10.0 and with the GitLab Agent Helm Chart version v1.25.0, operational container scanning (OCS) is supported for `linux/arm64` and `linux/amd64`. For previous versions only `linux/amd64` is supported.
 
 ## Enable operational container scanning
 
-You can use operational container scanning (OCS) to scan container images in your cluster for security vulnerabilities.
+You can use OCS to scan container images in your cluster for security vulnerabilities.
 Starting from GitLab Agent release 16.9, OCS uses a [wrapper image](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) around [Trivy](https://github.com/aquasecurity/trivy) to scan images for vulnerabilities.
 Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurity/trivy) image.
 

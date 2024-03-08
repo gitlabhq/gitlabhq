@@ -19,8 +19,9 @@ module QA
         end
       end
 
-      it 'pushes to a project using a specific Praefect repository storage', :smoke, :skip_fips_env, :requires_admin,
-        :requires_praefect, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347789' do
+      it 'pushes to a project using a specific Praefect repository storage',
+        :smoke, :skip_fips_env, :requires_admin, :skip_live_env, :requires_praefect,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347789' do
         Flow::Login.sign_in_as_admin
 
         project = create(:project,
