@@ -19,7 +19,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
           My precious issue
         </span>
         <gl-icon-stub
-          class="gl-text-gray-200"
+          class="gl-flex-shrink-0 gl-text-gray-200"
           name="chevron-right"
           size="16"
         />
@@ -62,9 +62,20 @@ exports[`Design management toolbar component renders design and updated data 1`]
       buttonicon="archive"
       buttonsize="medium"
       buttonvariant="default"
-      class="gl-ml-3 gl-mr-6"
+      class="gl-ml-3"
       hasselecteddesigns="true"
       title="Archive design"
+    />
+    <gl-button-stub
+      aria-label="Show comments"
+      buttontextclasses=""
+      category="primary"
+      class="gl-ml-3 gl-mr-6"
+      data-testid="toggle-design-sidebar"
+      icon="comments"
+      size="medium"
+      title="Show comments"
+      variant="default"
     />
     <design-navigation-stub
       class="gl-ml-auto"

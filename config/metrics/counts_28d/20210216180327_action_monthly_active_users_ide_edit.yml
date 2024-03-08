@@ -12,7 +12,7 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - g_edit_by_web_ide
     - g_edit_by_sfe

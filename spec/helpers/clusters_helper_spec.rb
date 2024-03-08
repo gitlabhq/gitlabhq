@@ -63,7 +63,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
 
     it 'displays empty image path' do
       expect(subject[:clusters_empty_state_image]).to match(%r{/illustrations/empty-state/empty-state-clusters|svg})
-      expect(subject[:empty_state_image]).to match(%r{/illustrations/empty-state/empty-state-agents|svg})
+      expect(subject[:empty_state_image]).to match(%r{/illustrations/empty-state/empty-environment-md|svg})
     end
 
     it 'displays add cluster using certificate path' do

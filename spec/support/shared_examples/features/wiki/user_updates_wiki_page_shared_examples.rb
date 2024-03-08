@@ -16,10 +16,8 @@ RSpec.shared_examples 'User updates wiki page' do
   end
 
   context 'when wiki is empty', :js do
-    before do |example|
+    before do
       visit(wiki_path(wiki))
-
-      wait_for_svg_to_be_loaded(example)
 
       click_link "Create your first page"
     end

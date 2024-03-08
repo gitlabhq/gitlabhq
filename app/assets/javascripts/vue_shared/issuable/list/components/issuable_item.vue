@@ -91,14 +91,14 @@ export default {
     externalAuthor() {
       return this.issuable.externalAuthor;
     },
-    webUrl() {
-      return this.issuable.gitlabWebUrl || this.issuable.webUrl;
+    issuableLinkHref() {
+      return this.issuable.webPath || this.issuable.gitlabWebUrl || this.issuable.webUrl;
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
     isIssuableUrlExternal() {
-      return isExternal(this.webUrl ?? '');
+      return isExternal(this.issuableLinkHref ?? '');
     },
     reference() {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
@@ -190,7 +190,7 @@ export default {
       );
     },
     issuableNotesLink() {
-      return setUrlFragment(this.webUrl, 'notes');
+      return setUrlFragment(this.issuableLinkHref, 'notes');
     },
     statusBadgeVariant() {
       if (this.isMergeRequest && this.isClosed) {
@@ -238,7 +238,7 @@ export default {
         return;
       }
       e.preventDefault();
-      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.webUrl });
+      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.issuableLinkHref });
     },
   },
 };
@@ -289,7 +289,7 @@ export default {
         <gl-link
           class="issue-title-text"
           dir="auto"
-          :href="webUrl"
+          :href="issuableLinkHref"
           data-testid="issuable-title-link"
           v-bind="issuableTitleProps"
           @click="handleIssuableItemClick"

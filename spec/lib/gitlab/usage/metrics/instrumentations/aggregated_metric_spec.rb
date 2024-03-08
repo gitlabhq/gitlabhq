@@ -42,10 +42,10 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
   end
 
   where(:data_source, :time_frame, :attribute, :expected_value) do
-    'redis_hll' | '28d' | 'user_id'    | 3
-    'redis_hll' | '7d'  | 'user_id'    | 2
-    'redis_hll' | '7d'  | 'project_id' | 1
-    'database'  | '7d'  | 'user_id'    | 3.0
+    'redis_hll' | '28d' | 'user.id'    | 3
+    'redis_hll' | '7d'  | 'user.id'    | 2
+    'redis_hll' | '7d'  | 'project.id' | 1
+    'database'  | '7d'  | 'user.id'    | 3.0
   end
 
   with_them do
@@ -72,29 +72,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
 
     it 'has correct value' do
       expect(described_class.new(metric_definition).value).to be_within(error_rate).percent_of(expected_value)
-    end
-  end
-
-  context "with not allowed aggregate attribute" do
-    let(:metric_definition) do
-      {
-        data_source: 'redis_hll',
-        time_frame: '28d',
-        options: {
-          aggregate: {
-            attribute: 'project.name'
-          },
-          events: %w[
-            g_edit_by_snippet_ide
-            g_edit_by_web_ide
-          ]
-        }
-      }
-    end
-
-    it "raises an error" do
-      error_class = Gitlab::Usage::MetricDefinition::InvalidError
-      expect { described_class.new(metric_definition).value }.to raise_error(error_class)
     end
   end
 end

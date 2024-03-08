@@ -13,7 +13,7 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - users_creating_work_items
     - users_updating_work_item_title

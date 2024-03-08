@@ -1,15 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Design management design index page renders design index 1`] = `
+exports[`Design management design index page when loaded renders design index 1`] = `
 <div
   class="design-detail fixed-top gl-bg-gray-10 gl-display-flex gl-flex-direction-column gl-justify-content-center gl-lg-flex-direction-row gl-w-full js-design-detail"
 >
   <div
     class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-relative"
   >
-    <div
+    <toolbar-stub
+      __typename="Design"
+      description="Test description"
+      descriptionhtml="Test description"
+      design="[object Object]"
+      diffrefs="[object Object]"
+      discussions="[object Object]"
+      event="NONE"
+      filename="test.jpg"
+      fullpath="full-design-path"
+      id="reference-0"
       iid="1"
+      image="test.jpg"
+      imagev432x230="test.jpg"
+      islatestversion="true"
+      issidebaropen="true"
+      issue="[object Object]"
+      notescount="0"
       project-path="project-path"
+      updatedby="[object Object]"
     />
     <div
       class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-lg-flex-direction-row gl-overflow-hidden gl-relative"
@@ -31,141 +48,7 @@ exports[`Design management design index page renders design index 1`] = `
           />
         </div>
       </div>
-      <design-disclosure-stub
-        open="true"
-      >
-        <div
-          class="gl-h-full gl-pt-0 image-notes"
-        >
-          <description-form-stub
-            class="gl-mt-4"
-            design="[object Object]"
-            designvariables="[object Object]"
-            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-          />
-          <participants-stub
-            class="gl-mb-4"
-            lazy="true"
-            numberoflessparticipants="8"
-            participants="[object Object]"
-          />
-          <design-note-signed-out-stub
-            class="gl-mb-4"
-            isadddiscussion="true"
-            registerpath=""
-            signinpath=""
-          />
-          <design-discussion-stub
-            data-testid="unresolved-discussion"
-            designid="gid::/gitlab/Design/1"
-            discussion="[object Object]"
-            discussionwithopenform=""
-            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-            noteableid="gid::/gitlab/Design/1"
-            registerpath=""
-            signinpath=""
-          />
-          <gl-accordion-stub
-            class="gl-mb-5"
-            headerlevel="3"
-          >
-            <gl-accordion-item-stub
-              headerclass="gl-mb-5!"
-              title="Resolved Comments (1)"
-            >
-              <design-discussion-stub
-                data-testid="resolved-discussion"
-                designid="gid::/gitlab/Design/1"
-                discussion="[object Object]"
-                discussionwithopenform=""
-                markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-                noteableid="gid::/gitlab/Design/1"
-                registerpath=""
-                signinpath=""
-              />
-            </gl-accordion-item-stub>
-          </gl-accordion-stub>
-        </div>
-      </design-disclosure-stub>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Design management design index page with error GlAlert is rendered in correct position with correct content 1`] = `
-<div
-  class="design-detail fixed-top gl-bg-gray-10 gl-display-flex gl-flex-direction-column gl-justify-content-center gl-lg-flex-direction-row gl-w-full js-design-detail"
->
-  <div
-    class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-relative"
-  >
-    <div
-      iid="1"
-      project-path="project-path"
-    />
-    <div
-      class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-lg-flex-direction-row gl-overflow-hidden gl-relative"
-    >
-      <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-2 gl-overflow-hidden gl-relative"
-      >
-        <div
-          class="gl-p-5"
-        >
-          <gl-alert-stub
-            dismissible="true"
-            dismisslabel="Dismiss"
-            primarybuttonlink=""
-            primarybuttontext=""
-            secondarybuttonlink=""
-            secondarybuttontext=""
-            showicon="true"
-            title=""
-            variant="danger"
-          >
-            woops
-          </gl-alert-stub>
-        </div>
-        <design-presentation-stub
-          discussions=""
-          image="test.jpg"
-          imagename="test.jpg"
-          scale="1"
-        />
-        <div
-          class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
-        >
-          <design-scaler-stub
-            maxscale="2"
-          />
-        </div>
-      </div>
-      <design-disclosure-stub
-        open="true"
-      >
-        <div
-          class="gl-h-full gl-pt-0 image-notes"
-        >
-          <description-form-stub
-            class="gl-mt-4"
-            design="[object Object]"
-            designvariables="[object Object]"
-            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-          />
-          <participants-stub
-            class="gl-mb-4"
-            lazy="true"
-            numberoflessparticipants="8"
-            participants="[object Object]"
-          />
-          <design-note-signed-out-stub
-            class="gl-mb-4"
-            isadddiscussion="true"
-            registerpath=""
-            signinpath=""
-          />
-        </div>
-      </design-disclosure-stub>
+      <div />
     </div>
   </div>
 </div>

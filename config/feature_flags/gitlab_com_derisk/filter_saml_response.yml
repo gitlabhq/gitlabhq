@@ -1,0 +1,9 @@
+---
+name: filter_saml_response
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435308
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146454
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/446101
+milestone: '16.10'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

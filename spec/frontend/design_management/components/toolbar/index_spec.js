@@ -1,8 +1,8 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
@@ -32,7 +32,7 @@ describe('Design management toolbar component', () => {
       [permissionsQuery, jest.fn().mockResolvedValue(getPermissionsQueryResponse(createDesign))],
     ]);
 
-    wrapper = shallowMount(Toolbar, {
+    wrapper = shallowMountExtended(Toolbar, {
       apolloProvider: mockApollo,
       router,
       propsData: {
@@ -130,5 +130,14 @@ describe('Design management toolbar component', () => {
     expect(wrapper.findComponent(GlButton).attributes('href')).toBe(
       '/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d',
     );
+  });
+
+  it('emits toggle-sidebar event when clicking on toggle sidebar button', async () => {
+    createComponent();
+
+    wrapper.findByTestId('toggle-design-sidebar').vm.$emit('click');
+    await nextTick();
+
+    expect(wrapper.emitted('toggle-sidebar')).toHaveLength(1);
   });
 });

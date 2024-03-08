@@ -93,6 +93,7 @@ export default {
       resolvedDiscussionsExpanded: false,
       prevCurrentUserTodos: null,
       maxScale: DEFAULT_MAX_SCALE,
+      isSidebarOpen: true,
     };
   },
   apollo: {
@@ -322,6 +323,9 @@ export default {
     setMaxScale(event) {
       this.maxScale = 1 / event;
     },
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,
@@ -351,8 +355,10 @@ export default {
             :is-latest-version="isLatestVersion"
             :is-loading="isLoading"
             :design="design"
+            :is-sidebar-open="isSidebarOpen"
             v-bind="design"
             @delete="mutate"
+            @toggle-sidebar="toggleSidebar"
           />
         </template>
       </design-destroyer>
@@ -376,6 +382,7 @@ export default {
             :scale="scale"
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
             :is-loading="isLoading"
+            :disable-commenting="!isSidebarOpen"
             @openCommentForm="openCommentForm"
             @closeCommentForm="closeCommentForm"
             @moveNote="onMoveNote"
@@ -394,6 +401,7 @@ export default {
           :resolved-discussions-expanded="resolvedDiscussionsExpanded"
           :markdown-preview-path="markdownPreviewPath"
           :is-loading="isLoading"
+          :is-open="isSidebarOpen"
           @deleteNoteError="onDeleteNoteError"
           @resolveDiscussionError="onResolveDiscussionError"
           @toggleResolvedComments="toggleResolvedComments"

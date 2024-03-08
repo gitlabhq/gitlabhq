@@ -52,8 +52,8 @@
                 "properties": {
                   "attribute": {
                     "enum": [
-                      "user_id",
-                      "project_id"
+                      "user.id",
+                      "project.id"
                     ]
                   }
                 },

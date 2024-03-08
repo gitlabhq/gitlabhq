@@ -12,7 +12,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
   - i_ecosystem_jira_service_close_issue
   - i_ecosystem_jira_service_cross_reference

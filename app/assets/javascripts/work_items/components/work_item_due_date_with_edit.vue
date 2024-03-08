@@ -260,6 +260,7 @@ export default {
             container="body"
             :disabled="isDatepickerDisabled"
             :input-id="$options.startDateInputId"
+            :target="null"
             show-clear-button
             class="work-item-date-picker"
             @clear="clearStartDatePicker"
@@ -279,6 +280,7 @@ export default {
             :disabled="isDatepickerDisabled"
             :input-id="$options.dueDateInputId"
             :min-date="dirtyStartDate"
+            :target="null"
             show-clear-button
             class="work-item-date-picker"
             data-testid="due-date-picker"

@@ -30,6 +30,7 @@ describe('DaterangeToken', () => {
           title: 'Last month',
         },
       ],
+      maxDateRange: 7,
     },
   };
 
@@ -96,6 +97,12 @@ describe('DaterangeToken', () => {
     );
   });
 
+  it('sets maxDateRange on the datepicker', async () => {
+    await selectSuggestion(CUSTOM_DATE);
+
+    expect(findDateRangePicker().props('maxDateRange')).toBe(defaultProps.config.maxDateRange);
+  });
+
   it('sets the dataSegmentInputAttributes', () => {
     expect(findGlFilteredSearchToken().props('dataSegmentInputAttributes')).toEqual({
       id: 'time_range_data_segment_input',
@@ -130,6 +137,7 @@ describe('DaterangeToken', () => {
       expect(findDateRangePicker().exists()).toBe(true);
       const today = new Date();
       expect(findDateRangePicker().props('defaultStartDate')).toEqual(today);
+      expect(findDateRangePicker().props('defaultMaxDate')).toEqual(today);
       expect(findDateRangePicker().props('startOpened')).toBe(true);
     });
 

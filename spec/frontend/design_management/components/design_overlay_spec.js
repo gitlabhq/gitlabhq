@@ -338,4 +338,15 @@ describe('Design overlay component', () => {
       });
     });
   });
+
+  describe('when notes are disabled', () => {
+    it('does not render note pins', () => {
+      createComponent({
+        notes,
+        disableNotes: true,
+      });
+
+      expect(findAllNotes()).toHaveLength(0);
+    });
+  });
 });

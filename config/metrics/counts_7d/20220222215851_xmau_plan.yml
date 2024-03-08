@@ -13,7 +13,7 @@ data_source: redis_hll
 time_frame: 7d
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - users_creating_work_items
     - users_updating_work_item_title

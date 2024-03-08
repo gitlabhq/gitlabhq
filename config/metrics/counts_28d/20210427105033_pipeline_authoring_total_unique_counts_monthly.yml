@@ -14,7 +14,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - o_pipeline_authoring_unique_users_committing_ciconfigfile
     - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile

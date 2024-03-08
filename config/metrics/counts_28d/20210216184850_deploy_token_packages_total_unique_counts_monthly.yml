@@ -13,7 +13,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
   - i_package_composer_deploy_token
   - i_package_conan_deploy_token

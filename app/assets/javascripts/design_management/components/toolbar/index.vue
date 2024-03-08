@@ -14,6 +14,8 @@ import CloseButton from './close_button.vue';
 export default {
   i18n: {
     downloadButtonLabel: s__('DesignManagement|Download design'),
+    hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),
+    showCommentsButtonLabel: s__('DesignManagement|Show comments'),
   },
   components: {
     GlButton,
@@ -77,6 +79,10 @@ export default {
       type: Object,
       required: true,
     },
+    isSidebarOpen: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -111,6 +117,11 @@ export default {
     issueTitle() {
       return this.design.issue.title;
     },
+    toggleCommentsButtonLabel() {
+      return this.isSidebarOpen
+        ? this.$options.i18n.hideCommentsButtonLabel
+        : this.$options.i18n.showCommentsButtonLabel;
+    },
   },
   DESIGNS_ROUTE_NAME,
 };
@@ -129,7 +140,7 @@ export default {
           <span class="gl-text-truncate gl-text-gray-900 gl-text-decoration-none">
             {{ issueTitle }}
           </span>
-          <gl-icon name="chevron-right" class="gl-text-gray-200" />
+          <gl-icon name="chevron-right" class="gl-text-gray-200 gl-flex-shrink-0" />
           <span class="gl-text-truncate gl-font-weight-normal">{{ filename }}</span>
         </h2>
         <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
@@ -149,18 +160,26 @@ export default {
         icon="download"
         :title="$options.i18n.downloadButtonLabel"
         :aria-label="$options.i18n.downloadButtonLabel"
-        :class="{ 'gl-mr-6': !isLoggedIn }"
       />
       <delete-button
         v-if="isLatestVersion && canDeleteDesign"
         v-gl-tooltip.bottom
-        class="gl-ml-3 gl-mr-6"
+        class="gl-ml-3"
         :is-deleting="isDeleting"
         button-variant="default"
         button-icon="archive"
         button-category="secondary"
         :title="s__('DesignManagement|Archive design')"
         @delete-selected-designs="$emit('delete')"
+      />
+      <gl-button
+        v-gl-tooltip.bottom
+        icon="comments"
+        :title="toggleCommentsButtonLabel"
+        :aria-label="toggleCommentsButtonLabel"
+        class="gl-ml-3 gl-mr-6"
+        data-testid="toggle-design-sidebar"
+        @click="$emit('toggle-sidebar')"
       />
       <design-navigation :id="id" class="gl-ml-auto" />
     </div>

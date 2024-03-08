@@ -1,13 +1,14 @@
 - breadcrumb_title _('Confluence')
 - page_title _('Confluence')
 - add_page_specific_style 'page_bundles/wiki'
-= render layout: 'shared/empty_states/wikis_layout', locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
-  %h4
-    = s_('WikiEmpty|Confluence is enabled')
-  %p
+
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-wiki-md.svg',
+  title: s_('WikiEmpty|Confluence is enabled'),
+  primary_button_text: s_('WikiEmpty|Go to Confluence'),
+  primary_button_link: @project.confluence_integration.confluence_url,
+  empty_state_options: { data: { testid: 'wiki-empty-state' } }) do |c|
+
+  - c.with_description do
     - wiki_confluence_epic_link_url = 'https://gitlab.com/groups/gitlab-org/-/epics/3629'
     - wiki_confluence_epic_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wiki_confluence_epic_link_url }
     = html_escape(s_("WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}.")) % { wiki_confluence_epic_link_start: wiki_confluence_epic_link_start, wiki_confluence_epic_link_end: '</a>'.html_safe }
-  = link_button_to @project.confluence_integration.confluence_url, target: '_blank', rel: 'noopener noreferrer', class: 'external-url', title: s_('WikiEmpty|Go to Confluence'), variant: :confirm do
-    = s_('WikiEmpty|Go to Confluence')
-    = sprite_icon('external-link')

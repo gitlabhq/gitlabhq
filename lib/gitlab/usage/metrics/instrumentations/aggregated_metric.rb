@@ -12,7 +12,7 @@ module Gitlab
         # data_source: redis_hll
         # options:
         #   aggregate:
-        #     attribute: user_id
+        #     attribute: user.id
         #   events:
         #     - 'incident_management_alert_status_changed'
         #     - 'incident_management_alert_assigned'
@@ -21,13 +21,6 @@ module Gitlab
 
         class AggregatedMetric < BaseMetric
           FALLBACK = -1
-          # This map is necessary because AggregatedMetrics' `:attribute` format
-          # is different from internal_events `events.unique` format.
-          # To be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/439609
-          ALLOWED_ATTRIBUTES_MAP = {
-            'user_id' => 'user.id',
-            'project_id' => 'project.id'
-          }.freeze
 
           def initialize(metric_definition)
             super
@@ -54,17 +47,8 @@ module Gitlab
             {
               source: source,
               events: options[:events],
-              attribute: attribute
+              attribute: aggregate[:attribute]
             }
-          end
-
-          def attribute
-            config_attribute = aggregate[:attribute]
-
-            return ALLOWED_ATTRIBUTES_MAP[config_attribute] if ALLOWED_ATTRIBUTES_MAP.key?(config_attribute)
-
-            info = "#{self.class.name} only accepts the following aggregate.attributes: #{ALLOWED_ATTRIBUTES_MAP.keys}"
-            raise Gitlab::Usage::MetricDefinition::InvalidError, info
           end
         end
       end

@@ -81,6 +81,8 @@ you're ready to learn about Git workflows and branching strategies:
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
 - [Introduction to Git rebase, force-push, and merge conflicts](git_rebase.md)
+- [GitLab Flow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/)
+  - [GitLab Flow best practices](https://about.gitlab.com/topics/version-control/what-are-gitlab-flow-best-practices/)
 - From the official Git documentation:
   - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
   - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)

@@ -180,6 +180,7 @@ export const AGENT_STATUSES = {
 };
 
 export const I18N_AGENTS_EMPTY_STATE = {
+  title: s__("ClusterIntegration|Your project doesn't have any GitLab agents"),
   introText: s__(
     'ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
   ),

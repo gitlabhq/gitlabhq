@@ -60,6 +60,10 @@ export default {
       type: Object,
       required: true,
     },
+    isOpen: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -134,7 +138,7 @@ export default {
 </script>
 
 <template>
-  <design-disclosure :open="true">
+  <design-disclosure :open="isOpen">
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
         <description-form

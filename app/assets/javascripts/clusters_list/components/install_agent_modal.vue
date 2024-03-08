@@ -295,19 +295,13 @@ export default {
       />
     </template>
 
-    <template v-else>
-      <div class="gl-text-center gl-mb-5">
-        <img :alt="$options.i18n.altText" :src="emptyStateImage" height="100" />
-      </div>
-
-      <p v-if="kasDisabled">
-        <gl-sprintf :message="$options.i18n.enableKasText">
-          <template #link="{ content }">
-            <gl-link :href="$options.enableKasPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-    </template>
+    <gl-alert v-else :dismissible="false" variant="warning">
+      <gl-sprintf :message="$options.i18n.enableKasText">
+        <template #link="{ content }">
+          <gl-link :href="$options.enableKasPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-alert>
 
     <template #modal-footer>
       <gl-button

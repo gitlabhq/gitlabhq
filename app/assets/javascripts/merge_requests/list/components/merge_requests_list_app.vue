@@ -12,11 +12,10 @@ import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
-  isSortKey,
 } from '~/issues/list/utils';
 import {
   CREATED_DESC,
@@ -25,7 +24,6 @@ import {
   PARAM_PAGE_AFTER,
   PARAM_PAGE_BEFORE,
   PARAM_STATE,
-  UPDATED_DESC,
   urlSortParams,
 } from '~/issues/list/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -261,20 +259,12 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    updateData(sortValue) {
+    updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-      const dashboardSortKey = getSortKey(sortValue);
-      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
-
-      const sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
-
-      const tokens = getFilterTokens(window.location.search);
-      this.filterTokens = tokens;
-
+      this.filterTokens = getFilterTokens(window.location.search);
       this.pageParams = getInitialPageParams(
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
@@ -282,7 +272,7 @@ export default {
         getParameterByName(PARAM_PAGE_AFTER),
         getParameterByName(PARAM_PAGE_BEFORE),
       );
-      this.sortKey = sortKey;
+      this.sortKey = deriveSortKey({ sort, state });
       this.state = state || STATUS_OPEN;
     },
   },

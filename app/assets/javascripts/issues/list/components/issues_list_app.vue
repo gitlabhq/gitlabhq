@@ -103,12 +103,11 @@ import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
   groupMultiSelectFilterTokens,
-  isSortKey,
   mapWorkItemWidgetsToIssueFields,
   updateUpvotesCount,
 } from '../utils';
@@ -789,22 +788,16 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    updateData(sortValue) {
+    updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-      const dashboardSortKey = getSortKey(sortValue);
-      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
-
-      // The initial sort is an old enum value when it is saved on the Haml dashboard issues page.
-      // The initial sort is a GraphQL enum value when it is saved on the Vue group/project issues page.
-      let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+      let sortKey = deriveSortKey({ sort, state });
 
       if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
         this.showIssueRepositioningMessage();
-        sortKey = defaultSortKey;
+        sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
       const tokens = getFilterTokens(window.location.search);

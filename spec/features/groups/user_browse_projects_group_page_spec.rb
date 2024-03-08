@@ -23,7 +23,7 @@ RSpec.describe 'User browse group projects page', feature_category: :groups_and_
           visit projects_group_path(group)
 
           expect(page).to have_link project.name
-          expect(page).to have_css('span.badge.badge-info', text: 'Archived')
+          expect(page).to have_css('span.gl-badge.badge-info', text: 'Archived')
         end
       end
     end

@@ -265,7 +265,7 @@ You can use a YAML file to define your aggregated metrics. The following argumen
 
 Refer to merge request [98206](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) for an example of a merge request that adds an `AggregatedMetric` metric.
 
-Count unique `user_ids` that occurred in at least one of the events: `incident_management_alert_status_changed`,
+Count unique `user.id`s that occurred in at least one of the events: `incident_management_alert_status_changed`,
 `incident_management_alert_assigned`, `incident_management_alert_todo`, `incident_management_alert_create_incident`.
 
 ```yaml
@@ -274,7 +274,7 @@ instrumentation_class: AggregatedMetric
 data_source: internal_events
 options:
     aggregate:
-        attribute: user_id
+        attribute: user.id
     events:
         - `incident_management_alert_status_changed`
         - `incident_management_alert_assigned`
@@ -380,7 +380,7 @@ instrumentation_class: MergeUsageCountAggregatedMetric
 data_source: redis_hll
 options:
     aggregate:
-        attribute: user_id
+        attribute: user.id
     events:
         - `incident_management_alert_status_changed`
         - `incident_management_alert_assigned`

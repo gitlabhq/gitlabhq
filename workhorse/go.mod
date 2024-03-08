@@ -21,7 +21,7 @@ require (
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.1
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	gitlab.com/gitlab-org/gitaly/v16 v16.9.1
 	gitlab.com/gitlab-org/labkit v1.21.0
 	gocloud.dev v0.36.0

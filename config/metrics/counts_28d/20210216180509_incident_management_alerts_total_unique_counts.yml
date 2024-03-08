@@ -12,7 +12,7 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - 'incident_management_alert_status_changed'
     - 'incident_management_alert_assigned'

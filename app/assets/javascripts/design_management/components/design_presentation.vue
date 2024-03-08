@@ -46,6 +46,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    disableCommenting: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -324,7 +328,8 @@ export default {
         :position="overlayPosition"
         :notes="discussionStartingNotes"
         :current-comment-form="currentCommentForm"
-        :disable-commenting="!isLoggedIn || isDraggingDesign"
+        :disable-commenting="!isLoggedIn || isDraggingDesign || disableCommenting"
+        :disable-notes="disableCommenting"
         :resolved-discussions-expanded="resolvedDiscussionsExpanded"
         @openCommentForm="openCommentForm"
         @closeCommentForm="closeCommentForm"

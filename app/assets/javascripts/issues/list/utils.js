@@ -28,6 +28,7 @@ import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
 } from '~/work_items/constants';
+import { STATUS_CLOSED, STATUS_OPEN } from '../constants';
 import {
   ALTERNATIVE_FILTER,
   API_PARAM,
@@ -78,10 +79,18 @@ export const getInitialPageParams = (
   beforeCursor,
 });
 
-export const getSortKey = (sort) =>
-  Object.keys(urlSortParams).find((key) => urlSortParams[key] === sort);
+export const getSortKey = (sort, sortMap = urlSortParams) =>
+  Object.keys(sortMap).find((key) => sortMap[key] === sort);
 
-export const isSortKey = (sort) => Object.keys(urlSortParams).includes(sort);
+export const isSortKey = (sort, sortMap = urlSortParams) => Object.keys(sortMap).includes(sort);
+
+export const deriveSortKey = ({ sort, sortMap, state = STATUS_OPEN }) => {
+  const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+  const legacySortKey = getSortKey(sort, sortMap);
+  const graphQLSortKey = isSortKey(sort?.toUpperCase(), sortMap) && sort.toUpperCase();
+
+  return legacySortKey || graphQLSortKey || defaultSortKey;
+};
 
 export const getSortOptions = ({
   hasBlockedIssuesFeature,

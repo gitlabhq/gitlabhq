@@ -14,7 +14,7 @@ data_category: optional
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    attribute: user_id
+    attribute: user.id
   events:
     - incident_management_timeline_event_created
     - incident_management_timeline_event_edited

@@ -29,7 +29,7 @@ const $route = {
 const mockDesignVariables = {
   fullPath: 'project-path',
   iid: '1',
-  filenames: ['gid::/gitlab/Design/1'],
+  filenames: ['gid:/gitlab/Design/1'],
   atVersion: null,
 };
 

@@ -1,7 +1,7 @@
 - link = link_to(s_('ClusterIntegration|sign up'), 'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral', target: '_blank', rel: 'noopener noreferrer')
 
 = render Pajamas::AlertComponent.new(title: s_('ClusterIntegration|Did you know?'),
-  alert_options: { class: 'gcp-signup-offer',
+  alert_options: { class: 'gl-mb-6 gcp-signup-offer',
                    data: { feature_id: Users::CalloutsHelper::GCP_SIGNUP_OFFER, dismiss_endpoint: callouts_path }},
                    close_button_options: { data: { track_action: 'click_dismiss', track_label: 'gcp_signup_offer_banner' }}) do |c|
   - c.with_body do
