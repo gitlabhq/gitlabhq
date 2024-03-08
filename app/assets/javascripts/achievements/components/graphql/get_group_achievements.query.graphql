@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "./achievement_fields.fragment.graphql"
 
 query getGroupAchievements(
   $groupFullPath: ID!
@@ -11,9 +12,7 @@ query getGroupAchievements(
     id
     achievements(first: $first, last: $last, after: $after, before: $before) {
       nodes {
-        id
-        name
-        description
+        ...AchievementFragment
       }
       pageInfo {
         ...PageInfo

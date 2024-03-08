@@ -48,7 +48,7 @@ module Preloaders
       group_group_link_table = GroupGroupLink.arel_table
       group_member_table = GroupMember.arel_table
 
-      altered_columns = GroupMember.attribute_names.map do |column_name|
+      altered_columns = GroupMember.column_names.map do |column_name|
         case column_name
         when 'access_level'
           # Consider the limiting effect of group share's access level

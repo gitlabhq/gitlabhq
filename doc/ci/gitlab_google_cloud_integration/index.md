@@ -1,20 +1,27 @@
 ---
-stage: none
-group: unassigned
+stage: Package
+group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab and Google Cloud
+# GitLab and Google Cloud integration
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-As with all projects, the items mentioned on this page are subject to change or delay.
-The development, release, and timing of any products, features, or functionality remain at the
-sole discretion of GitLab Inc.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
 
-The GitLab and Google Cloud integration combines GitLab source code management, planning, CI/CD workflow, advanced security, and compliance capabilities
-with the unified data plane in Google’s Cloud console and Artifact Registry.
+FLAG:
+On GitLab.com, this feature is available for a subset of users.
+On GitLab Dedicated, this feature is not available.
 
-For more information, see [Better together with GitLab and Google Cloud](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/).
+This feature is in [Beta](../../policy/experiment-beta-support.md).
+To test this feature, join the [waitlist](https://forms.gle/XdxdTxC7DXj4NSaz9).
+
+Use the Google Cloud integration to use Google Cloud resources in GitLab projects.
+
+To get started, see [Set up the Google Cloud integration](../../tutorials/set_up_gitlab_google_integration/index.md).
+
+- [Google Cloud workload identity federation and IAM](../../integration/google_cloud_iam.md)
+- [Google Artifact Registry](../../user/project/integrations/google_artifact_registry.md)
+- [Provisioning runners to Google Cloud](../runners/provision_runners_google_cloud.md)

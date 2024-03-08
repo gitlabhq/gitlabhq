@@ -10,19 +10,18 @@ const JUST_APPROVED = 'approved';
 
 const REVIEW_STATE_ICONS = {
   APPROVED: {
-    name: 'status-success',
+    name: 'check-circle',
     class: 'gl-text-green-500',
     title: __('Reviewer approved changes'),
   },
   REQUESTED_CHANGES: {
-    name: 'status-alert',
+    name: 'error',
     class: 'gl-text-red-500',
     title: __('Reviewer requested changes'),
   },
   REVIEWED: {
-    name: 'comment',
-    class: 'gl-bg-blue-500 gl-text-white gl-icon s16 gl-rounded-full gl--flex-center',
-    size: 8,
+    name: 'comment-lines',
+    class: 'gl-text-blue-500',
     title: __('Reviewer commented'),
   },
   UNREVIEWED: {

@@ -2700,6 +2700,18 @@ msgstr ""
 msgid "Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"
 msgstr ""
 
+msgid "Achievements|Achievement description cannot be longer than %{length} characters."
+msgstr ""
+
+msgid "Achievements|Achievement has been added."
+msgstr ""
+
+msgid "Achievements|Achievement name cannot be longer than %{length} characters."
+msgstr ""
+
+msgid "Achievements|Achievement name is required."
+msgstr ""
+
 msgid "Achievements|Achievements"
 msgstr ""
 
@@ -2707,6 +2719,15 @@ msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
 msgstr ""
 
 msgid "Achievements|Awarded %{timeAgo} by a private namespace"
+msgstr ""
+
+msgid "Achievements|Description"
+msgstr ""
+
+msgid "Achievements|Name"
+msgstr ""
+
+msgid "Achievements|New achievement"
 msgstr ""
 
 msgid "Achievements|There are currently no achievements."
@@ -4414,6 +4435,9 @@ msgid "Admin|View pending user approvals"
 msgstr ""
 
 msgid "Admin|Your instance has reached its user cap"
+msgstr ""
+
+msgid "Adopted"
 msgstr ""
 
 msgid "Advanced"
@@ -31032,6 +31056,9 @@ msgstr ""
 msgid "Members|Filter members"
 msgstr ""
 
+msgid "Members|Indirect"
+msgstr ""
+
 msgid "Members|Inherited"
 msgstr ""
 
@@ -33494,6 +33521,9 @@ msgid "Normal text"
 msgstr ""
 
 msgid "Normal view"
+msgstr ""
+
+msgid "Not adopted"
 msgstr ""
 
 msgid "Not all browsers support WebAuthn. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in, even from an unsupported browser."
@@ -59657,6 +59687,9 @@ msgid "failed to revert associated finding(id=%{finding_id}) to detected"
 msgstr ""
 
 msgid "failed to revoke token"
+msgstr ""
+
+msgid "features adopted"
 msgstr ""
 
 msgid "file"

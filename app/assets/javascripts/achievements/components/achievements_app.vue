@@ -1,19 +1,25 @@
 <script>
-import { GlEmptyState, GlKeysetPagination, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlKeysetPagination, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import { NEW_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
 
 const ENTRIES_PER_PAGE = 20;
 
 export default {
   components: {
+    GlButton,
     GlEmptyState,
     GlKeysetPagination,
     GlLoadingIcon,
     GlTableLite,
   },
   inject: {
+    canAdminAchievement: {
+      type: Boolean,
+      required: true,
+    },
     groupFullPath: {
       type: String,
       required: true,
@@ -35,10 +41,7 @@ export default {
     achievements: {
       query: getGroupAchievements,
       variables() {
-        return {
-          groupFullPath: this.groupFullPath,
-          ...this.cursor,
-        };
+        return this.queryVariables;
       },
       result({ data }) {
         this.pageInfo = data?.group?.achievements?.pageInfo;
@@ -62,6 +65,18 @@ export default {
     showPagination() {
       return this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage;
     },
+    query() {
+      return {
+        query: getGroupAchievements,
+        variables: this.queryVariables,
+      };
+    },
+    queryVariables() {
+      return {
+        groupFullPath: this.groupFullPath,
+        ...this.cursor,
+      };
+    },
   },
   methods: {
     nextPage(item) {
@@ -83,12 +98,19 @@ export default {
   },
   i18n: {
     emptyStateTitle: s__('Achievements|There are currently no achievements.'),
+    newAchievement: s__('Achievements|New achievement'),
   },
+  NEW_ROUTE_NAME,
 };
 </script>
 
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
+    <router-link v-if="canAdminAchievement" :to="{ name: $options.NEW_ROUTE_NAME }">
+      <gl-button variant="confirm" data-testid="new-achievement-button" class="gl-my-3">
+        {{ $options.i18n.newAchievement }}
+      </gl-button>
+    </router-link>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
     <gl-empty-state v-else-if="!items.length" :title="$options.i18n.emptyStateTitle" />
     <template v-else>
@@ -101,5 +123,6 @@ export default {
         @next="nextPage"
       />
     </template>
+    <router-view :store-query="query" />
   </div>
 </template>

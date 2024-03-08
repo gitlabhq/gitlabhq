@@ -293,6 +293,9 @@ class Member < ApplicationRecord
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
+  # Only false when the current user is a member of the shared group or project but not of the invited private group
+  # so the current user can't see the source of the membership.
+  attribute :is_source_accessible_to_current_user, default: true
 
   class << self
     def search(query)

@@ -150,14 +150,9 @@ module MembershipActions
     when 'exclude'
       [:direct]
     when 'only'
-      [:inherited]
+      [:inherited].concat(shared_members_relations)
     else
-      if Feature.enabled?(:webui_members_inherited_users, current_user)
-        project_relations = [:invited_groups, :shared_into_ancestors]
-        [:inherited, :direct, :shared_from_groups, *(project_relations if params[:project_id])]
-      else
-        [:inherited, :direct]
-      end
+      [:inherited, :direct].concat(shared_members_relations)
     end
   end
 
@@ -187,6 +182,13 @@ module MembershipActions
     else
       {}
     end
+  end
+
+  def shared_members_relations
+    return [] unless Feature.enabled?(:webui_members_inherited_users, current_user)
+
+    project_relations = [:invited_groups, :shared_into_ancestors]
+    [:shared_from_groups, *(project_relations if params[:project_id])]
   end
 end
 

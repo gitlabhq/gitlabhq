@@ -24,7 +24,7 @@ describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
   const findAllRerequestButtons = () => wrapper.findAll('[data-testid="re-request-button"]');
-  const findAllReviewerApprovalIcons = () => wrapper.findAll('[name="status-success"]');
+  const findAllReviewerApprovalIcons = () => wrapper.findAll('[name="check-circle"]');
   const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
 
   const hasApprovalIconAnimation = () =>
@@ -202,9 +202,9 @@ describe('UncollapsedReviewerList component', () => {
     it.each`
       reviewState            | approved | icon
       ${'UNREVIEWED'}        | ${false} | ${'dash-circle'}
-      ${'REVIEWED'}          | ${true}  | ${'status-success'}
-      ${'REVIEWED'}          | ${false} | ${'comment'}
-      ${'REQUESTED_CHANGES'} | ${false} | ${'status-alert'}
+      ${'REVIEWED'}          | ${true}  | ${'check-circle'}
+      ${'REVIEWED'}          | ${false} | ${'comment-lines'}
+      ${'REQUESTED_CHANGES'} | ${false} | ${'error'}
     `(
       'renders $icon for reviewState:$reviewState and approved:$approved',
       ({ reviewState, approved, icon }) => {

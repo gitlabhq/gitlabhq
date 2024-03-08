@@ -108,7 +108,7 @@ For Maven packages, [all clients supported by the package registry](../../maven_
 - `gradle`
 - `sbt`
 
-For authentication, the Maven dependency proxy access all authentication methods accepted by the [Maven package registry](../../maven_repository/index.md#edit-the-client-configuration).
+For authentication, you can use all methods accepted by the [Maven package registry](../../maven_repository/index.md#edit-the-client-configuration).
 You should use the [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) method as it is less complex.
 
 To configure the client:
@@ -122,6 +122,10 @@ To configure the client:
 ::Tabs
 
 :::TabTitle mvn
+
+[Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) is accepted.
+However, you should use the [custom HTTP header authentication](../../maven_repository/index.md#custom-http-header),
+so that `mvn` uses fewer network requests.
 
 In the `pom.xml` file add a `repository` element:
 

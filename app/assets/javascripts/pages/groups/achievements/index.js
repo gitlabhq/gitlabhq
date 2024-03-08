@@ -1,3 +1,4 @@
+import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -8,6 +9,7 @@ import routes from '~/achievements/routes';
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
+Vue.use(GlToast);
 
 const init = () => {
   const el = document.getElementById('js-achievements-app');

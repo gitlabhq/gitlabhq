@@ -7,6 +7,10 @@ module Groups
 
     before_action :authorize_read_achievement!
 
+    def new
+      render action: "index"
+    end
+
     private
 
     def authorize_read_achievement!

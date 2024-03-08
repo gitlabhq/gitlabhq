@@ -611,7 +611,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         ])
 
         expect_cli_output do
-          output = plain_last_lines(1000)
+          output = plain_last_lines
 
           output.include?(expected_example_prompt) &&
             output.include?(expected_rails_example) &&
@@ -675,7 +675,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         ])
 
         expect_cli_output do
-          output = plain_last_lines(320)
+          output = plain_last_lines
 
           output.include?(expected_example_prompt) &&
             output.include?(expected_event1_example) &&
@@ -846,10 +846,10 @@ RSpec.describe Cli, feature_category: :service_ping do
     prompt.input.rewind
   end
 
-  def plain_last_lines(size)
-    prompt.output.string
-      .lines
-      .last(size)
+  def plain_last_lines(size = nil)
+    lines = prompt.output.string.lines
+    lines = lines.last(size) if size
+    lines
       .join('')
       .gsub(/\e[^\sm]{2,4}[mh]/, '') # Ignore text colors
       .gsub(/(\e\[(2K|1G|1A))+\z/, '') # Remove trailing characters if timeout occurs

@@ -23,7 +23,7 @@ Prerequisites:
   - Explicitly defined as a [member](index.md) of the project.
   - Explicitly defined as a member of a group or subgroup that has access to the project.
   - An administrator.
-- You must be a member of the inviting group or subgroup.
+- You must be a member of the invited group or subgroup.
 
 To invite a group to a project:
 

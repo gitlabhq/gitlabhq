@@ -119,7 +119,7 @@ For more information about sharing conditions and behavior, see [Sharing project
 
 Prerequisites:
 
-- You must be a member of the inviting group.
+- You must be a member of the invited and inviting groups.
 
 To invite a group to your group:
 
