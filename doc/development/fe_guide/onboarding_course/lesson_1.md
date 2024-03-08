@@ -47,7 +47,7 @@ Tips for using the GDK:
   This command fetches the latest branch of the GitLab project, as well as the latest branch of the GDK and its dependencies.
   Keeping your GDK up to date helps ensure you will be working with the latest version of GitLab and make sure you have the latest bug fixes.
 
-Remember, if you need further assistance or have specific questions, you can reach out to the GitLab community through our [Discord](https://discord.gg/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/).
+Remember, if you need further assistance or have specific questions, you can reach out to the GitLab community through our [Discord](https://discord.com/invite/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/).
 
 ## Installing and using the GDK locally
 
@@ -180,4 +180,4 @@ When writing a merge request there are some important things to be aware of:
   <iframe src="https://www.youtube-nocookie.com/embed/BJCCwc1Czt4" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-Now it is your turn to complete your first MR, there is a list of issues that are very similar to the one we just finished that need completing [here in the "Linked items" section](https://gitlab.com/gitlab-org/gitlab/-/issues/389920). Thanks for contributing! (if there are none left, let us know on [Discord](https://discord.gg/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/) and we'll find more for you)
+Now it is your turn to complete your first MR, there is a list of issues that are very similar to the one we just finished that need completing [here in the "Linked items" section](https://gitlab.com/gitlab-org/gitlab/-/issues/389920). Thanks for contributing! (if there are none left, let us know on [Discord](https://discord.com/invite/gitlab) or [other available support channels](https://about.gitlab.com/community/contribute/) and we'll find more for you)

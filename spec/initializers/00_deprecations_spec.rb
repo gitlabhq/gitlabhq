@@ -32,6 +32,7 @@ RSpec.describe '00_deprecations', feature_category: :shared do
 
   shared_examples 'logs to Gitlab::DeprecationJsonLogger' do |message, source|
     it 'logs them to Gitlab::DeprecationJsonLogger' do
+      allow(Gitlab::DeprecationJsonLogger).to receive(:info)
       expect(Gitlab::DeprecationJsonLogger).to receive(:info).with(
         message: match(/^#{message}/),
         source: source

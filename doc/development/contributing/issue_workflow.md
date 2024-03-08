@@ -72,7 +72,7 @@ the community for help.
 
 ## Issue triaging
 
-Our issue triage policies are [described in our handbook](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/).
+Our issue triage policies are [described in our handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/).
 You are very welcome to help the GitLab team triage issues.
 
 The most important thing is making sure valid issues receive feedback from the

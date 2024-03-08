@@ -24,7 +24,7 @@ You can follow this tutorial to familiarize yourself with the contribution proce
    - If you use a local development environment, you can start making changes locally while you wait
      for the team to confirm your access.
      You must have access to the community fork to push your changes to it.
-1. We recommend you join the [GitLab Discord server](https://discord.gg/gitlab), where GitLab team
+1. We recommend you join the [GitLab Discord server](https://discord.com/invite/gitlab), where GitLab team
    members and the wider community are ready and waiting to answer your questions and offer support
    for making contributions.
 

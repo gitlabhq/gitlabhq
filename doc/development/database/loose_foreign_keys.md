@@ -560,7 +560,7 @@ nullifies the `merge_requests.head_pipeline_id` column.
 
 Due to the large volume of inserts the database table receives daily, a special partitioning
 strategy was implemented to address data bloat concerns. Originally, the
-[time-decay](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/time-decay.html)
+[time-decay](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/time-decay/)
 strategy was considered for the feature but due to the large data volume we decided to implement a
 new strategy.
 

@@ -333,7 +333,7 @@ Further reading:
 
 - [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability).
 - GraphQL documentation on [Object types and fields](https://graphql.org/learn/schema/#object-types-and-fields).
-- [Using nullability in GraphQL](https://www.apollographql.com/blog/graphql/basics/using-nullability-in-graphql/)
+- [Using nullability in GraphQL](https://www.apollographql.com/blog/using-nullability-in-graphql)
 
 ### Exposing Global IDs
 

@@ -78,7 +78,7 @@ To add a new tool:
 
 1. Test and iterate on the prompt using RSpec tests that make real requests to the large language model.
     - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
-    - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/introduction-to-prompt-design) on working on prompts.
+    - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/intro-to-prompting) on working on prompts.
     - GitLab [guide](prompts.md) on working with prompts.
 
 1. Implement code in the tool to parse the response from the large language model and return it to the zero-shot agent.

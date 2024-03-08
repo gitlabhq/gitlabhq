@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Experiment Guide
 
 Experiments can be conducted by any GitLab team, most often the teams from the
-[Growth Sub-department](https://handbook.gitlab.com/handbook/engineering/development/growth/).
+[Growth Sub-department](https://handbook.gitlab.com/handbook/marketing/growth/engineering/).
 Experiments are not tied to releases because they primarily target GitLab.com.
 
 Experiments are run as an A/B/n test, and are behind an [experiment feature flag](../feature_flags/index.md#experiment-type)
@@ -53,7 +53,7 @@ This uses [experiment](../feature_flags/index.md#experiment-type) feature flags.
 
 Some experiments may require you to add custom icons or illustrations to our codebase.
 This process is lengthy and at this stage, the outcome of the experiment uncertain.
-Therefore, you should postpone this effort until the [experiment cleanup process](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue).
+Therefore, you should postpone this effort until the [experiment cleanup process](https://handbook.gitlab.com/handbook/marketing/growth/engineering/experimentation/#experiment-cleanup-issue).
 
 We recommend the following workflow:
 

@@ -267,7 +267,7 @@ might be missing some of those application-defined `gitlab_shared` tables (like 
 
 ### The special purpose of `gitlab_pm`
 
-`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
+`gitlab_pm` stores package metadata describing public repositories. This data is used for the License Compliance and Dependency Scanning product categories and is maintained by the [Composition Analysis Group](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis/). It is an alias for `gitlab_main` intended to make it easier to route to a different database in the future.
 
 ## Migrations
 

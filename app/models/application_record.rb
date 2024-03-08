@@ -124,6 +124,12 @@ class ApplicationRecord < ActiveRecord::Base
     end
   end
 
+  # This method has been removed in Rails 7.1
+  # However, application relies on it in case-when usages with objects wrapped in presenters
+  def self.===(object)
+    object.is_a?(self)
+  end
+
   def readable_by?(user)
     Ability.allowed?(user, "read_#{to_ability_name}".to_sym, self)
   end

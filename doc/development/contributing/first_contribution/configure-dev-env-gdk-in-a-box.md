@@ -79,7 +79,7 @@ https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_in_a_bo
    [`setup-git` code](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/gdk-in-a-box/setup-git).
 
 1. In VS Code, select **File > Open folder**, and go to: `/home/debian/gitlab-development-kit/gitlab/`.
-1. Open GitLab in your browser: [http://gdk.local:3000](http://gdk.local:3000).
+1. Open GitLab in your browser: `http://gdk.local:3000`.
 1. Sign in with the username `root` and the password `5iveL!fe`.
 1. Continue to [Change the code with the GDK](contribute-gdk.md).
 

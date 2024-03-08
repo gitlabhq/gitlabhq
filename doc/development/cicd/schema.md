@@ -18,7 +18,7 @@ should our CI/CD schema.
 
 ## JSON Schemas
 
-The CI/CD schema follows the [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes.html)
+The CI/CD schema follows the [JSON Schema Draft-07](https://json-schema.org/draft-07/json-schema-release-notes)
 specification. Although the CI/CD configuration file is written in YAML, it is converted
 into JSON by using `monaco-yaml` before it is validated by the CI/CD schema.
 

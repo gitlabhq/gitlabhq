@@ -198,7 +198,7 @@ limits framework using a forward looking rate limiting architecture.
 We are working on defining new requirements and designing the next
 architecture, so if you need new functionalities to add new limits, instead of
 building them right now, consider contributing to the
-[Rate Limiting Architecture Working Group](https://about.gitlab.com/company/team/structure/working-groups/rate-limit-architecture/)
+[Rate Limiting Architecture Working Group](https://handbook.gitlab.com/handbook/company/working-groups/rate-limit-architecture/)
 
 Examples of what features we might want to build into the next iteration of
 rate limiting architecture:

@@ -372,7 +372,7 @@ subscription aiCompletionResponse($userId: UserID, $resourceId: AiModelID, $clie
 
 Note that the [subscription for chat](duo_chat.md#graphql-subscription) behaves differently.
 
-To not have many concurrent subscriptions, you should also only subscribe to the subscription once the mutation is sent by using [`skip()`](https://apollo.vuejs.org/guide/apollo/subscriptions.html#skipping-the-subscription).
+To not have many concurrent subscriptions, you should also only subscribe to the subscription once the mutation is sent by using [`skip()`](https://apollo.vuejs.org/guide-option/subscriptions.html#skipping-the-subscription).
 
 #### Current abstraction layer flow
 

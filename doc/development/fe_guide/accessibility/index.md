@@ -47,7 +47,7 @@ Use these tools and learning resources to improve your web accessibility workflo
 
 ### Viewing the browser accessibility tree
 
-- [Firefox DevTools guide](https://developer.mozilla.org/en-US/docs/Tools/Accessibility_inspector#accessing_the_accessibility_inspector)
+- [Firefox DevTools guide](https://firefox-source-docs.mozilla.org/devtools-user/accessibility_inspector/index.html#accessing-the-accessibility-inspector)
 - [Chrome DevTools guide](https://developer.chrome.com/docs/devtools/accessibility/reference/#pane)
 
 ### Browser extensions

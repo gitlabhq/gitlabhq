@@ -61,7 +61,7 @@ To configure Vale in your editor, install one of the following as appropriate:
   You can configure the plugin to [display only a subset of alerts](#limit-which-tests-are-run).
 - Sublime Text [`SublimeLinter-vale` package](https://packagecontrol.io/packages/SublimeLinter-vale). To have Vale
   suggestions appears as blue instead of red (which is how errors appear), add `vale` configuration to your
-  [SublimeLinter](http://sublimelinter.readthedocs.org) configuration:
+  [SublimeLinter](https://www.sublimelinter.com/en/master/) configuration:
 
   ```json
   "vale": {
