@@ -55464,6 +55464,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|View details"
 msgstr ""
 
+msgid "ValueStreamAnalytics|View value stream"
+msgstr ""
+
 msgid "ValueStreamEvent|Items in stage"
 msgstr ""
 
