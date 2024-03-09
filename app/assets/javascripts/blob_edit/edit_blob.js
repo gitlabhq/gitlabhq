@@ -74,7 +74,12 @@ export default class EditBlob {
     let blobContent = '';
 
     if (filePath) {
-      const { data } = await Api.getRawFile(projectId, filePath, { ref });
+      const { data } = await Api.getRawFile(
+        projectId,
+        filePath,
+        { ref },
+        { responseType: 'text', transformResponse: (x) => x },
+      );
       blobContent = String(data);
     }
 

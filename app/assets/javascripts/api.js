@@ -814,12 +814,12 @@ const Api = {
     return axios.delete(url, { data });
   },
 
-  getRawFile(id, path, params = {}) {
+  getRawFile(id, path, params = {}, options = {}) {
     const url = Api.buildUrl(this.rawFilePath)
       .replace(':id', encodeURIComponent(id))
       .replace(':path', encodeURIComponent(path));
 
-    return axios.get(url, { params });
+    return axios.get(url, { params, ...options });
   },
 
   updateIssue(project, issue, data = {}) {

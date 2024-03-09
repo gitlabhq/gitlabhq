@@ -1,0 +1,9 @@
+---
+name: label_similarity_sort
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443244
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145821
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/448455
+milestone: '16.10'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

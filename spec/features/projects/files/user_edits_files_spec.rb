@@ -6,12 +6,16 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   include Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   include Features::BlobSpecHelpers
+  include TreeHelper
+
+  let_it_be(:json_text) { '{"name":"Best package ever!"}' }
+  let_it_be(:project_with_json) { create(:project, :custom_repo, name: 'Project with json', files: { 'package.json' => json_text }) }
+  let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository, name: 'Shop') }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
-  let(:user) { create(:user) }
 
   before do
     stub_feature_flags(vscode_web_ide: false)
@@ -246,6 +250,18 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       it_behaves_like 'unavailable for an archived project' do
         let(:project) { project2 }
       end
+    end
+  end
+
+  context 'when editing a json file', :js do
+    before_all do
+      project_with_json.add_maintainer(user)
+    end
+
+    it 'loads the content as text' do
+      visit(project_edit_blob_path(project_with_json, tree_join(project_with_json.default_branch, 'package.json')))
+      wait_for_requests
+      expect(find('.monaco-editor')).to have_content(json_text)
     end
   end
 end

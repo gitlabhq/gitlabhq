@@ -99,7 +99,12 @@ describe('Blob Editing', () => {
   describe('file content', () => {
     beforeEach(() => initEditor());
     it('requests raw file content', () => {
-      expect(Api.getRawFile).toHaveBeenCalledWith(projectId, filePath, { ref: 'main' });
+      expect(Api.getRawFile).toHaveBeenCalledWith(
+        projectId,
+        filePath,
+        { ref: 'main' },
+        { responseType: 'text', transformResponse: expect.any(Function) },
+      );
     });
 
     it('creates an editor instance with the raw content', () => {

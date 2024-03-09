@@ -117,6 +117,9 @@ describe('IssuesDashboardApp component', () => {
       propsData: {
         eeTypeTokenOptions,
       },
+      stubs: {
+        GlIntersperse: true,
+      },
     });
   };
 

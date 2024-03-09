@@ -419,6 +419,7 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
+          multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
           type: TOKEN_TYPE_TYPE,

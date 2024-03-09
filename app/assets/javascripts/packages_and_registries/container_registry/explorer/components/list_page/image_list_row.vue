@@ -66,7 +66,9 @@ export default {
   },
   computed: {
     disabledDelete() {
-      return !this.item.canDelete || this.deleting || this.migrating;
+      return (
+        !this.item.userPermissions.destroyContainerRepository || this.deleting || this.migrating
+      );
     },
     id() {
       return getIdFromGraphQLId(this.item.id);

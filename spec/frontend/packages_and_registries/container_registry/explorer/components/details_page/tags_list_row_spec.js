@@ -70,7 +70,7 @@ describe('tags list row', () => {
     });
 
     it("does not exist when the row can't be deleted", () => {
-      const customTag = { ...tag, canDelete: false };
+      const customTag = { ...tag, userPermissions: { destroyContainerRepositoryTag: false } };
 
       mountComponent({ ...defaultProps, tag: customTag });
 
@@ -306,8 +306,11 @@ describe('tags list row', () => {
       expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(false);
     });
 
-    it('is not rendered when tag.canDelete is false', () => {
-      mountComponent({ ...defaultProps, tag: { ...tag, canDelete: false } });
+    it('is not rendered when tag.userPermissions.destroyContainerRegistryTag is false', () => {
+      mountComponent({
+        ...defaultProps,
+        tag: { ...tag, userPermissions: { destroyContainerRepositoryTag: false } },
+      });
 
       expect(findAdditionalActionsMenu().exists()).toBe(false);
     });

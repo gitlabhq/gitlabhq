@@ -45,4 +45,30 @@ RSpec.describe 'Search for labels', :js, feature_category: :team_planning do
     expect(page).not_to have_content(label2.title)
     expect(page).not_to have_content(label2.description)
   end
+
+  context 'when label_similarity_sort is enabled' do
+    before do
+      stub_feature_flags(label_similarity_sort: true)
+    end
+
+    it 'sorts by relevance when searching' do
+      find('#label-search').fill_in(with: 'Bar')
+      find('#label-search').native.send_keys(:enter)
+
+      expect(page).to have_button('Relevance')
+    end
+  end
+
+  context 'when label_similarity_sort is disabled' do
+    before do
+      stub_feature_flags(label_similarity_sort: false)
+    end
+
+    it 'sorts by relevance when searching' do
+      find('#label-search').fill_in(with: 'Bar')
+      find('#label-search').native.send_keys(:enter)
+
+      expect(page).to have_button('Name')
+    end
+  end
 end

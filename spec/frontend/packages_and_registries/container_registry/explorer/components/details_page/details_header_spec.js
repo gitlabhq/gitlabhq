@@ -108,15 +108,20 @@ describe('Details Header', () => {
 
   describe('menu', () => {
     it.each`
-      canDelete | disabled | isVisible
-      ${true}   | ${false} | ${true}
-      ${true}   | ${true}  | ${false}
-      ${false}  | ${false} | ${false}
-      ${false}  | ${true}  | ${false}
+      destroyContainerRepository | disabled | isVisible
+      ${true}                    | ${false} | ${true}
+      ${true}                    | ${true}  | ${false}
+      ${false}                   | ${false} | ${false}
+      ${false}                   | ${true}  | ${false}
     `(
-      'when canDelete is $canDelete and disabled is $disabled is $isVisible that the menu is visible',
-      ({ canDelete, disabled, isVisible }) => {
-        mountComponent({ propsData: { image: { ...defaultImage, canDelete }, disabled } });
+      'when userPermissions.destroyContainerRepository is $destroyContainerRepository and disabled is $disabled is $isVisible that the menu is visible',
+      ({ destroyContainerRepository, disabled, isVisible }) => {
+        mountComponent({
+          propsData: {
+            image: { ...defaultImage, userPermissions: { destroyContainerRepository } },
+            disabled,
+          },
+        });
 
         expect(findMenu().exists()).toBe(isVisible);
       },

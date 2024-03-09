@@ -159,7 +159,8 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
       end
 
       it 'filters issues by multiple labels with not operator' do
-        select_tokens 'Label', '!=', bug_label.title, 'Label', '=', caps_sensitive_label.title, submit: true
+        select_tokens 'Label', '!=', bug_label.title, submit: true
+        select_tokens 'Label', '=', caps_sensitive_label.title, submit: true
 
         expect_negated_label_token(bug_label.title)
         expect_label_token(caps_sensitive_label.title)

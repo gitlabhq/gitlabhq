@@ -102,7 +102,7 @@ export default {
       }[this.imageDetails?.expirationPolicyCleanupStatus];
     },
     deleteButtonDisabled() {
-      return this.disabled || !this.imageDetails.canDelete;
+      return this.disabled || !this.imageDetails.userPermissions.destroyContainerRepository;
     },
     rootImageTooltip() {
       return !this.imageDetails.name ? ROOT_IMAGE_TOOLTIP : '';

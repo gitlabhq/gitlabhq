@@ -183,6 +183,7 @@ describe('groupMultiSelectFilterTokens', () => {
       groupMultiSelectFilterTokens(filteredTokens, [
         { type: 'assignee', multiSelect: true },
         { type: 'author', multiSelect: true },
+        { type: 'label', multiSelect: true },
       ]),
     ).toEqual(groupedFilteredTokens);
   });

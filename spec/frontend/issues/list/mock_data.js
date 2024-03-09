@@ -264,10 +264,23 @@ const makeFilteredTokens = ({ grouped }) => [
   { type: TOKEN_TYPE_MILESTONE, value: { data: 'season 30', operator: OPERATOR_NOT } },
   { type: TOKEN_TYPE_LABEL, value: { data: 'cartoon', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_LABEL, value: { data: 'tv', operator: OPERATOR_IS } },
-  { type: TOKEN_TYPE_LABEL, value: { data: 'live action', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_LABEL, value: { data: 'drama', operator: OPERATOR_NOT } },
-  { type: TOKEN_TYPE_LABEL, value: { data: 'comedy', operator: OPERATOR_OR } },
-  { type: TOKEN_TYPE_LABEL, value: { data: 'sitcom', operator: OPERATOR_OR } },
+  ...(grouped
+    ? [
+        {
+          type: TOKEN_TYPE_LABEL,
+          value: { data: ['live action', 'drama'], operator: OPERATOR_NOT },
+        },
+      ]
+    : [
+        { type: TOKEN_TYPE_LABEL, value: { data: 'live action', operator: OPERATOR_NOT } },
+        { type: TOKEN_TYPE_LABEL, value: { data: 'drama', operator: OPERATOR_NOT } },
+      ]),
+  ...(grouped
+    ? [{ type: TOKEN_TYPE_LABEL, value: { data: ['comedy', 'sitcom'], operator: OPERATOR_OR } }]
+    : [
+        { type: TOKEN_TYPE_LABEL, value: { data: 'comedy', operator: OPERATOR_OR } },
+        { type: TOKEN_TYPE_LABEL, value: { data: 'sitcom', operator: OPERATOR_OR } },
+      ]),
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v3', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v4', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_RELEASE, value: { data: 'v20', operator: OPERATOR_NOT } },

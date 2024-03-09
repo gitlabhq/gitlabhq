@@ -75,6 +75,33 @@ class Label < ApplicationRecord
       .with_preloaded_container
   end
 
+  scope :sorted_by_similarity_desc, -> (search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["title"], multiplier: 1 },
+        { column: arel_table["description"], multiplier: 0.2 }
+      ])
+
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          distinct: false,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Label.arel_table[:id].desc
+        )
+      ])
+
+    order.apply_cursor_conditions(reorder(order))
+  end
+
   def self.pluck_titles
     pluck(:title)
   end

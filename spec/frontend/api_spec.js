@@ -1202,6 +1202,18 @@ describe('Api', () => {
           expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params });
         });
       });
+
+      describe('when the method is called with options', () => {
+        it('sets the params and options on the request', () => {
+          const options = { responseType: 'text', transformRequest: (x) => x };
+          const params = { ref: 'main' };
+          jest.spyOn(axios, 'get');
+
+          Api.getRawFile(dummyProjectPath, dummyFilePath, params, options);
+
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params, ...options });
+        });
+      });
     });
 
     describe('when an error occurs while getting a raw file', () => {

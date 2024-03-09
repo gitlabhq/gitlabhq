@@ -141,7 +141,7 @@ module FilteredSearchHelpers
     create_token('Release', release_tag)
   end
 
-  def label_token(label_name = nil, has_symbol = true)
+  def label_token(label_name = nil, has_symbol = false)
     symbol = has_symbol ? '~' : nil
     create_token('Label', label_name, symbol)
   end
@@ -264,11 +264,11 @@ module FilteredSearchHelpers
   end
 
   def expect_label_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Label = ~#{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: "Label = #{value}"
   end
 
   def expect_negated_label_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Label != ~#{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: "Label != #{value}"
   end
 
   def expect_milestone_token(value)

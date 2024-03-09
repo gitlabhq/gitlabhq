@@ -417,6 +417,17 @@ RSpec.describe Label, feature_category: :team_planning do
     end
   end
 
+  describe '.sorted_by_similarity_desc' do
+    context 'when sorted by similarity' do
+      it 'returns most relevant labels first' do
+        label1 = create(:label, title: 'exact')
+        label2 = create(:label, title: 'less exact')
+        label3 = create(:label, title: 'other', description: 'mentions exact')
+        expect(described_class.sorted_by_similarity_desc('exact')).to eq([label1, label2, label3])
+      end
+    end
+  end
+
   describe '.optionally_subscribed_by' do
     let!(:user)   { create(:user) }
     let!(:label)  { create(:label) }
