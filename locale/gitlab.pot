@@ -45379,6 +45379,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this project."
 msgstr ""
 
+msgid "SecurityOrchestration|Enforce policy on all groups, subgroups, and projects linked to the security policy project. %{linkStart}How does scoping work?%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
 msgstr ""
 
@@ -45762,6 +45765,9 @@ msgstr ""
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
 msgstr ""
 
+msgid "SecurityOrchestration|Turn off default mode to edit scope."
+msgstr ""
+
 msgid "SecurityOrchestration|Unlink project"
 msgstr ""
 
@@ -45778,6 +45784,9 @@ msgid "SecurityOrchestration|Use a merge request approval policy to create rules
 msgstr ""
 
 msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, SAST IaC, DAST, Secret detection, Container scanning, and Dependency scanning."
+msgstr ""
+
+msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
