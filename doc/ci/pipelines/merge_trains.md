@@ -176,6 +176,52 @@ NOTE:
 The **merge immediately** option may not be available if your project utilizes the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) 
 merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
 
+### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414505) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `merge_trains_skip_train`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/422111) as an [experiment feature](../../policy/experiment-beta-support.md) in GitLab 16.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature,
+an administrator can [disable the feature flag](../../administration/feature_flags.md)
+named `merge_trains_skip_train`. On GitLab.com and GitLab Dedicated, this feature is available.
+
+You can allow merge requests to be merged without completely restarting a running merge train.
+Use this feature to quickly merge changes that can safely skip the pipeline, for example
+minor documentation updates.
+
+Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
+
+WARNING:
+You can use this feature to quickly merge security or bug fixes, but the changes
+in the merge request that skipped the train are not verified against
+any of the other merge requests in the train. If these other merge train pipelines
+complete successfully and merge, there is a risk that the combined changes are incompatible.
+The target branch could then require additional work to resolve the new failures.
+
+Prerequisites:
+
+- You must have the Maintainer role.
+- You must have [Merge trains enabled](#enable-merge-trains).
+
+To enable skipping the train without pipeline restarts:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Merge options** section, ensure the **Enable merged results pipelines**
+   and **Enable merge trains** options are enabled.
+1. Select **Allow skipping the merge train**.
+1. Select **Save changes**.
+
+To merge a merge request by skipping the merge train, use the [merge requests merge API endpoint](../../api/merge_requests.md#merge-a-merge-request)
+to merge with the attribute `skip_merge_train` set to `true`.
+
+The merge request merges, and the existing merge train pipelines are not cancelled
+or restarted.
+
 ## Troubleshooting
 
 ### Merge request dropped from the merge train

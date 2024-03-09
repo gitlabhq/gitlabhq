@@ -39519,6 +39519,9 @@ msgstr ""
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
 msgstr ""
 
+msgid "ProjectSettings|Commits in earlier merge train pipelines might not get validated with immediately merged commits. "
+msgstr ""
+
 msgid "ProjectSettings|Configure %{link_start}data sources%{link_end} to be used for your dashboards."
 msgstr ""
 
@@ -39696,7 +39699,7 @@ msgstr ""
 msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
 msgstr ""
 
-msgid "ProjectSettings|Merge requests can be set to merge immediately without interrupting the merge train. Commits in earlier merge train pipelines might not get validated with immediately merged commits."
+msgid "ProjectSettings|Merge requests can be set to merge immediately without restarting pipelines for other trains in the queue. "
 msgstr ""
 
 msgid "ProjectSettings|Merge suggestions"
@@ -39871,6 +39874,9 @@ msgid "ProjectSettings|The host of your data collector instance."
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged."
+msgstr ""
+
+msgid "ProjectSettings|This feature is an experiment. When you enable this, you accept the %{link}."
 msgstr ""
 
 msgid "ProjectSettings|This project"
