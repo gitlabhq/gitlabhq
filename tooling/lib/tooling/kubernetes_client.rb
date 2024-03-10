@@ -22,7 +22,7 @@ module Tooling
     def delete_namespaces(namespaces)
       return if namespaces.any? { |ns| !K8S_ALLOWED_NAMESPACES_REGEX.match?(ns) }
 
-      run_command("kubectl delete namespace --now --ignore-not-found #{namespaces.join(' ')}")
+      run_command(%W[kubectl delete namespace --now --ignore-not-found #{namespaces.join(' ')}])
     end
 
     def delete_namespaces_by_exact_names(resource_names:, wait:)
@@ -39,7 +39,7 @@ module Tooling
     end
 
     def namespaces_created_before(created_before:)
-      response = run_command("kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json")
+      response = run_command(%W[kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json])
 
       items = JSON.parse(response)['items'] # rubocop:disable Gitlab/Json
       items.filter_map do |item|
@@ -53,14 +53,15 @@ module Tooling
     end
 
     def run_command(command)
-      puts "Running command: `#{command}`"
+      command_str = command.join(' ')
+      puts "Running command: `#{command_str}`"
 
-      result = Gitlab::Popen.popen_with_detail([command])
+      result = Gitlab::Popen.popen_with_detail(command)
 
       if result.status.success?
         result.stdout.chomp.freeze
       else
-        raise CommandFailedError, "The `#{command}` command failed (status: #{result.status}) with the following error:\n#{result.stderr}"
+        raise CommandFailedError, "The `#{command_str}` command failed (status: #{result.status}) with the following error:\n#{result.stderr}"
       end
     end
   end

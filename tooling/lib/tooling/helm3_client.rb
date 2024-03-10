@@ -39,15 +39,16 @@ module Tooling
     private
 
     def run_command(command)
-      final_command = ['helm', *command].join(' ')
-      puts "Running command: `#{final_command}`" # rubocop:disable Rails/Output
+      final_command = ['helm', *command]
+      final_command_str = final_command.join(' ')
+      puts "Running command: `#{final_command_str}`" # rubocop:disable Rails/Output -- Only review apps calls this
 
-      result = Gitlab::Popen.popen_with_detail([final_command])
+      result = Gitlab::Popen.popen_with_detail(final_command)
 
       if result.status.success?
         result.stdout.chomp.freeze
       else
-        raise CommandFailedError, "The `#{final_command}` command failed (status: #{result.status}) with the following error:\n#{result.stderr}"
+        raise CommandFailedError, "The `#{final_command_str}` command failed (status: #{result.status}) with the following error:\n#{result.stderr}"
       end
     end
 
