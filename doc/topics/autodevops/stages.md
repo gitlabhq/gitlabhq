@@ -220,7 +220,7 @@ For more information, see
 ## Auto Secret Detection
 
 > - Introduced in GitLab 13.1.
-> - Select functionality [made available](../../user/application_security/secret_detection/index.md#features-per-tier) in all tiers in GitLab 13.3
+> - Select functionality [made available](../../user/application_security/secret_detection/pipeline/index.md#requirements) in all tiers in GitLab 13.3
 
 Secret Detection uses the
 [Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. Auto Secret Detection requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.

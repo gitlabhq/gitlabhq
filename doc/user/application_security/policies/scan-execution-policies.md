@@ -231,10 +231,10 @@ Note the following:
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.
-- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
-  are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
-- By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/index.md#full-history-secret-detection).
-- For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/index.md#edit-the-gitlab-ciyml-file-manually).
+- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#custom-rulesets)
+  are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+- By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
+- For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
 - Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).

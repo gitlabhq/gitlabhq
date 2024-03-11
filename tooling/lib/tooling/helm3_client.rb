@@ -55,9 +55,12 @@ module Tooling
     def raw_releases(page, args = [])
       command = [
         'list',
-        %(--max #{PAGINATION_SIZE}),
-        %(--offset #{PAGINATION_SIZE * page}),
-        %(--output json),
+        '--max',
+        PAGINATION_SIZE.to_s,
+        '--offset',
+        (PAGINATION_SIZE * page).to_s,
+        '--output',
+        'json',
         *args
       ]
 

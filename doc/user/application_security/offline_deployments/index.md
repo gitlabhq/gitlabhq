@@ -93,7 +93,7 @@ above. You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/index.md#running-sast-in-an-offline-environment)
-- [Secret Detection offline directions](../secret_detection/index.md#running-secret-detection-in-an-offline-environment)
+- [Secret Detection offline directions](../secret_detection/pipeline/index.md#offline-configuration)
 - [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
 - [API Fuzzing offline directions](../api_fuzzing/configuration/offline_configuration.md)
 - [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/index.md#running-in-an-offline-environment)

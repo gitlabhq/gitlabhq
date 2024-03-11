@@ -12981,8 +12981,8 @@ msgstr "GitLab管理テンプレートを使用してSASTを設定してくだ�
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "`.gitlab-ci.yml`でSASTを設定します。このファイルがまだ存在していない場合、作成します"
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "GitLab管理テンプレートを使用して秘密検出を設定してください。秘密検出をカスタマイズするには、[変数のオーバーライドを追加](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings)してください。"
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "GitLab管理テンプレートを使用して秘密検出を設定してください。秘密検出をカスタマイズするには、[変数のオーバーライドを追加](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization)してください。"
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "`.gitlab-ci.yml`で秘密検出を設定します。このファイルがまだ存在していない場合、作成します"

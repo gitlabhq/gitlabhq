@@ -192,9 +192,48 @@ To improve the perceived performance of the page we should implement the followi
 1. Apply `content-visibility` whenever possible to reduce redraw overhead.
 1. Render diff discussions asynchronously.
 
-#### Requests throughout the page lifecycle
+#### Page & Data Flows
 
-- ToDo in follow-up: add a graph showing the planned requests throughout the page lifecycle.
+These diagrams document the flows necessary to display diffs and to allow user interactions and user-submitted data to be gathered and stored.
+In other words: this page documents the bi-directional data flow for a complete, interactive application that allows diffs to display and users to collaborate on diffs.
+
+##### Critical Phases
+
+1. Gitaly
+1. Database
+1. Diff Storage
+1. Cache
+1. Back end
+1. Web API
+1. Front end*
+
+```mermaid
+
+flowchart LR
+    Gitaly
+    DB[Database]
+    Cache
+    DS[Diff Storage]
+    FE[Front End]
+    Display
+
+    Gitaly <--> BE
+    DB <--> BE
+    Cache <--> BE
+    DS <--> BE
+    BE <--> API
+    API <--> FE
+    FE --> Display
+
+    subgraph Rails
+    direction LR
+        BE[Back End]
+        API[Web API]
+    end
+
+```
+
+<sup>*</sup>: Front end obscures many unexplored phases. It is likely that the front end will need caches, databases, API abstractions (over sub-modules like network connectivity, etc.), and more. While these have not been expanded on, "Front end" stands in for all of that complexity here.
 
 ### Accessibility
 

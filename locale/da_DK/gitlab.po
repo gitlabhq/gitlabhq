@@ -13160,8 +13160,8 @@ msgstr "Konfigurer SAST i `.gitlab-ci.yml` med den GitLab-håndterede skabelon. 
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "Konfigurer hemmelig registrering i `.gitlab-ci.yml` med den GitLab-håndterede skabelon. Du kan [tilføje variabeltilsidesættelser](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) for at tilpasse indstillinger for hemmelig registrering."
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "Konfigurer hemmelig registrering i `.gitlab-ci.yml` med den GitLab-håndterede skabelon. Du kan [tilføje variabeltilsidesættelser](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) for at tilpasse indstillinger for hemmelig registrering."
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""

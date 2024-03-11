@@ -2654,6 +2654,11 @@
 .review:rules:review-cleanup:
   rules:
     - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - "scripts/review_apps/automated_cleanup.rb"
+        - "tooling/lib/tooling/helm3_client.rb"
+        - "tooling/lib/tooling/kubernetes_client.rb"
+    - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: manual
       allow_failure: true

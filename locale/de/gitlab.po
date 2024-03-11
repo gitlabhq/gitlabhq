@@ -13160,8 +13160,8 @@ msgstr "Konfiguriere SAST in `.gitlab-ci.yml` mithilfe der von GitLab verwaltete
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Konfigurieren von SAST in `.gitlab-ci.yml`, Erstellen dieser Datei, falls sie noch nicht vorhanden ist"
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "Konfiguriere die Secret-Erkennung in `.gitlab-ci.yml` mithilfe der von GitLab verwalteten Vorlage. Du kannst [Variablenüberschreibungen hinzufügen](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings), um die Einstellungen für die geheime Erkennung anzupassen."
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "Konfiguriere die Secret-Erkennung in `.gitlab-ci.yml` mithilfe der von GitLab verwalteten Vorlage. Du kannst [Variablenüberschreibungen hinzufügen](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization), um die Einstellungen für die geheime Erkennung anzupassen."
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Konfiguriere die Erkennung von Passwörtern in `.gitlab-ci.yml` und erstelle diese Datei, falls sie noch nicht vorhanden ist"

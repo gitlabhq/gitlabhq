@@ -48,9 +48,16 @@ RSpec.describe Tooling::KubernetesClient do
     subject { instance.cleanup_namespaces_by_created_at(created_before: two_days_ago) }
 
     before do
-      allow(instance).to receive(:run_command).with(
-        %W[kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json]
-      ).and_return(kubectl_namespaces_json)
+      allow(instance).to receive(:run_command).with([
+        'kubectl',
+        'get',
+        'namespace',
+        '--all-namespaces',
+        '--sort-by',
+        '{.metadata.creationTimestamp}',
+        '-o',
+        'json'
+      ]).and_return(kubectl_namespaces_json)
     end
 
     context 'when no namespaces are stale' do
@@ -155,9 +162,16 @@ RSpec.describe Tooling::KubernetesClient do
     end
 
     it 'returns an array of namespaces' do
-      allow(instance).to receive(:run_command).with(
-        %W[kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json]
-      ).and_return(kubectl_namespaces_json)
+      allow(instance).to receive(:run_command).with([
+        'kubectl',
+        'get',
+        'namespace',
+        '--all-namespaces',
+        '--sort-by',
+        '{.metadata.creationTimestamp}',
+        '-o',
+        'json'
+      ]).and_return(kubectl_namespaces_json)
 
       expect(subject).to match_array(%w[review-first-review-app])
     end

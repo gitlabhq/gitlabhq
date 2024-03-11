@@ -39,7 +39,18 @@ module Tooling
     end
 
     def namespaces_created_before(created_before:)
-      response = run_command(%W[kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json])
+      command = [
+        'kubectl',
+        'get',
+        'namespace',
+        '--all-namespaces',
+        '--sort-by',
+        '{.metadata.creationTimestamp}',
+        '-o',
+        'json'
+      ]
+
+      response = run_command(command)
 
       items = JSON.parse(response)['items'] # rubocop:disable Gitlab/Json
       items.filter_map do |item|
