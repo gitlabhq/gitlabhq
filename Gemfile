@@ -148,7 +148,7 @@ gem 'apollo_upload_server', '~> 2.1.5', feature_category: :api
 gem 'graphlient', '~> 0.6.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Generate Fake data
-gem 'ffaker', '~> 2.10' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'ffaker', '~> 2.23' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'hashie', '~> 5.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

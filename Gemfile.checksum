@@ -175,7 +175,7 @@
 {"name":"fast_blank","version":"1.0.1","platform":"java","checksum":"90d82106b0e4aa19ac24ba1604c79a0c5a4c471601e800c9b2b072938a6d9a92"},
 {"name":"fast_blank","version":"1.0.1","platform":"ruby","checksum":"269fc30414fed4e6403bc4a49081e1ea539f8b9226e59276ed1efaefabaa17ea"},
 {"name":"fast_gettext","version":"2.3.0","platform":"ruby","checksum":"0253e26423ccab68061c42387827e3b99243a1b15ad614df1c800ba870d64f84"},
-{"name":"ffaker","version":"2.10.0","platform":"ruby","checksum":"4323b85b4bbdb0d932695b2ebffeb3645304215092e64e2a451630a9f5a5e507"},
+{"name":"ffaker","version":"2.23.0","platform":"ruby","checksum":"9d2dfb5cc284a92c8571bddcbe0c573127a2f3238f4b0aa56e08ccf3e4858498"},
 {"name":"ffi","version":"1.15.5","platform":"java","checksum":"610b9a993e67b812123cfedc1c45a639aa2f2455747af5443d54f98e092b1abe"},
 {"name":"ffi","version":"1.15.5","platform":"ruby","checksum":"6f2ed2fa68047962d6072b964420cba91d82ce6fa8ee251950c17fca6af3c2a0"},
 {"name":"ffi","version":"1.15.5","platform":"x64-mingw-ucrt","checksum":"3dea5573d11cd4c8a965e861052b0036098b239140caa0a98940c5c84eb5990d"},

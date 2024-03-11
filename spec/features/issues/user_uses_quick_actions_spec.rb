@@ -10,6 +10,10 @@ require 'spec_helper'
 RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_planning do
   include Features::NotesHelpers
 
+  before do
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+  end
+
   context "issuable common quick actions" do
     let(:new_url_opts) { {} }
     let(:maintainer) { create(:user) }
