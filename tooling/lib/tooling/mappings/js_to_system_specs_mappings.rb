@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/inflector'
-
 require_relative '../helpers/predictive_tests_helper'
 require_relative '../../../../lib/gitlab_edition'
 
@@ -56,8 +54,23 @@ module Tooling
       def construct_js_keywords(js_files)
         js_files.map do |js_file|
           filename = js_file.scan(@first_js_folder_extract_regexp).flatten.first
-          filename.singularize
+          singularize(filename)
         end.uniq
+      end
+
+      # We don't want to use active_support for this method, and our singularization cases
+      # are much simpler than what the active_support method would need.
+      def singularize(string)
+        if string.end_with?('ies')
+          string.sub(/ies$/, 'y')
+        # e.g. branches -> branch, protected branches -> protected branch
+        elsif string.end_with?('hes')
+          string.sub(/hes$/, 'h')
+        elsif string.end_with?('s')
+          string.sub(/s$/, '')
+        else
+          string
+        end
       end
 
       def system_specs_for_edition(edition)

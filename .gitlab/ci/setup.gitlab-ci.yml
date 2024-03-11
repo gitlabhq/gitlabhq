@@ -120,13 +120,12 @@ detect-tests:
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
   before_script:
-    - apt-get update && apt-get install -y curl make gcc # Not present in ruby-slim, so we add it manually
+    - apt update && apt install -y curl
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
     - install_tff_gem
-    - install_activesupport_gem
     - retrieve_tests_mapping
     - retrieve_frontend_fixtures_mapping
     - |
