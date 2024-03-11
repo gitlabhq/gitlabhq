@@ -1,4 +1,3 @@
 ---
 filenames:
   - ee/app/assets/javascripts/oncall_schedules/graphql/mutations/update_oncall_schedule_rotation.mutation.graphql
-  - ee/app/assets/javascripts/packages_and_registries/google_artifact_registry/graphql/queries/get_artifact_details.query.graphql

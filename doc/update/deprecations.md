@@ -948,6 +948,27 @@ major release, GitLab 17.0. This gem sees very little use and is better suited f
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Duplicate storages in Gitaly configuration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.10</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5598).
+</div>
+
+Support for configuring multiple Gitaly storages that point to the same storage path is deprecated and will be removed in GitLab 17.0
+In GitLab 17.0 and later, this type of configuration will cause an error.
+
+We're removing support for this type of configuration because it can cause problems with background repository
+maintenance and will not be compatible with future Gitaly storage implementations.
+
+Instance administrators must update the `storage` entries of the `gitaly['configuration']`
+section in `gitlab.rb` configuration file to ensure each storage is configured with a unique path.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### File type variable expansion fixed in downstream pipelines
 
 <div class="deprecation-notes">
