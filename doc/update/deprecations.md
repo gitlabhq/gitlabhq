@@ -2052,6 +2052,54 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `Gitlab['omnibus_gitconfig']` configuration item is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.10</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5132).
+</div>
+
+The `omnibus_gitconfig['system']` configuration item has been deprecated. If you use
+`omnibus_gitconfig['system']` to set custom Git configuration for Gitaly, you must configure Git
+directly through Gitaly configuration under `gitaly[:configuration][:git][:config]` before upgrading to GitLab 17.0.
+
+For example:
+
+```ruby
+  gitaly[:configuration][:git][:config] = [
+    {
+      key: 'fetch.fsckObjects',
+      value: 'true',
+    },
+    # ...
+  ]
+```
+
+The format of the configuration keys must match what is passed to `git` through the CLI flag `git -c <configuration>`.
+
+If you have trouble converting the existing keys to the expected format, see the existing keys in the correct format in
+the Linux package-generated configuration file of Gitaly. By default, the configuration file is located at
+`/var/opt/gitlab/gitaly/config.toml`.
+
+The following configuration options that are managed by Gitaly should be removed. These keys do not need to be migrated
+to Gitaly:
+
+- `pack.threads=1`
+- `receive.advertisePushOptions=true`
+- `receive.fsckObjects=true`
+- `repack.writeBitmaps=true`
+- `transfer.hideRefs=^refs/tmp/`
+- `transfer.hideRefs=^refs/keep-around/`
+- `transfer.hideRefs=^refs/remotes/`
+- `core.alternateRefsCommand="exit 0 #"`
+- `core.fsyncObjectFiles=true`
+- `fetch.writeCommitGraph=true`
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `after_script` keyword will run for cancelled jobs
 
 <div class="deprecation-notes">
