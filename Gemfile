@@ -453,7 +453,7 @@ group :development, :test do
   # Profiling data from CI/CD pipelines
   gem 'influxdb-client', '~> 2.9', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'knapsack', '~> 1.21.1', feature_category: :tooling
+  gem 'knapsack', '~> 1.22.0', feature_category: :tooling
   gem 'crystalball', '~> 0.7.0', require: false, feature_category: :tooling
   gem 'test_file_finder', '~> 0.2.1', feature_category: :tooling
 
