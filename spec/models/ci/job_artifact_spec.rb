@@ -211,7 +211,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
 
     it 'returns a list of erasable file types' do
       all_types = described_class.file_types.keys
-      erasable_types = all_types - described_class::NON_ERASABLE_FILE_TYPES
+      erasable_types = all_types - Enums::Ci::JobArtifact.non_erasable_file_types
 
       expect(subject).to contain_exactly(*erasable_types)
     end
@@ -458,7 +458,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
   describe 'validates file format' do
     subject { artifact }
 
-    described_class::TYPE_AND_FORMAT_PAIRS.except(:trace).each do |file_type, file_format|
+    Enums::Ci::JobArtifact.type_and_format_pairs.except(:trace).each do |file_type, file_format|
       context "when #{file_type} type with #{file_format} format" do
         let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: file_format) }
 
@@ -479,26 +479,6 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
             it { is_expected.not_to be_valid }
           end
         end
-      end
-    end
-  end
-
-  describe 'validates DEFAULT_FILE_NAMES' do
-    subject { described_class::DEFAULT_FILE_NAMES }
-
-    described_class.file_types.each do |file_type, _|
-      it "expects #{file_type} to be included" do
-        is_expected.to include(file_type.to_sym)
-      end
-    end
-  end
-
-  describe 'validates TYPE_AND_FORMAT_PAIRS' do
-    subject { described_class::TYPE_AND_FORMAT_PAIRS }
-
-    described_class.file_types.each do |file_type, _|
-      it "expects #{file_type} to be included" do
-        expect(described_class.file_formats).to include(subject[file_type.to_sym])
       end
     end
   end

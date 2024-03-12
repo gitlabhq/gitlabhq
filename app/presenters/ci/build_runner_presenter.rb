@@ -114,8 +114,8 @@ module Ci
 
         self.new(
           artifact_type: artifact_type,
-          artifact_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(artifact_type),
-          name: ::Ci::JobArtifact::DEFAULT_FILE_NAMES.fetch(artifact_type),
+          artifact_format: ::Enums::Ci::JobArtifact.type_and_format_pairs.fetch(artifact_type),
+          name: ::Enums::Ci::JobArtifact.default_file_names.fetch(artifact_type),
           paths: paths,
           when: 'always',
           expire_in: expire_in

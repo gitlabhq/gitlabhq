@@ -21,15 +21,6 @@ module Ci
 
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 
-    NON_ERASABLE_FILE_TYPES = Enums::Ci::JobArtifact.non_erasable_file_types
-    REPORT_FILE_TYPES = Enums::Ci::JobArtifact.report_file_types
-    DEFAULT_FILE_NAMES = Enums::Ci::JobArtifact.default_file_names
-    INTERNAL_TYPES = Enums::Ci::JobArtifact.internal_types
-    REPORT_TYPES = Enums::Ci::JobArtifact.report_types
-    DOWNLOADABLE_TYPES = Enums::Ci::JobArtifact.downloadable_types
-
-    TYPE_AND_FORMAT_PAIRS = INTERNAL_TYPES.merge(REPORT_TYPES).freeze
-
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
     belongs_to :project
@@ -83,7 +74,7 @@ module Ci
     end
 
     scope :all_reports, -> do
-      with_file_types(REPORT_TYPES.keys.map(&:to_s))
+      with_file_types(Enums::Ci::JobArtifact.report_types.keys.map(&:to_s))
     end
 
     scope :erasable, -> do
@@ -92,7 +83,7 @@ module Ci
 
     scope :non_trace, -> { where.not(file_type: [:trace]) }
 
-    scope :downloadable, -> { where(file_type: DOWNLOADABLE_TYPES) }
+    scope :downloadable, -> { where(file_type: Enums::Ci::JobArtifact.downloadable_types) }
     scope :unlocked, -> { joins(job: :pipeline).merge(::Ci::Pipeline.unlocked) }
     scope :order_expired_asc, -> { order(expire_at: :asc) }
     scope :with_destroy_preloads, -> { includes(project: [:route, :statistics, :build_artifacts_size_refresh]) }
@@ -115,7 +106,7 @@ module Ci
     enum file_location: Enums::Ci::JobArtifact.file_location
 
     def validate_file_format!
-      unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
+      unless Enums::Ci::JobArtifact.type_and_format_pairs[self.file_type&.to_sym] == self.file_format&.to_sym
         errors.add(:base, _('Invalid file format with specified file type'))
       end
     end
@@ -127,7 +118,7 @@ module Ci
     end
 
     def self.file_types_for_report(report_type)
-      REPORT_FILE_TYPES.fetch(report_type) { raise ArgumentError, "Unrecognized report type: #{report_type}" }
+      Enums::Ci::JobArtifact.report_file_types.fetch(report_type) { raise ArgumentError, "Unrecognized report type: #{report_type}" }
     end
 
     def self.associated_file_types_for(file_type)
@@ -137,7 +128,7 @@ module Ci
     end
 
     def self.erasable_file_types
-      self.file_types.keys - NON_ERASABLE_FILE_TYPES
+      self.file_types.keys - Enums::Ci::JobArtifact.non_erasable_file_types
     end
 
     def self.total_size

@@ -1209,7 +1209,7 @@ module Ci
       report_types = options&.dig(:artifacts, :reports)&.keys || []
 
       report_types.each do |report_type|
-        next unless Ci::JobArtifact::REPORT_TYPES.include?(report_type)
+        next unless Enums::Ci::JobArtifact.report_types.include?(report_type)
 
         ::Gitlab::Ci::Artifacts::Metrics
           .build_completed_report_type_counter(report_type)

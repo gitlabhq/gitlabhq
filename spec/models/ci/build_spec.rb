@@ -164,13 +164,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    ::Ci::JobArtifact::DOWNLOADABLE_TYPES.each do |type|
+    ::Enums::Ci::JobArtifact.downloadable_types.each do |type|
       context "when job has a #{type} artifact" do
         it 'returns the job' do
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -206,7 +206,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -242,7 +242,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, project: project)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -5814,7 +5814,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               :ci_job_artifact,
               job: build,
               file_type: type,
-              file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym]
+              file_format: Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym]
             )
           end
 

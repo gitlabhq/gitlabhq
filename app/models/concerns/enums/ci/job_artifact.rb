@@ -142,6 +142,10 @@ module Enums
         DOWNLOADABLE_TYPES
       end
 
+      def self.type_and_format_pairs
+        INTERNAL_TYPES.merge(REPORT_TYPES).freeze
+      end
+
       # Returns the Hash to use for creating the `file_type` enum for
       # `JobArtifact`.
       def self.file_type

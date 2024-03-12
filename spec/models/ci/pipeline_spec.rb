@@ -5862,7 +5862,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           before do
             create(
               :ci_job_artifact,
-              file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+              file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
               file_type: type,
               job: pipeline.builds.first
             )
