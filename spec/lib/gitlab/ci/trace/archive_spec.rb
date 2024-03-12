@@ -137,7 +137,6 @@ RSpec.describe Gitlab::Ci::Trace::Archive, feature_category: :scalability do
 
         allow_next_instance_of(Ci::JobArtifact) do |artifact|
           artifact.job_id = job.id
-          artifact.partition_id = job.partition_id
 
           expect(artifact)
             .to receive(:store_file!)

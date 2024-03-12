@@ -24,12 +24,7 @@ module Ci
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
     belongs_to :project
-    belongs_to :job,
-      ->(artifact) { in_partition(artifact) },
-      class_name: "Ci::Build",
-      foreign_key: :job_id,
-      partition_foreign_key: :partition_id,
-      inverse_of: :job_artifacts
+    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_artifacts
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
 
@@ -157,10 +152,6 @@ module Ci
     # FastDestroyAll concerns
     def self.finalize_fast_destroy(service)
       service.update_statistics
-    end
-
-    def self.use_partition_id_filter?
-      ::Feature.enabled?(:use_partition_id_filter_on_ci_job_artifacts, Feature.current_request)
     end
 
     def local_store?

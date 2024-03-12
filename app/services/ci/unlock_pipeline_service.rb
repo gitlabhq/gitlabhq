@@ -86,12 +86,10 @@ module Ci
 
       builds_relation.each_batch(of: BATCH_SIZE) do |builds|
         # rubocop: disable CodeReuse/ActiveRecord
-        Ci::JobArtifact.where(job_id: builds.pluck(:id), partition_id: partition_id)
-                       .each_batch(of: BATCH_SIZE) do |job_artifacts|
-          unlocked_count = Ci::JobArtifact.where(
-            id: job_artifacts.pluck(:id),
-            partition_id: partition_id
-          ).update_all(locked: :unlocked)
+        Ci::JobArtifact.where(job_id: builds.pluck(:id)).each_batch(of: BATCH_SIZE) do |job_artifacts|
+          unlocked_count = Ci::JobArtifact
+            .where(id: job_artifacts.pluck(:id))
+            .update_all(locked: :unlocked)
 
           @unlocked_job_artifacts_count ||= 0
           @unlocked_job_artifacts_count += unlocked_count
@@ -110,12 +108,6 @@ module Ci
       else
         pipeline.builds
       end
-    end
-
-    # All the partitionable entities connected to a pipeline
-    # belong to the same partition where the pipeline is.
-    def partition_id
-      pipeline.partition_id
     end
 
     def unlock_pipeline_artifacts

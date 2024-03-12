@@ -1938,6 +1938,9 @@ msgstr ""
 msgid "AIAgents|AI Agents"
 msgstr ""
 
+msgid "AIAgents|Agent Settings"
+msgstr ""
+
 msgid "AIAgents|An error has occurred when saving the agent."
 msgstr ""
 
@@ -1948,6 +1951,9 @@ msgid "AIAgents|New agent"
 msgstr ""
 
 msgid "AIAgents|The requested agent was not found."
+msgstr ""
+
+msgid "AIAgents|Update the name and prompt for this agent."
 msgstr ""
 
 msgid "AIAgent|AI Agent: %{agentId}"

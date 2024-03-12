@@ -61,16 +61,7 @@ module Ci
     # before we delete builds. By doing this, the relation should be empty and not fire any
     # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
-    # rubocop:disable Cop/ActiveRecordDependent -- See above
-    has_many :job_artifacts,
-      ->(build) { in_partition(build) },
-      class_name: 'Ci::JobArtifact',
-      foreign_key: :job_id,
-      partition_foreign_key: :partition_id,
-      dependent: :destroy,
-      inverse_of: :job
-    # rubocop:enable Cop/ActiveRecordDependent
-
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
     has_many :job_annotations,
       ->(build) { in_partition(build) },
@@ -82,12 +73,8 @@ module Ci
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
-    Ci::JobArtifact.file_types.each_key do |key|
-      has_one :"job_artifacts_#{key}", ->(build) { in_partition(build).with_file_types([key]) },
-        class_name: 'Ci::JobArtifact',
-        foreign_key: :job_id,
-        partition_foreign_key: :partition_id,
-        inverse_of: :job
+    Ci::JobArtifact.file_types.each do |key, value|
+      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
     end
 
     has_one :runner_manager_build,

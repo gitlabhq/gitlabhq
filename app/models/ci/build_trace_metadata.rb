@@ -13,10 +13,7 @@ module Ci
       class_name: 'Ci::Build',
       partition_foreign_key: :partition_id,
       inverse_of: :trace_metadata
-    belongs_to :trace_artifact, # rubocop:disable Rails/InverseOf -- No clear relation to be used
-      ->(metadata) { in_partition(metadata) },
-      class_name: 'Ci::JobArtifact',
-      partition_foreign_key: :partition_id
+    belongs_to :trace_artifact, class_name: 'Ci::JobArtifact'
 
     partitionable scope: :build
 
