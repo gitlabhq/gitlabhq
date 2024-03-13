@@ -1007,7 +1007,6 @@ Layout/LineLength:
     - 'ee/app/services/projects/mark_for_deletion_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
     - 'ee/app/services/resource_events/change_weight_service.rb'
-    - 'ee/app/services/security/auto_fix_service.rb'
     - 'ee/app/services/security/dependency_list_service.rb'
     - 'ee/app/services/security/ingestion/finding_map.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_remediations.rb'
