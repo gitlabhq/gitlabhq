@@ -9,6 +9,7 @@ module API
           expose :ref_type
           expose :refspecs
           expose :git_depth, as: :depth
+          expose :repo_object_format
         end
       end
     end

@@ -221,6 +221,18 @@ RSpec.describe Ci::BuildRunnerPresenter do
     end
   end
 
+  describe '#repo_object_format' do
+    let(:build) { create(:ci_build) }
+
+    subject { presenter.repo_object_format }
+
+    it 'delegates the call to #repository_object_format' do
+      expect(build.project).to receive(:repository_object_format).and_return('object_format')
+
+      is_expected.to eq 'object_format'
+    end
+  end
+
   describe '#refspecs' do
     subject { presenter.refspecs }
 

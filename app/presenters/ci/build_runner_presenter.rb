@@ -32,6 +32,10 @@ module Ci
       end.to_i
     end
 
+    def repo_object_format
+      project.repository_object_format.to_s
+    end
+
     def runner_variables
       variables
         .sort_and_expand_all(keep_undefined: true, expand_file_refs: false, expand_raw_refs: false)
