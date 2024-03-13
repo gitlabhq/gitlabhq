@@ -2092,6 +2092,33 @@ Input type: `BoardListUpdateLimitMetricsInput`
 | <a id="mutationboardlistupdatelimitmetricserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationboardlistupdatelimitmetricslist"></a>`list` | [`BoardList`](#boardlist) | Updated list. |
 
+### `Mutation.branchRuleApprovalProjectRuleCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `branchRuleApprovalProjectRuleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleapprovalprojectrulecreateapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | How many approvals are required to satify rule. |
+| <a id="mutationbranchruleapprovalprojectrulecreatebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to destroy. |
+| <a id="mutationbranchruleapprovalprojectrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleapprovalprojectrulecreategroupids"></a>`groupIds` | [`[ID!]`](#id) | List of IDs of Groups that can approval rule. |
+| <a id="mutationbranchruleapprovalprojectrulecreatename"></a>`name` | [`String!`](#string) | Name of the approval rule. |
+| <a id="mutationbranchruleapprovalprojectrulecreateuserids"></a>`userIds` | [`[ID!]`](#id) | List of IDs of Users that can approval rule. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleapprovalprojectrulecreateapprovalrule"></a>`approvalRule` | [`ApprovalProjectRule`](#approvalprojectrule) | Approval rule after mutation. |
+| <a id="mutationbranchruleapprovalprojectrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleapprovalprojectrulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.branchRuleCreate`
 
 DETAILS:

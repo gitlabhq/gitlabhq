@@ -4,7 +4,7 @@ group: Global Search
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Exact Code Search
+# Exact code search
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -16,24 +16,18 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available. The feature is not ready for production use.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+The feature is not ready for production use.
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-## Usage
+With exact code search, you can use regular expressions and exact strings to search for code in a project.
+You can use backslashes to escape special characters and double quotes to search for exact strings.
 
-When performing any Code search in GitLab it will choose to use "Exact Code
-Search" powered by [Zoekt](https://github.com/sourcegraph/zoekt) if the project
-is part of an enabled Group.
-
-The main differences between Zoekt and [advanced search](advanced_search.md)
-are that Zoekt provides exact substring matching as well as allows you to
-search for regular expressions. Since it allows searching for regular
-expressions, certain special characters will require escaping. Backslash can
-escape special characters and wrapping in double quotes can be used for phrase
-searches.
+Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
+and is used by default in groups where the feature is enabled.
 
 ## Zoekt search API
 
@@ -42,7 +36,8 @@ searches.
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `zoekt_search_api`.
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+The feature is not ready for production use.
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 

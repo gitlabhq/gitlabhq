@@ -914,10 +914,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
 
-This file logs information related to the
-[Exact code search](../../user/search/exact_code_search.md) feature which is
-powered by Zoekt.
-
+This file logs information related to [exact code search](../../user/search/exact_code_search.md).
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.

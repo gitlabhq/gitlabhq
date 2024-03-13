@@ -309,7 +309,7 @@ module EventsHelper
     base_class = 'system-note-image'
 
     classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-gray-50 gl-line-height-0" : "user-avatar"
-    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block')
+    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block', project: event.project)
 
     tag.div(class: "#{base_class} #{classes}") { content }
   end
