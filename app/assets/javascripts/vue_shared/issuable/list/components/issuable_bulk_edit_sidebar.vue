@@ -1,4 +1,6 @@
 <script>
+const getLayoutPage = () => document.querySelector('.layout-page');
+
 export default {
   props: {
     expanded: {
@@ -8,14 +10,20 @@ export default {
   },
   watch: {
     expanded(value) {
-      const layoutPageEl = document.querySelector('.layout-page');
+      const layoutPageEl = getLayoutPage();
 
       if (layoutPageEl) {
         layoutPageEl.classList.toggle('right-sidebar-expanded', value);
         layoutPageEl.classList.toggle('right-sidebar-collapsed', !value);
-        layoutPageEl.classList.toggle('issuable-bulk-update-sidebar', !value);
       }
     },
+  },
+  mounted() {
+    const layoutPageEl = getLayoutPage();
+
+    if (layoutPageEl) {
+      layoutPageEl.classList.add('issuable-bulk-update-sidebar');
+    }
   },
 };
 </script>

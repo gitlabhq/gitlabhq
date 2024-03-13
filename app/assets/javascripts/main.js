@@ -140,7 +140,7 @@ const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.
   document.body.dataset.page,
 );
 if (!isBoardsOrMR && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
-  const $rightSidebar = $('aside.right-sidebar');
+  const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
   const $layoutPage = $('.layout-page');
 
   if ($rightSidebar.length > 0) {
