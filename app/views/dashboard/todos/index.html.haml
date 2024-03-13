@@ -83,10 +83,9 @@
                     = sort_title_recently_updated
 
   - if @allowed_todos.any?
-    .col.js-todos-list-container{ data: { testid: "todos-list-container" } }
-      .js-todos-options{ data: { per_page: @allowed_todos.count, current_page: @todos.current_page, total_pages: @todos.total_pages } }
-        %ul.content-list.todos-list
-          = render @allowed_todos
+    .js-todos-list-container{ data: { testid: "todos-list-container" } }
+      %ul.content-list.todos-list
+        = render @allowed_todos
       = paginate @todos, theme: "gitlab"
 
     .js-nothing-here-container.hidden
