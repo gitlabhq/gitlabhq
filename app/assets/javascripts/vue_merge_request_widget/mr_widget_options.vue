@@ -281,7 +281,7 @@ export default {
     },
     'mr.ciStatus': {
       handler(newValue) {
-        if (!newValue) return;
+        if (!newValue || this.loading) return;
 
         this.handleNotification();
       },
