@@ -966,7 +966,7 @@ GEM
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
-    jaro_winkler (1.5.4)
+    jaro_winkler (1.5.6)
     jira-ruby (2.3.0)
       activesupport
       atlassian-jwt
@@ -1372,7 +1372,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rb_sys (0.9.86)
-    rbtrace (0.4.14)
+    rbtrace (0.5.1)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
