@@ -3,7 +3,7 @@
 module Gitlab
   module Cleanup
     module OrphanJobArtifactFinalObjects
-      class Batch
+      class BatchFromStorage
         def initialize(fog_collection, bucket_prefix: nil)
           @fog_collection = fog_collection
           @bucket_prefix = bucket_prefix

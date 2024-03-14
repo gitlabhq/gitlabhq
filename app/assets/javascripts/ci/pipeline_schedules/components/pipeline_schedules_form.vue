@@ -120,7 +120,7 @@ export default {
     shortDescriptionPipeline: s__(
       'PipelineSchedules|Provide a short description for this pipeline',
     ),
-    editScheduleBtnText: s__('PipelineSchedules|Edit pipeline schedule'),
+    saveScheduleBtnText: s__('PipelineSchedules|Save changes'),
     createScheduleBtnText: s__('PipelineSchedules|Create pipeline schedule'),
     cancel: __('Cancel'),
     targetBranchTag: __('Select target branch or tag'),
@@ -194,7 +194,7 @@ export default {
     },
     buttonText() {
       return this.editing
-        ? this.$options.i18n.editScheduleBtnText
+        ? this.$options.i18n.saveScheduleBtnText
         : this.$options.i18n.createScheduleBtnText;
     },
     varSecurityBtnText() {

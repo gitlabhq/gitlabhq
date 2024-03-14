@@ -36828,6 +36828,9 @@ msgstr ""
 msgid "PipelineSchedules|Runs with the same project permissions as the schedule owner."
 msgstr ""
 
+msgid "PipelineSchedules|Save changes"
+msgstr ""
+
 msgid "PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. "
 msgstr ""
 

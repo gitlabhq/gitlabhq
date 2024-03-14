@@ -4,7 +4,7 @@ module Gitlab
   module Cleanup
     module OrphanJobArtifactFinalObjects
       class GenerateList
-        include Gitlab::Utils::StrongMemoize
+        include StorageHelpers
 
         UnsupportedProviderError = Class.new(StandardError)
 
@@ -29,14 +29,14 @@ module Gitlab
           initialize_file
 
           each_batch do |fog_collection|
-            Batch.new(fog_collection, bucket_prefix: bucket_prefix).orphan_objects.each do |fog_file|
+            BatchFromStorage.new(fog_collection, bucket_prefix: bucket_prefix).orphan_objects.each do |fog_file|
               log_orphan_object(fog_file)
             end
           end
 
           log_info("Done. All orphan objects are listed in #{filename}.")
         ensure
-          file.close
+          file&.close
         end
 
         private
@@ -128,27 +128,6 @@ module Gitlab
             redis.del(LAST_PAGE_MARKER_REDIS_KEY)
           end
         end
-
-        def connection
-          ::Fog::Storage.new(configuration['connection'].symbolize_keys)
-        end
-
-        def configuration
-          Gitlab.config.artifacts.object_store
-        end
-
-        def bucket
-          configuration.remote_directory
-        end
-
-        def bucket_prefix
-          configuration.bucket_prefix
-        end
-
-        def artifacts_directory
-          connection.directories.new(key: bucket)
-        end
-        strong_memoize_attr :artifacts_directory
 
         def log_orphan_object(fog_file)
           add_orphan_object_to_list(fog_file)

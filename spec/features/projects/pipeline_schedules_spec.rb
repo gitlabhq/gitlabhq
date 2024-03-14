@@ -27,7 +27,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       it 'edits the pipeline' do
         find_by_testid('edit-pipeline-schedule-btn').click
 
-        expect(page).to have_content(s_('PipelineSchedules|Edit pipeline schedule'))
+        expect(page).to have_content(s_('PipelineSchedules|Edit Pipeline Schedule'))
+        expect(page).to have_button(s_('PipelineSchedules|Save changes'))
       end
 
       context 'when the owner is nil' do
@@ -368,7 +369,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
   end
 
   def save_pipeline_schedule
-    click_button s_('PipelineSchedules|Edit pipeline schedule')
+    click_button s_('PipelineSchedules|Save changes')
   end
 
   def fill_in_schedule_form
