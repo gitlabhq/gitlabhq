@@ -208,7 +208,6 @@ This list of limitations only reflects the latest version of GitLab. If you are 
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
 - Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
-- GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to perform complete re-synchronization and re-configuration of all non-promoted secondaries to follow the new primary site.
@@ -217,6 +216,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - Backups [cannot be run on secondaries](replication/troubleshooting.md#message-error-canceling-statement-due-to-conflict-with-recovery).
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980).
 - Git push with options over SSH against a secondary site does not work and terminates the connection. For more information, see [issue 417186](https://gitlab.com/gitlab-org/gitlab/-/issues/417186).
+- The Geo secondary site does not accelerate (serve) the clone request for the first stage of the pipeline in most cases. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In general, it does serve the clone request for subsequent stages. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) discusses the reasons for this and proposes an enhancement to increase the chance that Runner clone requests are served from the secondary site.
 
 ### Limitations on replication/verification
 

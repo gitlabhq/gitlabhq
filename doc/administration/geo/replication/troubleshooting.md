@@ -1702,6 +1702,22 @@ Example log (`gitlab-shell.log`):
 Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nError: Net::ReadTimeout\",\"result\":null}" code=500 method=POST pid=5483 url="http://127.0.0.1:3000/api/v4/geo/proxy_git_push_ssh/push"
 ```
 
+### Repair OAuth authorization between Geo sites
+
+When upgrading a Geo site, you might not be able to log in into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../operations/rails_console.md) session on your primary site and perform the following steps:
+
+1. To find the affected node, first list all the Geo Nodes you have:
+
+   ```ruby
+   GeoNode.all
+   ```
+
+1. Repair the affected Geo node by specifying the ID:
+
+   ```ruby
+   GeoNode.find(<id>).repair
+   ```
+
 ## Recovering from a partial failover
 
 The partial failover to a secondary Geo *site* may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
