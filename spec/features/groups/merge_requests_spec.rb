@@ -97,7 +97,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
     it 'shows an empty state, button to create merge request and no filters bar', :aggregate_failures, :js do
       visit path
 
-      expect(page).to have_selector('.empty-state')
+      expect(page).to have_selector('.gl-empty-state')
       expect(page).to have_button('Select project to create merge request')
       expect(page).to have_selector('.issues-filters')
     end
@@ -107,7 +107,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
         create(:merge_request, :closed, source_project: project, target_project: project)
         visit path
 
-        expect(page).to have_selector('.empty-state')
+        expect(page).to have_selector('.gl-empty-state')
         expect(page).to have_button('Select project to create merge request')
         expect(page).to have_selector('.issues-filters')
       end

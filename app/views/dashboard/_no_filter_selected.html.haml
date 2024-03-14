@@ -1,8 +1,2 @@
-.row.empty-state.text-center
-  .col-12
-    .svg-130.gl-mt-3
-      = image_tag 'illustrations/issue-dashboard_results-without-filter.svg'
-  .col-12
-    .text-content
-      %h4
-        = _("Please select at least one filter to see results")
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+  title: _("Please select at least one filter to see results"))

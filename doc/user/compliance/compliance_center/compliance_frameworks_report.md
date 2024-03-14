@@ -13,10 +13,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422973) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `compliance_framework_report_ui`. Disabled by default.
 > - In GitLab 16.4 and earlier, **Compliance frameworks report** referred to what is now called **Compliance projects report**. The formally-named **Compliance frameworks report** was [renamed to **Compliance projects report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140825) in GitLab 16.8.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature an administrator to [disable the feature flag](../../../administration/feature_flags.md) named
-`compliance_framework_report_ui`. On GitLab.com and GitLab Dedicated, this feature is available.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/425242) in GitLab 16.10.
 
 With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 

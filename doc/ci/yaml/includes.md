@@ -419,6 +419,7 @@ these keywords:
 
 - [`rules:if`](index.md#rulesif).
 - [`rules:exists`](index.md#rulesexists).
+- [`rules:changes`](index.md#ruleschanges).
 
 ### `include` with `rules:if`
 
