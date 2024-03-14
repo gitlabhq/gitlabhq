@@ -420,7 +420,7 @@ To import the group:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
-1. Select **Choose file...**.
+1. Select **Choose file**.
 1. Select the GitLab export file you want to import.
 1. To begin importing, select **Import**.
 

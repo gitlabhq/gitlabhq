@@ -15,5 +15,6 @@ const createState = ({
   autocompleteOptions: [],
   autocompleteError: false,
   loading: false,
+  commandChar: '',
 });
 export default createState;

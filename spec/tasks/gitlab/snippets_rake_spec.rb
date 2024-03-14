@@ -20,6 +20,13 @@ RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
       stub_env('SNIPPET_IDS' => non_migrated_ids.join(','))
     end
 
+    it 'looks up the appropriate shard' do
+      # the default config/gitlab.yml gives nil for all workers
+      expect(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).with(nil).and_call_original
+
+      subject
+    end
+
     it 'can migrate specific snippets passing ids' do
       expect_next_instance_of(Gitlab::BackgroundMigration::BackfillSnippetRepositories) do |instance|
         expect(instance).to receive(:perform_by_ids).with(non_migrated_ids).and_call_original
@@ -74,6 +81,14 @@ RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
 
   describe 'migration_status' do
     subject { run_rake_task('gitlab:snippets:migration_status') }
+
+    it 'looks up the appropriate shard' do
+      expect(Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:store).and_call_original
+      # the default config/gitlab.yml gives nil for all workers
+      expect(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).with(nil).and_call_original
+
+      subject
+    end
 
     it 'returns a message when the background migration is not running' do
       expect { subject }.to output("There are no snippet migrations running\n").to_stdout

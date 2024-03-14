@@ -27,7 +27,7 @@ You can also access the chart from the [Value Streams Dashboard](../../analytics
 Hover over each bar to see the total number of issues.
 
 To narrow the scope of issues included in the graph, enter your criteria in the
-**Search or filter results...** field. Criteria from the following list can be typed in or selected from a menu:
+**Search or filter results** text box. Criteria from the following list can be typed in or selected from a menu:
 
 - Author
 - Assignee

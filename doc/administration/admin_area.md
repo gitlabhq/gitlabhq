@@ -87,7 +87,7 @@ To filter only projects in that namespace, select from the **Namespace** dropdow
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 
 1. Select the **Public** tab.
-1. Enter `score` in the **Filter by name...** input box.
+1. Enter `score` in the **Filter by name** text box.
 
 ## Administering users
 
@@ -363,17 +363,17 @@ To access the **Runners** page:
 
 To search runners' descriptions:
 
-1. In the **Search or filter results...** field, type the description of the runner you want to
+1. In the **Search or filter results** text box, type the description of the runner you want to
    find.
 1. Press <kbd>Enter</kbd>.
 
 You can also filter runners by status, type, and tag. To filter:
 
-1. Select a tab or the **Search or filter results...** field.
+1. Select a tab or the **Search or filter results** text box.
 1. Select any **Type**, or filter by **Status** or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
+![Attributes of a runner filtered by status](img/index_runners_search_or_filter_v14_5.png)
 
 #### Bulk delete runners
 

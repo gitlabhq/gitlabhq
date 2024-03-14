@@ -129,7 +129,7 @@ Prerequisites:
 
 - Enable the `Develop` menu item.
   1. Open Safari's preferences. Press <kbd>Command</kbd>+<kbd>,</kbd> or from the menu, select
-     **Safari > Preferences...**.
+     **Safari > Preferences**.
   1. Select **Advanced** tab, then select `Show Develop menu item in menu bar`.
   1. Close the **Preferences** window.
 

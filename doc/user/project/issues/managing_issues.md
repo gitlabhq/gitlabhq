@@ -473,7 +473,7 @@ To filter the list of issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. Above the list of issues, select **Search or filter results...**.
+1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -490,7 +490,7 @@ To filter the list issues for text in a title or description:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. Above the list of issues, in the **Search or filter results...** box, enter the searched phrase.
+1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
 1. In the dropdown list that appears, select **Search for this text**.
 1. Select the text box again, and in the dropdown list that appers, select **Search Within**, and then either **Titles** or **Descriptions**.
 1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).

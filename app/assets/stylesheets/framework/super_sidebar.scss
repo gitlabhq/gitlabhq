@@ -633,8 +633,7 @@ $command-palette-spacing: px-to-rem(14px);
     max-height: 30rem;
 
     .gl-new-dropdown-item {
-      padding-left: $gl-spacing-scale-3;
-      padding-right: $gl-spacing-scale-3;
+      @include gl-px-3;
     }
 
     // Target groups

@@ -108,4 +108,18 @@ describe('Global Search Store Actions', () => {
       });
     });
   });
+  describe('setCommand', () => {
+    beforeEach(() => {
+      state = createState({});
+    });
+
+    it('calls the SET_COMMAND mutation', () => {
+      return testAction({
+        action: actions.setCommand,
+        payload: '>',
+        state,
+        expectedMutations: [{ type: types.SET_COMMAND, payload: '>' }],
+      });
+    });
+  });
 });

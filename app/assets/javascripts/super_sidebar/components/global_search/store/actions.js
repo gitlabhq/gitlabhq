@@ -43,3 +43,7 @@ export const clearAutocomplete = ({ commit }) => {
 export const setSearch = ({ commit }, value) => {
   commit(types.SET_SEARCH, value);
 };
+
+export const setCommand = ({ commit }, value) => {
+  commit(types.SET_COMMAND, value);
+};

@@ -14,6 +14,7 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
       'avatarUrl' => project.avatar_url,
       'url' => Gitlab::Utils.append_path(Settings.gitlab.base_url.chomp('/'), project_path(project)),
       'lastUpdatedDate' => project.updated_at.iso8601,
+      'updateSequenceId' => be_a(Integer),
       'workspace' => {
         'id' => project.namespace_id,
         'name' => project.namespace.name,

@@ -98,7 +98,7 @@ To block a user:
 
 The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
 
-To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
+To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin Area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user
 

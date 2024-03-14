@@ -89,7 +89,7 @@ To filter the list of merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
-1. Above the list of merge requests, select **Search or filter results...**.
+1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.

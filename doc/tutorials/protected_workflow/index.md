@@ -40,7 +40,7 @@ example project named "Excelsior", and creates a minimal approval workflow for t
 Before setting up Excelsior Project, you should create a group to own
 the project. Here, you'll set up the Engineering group:
 
-1. On the left sidebar, at the top, select **Create new...** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Create group**.
 1. For **Group name**, enter `Engineering`.
 1. For the **Group URL**, enter `engineering`.
@@ -134,7 +134,7 @@ To create the new `excelsior` project:
 1. On the left sidebar, select **Search or go to** and
    search for `engineering`. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
-   select **Create new...** (**{plus}**) and **In this group > New project/repository**.
+   select **Create new** (**{plus}**) and **In this group > New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Excelsior`. The **Project slug** should

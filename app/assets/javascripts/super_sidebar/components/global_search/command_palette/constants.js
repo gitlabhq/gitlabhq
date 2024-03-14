@@ -4,7 +4,7 @@ export const COMMAND_HANDLE = '>';
 export const USER_HANDLE = '@';
 export const PROJECT_HANDLE = ':';
 export const ISSUE_HANDLE = '#';
-export const PATH_HANDLE = '/';
+export const PATH_HANDLE = '~';
 
 export const TRACKING_ACTIVATE_COMMAND_PALETTE = 'activate_command_palette';
 export const TRACKING_CLICK_COMMAND_PALETTE_ITEM = 'click_command_palette_item';
@@ -16,7 +16,7 @@ export const TRACKING_HANDLE_LABEL_MAP = {
   // No ISSUE_HANDLE. See https://gitlab.com/gitlab-org/gitlab/-/issues/417434.
 };
 
-export const COMMON_HANDLES = [COMMAND_HANDLE, USER_HANDLE, PROJECT_HANDLE];
+export const COMMON_HANDLES = [COMMAND_HANDLE, USER_HANDLE, PROJECT_HANDLE, PATH_HANDLE];
 export const SEARCH_OR_COMMAND_MODE_PLACEHOLDER = sprintf(
   s__(
     'CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{pathHandle} for project file, or perform generic search...',

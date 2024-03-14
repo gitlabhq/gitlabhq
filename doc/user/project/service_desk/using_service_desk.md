@@ -108,7 +108,7 @@ a dedicated email address.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Service Desk**.
-1. Above the list of issues, select **Search or filter results...**.
+1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:

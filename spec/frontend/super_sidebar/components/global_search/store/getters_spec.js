@@ -1,5 +1,6 @@
 import * as getters from '~/super_sidebar/components/global_search/store/getters';
 import initState from '~/super_sidebar/components/global_search/store/state';
+import { sprintf } from '~/locale';
 import {
   MOCK_USERNAME,
   MOCK_SEARCH_PATH,
@@ -434,4 +435,37 @@ describe('Global Search Store Getters', () => {
       });
     },
   );
+
+  describe.each(['>', ''])('isCommandMode', (commandChar) => {
+    beforeEach(() => {
+      createState();
+      state.commandChar = commandChar;
+    });
+
+    it(`returns ${commandChar !== ''} if commandchar: "${commandChar}"`, () => {
+      expect(getters.isCommandMode(state)).toBe(commandChar !== '');
+    });
+  });
+
+  describe.each`
+    commandChar | header
+    ${'>'}      | ${'Search for `%{searchTerm}` pages in...'}
+    ${'@'}      | ${'Search for `%{searchTerm}` users in...'}
+    ${':'}      | ${'Search for `%{searchTerm}` projects in...'}
+    ${'~'}      | ${'Search for `%{searchTerm}` files in...'}
+    ${'}'}      | ${'Search for `%{searchTerm}` in...'}
+  `('scopedSearchGroup', ({ commandChar, header }) => {
+    beforeEach(() => {
+      createState();
+      state.commandChar = commandChar;
+      state.search = 'test';
+    });
+
+    it(`returns group header based on commandchar`, () => {
+      expect(getters.scopedSearchGroup(state, getters)).toStrictEqual({
+        items: expect.any(Function),
+        name: sprintf(header, { searchTerm: state.search }),
+      });
+    });
+  });
 });

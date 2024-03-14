@@ -35,7 +35,7 @@ Prerequisites:
 1. Optional. Filter results:
    1. From the **Projects** dropdown list, select a project.
    1. To filter results by author, milestone, or label,
-      select **Filter results...** and enter a value.
+      select **Filter results** and enter a value.
    1. To adjust the date range:
       - In the **From** field, select a start date.
       - In the **To** field, select an end date.

@@ -127,8 +127,8 @@ and faster to preview proposed modifications.
 
 Configuring Route Maps involves telling GitLab how the paths of files
 in your repository map to paths of pages on your website using a Route Map.
-Once set, GitLab displays **View on ...** buttons, which take you
-to the pages changed directly from merge requests.
+When you configure Route Maps, **View on** buttons are displayed.
+Select these buttons to go to the pages changed directly from merge requests.
 
 To set up a route map, add a file inside the repository at `.gitlab/route-map.yml`,
 which contains a YAML array that maps `source` paths (in the repository) to `public`

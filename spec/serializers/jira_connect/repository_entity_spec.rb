@@ -12,6 +12,7 @@ RSpec.describe JiraConnect::RepositoryEntity, feature_category: :integrations do
     expect(serializer[:name]).to eq(repository.name)
     expect(serializer[:url]).to end_with(repository.full_path)
     expect(serializer[:avatarUrl]).to eq(repository.avatar_url)
+    expect(serializer[:updateSequenceId]).to be_kind_of(Integer)
     expect(serializer[:lastUpdatedDate]).to eq(repository.updated_at.iso8601)
     expect(serializer[:workspace]).to be_kind_of(Hash)
   end

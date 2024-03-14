@@ -6,8 +6,17 @@ import {
   MERGE_REQUEST_CATEGORY,
   ISSUES_CATEGORY,
   RECENT_EPICS_CATEGORY,
+  COMMAND_PALETTE_TYPE_PAGES,
+  COMMAND_PALETTE_TYPE_FILES,
 } from '~/vue_shared/global_search/constants';
-import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from './command_palette/constants';
+
+import {
+  TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+  COMMON_HANDLES,
+  USERS_GROUP_TITLE,
+  PROJECTS_GROUP_TITLE,
+} from './command_palette/constants';
+
 import { LARGE_AVATAR_PX, SMALL_AVATAR_PX } from './constants';
 
 const getTruncatedNamespace = (string) => {
@@ -90,3 +99,22 @@ export const getFormattedItem = (item, searchContext) => {
     (val) => val !== undefined,
   );
 };
+
+export const commandPaletteDropdownItems = [
+  {
+    value: COMMON_HANDLES[0],
+    text: COMMAND_PALETTE_TYPE_PAGES,
+  },
+  {
+    value: COMMON_HANDLES[1],
+    text: USERS_GROUP_TITLE,
+  },
+  {
+    value: COMMON_HANDLES[2],
+    text: PROJECTS_GROUP_TITLE,
+  },
+  {
+    value: COMMON_HANDLES[3],
+    text: COMMAND_PALETTE_TYPE_FILES,
+  },
+];
