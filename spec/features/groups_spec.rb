@@ -48,7 +48,9 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
             fill_in 'Group name', with: 'test-group'
 
             inspect_requests(
-              inject_headers: { ::Organizations::ORGANIZATION_HTTP_HEADER.sub(/^HTTP_/, '') => another_organization.id }
+              inject_headers: {
+                ::Organizations::ORGANIZATION_HTTP_HEADER.sub(/^HTTP_/, '') => another_organization.id.to_s
+              }
             ) do
               click_button 'Create group'
             end
