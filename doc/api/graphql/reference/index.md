@@ -1550,6 +1550,33 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
+### `Mutation.approvalProjectRuleUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `approvalProjectRuleUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruleupdateapprovalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | How many approvals are required to satify rule. |
+| <a id="mutationapprovalprojectruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruleupdategroupids"></a>`groupIds` | [`[ID!]`](#id) | List of IDs of Groups that can approval rule. |
+| <a id="mutationapprovalprojectruleupdateid"></a>`id` | [`ApprovalProjectRuleID!`](#approvalprojectruleid) | Global ID of the approval rule to destroy. |
+| <a id="mutationapprovalprojectruleupdatename"></a>`name` | [`String!`](#string) | Name of the approval rule. |
+| <a id="mutationapprovalprojectruleupdateuserids"></a>`userIds` | [`[ID!]`](#id) | List of IDs of Users that can approval rule. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruleupdateapprovalrule"></a>`approvalRule` | [`ApprovalProjectRule`](#approvalprojectrule) | Approval rule after mutation. |
+| <a id="mutationapprovalprojectruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.approveDeployment`
 
 Input type: `ApproveDeploymentInput`
@@ -33587,6 +33614,12 @@ An example `AnalyticsDevopsAdoptionEnabledNamespaceID` is: `"gid://gitlab/Analyt
 A `AppSecFuzzingCoverageCorpusID` is a global ID. It is encoded as a string.
 
 An example `AppSecFuzzingCoverageCorpusID` is: `"gid://gitlab/AppSec::Fuzzing::Coverage::Corpus/1"`.
+
+### `ApprovalProjectRuleID`
+
+A `ApprovalProjectRuleID` is a global ID. It is encoded as a string.
+
+An example `ApprovalProjectRuleID` is: `"gid://gitlab/ApprovalProjectRule/1"`.
 
 ### `AuditEventsAmazonS3ConfigurationID`
 
