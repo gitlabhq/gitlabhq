@@ -387,9 +387,10 @@ artifacts through the [Admin Area settings](../administration/settings/continuou
 
 ## Storage statistics
 
-You can see the total storage used for job artifacts on groups and projects
-in the administration area, as well as through the [groups](../api/groups.md)
-and [projects APIs](../api/projects.md).
+You can see the total storage used for job artifacts for groups and projects in:
+
+- The Admin Area
+- The [groups](../api/groups.md) and [projects](../api/projects.md) APIs
 
 ## Implementation details
 

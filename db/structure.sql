@@ -25675,11 +25675,11 @@ CREATE INDEX index_member_approval_on_requested_by_id ON member_approvals USING 
 
 CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING btree (reviewed_by_id);
 
-CREATE UNIQUE INDEX index_member_roles_on_name_unique ON member_roles USING btree (name) WHERE (namespace_id IS NULL);
-
 CREATE INDEX index_member_approvals_on_member_role_id ON member_approvals USING btree (member_role_id);
 
 CREATE INDEX index_member_approvals_on_user_id ON member_approvals USING btree (user_id);
+
+CREATE UNIQUE INDEX index_member_roles_on_name_unique ON member_roles USING btree (name) WHERE (namespace_id IS NULL);
 
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
 

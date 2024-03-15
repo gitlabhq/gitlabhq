@@ -35,8 +35,9 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 > - Installation at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 To install the GitLab for Slack app from the project or group settings:
 
@@ -196,8 +197,9 @@ The following GitLab events can trigger notifications in Slack:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 To trigger a [notification event](#notification-events) for a group mention, use `@<group_name>` in:
 

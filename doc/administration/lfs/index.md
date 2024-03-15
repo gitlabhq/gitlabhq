@@ -345,10 +345,10 @@ To migrate back to local storage:
 
 ## Storage statistics
 
-You can see the total storage used for LFS objects on groups and projects:
+You can see the total storage used for LFS objects for groups and projects in:
 
-- In the administration area.
-- In the [groups](../../api/groups.md) and [projects APIs](../../api/projects.md).
+- The Admin Area
+- The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
 ## Related topics
 

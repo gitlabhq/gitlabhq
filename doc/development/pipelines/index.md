@@ -49,12 +49,11 @@ In summary:
 
 ### Predictive Tests Dashboards
 
-- <https://app.periscopedata.com/app/gitlab/1116767/Test-Intelligence-Accuracy>
-- <https://app.periscopedata.com/app/gitlab/899368/EP---Predictive-testing-analysis>
+- <https://10az.online.tableau.com/#/site/gitlab/views/DRAFTTestIntelligenceAccuracy/TestIntelligenceAccuracy>
 
 ### The `detect-tests` CI job
 
-Most CI/CD pipelines for `gitlab-org/gitlab` will run a [`detect-tests` CI job](https://gitlab.com/gitlab-org/gitlab/-/blob/0c6058def8f182b4a2410db5d08a9550b951b2d8/.gitlab/ci/setup.gitlab-ci.yml#L101-146) in the `prepare` stage to detect which backend/frontend tests should be run based on the files that changed in the given MR.
+Most CI/CD pipelines for `gitlab-org/gitlab` will run a [`detect-tests` CI job](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/.gitlab/ci/setup.gitlab-ci.yml#L115-154) in the `prepare` stage to detect which backend/frontend tests should be run based on the files that changed in the given MR.
 
 The `detect-tests` job will create many files that will contain the backend/frontend tests that should be run. Those files will be read in subsequent jobs in the pipeline, and only those tests will be executed.
 
@@ -62,19 +61,12 @@ The `detect-tests` job will create many files that will contain the backend/fron
 
 #### Determining predictive RSpec test files in a merge request
 
-To identify the RSpec tests that are likely to fail in a merge request, we use *static mappings* and *dynamic mappings*.
-
-##### Static mappings
-
-We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
-  be mapped via coverage tracing ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/5ab06422826c0d69c615655982a6f969a7f3c6ea/tooling/lib/tooling/find_tests.rb#L17)).
-
-The test mappings contain a map of each source files to a list of test files which is dependent of the source file.
+To identify the RSpec tests that are likely to fail in a merge request, we use *dynamic mappings* and *static mappings*.
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a dynamic mapping strategy from test coverage tracing (generated via the [`Crystalball` gem](https://github.com/toptal/crystalball))
-  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_tests.rb#L20)).
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://github.com/toptal/crystalball))
+  ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L20), and [the mapping strategies we use in Crystalball](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/crystalball_env.rb)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
 
@@ -92,6 +84,13 @@ In addition to `test_file_finder`, we have added several advanced mappings to de
   - If a JS file is changed, we should try to identify the system specs that are covering this JS component.
 - [`FindFilesUsingFeatureFlags`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/lib/tooling/find_files_using_feature_flags.rb) ([#407366](https://gitlab.com/gitlab-org/gitlab/-/issues/407366))
   - If a feature flag was changed, we check which Ruby file is including that feature flag, and we add it to the list of changed files in the detect-tests CI job. The remainder of the job will then detect which frontend/backend tests should be run based on those changed files.
+
+##### Static mappings
+
+We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
+  be mapped via dynamic mappings ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L17)).
+
+The [test mappings](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) contain a map of each source files to a list of test files which is dependent of the source file.
 
 #### Exceptional cases
 

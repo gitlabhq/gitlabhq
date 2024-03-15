@@ -17,7 +17,7 @@ include:
   - project: gitlab-org/quality/pipeline-common
     ref: 8.5.0
     file:
-      - /ci/base.gitlab-ci.yml
+      - /ci/base.gitlab-ci.yml  # https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/8.4.4/ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
 
 stages:
