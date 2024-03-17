@@ -287,7 +287,13 @@ You can filter push events by branch. Use one of the following options to filter
 
 - **All branches**: push events from all branches.
 - **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
-- **Regular expression**: push events from a branch that matches a regular expression (for example, `^(feature|hotfix)/`).
+- **Regular expression**: push events from a branch that matches a regular expression (regex).
+  The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+  For example, to exclude `main`, you can use:
+
+  ```plaintext
+  \b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
+  ```
 
 To configure branch filtering for a project or group, see
 [Configure a webhook in GitLab](#configure-a-webhook-in-gitlab).

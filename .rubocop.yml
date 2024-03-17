@@ -1045,6 +1045,7 @@ Cop/RedisQueueUsage:
     - 'lib/gitlab/sidekiq_sharding/scheduled_enq.rb'
     - 'lib/gitlab/sidekiq_sharding/router.rb'
     - 'app/workers/concerns/application_worker.rb'
+    - 'lib/gitlab/sidekiq_queue.rb'
 
 Cop/SidekiqApiUsage:
   Enabled: true
