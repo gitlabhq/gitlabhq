@@ -239,7 +239,7 @@ To use a rootless private runner:
      --token "<project_token>" \
      --non-interactive \
      --builds-dir "/tmp/builds" \
-     --env "DOCKER_HOST=unix:///run/user/<gitlab-runner-user>/docker.sock"
+     --env "DOCKER_HOST=unix:///run/user/<gitlab-runner-user>/docker.sock" \
      --docker-host "unix:///run/user/<gitlab-runner-user>/docker.sock"
    ```
 
