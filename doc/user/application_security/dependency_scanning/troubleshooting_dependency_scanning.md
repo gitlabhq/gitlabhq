@@ -230,3 +230,12 @@ To prevent false positives, Gemnasium only uses `go.sum` if it is unable to gene
 ```shell
 [WARN] [Gemnasium] [2022-09-14T20:59:38Z] ▶ Selecting "go.sum" parser for "/test-projects/gitlab-shell/go.sum". False positives may occur. See https://gitlab.com/gitlab-org/gitlab/-/issues/321081.
 ```
+
+## `Host key verification failed` when trying to use `ssh`
+
+After installing `openssh-client` on any `gemnasium` image, using `ssh` might lead to a `Host key verification failed` message. This can occur if you use `~` to represent the user directory during setup, due to setting `$HOME` to `/tmp` when building the image. This issue is described in [Cloning project over SSH fails when using `gemnasium-python` image](https://gitlab.com/gitlab-org/gitlab/-/issues/374571). `openssh-client` expects to find `/root/.ssh/known_hosts` but this path does not exist; `/tmp/.ssh/known_hosts` exists instead.
+
+This has been resolved in `gemnasium-python` where `openssh-client` is pre-installed, but the issue could occur when installing `openssh-client` from scratch on other images. To resolve this, you may either:
+
+1. Use absolute paths (`/root/.ssh/known_hosts` instead of `~/.ssh/known_hosts`) when setting up keys and hosts.
+1. Add `UserKnownHostsFile` to your `ssh` config specifying the relevant `known_hosts` files, for example: `echo 'UserKnownHostsFile /tmp/.ssh/known_hosts' >> /etc/ssh/ssh_config`.

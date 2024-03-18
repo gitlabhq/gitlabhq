@@ -704,7 +704,7 @@ vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 Prerequisites:
 
 - The `test` stage is required in the `.gitlab-ci.yml` file.
-- On GitLab self-managed you need GitLab Runner with the
+- With self-managed runners you need a GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
 - If you're using SaaS runners on GitLab.com, this is enabled by default.
