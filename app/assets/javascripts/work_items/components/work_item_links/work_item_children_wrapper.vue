@@ -286,6 +286,7 @@ export default {
       :has-indirect-children="hasIndirectChildren"
       :show-labels="showLabels"
       :work-item-full-path="fullPath"
+      is-top-level
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

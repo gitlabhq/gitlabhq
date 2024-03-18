@@ -268,6 +268,9 @@ export default {
     },
     handleDescriptionTextUpdated(newText) {
       this.descriptionText = newText;
+      if (this.disableInlineEditing) {
+        this.$emit('updateDraft', this.descriptionText);
+      }
       this.updateWorkItem();
     },
   },
