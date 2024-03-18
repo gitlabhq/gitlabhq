@@ -79,8 +79,9 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 ## Admin Area
 
-Use title case for **Admin Area**.
-This area of the UI says **Admin Area** at the top of the page and on the menu.
+Use title case for **Admin Area**. The UI uses title case.
+
+Do not use **administrator area**, **administration area**, or other variants.
 
 ## Admin Mode
 

@@ -79,6 +79,14 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         expect { subject }.to raise_error(RuntimeError)
       end
     end
+
+    context 'when path contains certain utf-8 characters' do
+      let(:path) { '😬' }
+
+      it 'does not raise an encoding error' do
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 
   describe '.send_git_patch' do
