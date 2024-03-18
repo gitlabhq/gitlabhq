@@ -364,9 +364,9 @@ The Ruby gem which performs the check is hard coded with `pool.ntp.org` as its r
 
   This issue occurs when the hostname `pool.ntp.org` resolves to a server which does not provide a time service.
 
-In this case, in GitLab 15.7 and newer, [specify a custom NTP server using environment variables](#health-check-rake-task).
+In this case, in GitLab 15.7 and later, [specify a custom NTP server using environment variables](#health-check-rake-task).
 
-In GitLab 15.6 and older, use one of the following workarounds:
+In GitLab 15.6 and earlier, use one of the following workarounds:
 
 - Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
   This fixes the long timeout and the timeout error.
@@ -776,7 +776,7 @@ The following configuration example:
 - Ignores five common check failures.
 
 [The Gitaly documentation has more details](../../gitaly/consistency_checks.md)
-about other Git check failures and older versions of GitLab.
+about other Git check failures and earlier versions of GitLab.
 
 ```ruby
 gitaly['configuration'] = {

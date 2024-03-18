@@ -75,7 +75,7 @@ If your Auto DevOps project has an active environment deployed with the v1 `auto
 
 #### Kubernetes 1.16+
 
-The v2 auto-deploy-image drops support for Kubernetes 1.15 and lower. If you need to upgrade your
+The v2 auto-deploy-image drops support for Kubernetes 1.15 and earlier. If you need to upgrade your
 Kubernetes cluster, follow your cloud provider's instructions. Here's
 [an example on GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster).
 

@@ -1728,7 +1728,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
+Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium and Ultimate tier.
 
 ```plaintext
 POST /groups/:id/ldap_group_links
@@ -1780,7 +1780,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
+Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium and Ultimate tier.
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links

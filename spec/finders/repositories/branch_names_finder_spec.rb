@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repositories::BranchNamesFinder do
+RSpec.describe Repositories::BranchNamesFinder, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
 
   describe '#execute' do

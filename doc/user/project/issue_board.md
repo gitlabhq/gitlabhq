@@ -57,7 +57,11 @@ the issue board feature.
 > - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
 > - Multiple issue boards per group are available in GitLab Premium.
 
-Multiple issue boards allow for more than one issue board for a given project in the Free tier or group in the Premium and Ultimate tier.
+Multiple issue boards allow for more than one issue board for:
+
+- A project in all tiers
+- A group in the Premium and Ultimate tier
+
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.

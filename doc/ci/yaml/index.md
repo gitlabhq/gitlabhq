@@ -2970,11 +2970,11 @@ This example creates four paths of execution:
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
   this feature is available by default.
-- In GitLab 14.0 and older, you can only refer to jobs in earlier stages. Stages must be
+- In GitLab 14.0 and earlier, you can only refer to jobs in earlier stages. Stages must be
   explicitly defined for all jobs that use the `needs` keyword, or are referenced
   in a job's `needs` section.
-- In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
-  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
+- If `needs` refers to a job that might not be added to
+  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. Use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
 - If a pipeline has jobs with `needs: []` and jobs in the [`.pre`](#stage-pre) stage, they will
   all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
   and jobs in the `.pre` stage also start immediately.

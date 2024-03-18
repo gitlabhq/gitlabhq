@@ -544,11 +544,11 @@ The chart shows data for the last 500 workflow items.
 
 Access permissions for value stream analytics depend on the project type.
 
-| Project type | Permissions                            |
-|--------------|----------------------------------------|
-| Public       | Anyone can access.                     |
-| Internal     | Any authenticated user can access.     |
-| Private      | Any member Guest and above can access. |
+| Project type | Permissions                                       |
+|--------------|---------------------------------------------------|
+| Public       | Anyone can access.                                |
+| Internal     | Any authenticated user can access.                |
+| Private      | Any user with at least the Guest role can access. |
 
 ## Troubleshooting
 

@@ -404,7 +404,7 @@ You can configure GitLab to use multiple SAML IdPs if:
 - Each provider has a unique name set that matches a name set in `args`. At least
   one provider must have the name `saml` to mitigate a
   [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab
-  14.6 and newer.
+  14.6 and later.
 - The providers' names are used:
   - In OmniAuth configuration for properties based on the provider name. For example,
     `allowBypassTwoFactor`, `allowSingleSignOn`, and `syncProfileFromProvider`.

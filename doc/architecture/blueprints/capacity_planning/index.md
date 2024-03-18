@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: implemented
 creation-date: "2023-09-11"
 authors: [ "@abrandl" ]
 coach: "@andrewn"

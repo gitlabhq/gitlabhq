@@ -99,7 +99,7 @@ sequenceDiagram
 ## Policy
 
 The`read_harbor_registry` policy for groups and projects is used to control whether users have access to Harbor registry.
-This policy is enabled for every user with the Reporter role and above.
+This policy is enabled for every user with at least the Reporter role.
 
 ## Frontend Development
 

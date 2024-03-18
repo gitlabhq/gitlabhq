@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39737) from JUnit test reports to Unit test reports in GitLab 13.4.
-
 It is very common that a [CI/CD pipeline](../pipelines/index.md) contains a
 test job that verifies your code.
 If the tests fail, the pipeline fails and users get notified. The person that
