@@ -59,8 +59,6 @@ global:
     configureCertmanager: false
     tls:
       enabled: false
-  shell:
-    port: 32022
   extraEnv:
     GITLAB_LICENSE_MODE: test
     CUSTOMER_PORTAL_URL: https://customers.staging.gitlab.com

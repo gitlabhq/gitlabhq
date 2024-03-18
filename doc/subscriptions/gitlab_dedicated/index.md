@@ -184,7 +184,9 @@ The following GitLab application features are not available:
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk
-- GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
+- Some GitLab Duo AI capabilities
+  - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
+  - Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information.
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)
 - Any functionality or feature behind a Feature Flag that is toggled `off` by default

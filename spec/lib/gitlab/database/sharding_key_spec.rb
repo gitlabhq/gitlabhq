@@ -23,6 +23,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *tables_with_alternative_not_null_constraint,
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
       'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'path_locks.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643

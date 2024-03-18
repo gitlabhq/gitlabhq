@@ -50009,11 +50009,6 @@ msgstr ""
 msgid "TanukiBot|How to use GitLab"
 msgstr ""
 
-msgid "TanukiBot|Source"
-msgid_plural "TanukiBot|Sources"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "TanukiBot|The issue, epic, or code you're viewing"
 msgstr ""
 

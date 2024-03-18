@@ -1,7 +1,9 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlIcon, GlModal, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlIcon, GlModal, GlSprintf } from '@gitlab/ui';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
+import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
@@ -57,17 +59,9 @@ export default {
       'Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects. %{linkStart}Where’s my project ID in Google Cloud?%{linkEnd}',
     ),
     regionLabel: s__('Runners|Region'),
-    regionHelpText: s__('Runners|Specific geographical location where you can run your resources.'),
-    learnMore: s__('Runners|Learn more in the %{linkStart}Google Cloud documentation%{linkEnd}.'),
     zoneLabel: s__('Runners|Zone'),
-    zoneHelpText: s__(
-      'Runners|Isolated location within a region. The zone determines what computing resources are available and where your data is stored and used.',
-    ),
     zonesLinkText: s__('Runners|View available zones'),
     machineTypeLabel: s__('Runners|Machine type'),
-    machineTypeHelpText: s__(
-      'Runners|Machine type with preset amounts of virtual machines processors (vCPUs) and memory',
-    ),
     machineTypeDescription: s__(
       'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}.',
     ),
@@ -124,13 +118,14 @@ export default {
   components: {
     ClipboardButton,
     GoogleCloudFieldGroup,
+    GoogleCloudLearnMoreLink,
     GlAlert,
     GlButton,
     GlIcon,
     GlLink,
     GlModal,
-    GlPopover,
     GlSprintf,
+    HelpPopover,
   },
   props: {
     runnerId: {
@@ -336,7 +331,7 @@ export default {
     <div class="gl-mt-5">
       <h1 class="gl-heading-1">{{ $options.i18n.heading }}</h1>
       <p>
-        <gl-icon name="information-o" class="gl-text-blue-600!" />
+        <gl-icon name="information-o" class="gl-text-blue-600" />
         <gl-sprintf :message="tokenMessage">
           <template #token>
             <code data-testid="runner-token">{{ token }}</code>
@@ -453,20 +448,12 @@ export default {
       <template #label>
         <div>
           {{ $options.i18n.regionLabel }}
-          <gl-icon id="region-popover" name="question-o" class="gl-text-blue-600" />
-          <gl-popover triggers="hover" placement="top" target="region-popover">
-            <template #default>
-              <p>{{ $options.i18n.regionHelpText }}</p>
-              <gl-sprintf :message="$options.i18n.learnMore">
-                <template #link="{ content }">
-                  <gl-link :href="$options.links.regionAndZonesLink" target="_blank">
-                    {{ content }}
-                    <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </template>
-          </gl-popover>
+          <help-popover>
+            <p>
+              {{ s__('Runners|Specific geographical location where you can run your resources.') }}
+            </p>
+            <google-cloud-learn-more-link :href="$options.links.regionAndZonesLink" />
+          </help-popover>
         </div>
       </template>
     </google-cloud-field-group>
@@ -485,20 +472,16 @@ export default {
       <template #label>
         <div>
           {{ $options.i18n.zoneLabel }}
-          <gl-icon id="zone-popover" name="question-o" class="gl-text-blue-600" />
-          <gl-popover triggers="hover" placement="top" target="zone-popover">
-            <template #default>
-              <p>{{ $options.i18n.zoneHelpText }}</p>
-              <gl-sprintf :message="$options.i18n.learnMore">
-                <template #link="{ content }">
-                  <gl-link :href="$options.links.regionAndZonesLink" target="_blank">
-                    {{ content }}
-                    <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </template>
-          </gl-popover>
+          <help-popover>
+            <p>
+              {{
+                s__(
+                  'Runners|Isolated location within a region. The zone determines what computing resources are available and where your data is stored and used.',
+                )
+              }}
+            </p>
+            <google-cloud-learn-more-link :href="$options.links.regionAndZonesLink" />
+          </help-popover>
         </div>
       </template>
       <template #description>
@@ -525,20 +508,16 @@ export default {
       <template #label>
         <div>
           {{ $options.i18n.machineTypeLabel }}
-          <gl-icon id="machine-type-popover" name="question-o" class="gl-text-blue-600" />
-          <gl-popover triggers="hover" placement="top" target="machine-type-popover">
-            <template #default>
-              <p>{{ $options.i18n.machineTypeHelpText }}</p>
-              <gl-sprintf :message="$options.i18n.learnMore">
-                <template #link="{ content }">
-                  <gl-link :href="$options.links.machineTypesLink" target="_blank">
-                    {{ content }}
-                    <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </template>
-          </gl-popover>
+          <help-popover>
+            <p>
+              {{
+                s__(
+                  'Runners|Machine type with preset amounts of virtual machines processors (vCPUs) and memory',
+                )
+              }}
+            </p>
+            <google-cloud-learn-more-link :href="$options.links.machineTypesLink" />
+          </help-popover>
         </div>
       </template>
       <template #description>

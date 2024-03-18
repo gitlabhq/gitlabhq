@@ -252,26 +252,17 @@ module QA
             end
           end
 
-          def add_prompt_into_a_file(file_name, prompt_data)
+          def add_prompt_into_a_file(file_name, prompt_data, wait_for_code_suggestions: true)
             within_vscode_editor do
               open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
-                wait_until_code_suggestions_enabled
+                wait_until_code_suggestions_enabled if wait_for_code_suggestions
                 send_keys(:enter, :enter)
 
                 # Send keys one at a time to allow suggestions request to be triggered
                 prompt_data.each_char { |c| send_keys(c) }
               end
-            end
-          end
-
-          def wait_until_code_suggestions_enabled
-            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
-              message: 'Wait for Code Suggestions extension to be enabled') do
-              raise code_suggestions_error if has_code_suggestions_error?
-
-              has_code_suggestions_status?('enabled')
             end
           end
 
@@ -312,6 +303,14 @@ module QA
             end
           end
 
+          def has_code_suggestions_disabled?
+            within_vscode_editor do
+              within_file_editor do
+                has_code_suggestions_status_without_error?('disabled')
+              end
+            end
+          end
+
           def open_duo_chat
             within_vscode_editor do
               click_element('a[aria-label="GitLab Duo Chat"]', wait: 60)
@@ -346,6 +345,19 @@ module QA
 
           def code_suggestions_error
             page.document.find(code_suggestions_icon_selector('error'))['aria-label']
+          end
+
+          def has_code_suggestions_status_without_error?(status)
+            raise code_suggestions_error if has_code_suggestions_error?
+
+            has_code_suggestions_status?(status)
+          end
+
+          def wait_until_code_suggestions_enabled
+            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
+              message: 'Wait for Code Suggestions extension to be enabled') do
+              has_code_suggestions_status_without_error?('enabled')
+            end
           end
         end
       end

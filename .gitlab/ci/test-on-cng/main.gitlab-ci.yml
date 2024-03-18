@@ -15,7 +15,7 @@ workflow:
   stage: test
   extends: .qa-cache
   needs: [build-cng]
-  tags: [saas-linux-2xlarge-amd64]
+  tags: [e2e]
   services:
     - docker:${DOCKER_VERSION}-dind
   variables:
@@ -32,6 +32,7 @@ workflow:
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
+    QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
@@ -61,9 +62,8 @@ workflow:
       junit: qa/tmp/rspec-*.xml
       dotenv: $QA_SUITE_STATUS_ENV_FILE
     paths:
-      - "*.log"
-      - qa/tmp/test-metrics-*.json
-      - qa/tmp/allure-results
+      - qa/tmp
+      - ${CI_PROJECT_DIR}/*.log
 
 # ==========================================
 # Pre stage
@@ -77,14 +77,31 @@ build-cng:
   extends: .build-cng
   needs: [build-cng-env]
 
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .ruby-image
+    - .qa-cache
+    - .rules:download-knapsack
+  variables:
+    GIT_STRATEGY: clone
+  before_script:
+    - cd qa && bundle install
+  after_script: []
+
 # ==========================================
 # Test stage
 # ==========================================
 cng-qa-smoke:
-  extends:
-    - .cng-base
+  extends: .cng-base
   variables:
     QA_SCENARIO: Test::Instance::Smoke
+
+cng-qa-blocking:
+  extends: .cng-base
+  variables:
+    QA_SCENARIO: Test::Instance::Blocking
+  parallel: 10
 
 # Test run against environment with minimum supported redis version defined in lib/system_check/app/redis_version_check.rb
 cng-qa-min-redis-version:
@@ -113,3 +130,10 @@ notify-slack:
     - .rules:report:process-results
   variables:
     QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.xml
+
+upload-knapsack-report:
+  extends:
+    - .upload-knapsack-report
+    - .rules:report:process-results
+  variables:
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json

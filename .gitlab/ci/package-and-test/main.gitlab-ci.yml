@@ -571,16 +571,31 @@ importers:
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
 
-ai-gateway:
+# ========== ai-gateway ===========
+
+.ai-gateway-base:
   extends:
     - .qa
     - .failure-videos
-  variables:
-    QA_SCENARIO: Test::Integration::AiGateway
   rules:
     - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - if: $QA_SUITES =~ /$QA_SCENARIO/
     - !reference [.rules:test:manual, rules]
+
+ai-gateway:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGateway
+
+ai-gateway-no-license:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoLicense
+  before_script:
+    - unset QA_EE_LICENSE
+    - !reference [.ai-gateway-base, before_script]
 
 # ------------------------------------------
 # Update jobs
