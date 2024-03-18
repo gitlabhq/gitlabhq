@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'coverage'
+require 'simplecov'
 require 'crystalball/map_generator/coverage_strategy'
 require_relative './coverage_lines_execution_detector'
 

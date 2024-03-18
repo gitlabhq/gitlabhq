@@ -139,6 +139,23 @@ export const createModelResponses = {
   },
 };
 
+export const destroyModelResponses = {
+  success: {
+    data: {
+      mlModelDestroy: {
+        errors: [],
+      },
+    },
+  },
+  failure: {
+    data: {
+      mlModelDestroy: {
+        errors: ['Model not found'],
+      },
+    },
+  },
+};
+
 export const modelWithVersions = {
   id: 'gid://gitlab/Ml::Model/1',
   name: 'model_1',

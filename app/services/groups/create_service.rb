@@ -170,10 +170,7 @@ module Groups
         nil # nothing to do, already assigned from params
       elsif @group.parent_id
         @group.organization = @group.parent.organization
-      # Rely on middleware setting of the organization,
-      # but since we are guarding with feature flag, we need to check it first
-      # Consider replacing elsif with else in cleanup of current_organization_middleware feature flag in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/441121
+      # Rely on middleware setting of the organization, but sometimes it won't be set, so we need to guard it here.
       elsif Current.organization
         @group.organization = Current.organization
       end

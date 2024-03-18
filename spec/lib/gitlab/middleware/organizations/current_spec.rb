@@ -55,17 +55,5 @@ RSpec.describe Gitlab::Middleware::Organizations::Current, feature_category: :ce
         expect(Current.organization).to be_nil
       end
     end
-
-    context 'when current_organization_middleware feature flag is disabled' do
-      before do
-        stub_feature_flags(current_organization_middleware: false)
-      end
-
-      it 'does not set the organization' do
-        perform_request
-
-        expect(Current.organization).to be_nil
-      end
-    end
   end
 end

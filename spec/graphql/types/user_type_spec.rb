@@ -69,6 +69,8 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
     let_it_be(:requested_user) { create(:user, name: 'John Smith') }
     let_it_be(:requested_project_bot) { create(:user, :project_bot, name: 'Project bot') }
     let_it_be(:requested_group_bot) { create(:user, :project_bot, name: 'Group bot') }
+    let_it_be(:requested_project_service_account) { create(:user, :service_account, name: 'Project service account') }
+    let_it_be(:requested_group_service_account) { create(:user, :service_account, name: 'Group service account') }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:group) { create(:group, :public) }
 
@@ -187,6 +189,78 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
           end
         end
       end
+
+      context 'a project service account' do
+        let(:username) { requested_project_service_account.username }
+
+        context 'when requester is nil' do
+          let(:current_user) { nil }
+
+          it 'returns nothing' do
+            expect(user_name).to be_nil
+          end
+        end
+
+        context 'when the requester is not a project member' do
+          it 'returns `Project service account` for a non project member in a public project' do
+            expect(user_name).to eq('Project service account')
+          end
+        end
+
+        context 'with a project member' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'returns `Project service account` for a project member' do
+            expect(user_name).to eq('Project service account')
+          end
+
+          context 'in a private project' do
+            let(:project) { create(:project, :private) }
+
+            it 'returns `Project service account` for a project member in a private project' do
+              expect(user_name).to eq('Project service account')
+            end
+          end
+        end
+
+        context 'a group service account' do
+          let(:username) { requested_group_service_account.username }
+
+          context 'when requester is nil' do
+            let(:current_user) { nil }
+
+            it 'returns nothing' do
+              expect(user_name).to be_nil
+            end
+          end
+
+          context 'when the requester is not a group member' do
+            it 'returns `Group service account` for a non group member in a public group' do
+              expect(user_name).to eq('Group service account')
+            end
+          end
+
+          context 'with a group member' do
+            before do
+              group.add_guest(user)
+            end
+
+            it 'returns `Group service account` for a group member' do
+              expect(user_name).to eq('Group service account')
+            end
+
+            context 'in a private group' do
+              let(:group) { create(:group, :private) }
+
+              it 'returns `Group service account` for a group member in a private group' do
+                expect(user_name).to eq('Group service account')
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'admin requests', :enable_admin_mode do
@@ -211,6 +285,22 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
 
         it 'returns name' do
           expect(subject).to eq('Group bot')
+        end
+      end
+
+      context 'a project service account' do
+        let(:username) { requested_project_service_account.username }
+
+        it 'returns name' do
+          expect(subject).to eq('Project service account')
+        end
+      end
+
+      context 'a group service account' do
+        let(:username) { requested_group_service_account.username }
+
+        it 'returns name' do
+          expect(subject).to eq('Group service account')
         end
       end
     end

@@ -32113,6 +32113,9 @@ msgstr ""
 msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
 msgstr ""
 
+msgid "MlExperimentTracking|Deleting this model will delete the associated model versions, candidates and artifacts."
+msgstr ""
+
 msgid "MlExperimentTracking|Details"
 msgstr ""
 
@@ -32207,10 +32210,19 @@ msgstr ""
 msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
 msgstr ""
 
+msgid "MlModelRegistry|Delete model"
+msgstr ""
+
+msgid "MlModelRegistry|Delete model?"
+msgstr ""
+
 msgid "MlModelRegistry|Details"
 msgstr ""
 
 msgid "MlModelRegistry|Experiment"
+msgstr ""
+
+msgid "MlModelRegistry|Failed to delete model with error: %{message}"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to load model candidates with error: %{message}"
@@ -32238,6 +32250,9 @@ msgid "MlModelRegistry|Manage versions of your machine learning model"
 msgstr ""
 
 msgid "MlModelRegistry|Metadata"
+msgstr ""
+
+msgid "MlModelRegistry|Model deleted successfully"
 msgstr ""
 
 msgid "MlModelRegistry|Model performance"

@@ -59,6 +59,28 @@ switch between ascending or descending order, select **Sort order**.
 
 ![Sort releases dropdown list options](img/releases_sort_v13_6.png)
 
+### Permanent link to latest release
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+
+Latest release page is accessible through a permanent URL.
+GitLab redirects to the latest release page URL when it is visited.
+
+The format of the URL is:
+
+```plaintext
+https://host/namespace/project/-/releases/permalink/latest
+```
+
+We also support, suffix path carry forward on the redirect to the latest release.
+Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
+
+Refer [permanent links to latest release assets](release_fields.md#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
+
+#### Sorting preferences
+
+By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
+
 ## Create a release
 
 You can create a release:

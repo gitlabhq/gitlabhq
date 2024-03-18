@@ -41,7 +41,7 @@ the `api` scope:
 1. Select the `api` scope.
 1. Select **Create personal access token**.
 
-You can also use a [project](../../../project/settings/project_access_tokens.md) or [group access token](../../../group/settings/group_access_tokens.md) with the `api` scope.
+You can also use a [project](../../../project/settings/project_access_tokens.md) or [group access token](../../../group/settings/group_access_tokens.md) with the `api` scope and the `developer` role.
 
 ## Complete a bootstrap installation
 

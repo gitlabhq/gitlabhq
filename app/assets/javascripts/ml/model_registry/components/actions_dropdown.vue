@@ -30,5 +30,6 @@ export default {
     no-caret
   >
     <gl-disclosure-dropdown-item :item="copyIdItem" :data-clipboard-text="mlflowTrackingUrl" />
+    <slot></slot>
   </gl-disclosure-dropdown>
 </template>

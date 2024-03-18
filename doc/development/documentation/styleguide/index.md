@@ -741,8 +741,8 @@ For example:
 ```markdown
 **Footnotes:**
 
-1. This is the footnote.
-1. This is the other footnote.
+1. This is the first footnote.
+1. This is the second footnote.
 ```
 
 The table and footnotes would render as follows:
@@ -754,8 +754,29 @@ The table and footnotes would render as follows:
 
 **Footnotes:**
 
-1. This is the footnote.
-1. This is the other footnote.
+1. This is the first footnote.
+1. This is the second footnote.
+
+##### More than five footnotes
+
+If you have five or more footnotes that you cannot include in the table itself,
+you can use consecutive numbers for the list items.
+If you use consecutive numbers, you must disable Markdown rule `029`:
+
+```markdown
+**Footnotes:**
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+
+1. This is the first footnote.
+2. This is the second footnote.
+3. This is the third footnote.
+4. This is the fourth footnote.
+5. This is the fifth footnote.
+
+<!-- markdownlint-enable MD029 -->
+```
 
 ## Quotes
 

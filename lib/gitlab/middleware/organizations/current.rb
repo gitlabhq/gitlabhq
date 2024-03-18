@@ -15,9 +15,7 @@ module Gitlab
         def call(env)
           @request = Rack::Request.new(env)
 
-          if Feature.enabled?(:current_organization_middleware, type: :gitlab_com_derisk)
-            ::Current.organization = calculated_organization
-          end
+          ::Current.organization = calculated_organization
 
           @app.call(env)
         end

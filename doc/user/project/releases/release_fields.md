@@ -67,28 +67,6 @@ Each link as an asset has the following attributes:
 | `filepath`  | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. | No       |
 | `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
 
-#### Permanent link to latest release
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
-
-Latest release page is accessible through a permanent URL.
-GitLab redirects to the latest release page URL when it is visited.
-
-The format of the URL is:
-
-```plaintext
-https://host/namespace/project/-/releases/permalink/latest
-```
-
-We also support, suffix path carry forward on the redirect to the latest release.
-Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
-
-Refer [permanent links to latest release assets](#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
-
-##### Sorting preferences
-
-By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
-
 #### Permanent links to release assets
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
@@ -136,7 +114,7 @@ curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" 
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
 
-You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
+You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
 
 The format of the URL is:
 

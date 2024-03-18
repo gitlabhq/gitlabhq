@@ -55,6 +55,12 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
       it { is_expected.not_to be_can_sign_in_bot(user) }
     end
 
+    context 'the user is a service account, but for a web request' do
+      let_it_be(:user) { build(:user, :service_account) }
+
+      it { is_expected.not_to be_can_sign_in_bot(user) }
+    end
+
     context 'the user is a regular user, for an API request' do
       let(:user) { build(:user) }
 
@@ -67,6 +73,16 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator do
 
     context 'the user is a project bot, for an API request' do
       let(:user) { build(:user, :project_bot) }
+
+      before do
+        env['SCRIPT_NAME'] = '/api/some_resource'
+      end
+
+      it { is_expected.to be_can_sign_in_bot(user) }
+    end
+
+    context 'the user is a service account, for an API request' do
+      let_it_be(:user) { build(:user, :service_account) }
 
       before do
         env['SCRIPT_NAME'] = '/api/some_resource'
