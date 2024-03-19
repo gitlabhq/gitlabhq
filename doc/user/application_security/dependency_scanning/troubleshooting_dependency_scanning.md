@@ -71,7 +71,7 @@ affected. Read more in
 
 ## Dependency scanning jobs are running unexpectedly
 
-The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
 uses the [`rules:exists`](../../../ci/yaml/index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
@@ -138,9 +138,9 @@ and now must update your configuration to again get the latest patched versions 
 analyzers, edit your `.gitlab-ci.yml` file and either:
 
 - Set your `DS_MAJOR_VERSION` to match the latest version as seen in
-  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml#L18).
+  [our current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml#L17).
 - If you hardcoded the `DS_ANALYZER_IMAGE` variable directly, change it to match the latest
-  line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml).
+  line as found in our [current Dependency Scanning template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml).
   The line number varies depending on which scanning job you edited.
 
   For example, the `gemnasium-maven-dependency_scanning` job pulls the latest
