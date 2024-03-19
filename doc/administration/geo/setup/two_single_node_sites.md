@@ -555,7 +555,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-ctl reconfigure
    ```
 
-1. Navigate to the primary node GitLab instance:
+1. Go to the primary node GitLab instance:
    1. On the left sidebar, at the bottom, select **Admin Area**.
    1. Select **Geo > Sites**.
    1. Select **Add site**.

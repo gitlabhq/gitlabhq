@@ -693,7 +693,7 @@ mirror trivy java db:
 ```
 
 The vulnerability database is not a regular Docker image, so it is not possible to pull it by using `docker pull`.
-The image shows an error if you navigate to it in the GitLab UI.
+The image shows an error if you go to it in the GitLab UI.
 
 If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way. Do not add the tag `:1` at the end, it is added by `trivy`:
 

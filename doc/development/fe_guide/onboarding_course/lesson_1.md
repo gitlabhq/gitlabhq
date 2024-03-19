@@ -69,7 +69,7 @@ Here's a step-by-step summary:
    - [Create an account](https://gitlab.com/users/sign_up) or [sign in](https://gitlab.com/users/sign_in) on GitLab.com and join the [community members group](https://gitlab.com/gitlab-community/meta#request-access-to-community-forks).
 1. Installation:
    - Choose a directory to install the GitLab Development Kit (GDK).
-   - Open your terminal and navigate to the chosen directory.
+   - Open your terminal and go to the chosen directory.
    - Download and run the installation script from the terminal:
 
      ```shell
@@ -140,7 +140,7 @@ If you already know the file you are going to work on and now you want to find w
 1. Start by gathering clues to understand the file’s purpose. Look for relevant information within the file itself, such as keywords or specific content that might indicate its context.
 1. You can also examine the file path (or folder structure) to gain insights into where the file might be rendered.
    A lot of routing in GitLab is very similar to the folder structure.
-1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to navigate to the feature page.
+1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to go to the feature page.
 1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.

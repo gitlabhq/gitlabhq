@@ -26,7 +26,7 @@ To enable the EWM integration, in a project:
 
    - **Project URL**: The URL to the EWM project area.
 
-     To obtain your project area URL, navigate to the
+     To obtain your project area URL, go to the
      path `/ccm/web/projects` and copy the listed project's URL. For example, `https://example.com/ccm/web/Example%20Project`.
    - **Issue URL**: The URL to the work item editor in the EWM project area.
 

@@ -189,7 +189,7 @@ To access this text box:
 1. Expand the **Sign-in restrictions** section.
 ```
 
-Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
+Your users see the **Custom sign-in text** when they go to the sign-in screen for your
 GitLab instance.
 
 ## Troubleshooting

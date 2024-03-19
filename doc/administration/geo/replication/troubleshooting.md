@@ -1494,7 +1494,7 @@ If these kinds of risks do not apply, for example in a test environment, or if y
    ```
 
 1. The secondary site should appear healthy. If it does not, run `gitlab-rake gitlab:geo:check` on the secondary site, or try restarting Rails if you haven't done so since re-adding the secondary site.
-1. To resync missing or out-of-date data, navigate to **Admin > Geo > Sites**.
+1. To resync missing or out-of-date data, go to **Admin > Geo > Sites**.
 1. Under the secondary site select **Replication Details**.
 1. Select **Reverify all** for every data type.
 

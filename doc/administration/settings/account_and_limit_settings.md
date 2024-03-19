@@ -134,11 +134,11 @@ there are no restrictions.
 These settings can be found in:
 
 - Each project's settings:
-  1. From the Project's homepage, navigate to **Settings > General**.
+  1. From the Project's homepage, go to **Settings > General**.
   1. Fill in the **Repository size limit (MiB)** field in the **Naming, topics, avatar** section.
   1. Select **Save changes**.
 - Each group's settings:
-  1. From the Group's homepage, navigate to **Settings > General**.
+  1. From the Group's homepage, go to **Settings > General**.
   1. Fill in the **Repository size limit (MiB)** field in the **Naming, visibility** section.
   1. Select **Save changes**.
 - GitLab global settings:

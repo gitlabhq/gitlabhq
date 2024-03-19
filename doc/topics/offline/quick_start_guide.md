@@ -51,7 +51,7 @@ Prerequisites:
 If you are using Ubuntu, you can install the dependency `.deb` packages you copied across with `dpkg`. Do not install the GitLab package yet.
 
 ```shell
-# Navigate to the physical media device
+# Go to the physical media device
 sudo cd /path/to/mount
 
 # Install the dependency packages

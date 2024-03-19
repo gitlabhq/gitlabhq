@@ -77,7 +77,7 @@ documentation is generated from the YAML files located in
 To update the deprecations and removals page when a YAML file is added,
 edited, or removed:
 
-1. From the command line, navigate to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+1. From the command line, go to your local clone of the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
 1. Create, edit, or remove the YAML file under [`data/deprecations`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations).
 1. Compile the deprecations and removals documentation:
 
@@ -85,7 +85,7 @@ edited, or removed:
    bin/rake gitlab:docs:compile_deprecations
    ```
 
-1. If needed, you can verify the docs are up to date with:
+1. If needed, you can verify the documentation is up to date with:
 
    ```shell
    bin/rake gitlab:docs:check_deprecations

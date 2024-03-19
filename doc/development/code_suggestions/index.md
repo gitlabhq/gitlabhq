@@ -20,7 +20,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 
 1. Install and run locally the [VSCode Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment):
    1. Add the `"gitlab.debug": true` info to the Code Suggestions development config:
-      1. In VS Code navigate to the Extensions page and find "GitLab Workflow" in the list.
+      1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.
       1. Check a "GitLab: Debug" checkbox.
    1. If you'd like to test code suggestions are working from inside the VS Code Extension, then follow the [steps to setup a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
@@ -31,7 +31,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 1. Main Application (GDK):
    1. Install the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#one-line-installation).
    1. Enable Feature Flag ```code_suggestions_tokens_api```:
-      1. In your terminal, navigate to your `gitlab-development-kit` > `gitlab` directory.
+      1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:code_suggestions_tokens_api)` from the console.
    1. Set the AI Gateway URL environmental variable by running `export AI_GATEWAY_URL=http://localhost:5052`.
@@ -89,6 +89,6 @@ To setup your GDK for local development using the add-on, please follow these st
    ```
 
    1. Restart your GDK.
-   1. Navigate to `/admin/subscription`.
+   1. Go to `/admin/subscription`.
    1. Remove any active license.
    1. Add the new activation code.

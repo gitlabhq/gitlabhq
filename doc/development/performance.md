@@ -6,8 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Performance Guidelines
 
-This document describes various guidelines to follow to ensure good and
-consistent performance of GitLab. Refer to the [Index](#performance-documentation) section below to navigate to Performance-related pages.
+This document describes various guidelines to ensure good and consistent performance of GitLab.
 
 ## Performance Documentation
 

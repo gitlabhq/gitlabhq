@@ -325,18 +325,18 @@ features from GitLab EE to GitLab CE, related issues would be labeled with
 A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/25517#note_20019084).
 
-## Technical and UX debt
+## Technical debt and Deferred UX
 
 In order to track things that can be improved in the GitLab codebase,
 we use the `~"technical debt"` label in the [GitLab issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
-We use the `~"UX debt"` label when we choose to deviate from the MVC, in a way that harms the user experience.
+We use the `~"Deferred UX"` label when we choose to deviate from the MVC, in a way that harms the user experience.
 
 These labels should be added to issues that describe things that can be improved,
 shortcuts that have been taken, features that need additional attention, and all
 other things that have been left behind due to high velocity of development.
 For example, code that needs refactoring should use the `~"technical debt"` label,
 something that didn't ship according to our Design System guidelines should
-use the `~"UX debt"` label.
+use the `~"Deferred UX"` label.
 
 Everyone can create an issue, though you may need to ask for adding a specific
 label, if you do not have permissions to do it by yourself. Additional labels
@@ -348,4 +348,4 @@ that describe a new feature to be introduced in GitLab, and should be scheduled
 for a release by the appropriate person.
 
 Make sure to mention the merge request that the `~"technical debt"` issue or
-`~"UX debt"` issue is associated with in the description of the issue.
+`~"Deferred UX"` issue is associated with in the description of the issue.

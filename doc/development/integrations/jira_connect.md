@@ -36,13 +36,13 @@ To install the app in Jira:
 1. Enable Jira development mode to install apps that are not from the Atlassian
    Marketplace:
 
-   1. In Jira, navigate to **Jira settings > Apps > Manage apps**.
+   1. In Jira, go to **Jira settings > Apps > Manage apps**.
    1. Scroll to the bottom of the **Manage apps** page and select **Settings**.
    1. Select **Enable development mode** and select **Apply**.
 
 1. Install the app:
 
-   1. In Jira, navigate to **Jira settings > Apps > Manage apps**.
+   1. In Jira, go to **Jira settings > Apps > Manage apps**.
    1. Select **Upload app**.
    1. In the **From this URL** field, provide a link to the app descriptor. The host and port must point to your GitLab instance.
 

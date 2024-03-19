@@ -39,10 +39,6 @@ or instance and user audit events. You can see the audit events in [audit event 
 
 Audit event types belong to the following product categories.
 
-NOTE:
-Audit event types with the `-` scope are limited to either project, group, or instance and user audit events, but the
-[information on the scope](https://gitlab.com/gitlab-org/gitlab/-/issues/438620) is still being added to the documentation.
-
 ### Ai framework
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
@@ -196,9 +192,9 @@ Audit event types with the `-` scope are limited to either project, group, or in
 | [`ci_group_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a group level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
 | [`ci_group_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
 | [`ci_group_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
-| [`ci_instance_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
-| [`ci_instance_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
-| [`ci_instance_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
+| [`ci_instance_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
+| [`ci_instance_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
+| [`ci_instance_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
 | [`ci_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a project level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
@@ -386,7 +382,7 @@ Audit event types with the `-` scope are limited to either project, group, or in
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Event triggered on successful assignment of associated projects to a CI runner| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | - |
+| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Event triggered on successful assignment of associated projects to a CI runner| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | User |
 
 ### Security policy management
 

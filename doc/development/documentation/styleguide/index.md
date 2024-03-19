@@ -1255,7 +1255,7 @@ include a visual representation to help readers understand it, you can:
 You can use an automatic screenshot generator to take and compress screenshots.
 
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
-1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Go to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
 1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.

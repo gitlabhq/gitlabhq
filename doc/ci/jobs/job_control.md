@@ -726,7 +726,7 @@ test:
     - bundle exec rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL
 ```
 
-You can then navigate to the **Jobs** tab of a new pipeline build and see your RSpec
+You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
 WARNING:

@@ -40,7 +40,7 @@ In brief:
 
 - GitLab relies on the user to provide their own Kubernetes credentials, and to
   appropriately label the pods they create when deploying.
-- When a user navigates to the terminal page for an environment, they are served
+- When a user goes to the terminal page for an environment, they are served
   a JavaScript application that opens a WebSocket connection back to GitLab.
 - The WebSocket is handled in [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse),
   rather than the Rails application server.

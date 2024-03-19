@@ -45,7 +45,7 @@ instance of the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer):
 
 ![GraphiQL explorer search for boards](img/sample_issue_boards_v13_2.png)
 
-If you want to view one of these boards, take one of the numeric identifiers shown in the output. From the screenshot, the first identifier is `105011`. Navigate to the following URL, which includes the identifier:
+If you want to view one of these boards, take one of the numeric identifiers shown in the output. From the screenshot, the first identifier is `105011`. Go to the following URL, which includes the identifier:
 
 ```markdown
 https://gitlab.com/gitlab-org/gitlab-docs/-/boards/105011

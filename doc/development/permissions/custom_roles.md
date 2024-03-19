@@ -240,9 +240,9 @@ end
 #### Step 4: Verify
 
 - Ensure SaaS mode is enabled with `GITLAB_SIMULATE_SAAS=1`.
-- Navigate to any Group that you are an owner of, then go to `Settings -> Roles and Permissions`.
-- Click on `Add new role` and create a custom role with the permission you have just created.
-- Navigate to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
+- Go to any Group that you are an owner of, then go to `Settings -> Roles and Permissions`.
+- Select `Add new role` and create a custom role with the permission you have just created.
+- Go to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
 - Next, log-in as that member and ensure that you are able to access the page that the custom ability is intended for.
 
 #### Step 5: Add specs

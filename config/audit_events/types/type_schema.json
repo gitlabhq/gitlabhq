@@ -53,8 +53,7 @@
           "Instance",
           "Group",
           "Project",
-          "User",
-          "-"
+          "User"
         ]
       },
       "description": "Scope that the audit event belongs to"

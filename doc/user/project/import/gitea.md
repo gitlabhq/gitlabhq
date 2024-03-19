@@ -26,15 +26,15 @@ The Gitea importer can import:
 When importing, repository public access is retained. If a repository is private in Gitea, it's
 created as private in GitLab as well.
 
-Because Gitea isn't an OAuth provider, author/assignee can't be mapped to users
-in your GitLab instance. This means the project creator (usually the user that
-started the import process) is set as the author. A reference, however, is kept
-on the issue about the original Gitea author.
-
 ## Known issues
 
-- Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
-  in their path must be renamed for all items to be imported correctly.
+- You must rename projects with a `.` in their path for all items to be imported correctly.
+  For more information, see [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175).
+- Because Gitea is not an OAuth provider, the author or assignee cannot be mapped to users on
+  your GitLab instance. The project creator (usually the user who started the import process)
+  is then set as the author. For issues, you can still see the original Gitea author.
+- Because Gitea cannot get comments from merge requests through the API, these comments are not imported.
+  For more information, see the [Gitea API documentation](https://docs.gitea.com/api/1.20/#tag/repository/operation/repoGetPullRequest).
 
 ## Prerequisites
 

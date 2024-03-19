@@ -99,7 +99,7 @@ one, you can clone the Conan [hello world starter project](https://github.com/co
 
 To build a package:
 
-1. Open a terminal and navigate to your project's root folder.
+1. Open a terminal and go to your project's root folder.
 1. Generate a new recipe by running `conan new` with a package name and version:
 
    ```shell
