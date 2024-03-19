@@ -3,7 +3,11 @@ import API from '~/api';
 import Tracking from './tracking';
 import { LOAD_INTERNAL_EVENTS_SELECTOR, SERVICE_PING_SCHEMA } from './constants';
 import { Tracker } from './tracker';
-import { InternalEventHandler, createInternalEventPayload } from './utils';
+import {
+  InternalEventHandler,
+  createInternalEventPayload,
+  validateAdditionalProperties,
+} from './utils';
 
 const InternalEvents = {
   /**
@@ -12,9 +16,14 @@ const InternalEvents = {
    * @param {string} category - The category of the event. This is optional and
    * defaults to the page name where the event was triggered. It's advised not to use
    * this parameter for new events unless absolutely necessary.
+   * @param {Object} additionalProperties - Object containing additional data for the event tracking.
+   * Supports `value`(number), `property`(string), and `label`(string) as keys.
+   *
    */
-  trackEvent(event, category = undefined) {
-    API.trackInternalEvent(event);
+  trackEvent(event, category = undefined, additionalProperties = {}) {
+    validateAdditionalProperties(additionalProperties);
+
+    API.trackInternalEvent(event, additionalProperties);
     Tracking.event(category, event, {
       context: {
         schema: SERVICE_PING_SCHEMA,
@@ -23,8 +32,9 @@ const InternalEvents = {
           data_source: 'redis_hll',
         },
       },
+      ...additionalProperties,
     });
-    this.trackBrowserSDK(event);
+    this.trackBrowserSDK(event, additionalProperties);
   },
   /**
    * Returns an implementation of this class in the form of
@@ -33,8 +43,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        trackEvent(event, category = undefined) {
-          InternalEvents.trackEvent(event, category);
+        trackEvent(event, category = undefined, additionalProperties = {}) {
+          InternalEvents.trackEvent(event, category, additionalProperties);
         },
       },
     };
@@ -95,13 +105,16 @@ const InternalEvents = {
   /**
    * track events for Product Analytics
    * @param {string} event
+   * @param {Object} additionalProperties - Object containing additional data for the event tracking.
+   * Supports `value`(number), `property`(string), and `label`(string) as keys.
+   *
    */
-  trackBrowserSDK(event) {
+  trackBrowserSDK(event, additionalProperties = {}) {
     if (!Tracker.enabled()) {
       return;
     }
 
-    window.glClient?.track(event);
+    window.glClient?.track(event, additionalProperties);
   },
 };
 

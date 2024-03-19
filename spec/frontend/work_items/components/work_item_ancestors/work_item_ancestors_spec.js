@@ -101,6 +101,9 @@ describe('WorkItemAncestors', () => {
 
     it('activates ellipsis option for DisclosureHierarchy component', () => {
       expect(findDisclosureHierarchy().props('withEllipsis')).toBe(true);
+      expect(findDisclosureHierarchy().props('items')).toEqual(
+        expect.objectContaining(formatAncestors(workItemThreeAncestorsQueryResponse.data.workItem)),
+      );
     });
   });
 

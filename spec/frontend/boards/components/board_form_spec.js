@@ -18,7 +18,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
-jest.mock('~/boards/eventhub');
 
 const currentBoard = {
   id: 'gid://gitlab/Board/1',

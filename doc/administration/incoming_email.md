@@ -161,6 +161,9 @@ If the sender's address is spoofed, the reject notice is delivered to the spoofe
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
+WARNING:
+Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first. This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
+
 ### Linux package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
@@ -202,7 +205,7 @@ Reply by email should now be working.
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
-  and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
+   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 If you use systemd units to manage GitLab:
 
@@ -807,7 +810,7 @@ IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](ht
 To configure GitLab for Microsoft Graph, you need to register an
 OAuth 2.0 application in your Azure Active Directory that has the
 `Mail.ReadWrite` permission for all mailboxes. See the [MailRoom step-by-step guide](https://github.com/tpitale/mail_room/#microsoft-graph-configuration)
-and [Microsoft instructions](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+and [Microsoft instructions](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)
 for more details.
 
 Record the following when you configure your OAuth 2.0 application:

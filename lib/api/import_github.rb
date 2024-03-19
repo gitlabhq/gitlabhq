@@ -36,9 +36,8 @@ module API
     end
     post 'import/github' do
       result = Import::GithubService.new(client, current_user, params).execute(access_params, provider)
-
       if result[:status] == :success
-        present ProjectSerializer.new.represent(result[:project])
+        present ProjectSerializer.new.represent(result[:project], { serializer: :import, warning: result[:warning] })
       else
         status result[:http_status]
         { errors: result[:message] }

@@ -198,7 +198,7 @@ export default {
       </span>
     </template>
 
-    <template v-if="packageEntity.canDestroy" #right-action>
+    <template v-if="packageEntity.userPermissions.destroyPackage" #right-action>
       <gl-disclosure-dropdown
         category="tertiary"
         data-testid="delete-dropdown"

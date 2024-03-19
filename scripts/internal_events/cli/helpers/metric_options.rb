@@ -71,9 +71,11 @@ module InternalEventsCli
           fields = InternalEventsCli::NEW_METRIC_FIELDS.map(&:to_s)
 
           metric = Metric.new(**details.slice(*fields))
-          next unless metric.actions
 
-          metric if (metric.actions & actions).any?
+          metric_actions = metric.events&.map { |event| event['name'] }
+          next unless metric_actions
+
+          metric if (metric_actions & actions).any?
         end
       end
 

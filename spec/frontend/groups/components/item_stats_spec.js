@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemStats from '~/groups/components/item_stats.vue';
-import ItemStatsValue from '~/groups/components/item_stats_value.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { mockParentGroupItem, ITEM_TYPE } from '../mock_data';
 
@@ -17,54 +17,94 @@ describe('ItemStats', () => {
     });
   };
 
-  const findItemStatsValue = () => wrapper.findComponent(ItemStatsValue);
+  it('renders component container element correctly', () => {
+    createComponent();
 
-  describe('template', () => {
-    it('renders component container element correctly', () => {
-      createComponent();
+    expect(wrapper.classes()).toContain('stats');
+  });
 
-      expect(wrapper.classes()).toContain('stats');
-    });
+  it('renders last updated information for project item correctly', () => {
+    const lastActivityAt = '2017-04-09T18:40:39.101Z';
 
-    it('renders start count and last updated information for project item correctly', () => {
+    const item = {
+      ...mockParentGroupItem,
+      type: ITEM_TYPE.PROJECT,
+      lastActivityAt,
+    };
+
+    createComponent({ item });
+
+    expect(wrapper.findComponent(TimeAgoTooltip).props('time')).toBe(lastActivityAt);
+  });
+
+  describe.each`
+    count        | expectedStat
+    ${undefined} | ${'0'}
+    ${null}      | ${'0'}
+    ${4500}      | ${'4.5k'}
+  `('when `starCount` is $count', ({ count, expectedStat }) => {
+    it(`renders star count as ${expectedStat}`, () => {
       const item = {
         ...mockParentGroupItem,
         type: ITEM_TYPE.PROJECT,
-        starCount: 4,
-        lastActivityAt: '2017-04-09T18:40:39.101Z',
+        starCount: count,
       };
 
       createComponent({ item });
 
-      expect(findItemStatsValue().exists()).toBe(true);
-      expect(findItemStatsValue().props('cssClass')).toBe('project-stars');
-      expect(wrapper.find('.last-updated').exists()).toBe(true);
+      expect(wrapper.findByTestId('star-count').props('value')).toBe(expectedStat);
     });
+  });
 
-    describe('group specific rendering', () => {
-      describe.each`
-        provided | state                 | data
-        ${true}  | ${'displays'}         | ${null}
-        ${false} | ${'does not display'} | ${{ subgroupCount: undefined, projectCount: undefined }}
-      `('when provided = $provided', ({ provided, state, data }) => {
-        beforeEach(() => {
-          const item = {
-            ...mockParentGroupItem,
-            ...data,
-            type: ITEM_TYPE.GROUP,
-          };
+  describe('when subgroup count is undefined', () => {
+    it('does not render subgroup count', () => {
+      const item = {
+        ...mockParentGroupItem,
+        subgroupCount: undefined,
+      };
 
-          createComponent({ item });
-        });
+      createComponent({ item });
 
-        it.each`
-          entity         | testId
-          ${'subgroups'} | ${'subgroups-count'}
-          ${'projects'}  | ${'projects-count'}
-        `(`${state} $entity count`, ({ testId }) => {
-          expect(wrapper.findByTestId(testId).exists()).toBe(provided);
-        });
-      });
+      expect(wrapper.findByTestId('subgroup-count').exists()).toBe(false);
+    });
+  });
+
+  describe('when subgroup count is 4500', () => {
+    it('renders subgroup count as 4.5k', () => {
+      const item = {
+        ...mockParentGroupItem,
+        subgroupCount: 4500,
+      };
+
+      createComponent({ item });
+
+      expect(wrapper.findByTestId('subgroup-count').props('value')).toBe('4.5k');
+    });
+  });
+
+  describe('when project count is undefined', () => {
+    it('does not render project count', () => {
+      const item = {
+        ...mockParentGroupItem,
+        projectCount: undefined,
+      };
+
+      createComponent({ item });
+
+      expect(wrapper.findByTestId('project-count').exists()).toBe(false);
+    });
+  });
+
+  describe('when project count is 4500', () => {
+    it('renders project count as 4.5k', () => {
+      const item = {
+        ...mockParentGroupItem,
+        projectCount: 4500,
+      };
+
+      createComponent({ item });
+
+      expect(wrapper.findByTestId('project-count').props('value')).toBe('4.5k');
     });
   });
 });

@@ -56,6 +56,11 @@ export default {
       type: String,
       required: true,
     },
+    confirmLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return { confirmationPhrase: '' };
@@ -72,6 +77,7 @@ export default {
         attributes: {
           variant: 'danger',
           disabled: !this.isValid,
+          loading: this.confirmLoading,
           'data-testid': 'confirm-danger-modal-button',
         },
       };
@@ -80,6 +86,15 @@ export default {
       return {
         text: this.cancelButtonText,
       };
+    },
+  },
+  watch: {
+    confirmLoading(isLoading, wasLoading) {
+      // If the button was loading and now no longer is
+      if (!isLoading && wasLoading) {
+        // Hide the modal
+        this.$emit('change', false);
+      }
     },
   },
   methods: {
@@ -105,7 +120,7 @@ export default {
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
     size="sm"
-    @primary="$emit('confirm')"
+    @primary="$emit('confirm', $event)"
     @change="$emit('change', $event)"
   >
     <gl-alert

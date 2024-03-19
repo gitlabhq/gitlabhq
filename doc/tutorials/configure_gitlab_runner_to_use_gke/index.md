@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial describes how to configure GitLab Runner to use the Google Kubernetes Engine (GKE)
 to run jobs.
@@ -71,7 +71,7 @@ This step describes how to create a cluster and connect to it. After you connect
 
 Now that you have a cluster, you're ready to install and configure the Kubernetes Operator.
 
-1. Install the prerequisites:
+1. Install `cert-manager`. Skip this step if you already have a certificate manager installed:
 
    ```shell
    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.7.1/cert-manager.yaml
@@ -85,18 +85,91 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
     | bash -s v0.24.0
    ```
 
-1. Install the Kubernetes Operator Catalog:
-
-   ```shell
-   kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
-   kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/olm.yaml
-   ```
-
 1. Install the Kubernetes Operator:
 
    ```shell
    kubectl create -f https://operatorhub.io/install/gitlab-runner-operator.yaml
    ```
+
+1. Operator Lifecycle Manager v0.25.0 and later only. Add your own certificate manager or use `cert-manager`.
+
+   - To add your own certificate provider:
+
+     1. In the `gitlab-runner-operator.yaml`, define the certificate namespace and certificate name in the `env` setting:
+
+        ```shell
+        cat > gitlab-runner-operator.yaml << EOF
+        apiVersion: operators.coreos.com/v1alpha1
+        kind: Subscription
+        metadata:
+        name: gitlab-runner-operator
+        namespace: gitlab-ns
+        spec:
+        channel: stable
+        name: gitlab-runner-operator
+        source: operatorhubio-catalog
+        ca: webhook-server-cert
+        sourceNamespace: olm
+        config:
+        env:
+           - name: CERTIFICATE_NAMESPACE
+           value: cert_namespace_desired_value
+           - name: CERTIFICATE_NAME
+           value: cert_name_desired_value
+        EOF
+        ```
+
+     1. Apply the `gitlab-runner-operator.yaml` to the Kubernetes cluster:
+
+        ```shell
+        kubectl apply -f gitlab-runner-operator.yaml
+        ```
+
+   - To use the `cert-manager`:
+
+     1. Use the `certificate-issuer-install.yaml` to install a `Certificate` and `Issuer` in the default namespace, in addition
+     to the operator installation:
+
+        ```shell
+        cat > certificate-issuer-install.yaml << EOF
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+        labels:
+           app.kubernetes.io/component: controller-manager
+           app.kubernetes.io/managed-by: olm
+           app.kubernetes.io/name: gitlab-runner-operator
+        name: gitlab-runner-system
+        ---
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+        name: gitlab-runner-serving-cert
+        namespace: gitlab-runner-system
+        spec:
+        dnsNames:
+        - gitlab-runner-webhook-service.gitlab-runner-system.svc
+        - gitlab-runner-webhook-service.gitlab-runner-system.svc.cluster.local
+        issuerRef:
+          kind: Issuer
+          name: gitlab-runner-selfsigned-issuer
+        secretName: webhook-server-cert
+        ---
+        apiVersion: cert-manager.io/v1
+        kind: Issuer
+        metadata:
+        name: gitlab-runner-selfsigned-issuer
+        namespace: gitlab-runner-system
+        spec:
+        selfSigned: {}
+        EOF
+        ```
+
+     1. Apply the `certificate-issuer-install.yaml` to the Kubernetes cluster:
+
+        ```shell
+        kubectl create -f certificate-issuer-install.yaml
+        ```
 
 1. Create a secret that contains the `runner-registration-token` from your
    GitLab project:
@@ -109,7 +182,7 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
       name: gitlab-runner-secret
     type: Opaque
     stringData:
-      runner-registration-token: YOUR_RUNNER_REGISTRATION_TOKEN
+      runner-token: YOUR_RUNNER_AUTHENTICATION_TOKEN
     EOF
    ```
 

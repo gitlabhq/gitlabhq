@@ -25,11 +25,18 @@ class ActiveSession
   SESSION_BATCH_SIZE = 200
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
-  attr_accessor :ip_address, :browser, :os,
+  ATTR_ACCESSOR_LIST = [
+    :ip_address, :browser, :os,
     :device_name, :device_type,
-    :is_impersonated, :session_id, :session_private_id
+    :is_impersonated, :session_id, :session_private_id,
+    :admin_mode
+  ].freeze
+  ATTR_READER_LIST = [
+    :created_at, :updated_at
+  ].freeze
 
-  attr_reader :created_at, :updated_at
+  attr_accessor(*ATTR_ACCESSOR_LIST)
+  attr_reader(*ATTR_READER_LIST)
 
   def created_at=(time)
     @created_at = time.is_a?(String) ? Time.zone.parse(time) : time
@@ -71,20 +78,35 @@ class ActiveSession
       timestamp = Time.current
       expiry = Settings.gitlab['session_expire_delay'] * 60
 
-      active_user_session = new(
-        ip_address: request.remote_ip,
-        browser: client.name,
-        os: client.os_name,
-        device_name: client.device_name,
-        device_type: client.device_type,
-        created_at: user.current_sign_in_at || timestamp,
-        updated_at: timestamp,
-        session_private_id: session_private_id,
-        is_impersonated: request.session[:impersonator_id].present?
-      )
+      active_user_session = if Feature.enabled?(:show_admin_mode_within_active_sessions)
+                              new(
+                                ip_address: request.remote_ip,
+                                browser: client.name,
+                                os: client.os_name,
+                                device_name: client.device_name,
+                                device_type: client.device_type,
+                                created_at: user.current_sign_in_at || timestamp,
+                                updated_at: timestamp,
+                                session_private_id: session_private_id,
+                                is_impersonated: request.session[:impersonator_id].present?,
+                                admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?
+                              )
+                            else
+                              new(
+                                ip_address: request.remote_ip,
+                                browser: client.name,
+                                os: client.os_name,
+                                device_name: client.device_name,
+                                device_type: client.device_type,
+                                created_at: user.current_sign_in_at || timestamp,
+                                updated_at: timestamp,
+                                session_private_id: session_private_id,
+                                is_impersonated: request.session[:impersonator_id].present?
+                              )
+                            end
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
+        redis.pipelined do |pipeline|
           pipeline.setex(
             key_name(user.id, session_private_id),
             expiry,
@@ -240,6 +262,8 @@ class ActiveSession
 
     if raw_session.start_with?('v2:')
       session_data = Gitlab::Json.parse(raw_session[3..]).symbolize_keys
+      # load only known attributes
+      session_data.slice!(*ATTR_ACCESSOR_LIST.union(ATTR_READER_LIST))
       new(**session_data)
     else
       # Deprecated legacy format. To be removed in 15.0

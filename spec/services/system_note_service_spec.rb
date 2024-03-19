@@ -171,6 +171,40 @@ RSpec.describe SystemNoteService, feature_category: :shared do
     end
   end
 
+  describe '.merge_when_checks_pass' do
+    it 'calls MergeRequestsService' do
+      sha = double
+
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:merge_when_checks_pass).with(sha)
+      end
+
+      described_class.merge_when_checks_pass(noteable, project, author, sha)
+    end
+  end
+
+  describe '.cancel_auto_merge' do
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:cancel_auto_merge)
+      end
+
+      described_class.cancel_auto_merge(noteable, project, author)
+    end
+  end
+
+  describe '.abort_auto_merge' do
+    it 'calls MergeRequestsService' do
+      reason = double
+
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:abort_auto_merge).with(reason)
+      end
+
+      described_class.abort_auto_merge(noteable, project, author, reason)
+    end
+  end
+
   describe '.merge_when_pipeline_succeeds' do
     it 'calls MergeRequestsService' do
       sha = double

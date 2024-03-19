@@ -5,12 +5,7 @@ module QA
     describe 'Gitaly repository storage' do
       let(:user) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:parent_project) { create(:project, :with_readme, name: 'parent-project') }
-      let(:fork_project) do
-        Resource::Fork.fabricate_via_api! do |fork|
-          fork.user = user
-          fork.upstream = parent_project
-        end.project
-      end
+      let(:fork_project) { create(:fork, user: user, upstream: parent_project).project }
 
       before do
         parent_project.add_member(user)
@@ -23,11 +18,7 @@ module QA
 
         parent_project.change_repository_storage(QA::Runtime::Env.additional_repository_storage)
 
-        second_fork_project = Resource::Fork.fabricate_via_api! do |fork|
-          fork.name = "second-fork-of-#{parent_project.name}"
-          fork.user = user
-          fork.upstream = parent_project
-        end.project
+        second_fork_project = create(:fork, name: "second-fork-of-#{parent_project.name}", user: user, upstream: parent_project).project
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = second_fork_project

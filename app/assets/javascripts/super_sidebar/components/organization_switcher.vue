@@ -108,7 +108,12 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown :items="items" class="gl-display-block" @shown="onShown">
+  <gl-disclosure-dropdown
+    :items="items"
+    class="gl-display-block"
+    placement="center"
+    @shown="onShown"
+  >
     <template #toggle>
       <button
         class="organization-switcher-button gl-display-flex gl-align-items-center gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-line-height-1 gl-w-full"

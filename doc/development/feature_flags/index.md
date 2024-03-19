@@ -374,6 +374,22 @@ Feature flags **must** be used in the MR that introduces them. Not doing so caus
 [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
 
+### Optionally add a `.patch` file for automated removal of feature flags
+
+The [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) is able to automatically remove your feature flag code for you using the [`DeleteOldFeatureFlags` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/delete_old_feature_flags.rb). The tool will run periodically and automatically clean up old feature flags from the code.
+
+For this tool to automatically remove the usages of the feature flag in your code you can add a `.patch` file alongside your feature flag YAML file. The file should be exactly the same name except using the `.patch` extension instead of the `.yml` extension.
+
+For example you can create a patch file for `config/feature_flags/beta/my_feature_flag.yml` using the following steps:
+
+1. Edit the code locally to remove the feature flag `my_feature_flag` usage assuming that the feature flag is already enabled and we are rolling forward
+1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`
+1. Undo the changes to the files where you removed the feature flag usage
+1. Commit this file `config/feature_flags/beta/my_feature_flag.patch` file to the branch where you are adding the feature flag
+
+Then in future the `gitlab-housekeeper` will automatically clean up your
+feature flag for you by applying this patch.
+
 ## List all the feature flags
 
 To [use ChatOps](../../ci/chatops/index.md) to output all the feature flags in an environment to Slack, you can use the `run feature list`
@@ -555,6 +571,24 @@ Feature.enabled?(:feature_flag_group, group)
 Feature.enabled?(:feature_flag_user, user)
 ```
 
+Models which `include FeatureGate` have an `.actor_from_id` class method.
+If you have the model's ID and do not need the model for anything other than checking the feature
+flag state, you can use `.actor_from_id` in order check the feature flag state without making a
+database query to retrieve the model.
+
+```ruby
+# Bad -- Unnecessary query is executed
+Feature.enabled?(:feature_flag, Project.find(project_id))
+
+# Good -- No query for projects
+Feature.enabled?(:feature_flag, Project.actor_from_id(project_id))
+
+# Good -- Project model is used after feature flag check
+project = Project.find(project_id)
+return unless Feature.enabled?(:feature_flag, project)
+project.update!(column: value)
+```
+
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
@@ -713,12 +747,25 @@ We want to avoid introducing a changelog when features are not accessible by an 
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid
-  graph LR
-      A[flag: default off] -->|'added' / 'changed' / 'fixed' / '...'| B(flag: default on)
-      B -->|'other'| C(remove flag, keep new code)
-      B -->|'removed' / 'changed'| D(remove flag, keep old code)
-      A -->|'added' / 'changed' / 'fixed' / '...'| C
-      A -->|no changelog| D
+  flowchart LR
+    FDOFF(Flag is currently\n`default: off`)
+    FDON(Flag is currently\n`default: on`)
+    CDO{Change to\n`default: on`}
+    ACF(added / changed / fixed / '...')
+    RF{Remove flag}
+    RF2{Remove flag}
+    NC(No changelog)
+    RC(removed / changed)
+    OTHER(other)
+
+    FDOFF -->CDO-->ACF
+    FDOFF -->RF
+    RF-->|Keep new code?| ACF
+    RF-->|Keep old code?| NC
+
+    FDON -->RF2
+    RF2-->|Keep old code?| RC
+    RF2-->|Keep new code?| OTHER
   ```
 
 - The changelog for a feature flag should describe the feature and not the

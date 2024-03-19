@@ -28,12 +28,12 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 
 | Service                                   | Nodes | Configuration           | GCP             | AWS          | Azure    |
 |-------------------------------------------|-------|-------------------------|-----------------|--------------|----------|
-| External load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| External load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
 | Redis<sup>2</sup>                         | 3     | 2 vCPU, 7.5 GB memory   | `n1-standard-2` | `m5.large`   | `D2s v3` |
 | Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | PostgreSQL<sup>1</sup>                    | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Internal load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
 | Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory<sup>6</sup> | `n1-standard-8` | `m5.2xlarge` | `D8s v3` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
@@ -42,11 +42,14 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>4</sup>                | -     | -                       | -               | -            | -        |
 
+**Footnotes:**
+
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
+   Also note that sizing depends on selected Load Balancer as well as additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
@@ -229,21 +232,13 @@ The following list includes descriptions of each server and its assigned IP:
 
 ## Configure the external load balancer
 
-In a multi-node GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you'll need an external load balancer to route
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation. It is expected however that any
-reputable load balancer should work and as such this section will focus on the specifics of
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
-
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
 
 ### Readiness checks
 
@@ -356,10 +351,14 @@ for details on managing SSL certificates and configuring NGINX.
 
 ## Configure the internal load balancer
 
-The Internal Load Balancer is used to balance any internal connections the GitLab environment requires
+In a multi-node GitLab configuration, you'll need an internal load balancer to route
+traffic for select internal components if configured
 such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
 
-It's a separate node from the External Load Balancer and shouldn't have any access externally.
+The specifics on which load balancer to use, or its exact configuration
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
+what to configure for your load balancer of choice.
 
 The following IP is used as an example:
 
@@ -413,14 +412,6 @@ backend praefect
 
 Refer to your preferred Load Balancer's documentation for further guidance.
 
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
-
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
     Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
@@ -460,7 +451,7 @@ to be used with GitLab. The following IPs are used as an example:
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
@@ -1976,7 +1967,7 @@ On each node perform the following:
       'google_project' => '<gcp-project-name>',
       'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   
+
    ## Uncomment and edit the following options if you have set up NFS
    ##
    ## Prevent GitLab from starting if NFS data mounts are not available
@@ -2261,17 +2252,20 @@ services where applicable):
 | Consul<sup>1</sup> + Sentinel<sup>2</sup> | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | PostgreSQL<sup>1</sup>                    | 3     | 4 vCPU, 15 GB memory  | `n1-standard-4` | `m5.xlarge`  |
 | PgBouncer<sup>1</sup>                     | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
-| Internal load balancing node<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
+| Internal load balancer<sup>3</sup>        | 1     | 4 vCPU, 3.6 GB memory | `n1-highcpu-4`  | `c5n.xlarge` |
 | Gitaly<sup>5</sup>                        | 3     | 8 vCPU, 30 GB memory<sup>6</sup>  | `n1-standard-8` | `m5.2xlarge` |
 | Praefect<sup>5</sup>                      | 3     | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Praefect PostgreSQL<sup>1</sup>           | 1+    | 2 vCPU, 1.8 GB memory | `n1-highcpu-2`  | `c5.large`   |
 | Object storage<sup>4</sup>                | -     | -                     | -               | -            |
 
+**Footnotes:**
+
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) for more information.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
+   Also note that sizing depends on selected Load Balancer as well as additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
    Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.

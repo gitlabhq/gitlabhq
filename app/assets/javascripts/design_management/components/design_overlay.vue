@@ -38,6 +38,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    disableNotes: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     activeDiscussion: {
@@ -276,29 +281,31 @@ export default {
       @mouseup="onAddCommentMouseup"
     ></button>
 
-    <design-note-pin
-      v-for="note in visibleNotes"
-      :key="note.id"
-      :label="note.index"
-      :position="
-        isMovingNote(note.id) && movingNoteNewPosition
-          ? getNotePositionStyle(movingNoteNewPosition)
-          : getNotePositionStyle(note.position)
-      "
-      :is-inactive="isNoteInactive(note)"
-      :is-resolved="note.resolved"
-      is-on-image
-      data-testid="note-pin"
-      @mousedown.stop="onNoteMousedown($event, note)"
-      @mouseup.stop="onNoteMouseup(note)"
-    />
+    <template v-if="!disableNotes">
+      <design-note-pin
+        v-for="note in visibleNotes"
+        :key="note.id"
+        :label="note.index"
+        :position="
+          isMovingNote(note.id) && movingNoteNewPosition
+            ? getNotePositionStyle(movingNoteNewPosition)
+            : getNotePositionStyle(note.position)
+        "
+        :is-inactive="isNoteInactive(note)"
+        :is-resolved="note.resolved"
+        is-on-image
+        data-testid="note-pin"
+        @mousedown.stop="onNoteMousedown($event, note)"
+        @mouseup.stop="onNoteMouseup(note)"
+      />
 
-    <design-note-pin
-      v-if="currentCommentForm"
-      :position="currentCommentPositionStyle"
-      data-testid="comment-badge"
-      @mousedown.stop="onNoteMousedown"
-      @mouseup.stop="onNoteMouseup"
-    />
+      <design-note-pin
+        v-if="currentCommentForm"
+        :position="currentCommentPositionStyle"
+        data-testid="comment-badge"
+        @mousedown.stop="onNoteMousedown"
+        @mouseup.stop="onNoteMouseup"
+      />
+    </template>
   </div>
 </template>

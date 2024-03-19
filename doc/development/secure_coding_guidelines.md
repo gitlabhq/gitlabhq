@@ -224,10 +224,10 @@ have been reported to GitLab include:
 
 - Network mapping of internal services
   - This can help an attacker gather information about internal services
-  that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
+    that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
-  to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
+    to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
 - When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293).
 
 ### When to Consider
@@ -349,7 +349,10 @@ When user submitted data is included in responses to end users, which is just ab
 
 ### Mitigation
 
-In most situations, a two-step solution can be used: input validation and output encoding in the appropriate context.
+In most situations, a two-step solution can be used: input validation and
+output encoding in the appropriate context. You should also invalidate the
+existing Markdown cached HTML to mitigate the effects of already-stored
+vulnerable XSS content. For an example, see ([issue 357930](https://gitlab.com/gitlab-org/gitlab/-/issues/357930)).
 
 #### Input validation
 
@@ -629,7 +632,7 @@ This outputs `1` followed by the content of `/etc/passwd`.
 
 ### TLS minimum recommended version
 
-As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), you must use TLS 1.2 and above.
+As we have [moved away from supporting TLS 1.0 and 1.1](https://about.gitlab.com/blog/2018/10/15/gitlab-to-deprecate-older-tls/), you must use TLS 1.2 and later.
 
 #### Ciphers
 
@@ -1533,5 +1536,5 @@ For general guidance, contact the [Application Security](https://handbook.gitlab
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))
-- [Security logging overview](https://handbook.gitlab.com/handbook/security/product-security/security-logging/)
+- [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)

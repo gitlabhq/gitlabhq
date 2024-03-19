@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can read more about [personal access tokens](../user/profile/personal_access_tokens.md).
 
@@ -216,7 +216,7 @@ Rotate a personal access token. Revokes the previous token and creates a new tok
 You can either:
 
 - Use the personal access token ID.
-- Pass the personal access token to the API in a request header.
+- In GitLab 16.10 and later, pass the personal access token to the API in a request header.
 
 ### Use a personal access token ID
 
@@ -267,6 +267,8 @@ Example response:
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 
 ### Use a request header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426779) in GitLab 16.10
 
 Requires:
 
@@ -391,7 +393,7 @@ See the [Users API documentation](users.md#create-a-personal-access-token) for i
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 See the [Users API documentation](users.md#create-a-personal-access-token-with-limited-scopes-for-the-currently-authenticated-user)
 for information on creating a personal access token for the currently authenticated user.

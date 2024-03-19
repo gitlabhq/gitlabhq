@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > DAST API analyzer [became the default analyzer for on-demand DAST API scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
 

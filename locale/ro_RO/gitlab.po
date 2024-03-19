@@ -13339,8 +13339,8 @@ msgstr "Configurați SAST în „.gitlab-ci.yml” utilizând șablonul gestiona
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Configurați SAST în „.gitlab-ci.yml”, creând acest fișier dacă nu există deja."
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "Configurați Detectarea secretelor în „.gitlab-ci.yml” utilizând șablonul gestionat de GitLab. Puteți [adăuga suprascrieri de variabile](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) pentru a personaliza setările de Detectare a secretelor."
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "Configurați Detectarea secretelor în „.gitlab-ci.yml” utilizând șablonul gestionat de GitLab. Puteți [adăuga suprascrieri de variabile](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) pentru a personaliza setările de Detectare a secretelor."
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Configurați Detectarea secretelor în „.gitlab-ci.yml”, creând acest fișier dacă nu există deja."

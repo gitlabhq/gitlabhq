@@ -16,6 +16,7 @@ module Organizations
     }
 
     scope :owners, -> { where(access_level: Gitlab::Access::OWNER) }
+    scope :in_organization, ->(organization) { where(organization: organization) }
 
     def self.create_default_organization_record_for(user_id, user_is_admin:)
       upsert(

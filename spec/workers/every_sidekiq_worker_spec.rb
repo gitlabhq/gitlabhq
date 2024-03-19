@@ -120,7 +120,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
       {
         'AdjournedProjectDeletionWorker' => 3,
         'AdminEmailsWorker' => 3,
-        'Ai::SyncServiceTokenWorker' => 3,
+        'Ai::SyncServiceTokenWorker' => 3, # TODO: remove starting 16.11, see https://gitlab.com/groups/gitlab-org/-/epics/12544
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,
@@ -135,7 +135,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'AutoMergeProcessWorker' => 3,
         'BackgroundMigrationWorker' => 3,
         'BackgroundMigration::CiDatabaseWorker' => 3,
-        'BuildHooksWorker' => 3,
         'BuildQueueWorker' => 3,
         'BuildSuccessWorker' => 3,
         'BulkImportWorker' => 3,
@@ -342,7 +341,10 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'LdapGroupSyncWorker' => 3,
         'Licenses::ResetSubmitLicenseUsageDataBannerWorker' => 13,
         'Llm::Embedding::GitlabDocumentation::SetEmbeddingsOnTheRecordWorker' => 5,
+        # DEPRECATED: Remove this in favor for CreateEmbeddingsRecordsWorker
+        # see https://gitlab.com/gitlab-org/gitlab/-/issues/438337
         'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker' => 3,
+        'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker' => 3,
         'Llm::Embedding::GitlabDocumentation::CreateDbEmbeddingsPerDocFileWorker' => 5,
         'MailScheduler::IssueDueWorker' => 3,
         'MailScheduler::NotificationServiceWorker' => 3,
@@ -437,7 +439,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RunPipelineScheduleWorker' => 3,
         'ScanSecurityReportSecretsWorker' => 17,
         'Search::ElasticGroupAssociationDeletionWorker' => 3,
-        'Security::AutoFixWorker' => 3,
         'Security::StoreScansWorker' => 3,
         'Security::TrackSecureScansWorker' => 1,
         'ServiceDeskEmailReceiverWorker' => 3,

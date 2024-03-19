@@ -4,6 +4,7 @@ module Pajamas
   class SingleStatComponent < Pajamas::Component
     # @param [String] title
     # @param [String] stat_value
+    # @param [String] stat_value_testid
     # @param [String] unit
     # @param [String] title_icon
     # @param [String] meta_text
@@ -12,6 +13,7 @@ module Pajamas
     def initialize(
       title: nil,
       stat_value: nil,
+      stat_value_testid: 'non-animated-value',
       unit: nil,
       title_icon: nil,
       meta_text: nil,
@@ -21,6 +23,7 @@ module Pajamas
     )
       @title = title
       @stat_value = stat_value
+      @stat_value_testid = stat_value_testid
       @unit = unit
       @title_icon = title_icon.to_s.presence
       @meta_text = meta_text
@@ -28,6 +31,9 @@ module Pajamas
       @text_color = text_color
       @variant = filter_attribute(variant.to_sym, Pajamas::BadgeComponent::VARIANT_OPTIONS, default: :muted)
     end
+
+    renders_one :title
+    renders_one :stat_value
 
     private
 

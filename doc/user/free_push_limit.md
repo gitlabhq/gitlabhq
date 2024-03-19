@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 A 100 MiB per-file limit applies when pushing new files to any project in the Free tier.
 

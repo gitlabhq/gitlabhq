@@ -119,7 +119,7 @@ For more information about sharing conditions and behavior, see [Sharing project
 
 Prerequisites:
 
-- You must be a member of the inviting group.
+- You must be a member of the invited and inviting groups.
 
 To invite a group to your group:
 
@@ -215,7 +215,7 @@ To disable group mentions:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
@@ -308,13 +308,13 @@ in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
 
-User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
+On GitLab.com, on the Ultimate tier, there is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add new guest users to a group when the amount of billable users exceeds the user cap. For example, suppose you have a user cap of 5, with 3 developers and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 
 ## Group file templates
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -340,7 +340,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To enable group file templates:
 
@@ -354,7 +354,7 @@ To enable group file templates:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
@@ -425,7 +425,7 @@ To enable this setting:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -451,7 +451,7 @@ for the ability to set merge request approval rules for groups is tracked in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
@@ -479,7 +479,7 @@ To enable Experiment features for a top-level group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 

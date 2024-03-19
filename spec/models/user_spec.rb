@@ -162,6 +162,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
     it { is_expected.to have_many(:expired_today_and_unnotified_keys) }
+    it { is_expected.to have_many(:expiring_soon_and_unnotified_personal_access_tokens) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
@@ -247,6 +248,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
       it { expect(user.color_scheme_id).to eq(Gitlab::CurrentSettings.default_syntax_highlighting_theme) }
+      it { expect(user.color_mode_id).to eq(Gitlab::ColorModes::APPLICATION_DEFAULT) }
     end
 
     describe '#user_detail' do
@@ -624,6 +626,11 @@ RSpec.describe User, feature_category: :user_profile do
           it { is_expected.to eq 'zh_CN' }
         end
       end
+    end
+
+    context 'color_mode_id' do
+      it { is_expected.to allow_value(*Gitlab::ColorModes.valid_ids).for(:color_mode_id) }
+      it { is_expected.not_to allow_value(Gitlab::ColorModes.available_modes.size + 1).for(:color_mode_id) }
     end
 
     shared_examples 'username validations' do
@@ -1413,6 +1420,44 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.with_personal_access_tokens_expiring_soon_and_ids' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:pat1) { create(:personal_access_token, user: user1, expires_at: 2.days.from_now) }
+      let_it_be(:pat2) { create(:personal_access_token, user: user2, expires_at: 7.days.from_now) }
+      let_it_be(:ids) { [user1.id] }
+
+      subject(:users) { described_class.with_personal_access_tokens_expiring_soon_and_ids(ids) }
+
+      it 'filters users only by id' do
+        expect(users).to contain_exactly(user1)
+      end
+
+      it 'includes expiring personal access tokens' do
+        expect(users.first.expiring_soon_and_unnotified_personal_access_tokens).to be_loaded
+      end
+    end
+
+    describe '.with_personal_access_tokens_and_resources' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:user3) { create(:user) }
+
+      subject(:users) { described_class.with_personal_access_tokens_and_resources }
+
+      it 'includes expiring personal access tokens' do
+        expect(users.first.personal_access_tokens).to be_loaded
+      end
+
+      it 'includes groups' do
+        expect(users.first.groups).to be_loaded
+      end
+
+      it 'includes projects' do
+        expect(users.first.projects).to be_loaded
+      end
+    end
+
     describe '.active_without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
@@ -1499,25 +1544,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns only the trusted users' do
         expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
       end
-    end
-  end
-
-  describe '#user_belongs_to_organization?' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:organization) { create(:organization) }
-
-    subject { user.user_belongs_to_organization?(organization) }
-
-    context 'when user is an organization user' do
-      before do
-        create(:organization_user, organization: organization, user: user)
-      end
-
-      it { is_expected.to eq true }
-    end
-
-    context 'when user is not an organization user' do
-      it { is_expected.to eq false }
     end
   end
 
@@ -4378,6 +4404,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.following?(followee)).to be_falsey
     end
+
+    it 'does not include follow if follower user is banned' do
+      user = create(:user)
+
+      follower = create(:user)
+      follower.follow(user)
+
+      expect(user.followed_by?(follower)).to be_truthy
+
+      follower.ban
+
+      expect(user.followed_by?(follower)).to be_falsey
+    end
   end
 
   describe '#unfollow' do
@@ -6021,7 +6060,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#assign_personal_namespace' do
-    subject(:personal_namespace) { user.assign_personal_namespace }
+    let(:organization) { create(:organization) }
+
+    subject(:personal_namespace) { user.assign_personal_namespace(organization) }
 
     context 'when namespace exists' do
       let(:user) { build(:user) }
@@ -6038,15 +6079,27 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when namespace does not exist' do
       let(:user) { described_class.new attributes_for(:user) }
 
-      it 'builds a new namespace' do
+      it 'builds a new namespace using assigned organization' do
         subject
 
         expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
         expect(user.namespace.namespace_settings).to be_present
+        expect(user.namespace.organization).to eq(organization)
       end
 
       it 'returns the personal namespace' do
         expect(personal_namespace).to eq(user.namespace)
+      end
+
+      context 'when organization is nil' do
+        let!(:default_organization) { create(:organization, :default) }
+
+        # This logic will be removed when organization becomes a required argument
+        it 'builds a new namespace using default organization' do
+          user.assign_personal_namespace
+
+          expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
+        end
       end
     end
   end
@@ -8355,6 +8408,24 @@ RSpec.describe User, feature_category: :user_profile do
       let_it_be(:user) { create(:user) }
 
       it { is_expected.to eq false }
+    end
+  end
+
+  describe 'color_mode_id' do
+    context 'when theme_id is 11' do
+      let(:user) { build(:user, theme_id: 11) }
+
+      it 'returns 2' do
+        expect(user.color_mode_id).to eq(2)
+      end
+    end
+
+    context 'when theme_id is not 11' do
+      let(:user) { build(:user, theme_id: 5) }
+
+      it 'returns the value of color_mode_id' do
+        expect(user.color_mode_id).to eq(1)
+      end
     end
   end
 end

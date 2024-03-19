@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -29,12 +29,12 @@ which you can customize to meet the specific needs of each project.
 - Ensure autoscaling for the Kubernetes cluster is enabled.
 - In the Kubernetes cluster:
   - Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
-  is defined so that volumes can be dynamically provisioned for each workspace.
+    is defined so that volumes can be dynamically provisioned for each workspace.
   - Install an Ingress controller of your choice (for example, `ingress-nginx`) and make
-  that controller accessible over a domain.
+    that controller accessible over a domain.
     - In development environments, add an entry to the `/etc/hosts` file or update your DNS records.
     - In production environments, point `*.<workspaces.example.dev>` and `<workspaces.example.dev>`
-    to the load balancer exposed by the Ingress controller.
+      to the load balancer exposed by the Ingress controller.
   - [Install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
   - [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
 - You must have at least the Developer role in the root group.
@@ -46,15 +46,22 @@ which you can customize to meet the specific needs of each project.
 
 ### Create a workspace
 
+> - **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
+> - **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
+
 To create a workspace:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Workspaces**.
 1. Select **New workspace**.
-1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
-1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates.
+1. From the **Project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
+1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
+1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
+   GitLab uses to create the workspace.
+1. In **Devfile location**, enter the path to the devfile you use to configure the workspace.
+   If your devfile is not in the root directory of your project, specify a relative path.
+1. In **Workspace automatically terminates after**, enter the number of hours until the workspace automatically terminates.
    This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
 

@@ -20,7 +20,7 @@ We recommend using the local setup together with the [internal events monitor](#
 
 By default, self-managed instances do not collect event data via Snowplow. We can use [Snowplow Micro](https://docs.snowplow.io/docs/testing-debugging/snowplow-micro/what-is-micro/), a Docker based Snowplow collector, to test events locally:
 
-1. Ensure [Docker is installed and working](https://www.docker.com/get-started).
+1. Ensure [Docker is installed and working](https://www.docker.com/get-started/).
 
 1. Enable Snowplow Micro:
 

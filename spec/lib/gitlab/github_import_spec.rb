@@ -13,9 +13,9 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     it 'returns a new Client with a custom token' do
       expect(described_class::Client)
         .to receive(:new)
-        .with('123', host: nil, parallel: true, per_page: 100)
+        .with('ghp_123', host: nil, parallel: true, per_page: 100)
 
-      described_class.new_client_for(project, token: '123')
+      described_class.new_client_for(project, token: 'ghp_123')
     end
 
     it 'returns a new Client with a token stored in the import data' do
@@ -54,9 +54,9 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     it 'returns a new Client with a custom token' do
       expect(described_class::Client)
         .to receive(:new)
-        .with('123', host: 'http://github.another-domain.com/api/v3', parallel: true, per_page: 100)
+        .with('ghp_123', host: 'http://github.another-domain.com/api/v3', parallel: true, per_page: 100)
 
-      described_class.new_client_for(project, token: '123')
+      described_class.new_client_for(project, token: 'ghp_123')
     end
 
     it 'returns a new Client with a token stored in the import data' do
@@ -123,6 +123,20 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
 
         expect(described_class.per_page(project)).to eq(Gitlab::GithubImport::Client::DEFAULT_PER_PAGE)
       end
+    end
+  end
+
+  describe '.fine_grained_personal_token?' do
+    it 'detects a fine-grained token' do
+      expect(described_class.fine_grained_personal_token?('github_pat_235234')).to eq(true)
+      expect(described_class.fine_grained_personal_token?('ghp_235234ab234234')).to eq(false)
+    end
+  end
+
+  describe '.classic_personal_token?' do
+    it 'detects a fine-grained token' do
+      expect(described_class.classic_personal_token?('github_pat_235234')).to eq(false)
+      expect(described_class.classic_personal_token?('ghp_235234ab234234')).to eq(true)
     end
   end
 end

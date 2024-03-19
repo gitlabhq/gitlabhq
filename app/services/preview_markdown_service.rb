@@ -23,7 +23,7 @@ class PreviewMarkdownService < BaseContainerService
   def explain_quick_actions(text)
     return text, [] unless quick_action_types.include?(target_type)
 
-    quick_actions_service = QuickActions::InterpretService.new(project, current_user)
+    quick_actions_service = QuickActions::InterpretService.new(container: container, current_user: current_user)
     quick_actions_service.explain(text, find_commands_target, keep_actions: params[:render_quick_actions])
   end
 

@@ -58,6 +58,10 @@ class IssuableBaseService < ::BaseContainerService
     can?(current_user, ability_name, issuable)
   end
 
+  def can_set_confidentiality?(issuable)
+    can?(current_user, :set_confidentiality, issuable)
+  end
+
   def filter_params(issuable)
     unless can_set_issuable_metadata?(issuable)
       params.delete(:labels)
@@ -78,7 +82,7 @@ class IssuableBaseService < ::BaseContainerService
 
     # confidential attribute is a special type of metadata and needs to be allowed to be set
     # by non-members on issues in public projects so that security issues can be reported as confidential.
-    params.delete(:confidential) unless can?(current_user, :set_confidentiality, issuable)
+    params.delete(:confidential) unless can_set_confidentiality?(issuable)
     filter_contact_params(issuable)
     filter_assignees(issuable)
     filter_labels
@@ -210,9 +214,11 @@ class IssuableBaseService < ::BaseContainerService
   def merge_quick_actions_into_params!(issuable, only: nil)
     original_description = params.fetch(:description, issuable.description)
 
-    description, command_params =
-      QuickActions::InterpretService.new(project, current_user, quick_action_options)
-        .execute(original_description, issuable, only: only)
+    description, command_params = QuickActions::InterpretService.new(
+      container: container,
+      current_user: current_user,
+      params: quick_action_options
+    ).execute(original_description, issuable, only: only)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
     params[:description] = description if description && description != original_description
@@ -306,6 +312,8 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def update(issuable)
+    ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
+
     old_associations = associations_before_update(issuable)
 
     initialize_callbacks!(issuable)
@@ -341,7 +349,12 @@ class IssuableBaseService < ::BaseContainerService
 
         issuable.updated_by = current_user if should_touch
 
-        transaction_update(issuable, { save_with_touch: should_touch })
+        # `issuable` could create a ghost user when updating `last_edited_by`.
+        # Users::Internal.ghost will obtain an ExclusiveLease within this transaction.
+        # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441526
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          transaction_update(issuable, { save_with_touch: should_touch })
+        end
       end
 
       if issuable_saved

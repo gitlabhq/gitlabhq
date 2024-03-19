@@ -1,8 +1,7 @@
 - page_title _('Two-factor authentication for admin mode')
 - add_page_specific_style 'page_bundles/login'
 
-.row.justify-content-center
+.row.gl-mt-5.justify-content-center
   .col-md-5
     .login-page
-      .login-box.gl-p-5
-        = render 'devise/shared/totp_recovery_code_or_webauthn', admin_mode: true
+      = render 'devise/shared/totp_recovery_code_or_webauthn', admin_mode: true

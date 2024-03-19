@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline
@@ -172,7 +172,7 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: Security/SAST.gitlab-ci.yml
+      - template: Jobs/SAST.gitlab-ci.yml
       - project: 'my-group/my-pipeline-library'
         ref: 'main'
         file: '/path/to/child-pipeline.yml'
@@ -355,6 +355,58 @@ To cancel a downstream pipeline that is still running, select **Cancel** (**{can
 - From the downstream pipeline's details page.
 - On the pipeline's card in the pipeline graph view.
 
+### Auto-cancel the parent pipeline from a downstream pipeline
+
+You can configure a child pipeline to [auto-cancel](../yaml/index.md#workflowauto_cancelon_job_failure)
+as soon as one of its jobs fail.
+
+The parent pipeline only auto-cancels when a job in the child pipeline fails if:
+
+- The parent pipeline is also set up to auto-cancel on job failure.
+- The trigger job is configured with [`strategy: depend`](../yaml/index.md#triggerstrategy).
+
+For example:
+
+- Content of `.gitlab-ci.yml`:
+
+  ```yaml
+  workflow:
+    auto_cancel:
+      on_job_failure: all
+
+  trigger_job:
+    trigger:
+      include: child-pipeline.yml
+      strategy: depend
+
+  job3:
+    script:
+      - sleep 120
+  ```
+
+- Content of `child-pipeline.yml`
+
+  ```yaml
+  # Contents of child-pipeline.yml
+  workflow:
+    auto_cancel:
+      on_job_failure: all
+
+  job1:
+    script: sleep 60
+
+  job2:
+    script:
+      - sleep 30
+      - exit 1
+  ```
+
+In this example:
+
+1. The parent pipeline triggers the child pipeline and `job3` at the same time
+1. `job2` from the child pipeline fails and the child pipeline is canceled, stopping `job1` as well
+1. The child pipeline has been cancelled so the parent pipeline is auto-canceled
+
 ### Mirror the status of a downstream pipeline in the trigger job
 
 You can mirror the status of the downstream pipeline in the trigger job
@@ -397,7 +449,7 @@ displays to the right of the mini graph.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ::Tabs
 
@@ -683,7 +735,7 @@ the ones defined in the upstream project take precedence.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
 

@@ -3,17 +3,18 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective } from 'helpers/vue_mock_directive';
 import GlobalSearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
 import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
 import FakeSearchInput from '~/super_sidebar/components/global_search/command_palette/fake_search_input.vue';
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
+import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
-  PATH_HANDLE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -49,6 +50,7 @@ describe('GlobalSearchModal', () => {
 
   const actionSpies = {
     setSearch: jest.fn(),
+    setCommand: jest.fn(),
     fetchAutocompleteOptions: jest.fn(),
     clearAutocomplete: jest.fn(),
   };
@@ -58,12 +60,14 @@ describe('GlobalSearchModal', () => {
       project: MOCK_PROJECT,
       group: MOCK_GROUP,
     },
+    commandChar: '',
   };
 
   const defaultMockGetters = {
     searchQuery: () => MOCK_SEARCH_QUERY,
     searchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
     scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
+    isCommandMode: () => false,
   };
 
   const createComponent = ({
@@ -88,6 +92,9 @@ describe('GlobalSearchModal', () => {
 
     wrapper = shallowMountExtended(GlobalSearchModal, {
       store,
+      directives: {
+        GlModalDirective: createMockDirective('gl-modal-directive'),
+      },
       stubs,
       ...mountOptions,
     });
@@ -105,6 +112,7 @@ describe('GlobalSearchModal', () => {
   const findCommandPaletteItems = () => wrapper.findComponent(CommandPaletteItems);
   const findFakeSearchInput = () => wrapper.findComponent(FakeSearchInput);
   const findScrollScrim = () => wrapper.findComponent(ScrollScrim);
+  const findCommandPaletteDropdown = () => wrapper.findComponent(CommandsOverviewDropdown);
 
   describe('template', () => {
     describe('always renders', () => {
@@ -140,7 +148,7 @@ describe('GlobalSearchModal', () => {
       describe(`when search is ${search}`, () => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-          createComponent({ initialState: { search }, mockGetters: {} });
+          createComponent({ initialState: { search } });
           findGlobalSearchInput().vm.$emit('click');
         });
 
@@ -178,6 +186,7 @@ describe('GlobalSearchModal', () => {
                 loading,
               },
               mockGetters: {
+                ...defaultMockGetters,
                 searchOptions: () => searchOptions,
               },
             });
@@ -191,22 +200,52 @@ describe('GlobalSearchModal', () => {
     );
 
     describe('Command palette', () => {
-      describe.each([...COMMON_HANDLES, PATH_HANDLE])('when search handle is %s', (handle) => {
+      const possibleHandles = ['', ...COMMON_HANDLES];
+
+      describe.each(possibleHandles)('when search handle is %s', (handle) => {
         beforeEach(() => {
           createComponent({
-            initialState: { search: handle },
+            initialState: { search: handle, commandChar: handle },
+            mockGetters: {
+              ...defaultMockGetters,
+              isCommandMode: () => Boolean(handle),
+            },
           });
         });
 
         it('should render command mode components', () => {
-          expect(findCommandPaletteItems().exists()).toBe(true);
-          expect(findFakeSearchInput().exists()).toBe(true);
+          expect(findCommandPaletteItems().exists()).toBe(Boolean(handle));
+          expect(findFakeSearchInput().exists()).toBe(Boolean(handle));
         });
 
         it('should provide an alternative placeholder to the search input', () => {
           expect(findGlobalSearchInput().attributes('placeholder')).toBe(
             SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
           );
+        });
+      });
+
+      describe.each(possibleHandles)('when search handle is %s', (handle) => {
+        beforeEach(() => {
+          createComponent({
+            initialState: { search: '', commandChar: handle },
+            mockGetters: {
+              ...defaultMockGetters,
+              isCommandMode: () => Boolean(handle),
+            },
+            stubs: {
+              GlModal,
+              GlSearchBoxByType,
+            },
+          });
+
+          findGlobalSearchInput().vm.$emit('click');
+        });
+
+        it.each(possibleHandles)('should handle command selection', async (selected) => {
+          await findCommandPaletteDropdown().vm.$emit('selected', selected);
+
+          expect(actionSpies.setCommand).toHaveBeenCalledWith(expect.any(Object), selected);
         });
       });
     });
@@ -227,6 +266,10 @@ describe('GlobalSearchModal', () => {
 
           it('calls setSearch with search term', () => {
             expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), MOCK_SEARCH);
+          });
+
+          it('calls setCommand with search term', () => {
+            expect(actionSpies.setCommand).toHaveBeenCalledWith(expect.any(Object), '');
           });
 
           it('calls fetchAutocompleteOptions', () => {
@@ -264,18 +307,46 @@ describe('GlobalSearchModal', () => {
             new KeyboardEvent('keydown', { key: ENTER_KEY }),
           );
 
-        describe('in command mode', () => {
-          beforeEach(() => {
-            createComponent({
-              initialState: { search: '>' },
-            });
-            submitSearch();
-          });
+        describe.each`
+          firstInputText | secondInputText | outputText | command | secondCommand
+          ${''}          | ${'test'}       | ${'test'}  | ${''}   | ${''}
+          ${''}          | ${'>test'}      | ${'>test'} | ${''}   | ${'>'}
+          ${'>test'}     | ${'>test'}      | ${'>test'} | ${'>'}  | ${'>'}
+          ${'>test'}     | ${'~test'}      | ${'~test'} | ${'>'}  | ${'~'}
+          ${''}          | ${'~~~~'}       | ${'~~~~'}  | ${''}   | ${'~'}
+        `(
+          'in command mode',
+          ({ firstInputText, secondInputText, outputText, command, secondCommand }) => {
+            beforeEach(() => {
+              createComponent({
+                initialState: { search: firstInputText, commandChar: command },
+                mockGetters: {
+                  ...defaultMockGetters,
+                  isCommandMode: () => Boolean(command),
+                },
+              });
 
-          it('does not submit a search', () => {
-            expect(visitUrl).not.toHaveBeenCalled();
-          });
-        });
+              submitSearch();
+            });
+
+            afterEach(() => {
+              jest.clearAllMocks();
+            });
+
+            it('does not submit a search', () => {
+              expect(visitUrl).not.toHaveBeenCalled();
+            });
+
+            it('update search input recognizes correct input', () => {
+              findGlobalSearchInput().vm.$emit('input', secondInputText);
+              expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), outputText);
+              expect(actionSpies.setCommand).toHaveBeenCalledWith(
+                expect.any(Object),
+                secondCommand,
+              );
+            });
+          },
+        );
 
         describe('in search mode', () => {
           it('will NOT submit a search with less than min characters', () => {

@@ -55,14 +55,33 @@ module AvatarsHelper
   end
 
   def author_avatar(commit_or_event, options = {})
-    css_class = options[:css_class] || "gl-display-none gl-sm-display-inline-block"
+    options[:css_class] ||= "gl-display-none gl-sm-display-inline-block"
 
-    user_avatar(options.merge({
-      user: commit_or_event.author,
-      user_name: commit_or_event.author_name,
-      user_email: commit_or_event.author_email,
-      css_class: css_class
-    }))
+    if Feature.enabled?(:cached_author_avatar_helper, options.delete(:project))
+      Gitlab::AvatarCache.by_email(commit_or_event.author_email, commit_or_event.author_name, options) do
+        user_avatar(options.merge({
+          user: commit_or_event.author,
+          user_name: commit_or_event.author_name,
+          user_email: commit_or_event.author_email
+        }))
+      end.html_safe # rubocop: disable Rails/OutputSafety -- this is only needed as the AvatarCache is a direct Redis cache
+    else
+      user_avatar(options.merge({
+        user: commit_or_event.author,
+        user_name: commit_or_event.author_name,
+        user_email: commit_or_event.author_email
+      }))
+    end
+  end
+
+  def user_avatar(options = {})
+    avatar = user_avatar_without_link(options)
+
+    if options[:user]
+      link_to(avatar, user_path(options[:user]))
+    elsif options[:user_email]
+      mail_to(options[:user_email], avatar)
+    end
   end
 
   def user_avatar_without_link(options = {})
@@ -96,16 +115,6 @@ module AvatarsHelper
     }
 
     tag.img(**image_options)
-  end
-
-  def user_avatar(options = {})
-    avatar = user_avatar_without_link(options)
-
-    if options[:user]
-      link_to(avatar, user_path(options[:user]))
-    elsif options[:user_email]
-      mail_to(options[:user_email], avatar)
-    end
   end
 
   def avatar_without_link(resource, options = {})

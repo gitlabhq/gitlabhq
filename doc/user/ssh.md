@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Git is a distributed version control system, which means you can work locally,
 then share or *push* your changes to a server. In this case, the server you push to is GitLab.
@@ -406,7 +406,8 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 ## View your account's SSH keys
 
-1. Sign in to GitLab.
+To view the SSH keys for your account:
+
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
@@ -418,9 +419,17 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
   - Public fingerprint.
   - Expiry date.
   - Permitted usage types.
-- The time a key was last used. On GitLab.com this value is unavailable, and you are unable to see if or when an SSH key has been used. For more information, see [issue 324764](https://gitlab.com/gitlab-org/gitlab/-/issues/324764).
+- The time a key was last used.
 
-Select **Delete** to permanently delete an SSH key.
+## Delete an SSH key
+
+To permanently delete an SSH key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **SSH Keys**.
+1. Next to the key you want to delete, select **Remove** (**{remove}**).
+1. Select **Delete**.
 
 ## Use different accounts on a single GitLab instance
 
@@ -475,7 +484,7 @@ You can set up two-factor authentication (2FA) for
 
 ## Use EGit on Eclipse
 
-If you are using [EGit](https://www.eclipse.org/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
+If you are using [EGit](https://eclipse.dev/egit/), you can [add your SSH key to Eclipse](https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration).
 
 ## Use SSH on Microsoft Windows
 

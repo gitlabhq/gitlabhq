@@ -382,13 +382,13 @@ module Types
     field :ci_variables, Types::Ci::ProjectVariableType.connection_type,
       null: true,
       description: "List of the project's CI/CD variables.",
-      authorize: :admin_build,
+      authorize: :admin_cicd_variables,
       resolver: Resolvers::Ci::VariablesResolver
 
     field :inherited_ci_variables, Types::Ci::InheritedCiVariableType.connection_type,
       null: true,
       description: "List of CI/CD variables the project inherited from its parent group and ancestors.",
-      authorize: :admin_build,
+      authorize: :admin_cicd_variables,
       resolver: Resolvers::Ci::InheritedVariablesResolver
 
     field :ci_cd_settings, Types::Ci::CiCdSettingType,
@@ -438,7 +438,7 @@ module Types
     field :services, Types::Projects::ServiceType.connection_type,
       null: true,
       deprecated: {
-        reason: 'This will be renamed to `Project.integrations`',
+        reason: 'A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904)',
         milestone: '15.9'
       },
       description: 'Project services.',
@@ -495,6 +495,13 @@ module Types
     field :container_expiration_policy, Types::ContainerExpirationPolicyType,
       null: true,
       description: 'Container expiration policy of the project.'
+
+    field :container_registry_protection_rules,
+      Types::ContainerRegistry::Protection::RuleType.connection_type,
+      null: true,
+      description: 'Container protection rules for the project.',
+      alpha: { milestone: '16.10' },
+      resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
     field :container_repositories, Types::ContainerRepositoryType.connection_type,
       null: true,
@@ -703,6 +710,17 @@ module Types
       description: 'Plan limits for the current project.',
       alpha: { milestone: '16.9' },
       null: true
+
+    field :available_deploy_keys, Types::AccessLevels::DeployKeyType.connection_type,
+      resolver: Resolvers::Projects::DeployKeyResolver,
+      description: 'List of available deploy keys',
+      extras: [:lookahead],
+      null: true,
+      authorize: :admin_project do
+        argument :title_query, GraphQL::Types::String,
+          required: false,
+          description: 'Term by which to search deploy key titles'
+      end
 
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names

@@ -37,3 +37,5 @@ export const SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT =
   'users_visiting_security_configuration_threat_management';
 
 export const SERVICE_PING_PIPELINE_SECURITY_VISIT = 'users_visiting_pipeline_security';
+
+export const ALLOWED_ADDITIONAL_PROPERTIES = ['label', 'property', 'value'];

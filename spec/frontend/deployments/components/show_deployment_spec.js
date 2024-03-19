@@ -1,10 +1,11 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
-import { GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlSprintf } from '@gitlab/ui';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import ShowDeployment from '~/deployments/components/show_deployment.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import deploymentQuery from '~/deployments/graphql/queries/deployment.query.graphql';
@@ -13,12 +14,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/graphql_shared/utils');
 
 Vue.use(VueApollo);
 
 const PROJECT_PATH = 'group/project';
 const ENVIRONMENT_NAME = mockEnvironmentFixture.data.project.environment.name;
 const DEPLOYMENT_IID = mockDeploymentFixture.data.project.deployment.iid;
+const GRAPHQL_ETAG_KEY = 'project/environments';
 
 describe('~/deployments/components/show_deployment.vue', () => {
   let wrapper;
@@ -36,12 +39,16 @@ describe('~/deployments/components/show_deployment.vue', () => {
       [deploymentQuery, deploymentQueryResponse],
       [environmentQuery, environmentQueryResponse],
     ]);
-    wrapper = mount(ShowDeployment, {
+    wrapper = shallowMount(ShowDeployment, {
       apolloProvider: mockApollo,
       provide: {
         projectPath: PROJECT_PATH,
         environmentName: ENVIRONMENT_NAME,
         deploymentIid: DEPLOYMENT_IID,
+        graphqlEtagKey: GRAPHQL_ETAG_KEY,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
     return waitForPromises();
@@ -96,6 +103,18 @@ describe('~/deployments/components/show_deployment.vue', () => {
         deployment: mockDeploymentFixture.data.project.deployment,
         environment: mockEnvironmentFixture.data.project.environment,
       });
+    });
+  });
+
+  describe('etag polling', () => {
+    beforeEach(() => {
+      deploymentQueryResponse.mockResolvedValue(mockDeploymentFixture);
+      environmentQueryResponse.mockResolvedValue(mockEnvironmentFixture);
+      return createComponent();
+    });
+
+    it('should set up a toggle visiblity hook on mount', () => {
+      expect(toggleQueryPollingByVisibility).toHaveBeenCalled();
     });
   });
 });

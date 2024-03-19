@@ -11,9 +11,6 @@ class MigrationCollisionChecker
 
   ERROR_CODE = 1
 
-  # To be removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129012
-  SKIP_MIGRATIONS = %w[AddInternalToNotes BackfillInternalOnNotes].freeze
-
   Result = Struct.new(:error_code, :error_message)
 
   def initialize
@@ -36,9 +33,6 @@ class MigrationCollisionChecker
     MIGRATION_FOLDERS.each do |migration_folder|
       Dir.glob(base_path.join(migration_folder)).each do |migration_path|
         klass_name = CLASS_MATCHER.match(File.read(migration_path))[1]
-
-        next if SKIP_MIGRATIONS.include?(klass_name)
-
         collisions[klass_name] << migration_path
       end
     end

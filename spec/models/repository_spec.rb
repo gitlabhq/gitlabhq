@@ -398,8 +398,21 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'with path' do
-        it 'sets follow when it is a single path' do
-          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+        context 'when remove_file_commit_history_following feature flag is disabled' do
+          before do
+            stub_feature_flags(remove_file_commit_history_following: false)
+          end
+
+          it 'sets follow when it is a single path' do
+            expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+            repository.commits('master', limit: 1, path: 'README.md')
+            repository.commits('master', limit: 1, path: ['README.md'])
+          end
+        end
+
+        it 'does not set follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original.twice
 
           repository.commits('master', limit: 1, path: 'README.md')
           repository.commits('master', limit: 1, path: ['README.md'])
@@ -2621,16 +2634,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#copy_gitattributes" do
-    it 'returns true with a valid ref' do
-      expect(repository.copy_gitattributes('master')).to be_truthy
-    end
-
-    it 'returns false with an invalid ref' do
-      expect(repository.copy_gitattributes('invalid')).to be_falsey
-    end
-  end
-
   describe '#before_remove_tag' do
     it 'flushes the tag cache' do
       expect(repository).to receive(:expire_tags_cache).and_call_original
@@ -3789,7 +3792,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       allow(repository.raw_repository).to receive(:branch_names).and_return([branch_name])
     end
 
-    context 'when prohibited branch exists' do
+    shared_examples 'deletes the branch' do
       it 'deletes prohibited branch' do
         expect(repository.raw_repository).to receive(:delete_branch).with(branch_name)
 
@@ -3803,6 +3806,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
         repository.remove_prohibited_branches
       end
+    end
+
+    context 'when branch name is hexadecmal and 40-characters long' do
+      include_examples 'deletes the branch'
+    end
+
+    context 'when branch name is hexadecmal and 64-characters long' do
+      let(:branch_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
+
+      include_examples 'deletes the branch'
     end
 
     context 'when branch name is 40-characters long but not hexadecimal' do
@@ -4080,6 +4093,30 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
+    end
+  end
+
+  describe '#empty_tree_id' do
+    subject { repository.empty_tree_id }
+
+    context 'for existing repository' do
+      context 'for SHA1 repository' do
+        it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+      end
+
+      context 'for SHA256 repository' do
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+
+        it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
+      end
+    end
+
+    context 'for missing repository' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
     end
   end
 

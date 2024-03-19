@@ -43,15 +43,25 @@ describe('Vuex members actions', () => {
       const payload = { memberId, accessLevel, memberRoleId };
 
       describe('successful request', () => {
-        it(`updates member role`, async () => {
-          mock.onPut().replyOnce(HTTP_STATUS_OK);
+        describe('updates member role', () => {
+          const MOCK_REQUEST_RESULT = { status: 'ok' };
+          let response;
 
-          await testAction(updateMemberRole, payload, state, []);
+          beforeEach(async () => {
+            mock.onPut().replyOnce(HTTP_STATUS_OK, MOCK_REQUEST_RESULT);
+            response = await testAction(updateMemberRole, payload, state, []);
+          });
 
-          expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
-          expect(mockedRequestFormatter).toHaveBeenCalledWith({
-            accessLevel,
-            memberRoleId,
+          it('will make the PUT request', () => {
+            expect(mock.history.put[0].url).toBe('/groups/foo-bar/-/group_members/238');
+            expect(mockedRequestFormatter).toHaveBeenCalledWith({
+              accessLevel,
+              memberRoleId,
+            });
+          });
+
+          it('will return the request result', () => {
+            expect(response.data).toEqual(MOCK_REQUEST_RESULT);
           });
         });
       });

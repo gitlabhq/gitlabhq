@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
 > - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
@@ -110,7 +110,7 @@ To configure your Vault server:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 

@@ -1,10 +1,5 @@
-.gl-display-flex.gl-flex-direction-column.gl-align-items-center
-  %div
-    .svg-content.svg-150
-      = image_tag 'illustrations/empty-state/empty-search-md.svg'
-  %div
-    %h4.gl-text-center.gl-font-weight-bold= _('Your search timed out')
-    %p.gl-text-center= _('To resolve this, try to:')
-    %ul
-      %li= html_escape(_('Refine your search criteria (select a %{strong_open}group%{strong_close} and %{strong_open}project%{strong_close} when possible)')) % { strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
-      %li= html_escape(_('Use double quotes for multiple keywords, such as %{code_open}"your search"%{code_close}')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+  title: _('Your search has timed out')) do |c|
+
+  - c.with_description do
+    = html_escape(_('To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}"your search"%{code_close}).')) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }

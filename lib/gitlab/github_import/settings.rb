@@ -67,8 +67,7 @@ module Gitlab
           data: {
             optional_stages: optional_stages,
             timeout_strategy: user_settings[:timeout_strategy],
-            extended_events: user_settings[:extended_events],
-            prioritize_collaborators: user_settings[:prioritize_collaborators]
+            extended_events: user_settings[:extended_events]
           },
           credentials: project.import_data&.credentials
         )
@@ -86,10 +85,6 @@ module Gitlab
 
       def extended_events?
         !!project.import_data&.data&.dig('extended_events')
-      end
-
-      def prioritize_collaborators?
-        !!project.import_data&.data&.dig('prioritize_collaborators')
       end
 
       private

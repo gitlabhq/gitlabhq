@@ -15,7 +15,7 @@ Learn how to build a [Yarn](../workflows/build_packages.md#yarn) package.
 
 You can use the Yarn documentation to get started with
 [Yarn Classic](https://classic.yarnpkg.com/en/docs/getting-started) and
-[Yarn 2+](https://yarnpkg.com/getting-started/).
+[Yarn 2+](https://yarnpkg.com/getting-started).
 
 ## Publish to GitLab package registry
 
@@ -297,7 +297,7 @@ Then you can use `yarn add` to install your packages.
 ## Related topics
 
 - [npm documentation](../npm_registry/index.md#helpful-hints)
-- [Yarn Migration Guide](https://yarnpkg.com/migration/guide/)
+- [Yarn Migration Guide](https://yarnpkg.com/migration/guide)
 
 ## Troubleshooting
 

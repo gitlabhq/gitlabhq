@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Purchase
+group: Subscription Management
 description: Billing examples.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:

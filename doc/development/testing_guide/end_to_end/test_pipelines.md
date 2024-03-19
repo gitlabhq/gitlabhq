@@ -188,3 +188,39 @@ tests against the GDK instance running in the container.
 ##### report
 
 This stage is responsible for [allure test report](index.md#allure-report) generation.
+
+## `e2e:test-on-cng`
+
+The `e2e:test-on-cng` child pipeline runs tests against [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.
+Unlike `review-apps`, this pipeline uses local [kind](https://github.com/kubernetes-sigs/kind) Kubernetes cluster.
+
+Currently this pipeline is executed on nightly scheduled pipelines and is mainly responsible for testing compatibility with minimal supported version of `redis`.
+
+### Setup
+
+The pipeline setup consists of several jobs in the main GitLab pipeline:
+
+- `compile-production-assets` and `build-assets-image` jobs are responsible for compiling frontend assets which are required
+by [CNG](https://gitlab.com/gitlab-org/build/CNG-mirror) build pipeline.
+- `e2e-test-pipeline-generate` job is responsible for generating `e2e:test-on-cng` child pipeline
+
+### `e2e:test-on-cng` child pipeline
+
+Child pipeline consists of several stages that support E2E test execution.
+
+#### .pre
+
+- `build-cng-env` job is responsible for setting up all environment variables for [CNG](https://gitlab.com/gitlab-org/build/CNG-mirror) downstream pipeline
+- `build-cng` job triggers `CNG` downstream pipeline which is responsible for building all necessary images
+
+#### test
+
+Jobs in `test` stage perform following actions:
+
+- local k8s cluster setup using [`kind`](https://github.com/kubernetes-sigs/kind)
+- GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
+- E2E test execution against performed deployment
+
+#### report
+
+This stage is responsible for [allure test report](index.md#allure-report) generation as well as test metrics upload.

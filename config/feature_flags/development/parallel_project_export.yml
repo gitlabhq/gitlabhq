@@ -1,0 +1,8 @@
+---
+name: parallel_project_export
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145165
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442337
+milestone: '16.10'
+type: development
+group: group::import and integrate
+default_enabled: false

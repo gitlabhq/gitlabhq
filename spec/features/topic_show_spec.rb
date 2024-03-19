@@ -42,7 +42,7 @@ RSpec.describe 'Topic show page', feature_category: :groups_and_projects do
 
     context 'without associated projects' do
       it 'shows correct empty state message' do
-        expect(page).to have_content('Explore public groups to find projects to contribute to.')
+        expect(page).to have_content('Explore public groups to find projects to contribute to')
       end
     end
   end

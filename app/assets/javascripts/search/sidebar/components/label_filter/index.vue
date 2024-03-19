@@ -15,8 +15,6 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import { uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
 import { slugify } from '~/lib/utils/text_utility';
-import { isLoggedIn } from '~/lib/utils/common_utils';
-import { sprintf } from '~/locale';
 
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 
@@ -52,7 +50,6 @@ export default {
     return {
       currentFocusIndex: SEARCH_BOX_INDEX,
       isFocused: false,
-      isLoggedIn: isLoggedIn(),
     };
   },
   i18n: I18N,
@@ -65,31 +62,7 @@ export default {
       'appliedSelectedLabels',
       'unselectedLabels',
       'unappliedNewLabels',
-      'labelAggregationBuckets',
     ]),
-    searchInputDescribeBy() {
-      if (this.isLoggedIn) {
-        return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN;
-      }
-      return this.$options.i18n.SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN;
-    },
-    dropdownResultsDescription() {
-      if (!('showSearchDropdown' in this)) {
-        return ''; // This allows aria-live to see register an update when the dropdown is shown
-      }
-
-      if ('showDefaultItems' in this) {
-        return sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_DEFAULT, {
-          count: this.filteredLabels.length,
-        });
-      }
-
-      return 'loading' in this
-        ? this.$options.i18n.SEARCH_RESULTS_LOADING
-        : sprintf(this.$options.i18n.SEARCH_DESCRIBED_BY_UPDATED, {
-            count: this.filteredLabels.length,
-          });
-    },
     currentFocusedOption() {
       return this.filteredLabels[this.currentFocusIndex] || null;
     },
@@ -97,12 +70,6 @@ export default {
       return `${slugify(this.currentFocusedOption?.parent_full_name || 'undefined-name')}_${slugify(
         this.currentFocusedOption?.title || 'undefined-title',
       )}`;
-    },
-    defaultIndex() {
-      if ('showDefaultItems' in this) {
-        return SEARCH_BOX_INDEX;
-      }
-      return FIRST_DROPDOWN_INDEX;
     },
     hasSelectedLabels() {
       return this.filteredAppliedSelectedLabels?.length > 0;
@@ -217,6 +184,9 @@ export default {
         @close="onLabelClose"
       />
     </div>
+    <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
+      $options.i18n.DESCRIBE_LABEL_FILTER_INPUT
+    }}</span>
     <gl-search-box-by-type
       ref="searchLabelInputBox"
       v-model="searchLabels"
@@ -228,9 +198,6 @@ export default {
       @focusin="openDropdown"
       @keydown.esc="closeDropdown"
     />
-    <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">{{
-      searchInputDescribeBy
-    }}</span>
     <span
       role="region"
       :data-testid="$options.SEARCH_RESULTS_DESCRIPTION"
@@ -238,7 +205,7 @@ export default {
       aria-live="polite"
       aria-atomic="true"
     >
-      {{ dropdownResultsDescription }}
+      {{ $options.i18n.DESCRIBE_LABEL_FILTER }}
     </span>
     <div
       v-if="isFocused"
@@ -251,7 +218,7 @@ export default {
           v-model="currentFocusIndex"
           :max="filteredLabels.length - 1"
           :min="$options.FIRST_DROPDOWN_INDEX"
-          :default-index="defaultIndex"
+          :default-index="$options.FIRST_DROPDOWN_INDEX"
           :enable-cycle="true"
         />
         <div v-if="!aggregations.error && filteredLabels.length > 0">

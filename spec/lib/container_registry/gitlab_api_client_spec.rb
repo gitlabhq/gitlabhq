@@ -54,6 +54,17 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
       it { is_expected.to be_truthy }
     end
+
+    context "when the response is a Faraday::Error" do
+      before do
+        allow(::Gitlab).to receive(:com_except_jh?).and_return(false)
+        stub_application_setting(container_registry_features: [])
+        stub_request(:get, "#{registry_api_url}/gitlab/v1/")
+          .to_raise(::Faraday::Error)
+      end
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '#pre_import_repository' do

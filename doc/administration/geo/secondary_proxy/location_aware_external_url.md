@@ -57,15 +57,15 @@ routing configurations. To create a traffic policy:
 1. Select **Create traffic policy**.
 1. Fill in the **Policy Name** field with `Single Git Host` and select **Next**.
 1. Leave **DNS type** as `A: IP Address in IPv4 format`.
-1. Select **Connect to...**, then **Geolocation rule**.
+1. Select **Connect to**, then select **Geolocation rule**.
 1. For the first **Location**:
    1. Leave it as `Default`.
-   1. Select **Connect to...**, then **New endpoint**.
+   1. Select **Connect to**, then select **New endpoint**.
    1. Choose **Type** `value` and fill it in with `<your **primary** IP address>`.
 
 1. For the second **Location**:
    1. Choose `Europe`.
-   1. Select **Connect to...** and select **New endpoint**.
+   1. Select **Connect to**, then select **New endpoint**.
    1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
    ![Add traffic policy endpoints](img/single_url_add_traffic_policy_endpoints.png)

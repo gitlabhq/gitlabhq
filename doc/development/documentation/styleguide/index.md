@@ -30,7 +30,7 @@ use, and troubleshooting. The documentation evolves continuously. It is updated 
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content 
+about GitLab products. It also informs decisions about the kinds of content
 included in the documentation.
 
 ## Topic types
@@ -65,7 +65,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
-Our style guide, [word list](word_list.md), and [Vale rules](../testing.md) ensure consistency in the documentation.
+Our style guide, [word list](word_list.md), and [Vale rules](../testing/index.md) ensure consistency in the documentation.
 
 When documentation is translated into other languages, the meaning of each word must be clear.
 The increasing use of machine translation, GitLab Duo Chat, and other AI tools
@@ -114,7 +114,7 @@ linked style guide. You can't use Kramdown-specific markup (for example, `{:.cla
 For a complete Kramdown reference, see the
 [GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
 
-The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
+The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 
 ### HTML in Markdown
 
@@ -677,7 +677,7 @@ To enable the setting:
   ```
 
 To format a table with this extension, select the entire table, right-click the selection,
-and select **Format selection**.
+and select **Format Selection With**. Select **Markdown Table Formatter** in the VS Code Command Palette.
 
 Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
 plugin, but it does not have a **Follow header row length** setting.
@@ -712,18 +712,16 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 
 ### Footnotes
 
-Use footnotes below tables when it's not suitable to include the content in the table
-itself. For example, use footnotes when you need to:
+Use footnotes below tables only when you cannot include the content in the table itself.
+For example, use footnotes when you must:
 
-- Provide the same reference information on several table cells.
+- Provide the same information in several table cells.
 - Include content that would disrupt the table's layout.
 
 #### Footnote format
 
-For each footnote, use the HTML superscript tag `<sup>`.
-Put the tag at the end of the sentence or term.
-
-When you add a footnote, do not re-sort the existing tags in the table.
+In the table, use the HTML superscript tag `<sup>` for each footnote.
+Put the tag at the end after any punctuation mark.
 
 For example:
 
@@ -734,39 +732,51 @@ For example:
 | App B    | Description text. <sup>2</sup> |
 ```
 
-For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+When you add a footnote, do not re-sort the existing tags in the table.
 
-NOTE:
-To format text in footnotes (for example, to use emphasis or links), you must use HTML rather than Markdown.
+For the footnotes below the table, use `**Footnotes:**` followed by an ordered list.
 
 For example:
 
-```html
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+```markdown
+**Footnotes:**
+
+1. This is the first footnote.
+1. This is the second footnote.
 ```
 
-This text renders as this output:
+The table and footnotes would render as follows:
 
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. This is the first footnote.
+1. This is the second footnote.
+
+##### More than five footnotes
+
+If you have five or more footnotes that you cannot include in the table itself,
+you can use consecutive numbers for the list items.
+If you use consecutive numbers, you must disable Markdown rule `029`:
+
+```markdown
+**Footnotes:**
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+
+1. This is the first footnote.
+2. This is the second footnote.
+3. This is the third footnote.
+4. This is the fourth footnote.
+5. This is the fifth footnote.
+
+<!-- markdownlint-enable MD029 -->
+```
 
 ## Quotes
 
@@ -803,7 +813,7 @@ use a relative file path. For example, `../user/gitlab_com/index.md`.
 Use inline link Markdown markup `[Text](https://example.com)`,
 rather than reference-style links, like `[Text][identifier]`.
 
-Put the entire link on a single line so that [linters](../testing.md) can find it.
+Put the entire link on a single line so that [linters](../testing/index.md) can find it.
 
 ### Links in separate repositories
 
@@ -836,7 +846,7 @@ any related links, search these directories:
 - `app/views/*`
 - `ee/app/views/*`
 
-If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
+If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
 in your merge request fails.
 
 ### Text for links
@@ -1699,7 +1709,7 @@ The Markdown for tier badges should look like the following:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](<link-to-issue>) in GitLab 16.3.
@@ -1708,17 +1718,16 @@ DETAILS:
 
 For offering, use any combination of these words, in this order, separated by commas:
 
-- SaaS
-- Self-managed (lowercase when not the first item)
+- GitLab.com
+- Self-managed
+- GitLab Dedicated
 
 For example:
 
-- SaaS
-- SaaS, self-managed
+- GitLab.com
+- GitLab.com, Self-managed
 - Self-managed
-
-NOTE:
-SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We will update this page when the change occurs.
+- Self-managed, GitLab Dedicated
 
 For tier, choose one:
 
@@ -2013,7 +2022,7 @@ Use the following template to add information to the page.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
 

@@ -47,6 +47,7 @@ describe('ArchivedProjectsService', () => {
             updated_at: project.updated_at,
             marked_for_deletion: false,
             last_activity_at: project.last_activity_at,
+            archived: false,
           };
         }),
         headers,

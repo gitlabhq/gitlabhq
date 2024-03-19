@@ -12,7 +12,7 @@ Configure your groups to control group permissions and access.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
@@ -60,7 +60,7 @@ To change the permitted Git access protocols for a group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -124,7 +124,7 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
@@ -220,17 +220,19 @@ your group.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects in a group can be forked.
-Optionally, on [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
+In [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
-This setting is removed from the SAML setting page, and migrated to the
-group settings page. In the interim period, both of these settings are taken into consideration.
-If even one is set to `true`, then the group does not allow outside forks.
+Prerequisites:
+
+- This setting is enabled on the top-level group only.
+- All subgroups inherit this setting from the top-level group, and it cannot be
+  changed at the subgroup level.
 
 To prevent projects from being forked outside the group:
 
@@ -246,7 +248,7 @@ Existing forks are not removed.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -305,7 +307,7 @@ You can use a workaround to [manage project access through LDAP groups](../proje
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via CN:
 
@@ -323,7 +325,7 @@ To create group links via CN:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via filter:
 
@@ -337,7 +339,7 @@ To create group links via filter:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

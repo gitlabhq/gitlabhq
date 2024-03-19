@@ -34,7 +34,6 @@ Capybara/VisibilityMatcher:
     - 'spec/features/merge_request/user_views_diffs_commit_spec.rb'
     - 'spec/features/merge_request/user_views_diffs_spec.rb'
     - 'spec/features/projects/blobs/blob_show_spec.rb'
-    - 'spec/features/projects/blobs/user_follows_pipeline_suggest_nudge_spec.rb'
     - 'spec/features/projects/ci/lint_spec.rb'
     - 'spec/features/projects/commit/comments/user_adds_comment_spec.rb'
     - 'spec/features/projects/commits/multi_view_diff_spec.rb'

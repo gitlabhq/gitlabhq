@@ -56,25 +56,60 @@ RSpec.describe Gitlab::UserAccess, feature_category: :system_access do
         expect(project_access.can_push_to_branch?('master')).to be_truthy
       end
 
-      context 'when the user is a developer' do
-        using RSpec::Parameterized::TableSyntax
-
+      context 'when feature flag `default_branch_protection_defaults` is disabled' do
         before do
-          empty_project.add_developer(user)
+          stub_feature_flags(default_branch_protection_defaults: false)
         end
 
-        where(:default_branch_protection_level, :result) do
-          Gitlab::Access::PROTECTION_NONE          | true
-          Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
-          Gitlab::Access::PROTECTION_DEV_CAN_MERGE | false
-          Gitlab::Access::PROTECTION_FULL          | false
+        context 'when the user is a developer' do
+          using RSpec::Parameterized::TableSyntax
+
+          before do
+            empty_project.add_developer(user)
+          end
+
+          where(:default_branch_protection_level, :result) do
+            Gitlab::Access::PROTECTION_NONE          | true
+            Gitlab::Access::PROTECTION_DEV_CAN_PUSH  | true
+            Gitlab::Access::PROTECTION_DEV_CAN_MERGE | false
+            Gitlab::Access::PROTECTION_FULL          | false
+          end
+
+          with_them do
+            it do
+              expect(empty_project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level).at_least(:once)
+
+              expect(project_access.can_push_to_branch?('master')).to eq(result)
+            end
+          end
+        end
+      end
+
+      context 'when feature flag `default_branch_protection_defaults` is enabled' do
+        before do
+          stub_feature_flags(default_branch_protection_defaults: true)
         end
 
-        with_them do
-          it do
-            expect(empty_project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level).at_least(:once)
+        context 'when the user is a developer' do
+          using RSpec::Parameterized::TableSyntax
 
-            expect(project_access.can_push_to_branch?('master')).to eq(result)
+          before do
+            empty_project.add_developer(user)
+          end
+
+          where(:default_branch_protection_level, :result) do
+            Gitlab::Access::BranchProtection.protection_none                    | true
+            Gitlab::Access::BranchProtection.protection_partial                 | true
+            Gitlab::Access::BranchProtection.protected_against_developer_pushes | false
+            Gitlab::Access::BranchProtection.protected_fully                    | false
+          end
+
+          with_them do
+            it do
+              expect(empty_project.namespace).to receive(:default_branch_protection_settings).and_return(default_branch_protection_level).at_least(:once)
+
+              expect(project_access.can_push_to_branch?('master')).to eq(result)
+            end
           end
         end
       end

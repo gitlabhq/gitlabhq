@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 SaaS runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) for open source programs and customers in Premium and Ultimate plans.

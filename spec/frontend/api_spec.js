@@ -1202,6 +1202,18 @@ describe('Api', () => {
           expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params });
         });
       });
+
+      describe('when the method is called with options', () => {
+        it('sets the params and options on the request', () => {
+          const options = { responseType: 'text', transformRequest: (x) => x };
+          const params = { ref: 'main' };
+          jest.spyOn(axios, 'get');
+
+          Api.getRawFile(dummyProjectPath, dummyFilePath, params, options);
+
+          expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params, ...options });
+        });
+      });
     });
 
     describe('when an error occurs while getting a raw file', () => {
@@ -1416,25 +1428,7 @@ describe('Api', () => {
       'Content-Type': 'application/json',
     };
 
-    describe('when service data increment counter is called with feature flag disabled', () => {
-      beforeEach(() => {
-        gon.features = { usageDataApi: false };
-      });
-
-      it('returns null', () => {
-        jest.spyOn(axios, 'post');
-        mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, true);
-
-        expect(axios.post).toHaveBeenCalledTimes(0);
-        expect(Api.trackRedisCounterEvent(event)).toEqual(null);
-      });
-    });
-
     describe('when service data increment counter is called', () => {
-      beforeEach(() => {
-        gon.features = { usageDataApi: true };
-      });
-
       it('resolves the Promise', () => {
         jest.spyOn(axios, 'post');
         mock.onPost(expectedUrl, { event }).replyOnce(HTTP_STATUS_OK, true);
@@ -1461,26 +1455,7 @@ describe('Api', () => {
         window.gon.current_user_id = 1;
       });
 
-      describe('when service data increment unique users is called with feature flag disabled', () => {
-        beforeEach(() => {
-          gon.features = { usageDataApi: false };
-        });
-
-        it('returns null and does not call the endpoint', () => {
-          jest.spyOn(axios, 'post');
-
-          const result = Api.trackRedisHllUserEvent(event);
-
-          expect(result).toEqual(null);
-          expect(axios.post).toHaveBeenCalledTimes(0);
-        });
-      });
-
       describe('when service data increment unique users is called', () => {
-        beforeEach(() => {
-          gon.features = { usageDataApi: true };
-        });
-
         it('resolves the Promise', () => {
           jest.spyOn(axios, 'post');
           mock.onPost(expectedUrl, { event }).replyOnce(HTTP_STATUS_OK, true);
@@ -1493,11 +1468,7 @@ describe('Api', () => {
       });
     });
 
-    describe('when user is not set and feature flag enabled', () => {
-      beforeEach(() => {
-        gon.features = { usageDataApi: true };
-      });
-
+    describe('when user is not set', () => {
       it('returns null and does not call the endpoint', () => {
         jest.spyOn(axios, 'post');
 
@@ -1512,6 +1483,7 @@ describe('Api', () => {
   describe('trackInternalEvent', () => {
     const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/usage_data/track_event`;
     const event = 'i_devops_adoption';
+    const additionalProperties = { property: 'value' };
 
     const defaultContext = {
       data: {
@@ -1520,11 +1492,12 @@ describe('Api', () => {
       },
     };
 
-    const postData = {
+    const postData = (additionalProps = {}) => ({
       event,
       project_id: defaultContext.data.project_id,
       namespace_id: defaultContext.data.namespace_id,
-    };
+      additional_properties: additionalProps,
+    });
 
     const headers = {
       'Content-Type': 'application/json',
@@ -1536,48 +1509,39 @@ describe('Api', () => {
         window.gl = { snowplowStandardContext: { ...defaultContext } };
       });
 
-      describe('when internal event is called with feature flag disabled', () => {
-        beforeEach(() => {
-          gon.features = { usageDataApi: false };
-        });
-
-        it('returns null and does not call the endpoint', () => {
+      describe('when internal event is called', () => {
+        it('resolves the Promise without additionalProperties', () => {
           jest.spyOn(axios, 'post');
-          const result = Api.trackInternalEvent(event);
-          expect(result).toEqual(null);
-          expect(axios.post).toHaveBeenCalledTimes(0);
-        });
-      });
-
-      describe('when internal event is called with feature flag enabled', () => {
-        beforeEach(() => {
-          gon.features = { usageDataApi: true };
-        });
-
-        it('resolves the Promise', () => {
-          jest.spyOn(axios, 'post');
-          mock.onPost(expectedUrl, postData).replyOnce(HTTP_STATUS_OK, true);
+          mock.onPost(expectedUrl, postData()).replyOnce(HTTP_STATUS_OK, true);
 
           return Api.trackInternalEvent(event).then(({ data }) => {
             expect(data).toEqual(true);
-            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData(), { headers });
           });
         });
       });
-    });
 
-    describe('when user is not set and feature flag enabled', () => {
-      beforeEach(() => {
-        window.gon.current_user_id = '';
-        gon.features = { usageDataApi: true };
-        window.gl = { snowplowStandardContext: { ...defaultContext } };
+      describe('when internal event is called with additionalProperties', () => {
+        it('resolves the Promise with additionalProperties', () => {
+          jest.spyOn(axios, 'post');
+          mock.onPost(expectedUrl, postData(additionalProperties)).replyOnce(HTTP_STATUS_OK, true);
+
+          return Api.trackInternalEvent(event, additionalProperties).then(({ data }) => {
+            expect(data).toEqual(true);
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData(additionalProperties), {
+              headers,
+            });
+          });
+        });
       });
 
-      it('returns null and does not call the endpoint', () => {
-        jest.spyOn(axios, 'post');
-        const result = Api.trackInternalEvent(event);
-        expect(result).toEqual(null);
-        expect(axios.post).toHaveBeenCalledTimes(0);
+      describe('when internal event is called with unallowed additionalProperties', () => {
+        it('throws an error', () => {
+          expect(() => {
+            const unallowedProperties = { new_key: 'unallowed' };
+            Api.trackInternalEvent(event, unallowedProperties);
+          }).toThrow(/Disallowed additional properties were provided:/);
+        });
       });
     });
   });

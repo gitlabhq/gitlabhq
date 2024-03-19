@@ -4,13 +4,12 @@ require 'spec_helper'
 
 RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
   include AdminModeHelper
+  using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
     let(:user) { create(:user) }
 
     describe 'root level groups' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:user_type, :params, :results) do
         nil | { all_available: true } | %i[public_group user_public_group]
         nil | { all_available: false } | %i[public_group user_public_group]
@@ -181,17 +180,29 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       let_it_be(:internal_sub_subgroup) { create(:group, :internal, parent: public_subgroup) }
       let_it_be(:private_sub_subgroup) { create(:group, :private, parent: public_subgroup) }
       let_it_be(:public_sub_subgroup) { create(:group, :public, parent: public_subgroup) }
+      let_it_be(:invited_to_group) { create(:group, :public) }
+      let_it_be(:invited_to_subgroup) { create(:group, :public) }
 
       let(:params) { { include_parent_descendants: true, parent: parent_group } }
 
+      before do
+        parent_group.shared_with_groups << invited_to_group
+        public_subgroup.shared_with_groups << invited_to_subgroup
+      end
+
       context 'with nil parent' do
-        it 'returns all accessible groups' do
+        before do
           params[:parent] = nil
+        end
+
+        it 'returns all accessible groups' do
           expect(described_class.new(user, params).execute).to contain_exactly(
             parent_group,
             public_subgroup,
             internal_sub_subgroup,
-            public_sub_subgroup
+            public_sub_subgroup,
+            invited_to_group,
+            invited_to_subgroup
           )
         end
       end
@@ -227,6 +238,22 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
             internal_sub_subgroup,
             private_sub_subgroup
           )
+        end
+
+        context 'when include shared groups is set' do
+          before do
+            params[:include_parent_shared_groups] = true
+          end
+
+          it 'returns all group descendants with shared groups' do
+            expect(described_class.new(user, params).execute).to contain_exactly(
+              public_subgroup,
+              public_sub_subgroup,
+              internal_sub_subgroup,
+              private_sub_subgroup,
+              invited_to_group
+            )
+          end
         end
       end
     end
@@ -405,6 +432,28 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
             private_sub_sub_subgroup
           )
         end
+      end
+    end
+
+    describe 'group sorting' do
+      let_it_be(:all_groups) { create_list(:group, 3, :public) }
+
+      subject(:result) { described_class.new(nil, params).execute.to_a }
+
+      where(:field, :direction, :sorted_groups) do
+        'id'   | 'asc'  | lazy { all_groups.sort_by(&:id) }
+        'id'   | 'desc' | lazy { all_groups.sort_by(&:id).reverse }
+        'name' | 'asc'  | lazy { all_groups.sort_by(&:name) }
+        'name' | 'desc' | lazy { all_groups.sort_by(&:name).reverse }
+        'path' | 'asc'  | lazy { all_groups.sort_by(&:path) }
+        'path' | 'desc' | lazy { all_groups.sort_by(&:path).reverse }
+      end
+
+      with_them do
+        let(:sort) { "#{field}_#{direction}" }
+        let(:params) { { sort: sort } }
+
+        it { is_expected.to eq(sorted_groups) }
       end
     end
   end

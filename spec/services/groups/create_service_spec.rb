@@ -153,6 +153,18 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         it_behaves_like 'creating a group'
       end
 
+      context 'when organization_id is not a valid id' do
+        let(:extra_params) { { organization_id: non_existing_record_id } }
+
+        it_behaves_like 'does not create a group'
+
+        it 'returns an error and does not set organization_id', :aggregate_failures do
+          expect(created_group.errors[:organization_id].first)
+            .to eq(s_("CreateGroup|You don't have permission to create a group in the provided organization."))
+          expect(created_group.organization_id).to be_nil
+        end
+      end
+
       context 'when user is an admin', :enable_admin_mode do
         let(:current_user) { create(:admin) }
 
@@ -189,9 +201,8 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       end
     end
 
-    context 'when organization is not set by params' do
+    context 'when organization is not set by params', :with_current_organization do
       let_it_be(:default_organization) { create(:organization, :default) }
-      let_it_be(:current_organization) { create(:organization, name: 'Current Organization') }
 
       context 'and the parent of the group has an organization' do
         let_it_be(:parent_group) { create(:group, organization: other_organization) }
@@ -203,22 +214,18 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         end
       end
 
-      context 'and current_organization is known' do
-        before do
-          allow_next_instance_of(Groups::CreateService) do |instance|
-            allow(instance).to receive(:current_organization).and_return(current_organization)
-          end
-        end
-
+      context 'and has no parent group' do
         it 'creates group with the current organization' do
           expect(created_group.organization).to eq(current_organization)
         end
       end
+    end
 
-      context 'and no group can be found' do
-        it 'creates group with the default organization' do
-          expect(created_group.organization).to eq(default_organization)
-        end
+    context 'when organization is not set at all' do
+      it 'creates group without an organization' do
+        expect(created_group.organization).to eq(nil)
+        # let db default happen even if the organization record itself doesn't exist
+        expect(created_group.organization_id).not_to be_nil
       end
     end
   end

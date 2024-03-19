@@ -63,28 +63,30 @@ new Vue({
   },
 });
 
-const {
-  graphEndpoint,
-  graphEndDate,
-  graphStartDate,
-  graphRef,
-  graphCsvPath,
-} = codeCoverageContainer.dataset;
-// eslint-disable-next-line no-new
-new Vue({
-  el: codeCoverageContainer,
-  render(h) {
-    return h(CodeCoverage, {
-      props: {
-        graphEndpoint,
-        graphEndDate,
-        graphStartDate,
-        graphRef,
-        graphCsvPath,
-      },
-    });
-  },
-});
+if (codeCoverageContainer?.dataset) {
+  const {
+    graphEndpoint,
+    graphEndDate,
+    graphStartDate,
+    graphRef,
+    graphCsvPath,
+  } = codeCoverageContainer.dataset;
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: codeCoverageContainer,
+    render(h) {
+      return h(CodeCoverage, {
+        props: {
+          graphEndpoint,
+          graphEndDate,
+          graphStartDate,
+          graphRef,
+          graphCsvPath,
+        },
+      });
+    },
+  });
+}
 
 // eslint-disable-next-line no-new
 new Vue({

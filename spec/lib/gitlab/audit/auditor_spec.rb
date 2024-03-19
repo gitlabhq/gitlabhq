@@ -48,19 +48,10 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
     context 'when yaml definition is defined' do
       before do
         allow(Gitlab::Audit::Type::Definition).to receive(:defined?).and_return(true)
-        allow(Gitlab::AppLogger).to receive(:info).and_return(app_logger)
       end
 
       it 'does not raise an error' do
         expect { audit! }.not_to raise_error
-      end
-
-      it 'logs event type and scope' do
-        expected_message = { message: 'Event type and scope', event_type: name, scope: 'Group' }
-
-        audit!
-
-        expect(Gitlab::AppLogger).to have_received(:info).with(expected_message)
       end
     end
 

@@ -264,6 +264,304 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
     end
   end
 
+  describe "GET /projects/:id/job_token_scope/groups_allowlist" do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:target_group) { create(:group, :public) }
+
+    let_it_be(:user) { create(:user) }
+
+    let(:get_job_token_scope_groups_allowlist_path) { "/projects/#{project.id}/job_token_scope/groups_allowlist" }
+
+    subject { get api(get_job_token_scope_groups_allowlist_path, user) }
+
+    context 'when unauthenticated user (missing user)' do
+      context 'for public project' do
+        it 'does not return ci cd settings of job token' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          get api(get_job_token_scope_groups_allowlist_path)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when authenticated user as maintainer' do
+      before_all { project.add_maintainer(user) }
+
+      it 'returns allowlist containing empty groups list' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+
+      it 'returns groups allowlist of project' do
+        create(:ci_job_token_group_scope_link, source_project: project, target_group: target_group)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.count).to eq 1
+        expect(json_response).to include(
+          hash_including("id" => target_group.id)
+        )
+      end
+
+      context 'when authenticated user as developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'returns forbidden and no ci cd settings for public project' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
+
+  describe "POST /projects/:id/job_token_scope/groups_allowlist" do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:target_group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:post_job_token_scope_groups_allowlist_path) { "/projects/#{project.id}/job_token_scope/groups_allowlist" }
+
+    let(:post_job_token_scope_groups_allowlist_params) do
+      { target_group_id: target_group.id }
+    end
+
+    subject do
+      post api(post_job_token_scope_groups_allowlist_path, user), params: post_job_token_scope_groups_allowlist_params
+    end
+
+    context 'when unauthenticated user (missing user)' do
+      context 'for public project' do
+        it 'does not return ci cd settings of job token' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          post api(post_job_token_scope_groups_allowlist_path)
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when authenticated user as maintainer' do
+      before_all { project.add_maintainer(user) }
+
+      it 'returns unauthorized and blank response when invalid auth credentials are given' do
+        invalid_personal_access_token = build(:personal_access_token, user: user)
+
+        post api(post_job_token_scope_groups_allowlist_path, user,
+          personal_access_token: invalid_personal_access_token),
+          params: post_job_token_scope_groups_allowlist_params
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns created and creates job token scope link' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to be_present
+        expect(json_response).to include(
+          "target_group_id" => target_group.id,
+          "source_project_id" => project.id
+        )
+      end
+
+      it 'returns bad_request and does not create an additional job token scope link' do
+        create(
+          :ci_job_token_group_scope_link,
+          source_project: project,
+          target_group: target_group
+        )
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns not_found when group for param `target_group_id` does not exist' do
+        post api(post_job_token_scope_groups_allowlist_path, user), params: { target_group_id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns :bad_request when parameter `target_group_id` missing' do
+        post api(post_job_token_scope_groups_allowlist_path, user), params: {}
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns :bad_request when parameter `target_group_id` is nil value' do
+        post api(post_job_token_scope_groups_allowlist_path, user), params: { target_group_id: nil }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns :bad_request when parameter `target_group_id` is empty value' do
+        post api(post_job_token_scope_groups_allowlist_path, user), params: { target_group_id: '' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when authenticated user as developer' do
+      before_all { project.add_developer(user) }
+
+      context 'for private project' do
+        it 'returns forbidden and no ci cd settings' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'for public project' do
+        it 'returns forbidden and no ci cd settings' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:target_group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:link) do
+      create(:ci_job_token_group_scope_link,
+        source_project: project,
+        target_group: target_group)
+    end
+
+    let(:project_id) { project.id }
+    let(:delete_job_token_scope_groups_allowlist_path) do
+      "/projects/#{project_id}/job_token_scope/groups_allowlist/#{target_group.id}"
+    end
+
+    subject { delete api(delete_job_token_scope_groups_allowlist_path, user) }
+
+    context 'when unauthenticated user (missing user)' do
+      let(:user) { nil }
+
+      context 'for public project' do
+        it 'does not delete requested project from groups allowlist' do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+    end
+
+    context 'when user has no permissions to project' do
+      it 'responds with 401 forbidden' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated user as a developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 403 Forbidden' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated user as a maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'for the target project member' do
+        before do
+          target_group.add_guest(user)
+        end
+
+        it 'returns no content and deletes requested project from groups allowlist' do
+          expect_next_instance_of(
+            Ci::JobTokenScope::RemoveGroupService,
+            project,
+            user
+          ) do |service|
+            expect(service).to receive(:execute).with(target_group)
+              .and_return(instance_double('ServiceResponse', success?: true))
+          end
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(response.body).to be_blank
+        end
+
+        context 'when fails to remove target group' do
+          it 'returns a bad request' do
+            expect_next_instance_of(
+              Ci::JobTokenScope::RemoveGroupService,
+              project,
+              user
+            ) do |service|
+              expect(service).to receive(:execute).with(target_group)
+                .and_return(instance_double('ServiceResponse',
+                  success?: false,
+                  reason: nil,
+                  message: 'Failed to remove'))
+            end
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+      end
+
+      context 'when user project does not exists' do
+        before do
+          project.destroy!
+        end
+
+        it 'responds with 404 Not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when target group does not exists' do
+        before do
+          target_group.destroy!
+        end
+
+        it 'responds with 404 Not found' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe "POST /projects/:id/job_token_scope/allowlist" do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:project_inbound_allowed) { create(:project, :public) }

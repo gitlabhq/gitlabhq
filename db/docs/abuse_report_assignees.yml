@@ -7,4 +7,4 @@ feature_categories:
 description: Stores information linking abuse reports and users (assignee)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134240
 milestone: '16.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_clusterwide

@@ -46,7 +46,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
 
       context 'when import label does not exist' do
         it 'does not record import failure' do
-          subject.perform(project.id, 123, issue_attrs, some_key)
+          subject.class.perform_inline(project.id, 123, issue_attrs, some_key)
 
           expect(label.issues.count).to eq(0)
           expect(Gitlab::Cache::Import::Caching.read(Gitlab::JiraImport.failed_issues_counter_cache_key(project.id)).to_i).to eq(0)
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
         before do
           Gitlab::JiraImport.cache_import_label_id(project.id, label.id)
 
-          subject.perform(project.id, 123, issue_attrs, some_key)
+          subject.class.perform_inline(project.id, 123, issue_attrs, some_key)
         end
 
         it 'does not record import failure' do

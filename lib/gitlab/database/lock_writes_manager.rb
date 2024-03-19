@@ -49,9 +49,9 @@ module Gitlab
             FOR EACH STATEMENT EXECUTE FUNCTION #{TRIGGER_FUNCTION_NAME}();
         SQL
 
-        execute_sql_statement(sql_statement)
+        result = process_query(sql_statement, 'lock')
 
-        result_hash(action: dry_run ? 'needs_lock' : 'locked')
+        result_hash(action: result)
       end
 
       def unlock_writes
@@ -65,19 +65,27 @@ module Gitlab
           DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};
         SQL
 
-        execute_sql_statement(sql_statement)
+        result = process_query(sql_statement, 'unlock')
 
-        result_hash(action: dry_run ? 'needs_unlock' : 'unlocked')
+        result_hash(action: result)
       end
 
       private
 
       attr_reader :table_name, :connection, :database_name, :logger, :dry_run, :table_name_without_schema, :with_retries
 
-      def execute_sql_statement(sql)
+      def process_query(sql, action)
         if dry_run
           logger&.info sql
-        elsif with_retries
+          "needs_#{action}"
+        else
+          execute_sql_statement(sql)
+          "#{action}ed"
+        end
+      end
+
+      def execute_sql_statement(sql)
+        if with_retries
           raise "Cannot call lock_retries_helper if a transaction is already open" if connection.transaction_open?
 
           run_with_retries(connection) do

@@ -45,7 +45,7 @@ table.no-vertical-table-lines tr {
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
@@ -145,7 +145,7 @@ The following languages and dependency managers are supported:
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">3</a></b></sup></td>
+      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
       <td><code>pom.xml</code></td>
       <td>N</td>
     </tr>
@@ -180,7 +180,7 @@ The following languages and dependency managers are supported:
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td rowspan="4">3.9, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
+      <td rowspan="4">3.9<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup>, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td>N</td>
@@ -200,8 +200,8 @@ The following languages and dependency managers are supported:
       <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
       <td>
         <ul>
-            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile"><code>Pipfile</code></a></li>
-            <li><a href="https://pipenv.pypa.io/en/latest/pipfile/#example-pipfile-lock"><code>Pipfile.lock</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile.html#example-pipfile"><code>Pipfile</code></a></li>
+            <li><a href="https://pipenv.pypa.io/en/latest/pipfile.html#example-pipfile-lock"><code>Pipfile.lock</code></a></li>
         </ul>
       </td>
       <td>N</td>
@@ -281,18 +281,19 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
-      <ul>
-        <li>Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.</li>
-        <li>Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated in GitLab 16.8</a>.</li>
-      </ul>
+      Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated</a> in GitLab 16.8.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
     <p>
-      <ul>
-        <li>Support for Maven below 3.8.8 was deprecated in GitLab 16.9 and will be removed in GitLab 17.0</li>
-      </ul>
+      Support for Maven below 3.8.8 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/438772">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
+    <p>
+      Support for Python 3.9 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
     </p>
   </li>
 </ol>
@@ -700,11 +701,10 @@ vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 Prerequisites:
 
 - The `test` stage is required in the `.gitlab-ci.yml` file.
-- On GitLab self-managed you need GitLab Runner with the
+- With self-managed runners you need a GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. On GitLab.com this
-  is enabled by default on the shared runners. The analyzer images provided are for the Linux/amd64
-  architecture.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable the analyzer, either:
 
@@ -730,7 +730,7 @@ To enable dependency scanning:
 
    ```yaml
    include:
-     - template: Security/Dependency-Scanning.gitlab-ci.yml
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -791,7 +791,7 @@ the `gemnasium` analyzer:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   variables:
@@ -802,7 +802,7 @@ To override the `dependencies: []` attribute, add an override job as above, targ
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   dependencies: ["build"]
@@ -837,7 +837,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
-| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
+| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
 | `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
@@ -949,7 +949,7 @@ of the dependency scanning job, named `gl-dependency-scanning-report.json`.
 
 For more details of the dependency scanning report, see:
 
-- [Example dependency scanning report](#example-vulnerability-report).
+- [Security scanner integration](../../../development/integrations/secure.md).
 - [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials
@@ -1015,7 +1015,7 @@ stages:
   - merge-cyclonedx-sboms
 
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
@@ -1097,8 +1097,8 @@ These scanners are [periodically updated](../index.md#vulnerability-scanner-main
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
-[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
+[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
 
 ### Set dependency scanning CI/CD job variables to use local dependency scanning analyzers
 
@@ -1109,7 +1109,7 @@ value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of t
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
@@ -1253,113 +1253,20 @@ intended to obtain a private package from a private index. This only affects use
 requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
 version number).
 
-## Example vulnerability report
+### Version number parsing
 
-The following is an example vulnerability report output by dependency scanning:
+In some cases it's not possible to determine if the version of a project dependency is in the affected range of a security advisory.
 
-```json
-{
-  "version": "2.0",
-  "vulnerabilities": [
-    {
-      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
-      "category": "dependency_scanning",
-      "name": "Regular Expression Denial of Service",
-      "message": "Regular Expression Denial of Service in debug",
-      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
-      "severity": "Unknown",
-      "solution": "Upgrade to latest versions.",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "debug"
-          },
-          "version": "1.0.5"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
-          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://nodesecurity.io/advisories/534"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/issues/501"
-        },
-        {
-          "url": "https://github.com/visionmedia/debug/pull/504"
-        }
-      ]
-    },
-    {
-      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-      "category": "dependency_scanning",
-      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
-      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
-      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
-      "severity": "Unknown",
-      "solution": "Upgrade to fixed version.\r\n",
-      "scanner": {
-        "id": "gemnasium",
-        "name": "Gemnasium"
-      },
-      "location": {
-        "file": "yarn.lock",
-        "dependency": {
-          "package": {
-            "name": "saml2-js"
-          },
-          "version": "1.5.0"
-        }
-      },
-      "identifiers": [
-        {
-          "type": "gemnasium",
-          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
-          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
-          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
-        },
-        {
-          "type": "cve",
-          "name": "CVE-2017-11429",
-          "value": "CVE-2017-11429",
-          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
-        }
-      ],
-      "links": [
-        {
-          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
-        },
-        {
-          "url": "https://github.com/Clever/saml2/issues/127"
-        },
-        {
-          "url": "https://www.kb.cert.org/vuls/id/475445"
-        }
-      ]
-    }
-  ],
-  "remediations": [
-    {
-      "fixes": [
-        {
-          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
-        }
-      ],
-      "summary": "Upgrade saml2-js",
-      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
-    }
-  ]
-}
-```
+For example:
+
+- The version is unknown.
+- The version is invalid.
+- Parsing the version or comparing it to the range fails.
+- The version is a branch, like `dev-master` or `1.5.x`.
+- The compared versions are ambiguous. For example, `1.0.0-20241502` can't be compared to `1.0.0-2`
+  because one version contains a timestamp while the other does not.
+
+In these cases, the analyzer skips the dependency and outputs a message to the log.
+
+The GitLab analyzers do not make assumptions as they could result in a false positive or false
+negative. For a discussion, see [issue 442027](https://gitlab.com/gitlab-org/gitlab/-/issues/442027).

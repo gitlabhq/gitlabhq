@@ -2,10 +2,11 @@
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
+import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import RunnerCloudConnectionForm from '~/ci/runner/components/runner_cloud_connection_form.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import {
   DEFAULT_PLATFORM,
@@ -19,11 +20,11 @@ export default {
   name: 'GroupNewRunnerApp',
   components: {
     RegistrationCompatibilityAlert,
+    RunnerGoogleCloudOption,
     RunnerPlatformsRadioGroup,
-    RunnerCloudConnectionForm,
     RunnerCreateForm,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   props: {
     groupId: {
       type: String,
@@ -36,17 +37,19 @@ export default {
     };
   },
   computed: {
-    gcpEnabled() {
-      return this.glFeatures.gcpRunner;
-    },
-    showCloudForm() {
-      return this.platform === GOOGLE_CLOUD_PLATFORM && this.gcpEnabled;
+    googleCloudProvisioningEnabled() {
+      return this.glFeatures.googleCloudSupportFeatureFlag;
     },
   },
   methods: {
     onSaved(runner) {
       const params = { [PARAM_KEY_PLATFORM]: this.platform };
       const ephemeralRegisterUrl = setUrlParams(params, runner.ephemeralRegisterUrl);
+
+      this.trackEvent('click_create_group_runner_button');
+      if (this.platform === GOOGLE_CLOUD_PLATFORM) {
+        this.trackEvent('provision_group_runner_on_google_cloud');
+      }
 
       saveAlertToLocalStorage({
         message: s__('Runners|Runner created.'),
@@ -82,14 +85,15 @@ export default {
       {{ s__('Runners|Platform') }}
     </h2>
 
-    <runner-platforms-radio-group v-model="platform" />
+    <runner-platforms-radio-group v-model="platform">
+      <template v-if="googleCloudProvisioningEnabled" #cloud-options>
+        <runner-google-cloud-option v-model="platform" />
+      </template>
+    </runner-platforms-radio-group>
 
     <hr aria-hidden="true" />
 
-    <runner-cloud-connection-form v-if="showCloudForm" />
-
     <runner-create-form
-      v-else
       :runner-type="$options.GROUP_TYPE"
       :group-id="groupId"
       @saved="onSaved"

@@ -46,7 +46,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::LfsObjectsImporter, fea
         end
 
         expect(Gitlab::BitbucketServerImport::ImportLfsObjectWorker).to receive(:perform_in)
-          .with(1.second, project.id, lfs_attributes.stringify_keys, start_with(Gitlab::JobWaiter::KEY_PREFIX))
+          .with(an_instance_of(Float), project.id,
+            lfs_attributes.stringify_keys, start_with(Gitlab::JobWaiter::KEY_PREFIX))
 
         waiter = importer.execute
 

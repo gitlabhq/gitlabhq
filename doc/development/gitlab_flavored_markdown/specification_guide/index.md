@@ -858,7 +858,7 @@ consists of the manually updated Markdown+HTML examples for the
 - It should consist of `H1` header sections, with all examples nested either 2 or 3 levels deep
   within `H2` or `H3` header sections.
 - `H3` header sections must be nested within `H2` header sections. They cannot be
-   nested directly within `H1` header sections.
+  nested directly within `H1` header sections.
 
 It _may_ contain additional prose-only header sections which do not contain any examples.
 

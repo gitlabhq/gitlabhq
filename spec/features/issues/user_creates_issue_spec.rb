@@ -318,7 +318,13 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       visit(new_project_issue_path(project))
     end
 
-    it_behaves_like 'edits content using the content editor'
+    it_behaves_like 'rich text editor - autocomplete'
+    it_behaves_like 'rich text editor - code blocks'
+    it_behaves_like 'rich text editor - common'
+    it_behaves_like 'rich text editor - copy/paste'
+    it_behaves_like 'rich text editor - links'
+    it_behaves_like 'rich text editor - media'
+    it_behaves_like 'rich text editor - selection'
   end
 
   context "when signed in as user with special characters in their name" do

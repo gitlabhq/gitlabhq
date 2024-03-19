@@ -278,6 +278,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     let_it_be(:another_namespace_project) { create(:project) }
     let_it_be(:another_namespace_project_namespace) { another_namespace_project.project_namespace }
 
+    context 'when absolute_path is true' do
+      it 'returns complete path to the project with leading slash', :aggregate_failures do
+        be_full_path = eq("/#{parent.full_path}")
+
+        expect(parent.to_reference_base(full: true, absolute_path: true)).to be_full_path
+      end
+    end
+
     # testing references with namespace being: group, project namespace and user namespace
     where(:namespace, :full, :from, :result) do
       ref(:parent)             | false | nil                                       | nil
@@ -452,6 +460,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'filters case-insensitive' do
         expect(described_class.filter_by_path(namespace1.path.upcase)).to eq([namespace1])
+      end
+    end
+
+    describe '.by_name' do
+      it 'includes correct namespaces' do
+        expect(described_class.by_name(namespace1.name)).to eq([namespace1])
+        expect(described_class.by_name(namespace2.name.chop)).to match_array([namespace1, namespace2])
       end
     end
 

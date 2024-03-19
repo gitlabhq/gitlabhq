@@ -325,7 +325,7 @@ For more information, see [Type safety](https://gitlab.com/gitlab-org/gitlab/-/t
 
 ### Functional patterns
 
-Although Ruby and especially Rails are primarily based on [object-oriented programming](https://en.wikipedia.org/wiki/object-oriented_programming) patterns, Ruby is a very flexible language and supports [functional programming](https://en.wikipedia.org/wiki/Functional_programming) patterns as well.
+Although Ruby and especially Rails are primarily based on [object-oriented programming](https://en.wikipedia.org/wiki/Object-oriented_programming) patterns, Ruby is a very flexible language and supports [functional programming](https://en.wikipedia.org/wiki/Functional_programming) patterns as well.
 
 Functional programming patterns, especially in domain logic, can often result in more readable, maintainable, and bug-resistant code while still using idiomatic and familiar Ruby patterns.
 However, functional programming patterns should be used carefully because some patterns would cause confusion and should be avoided even if they're directly supported by Ruby. The [`curry` method](https://www.rubydoc.info/stdlib/core/Method:curry) is a likely example.

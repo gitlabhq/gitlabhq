@@ -98,7 +98,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
       choose 'Use custom transitions'
       click_save_integration
 
-      within '[data-testid="issue-transition-mode"]' do
+      within_testid 'issue-transition-mode' do
         expect(page).to have_content('This field is required.')
       end
 

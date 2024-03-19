@@ -131,7 +131,7 @@ Organizations in the context of Cells 2.0 will contain the following functionali
 
 ### Organization Access
 
-See [Organization Users](organization-users.md). 
+See [Organization Users](organization-users.md).
 
 ### Roles and Permissions
 

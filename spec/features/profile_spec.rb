@@ -115,7 +115,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
     it 'changes my username' do
       fill_in 'username-change-input', with: 'new-username'
 
-      page.find('[data-testid="username-change-confirmation-modal"]').click
+      find_by_testid('username-change-confirmation-modal').click
 
       page.within('.modal') do
         find('.js-modal-action-primary').click

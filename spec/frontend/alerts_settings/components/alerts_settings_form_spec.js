@@ -16,6 +16,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import { typeSet } from '~/alerts_settings/constants';
+import parseSamplePayloadQuery from '~/alerts_settings/graphql/queries/parse_sample_payload.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import parsedMapping from '../mocks/parsed_mapping.json';
 import alertFields from '../mocks/alert_fields.json';
@@ -29,11 +30,20 @@ describe('AlertsSettingsForm', () => {
   let wrapper;
   const mockToastShow = jest.fn();
   let apolloProvider;
+  const parseSamplePayloadSpy = jest.fn().mockResolvedValue({
+    data: {
+      project: {
+        id: '1',
+        alertManagementPayloadFields: [{ path: 'Foo', label: 'title', type: 'STRING' }],
+      },
+    },
+  });
 
   const createComponent = async ({
     props = {},
     multiIntegrations = true,
     currentIntegration = null,
+    mockParseSamplePayloadQuery = parseSamplePayloadSpy,
   } = {}) => {
     const mockResolvers = {
       Query: {
@@ -43,7 +53,10 @@ describe('AlertsSettingsForm', () => {
       },
     };
 
-    apolloProvider = createMockApollo([], mockResolvers);
+    apolloProvider = createMockApollo(
+      [[parseSamplePayloadQuery, mockParseSamplePayloadQuery]],
+      mockResolvers,
+    );
 
     wrapper = extendedWrapper(
       mount(AlertsSettingsForm, {
@@ -286,16 +299,15 @@ describe('AlertsSettingsForm', () => {
   describe('Test payload section for HTTP integration', () => {
     const validSamplePayload = JSON.stringify(alertFields);
     const emptySamplePayload = '{}';
+    const currentIntegration = {
+      id: '1',
+      name: 'Test',
+      type: typeSet.http,
+      payloadExample: emptySamplePayload,
+      payloadAttributeMappings: [],
+    };
 
     beforeEach(async () => {
-      const currentIntegration = {
-        id: '1',
-        name: 'Test',
-        type: typeSet.http,
-        payloadExample: emptySamplePayload,
-        payloadAttributeMappings: [],
-      };
-
       await createComponent({
         currentIntegration,
         props: { alertFields },
@@ -316,7 +328,7 @@ describe('AlertsSettingsForm', () => {
       const validPayloadMsg = payload === emptySamplePayload ? 'not valid' : 'valid';
 
       it(`textarea should be ${enabledState} when payload reset ${payloadResetMsg} and payload is ${validPayloadMsg}`, async () => {
-        const currentIntegration = {
+        const updatedCurrentIntegration = {
           id: '1',
           name: 'Test',
           type: typeSet.http,
@@ -325,7 +337,7 @@ describe('AlertsSettingsForm', () => {
         };
 
         await createComponent({
-          currentIntegration,
+          currentIntegration: updatedCurrentIntegration,
           props: { alertFields },
         });
 
@@ -355,14 +367,14 @@ describe('AlertsSettingsForm', () => {
           : 'was not confirmed';
 
         it(`shows ${caption} button when sample payload ${samplePayloadMsg} and payload reset ${payloadResetMsg}`, async () => {
-          const currentIntegration = {
+          const updatedCurrentIntegration = {
             type: typeSet.http,
             payloadExample,
             payloadAttributeMappings: [],
           };
 
           await createComponent({
-            currentIntegration,
+            currentIntegration: updatedCurrentIntegration,
             props: { alertFields },
           });
 
@@ -378,13 +390,7 @@ describe('AlertsSettingsForm', () => {
 
     describe('Parsing payload', () => {
       it('displays a toast message on successful parse', async () => {
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockResolvedValue({
-          data: {
-            project: { alertManagementPayloadFields: [] },
-          },
-        });
         findActionBtn().vm.$emit('click');
-
         await waitForPromises();
 
         expect(mockToastShow).toHaveBeenCalledWith(
@@ -394,7 +400,12 @@ describe('AlertsSettingsForm', () => {
 
       it('displays an error message under payload field on unsuccessful parse', async () => {
         const errorMessage = 'Error parsing paylod';
-        jest.spyOn(wrapper.vm.$apollo, 'query').mockRejectedValue({ message: errorMessage });
+        const mockParseSamplePayloadQuery = jest.fn().mockRejectedValue({ message: errorMessage });
+        await createComponent({
+          currentIntegration,
+          props: { alertFields },
+          mockParseSamplePayloadQuery,
+        });
         findActionBtn().vm.$emit('click');
 
         await waitForPromises();

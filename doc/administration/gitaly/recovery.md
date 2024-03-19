@@ -484,7 +484,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 - `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
   [per-repository replication](praefect.md#configure-replication-factor) is set as the replication strategy.
 - `-replicate-immediately`, available in GitLab 14.6 and later, causes the command to replicate the repository to its secondaries immediately.
-   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
+  Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 
 The command outputs:
 
@@ -539,7 +539,7 @@ If any entry fails these checks, the command aborts prior to attempting to track
     ```
 
 - `-replicate-immediately`, causes the command to replicate the repository to its secondaries immediately.
-   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
+  Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 
 ### List virtual storage details
 

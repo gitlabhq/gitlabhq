@@ -66,10 +66,13 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
 
         context 'expired refresh token' do
           let!(:existing_token) do
-            create(:oauth_access_token, application: application,
-                                        resource_owner_id: user.id,
-                                        created_at: 10.minutes.ago,
-                                        expires_in: 5)
+            create(
+              :oauth_access_token,
+              application: application,
+              resource_owner_id: user.id,
+              created_at: 10.minutes.ago,
+              expires_in: 5
+            )
           end
 
           include_examples 'issues a new token'

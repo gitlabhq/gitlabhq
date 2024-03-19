@@ -15,6 +15,7 @@ prepare-as-if-foss-branch:
   before_script:
     - git clone --single-branch --branch master "${FOSS_REPOSITORY}" gitlab-foss
     - git -C gitlab-foss checkout -b "${AS_IF_FOSS_BRANCH}" master
+    - git -C gitlab-foss rev-parse HEAD
     - rm -r .git/
     - mv gitlab-foss/.git .
     - rm -r gitlab-foss
@@ -29,7 +30,9 @@ prepare-as-if-foss-branch:
     - rm -f CHANGELOG-EE.md
     - rm -f changelogs/*-ee.md
     - git add -A
-    - git commit -m 'Update from merge request'  # TODO: Mark which SHA we add
+    # --allow-empty accounts for the edge case where FOSS matchess EE repository
+    # and a merge request only contains EE related changes.
+    - git commit -m 'Update from merge request' --allow-empty # TODO: Mark which SHA we add
     - git push -f "${FOSS_REPOSITORY}" "${AS_IF_FOSS_BRANCH}"
 
 prepare-as-if-foss-env:
@@ -81,6 +84,7 @@ start-as-if-foss:
     ENABLE_COMPILE_PRODUCTION_ASSETS: $ENABLE_COMPILE_PRODUCTION_ASSETS
     ENABLE_COMPILE_STORYBOOK: $ENABLE_COMPILE_STORYBOOK
     ENABLE_COMPILE_TEST_ASSETS: $ENABLE_COMPILE_TEST_ASSETS
+    ENABLE_CACHE_ASSETS: $ENABLE_CACHE_ASSETS
     ENABLE_ESLINT: $ENABLE_ESLINT
     ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: $ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA
     ENABLE_GRAPHQL_SCHEMA_DUMP: $ENABLE_GRAPHQL_SCHEMA_DUMP

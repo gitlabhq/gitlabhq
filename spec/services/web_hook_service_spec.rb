@@ -369,6 +369,88 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       end
     end
 
+    context 'when custom_webhook_template is set' do
+      before do
+        stub_full_request(project_hook.url, method: :post)
+      end
+
+      context 'when template is valid' do
+        before do
+          project_hook.custom_webhook_template = '{"before":"{{before}}"}'
+        end
+
+        it 'renders custom_webhook_template for body' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: headers, body: '{"before":"oldrev"}')
+            .once
+        end
+
+        context 'when using nested values' do
+          let(:data) do
+            { before: 'before', nested: { key: 'value' } }
+          end
+
+          before do
+            project_hook.custom_webhook_template = '{"before":"{{before}}","nested_key":"{{nested.key}}"}'
+          end
+
+          it 'renders custom_webhook_template for body' do
+            service_instance.execute
+
+            expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+              .with(headers: headers, body: '{"before":"before","nested_key":"value"}')
+              .once
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(custom_webhook_template: false)
+          end
+
+          it 'does not render custom template', :aggregate_failures do
+            service_instance.execute
+
+            expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+              .with(headers: headers, body: '{"before":"oldrev","after":"newrev","ref":"ref"}')
+              .once
+          end
+        end
+      end
+
+      context 'when template is invalid' do
+        before do
+          project_hook.custom_webhook_template = '{"test":"{{event}"}'
+        end
+
+        it 'renders without problems', :aggregate_failures do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: headers, body: '{"test":"{{event}"}')
+            .once
+          expect { service_instance.execute }.not_to raise_error
+        end
+      end
+
+      context 'when template renders invalid json' do
+        before do
+          project_hook.custom_webhook_template = '{"test":"{{before}}}'
+        end
+
+        it 'handles the error', :aggregate_failures do
+          expect(service_instance.execute).to have_attributes(
+            status: :error,
+            message: 'Error while parsing rendered custom webhook template: quoted string not terminated ' \
+                     '(after test) at line 1, column 16 [parse.c:379] in \'{"test":"oldrev}'
+          )
+          expect { service_instance.execute }.not_to raise_error
+        end
+      end
+    end
+
     it 'handles 200 status code' do
       stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
 

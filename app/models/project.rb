@@ -189,6 +189,8 @@ class Project < ApplicationRecord
 
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
+  # These are usages of the ci_components owned (not used) by the project
+  has_many :ci_component_usages, class_name: 'Ci::Catalog::Resources::Components::Usage', inverse_of: :project
   has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
   has_many :catalog_resource_sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', inverse_of: :project
 
@@ -560,7 +562,6 @@ class Project < ApplicationRecord
       delegate :show_default_award_emojis, :show_default_award_emojis=
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
-      delegate :code_suggestions, :code_suggestions=
       delegate :duo_features_enabled, :duo_features_enabled=
     end
   end
@@ -655,14 +656,21 @@ class Project < ApplicationRecord
     )
   end
 
-  scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
+  scope :sorted_by_similarity_desc, -> (search, full_path_only: false) do
+    rules = if full_path_only
+              [{ column: arel_table["path"], multiplier: 1 }]
+            else
+              [
+                { column: arel_table["path"], multiplier: 1 },
+                { column: arel_table["name"], multiplier: 0.7 },
+                { column: arel_table["description"], multiplier: 0.2 }
+              ]
+            end
+
     order_expression = Gitlab::Database::SimilarityScore.build_expression(
       search: search,
-      rules: [
-        { column: arel_table["path"], multiplier: 1 },
-        { column: arel_table["name"], multiplier: 0.7 },
-        { column: arel_table["description"], multiplier: 0.2 }
-      ])
+      rules: rules
+    )
 
     order = Gitlab::Pagination::Keyset::Order.build(
       [
@@ -695,6 +703,7 @@ class Project < ApplicationRecord
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
+  scope :by_name, ->(name) { where('projects.name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
@@ -715,6 +724,11 @@ class Project < ApplicationRecord
     joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
       .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
+  end
+
+  scope :with_jira_installation, ->(installation_id) do
+    joins(namespace: :jira_connect_subscriptions)
+    .where(jira_connect_subscriptions: { jira_connect_installation_id: installation_id })
   end
 
   scope :with_feature_enabled, ->(feature) {
@@ -989,6 +1003,7 @@ class Project < ApplicationRecord
     def reference_pattern
       %r{
         (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
+        (?<absolute_path>/)?
         ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }xo
@@ -1645,9 +1660,9 @@ class Project < ApplicationRecord
   end
 
   # `from` argument can be a Namespace or Project.
-  def to_reference_base(from = nil, full: false)
+  def to_reference_base(from = nil, full: false, absolute_path: false)
     if full || cross_namespace_reference?(from)
-      full_path
+      absolute_path ? "/#{full_path}" : full_path
     elsif cross_project_reference?(from)
       path
     end
@@ -1749,14 +1764,12 @@ class Project < ApplicationRecord
       .sort_by(&:title)
   end
 
+  # Returns a list of integration names that should be disabled at the project-level.
+  # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
     return [] if Rails.env.development?
 
-    names = %w[zentao]
-
-    # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
-    # The GitLab for Slack app integration is only available when enabled through settings.
-    names << (Gitlab::CurrentSettings.slack_app_enabled ? 'slack_slash_commands' : 'gitlab_slack_application')
+    %w[zentao]
   end
 
   def find_or_initialize_integration(name)
@@ -1962,11 +1975,8 @@ class Project < ApplicationRecord
     (project_repository || build_project_repository).tap do |proj_repo|
       attributes = { shard_name: repository_storage, disk_path: disk_path }
 
-      if Feature.enabled?(:store_object_format, namespace, type: :gitlab_com_derisk)
-        object_format = repository.object_format
-
-        attributes[:object_format] = object_format if object_format.present?
-      end
+      object_format = repository.object_format
+      attributes[:object_format] = object_format if object_format.present?
 
       proj_repo.update!(**attributes)
     end
@@ -2324,7 +2334,13 @@ class Project < ApplicationRecord
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     check_project_export_limit!
 
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
+    job_id = if Feature.enabled?(:parallel_project_export, current_user)
+               Projects::ImportExport::CreateRelationExportsWorker
+                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+             else
+               ProjectExportWorker
+                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+             end
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
@@ -2444,6 +2460,8 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
+      .append(key: 'CI_COMPONENT_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn)
+      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn)
       .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)
@@ -2889,12 +2907,24 @@ class Project < ApplicationRecord
   end
 
   def default_branch_protected?
+    if Feature.enabled?(:default_branch_protection_defaults, self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+
+      return !branch_protection.developer_can_push?
+    end
+
     branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
 
     branch_protection.fully_protected? || branch_protection.developer_can_merge? || branch_protection.developer_can_initial_push?
   end
 
   def initial_push_to_default_branch_allowed_for_developer?
+    if Feature.enabled?(:default_branch_protection_defaults, self)
+      branch_protection = Gitlab::Access::DefaultBranchProtection.new(self)
+
+      return branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
+    end
+
     branch_protection = Gitlab::Access::BranchProtection.new(self.namespace.default_branch_protection)
 
     !branch_protection.any? || branch_protection.developer_can_push? || branch_protection.developer_can_initial_push?
@@ -3154,8 +3184,8 @@ class Project < ApplicationRecord
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
 
-  def work_items_mvc_feature_flag_enabled?
-    group&.work_items_mvc_feature_flag_enabled? || Feature.enabled?(:work_items_mvc)
+  def work_items_beta_feature_flag_enabled?
+    group&.work_items_beta_feature_flag_enabled? || Feature.enabled?(:work_items_beta, type: :beta)
   end
 
   def work_items_mvc_2_feature_flag_enabled?
@@ -3255,11 +3285,6 @@ class Project < ApplicationRecord
 
   # Overridden in EE
   def on_demand_dast_available?
-    false
-  end
-
-  # Overridden in EE
-  def code_suggestions_enabled?
     false
   end
 

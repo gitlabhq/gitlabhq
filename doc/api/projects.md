@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Interact with [projects](../user/project/index.md) by using the REST API.
 
@@ -1358,7 +1358,7 @@ target the upstream project by default.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
 
@@ -2549,7 +2549,7 @@ DELETE /projects/:id
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
@@ -2813,7 +2813,9 @@ GET /projects/:id/hooks/:hook_id
   "alert_status": "executable",
   "disabled_until": null,
   "url_variables": [ ],
-  "created_at": "2012-10-12T17:04:47Z"
+  "created_at": "2012-10-12T17:04:47Z",
+  "resource_access_token_events": true,
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
 }
 ```
 
@@ -2844,6 +2846,8 @@ POST /projects/:id/hooks
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
 | `token`                      | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki events. |
+| `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
 
 ### Edit project hook
 
@@ -2873,6 +2877,8 @@ PUT /projects/:id/hooks/:hook_id
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
 | `token`                      | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki page events. |
+| `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
 
 ### Delete project hook
 
@@ -2953,7 +2959,7 @@ POST /projects/:id/housekeeping
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### Get project push rules
 
@@ -2996,6 +3002,8 @@ Adds a push rule to a specified project.
 POST /projects/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                       | Type              | Required | Description |
 |---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -3012,6 +3020,8 @@ POST /projects/:id/push_rule
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits`       | boolean           | No       | Reject commit when it's not signed through GPG. |
 
+<!-- markdownlint-enable MD056 -->
+
 ### Edit project push rule
 
 Edits a push rule for a specified project.
@@ -3019,6 +3029,8 @@ Edits a push rule for a specified project.
 ```plaintext
 PUT /projects/:id/push_rule
 ```
+
+<!-- markdownlint-disable MD056 -->
 
 | Attribute                       | Type              | Required | Description |
 |---------------------------------|-------------------|----------|-------------|
@@ -3035,6 +3047,8 @@ PUT /projects/:id/push_rule
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits`       | boolean           | No       | Reject commits when they are not GPG signed. |
+
+<!-- markdownlint-enable MD056 -->
 
 ### Delete project push rule
 
@@ -3249,7 +3263,7 @@ Read more in the [Project vulnerabilities](project_vulnerabilities.md) documenta
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 
@@ -3289,7 +3303,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
@@ -3347,7 +3361,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 

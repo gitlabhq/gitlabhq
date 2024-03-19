@@ -95,10 +95,6 @@ class RemoveUsersUpdatedAtColumn < Gitlab::Database::Migration[2.1]
 end
 ```
 
-You can consider [enabling lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
-when you run a migration on big tables, because it might take some time to
-acquire a lock on this table.
-
 #### The removed column has an index or constraint that belongs to it
 
 If the `down` method requires adding back any dropped indexes or constraints, that cannot
@@ -127,7 +123,7 @@ end
 In the `down` method, we check to see if the column already exists before adding it again.
 We do this because the migration is non-transactional and might have failed while it was running.
 
-The [`disable_ddl_transaction!`](../migration_style_guide.md#usage-with-non-transactional-migrations-disable_ddl_transaction)
+The [`disable_ddl_transaction!`](../migration_style_guide.md#usage-with-non-transactional-migrations)
 is used to disable the transaction that wraps the whole migration.
 
 You can refer to the page [Migration Style Guide](../migration_style_guide.md)
@@ -355,17 +351,11 @@ bundle exec rails g post_deployment_migration change_ci_builds_default
 
 ```ruby
 class ChangeCiBuildsDefault < Gitlab::Database::Migration[2.1]
-  enable_lock_retries!
-
   def change
     change_column_default('ci_builds', 'partition_id', from: 100, to: 101)
   end
 end
 ```
-
-[Enable lock retries](../migration_style_guide.md#usage-with-transactional-migrations)
-when you run a migration on big tables, because it might take some time to
-acquire a lock on this table.
 
 ### Clean up the `SafelyChangeColumnDefault` concern in the next minor release
 

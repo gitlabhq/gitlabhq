@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Protected branches in GitLab restrict who can push to, merge, or modify a Git branch."
 ---
 
 # Protected branches
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In GitLab, [permissions](../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
@@ -123,7 +124,7 @@ The protected branch displays in the list of protected branches.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
@@ -131,7 +132,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md)
-named `group_protected_branches`. On GitLab.com, this feature is not available.
+named `group_protected_branches`. On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings. If a
@@ -327,7 +328,7 @@ if the `group_protected_branches` feature flag is enabled and a group owner has 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35097) in GitLab 13.5, users and groups who can push to protected branches do not have to use a merge request to merge their feature branches. This means they can skip merge request approval rules.
 

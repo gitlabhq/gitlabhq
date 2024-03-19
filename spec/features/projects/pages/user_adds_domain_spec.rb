@@ -112,6 +112,15 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
       expect(page).to have_content('Domain has already been taken')
     end
 
+    it 'shows warning message if auto ssl is failed' do
+      stub_lets_encrypt_settings
+      create(:pages_domain, project: project, auto_ssl_failed: true)
+
+      visit project_pages_path(project)
+
+      expect(page).to have_content("Something went wrong while obtaining the Let's Encrypt certificate")
+    end
+
     describe 'with dns verification enabled' do
       before do
         stub_application_setting(pages_domain_verification_enabled: true)
@@ -124,6 +133,14 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
 
         within('#content-body') { click_link 'Edit' }
         expect(page).to have_field :domain_verification, with: "#{domain.verification_domain} TXT #{domain.keyed_verification_code}"
+      end
+
+      it 'shows verification warning if domain is not verified' do
+        create(:pages_domain, :unverified, project: project, domain: 'my.test.domain.com')
+
+        visit project_pages_path(project)
+
+        expect(page).to have_content('my.test.domain.com is not verified')
       end
     end
 

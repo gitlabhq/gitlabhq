@@ -121,7 +121,7 @@ the following preparations into account.
   - Ensure the `db:check-schema` job has run successfully and no unexpected schema changes are introduced in a rollback. This job may only trigger a warning if the schema was changed.
   - Verify that the previously mentioned jobs continue to succeed whenever you modify the migrations during the review process.
 - Add tests for the migration in `spec/migrations` if necessary. See [Testing Rails migrations at GitLab](testing_guide/testing_migrations_guide.md) for more details.
-- When [high-traffic](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3) tables are involved in the migration, use the [`enable_lock_retries`](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) method to enable lock-retries. Review the relevant [examples in our documentation](migration_style_guide.md#usage-with-transactional-migrations) for use cases and solutions.
+- [Lock retries](migration_style_guide.md#retry-mechanism-when-acquiring-database-locks) are enabled by default for all transactional migrations. For non-transactional migrations review the relevant [documentation](migration_style_guide.md#usage-with-non-transactional-migrations) for use cases and solutions.
 - Ensure RuboCop checks are not disabled unless there's a valid reason to.
 - When adding an index to a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3),
   test its execution using `CREATE INDEX CONCURRENTLY` in [Database Lab](database/database_lab.md) and add the execution time to the MR description:
@@ -174,7 +174,7 @@ Include in the MR description:
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot. The `explain` command runs
-    `EXPLAIN ANALYZE`.
+  `EXPLAIN ANALYZE`.
   - If it's not possible to get an accurate picture in Database Lab, you may need to
     seed a development environment, and instead provide output
     from `EXPLAIN ANALYZE`. Create links to the plan using [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan and the query used in the form.
@@ -263,7 +263,7 @@ to add the raw SQL query and query plan to the Merge Request description, and re
     This can be the number of expected batches times the delay interval.
   - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - If a single `update` is below than `1s` the query can be placed
-      directly in a regular migration (inside `db/migrate`).
+    directly in a regular migration (inside `db/migrate`).
   - Background migrations are usually used, but not limited to:
     - Migrating data in larger tables.
     - Making numerous SQL queries per record in a dataset.

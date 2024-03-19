@@ -1,6 +1,8 @@
 <script>
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import TodoButton from '~/sidebar/components/todo_toggle/todo_button.vue';
+import { todoLabel } from '~/sidebar/utils';
 import createDesignTodoMutation from '../graphql/mutations/create_design_todo.mutation.graphql';
 import getDesignQuery from '../graphql/queries/get_design.query.graphql';
 import allVersionsMixin from '../mixins/all_versions';
@@ -11,6 +13,10 @@ import { CREATE_DESIGN_TODO_ERROR, DELETE_DESIGN_TODO_ERROR } from '../utils/err
 export default {
   components: {
     TodoButton,
+    GlIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [allVersionsMixin],
   inject: {
@@ -57,6 +63,12 @@ export default {
     },
     hasPendingTodo() {
       return Boolean(this.pendingTodo);
+    },
+    buttonIcon() {
+      return this.pendingTodo ? 'todo-done' : 'todo-add';
+    },
+    tooltipLabel() {
+      return todoLabel(this.hasPendingTodo);
     },
   },
   methods: {
@@ -132,10 +144,14 @@ export default {
 
 <template>
   <todo-button
+    v-gl-tooltip
+    :title="tooltipLabel"
     issuable-type="design"
     :issuable-id="design.iid"
     :is-todo="hasPendingTodo"
     :loading="todoLoading"
     @click.stop.prevent="toggleTodo"
-  />
+  >
+    <gl-icon :class="{ 'gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
+  </todo-button>
 </template>

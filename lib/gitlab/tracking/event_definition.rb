@@ -62,12 +62,6 @@ module Gitlab
           ERROR_MSG
         end
       end
-
-      private
-
-      def method_missing(method, *args)
-        attributes[method] || super
-      end
     end
   end
 end

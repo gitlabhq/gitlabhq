@@ -21,7 +21,7 @@ You must load the following extensions into the main GitLab database (defaults t
 | `btree_gist` | 13.1                   |
 | `plpgsql`    | 11.7                   |
 
-If you are using [GitLab Geo](https://about.gitlab.com/solutions/geo/), you must load the following
+If you are using [GitLab Geo](../administration/geo/index.md), you must load the following
 extensions into all secondary tracking databases (defaults to `gitlabhq_geo_production`):
 
 | Extension    | Minimum GitLab version |

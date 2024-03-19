@@ -255,7 +255,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
       context 'when a pipeline schedule has no variables' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'master', active: true }
         end
 
         context 'when params include one variable' do
@@ -309,7 +309,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
       context 'when a pipeline schedule has one variable' do
         let(:basic_param) do
-          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'patch-x', active: true }
+          { description: 'updated_desc', cron: '0 1 * * *', cron_timezone: 'UTC', ref: 'master', active: true }
         end
 
         let!(:pipeline_schedule_variable) do

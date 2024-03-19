@@ -58,8 +58,6 @@ import {
   groupRunnersDataPaginated,
   groupRunnersCountData,
   runnerJobCountData,
-  onlineContactTimeoutSecs,
-  staleTimeoutSecs,
   mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
@@ -124,8 +122,6 @@ describe('GroupRunnersApp', () => {
       },
       provide: {
         localMutations,
-        onlineContactTimeoutSecs,
-        staleTimeoutSecs,
         ...provide,
       },
       mocks: {

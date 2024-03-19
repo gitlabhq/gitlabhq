@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When mirroring fails, project maintainers can see a link similar to **{warning-solid}** **Pull mirroring failed 1 hour ago.**
 on the project details page. Select this link to go directly to the mirroring settings,
@@ -34,7 +34,7 @@ One of these issues might be occurring:
      setting.
 1. Your repository exceeds GitHub's file size limit of 100 MB. To fix this problem,
    check the file size limit configured for on GitHub, and consider using
-   [Git Large File Storage](https://git-lfs.github.com) to manage large files.
+   [Git Large File Storage](https://git-lfs.com/) to manage large files.
 
 ## Deadline Exceeded
 

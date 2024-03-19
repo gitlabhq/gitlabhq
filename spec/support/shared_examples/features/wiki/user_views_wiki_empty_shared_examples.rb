@@ -4,7 +4,7 @@
 #   wiki
 
 RSpec.shared_examples 'User views empty wiki' do
-  let(:element) { page.find('.row.empty-state') }
+  let(:element) { page.find('.gl-empty-state[data-testid="wiki-empty-state"]') }
   let(:container_name) { wiki.container.class.name.humanize(capitalize: false) }
   let(:confluence_link) { 'Enable the Confluence Wiki integration' }
 

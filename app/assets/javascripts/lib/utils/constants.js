@@ -10,9 +10,6 @@ export const BV_SHOW_TOOLTIP = 'bv::show::tooltip';
 export const BV_DROPDOWN_SHOW = 'bv::dropdown::show';
 export const BV_DROPDOWN_HIDE = 'bv::dropdown::hide';
 
-export const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
-
 // We set the drawer's z-index to 252 to clear flash messages that might
 // be displayed in the page and that have a z-index of 251.
 export const DRAWER_Z_INDEX = 252;

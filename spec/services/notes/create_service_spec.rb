@@ -203,7 +203,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           expect do
             execute_create_service
           end.to change {
-                   counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
+                   counter.unique_events(event_names: event, property_name: :user, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now)
                  }.by(1)
         end
 
@@ -227,37 +227,6 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         let(:new_opts) { opts.merge(noteable_type: 'MergeRequest', noteable_id: merge_request.id) }
-
-        context 'when mr_request_changes feature flag is disabled' do
-          before do
-            stub_feature_flags(mr_request_changes: false)
-          end
-
-          it 'calls MergeRequests::UpdateReviewerStateService service' do
-            expect_next_instance_of(
-              MergeRequests::UpdateReviewerStateService,
-              project: project_with_repo, current_user: user
-            ) do |service|
-              expect(service).to receive(:execute).with(merge_request, "reviewed")
-            end
-
-            described_class.new(project_with_repo, user, new_opts).execute
-          end
-
-          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
-            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
-          end
-        end
-
-        context 'when mr_request_changes feature flag is enabled' do
-          it 'does not call MergeRequests::UpdateReviewerStateService service when skip_set_reviewed is true' do
-            expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-            described_class.new(project_with_repo, user, new_opts).execute(skip_set_reviewed: true)
-          end
-        end
 
         context 'noteable highlight cache clearing' do
           let(:position) do

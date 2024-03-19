@@ -1,20 +1,20 @@
-import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlAvatarsInline } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ToggleRepliesWidget from '~/design_management/components/design_notes/toggle_replies_widget.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import notes from '../../mock_data/notes';
+import notes, { DISCUSSION_3 } from '../../mock_data/notes';
 
 describe('Toggle replies widget component', () => {
   let wrapper;
 
-  const findToggleWrapper = () => wrapper.find('[data-testid="toggle-comments-wrapper"]');
-  const findIcon = () => wrapper.findComponent(GlIcon);
-  const findButton = () => wrapper.findComponent(GlButton);
-  const findAuthorLink = () => wrapper.findComponent(GlLink);
-  const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
+  const findToggleWrapper = () => wrapper.findByTestId('toggle-comments-wrapper');
+  const findToggleButton = () => wrapper.findByTestId('toggle-replies-button');
+  const findRepliesButton = () => wrapper.findByTestId('replies-button');
+  const findAvatarInline = () => wrapper.findComponent(GlAvatarsInline);
+
+  const threeNotes = [...notes, DISCUSSION_3];
 
   function createComponent(props = {}) {
-    wrapper = shallowMount(ToggleRepliesWidget, {
+    wrapper = shallowMountExtended(ToggleRepliesWidget, {
       propsData: {
         collapsed: true,
         replies: notes,
@@ -32,23 +32,45 @@ describe('Toggle replies widget component', () => {
       expect(findToggleWrapper().classes()).not.toContain('expanded');
     });
 
-    it('should render chevron-right icon', () => {
-      expect(findIcon().props('name')).toBe('chevron-right');
+    it('should render chevron-right icon on the toggle button', () => {
+      expect(findToggleButton().props('icon')).toBe('chevron-right');
     });
 
     it('should have replies length on button', () => {
-      expect(findButton().text()).toBe('2 replies');
+      expect(findRepliesButton().text()).toBe('2 replies');
     });
 
-    it('should render a link to the last reply author', () => {
-      expect(findAuthorLink().exists()).toBe(true);
-      expect(findAuthorLink().text()).toBe(notes[1].author.name);
-      expect(findAuthorLink().attributes('href')).toBe(notes[1].author.webUrl);
+    it('renders the avatar inline component with default props', () => {
+      expect(findAvatarInline().exists()).toBe(true);
+      expect(findAvatarInline().props()).toMatchObject({
+        maxVisible: 2,
+        avatarSize: 24,
+        collapsed: true,
+        badgeSrOnlyText: '',
+        badgeTooltipProp: 'name',
+        badgeTooltipMaxChars: null,
+      });
     });
 
-    it('should render correct time ago tooltip', () => {
-      expect(findTimeAgo().exists()).toBe(true);
-      expect(findTimeAgo().props('time')).toBe(notes[1].createdAt);
+    it('renders the avatar inline component with screen reader text', () => {
+      createComponent({ replies: threeNotes });
+
+      expect(findAvatarInline().exists()).toBe(true);
+      expect(findAvatarInline().props('badgeSrOnlyText')).toBe('3 replies');
+    });
+
+    it('correctly passes author date to the avatar inline component', () => {
+      expect(findAvatarInline().props('avatars')).toMatchObject([
+        {
+          avatarUrl:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+          id: 'gid://gitlab/User/1',
+          name: 'John',
+          username: 'john.doe',
+          webUrl: 'link-to-john-profile',
+        },
+        { name: 'Mary', webUrl: 'link-to-mary-profile' },
+      ]);
     });
   });
 
@@ -61,33 +83,25 @@ describe('Toggle replies widget component', () => {
       expect(findToggleWrapper().classes()).toContain('expanded');
     });
 
-    it('should render chevron-down icon', () => {
-      expect(findIcon().props('name')).toBe('chevron-down');
+    it('should render chevron-down icon on the toggle button', () => {
+      expect(findToggleButton().props('icon')).toBe('chevron-down');
     });
 
     it('should have Collapse replies text on button', () => {
-      expect(findButton().text()).toBe('Collapse replies');
-    });
-
-    it('should not have a link to the last reply author', () => {
-      expect(findAuthorLink().exists()).toBe(false);
-    });
-
-    it('should not render time ago tooltip', () => {
-      expect(findTimeAgo().exists()).toBe(false);
+      expect(findRepliesButton().text()).toBe('Collapse replies');
     });
   });
 
-  it('should emit toggle event on icon click', () => {
+  it('should emit toggle event on toggle button click', async () => {
     createComponent();
-    findIcon().vm.$emit('click', new MouseEvent('click'));
+    await findToggleButton().vm.$emit('click');
 
     expect(wrapper.emitted('toggle')).toHaveLength(1);
   });
 
-  it('should emit toggle event on button click', () => {
+  it('should emit toggle event on replies button click', () => {
     createComponent();
-    findButton().vm.$emit('click', new MouseEvent('click'));
+    findRepliesButton().vm.$emit('click');
 
     expect(wrapper.emitted('toggle')).toHaveLength(1);
   });

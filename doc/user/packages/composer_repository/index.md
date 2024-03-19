@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
@@ -345,7 +345,7 @@ You can install from source by pulling the Git repository directly. To do so, ei
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per project, an administrator can
 [disable the feature flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 When you install from source, the `composer` configures an
 access to the project's Git repository.

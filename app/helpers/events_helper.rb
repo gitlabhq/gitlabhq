@@ -245,24 +245,24 @@ module EventsHelper
 
   def event_wiki_title_html(event)
     capture do
-      concat content_tag(:span, _('wiki page'), class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
+      concat content_tag(:span, "#{_('wiki page')} ", class: "event-target-type #{user_profile_activity_classes}")
       concat link_to(
         event.target_title,
         event_wiki_page_target_url(event),
         title: event.target_title,
-        class: 'has-tooltip event-target-link gl-mr-2'
+        class: 'has-tooltip event-target-link'
       )
     end
   end
 
   def event_design_title_html(event)
     capture do
-      concat content_tag(:span, _('design'), class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
+      concat content_tag(:span, "#{_('design')} ", class: "event-target-type #{user_profile_activity_classes}")
       concat link_to(
         event.design.reference_link_text,
         design_url(event.design),
         title: event.target_title,
-        class: 'has-tooltip event-design event-target-link gl-mr-2'
+        class: 'has-tooltip event-design event-target-link'
       )
     end
   end
@@ -274,8 +274,8 @@ module EventsHelper
   def event_note_title_html(event)
     if event.note_target
       capture do
-        concat content_tag(:span, event.note_target_type_name, class: "event-target-type gl-mr-2 #{user_profile_activity_classes}")
-        concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link gl-mr-2')
+        concat content_tag(:span, "#{event.note_target_type_name} ", class: "event-target-type #{user_profile_activity_classes}")
+        concat link_to(event.note_target_reference, event_note_target_url(event), title: event.target_title, class: 'has-tooltip event-target-link')
       end
     else
       content_tag(:strong, '(deleted)')
@@ -309,7 +309,7 @@ module EventsHelper
     base_class = 'system-note-image'
 
     classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-gray-50 gl-line-height-0" : "user-avatar"
-    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block')
+    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-display-inline-block', project: event.project)
 
     tag.div(class: "#{base_class} #{classes}") { content }
   end

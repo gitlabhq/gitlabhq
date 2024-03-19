@@ -2,6 +2,26 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from './constants';
 
+const availableProjectActions = (userPermissions) => {
+  const baseActions = [ACTION_EDIT];
+
+  if (userPermissions.removeProject) {
+    return [...baseActions, ACTION_DELETE];
+  }
+
+  return baseActions;
+};
+
+const availableGroupActions = (userPermissions) => {
+  const baseActions = [ACTION_EDIT];
+
+  if (userPermissions.removeGroup) {
+    return [...baseActions, ACTION_DELETE];
+  }
+
+  return baseActions;
+};
+
 export const formatProjects = (projects) =>
   projects.map(
     ({
@@ -11,6 +31,8 @@ export const formatProjects = (projects) =>
       issuesAccessLevel,
       forkingAccessLevel,
       webUrl,
+      userPermissions,
+      maxAccessLevel: accessLevel,
       ...project
     }) => ({
       ...project,
@@ -21,19 +43,27 @@ export const formatProjects = (projects) =>
       forkingAccessLevel: forkingAccessLevel.stringValue,
       webUrl,
       isForked: false,
+      accessLevel,
       editPath: `${webUrl}/edit`,
-      availableActions: [ACTION_EDIT, ACTION_DELETE],
+      availableActions: availableProjectActions(userPermissions),
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     }),
   );
 
 export const formatGroups = (groups) =>
-  groups.map(({ id, webUrl, parent, ...group }) => ({
+  groups.map(({ id, webUrl, parent, maxAccessLevel: accessLevel, userPermissions, ...group }) => ({
     ...group,
     id: getIdFromGraphQLId(id),
     webUrl,
     parent: parent?.id || null,
+    accessLevel,
     editPath: `${webUrl}/-/edit`,
-    availableActions: [ACTION_EDIT, ACTION_DELETE],
+    availableActions: availableGroupActions(userPermissions),
+    actionLoadingStates: {
+      [ACTION_DELETE]: false,
+    },
   }));
 
 export const onPageChange = ({

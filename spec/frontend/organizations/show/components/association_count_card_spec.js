@@ -8,7 +8,7 @@ describe('AssociationCountCard', () => {
   const defaultPropsData = {
     title: 'Groups',
     iconName: 'group',
-    count: 1050,
+    count: '1000+',
     linkHref: '/-/organizations/default/groups_and_projects?display=groups',
   };
 
@@ -28,7 +28,7 @@ describe('AssociationCountCard', () => {
     const link = findLink();
 
     expect(card.text()).toContain(defaultPropsData.title);
-    expect(card.text()).toContain('1k');
+    expect(card.text()).toContain('1000+');
     expect(link.text()).toBe('View all');
     expect(link.attributes('href')).toBe(defaultPropsData.linkHref);
   });

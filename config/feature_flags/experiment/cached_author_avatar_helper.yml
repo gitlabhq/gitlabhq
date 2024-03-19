@@ -1,0 +1,9 @@
+---
+name: cached_author_avatar_helper
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/220950
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144739
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442216
+milestone: '16.10'
+group: group::source code
+type: experiment
+default_enabled: false

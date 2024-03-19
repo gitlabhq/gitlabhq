@@ -294,7 +294,7 @@ module API
       post feature_category: :user_profile do
         authenticated_as_admin!
 
-        params = declared_params(include_missing: false)
+        params = declared_params(include_missing: false).merge(organization_id: Current.organization&.id)
 
         # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
         if params.key?(:private_profile) && params[:private_profile].nil?

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Git repositories become larger over time. When large files are added to a Git repository:
 
@@ -333,7 +333,7 @@ To expedite this process, see the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.

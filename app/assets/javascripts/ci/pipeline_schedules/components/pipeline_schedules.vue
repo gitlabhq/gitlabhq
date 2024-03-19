@@ -48,7 +48,7 @@ export default {
       'PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. ',
     ),
     planLimitReachedMsg: s__(
-      'PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an exisiting schedule.',
+      'PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an existing schedule.',
     ),
     planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
   },
@@ -183,8 +183,23 @@ export default {
     nextPage() {
       return Number(this.schedules?.pageInfo?.hasNextPage);
     },
+    // if limit is null, then user does not have access to create schedule
+    hasNoAccess() {
+      return this.schedules?.planLimit === null;
+    },
+    // if limit is 0, then schedule creation is unlimited
+    hasUnlimitedSchedules() {
+      return this.schedules?.planLimit === 0;
+    },
+    // if limit is x, then schedule creation is limited
     hasReachedPlanLimit() {
       return this.schedules?.count >= this.schedules?.planLimit;
+    },
+    shouldShowLimitReachedAlert() {
+      return !this.hasUnlimitedSchedules && this.hasReachedPlanLimit && !this.hasNoAccess;
+    },
+    shouldDisableNewScheduleBtn() {
+      return (this.hasReachedPlanLimit || this.hasNoAccess) && !this.hasUnlimitedSchedules;
     },
   },
   watch: {
@@ -336,7 +351,7 @@ export default {
     </gl-alert>
 
     <gl-alert
-      v-if="hasReachedPlanLimit"
+      v-if="shouldShowLimitReachedAlert"
       class="gl-my-3"
       variant="warning"
       :dismissible="false"
@@ -405,7 +420,7 @@ export default {
           :href="newSchedulePath"
           class="gl-ml-auto"
           variant="confirm"
-          :disabled="hasReachedPlanLimit"
+          :disabled="shouldDisableNewScheduleBtn"
           data-testid="new-schedule-button"
         >
           {{ $options.i18n.newSchedule }}

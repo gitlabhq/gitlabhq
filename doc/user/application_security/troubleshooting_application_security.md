@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with application security features, you might encounter the following issues.
 
@@ -126,7 +126,7 @@ would look similar to:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
@@ -141,7 +141,7 @@ would be written as follows:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is only executed on main or merge requests
 spotbugs-sast:
@@ -155,7 +155,7 @@ it would look similar to:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is not executed on tags
 spotbugs-sast:
@@ -167,7 +167,7 @@ To transition to the new `rules` syntax, the override would be rewritten as:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 # Ensure that the scanning is not executed on tags
 spotbugs-sast:

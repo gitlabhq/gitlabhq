@@ -12,6 +12,12 @@ module Gitlab
 
       included do
         # MergeRequest only quick actions definitions
+        #
+
+        ########################################################################
+        #
+        # /merge
+        #
         desc do
           if preferred_strategy = preferred_auto_merge_strategy(quick_action_target)
             _("Merge automatically (%{strategy})") % { strategy: preferred_strategy.humanize }
@@ -96,6 +102,10 @@ module Gitlab
           @execution_message[:rebase] = _('Scheduled a rebase of branch %{branch}.') % { branch: branch }
         end
 
+        ########################################################################
+        #
+        # /draft
+        #
         desc { _('Set the Draft status') }
         explanation do
           draft_action_message(_("Marks"))
@@ -113,6 +123,10 @@ module Gitlab
           @updates[:wip_event] = 'draft'
         end
 
+        ########################################################################
+        #
+        # /ready
+        #
         desc { _('Set the Ready status') }
         explanation do
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
@@ -142,6 +156,10 @@ module Gitlab
           @updates[:wip_event] = 'ready' if quick_action_target.draft?
         end
 
+        ########################################################################
+        #
+        # /target_branch
+        #
         desc { _('Set target branch') }
         explanation do |branch_name|
           _('Sets target branch to %{branch_name}.') % { branch_name: branch_name }
@@ -163,6 +181,10 @@ module Gitlab
           @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
         end
 
+        ########################################################################
+        #
+        # /submit_review
+        #
         desc { _('Submit a review') }
         explanation { _('Submit the current review.') }
         types MergeRequest
@@ -174,18 +196,16 @@ module Gitlab
 
           result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
-          if Feature.enabled?(:mr_request_changes, current_user)
-            reviewer_state = state.strip.presence
+          reviewer_state = state.strip.presence
 
-            if reviewer_state === 'approve'
-              ::MergeRequests::ApprovalService
-                .new(project: quick_action_target.project, current_user: current_user)
-                .execute(quick_action_target)
-            elsif MergeRequestReviewer.states.key?(reviewer_state)
-              ::MergeRequests::UpdateReviewerStateService
-                .new(project: quick_action_target.project, current_user: current_user)
-                .execute(quick_action_target, reviewer_state)
-            end
+          if reviewer_state === 'approve'
+            ::MergeRequests::ApprovalService
+              .new(project: quick_action_target.project, current_user: current_user)
+              .execute(quick_action_target)
+          elsif MergeRequestReviewer.states.key?(reviewer_state)
+            ::MergeRequests::UpdateReviewerStateService
+              .new(project: quick_action_target.project, current_user: current_user)
+              .execute(quick_action_target, reviewer_state)
           end
 
           @execution_message[:submit_review] = if result[:status] == :success
@@ -195,12 +215,15 @@ module Gitlab
                                                end
         end
 
+        ########################################################################
+        #
+        # /request_changes
+        #
         desc { _('Request changes') }
         explanation { _('Request changes to the current merge request.') }
         types MergeRequest
         condition do
-          Feature.enabled?(:mr_request_changes, current_user) &&
-            quick_action_target.persisted? &&
+          quick_action_target.persisted? &&
             quick_action_target.find_reviewer(current_user)
         end
         command :request_changes do
@@ -214,6 +237,10 @@ module Gitlab
                                                  end
         end
 
+        ########################################################################
+        #
+        # /approve
+        #
         desc { _('Approve a merge request') }
         explanation { _('Approve the current merge request.') }
         types MergeRequest
@@ -228,6 +255,10 @@ module Gitlab
           @execution_message[:approve] = _('Approved the current merge request.')
         end
 
+        ########################################################################
+        #
+        # /unapprove
+        #
         desc { _('Unapprove a merge request') }
         explanation { _('Unapprove the current merge request.') }
         types MergeRequest
@@ -246,6 +277,10 @@ module Gitlab
           @execution_message[:unapprove] = _('Unapproved the current merge request.')
         end
 
+        ########################################################################
+        #
+        # /assign_reviewer
+        #
         desc do
           if quick_action_target.allows_multiple_reviewers?
             _('Assign reviewers')
@@ -288,6 +323,10 @@ module Gitlab
           end
         end
 
+        ########################################################################
+        #
+        # /unassign_reviewer
+        #
         desc do
           if quick_action_target.allows_multiple_reviewers?
             _('Remove all or specific reviewers')

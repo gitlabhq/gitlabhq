@@ -13,7 +13,7 @@ module Resolvers
 
           {
             value: value,
-            title: n_('New Issue', 'New Issues', value),
+            title: n_('New issue', 'New issues', value),
             identifier: 'issues',
             links: []
           }

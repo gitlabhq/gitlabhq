@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
@@ -23,7 +23,7 @@ Prerequisites:
   - Explicitly defined as a [member](index.md) of the project.
   - Explicitly defined as a member of a group or subgroup that has access to the project.
   - An administrator.
-- You must be a member of the inviting group or subgroup.
+- You must be a member of the invited group or subgroup.
 
 To invite a group to a project:
 

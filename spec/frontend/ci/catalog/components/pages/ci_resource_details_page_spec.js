@@ -179,6 +179,7 @@ describe('CiResourceDetailsPage', () => {
       it('passes expected props', () => {
         expect(findDetailsComponent().props()).toEqual({
           resourcePath: cleanLeadingSeparator(defaultSharedData.webPath),
+          version: defaultAdditionalData.versions.nodes[0].name,
         });
       });
     });

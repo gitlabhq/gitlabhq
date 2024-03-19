@@ -224,7 +224,7 @@ RSpec.describe 'bin/audit-event-type' do
         expect(Readline).to receive(:readline).and_return(url)
         expect do
           expect(described_class.read_introduced_by_mr).to eq('https://merge-request')
-        end.to output(/URL to GitLab merge request that added this type of audit event:/).to_stdout
+        end.to output(/URL of GitLab merge request that adds this audit event type:/).to_stdout
       end
 
       context 'when URL is empty' do
@@ -235,7 +235,7 @@ RSpec.describe 'bin/audit-event-type' do
 
           expect do
             expect(described_class.read_introduced_by_mr).to be_nil
-          end.to output(/URL to GitLab merge request that added this type of audit event:/).to_stdout
+          end.to output(/URL of GitLab merge request that adds this audit event type:/).to_stdout
         end
       end
 
@@ -248,7 +248,7 @@ RSpec.describe 'bin/audit-event-type' do
 
           expect do
             expect { described_class.read_introduced_by_mr }.to raise_error(/EOF/)
-          end.to output(/URL to GitLab merge request that added this type of audit event:/)
+          end.to output(/URL of GitLab merge request that adds this audit event type:/)
                    .to_stdout.and output(/URL needs to start with https/).to_stderr
         end
       end
@@ -261,7 +261,7 @@ RSpec.describe 'bin/audit-event-type' do
         expect(Readline).to receive(:readline).and_return(url)
         expect do
           expect(described_class.read_introduced_by_issue).to eq('https://issue')
-        end.to output(/URL to GitLab issue that added this type of audit event:/).to_stdout
+        end.to output(/URL of GitLab issue or epic that outlines the requirements of this audit event type:/).to_stdout
       end
 
       context 'when URL is invalid' do
@@ -273,7 +273,7 @@ RSpec.describe 'bin/audit-event-type' do
 
           expect do
             expect { described_class.read_introduced_by_issue }.to raise_error(/EOF/)
-          end.to output(/URL to GitLab issue that added this type of audit event:/)
+          end.to output(/URL of GitLab issue or epic that outlines the requirements of this audit event type:/)
                    .to_stdout.and output(/URL needs to start with https/).to_stderr
         end
       end

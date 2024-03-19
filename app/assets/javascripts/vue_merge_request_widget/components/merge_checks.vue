@@ -100,7 +100,7 @@ export default {
       );
     },
     checks() {
-      return this.state.mergeabilityChecks || [];
+      return this.state?.mergeabilityChecks || [];
     },
     sortedChecks() {
       const order = ['FAILED', 'SUCCESS'];
@@ -162,7 +162,7 @@ export default {
           <rect x="32" y="2" width="302" height="20" rx="4" />
         </gl-skeleton-loader>
       </template>
-      <template v-else>
+      <template v-if="!isLoading" #default>
         <bold-text :message="summaryText" />
       </template>
     </state-container>
@@ -171,11 +171,12 @@ export default {
       class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-relative gl-bg-gray-10"
       data-testid="merge-checks-full"
     >
-      <div class="gl-px-5">
+      <div>
         <component
           :is="checkComponent(check)"
           v-for="(check, index) in sortedChecks"
           :key="index"
+          class="gl-pl-9 gl-pr-4"
           :class="{
             'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== sortedChecks.length - 1,
           }"

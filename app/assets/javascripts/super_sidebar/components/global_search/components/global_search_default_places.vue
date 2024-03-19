@@ -3,15 +3,21 @@ import { GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { PLACES } from '~/vue_shared/global_search/constants';
 import { TRACKING_UNKNOWN_ID, TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
-import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
+import {
+  TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+  OVERLAY_CHANGE_CONTEXT,
+} from '../command_palette/constants';
+import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 
 export default {
   name: 'DefaultPlaces',
   i18n: {
     PLACES,
+    OVERLAY_CHANGE_CONTEXT,
   },
   components: {
     GlDisclosureDropdownGroup,
+    SearchResultHoverLayover,
   },
   inject: ['contextSwitcherLinks'],
   computed: {
@@ -37,6 +43,9 @@ export default {
             'data-testid': 'places-item-link',
             'data-qa-places-item': title,
 
+            // this is helper class for popover-hint
+            class: 'show-hover-layover',
+
             // Any other data- attributes (e.g., for @rails/ujs)
             ...Object.entries(rest).reduce((acc, [name, value]) => {
               if (name.startsWith('data')) acc[kebabCase(name)] = value;
@@ -56,5 +65,11 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group v-if="shouldRender" v-bind="$attrs" :group="group" />
+  <gl-disclosure-dropdown-group v-if="shouldRender" v-bind="$attrs" :group="group">
+    <template #list-item="{ item }">
+      <search-result-hover-layover :text-message="$options.i18n.OVERLAY_CHANGE_CONTEXT">
+        <span>{{ item.text }}</span>
+      </search-result-hover-layover>
+    </template>
+  </gl-disclosure-dropdown-group>
 </template>

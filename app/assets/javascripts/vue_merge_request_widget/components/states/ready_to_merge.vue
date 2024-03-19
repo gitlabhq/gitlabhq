@@ -65,7 +65,7 @@ export default {
       },
       manual: true,
       result({ data }) {
-        if (!data.project) {
+        if (!data?.project?.mergeRequest) {
           return;
         }
 

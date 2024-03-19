@@ -323,6 +323,18 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     end
   end
 
+  shared_examples 'absolute references' do
+    it 'supports absolute reference' do
+      absolute_reference = "/#{reference}"
+
+      result = reference_filter("See #{absolute_reference}")
+
+      expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+      expect(result.css('a').first.attr('data-original')).to eq absolute_reference
+      expect(result.content).to eq "See %#{milestone.title}"
+    end
+  end
+
   shared_context 'project milestones' do
     let(:reference) { milestone.to_reference(format: :iid) }
 
@@ -341,6 +353,10 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
       let(:resource) { milestone }
       let(:resource_text) { "#{resource.class.reference_prefix}#{resource.title}" }
     end
+
+    it_behaves_like 'absolute references' do
+      let(:reference) { milestone.to_reference(format: :iid, full: true) }
+    end
   end
 
   shared_context 'group milestones' do
@@ -355,6 +371,10 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     it_behaves_like 'HTML text with references' do
       let(:resource) { milestone }
       let(:resource_text) { "#{resource.class.reference_prefix}#{resource.title}" }
+    end
+
+    it_behaves_like 'absolute references' do
+      let(:reference) { milestone.to_reference(format: :name, full: true) }
     end
 
     it 'does not support references by IID' do
@@ -411,6 +431,10 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
 
         expect(reference_filter(act, context).to_html).to eq exp
       end
+
+      it_behaves_like 'absolute references' do
+        let(:reference) { "#{project.full_path}%#{milestone.iid}" }
+      end
     end
 
     context 'when group milestone' do
@@ -420,13 +444,25 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
         let(:sub_group) { create(:group, parent: group) }
         let(:sub_group_milestone) { create(:milestone, title: 'sub_group_milestone', group: sub_group) }
 
-        it 'links to a valid reference of subgroup and group milestones' do
+        it 'links to valid references of subgroup and group milestones' do
           [group_milestone, sub_group_milestone].each do |milestone|
             reference = "%#{milestone.title}"
 
             result = reference_filter("See #{reference}", { project: nil, group: sub_group })
 
             expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+          end
+        end
+
+        it 'links to valid absolute references of subgroup and group milestones' do
+          [group_milestone, sub_group_milestone].each do |milestone|
+            reference = "/#{milestone.group.full_path}%#{milestone.title}"
+
+            result = reference_filter("See #{reference}", { project: nil, group: sub_group })
+
+            expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+            expect(result.css('a').first.attr('data-original')).to eq reference
+            expect(result.content).to eq "See %#{milestone.title}"
           end
         end
       end
@@ -448,6 +484,36 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
         expect(links.length).to eq(2)
         expect(links[0].attr('href')).to eq(urls.milestone_url(milestone))
         expect(links[1].attr('href')).to eq(urls.milestone_url(group_milestone))
+      end
+    end
+
+    context 'when referencing both project and group milestones using absolute references' do
+      let(:milestone) { create(:milestone, project: project) }
+      let(:group_milestone) { create(:milestone, title: 'group_milestone', group: project.group) }
+
+      it 'links to valid references' do
+        doc = reference_filter("See /#{milestone.to_reference(full: true)} and /#{group_milestone.to_reference(full: true)}", context)
+        links = doc.css('a')
+
+        expect(links.length).to eq(2)
+        expect(links[0].attr('href')).to eq(urls.milestone_url(milestone))
+        expect(links[1].attr('href')).to eq(urls.milestone_url(group_milestone))
+      end
+    end
+
+    context 'when referencing both group and subgroup milestones using absolute references' do
+      let(:subgroup) { create(:group, :public, parent: group) }
+      let(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
+      let(:subgroup_milestone) { create(:milestone, title: 'group_milestone', group: subgroup) }
+      let(:context) { { project: project, group: nil } }
+
+      it 'links to valid references' do
+        doc = reference_filter("See /#{group_milestone.to_reference(full: true)} and /#{subgroup_milestone.to_reference(full: true)}", context)
+        links = doc.css('a')
+
+        expect(links.length).to eq(2)
+        expect(links[0].attr('href')).to eq(urls.milestone_url(group_milestone))
+        expect(links[1].attr('href')).to eq(urls.milestone_url(subgroup_milestone))
       end
     end
   end

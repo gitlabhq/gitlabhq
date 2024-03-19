@@ -213,27 +213,12 @@ RSpec.configure do |config|
   include StubMember
 
   if ENV['CI'] || ENV['RETRIES']
-    # This includes the first try, i.e. tests will be run 2 times before failing.
-    config.default_retry_count = ENV.fetch('RETRIES', 1).to_i + 1
-
-    # Do not retry controller tests because rspec-retry cannot properly
-    # reset the controller which may contain data from last attempt. See
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73360
-    config.prepend_before(:each, type: :controller) do |example|
-      example.metadata[:retry] = 1
-    end
-
     # Gradually stop using rspec-retry
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
-    %i[
-      lib mailers metrics_server
-      migrations models policies presenters rack_servers requests
-      routing rubocop scripts serializers services sidekiq sidekiq_cluster
-      spam support_specs tasks tooling uploaders validators views workers
-    ].each do |type|
-      config.prepend_before(:each, type: type) do |example|
-        example.metadata[:retry] = 1
-      end
+    config.default_retry_count = 1
+    config.prepend_before(:each, type: :feature) do |example|
+      # This includes the first try, i.e. tests will be run 2 times before failing.
+      example.metadata[:retry] = ENV.fetch('RETRIES', 1).to_i + 1
     end
 
     config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
@@ -336,13 +321,14 @@ RSpec.configure do |config|
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
 
-      # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/432866
-      stub_feature_flags(redis_hll_property_name_tracking: false)
-
       # The code under this flag will be removed soon
       # We are temporarily keeping it in place while we confirm some assumptions
       # https://gitlab.com/gitlab-org/gitlab/-/issues/440667
       stub_feature_flags(ci_text_interpolation: false)
+
+      # The Vue version of the merge request list app is missing a lot of information
+      # disabling this for now whilst we work on it across multiple merge requests
+      stub_feature_flags(vue_merge_request_list: false)
     else
       unstub_all_feature_flags
     end
@@ -544,15 +530,35 @@ end
 
 Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)
 
-# Monkey-patch to enable ActiveSupport::Notifications for Redis commands
+# Inject middleware to enable ActiveSupport::Notifications for Redis commands
 module RedisCommands
   module Instrumentation
-    def process(commands, &block)
-      ActiveSupport::Notifications.instrument('redis.process_commands', commands: commands) do
-        super(commands, &block)
+    def call(command, redis_config)
+      ActiveSupport::Notifications.instrument('redis.process_commands', commands: command) do
+        super(command, redis_config)
       end
     end
   end
 end
 
-Redis::Client.prepend(RedisCommands::Instrumentation)
+RedisClient.register(RedisCommands::Instrumentation)
+
+module UsersInternalAllowExclusiveLease
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def unique_internal(scope, username, email_pattern, &block)
+      # this lets skip transaction checks when Users::Internal bots are created in
+      # let_it_be blocks during test set-up.
+      #
+      # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
+      if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
+        Gitlab::ExclusiveLease.skipping_transaction_check { super }
+      else
+        super
+      end
+    end
+  end
+end
+
+Users::Internal.prepend(UsersInternalAllowExclusiveLease)

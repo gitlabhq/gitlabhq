@@ -1,0 +1,10 @@
+#import "./achievement_fields.fragment.graphql"
+
+mutation createAchievement($input: AchievementsCreateInput!) {
+  achievementsCreate(input: $input) {
+    achievement {
+      ...AchievementFragment
+    }
+    errors
+  }
+}

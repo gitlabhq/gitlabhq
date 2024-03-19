@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QuickActions
-  class InterpretService < BaseService
+  class InterpretService < BaseContainerService
     include Gitlab::Utils::StrongMemoize
     include Gitlab::QuickActions::Dsl
     include Gitlab::QuickActions::IssueActions
@@ -109,12 +109,6 @@ module QuickActions
       project || group
     end
 
-    def group
-      strong_memoize(:group) do
-        quick_action_target.group if quick_action_target.respond_to?(:group)
-      end
-    end
-
     def find_labels(labels_params = nil)
       extract_references(labels_params, :label) | find_labels_by_name_no_tilde(labels_params)
     end
@@ -218,4 +212,4 @@ module QuickActions
   end
 end
 
-QuickActions::InterpretService.prepend_mod_with('QuickActions::InterpretService')
+QuickActions::InterpretService.prepend_mod

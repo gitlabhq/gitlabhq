@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Value stream analytics measures the time it takes to go from an idea to production.
 
@@ -108,7 +108,7 @@ To learn what start and end events can be paired, see [Validating start and end 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
@@ -201,10 +201,13 @@ Keep in mind the following observations related to this example:
 
 #### Cumulative label event duration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. These feature flags are disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with flags](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17476) in GitLab 16.10. Feature flag `vsa_duration_from_db` removed.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 With this feature, value stream analytics measures the duration of repetitive events for label-based stages. You should configure label removal or addition events for both start and end events.
 
@@ -219,7 +222,7 @@ With the original calculation method, the duration is five hours (from 9:00 to 1
 With cumulative label event duration calculation enabled, the duration is three hours (9:00 to 10:00 and 12:00 to 14:00).
 
 NOTE:
-When you upgrade your GitLab version and enable the feature flag `enable_vsa_cumulative_label_duration_calculation`, existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
+When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
 
 ### How value stream analytics identifies the production environment
 
@@ -307,7 +310,7 @@ Value stream analytics includes the following lifecycle metrics:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
@@ -390,7 +393,7 @@ selected stage finished for the given item.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
 
@@ -411,7 +414,7 @@ To view tasks by type:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### Create a value stream with GitLab default stages
 
@@ -422,7 +425,7 @@ create custom stages in addition to those provided in the default template.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
-1. Select **Create new Value Stream**.
+1. Select **New Value Stream**.
 1. Enter a name for the value stream.
 1. Select **Create from default template**.
 1. Customize the default stages:
@@ -476,7 +479,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
 
@@ -499,7 +502,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
 
@@ -516,7 +519,7 @@ To delete a custom value stream:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.
@@ -541,11 +544,11 @@ The chart shows data for the last 500 workflow items.
 
 Access permissions for value stream analytics depend on the project type.
 
-| Project type | Permissions                            |
-|--------------|----------------------------------------|
-| Public       | Anyone can access.                     |
-| Internal     | Any authenticated user can access.     |
-| Private      | Any member Guest and above can access. |
+| Project type | Permissions                                       |
+|--------------|---------------------------------------------------|
+| Public       | Anyone can access.                                |
+| Internal     | Any authenticated user can access.                |
+| Private      | Any user with at least the Guest role can access. |
 
 ## Troubleshooting
 

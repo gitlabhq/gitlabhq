@@ -31,7 +31,7 @@ RSpec.configure do |config|
   config.include QA::Support::Matchers::HaveMatcher
   config.include FactoryBot::Syntax::Methods
 
-  FactoryBot.definition_file_paths = ['qa/factories']
+  FactoryBot.definition_file_paths = %w[qa/factories qa/ee/factories]
 
   config.add_formatter QA::Support::Formatters::ContextFormatter
   config.add_formatter QA::Support::Formatters::QuarantineFormatter

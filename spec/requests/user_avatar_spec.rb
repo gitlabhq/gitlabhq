@@ -20,7 +20,7 @@ RSpec.describe 'Loading a user avatar', feature_category: :user_profile do
       get user.avatar_url # Skip queries on first application load
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect { get user.avatar_url }.not_to exceed_query_limit(3)
+      expect { get user.avatar_url }.not_to exceed_query_limit(4)
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe 'Loading a user avatar', feature_category: :user_profile do
       get user.avatar_url # Skip queries on first application load
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect { get user.avatar_url }.not_to exceed_query_limit(2)
+      expect { get user.avatar_url }.not_to exceed_query_limit(3)
     end
   end
 end

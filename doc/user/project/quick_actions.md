@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Quick actions are text-based shortcuts for common actions that are usually done
 by selecting buttons or dropdowns in the GitLab user interface. You can enter
@@ -67,7 +67,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/clone <path/to/project> [--with_notes]`                                                        | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Clone the issue to given project, or the current one if no arguments are given. Copies as much data as possible as long as the target project contains equivalent objects like labels, milestones, or epics. Does not copy comments or system notes unless `--with_notes` is provided as an argument. |
 | `/close`                                                                                         | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Close. |
 | `/confidential`                                                                                  | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Mark issue or epic as confidential. Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213741) in GitLab 15.6. |
-| `/convert_to_ticket <email address>`                                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | [Convert an issue into a Service Desk ticket](service_desk/using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default. |
+| `/convert_to_ticket <email address>`                                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | [Convert an issue into a Service Desk ticket](service_desk/using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 |
 | `/copy_metadata <!merge_request>`                                                                | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Copy labels and milestone from another merge request in the project. |
 | `/copy_metadata <#issue>`                                                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Copy labels and milestone from another issue in the project. |
 | `/create_merge_request <branch name>`                                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Create a new merge request starting from the current issue. |
@@ -168,6 +168,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/reassign @user1 @user2`                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current assignees with those specified. |
 | `/relabel ~label1 ~label2`                                    | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current labels with those specified. |
 | `/remove_due_date`                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Remove due date. |
+| `/remove_child <work_item>`                                                                         | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Remove the child `<work_item>`. The `<work_item>` value should be in the format of `#iid`, `group/project#iid`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/132761) in GitLab 16.10. |
 | `/remove_parent`                                     | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Removes the parent work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434344) in GitLab 16.9. |
 | `/reopen`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Reopen. |
 | `/set_parent <work_item>`                                     | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Set parent work item to `<work_item>`. The `<work_item>` value should be in the format of `#iid`, `group/project#iid`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5. |

@@ -11,8 +11,8 @@ module Gitlab
 
           def illustration
             {
-              image: 'illustrations/manual_action.svg',
-              size: 'svg-content svg-394',
+              image: 'illustrations/empty-state/empty-job-manual-md.svg',
+              size: '',
               title: _('This job requires a manual action'),
               content: illustration_content
             }
@@ -37,7 +37,7 @@ module Gitlab
           end
 
           def generic_permission_failure_message
-            if subject.outdated_deployment?
+            if subject.has_outdated_deployment?
               _("This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.")
             else
               _("This job does not run automatically and must be started manually, but you do not have access to it.")

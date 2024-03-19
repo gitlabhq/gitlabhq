@@ -63,6 +63,10 @@ nodemon
       plugin = simplePluginForNodemon({ shouldWatch: !STATIC_MODE });
       return plugin?.start();
     });
+    import('./tailwindcss.mjs').then(({ webpackTailwindCompilerPlugin }) => {
+      plugin = webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE });
+      return plugin?.start();
+    });
     /* eslint-enable import/extensions, promise/catch-or-return */
   })
   .on('quit', () => {

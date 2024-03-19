@@ -48,11 +48,13 @@ RSpec.describe Gitlab::Auth::Otp::Strategies::FortiTokenCloud do
                                         token: otp_code }
 
       stub_request(:post, otp_verification_url)
-        .with(body: JSON(otp_verification_request_body),
-              headers: {
-                'Content-Type' => 'application/json',
-                'Authorization' => "Bearer #{access_token}"
-              })
+        .with(
+          body: JSON(otp_verification_request_body),
+          headers: {
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer #{access_token}"
+          }
+        )
         .to_return(status: otp_verification_response_status, body: '', headers: {})
     end
 

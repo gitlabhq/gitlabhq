@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 There are two main ways to have a merge request flow with GitLab:
 
@@ -39,6 +39,31 @@ protected branch.
 **Disadvantages**
 
 - Manual setup of protected branch required for each new project
+
+To set up a protected branch flow:
+
+1. Start with ensuring that your default branch is protected with [default branch protections](../repository/branches/default.md).
+1. If your team has multiple branches, and you would like to manage who can merge changes and who
+   explicitly has the option to push or force push, consider making those branches protected:
+
+   - [Manage and Protect Branches](../repository/branches/index.md#manage-and-protect-branches)
+   - [Protected Branches](../protected_branches.md)
+
+1. Each change to the code comes through as a commit.
+   You can specify the format and security measures such as requiring SSH key signing for changes
+   coming into your code base with push rules:
+
+   - [Push Rules](../repository/push_rules.md)
+
+1. To ensure that the code is reviewed and checked by the right people in your team, use:
+
+   - [Code Owners](../codeowners/index.md)
+   - [Merge Request approval rules](approvals/rules.md)
+
+Also available in the Ultimate tier:
+
+- [Status checks](status_checks.md)
+- [Security Approvals](approvals/rules.md#security-approvals)
 
 ## Forking workflow
 

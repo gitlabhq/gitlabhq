@@ -7,11 +7,11 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 
 <!-- markdownlint-disable MD044 -->
 <!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing.html#disable-markdownlint-tests -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
 
 <div class="d-none">
   <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
-  of this help information with enhanced navigation, discoverability, and readability.</h3>
+  of this help information with enhanced navigation, formatting, and search.</h3>
 </div>
 <!-- the div above will not display on the docs site but will display on /help -->
 
@@ -31,25 +31,22 @@ Explore the different areas of the documentation:
 
 ## Popular topics
 
-Have a look at some of our most popular topics:
+View some of the most popular topics:
 
-| Popular topic                                                                              | Description |
-|:-------------------------------------------------------------------------------------------|:------------|
-| [Two-factor authentication](user/profile/account/two_factor_authentication.md)             | Improve the security of your GitLab account. |
-| [GitLab groups](user/group/index.md)                                                       | Manage projects together. |
-| [CI/CD YAML syntax reference](ci/yaml/index.md)                                            | Available configuration options for `.gitlab-ci.yml` files. |
-| [Activate GitLab EE with a license](administration/license.md)                             | Activate GitLab Enterprise Edition functionality with a license. |
-| [Back up and restore GitLab](administration/backup_restore/index.md)                       | Backing up and restoring GitLab self-managed instances. |
-| [GitLab release and maintenance policy](policy/maintenance.md)                             | Policies for version naming and cadence, and also upgrade recommendations. |
-| [Elasticsearch integration](integration/advanced_search/elasticsearch.md)                  | Integrate Elasticsearch with GitLab to enable advanced search. |
-| [Database settings for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html)  | Database settings for self-managed instances installed using Linux packages. |
-| [NGINX settings for Linux package installations](https://docs.gitlab.com/omnibus/settings/nginx.html)        | NGINX settings for self-managed instances installed using Linux packages. |
-| [SSL configuration for Linux package installations](https://docs.gitlab.com/omnibus/settings/ssl/index.html) | SSL settings for self-managed instances installed using Linux packages. |
-| [GitLab.com settings](user/gitlab_com/index.md)                                            | Settings used for GitLab.com. |
+| Popular topic                                                                  | Description |
+|:-------------------------------------------------------------------------------|:------------|
+| [CI/CD YAML syntax reference](ci/yaml/index.md)                                | Available configuration options for `.gitlab-ci.yml` files. |
+| [REST API](api/rest/index.md)                                                  | Use the REST API to extend GitLab. |
+| [Environments and deployments](ci/environments/index.md)                       | Deploy your application to different environments. |
+| [Configuring runners](ci/runners/configure_runners.md)                         | Get started using runners. |
+| [Two-factor authentication](user/profile/account/two_factor_authentication.md) | Improve the security of your GitLab account. |
+| [Back up and restore GitLab](administration/backup_restore/index.md)           | Back up and restore a GitLab self-managed instance. |
+| [GitLab release and maintenance policy](policy/maintenance.md)                 | Determine how and when to upgrade. |
+| [SSH keys](user/ssh.md)                                                        | Use SSH keys to communicate with GitLab. |
 
-## User account
+## User accounts
 
-For more information about GitLab account management, see:
+Learn about GitLab account management:
 
 | Topic                                                      | Description |
 |:-----------------------------------------------------------|:------------|
@@ -60,16 +57,16 @@ For more information about GitLab account management, see:
 
 ## Coming to GitLab from another platform
 
-If you are coming to GitLab from another platform, the following information is useful:
+If you are coming to GitLab from another platform:
 
 | Topic                                                                                  | Description |
 |:---------------------------------------------------------------------------------------|:------------|
-| [Importing to GitLab](user/project/import/index.md)                                    | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrating from SVN](user/project/import/index.md#import-repositories-from-subversion) | Convert a SVN repository to Git and GitLab. |
+| [Import to GitLab](user/project/import/index.md)                                       | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
+| [Migrate from SVN](user/project/import/index.md#import-repositories-from-subversion)   | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 
-You can build integrations with GitLab:
+To build integrations with GitLab:
 
 | Topic                                      | Description |
 |:-------------------------------------------|:------------|
@@ -79,9 +76,9 @@ You can build integrations with GitLab:
 
 ## Contribute to GitLab
 
-Learn how to contribute to GitLab with the following resources:
+To contribute to GitLab:
 
 | Topic                                                       | Description |
 |:------------------------------------------------------------|:------------|
-| [Contribute to GitLab development](development/index.md).  | How to contribute to GitLab development. |
-| [Contribute to the documentation](development/documentation/index.md)             | How to contribute to GitLab documentation. |
+| [Contribute to GitLab development](development/index.md).  | Contribute to GitLab development. |
+| [Contribute to the documentation](development/documentation/index.md) | Contribute to GitLab documentation. |

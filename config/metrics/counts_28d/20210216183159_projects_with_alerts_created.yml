@@ -4,7 +4,7 @@ key_path: counts_monthly.projects_with_alerts_created
 description: Monthly count of unique projects with HTTP alerting enabled
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 28d

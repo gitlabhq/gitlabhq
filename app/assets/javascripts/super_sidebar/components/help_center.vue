@@ -73,6 +73,7 @@ export default {
               action: this.showTanukiBotChat,
               extraAttrs: {
                 ...this.trackingAttrs('tanuki_bot_help_dropdown'),
+                'data-testid': 'duo-chat-menu-item',
               },
             },
             {
@@ -216,6 +217,7 @@ export default {
         category="tertiary"
         icon="question-o"
         class="super-sidebar-help-center-toggle btn-with-notification"
+        data-testid="sidebar-help-button"
       >
         <span
           v-if="showWhatsNewNotification"

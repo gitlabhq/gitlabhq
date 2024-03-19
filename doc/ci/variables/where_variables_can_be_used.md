@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As it's described in the [CI/CD variables](index.md) documentation, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
@@ -144,7 +144,20 @@ These restrictions exist because `after_script` scripts are executed in a
 
 ## Persisted variables
 
-Some predefined variables are called "persisted".
+Some predefined variables are called "persisted". Persisted variables are:
+
+- Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
+  - Runner.
+  - Script execution shell.
+- Not supported:
+  - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
+  - In the `rules`, `only`, and `except` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
+
+[Pipeline trigger jobs](../yaml/index.md#trigger) cannot use job-level persisted variables,
+but can use pipeline-level persisted variables.
+
+Some of the persisted variables contain tokens and cannot be used by some definitions
+due to security reasons.
 
 Pipeline-level persisted variables:
 
@@ -163,20 +176,27 @@ Job-level persisted variables:
 - `CI_REGISTRY_USER`
 - `CI_REPOSITORY_URL`
 
-Persisted variables are:
+Persisted variables for specific integrations:
 
-- Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
-  - Runner.
-  - Script execution shell.
-- Not supported:
-  - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
-  - In the `only`, `except`, and `rules` [variables expressions](../jobs/job_control.md#cicd-variable-expressions).
-
-[Pipeline trigger jobs](../yaml/index.md#trigger) cannot use job-level persisted variables,
-but can use pipeline-level persisted variables.
-
-Some of the persisted variables contain tokens and cannot be used by some definitions
-due to security reasons.
+- [Harbor](../../user/project/integrations/harbor.md):
+  - `HARBOR_URL`
+  - `HARBOR_HOST`
+  - `HARBOR_OCI`
+  - `HARBOR_PROJECT`
+  - `HARBOR_USERNAME`
+  - `HARBOR_PASSWORD`
+- [Apple App Store Connect](../../user/project/integrations/apple_app_store.md):
+  - `APP_STORE_CONNECT_API_KEY_ISSUER_ID`
+  - `APP_STORE_CONNECT_API_KEY_KEY_ID`
+  - `APP_STORE_CONNECT_API_KEY_KEY`
+  - `APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64`
+- [Google Play](../../user/project/integrations/google_play.md):
+  - `SUPPLY_PACKAGE_NAME`
+  - `SUPPLY_JSON_KEY_DATA`
+- [Diffblue Cover](../../integration/diffblue_cover.md):
+  - `DIFFBLUE_LICENSE_KEY`
+  - `DIFFBLUE_ACCESS_TOKEN_NAME`
+  - `DIFFBLUE_ACCESS_TOKEN`
 
 ## Variables with an environment scope
 

@@ -93,7 +93,7 @@ These users accept some downtime during the update. Unfortunately we can't ignor
 
 ## What kind of components can GitLab be broken down into?
 
-The [50,000 reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/), plus there is a ["canary" stage which receives updates first](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/).
+The [50,000 reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#gitlab-com-architecture), plus there is a ["canary" stage which receives updates first](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/).
 
 But the problem isn't just that there are many nodes. The bigger problem is that a deployment can be divided into different contexts. And GitLab.com is not the only one that does this. Some possible divisions:
 

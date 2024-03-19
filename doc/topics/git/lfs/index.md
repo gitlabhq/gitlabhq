@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use Git LFS to manage binary assets, like images and video, without bloating your Git repository's size."
 ---
 
 # Git Large File Storage (LFS)
@@ -22,7 +23,7 @@ In the repository view, files tracked by Git LFS display an **LFS** badge next t
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To install Git LFS on your self-managed GitLab server, see
 [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md).

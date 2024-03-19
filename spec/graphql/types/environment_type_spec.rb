@@ -10,7 +10,7 @@ RSpec.describe GitlabSchema.types['Environment'] do
     expected_fields = %w[
       name id state latest_opened_most_severe_alert path external_url deployments
       slug createdAt updatedAt autoStopAt autoDeleteAt tier environmentType lastDeployment deployFreezes
-      clusterAgent
+      clusterAgent deploymentsDisplayCount
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

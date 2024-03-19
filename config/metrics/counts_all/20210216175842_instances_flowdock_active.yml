@@ -4,7 +4,7 @@ key_path: counts.instances_flowdock_active
 description: Count of active instance-level integrations for Flowdock
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102394

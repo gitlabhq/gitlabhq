@@ -92,12 +92,12 @@ export default {
         class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
       >
         <a
-          class="gl-user-select-none gl-shadow-none! file-line-blame"
+          class="gl-select-none gl-shadow-none! file-line-blame"
           :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
         ></a>
         <a
           :id="`L${calculateLineNumber(index)}`"
-          class="gl-user-select-none gl-shadow-none! file-line-num"
+          class="gl-select-none gl-shadow-none! file-line-num"
           :href="`#L${calculateLineNumber(index)}`"
           :data-line-number="calculateLineNumber(index)"
         >

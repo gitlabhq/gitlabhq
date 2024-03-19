@@ -2,7 +2,6 @@
   "type": "object",
   "required": [
     "description",
-    "category",
     "action",
     "product_section",
     "product_stage",
@@ -19,6 +18,10 @@
     },
     "category": {
       "type": "string"
+    },
+    "internal_events": {
+      "type": "boolean",
+      "const": true
     },
     "action": {
       "type": "string",

@@ -20,7 +20,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:group) { create(:group, :nested) }
     let_it_be(:user) { create(:user) }
 
-    let(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
+    let(:project) do
+      create(:project, :empty_repo, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
+    end
+
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let(:job) do
@@ -206,7 +209,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               'ref_type' => 'branch',
               'refspecs' => ["+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
                              "+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}"],
-              'depth' => project.ci_default_git_depth }
+              'depth' => project.ci_default_git_depth,
+              'repo_object_format' => 'sha1' }
           end
 
           let(:expected_steps) do

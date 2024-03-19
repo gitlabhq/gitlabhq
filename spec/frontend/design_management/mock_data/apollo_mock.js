@@ -361,7 +361,7 @@ export const designFactory = ({
   description = 'Test description',
   descriptionHtml = '<p data-sourcepos="1:1-1:16" dir="auto">Test description</p>',
 } = {}) => ({
-  id: 'gid::/gitlab/Design/1',
+  id: 'gid:/gitlab/Design/1',
   iid: 1,
   filename: 'test.jpg',
   fullPath: 'full-design-path',
@@ -373,7 +373,7 @@ export const designFactory = ({
     name: 'test',
   },
   issue: {
-    id: 'gid::/gitlab/Issue/1',
+    id: 'gid:/gitlab/Issue/1',
     title: 'My precious issue',
     webPath: 'full-issue-path',
     webUrl: 'full-issue-url',

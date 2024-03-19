@@ -6,7 +6,6 @@ Lint/RedundantSafeNavigation:
     - 'app/graphql/resolvers/users_resolver.rb'
     - 'app/graphql/types/countable_connection_type.rb'
     - 'app/helpers/search_helper.rb'
-    - 'app/models/deployment.rb'
     - 'ee/app/graphql/ee/types/issue_connection_type.rb'
     - 'ee/app/models/search/namespace_index_assignment.rb'
     - 'lib/api/projects.rb'

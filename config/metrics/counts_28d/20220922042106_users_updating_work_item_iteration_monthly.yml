@@ -3,7 +3,7 @@ key_path: redis_hll_counters.work_items.users_updating_work_item_iteration_month
 description: Unique users updating a work item's iteration
 product_section: team planning
 product_stage: dev
-product_group: plan
+product_group: project_management
 value_type: number
 status: active
 milestone: "15.5"

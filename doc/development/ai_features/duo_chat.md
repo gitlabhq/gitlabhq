@@ -6,25 +6,46 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
+[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md) offering.
+
+How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on helping developers with DevSecOps,
+software development, source code, project management, CI/CD, and GitLab. Please feel free to engage me in these areas."
+
+Chat can answer different questions and perform certain tasks. It's done with the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
+
+To answer a user's question asked in the Chat interface, GitLab sends a [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb) to the Rails backend.
+Rails backend sends then instructions to the Large Language Model (LLM) via the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+
 ## Set up GitLab Duo Chat
 
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+There is a difference in the setup for Saas and self-managed instances.
+We recommend to start with a process described for SaaS-only AI features.
 
-1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Ensure the embedding database is configured](index.md#embeddings-database).
-1. Ensure that your current branch is up-to-date with `master`.
-1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
+1. [Setup SaaS-only AI features](index.md#test-saas-only-ai-features-locally).
+1. [Setup self-managed AI features](index.md#test-ai-features-with-ai-gateway-locally).
 
 ## Working with GitLab Duo Chat
 
-Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the LLM to perform certain tasks.
 
 The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
 
 If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
 
+### Troubleshooting
+
+When working with Chat locally, you might run into an error. Most commons problems are documented in this section.
+If you find an undocumented issue, you should document it in this section after you find a solution.
+
+| Problem                                               | Solution |
+| ----------------------------------------------------- | -------- |
+| There is no Chat button in the GitLab UI.             | Make sure your user is a part of a group with enabled Experimental and Beta features. |
+| Chat replies with "Forbidden by auth provider" error. | Backend can't access LLMs. Make sure your [AI Gateway](index.md#test-ai-features-with-ai-gateway-locally) is setup correctly. |
+| Requests takes too long to appear in UI  | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
+
 ## Contributing to GitLab Duo Chat
+
+From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#abstraction-layer).
 
 The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
 answer. The system prompt defines available tools that can be used to gather
@@ -57,7 +78,7 @@ To add a new tool:
 
 1. Test and iterate on the prompt using RSpec tests that make real requests to the large language model.
     - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
-    - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/introduction-to-prompt-design) on working on prompts.
+    - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/intro-to-prompting) on working on prompts.
     - GitLab [guide](prompts.md) on working with prompts.
 
 1. Implement code in the tool to parse the response from the large language model and return it to the zero-shot agent.
@@ -85,15 +106,70 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat against real LLMs locally
+## Tracing with LangSmith
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends
+Tracing is a powerful tool for understanding the behavior of your LLM application.
+LangSmith has best-in-class tracing capabilities, and it's integrated with GitLab Duo Chat. Tracing can help you track down issues like:
+
+- I'm new to GitLab Duo Chat and would like to understand what's going on under the hood.
+- Where exactly the process failed when you got an unexpected answer.
+- Which process was a bottle neck of the latency.
+- What tool was used for an ambiguous question.
+
+![LangSmith UI](img/langsmith.png)
+
+Tracing is especially useful for evaluation that runs GitLab Duo Chat against large dataset.
+LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
+and [RSpec tests](#testing-gitlab-duo-chat).
+
+### Use tracing with LangSmith
+
+NOTE:
+Tracing is available in Development and Testing environment only.
+It's not available in Production environment.
+
+1. Access to [LangSmith](https://smith.langchain.com/) site and create an account.
+1. Create [an API key](https://docs.smith.langchain.com/setup#create-an-api-key).
+1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
+    
+    ```shell
+    export LANGCHAIN_TRACING_V2=true
+    export LANGCHAIN_API_KEY='<your-api-key>'
+    export LANGCHAIN_PROJECT='<your-project-name>'
+    export LANGCHAIN_ENDPOINT='api.smith.langchain.com'
+    export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
+    ```
+
+1. Restart GDK.
+
+## Testing GitLab Duo Chat
+
+Because the success of answers to user questions in GitLab Duo Chat heavily depends
 on toolchain and prompts of each tool, it's common that even a minor change in a
 prompt or a tool impacts processing of some questions.
 
 To make sure that a change in the toolchain doesn't break existing
 functionality, you can use the following RSpec tests to validate answers to some
 predefined questions when using real LLMs:
+
+1. `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`
+   This test validates that the zero-shot agent is selecting the correct tools
+   for a set of Chat questions. It checks on the tool selection but does not
+   evaluate the quality of the Chat response.
+1. `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`
+   This test evaluates the quality of a Chat response by passing the question
+   asked along with the Chat-provided answer and context to at least two other
+   LLMs for evaluation. This evaluation is limited to questions about issues and
+   epics only. Learn more about the [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+
+If you are working on any changes to the GitLab Duo Chat logic, be sure to run
+the [GitLab Duo Chat CI jobs](#testing-with-ci) the merge request that contains
+your changes. Some of the CI jobs must be [manually triggered](../../ci/jobs/job_control.md#run-a-manual-job).
+
+## Testing locally
+
+To run the QA Evaluation test locally, the following environment variables
+must be exported:
 
 ```ruby
 export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
@@ -104,22 +180,23 @@ export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::
 REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
-When you need to update the test questions that require documentation embeddings,
-make sure a new fixture is generated and committed together with the change.
+When you update the test questions that require documentation embeddings,
+make sure you [generate a new fixture](index.md#use-embeddings-in-specs) and
+commit it together with the change.
 
-## Running the rspecs tagged with `real_ai_request`
+## Testing with CI
 
-The following CI jobs for GitLab project run the rspecs tagged with `real_ai_request`:
+The following CI jobs for GitLab project run the tests tagged with `real_ai_request`:
 
 - `rspec-ee unit gitlab-duo-chat-zeroshot`:
-   the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
-   The job is optionally triggered and allowed to fail.
+  the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
+  The job must be manually triggered and is allowed to fail.
 
 - `rspec-ee unit gitlab-duo-chat-qa`:
-   The job runs the QA evaluation tests in
-   `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-   The job is optionally triggered and allowed to fail.
-   Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+  The job runs the QA evaluation tests in
+  `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
+  The job must be manually triggered and is allowed to fail.
+  Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
 
 - `rspec-ee unit gitlab-duo-chat-qa-fast`:
   The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
@@ -166,12 +243,12 @@ See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used 
 #### RSpec and helpers
 
 1. [The RSpec file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb)
-  and the included helpers invoke the Chat service, an internal interface with the question.
+   and the included helpers invoke the Chat service, an internal interface with the question.
 
 1. After collecting the Chat service's answer,
-  the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
-  a LLM to grade the correctness of the answer based on the question and a context.
-  The context is simply a JSON serialization of the issue or epic being asked about in each question.
+   the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
+   a LLM to grade the correctness of the answer based on the question and a context.
+   The context is simply a JSON serialization of the issue or epic being asked about in each question.
 
 1. The evaluation prompt is sent to two LLMs, Claude and Vertex.
 
@@ -179,25 +256,30 @@ See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used 
 
 1. For each question, RSpec will regex-match for `CORRECT` or `INCORRECT`.
 
-#### Collection and tracking of QA evaluations via CI/CD automation
+#### Collection and tracking of QA evaluation with CI/CD automation
 
-The `gitlab` project's CI configurations have been setup to
-run the RSpec,
-collect the evaluation response as artifacts
-and execute [a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
+The `gitlab` project's CI configurations have been setup to run the RSpec,
+collect the evaluation response as artifacts and execute
+[a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
 that automates collection and tracking of evaluations.
 
 When `rspec-ee unit gitlab-duo-chat-qa` job runs in a pipeline for a merge request,
 the reporter script uses the evaluations saved as CI artifacts
 to generate a Markdown report and posts it as a note in the merge request.
 
-When `rspec-ee unit gitlab-duo-chat-qa` is run in a pipeline for a commit on `master` branch,
-the reporter script instead
-posts the generated report as an issue,
-saves the evaluations artfacts as a snippet,
-and updates the tracking issue in
-[`gitlab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
-in the project [`gitlab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
+To keep track of and compare QA test results over time, you must manually
+run the `rspec-ee unit gitlab-duo-chat-qa` on the `master` the branch:
+
+1. Visit the [new pipeline page](https://gitlab.com/gitlab-org/gitlab/-/pipelines/new).
+1. Select "Run pipeline" to run a pipeline against the `master` branch
+1. When the pipeline first starts, the `rspec-ee unit gitlab-duo-chat-qa` job under the
+   "Test" stage will not be available. Wait a few minutes for other CI jobs to
+   run and then manually kick off this job by selecting the "Play" icon.
+
+When the test runs on `master`, the reporter script posts the generated report as an issue,
+saves the evaluations artfacts as a snippet, and updates the tracking issue in
+[`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
+in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](<https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation>).
 
 ## GraphQL Subscription
 
@@ -229,9 +311,8 @@ and the analysis is tracked as a Snowplow event.
 The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
 
 - All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
-- The following are yet to be implemented:
+- The following is yet to be implemented:
   - "is_proper_sentence"
-  - "asked_on_the_same_page"
 - The following are deprecated:
   - "number_of_questions_in_history"
   - "length_of_questions_in_history"

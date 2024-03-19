@@ -3,8 +3,9 @@ import { GlCollapsibleListbox, GlListboxItem, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { mockTracking } from 'helpers/tracking_helper';
 import DiscussionFilter from '~/notes/components/mr_discussion_filter.vue';
-import { MR_FILTER_OPTIONS } from '~/notes/constants';
+import { MR_FILTER_OPTIONS, MR_FILTER_TRACKING_OPENED } from '~/notes/constants';
 
 Vue.use(Vuex);
 
@@ -134,5 +135,24 @@ describe('Merge request discussion filter component', () => {
     await nextTick();
 
     expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(11);
+  });
+
+  describe('instrumentation', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+      createComponent();
+    });
+
+    it('tracks overall opens of the filter dropdown', () => {
+      wrapper.findComponent(GlCollapsibleListbox).vm.$emit('shown');
+
+      expect(trackingSpy).toHaveBeenCalledWith(
+        undefined,
+        MR_FILTER_TRACKING_OPENED,
+        expect.any(Object),
+      );
+    });
   });
 });

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -102,7 +102,7 @@ in a safe place.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com, this
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com and GitLab Dedicated, this
 feature is not available.
 
 You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. Users must:
@@ -232,11 +232,14 @@ On your GitLab server:
 
 ### Enable one-time password using FortiToken Cloud
 
+DETAILS:
+**Offering:** Self-managed
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com, this
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com and GitLab Dedicated, this
 feature is not available. The feature is not ready for production use.
 
 You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must:
@@ -301,7 +304,7 @@ On GitLab.com, WebAuthn devices are available.
 
 FLAG:
 On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 
@@ -474,7 +477,7 @@ After signing in, immediately set up 2FA with a new device.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If other methods are unavailable, have a GitLab support contact submit a [support ticket](https://support.gitlab.com) to request
 a GitLab global administrator disable 2FA for your account:

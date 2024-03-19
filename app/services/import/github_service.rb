@@ -5,6 +5,9 @@ module Import
     include ActiveSupport::NumberHelper
     include Gitlab::Utils::StrongMemoize
 
+    MINIMUM_IMPORT_SCOPE = 'repo'
+    COLLAB_IMPORT_SCOPES = %w[admin:org read:org].freeze
+
     attr_accessor :client
     attr_reader :params, :current_user
 
@@ -12,12 +15,27 @@ module Import
       context_error = validate_context
       return context_error if context_error
 
+      if provider == :github # we skip scope validation for Gitea importer calls
+        token = access_params[:github_access_token]
+
+        if Gitlab::GithubImport.fine_grained_personal_token?(token)
+          Gitlab::GithubImport::Logger.info(
+            message: 'Fine grained GitHub personal access token used.'
+          )
+          warning = s_('GithubImport|Fine-grained personal access tokens are not officially supported. ' \
+                       'It is recommended to use a classic token instead.')
+        elsif Gitlab::GithubImport.classic_personal_token?(token)
+          scope_error = validate_scopes
+          return scope_error if scope_error
+        end
+      end
+
       project = create_project(access_params, provider)
       track_access_level('github')
 
       if project.persisted?
         store_import_settings(project)
-        success(project)
+        success(project, warning: warning)
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
       else
@@ -59,7 +77,7 @@ module Import
     end
 
     def oversize_error_message
-      _('"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
+      s_('GithubImport|"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
         repository_name: repo[:name],
         repository_size: number_to_human_size(repo[:size]),
         limit: number_to_human_size(repository_size_limit)
@@ -99,20 +117,34 @@ module Import
 
     private
 
+    def validate_scopes
+      scopes = client.octokit.scopes
+
+      unless scopes.include?(MINIMUM_IMPORT_SCOPE)
+        return log_and_return_error('Invalid Scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{scope}' scope."), scope: 'repo'), :unprocessable_entity)
+      end
+
+      collaborators_import = params.dig(:optional_stages, :collaborators_import) || false # if not set, default to false to skip collaborator import validation
+
+      return if collaborators_import == false || scopes.intersection(COLLAB_IMPORT_SCOPES).any?
+
+      log_and_return_error('Invalid scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."), scope: 'read:org'), :unprocessable_entity)
+    end
+
     def validate_context
       if blocked_url?
         log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
       elsif target_namespace.nil?
-        error(_('Namespace or group to import repository into does not exist.'), :unprocessable_entity)
+        error(s_('GithubImport|Namespace or group to import repository into does not exist.'), :unprocessable_entity)
       elsif !authorized?
-        error(_('You are not allowed to import projects in this namespace.'), :unprocessable_entity)
+        error(s_('GithubImport|You are not allowed to import projects in this namespace.'), :unprocessable_entity)
       elsif oversized?
         error(oversize_error_message, :unprocessable_entity)
       end
     end
 
     def target_namespace_path
-      raise ArgumentError, 'Target namespace is required' if params[:target_namespace].blank?
+      raise ArgumentError, s_('GithubImport|Target namespace is required') if params[:target_namespace].blank?
 
       params[:target_namespace]
     end
@@ -124,7 +156,7 @@ module Import
         error: exception.response_body
       )
 
-      error(_('Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
+      error(s_('GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
     end
 
     def log_and_return_error(message, translated_message, http_status)
@@ -142,8 +174,7 @@ module Import
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
           optional_stages: params[:optional_stages],
-          extended_events: Feature.enabled?(:github_import_extended_events, current_user),
-          prioritize_collaborators: Feature.enabled?(:github_import_prioritize_collaborators, current_user)
+          extended_events: Feature.enabled?(:github_import_extended_events, current_user)
         )
     end
   end

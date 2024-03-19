@@ -19,9 +19,9 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
     subject { parsed_payload.title }
 
     it_behaves_like 'parsable alert payload field',
-                    'annotations/title',
-                    'annotations/summary',
-                    'labels/alertname'
+      'annotations/title',
+      'annotations/summary',
+      'labels/alertname'
   end
 
   describe '#description' do
@@ -106,10 +106,10 @@ RSpec.describe Gitlab::AlertManagement::Payload::Prometheus do
     subject { parsed_payload.gitlab_y_label }
 
     it_behaves_like 'parsable alert payload field',
-                    'annotations/gitlab_y_label',
-                    'annotations/title',
-                    'annotations/summary',
-                    'labels/alertname'
+      'annotations/gitlab_y_label',
+      'annotations/title',
+      'annotations/summary',
+      'labels/alertname'
   end
 
   describe '#monitoring_tool' do

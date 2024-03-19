@@ -1,4 +1,4 @@
-import { identity, memoize, throttle } from 'lodash';
+import { identity, memoize, throttle, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -118,7 +118,10 @@ export function createDataSource({
 
 export default class AutocompleteHelper {
   constructor({ dataSourceUrls, sidebarMediator }) {
-    this.dataSourceUrls = dataSourceUrls;
+    this.dataSourceUrls = !isEmpty(dataSourceUrls)
+      ? dataSourceUrls
+      : gl.GfmAutoComplete?.dataSources || {};
+
     this.sidebarMediator = sidebarMediator;
 
     initEmojiMap();

@@ -19,7 +19,7 @@ RSpec.describe 'devise/sessions/new', feature_category: :system_access do
     it 'is shown when enabled' do
       render
 
-      expect(rendered).to have_selector('.new-session-tabs')
+      expect(rendered).to have_selector('#js-signin-tabs')
       expect(rendered).to have_selector('[data-testid="ldap-tab"]')
       expect(rendered).to have_field(_('Username'))
     end

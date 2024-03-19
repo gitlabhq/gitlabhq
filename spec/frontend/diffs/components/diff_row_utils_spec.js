@@ -7,6 +7,7 @@ import {
   EMPTY_CELL_TYPE,
 } from '~/diffs/constants';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 const LINE_CODE = 'abc123';
 
@@ -109,18 +110,25 @@ describe('diff_row_utils', () => {
 
   describe('lineHref', () => {
     it(`should return #${LINE_CODE}`, () => {
-      expect(utils.lineHref({ line_code: LINE_CODE }, {})).toEqual(`#${LINE_CODE}`);
+      expect(utils.lineHref({ line_code: LINE_CODE }, {})).toContain(`#${LINE_CODE}`);
     });
 
-    it(`should return '#' if line is undefined`, () => {
+    it(`should return empty string if line is undefined`, () => {
       expect(utils.lineHref()).toEqual('');
     });
 
-    it(`should return '#' if line_code is undefined`, () => {
+    it(`should return empty string if line_code is undefined`, () => {
       expect(utils.lineHref({}, {})).toEqual('');
     });
 
-    describe('pinned file', () => {
+    it(`should retain diff_id`, () => {
+      const newLocation = new URL(window.location);
+      newLocation.searchParams.append('diff_id', 'foo');
+      setWindowLocation(newLocation.toString());
+      expect(utils.lineHref({ line_code: LINE_CODE }, {})).toContain(`?diff_id=foo`);
+    });
+
+    describe('pinned file enabled', () => {
       beforeEach(() => {
         window.gon.features = { pinnedFile: true };
       });
@@ -131,25 +139,46 @@ describe('diff_row_utils', () => {
 
       it(`should return pinned file URL`, () => {
         const diffFile = getDiffFileMock();
-        expect(utils.lineHref({ line_code: LINE_CODE }, { diffFile })).toEqual(
+        expect(utils.lineHref({ line_code: LINE_CODE }, diffFile)).toContain(
           `?pin=${diffFile.file_hash}#${LINE_CODE}`,
         );
       });
     });
   });
 
-  describe('pinnedFileHref', () => {
-    beforeEach(() => {
-      window.gon.features = { pinnedFile: true };
+  describe('createFileUrl', () => {
+    describe('pinned file enabled', () => {
+      beforeEach(() => {
+        window.gon.features = { pinnedFile: true };
+      });
+
+      afterEach(() => {
+        delete window.gon.features;
+      });
+
+      it(`should return pinned file URL`, () => {
+        const diffFile = getDiffFileMock();
+        const url = utils.createFileUrl(diffFile);
+        expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
+        expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
+      });
+
+      it(`removes existing pinned file search param`, () => {
+        const newLocation = new URL(window.location);
+        newLocation.searchParams.append('pin', 'foo');
+        setWindowLocation(newLocation.toString());
+        const diffFile = getDiffFileMock();
+        const url = utils.createFileUrl(diffFile);
+        expect(url.searchParams.get('pin')).toBe(diffFile.file_hash);
+        expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
+      });
     });
 
-    afterEach(() => {
-      delete window.gon.features;
-    });
-
-    it(`should return pinned file URL`, () => {
+    it('should return file URL', () => {
       const diffFile = getDiffFileMock();
-      expect(utils.pinnedFileHref(diffFile)).toEqual(`?pin=${diffFile.file_hash}`);
+      const url = utils.createFileUrl(diffFile);
+      expect(url.searchParams.get('pin')).toBe(null);
+      expect(url.hash).toBe(`#diff-content-${diffFile.file_hash}`);
     });
   });
 

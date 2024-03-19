@@ -58,7 +58,7 @@ This project provides you with:
 ## Register the agent
 
 FLAG:
-In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 To create a GitLab agent for Kubernetes:
 
@@ -66,7 +66,7 @@ To create a GitLab agent for Kubernetes:
 1. Select **Connect a cluster (agent)**.
 1. From the **Select an agent or enter a name to create new** dropdown list, choose your agent's name and select **Register**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
-1. GitLab provides an address for the agent server (KAS), which you will also need later.
+1. Optional. If you use Helm, GitLab provides an address for the agent server (KAS) in the Helm command example. You need this for later.
 
 ## Create your GCP credentials
 
@@ -80,9 +80,21 @@ To set up your project to communicate to GCP and the GitLab API:
 1. Download the JSON file with the service account key you created in the previous step.
 1. On your computer, encode the JSON file to `base64` (replace `/path/to/sa-key.json` to the path to your key):
 
+   ::Tabs
+
+   :::TabTitle MacOS
+
+   ```shell
+   base64 -i /path/to/sa-key.json | tr -d \\n
+   ```
+
+   :::TabTitle Linux
+
    ```shell
    base64 /path/to/sa-key.json | tr -d \\n
    ```
+
+   ::EndTabs
 
 1. Use the output of this command as the `BASE64_GOOGLE_CREDENTIALS` environment variable in the next step.
 
@@ -121,7 +133,8 @@ From the Google Cloud console, enable the [Kubernetes Engine API](https://consol
 
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
-1. On the left sidebar, go to **Build > Pipelines**.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select **Run pipeline**.
 1. Next to **Play** (**{play}**), select the dropdown list icon (**{chevron-lg-down}**).
 1. Select **Deploy** to manually trigger the deployment job.
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 > - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.

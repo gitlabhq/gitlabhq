@@ -1,10 +1,3 @@
-export const SuggestCiYmlData = {
-  trackLabel: 'suggest_gitlab_ci_yml',
-  dismissKey: '10',
-  mergeRequestPath: 'mr_path',
-  humanAccess: 'owner',
-};
-
 export const Templates = {
   licenses: {
     Other: [

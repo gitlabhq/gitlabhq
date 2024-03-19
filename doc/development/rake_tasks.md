@@ -52,7 +52,7 @@ project.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can seed issues specifically for working with the
 [Insights charts](../user/group/insights/index.md) with the
@@ -164,6 +164,12 @@ bundle exec rake "gitlab:seed:project_environments[project_path, seed_count, pre
 # Examples
 bundle exec rake "gitlab:seed:project_environments[flightjs/Flight]"
 bundle exec rake "gitlab:seed:project_environments[flightjs/Flight, 25, FLIGHT_ENV_]"
+```
+
+#### Seed a group with dependencies
+
+```shell
+bundle exec rake gitlab:seed:dependencies
 ```
 
 #### Seed CI variables

@@ -33,7 +33,7 @@ RSpec.describe Projects::PipelineHelper do
         has_test_report: pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)),
         empty_dag_svg_path: match_asset_path('illustrations/empty-state/empty-dag-md.svg'),
         empty_state_image_path: match_asset_path('illustrations/empty-todos-md.svg'),
-        artifacts_expired_image_path: match_asset_path('illustrations/pipeline.svg'),
+        artifacts_expired_image_path: match_asset_path('illustrations/empty-state/empty-pipeline-md.svg'),
         tests_count: pipeline.test_report_summary.total[:count]
       })
     end
@@ -47,9 +47,7 @@ RSpec.describe Projects::PipelineHelper do
         full_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         pipeline_iid: pipeline.iid,
-        pipelines_path: project_pipelines_path(project),
-        yaml_errors: pipeline.yaml_errors,
-        trigger: pipeline.trigger?.to_s
+        pipelines_path: project_pipelines_path(project)
       })
     end
   end

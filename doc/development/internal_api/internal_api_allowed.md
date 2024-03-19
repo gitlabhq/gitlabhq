@@ -94,7 +94,8 @@ an administrator can [enable the feature flag](../../administration/feature_flag
 On GitLab.com, by default this feature is not available. To make it available
 per project, ask GitLab.com administrator to
 [enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.
-You should not use this feature for production environments.
+You should not use this feature for production environments. On GitLab Dedicated, this feature is
+not available.
 
 This experimental feature flag enables the endpoint to run multiple RPCs simultaneously,
 reducing the overall time taken by roughly half. This time savings is achieved through

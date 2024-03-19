@@ -5,10 +5,6 @@ class Projects::RunnersController < Projects::ApplicationController
   before_action :authorize_create_runner!, only: [:new, :register]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 
-  before_action do
-    push_frontend_feature_flag(:gcp_runner, @project, type: :wip)
-  end
-
   feature_category :runner
   urgency :low
 
@@ -85,3 +81,5 @@ class Projects::RunnersController < Projects::ApplicationController
     params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 end
+
+Projects::RunnersController.prepend_mod

@@ -1706,7 +1706,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let_it_be(:commit_3) { repository.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
 
     let_it_be(:initial_commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
-    let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
 
     let(:commit_1_files) do
       [
@@ -1739,7 +1738,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       ]
     end
 
-    let(:diff_tree_files) do
+    let(:initial_commit_files) do
       [
         Gitlab::Git::ChangedPath.new(
           status: :ADDED, path: ".gitignore", old_mode: "0", new_mode: "100644",
@@ -1757,10 +1756,10 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'returns a list of paths' do
-      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, diff_tree])
+      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, initial_commit])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + diff_tree_files).as_json)
+      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + initial_commit_files).as_json)
     end
 
     it 'returns only paths with valid SHAs' do
@@ -1850,32 +1849,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it "returns valid utf-8 data" do
       expect(utf8_file_paths.map { |file| file.force_encoding('utf-8') }).to all(be_valid_encoding)
-    end
-  end
-
-  describe "#copy_gitattributes" do
-    let(:repository) { mutable_repository }
-
-    it "raises an error with invalid ref" do
-      expect { repository.copy_gitattributes("invalid") }.to raise_error(Gitlab::Git::Repository::InvalidRef)
-    end
-
-    context 'when forcing encoding issues' do
-      let(:branch_name) { "ʕ•ᴥ•ʔ" }
-
-      before do
-        repository.create_branch(branch_name)
-      end
-
-      after do
-        repository.rm_branch(branch_name, user: build(:admin))
-      end
-
-      it "doesn't raise with a valid unicode ref" do
-        expect { repository.copy_gitattributes(branch_name) }.not_to raise_error
-
-        repository
-      end
     end
   end
 

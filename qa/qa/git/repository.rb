@@ -94,11 +94,11 @@ module QA
         ::File.write(name, contents)
 
         if use_lfs?
-          git_lfs_track_result = run_git(%(git lfs track #{name} --lockable))
+          git_lfs_track_result = run_git(%(git lfs track "#{name}" --lockable))
           return git_lfs_track_result.response unless git_lfs_track_result.success?
         end
 
-        git_add_result = run_git(%(git add #{name}))
+        git_add_result = run_git(%(git add "#{name}"))
 
         git_lfs_track_result.to_s + git_add_result.to_s
       end

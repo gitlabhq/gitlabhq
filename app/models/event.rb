@@ -48,6 +48,7 @@ class Event < ApplicationRecord
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
   REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
+  CONTRIBUTABLE_TARGET_TYPES = %w[MergeRequest Issue WorkItem].freeze
 
   sha_attribute :fingerprint
 
@@ -95,14 +96,12 @@ class Event < ApplicationRecord
 
   scope :contributions, -> do
     contribution_actions = [actions[:pushed], actions[:commented]]
-
-    contributable_target_types = %w[MergeRequest Issue WorkItem]
     target_contribution_actions = [actions[:created], actions[:closed], actions[:merged], actions[:approved]]
 
     where(
       'action IN (?) OR (target_type IN (?) AND action IN (?))',
       contribution_actions,
-      contributable_target_types, target_contribution_actions
+      CONTRIBUTABLE_TARGET_TYPES, target_contribution_actions
     )
   end
 

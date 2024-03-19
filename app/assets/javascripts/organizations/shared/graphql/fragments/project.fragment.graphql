@@ -1,0 +1,5 @@
+#import "./base_project.fragment.graphql"
+
+fragment Project on Project {
+  ...BaseProject
+}

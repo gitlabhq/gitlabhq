@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
 to them.
@@ -24,7 +24,7 @@ To create an epic in the group you're in:
 1. Get to the New Epic form:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
    - From an epic in your group, select **Epic actions** (**{ellipsis_v}**). Then select **New epic**.
-   - From anywhere, in the top menu, select **New...** (**{plus-square}**). Then select **New epic**.
+   - From anywhere, in the top menu, select **New** (**{plus-square}**). Then select **New epic**.
    - In an empty [roadmap](../roadmap/index.md), select **New epic**.
 
 1. Enter a title.
@@ -67,6 +67,7 @@ The parent epic's start date then reflects this change and propagates upwards to
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.
@@ -258,7 +259,7 @@ To filter:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
@@ -443,7 +444,7 @@ To reorder issues assigned to an epic:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
@@ -473,7 +474,7 @@ For more on epic templates, see [Epic Templates - Repeatable sets of issues](htt
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.

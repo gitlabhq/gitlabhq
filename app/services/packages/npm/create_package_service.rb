@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   module Npm
     class CreatePackageService < ::Packages::CreatePackageService
@@ -52,7 +53,8 @@ module Packages
       def create_npm_metadatum!(package)
         package.create_npm_metadatum!(package_json: package_json)
       rescue ActiveRecord::RecordInvalid => e
-        if package.npm_metadatum && package.npm_metadatum.errors.where(:package_json, :too_large).any? # rubocop: disable CodeReuse/ActiveRecord
+
+        if package.npm_metadatum && package.npm_metadatum.errors.added?(:package_json, :too_large)
           Gitlab::ErrorTracking.track_exception(e, field_sizes: field_sizes_for_error_tracking)
         end
 
@@ -72,7 +74,8 @@ module Packages
         return false if Feature.disabled?(:packages_protected_packages, project)
 
         user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
-        project.package_protection_rules.for_push_exists?(access_level: user_project_authorization_access_level, package_name: name, package_type: :npm)
+        project.package_protection_rules.for_push_exists?(access_level: user_project_authorization_access_level,
+          package_name: name, package_type: :npm)
       end
 
       def name
@@ -110,7 +113,8 @@ module Packages
       def calculated_package_file_size
         # This calculation is based on:
         # 1. 4 chars in a Base64 encoded string are 3 bytes in the original string. Meaning 1 char is 0.75 bytes.
-        # 2. The encoded string may have 1 or 2 extra '=' chars used for padding. Each padding char means 1 byte less in the original string.
+        # 2. The encoded string may have 1 or 2 extra '=' chars used for padding. Each padding char means 1 byte less in
+        #    the original string.
         # Reference:
         # - https://blog.aaronlenoir.com/2017/11/10/get-original-length-from-base-64-string/
         # - https://en.wikipedia.org/wiki/Base64#Decoding_Base64_with_padding

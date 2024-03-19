@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** self-managed
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39840) in GitLab 11.11.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -43,7 +43,7 @@ match the [environment selector](../../../ci/environments/index.md#limit-the-env
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for

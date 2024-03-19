@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [Experiment](../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
@@ -22,14 +22,14 @@ Here are the examples of use cases:
 
 | Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
 | -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
-| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE <sup>1</sup>   | GitLab.com            |
+| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com            |
 | [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#refactor-code-in-the-ide)       | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>         | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
 
 <html>
 <small>Footnotes:
@@ -66,7 +66,7 @@ You can ask questions about how GitLab works. Things like:
 
 NOTE:
 This feature is not currently supported in self-managed instances.
-See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11600) for more infomation.
+See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11600) for more information.
 
 ### Ask about a specific issue
 
@@ -87,7 +87,7 @@ You can ask about a specific GitLab issue. For example:
 You can ask about a specific GitLab epic. For example:
 
 - `Generate a summary for the epic identified via this link: <link to your epic>`
-- `Generate a concise summary of the opened epic.`
+- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
 - `What are the unique use cases raised by commenters in <link to your epic>?`
 
 ### Ask about code
@@ -99,12 +99,30 @@ You can also ask GitLab Duo Chat to generate code:
 
 - `Write a Ruby function that prints 'Hello, World!' when called.`
 - `Develop a JavaScript program that simulates a two-player Tic-Tac-Toe game. Provide both game logic and user interface, if applicable.`
+- `Create a regular expression for parsing IPv4 and IPv6 addresses in Python.`
+- `Generate code for parsing a syslog log file in Java. Use regular expressions when possible, and store the results in a hash map.`
+- `Create a product-consumer example with threads and shared memory in C++. Use atomic locks when possible.`
+- `Generate Rust code for high performance gRPC calls. Provide a source code example for a server and client.`
 
 And you can ask GitLab Duo Chat to explain code:
 
 - `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
 
 Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to explain the selected code in your editor.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
+### Ask about errors
+
+Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
+
+- `Explain this error message in Java: Int and system cannot be resolved to a type`
+- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
+- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
+- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
+- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Ask about CI/CD
 
@@ -114,6 +132,19 @@ Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to
 You can ask GitLab Duo Chat to create a CI/CD configuration:
 
 - `Create a .gitlab-ci.yml configuration file for testing and building a Ruby on Rails application in a GitLab CI/CD pipeline.`
+- `Create a CI/CD configuration for building and linting a Python application.`
+- `Create a CI/CD configuration to build and test Rust code.`
+- `Create a CI/CD configuration for C++. Use gcc as compiler, and cmake as build tool.`
+- `Create a CI/CD configuration for VueJS. Use npm, and add SAST security scanning.`
+- `Generate a security scanning pipeline configuration, optimized for Java.`
+
+You can also ask to explain specific job errors by copy-pasting the error message, prefixed with `Please explain this CI/CD job error message, in the context of <language>:`:
+
+- `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
+
+Alternatively, you can use [root cause analysis in CI/CD](ai_features.md#root-cause-analysis).
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Explain code in the IDE
 
@@ -127,6 +158,16 @@ This feature is available in VS Code and the Web IDE only.
 You can also add additional instructions to be considered, for example: `/explain the performance`
 See [Use GitLab Duo Chat in VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
 
+- `/explain focus on the algorithm`
+- `/explain the performance gains or losses using this code`
+- `/explain the object inheritance` (classes, object-oriented)
+- `/explain why a static variable is used here` (C++)
+- `/explain how this function would cause a segmentation fault` (C)
+- `/explain how concurrency works in this context` (Go)
+- `/explain how the request reaches the client` (REST API, database)
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ### Refactor code in the IDE
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for SaaS in GitLab 16.7.
@@ -138,11 +179,16 @@ This feature is available in VS Code and the Web IDE only.
 `/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
 You can include additional instructions to be considered. For example:
 
-- Use a specific coding pattern, for example `/refactor with ActiveRecord`.
+- Use a specific coding pattern, for example `/refactor with ActiveRecord` or `/refactor into a class providing static functions`.
 - Use a specific library, for example `/refactor using mysql`.
+- Use a specific function/algorithm, for example `/refactor into a stringstream with multiple lines` in C++.
 - Refactor to a different programming language, for example `/refactor to TypeScript`.
+- Focus on performance, for example `/refactor improving performance`.
+- Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
 
 See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Write tests in the IDE
 
@@ -156,6 +202,13 @@ This feature is available in VS Code and the Web IDE only.
 You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
 See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
 
+- Use a specific test framework, for example `/tests using the Boost.test framework` (C++) or `/tests using Jest` (JavaScript).
+- Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
+- Focus on performance, for example `/tests focus on performance`.
+- Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ### Ask follow up questions
 
 You can ask follow-up questions to delve deeper into the topic or task at hand.
@@ -166,12 +219,35 @@ A follow-up to the question `Write a Ruby function that prints 'Hello, World!' w
 
 - `Can you also explain how I can call and execute this Ruby function in a typical Ruby environment, such as the command line?`
 
+A follow-up to the question `How to start a C# project?` could be:
+
+- `Can you also please explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ## Enable GitLab Duo Chat
 
 ### For SaaS users
 
 To use this feature, at least one group you're a member of must
 have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+
+You can ask questions about resources that belong only to groups where this setting is enabled.
+
+#### Troubleshoot Chat access
+
+If you have access to chat responses you did not expect, you might be part of
+a group that has the **Use Experiment and Beta features** setting enabled.
+Review the list of your groups and verify which ones you have access to.
+
+GitLab.com administrators can verify your access by running this snippet in the Rails console:
+
+```ruby
+u = User.find_by_username($USERNAME)
+u.member_namespaces.namespace_settings_with_ai_features_enabled.with_ai_supported_plan(:ai_chat)
+```
+
+You can ask specific questions about group resources (like "summarize this issue") when this feature is enabled.
 
 ### For self-managed users
 
@@ -181,8 +257,12 @@ Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 Prerequisites:
 
-- You are using GitLab version 16.8 or later.
-- The Ultimate license is activated in your GitLab instance by using [cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- You have GitLab version 16.8 or later.
+- The Premium or Ultimate license is activated in your GitLab instance by using [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- Your firewalls and HTTP proxy servers allow outbound connections
+  to `cloud.gitlab.com`. To use an HTTP proxy, both
+  `gitLab _workhorse` and `gitLab_rails` have the necessary
+  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - All of the users in your instance have the latest version of their IDE extension.
 - You are an administrator.
 
@@ -199,8 +279,8 @@ To enable GitLab Duo Chat for your self-managed GitLab instance:
 
 You must [manually synchronize your subscription](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
-- You have just purchased a subscription for the Ultimate tier and have upgraded to GitLab 16.8.
-- You already have a subscription for the Ultimate tier and have upgraded to GitLab 16.8.
+- You have just purchased a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
+- You already have a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
 
 Without the manual synchronization, it might take up to 24 hours to activate GitLab Duo Chat on your instance.
 
@@ -225,7 +305,7 @@ To delete all previous conversations:
 ## Use GitLab Duo Chat in the Web IDE
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Status:** Experiment
 
 > - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment)
@@ -253,7 +333,7 @@ GitLab Duo Chat is not available in the Web IDE on self-managed.
 ## Use GitLab Duo Chat in VS Code
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Status:** Experiment
 
 > - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment).
@@ -287,7 +367,7 @@ When you use one of the slash commands you can also add additional instructions 
 
 To disable GitLab Duo Chat in VS Code:
 
-1. Go to **Settings > Extensions > GitLab Workflow (GitLab VSCode Extension)**.
+1. Go to **Settings > Extensions > GitLab Workflow (GitLab VS Code Extension)**.
 1. Clear the **Enable GitLab Duo Chat assistant** checkbox.
 
 ## Give feedback

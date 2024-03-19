@@ -14,7 +14,8 @@ module WikiPages
         execute_hooks(page)
         ServiceResponse.success(payload: { page: page })
       else
-        ServiceResponse.error(message: _('Could not create wiki page'), payload: { page: page })
+        message = page.template? ? _('Could not create wiki template') : _('Could not create wiki page')
+        ServiceResponse.error(message: message, payload: { page: page })
       end
     end
 

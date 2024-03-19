@@ -13,7 +13,6 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 }
 
 .design-detail {
-  background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
   bottom: $calc-application-footer-height;
 
   .comment-indicator {
@@ -26,6 +25,30 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       cursor: grabbing;
     }
   }
+}
+
+.design-disclosure {
+  min-width: 400px;
+  flex-shrink: 4;
+
+  @media (min-width: $breakpoint-lg) {
+    width: 400px !important;
+    flex-shrink: 0;
+  }
+}
+
+.design-disclosure-enter-to {
+  transform: translateX(0);
+}
+
+.design-disclosure-enter,
+.design-disclosure-leave-to {
+  transform: translateX(100%);
+}
+
+.design-disclosure-enter-active,
+.design-disclosure-leave-active {
+  transition: all .2s ease;
 }
 
 .design-list-item {
@@ -106,13 +129,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 }
 
 .image-notes {
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: $gl-padding;
   padding-top: 50px;
   background-color: var(--white, $white);
-  flex-shrink: 0;
-  min-width: 400px;
-  flex-basis: 28%;
 
   .link-inherit-color {
     &,
@@ -129,16 +149,14 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
     &.expanded {
       border-bottom: 1px solid var(--border-color, $border-color);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     .toggle-comments-button:focus {
       text-decoration: none;
       color: var(--blue-600, $blue-600);
     }
-  }
-
-  .design-note-pin {
-    margin-left: 9px;
   }
 
   .design-discussion {
@@ -148,7 +166,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       content: '';
       border-left: 1px solid var(--gray-100, $gray-100);
       position: absolute;
-      left: 22px;
+      left: 12px;
       top: -17px;
       height: 17px;
     }
@@ -159,6 +177,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       transition: background $gl-transition-duration-medium $general-hover-transition-curve;
       border-top-left-radius: $border-radius-default; // same border radius used by .bordered-box
       border-top-right-radius: $border-radius-default;
+
+      video {
+        width: 100%;
+      }
     }
 
     .reply-wrapper {

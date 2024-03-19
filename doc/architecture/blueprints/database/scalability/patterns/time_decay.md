@@ -10,7 +10,7 @@ description: 'Learn how to operate on large time-decay data'
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326035) in GitLab 14.0.
 
 This document describes the *time-decay pattern* introduced in the
-[Database Scalability Working Group](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/#time-decay-data).
+[Database Scalability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/#time-decay-data).
 We discuss the characteristics of time-decay data, and propose best practices for GitLab development
 to consider in this context.
 

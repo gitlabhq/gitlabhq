@@ -55,7 +55,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
         target_issue = create(:issue)
 
         post api("/projects/#{project.id}/issues/#{issue.iid}/links"),
-             params: { target_project_id: target_issue.project.id, target_issue_iid: target_issue.iid }
+          params: { target_project_id: target_issue.project.id, target_issue_iid: target_issue.iid }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -67,7 +67,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           target_issue = create(:issue)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: -1, target_issue_iid: target_issue.iid }
+            params: { target_project_id: -1, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Project Not Found')
@@ -79,7 +79,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           target_project = create(:project, :public)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: target_project.id, target_issue_iid: non_existing_record_iid }
+            params: { target_project_id: target_project.id, target_issue_iid: non_existing_record_iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
@@ -93,7 +93,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           unauthorized_project.add_guest(user)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
+            params: { target_project_id: unauthorized_project.id, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response['message']).to eq("Couldn't link issue. You must have at least the Reporter role in both projects.")
@@ -106,7 +106,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           target_issue = create(:issue, :confidential, project: project)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
+            params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Not found')
@@ -119,7 +119,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
           target_issue = create(:issue, project: project)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
+            params: { target_project_id: project.id, target_issue_iid: target_issue.iid }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Project Not Found')
@@ -135,7 +135,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
         it 'returns 201 status and contains the expected link response' do
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to' }
+            params: { target_project_id: project.id, target_issue_iid: target_issue.iid, link_type: 'relates_to' }
 
           expect_link_response(link_type: 'relates_to')
           expect(json_response['source_issue']['id']).to eq(issue.id)
@@ -144,7 +144,7 @@ RSpec.describe API::IssueLinks, feature_category: :team_planning do
 
         it 'returns 201 when sending full path of target project' do
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
-               params: { target_project_id: project.full_path, target_issue_iid: target_issue.iid }
+            params: { target_project_id: project.full_path, target_issue_iid: target_issue.iid }
 
           expect_link_response
         end

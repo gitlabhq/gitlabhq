@@ -1,0 +1,8 @@
+---
+name: merge_when_checks_pass
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121828
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/412995
+milestone: '16.2'
+type: development
+group: group::code review
+default_enabled: false

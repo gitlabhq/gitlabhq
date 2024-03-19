@@ -52,6 +52,32 @@ const runnerJobCountData = {
   },
 };
 
+const usersData = {
+  data: {
+    users: {
+      nodes: [
+        {
+          id: 'gid://gitlab/User/1',
+          avatarUrl: '/avatar.jpg',
+          webUrl: '/root',
+          name: 'Admin Istrator',
+          username: 'root',
+          __typename: 'UserCore',
+        },
+        {
+          id: 'gid://gitlab/User/2',
+          avatarUrl: '/root',
+          webUrl: '/user2',
+          name: 'Billy West',
+          username: 'user2',
+          __typename: 'UserCore',
+        },
+      ],
+      __typename: 'UserCoreConnection',
+    },
+  },
+};
+
 // Other mock data
 
 // Mock searches and their corresponding urls
@@ -336,16 +362,76 @@ export const mockSearchExamples = [
       first: RUNNER_PAGE_SIZE,
     },
   },
+  {
+    name: 'creator username',
+    urlQuery: '?creator[]=root',
+    search: {
+      runnerType: null,
+      membership: DEFAULT_MEMBERSHIP,
+      filters: [{ type: 'creator', value: { data: 'root', operator: '=' } }],
+      pagination: {},
+      sort: CREATED_DESC,
+    },
+    graphqlVariables: {
+      creator: 'root',
+      membership: DEFAULT_MEMBERSHIP,
+      sort: CREATED_DESC,
+      first: RUNNER_PAGE_SIZE,
+    },
+  },
 ];
-
-export const onlineContactTimeoutSecs = 2 * 60 * 60;
-export const staleTimeoutSecs = 7889238; // Ruby's `3.months`
 
 export const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 export const mockAuthenticationToken = 'MOCK_AUTHENTICATION_TOKEN';
 
 export const newRunnerPath = '/runners/new';
 export const runnerInstallHelpPage = 'https://docs.example.com/runner/install/';
+
+export const projectRunnerCloudProvisioningSteps = {
+  __typename: 'Project',
+  id: 'gid://gitlab/Project/1',
+  runnerCloudProvisioning: {
+    __typename: 'CiRunnerGoogleCloudProvisioning',
+    projectSetupShellScript: '#!/bin/bash echo "hello world!"',
+    provisioningSteps: [
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Save the Terraform script to a file',
+        languageIdentifier: 'terraform',
+        instructions: 'terraform...',
+      },
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Apply the Terraform script',
+        languageIdentifier: 'shell',
+        instructions: '#!/bin/bash\n\nterraform plan...',
+      },
+    ],
+  },
+};
+
+export const groupRunnerCloudProvisioningSteps = {
+  __typename: 'Group',
+  id: 'gid://gitlab/Group/24',
+  runnerCloudProvisioning: {
+    __typename: 'CiRunnerGoogleCloudProvisioning',
+    projectSetupShellScript: '#!/bin/bash echo "hello world!"',
+    provisioningSteps: [
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Save the Terraform script to a file',
+        languageIdentifier: 'terraform',
+        instructions: 'mock instructions...',
+      },
+      {
+        __typename: 'CiRunnerCloudProvisioningStep',
+        title: 'Apply the Terraform script',
+        languageIdentifier: 'shell',
+        instructions: 'mock instructions...',
+      },
+    ],
+  },
+};
 
 export {
   allRunnersData,
@@ -365,4 +451,5 @@ export {
   runnerFormData,
   runnerCreateResult,
   runnerForRegistration,
+  usersData,
 };

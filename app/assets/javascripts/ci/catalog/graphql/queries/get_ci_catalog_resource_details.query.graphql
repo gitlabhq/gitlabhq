@@ -23,7 +23,7 @@ query getCiCatalogResourceDetails($fullPath: ID!) {
           }
         }
         name
-        releasedAt
+        createdAt
       }
     }
   }

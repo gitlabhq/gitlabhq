@@ -22,7 +22,7 @@ class PersonalProjectsFinder < UnionFinder
 
     segments = all_projects(current_user)
 
-    find_union(segments, Project).with_namespace.order_updated_desc
+    find_union(segments, Project).with_namespace.sorted_by_activity
   end
 
   private

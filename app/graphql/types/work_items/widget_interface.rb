@@ -24,7 +24,7 @@ module Types
         ::Types::WorkItems::Widgets::AwardEmojiType,
         ::Types::WorkItems::Widgets::LinkedItemsType,
         ::Types::WorkItems::Widgets::ParticipantsType,
-        ::Types::WorkItems::Widgets::TimeTrackingType,
+        ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingType,
         ::Types::WorkItems::Widgets::DesignsType
       ].freeze
 
@@ -64,7 +64,7 @@ module Types
         when ::WorkItems::Widgets::Participants
           ::Types::WorkItems::Widgets::ParticipantsType
         when ::WorkItems::Widgets::TimeTracking
-          ::Types::WorkItems::Widgets::TimeTrackingType
+          ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
         when ::WorkItems::Widgets::Designs
           ::Types::WorkItems::Widgets::DesignsType
         else

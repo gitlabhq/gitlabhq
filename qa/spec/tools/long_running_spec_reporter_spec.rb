@@ -5,8 +5,14 @@ RSpec.describe QA::Tools::LongRunningSpecReporter do
 
   subject(:reporter) { described_class.execute }
 
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON", get_object: report) }
+  let(:gcs_client) { double("Fog::Storage::GoogleJSON", list_objects: reports, get_object: report) }
   let(:slack_notifier) { double("Slack::Notifier", post: nil) }
+  let(:reports) do
+    double("Google::Apis::StorageV1::Objects", items: [
+      double("Google::Apis::StorageV1::Object", name: "test"),
+      double("Google::Apis::StorageV1::Object", name: "test_2")
+    ])
+  end
 
   before do
     stub_env("SLACK_WEBHOOK", "slack_url")

@@ -36,7 +36,7 @@ prompt, command shell, and command line). Here are some options:
   - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3&viewFallbackFrom=powershell-7).
+  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/overview?view=powershell-7.4).
   - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
 - For Linux users:
   - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
@@ -263,7 +263,23 @@ Add another URL to a remote, so both remotes get updated on each push:
 git remote set-url --add <remote_name> <remote_url>
 ```
 
-## Show the log of reference changes to HEAD
+## Display changes to Git references
+
+A Git **reference** is a name that points to a specific commit, or to another reference.
+The reference `HEAD` is special. It usually points to a reference which points to the tip
+of the current working branch:
+
+```shell
+$ git show HEAD
+commit ab123c (HEAD -> main, origin/main, origin/HEAD)
+```
+
+When a reference is changed in the local repository, Git records the change
+in its **reference logs**. You can display the contents of the reference logs
+if you need to find the old values of a reference. For example, you might want
+to display the changes to `HEAD` in order to undo a change.
+
+To display the list of changes to `HEAD`:
 
 ```shell
 git reflog

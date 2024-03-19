@@ -12,6 +12,7 @@ module RuboCop
     # Tables with large number of columns (> 50 on GitLab.com as of 01/2021)
     WIDE_TABLES = %i[
       ci_builds
+      p_ci_builds
       namespaces
       projects
       users

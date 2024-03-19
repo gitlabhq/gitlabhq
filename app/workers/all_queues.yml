@@ -237,15 +237,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:bulk_imports_stuck_import
-  :worker_name: BulkImports::StuckImportWorker
-  :feature_category: :importers
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
@@ -321,6 +312,15 @@
 - :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
   :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
   :feature_category: :build_artifacts
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:ci_stuck_builds_drop_canceling
+  :worker_name: Ci::StuckBuilds::DropCancelingWorker
+  :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -570,6 +570,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:gitlab_performance_bar_stats
+  :worker_name: GitlabPerformanceBarStatsWorker
+  :feature_category: :metrics
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:gitlab_service_ping
   :worker_name: GitlabServicePingWorker
   :feature_category: :service_ping
@@ -815,7 +824,7 @@
   :tags: []
 - :name: cronjob:projects_inactive_projects_deletion_cron
   :worker_name: Projects::InactiveProjectsDeletionCronWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2154,15 +2163,6 @@
   :weight: 3
   :idempotent: false
   :tags: []
-- :name: pipeline_hooks:build_hooks
-  :worker_name: BuildHooksWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: false
-  :tags: []
 - :name: pipeline_hooks:pipeline_hooks
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
@@ -2865,6 +2865,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_user_cancel_pipeline
+  :worker_name: Ci::UserCancelPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: click_house_audit_event_partition_sync
   :worker_name: ClickHouse::AuditEventPartitionSyncWorker
   :feature_category: :compliance_management
@@ -3125,15 +3134,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
-- :name: gitlab_performance_bar_stats
-  :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :metrics
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :cpu
-  :weight: 1
-  :idempotent: true
   :tags: []
 - :name: google_cloud_create_cloudsql_instance
   :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
@@ -3459,6 +3459,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_process_auto_merge_from_event
+  :worker_name: MergeRequests::ProcessAutoMergeFromEventWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow
@@ -3470,15 +3479,6 @@
   :tags: []
 - :name: merge_requests_resolve_todos_after_approval
   :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: merge_requests_set_reviewer_reviewed
-  :worker_name: MergeRequests::SetReviewerReviewedWorker
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
@@ -3776,7 +3776,7 @@
   :tags: []
 - :name: projects_inactive_projects_deletion_notification
   :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

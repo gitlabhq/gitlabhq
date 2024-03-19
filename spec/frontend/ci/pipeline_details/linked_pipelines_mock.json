@@ -57,8 +57,8 @@
               "has_details": true,
               "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469032",
               "illustration": {
-                "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                "size": "svg-content svg-394",
+                "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                "size": "",
                 "title": "This job requires a manual action",
                 "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
               },
@@ -93,8 +93,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469032",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -222,8 +222,8 @@
               "has_details": true,
               "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469034",
               "illustration": {
-                "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                "size": "svg-content svg-394",
+                "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                "size": "",
                 "title": "This job requires a manual action",
                 "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
               },
@@ -257,8 +257,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-org/gitlab-runner/-/jobs/72469034",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -397,8 +397,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-content svg-394",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                  "size": "",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -432,8 +432,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-content svg-394",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                      "size": "",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -461,8 +461,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-content svg-394",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                  "size": "",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -496,8 +496,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-content svg-394",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                      "size": "",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -525,8 +525,8 @@
                 "has_details": true,
                 "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                 "illustration": {
-                  "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                  "size": "svg-content svg-394",
+                  "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                  "size": "",
                   "title": "This job requires a manual action",
                   "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                 },
@@ -560,8 +560,8 @@
                     "has_details": true,
                     "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                     "illustration": {
-                      "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                      "size": "svg-content svg-394",
+                      "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                      "size": "",
                       "title": "This job requires a manual action",
                       "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                     },
@@ -874,8 +874,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -909,8 +909,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -938,8 +938,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -973,8 +973,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1002,8 +1002,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1037,8 +1037,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1357,8 +1357,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1392,8 +1392,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1421,8 +1421,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1456,8 +1456,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1485,8 +1485,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1520,8 +1520,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1839,8 +1839,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1874,8 +1874,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982853",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1903,8 +1903,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -1938,8 +1938,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982854",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -1967,8 +1967,8 @@
                   "has_details": true,
                   "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                   "illustration": {
-                    "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                    "size": "svg-content svg-394",
+                    "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                    "size": "",
                     "title": "This job requires a manual action",
                     "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                   },
@@ -2002,8 +2002,8 @@
                       "has_details": true,
                       "details_path": "/gitlab-com/gitlab-docs/-/jobs/114982855",
                       "illustration": {
-                        "image": "https://assets.gitlab-static.net/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "https://assets.gitlab-static.net/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -3389,8 +3389,8 @@
                       "has_details": true,
                       "details_path": "/h5bp/html5-boilerplate/-/jobs/545",
                       "illustration": {
-                        "image": "/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                        "size": "svg-content svg-394",
+                        "image": "/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                        "size": "",
                         "title": "This job requires a manual action",
                         "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                       },
@@ -3425,8 +3425,8 @@
                           "has_details": true,
                           "details_path": "/h5bp/html5-boilerplate/-/jobs/545",
                           "illustration": {
-                            "image": "/assets/illustrations/manual_action-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
-                            "size": "svg-content svg-394",
+                            "image": "/assets/illustrations/empty-state/empty-job-manual-md-2b4ca0d1bcfd92aebf33d484e36cbf7a102d007f76b5a0cfea636033a629d601.svg",
+                            "size": "",
                             "title": "This job requires a manual action",
                             "content": "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
                           },

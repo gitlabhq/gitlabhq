@@ -5,6 +5,7 @@ module Operations
     include TokenAuthenticatable
 
     DEFAULT_UNLEASH_API_VERSION = 1
+    FEATURE_FLAGS_CLIENT_TOKEN_PREFIX = 'glffct-'
 
     self.table_name = 'operations_feature_flags_clients'
 
@@ -13,7 +14,9 @@ module Operations
     validates :project, presence: true
     validates :token, presence: true
 
-    add_authentication_token_field :token, encrypted: :required  # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439293
+    add_authentication_token_field :token,
+      encrypted: :required,
+      format_with_prefix: :prefix_for_feature_flags_client_token
 
     attr_accessor :unleash_app_name
 
@@ -44,6 +47,10 @@ module Operations
       "api_version:#{unleash_api_version}:" \
         "app_name:#{unleash_app_name}:" \
         "updated_at:#{last_feature_flag_updated_at.to_i}"
+    end
+
+    def prefix_for_feature_flags_client_token
+      FEATURE_FLAGS_CLIENT_TOKEN_PREFIX
     end
   end
 end

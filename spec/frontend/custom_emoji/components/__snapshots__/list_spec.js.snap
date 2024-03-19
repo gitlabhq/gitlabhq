@@ -68,7 +68,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
           <table
             aria-busy=""
             aria-colcount="4"
-            class="b-table gl-table gl-table-layout-fixed table"
+            class="b-table gl-table gl-table-fixed table"
             role="table"
           >
             <colgroup>

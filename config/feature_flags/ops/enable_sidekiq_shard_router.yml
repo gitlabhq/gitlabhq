@@ -1,0 +1,9 @@
+---
+name: enable_sidekiq_shard_router
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2817
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145495
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444293
+milestone: '16.10'
+group: group::scalability
+type: ops
+default_enabled: false

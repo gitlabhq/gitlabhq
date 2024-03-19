@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Auto Deploy](stages.md#auto-deploy) is a feature that deploys your application to a Kubernetes cluster.
 It consists of several dependencies:
@@ -75,7 +75,7 @@ If your Auto DevOps project has an active environment deployed with the v1 `auto
 
 #### Kubernetes 1.16+
 
-The v2 auto-deploy-image drops support for Kubernetes 1.15 and lower. If you need to upgrade your
+The v2 auto-deploy-image drops support for Kubernetes 1.15 and earlier. If you need to upgrade your
 Kubernetes cluster, follow your cloud provider's instructions. Here's
 [an example on GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster).
 

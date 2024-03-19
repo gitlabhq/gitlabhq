@@ -148,11 +148,11 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   describe 'POST /groups/:id/labels' do
     it 'returns created label when all params are given' do
       post api("/groups/#{group.id}/labels", user),
-           params: {
-             name: valid_new_label_title,
-             color: '#FFAABB',
-             description: 'test'
-           }
+        params: {
+          name: valid_new_label_title,
+          color: '#FFAABB',
+          description: 'test'
+        }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_new_label_title)
@@ -162,10 +162,10 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
 
     it 'returns created label when only required params are given' do
       post api("/groups/#{group.id}/labels", user),
-           params: {
-             name: valid_new_label_title,
-             color: '#FFAABB'
-           }
+        params: {
+          name: valid_new_label_title,
+          color: '#FFAABB'
+        }
 
       expect(response).to have_gitlab_http_status(:created)
       expect(json_response['name']).to eq(valid_new_label_title)
@@ -187,10 +187,10 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
 
     it 'returns 409 if label already exists' do
       post api("/groups/#{group.id}/labels", user),
-           params: {
-             name: group_label1.name,
-             color: '#FFAABB'
-           }
+        params: {
+          name: group_label1.name,
+          color: '#FFAABB'
+        }
 
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Label already exists')
@@ -267,12 +267,12 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   describe 'PUT /groups/:id/labels (deprecated)' do
     it 'returns 200 if name and colors and description are changed' do
       put api("/groups/#{group.id}/labels", user),
-          params: {
-            name: group_label1.name,
-            new_name: valid_new_label_title,
-            color: '#FFFFFF',
-            description: 'test'
-          }
+        params: {
+          name: group_label1.name,
+          new_name: valid_new_label_title,
+          color: '#FFFFFF',
+          description: 'test'
+        }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(valid_new_label_title)
@@ -285,10 +285,10 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
       put api("/groups/#{subgroup.id}/labels", user),
-          params: {
-            name: subgroup_label.name,
-            new_name: valid_new_label_title
-          }
+        params: {
+          name: subgroup_label.name,
+          new_name: valid_new_label_title
+        }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq(valid_new_label_title)
@@ -297,10 +297,10 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
 
     it 'returns 404 if label does not exist' do
       put api("/groups/#{group.id}/labels", user),
-          params: {
-            name: 'not_exists',
-            new_name: valid_new_label_title
-          }
+        params: {
+          name: 'not_exists',
+          new_name: valid_new_label_title
+        }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -324,11 +324,11 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
   describe 'PUT /groups/:id/labels/:label_id' do
     it 'returns 200 if name and colors and description are changed' do
       put api("/groups/#{group.id}/labels/#{valid_group_label_title_1_esc}", user),
-          params: {
-            new_name: valid_new_label_title,
-            color: '#FFFFFF',
-            description: 'test'
-          }
+        params: {
+          new_name: valid_new_label_title,
+          color: '#FFFFFF',
+          description: 'test'
+        }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['name']).to eq(valid_new_label_title)
@@ -341,9 +341,9 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       subgroup_label = create(:group_label, title: 'feature', group: subgroup)
 
       put api("/groups/#{subgroup.id}/labels/#{subgroup_label.name}", user),
-          params: {
-            new_name: valid_new_label_title
-          }
+        params: {
+          new_name: valid_new_label_title
+        }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(subgroup.labels[0].name).to eq(valid_new_label_title)
@@ -352,9 +352,9 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
 
     it 'returns 404 if label does not exist' do
       put api("/groups/#{group.id}/labels/not_exists", user),
-          params: {
-            new_name: valid_new_label_title
-          }
+        params: {
+          new_name: valid_new_label_title
+        }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

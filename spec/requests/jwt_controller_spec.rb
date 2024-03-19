@@ -28,8 +28,8 @@ RSpec.describe JwtController, feature_category: :system_access do
 
     it 'fails authentication' do
       expect(::Gitlab::AuthLogger).to receive(:warn).with(
-        hash_including(message: 'JWT authentication failed',
-                       http_user: 'personal_access_token')).and_call_original
+        hash_including(message: 'JWT authentication failed', http_user: 'personal_access_token')
+      ).and_call_original
 
       get '/jwt/auth', params: parameters, headers: headers
 

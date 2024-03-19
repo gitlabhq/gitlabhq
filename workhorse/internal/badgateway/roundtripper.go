@@ -106,6 +106,15 @@ var developmentErrorTemplate = template.Must(template.New("error502").Parse(`
 
 <head>
 	<title>Waiting for GitLab to boot</title>
+
+	<style>
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: #222;
+				color: #eee;
+			}
+		}
+	</style>
 </head>
 
 <body>

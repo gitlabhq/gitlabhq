@@ -1,5 +1,9 @@
 # Gitlab::Housekeeper
 
+Check out [the original
+blueprint](https://docs.gitlab.com/ee/architecture/blueprints/gitlab_housekeeper/)
+for the motivation behind the `gitlab-housekeeper`.
+
 This is a gem which can be run locally or in CI to do static and dynamic
 analysis of the GitLab codebase and, using a list of predefined "keeps", it will
 automatically create merge requests for things that developers would have
@@ -49,23 +53,23 @@ module Keeps
 
         `touch #{file_name}`
 
-        identifiers = [self.class.name.demodulize, "new_file#{i}"]
+        change = ::Gitlab::Housekeeper::Change.new
 
-        title = "Make new file #{file_name}"
+        change.identifiers = [self.class.name.demodulize, "new_file#{i}"]
 
-        description = <<~MARKDOWN
+        change.title = "Make new file #{file_name}"
+
+        change.description = <<~MARKDOWN
         ## New files
 
         This MR makes a new file #{file_name}
         MARKDOWN
 
-        labels = %w(type::feature)
+        change.labels = %w(type::feature)
 
-        changed_files = [file_name]
+        change.changed_files = [file_name]
 
-        yield(::Gitlab::Housekeeper::Change.new(
-          identifiers, title, description, changed_files, labels
-        ))
+        yield(change)
       end
     end
   end

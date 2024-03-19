@@ -41,7 +41,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post invitations_url(source, stranger),
-               params: { email: email, access_level: Member::MAINTAINER }
+            params: { email: email, access_level: Member::MAINTAINER }
         end
       end
 
@@ -52,7 +52,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
               it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
                 let(:route) do
                   post invitations_url(source, public_send(type)),
-                       params: { email: email, access_level: Member::MAINTAINER }
+                    params: { email: email, access_level: Member::MAINTAINER }
                 end
               end
             end
@@ -70,7 +70,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 post invitations_url(source, maintainer),
-                     params: { email: email, access_level: Member::OWNER }
+                  params: { email: email, access_level: Member::OWNER }
               end
             end
           end
@@ -79,7 +79,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 post invitations_url(source, maintainer),
-                     params: { user_id: access_requester.email, access_level: Member::OWNER }
+                  params: { user_id: access_requester.email, access_level: Member::OWNER }
               end
             end
           end
@@ -91,7 +91,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           it 'transforms the requester into a proper member' do
             expect do
               post invitations_url(source, maintainer),
-                   params: { email: access_requester.email, access_level: Member::MAINTAINER }
+                params: { email: access_requester.email, access_level: Member::MAINTAINER }
 
               expect(response).to have_gitlab_http_status(:created)
             end.to change { source.members.count }.by(1)
@@ -104,7 +104,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
             expect do
               post invitations_url(source, maintainer),
-                   params: { email: email, access_level: Member::MAINTAINER }
+                params: { email: email, access_level: Member::MAINTAINER }
 
               expect(response).to have_gitlab_http_status(:created)
             end.to change { member.reset.access_level }.from(Member::DEVELOPER).to(Member::MAINTAINER)
@@ -115,7 +115,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'adds a new member by email' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { email: email, access_level: Member::DEVELOPER }
+              params: { email: email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1)
@@ -124,7 +124,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'adds a new member by confirmed primary email' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { email: stranger.email, access_level: Member::DEVELOPER }
+              params: { email: stranger.email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.non_invite.count }.by(1)
@@ -144,7 +144,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'adds a new member as an invite for unconfirmed primary email' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
+              params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(0)
@@ -164,7 +164,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'adds a new member by user_id' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+              params: { user_id: stranger.id, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.non_invite.count }.by(1)
@@ -173,7 +173,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'adds new members with email and user_id' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { email: email, user_id: stranger.id, access_level: Member::DEVELOPER }
+              params: { email: email, user_id: stranger.id, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(1)
@@ -184,7 +184,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
             email_list = [email, email2].join(',')
 
             post invitations_url(source, maintainer),
-                 params: { email: email_list, access_level: Member::DEVELOPER }
+              params: { email: email_list, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(2)
@@ -197,7 +197,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
             user_id_list = "#{stranger.id},#{stranger2.id}"
 
             post invitations_url(source, maintainer),
-                 params: { email: email_list, user_id: user_id_list, access_level: Member::DEVELOPER }
+              params: { email: email_list, user_id: user_id_list, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.invite.count }.by(2).and change { source.members.non_invite.count }.by(2)
@@ -213,7 +213,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           parent.add_developer(stranger)
 
           post invitations_url(source, maintainer),
-               params: { email: stranger.email, access_level: Member::REPORTER }
+            params: { email: stranger.email, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['message'][stranger.email])
@@ -228,7 +228,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
           parent.add_developer(stranger)
 
           post invitations_url(source, maintainer),
-               params: { email: stranger.email, access_level: Member::MAINTAINER }
+            params: { email: stranger.email, access_level: Member::MAINTAINER }
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -237,7 +237,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       context 'access expiry date' do
         subject do
           post invitations_url(source, maintainer),
-               params: { email: email, access_level: Member::DEVELOPER, expires_at: expires_at }
+            params: { email: email, access_level: Member::DEVELOPER, expires_at: expires_at }
         end
 
         context 'when set to a date in the past' do
@@ -305,7 +305,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
         it 'returns error' do
           expect do
             post invitations_url(source, maintainer),
-                 params: { email: project_bot.email, access_level: Member::DEVELOPER }
+              params: { email: project_bot.email, access_level: Member::DEVELOPER }
 
             expect(json_response['status']).to eq 'error'
             expect(json_response['message'][project_bot.email]).to include('User project bots cannot be added to other groups / projects')
@@ -315,7 +315,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it "updates an already existing active member" do
         post invitations_url(source, maintainer),
-             params: { email: developer.email, access_level: Member::MAINTAINER }
+          params: { email: developer.email, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['status']).to eq("success")
@@ -324,7 +324,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when the invite params of email and user_id are not sent' do
         post invitations_url(source, maintainer),
-             params: { access_level: Member::MAINTAINER }
+          params: { access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
@@ -332,7 +332,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when the email is blank' do
         post invitations_url(source, maintainer),
-             params: { email: '', access_level: Member::MAINTAINER }
+          params: { email: '', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
@@ -340,7 +340,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when the user_id is blank' do
         post invitations_url(source, maintainer),
-             params: { user_id: '', access_level: Member::MAINTAINER }
+          params: { user_id: '', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('400 Bad request - Must provide either email or user_id as a parameter')
@@ -348,7 +348,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when the email list is not a valid format' do
         post invitations_url(source, maintainer),
-             params: { email: %w[email1@example.com not-an-email], access_level: Member::MAINTAINER }
+          params: { email: %w[email1@example.com not-an-email], access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('email contains an invalid email address')
@@ -356,7 +356,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when the comma-separated email list is not a valid format' do
         post invitations_url(source, maintainer),
-             params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
+          params: { email: 'email1@example.com,not-an-email', access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('email contains an invalid email address')
@@ -364,14 +364,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
 
       it 'returns 400 when access_level is not given' do
         post invitations_url(source, maintainer),
-             params: { email: email }
+          params: { email: email }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not valid' do
         post invitations_url(source, maintainer),
-             params: { email: email, access_level: non_existing_record_access_level }
+          params: { email: email, access_level: non_existing_record_access_level }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -379,24 +379,8 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
+      let(:source) { project }
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -458,24 +442,8 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /groups/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -587,46 +555,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'GET /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
+      let(:source) { project }
     end
   end
 
   describe 'GET /groups/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
     end
   end
 
@@ -712,46 +648,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'DELETE /projects/:id/inviations/:email' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
+      let(:source) { project }
     end
   end
 
   describe 'DELETE /groups/:id/inviations/:email' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
+      let(:source) { group }
     end
   end
 
@@ -859,27 +763,9 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
     end
   end
 
-  describe 'PUT /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
-    end
-  end
-
   describe 'PUT /groups/:id/invitations' do
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
+      let(:source) { group }
     end
   end
 end

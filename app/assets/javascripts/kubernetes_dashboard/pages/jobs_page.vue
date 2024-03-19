@@ -22,13 +22,15 @@ export default {
         return (
           data?.k8sJobs?.map((job) => {
             return {
-              name: job.metadata?.name,
-              namespace: job.metadata?.namespace,
+              name: job.metadata.name,
+              namespace: job.metadata.namespace,
               status: calculateJobStatus(job),
-              age: getAge(job.metadata?.creationTimestamp),
-              labels: job.metadata?.labels,
-              annotations: job.metadata?.annotations,
+              age: getAge(job.metadata.creationTimestamp),
+              labels: job.metadata.labels,
+              annotations: job.metadata.annotations,
               kind: s__('KubernetesDashboard|Job'),
+              spec: job.spec,
+              fullStatus: job.status,
             };
           }) || []
         );

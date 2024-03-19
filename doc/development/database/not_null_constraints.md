@@ -65,7 +65,10 @@ The steps required are:
 
    1. Ensure $ATTRIBUTE value is being set at the application level.
       1. If the attribute has a default value, add the default value to the model so the default value is set for new records.
-      1. Update all places in the code where the attribute is being set to `nil`, if any, for new and existing records.
+      1. Update all places in the code where the attribute would be set to `nil`, if any, for new and existing records. Note that
+         using ActiveRecord callbacks such as `before_save` and `before_validation` may not be sufficient, as some processes
+         skip these callbacks. `update_column`, `update_columns`, and bulk operations such as `insert_all` and `update_all` are some
+         examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
      NOTE:
@@ -208,24 +211,6 @@ In this case the number of releases depends on the amount of time needed to migr
 scheduled after the background migration has completed, which could be several releases after the constraint was added.
 
 1. Release `N.M`:
-   - Add the `NOT NULL` constraint without validating it:
-
-     ```ruby
-     # db/post_migrate/
-     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
-       disable_ddl_transaction!
-       milestone '16.7'
-
-       def up
-         add_not_null_constraint :merge_request_diffs, :project_id, validate: false
-       end
-
-       def down
-         remove_not_null_constraint :merge_request_diffs, :project_id
-       end
-     end
-     ```
-
    - Add the background-migration to fix the existing records:
 
      ```ruby
@@ -253,6 +238,8 @@ scheduled after the background migration has completed, which could be several r
      ```
 
 1. Release `N.M+X`, where `X` is the number of releases the migration was running:
+   - [Verify that all existing records are fixed](#check-if-all-records-are-fixed-next-release).
+
    - Cleanup the background migration:
 
      ```ruby
@@ -280,7 +267,41 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-   - **Optional.** For very large tables, schedule asynchronous validation of the `NOT NULL` constraint:
+   - Add the `NOT NULL` constraint:
+
+     ```ruby
+     # db/post_migrate/
+     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.7'
+
+       def up
+         add_not_null_constraint :merge_request_diffs, :project_id
+       end
+
+       def down
+         remove_not_null_constraint :merge_request_diffs, :project_id
+       end
+     end
+     ```
+
+   - **Optional.** For very large tables, add an invalid `NOT NULL` constraint and schedule asynchronous validation:
+
+     ```ruby
+     # db/post_migrate/
+     class AddMergeRequestDiffsProjectIdNotNullConstraint < Gitlab::Database::Migration[2.2]
+       disable_ddl_transaction!
+       milestone '16.7'
+
+       def up
+         add_not_null_constraint :merge_request_diffs, :project_id, validate: false
+       end
+
+       def down
+         remove_not_null_constraint :merge_request_diffs, :project_id
+       end
+     end
+     ```
 
      ```ruby
      # db/post_migrate/
@@ -299,7 +320,7 @@ scheduled after the background migration has completed, which could be several r
      end
      ```
 
-1. Validate the `NOT NULL` constraint (if the constraint was validated asynchronously, wait for this validation to finish):
+1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
 
    ```ruby
    # db/post_migrate/

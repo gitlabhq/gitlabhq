@@ -80,7 +80,7 @@ export default {
     filteredAndModifiedFields() {
       return FIELDS.filter(
         (field) => this.tableFields.includes(field.key) && this.showField(field),
-      ).map(this.modifyFieldDefinition);
+      ).map((item) => this.modifyFieldDefinition(item));
     },
     userIsLoggedIn() {
       return this.currentUserId !== null;
@@ -279,10 +279,14 @@ export default {
       </template>
 
       <template #cell(invited)="{ item: { createdAt, createdBy, invite, state } }">
-        <created-at :date="createdAt" :created-by="createdBy" />
-        <gl-badge v-if="inviteBadge(invite, state)" data-testid="invited-badge">{{
-          inviteBadge(invite, state)
-        }}</gl-badge>
+        <div
+          class="gl-display-flex gl-align-items-center gl-justify-content-end gl-lg-justify-content-start gl-flex-wrap gl-gap-3"
+        >
+          <created-at :date="createdAt" :created-by="createdBy" />
+          <gl-badge v-if="inviteBadge(invite, state)" data-testid="invited-badge"
+            >{{ inviteBadge(invite, state) }}
+          </gl-badge>
+        </div>
       </template>
 
       <template #cell(requested)="{ item: { createdAt } }">

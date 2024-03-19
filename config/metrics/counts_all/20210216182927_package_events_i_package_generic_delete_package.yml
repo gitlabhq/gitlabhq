@@ -4,7 +4,7 @@ key_path: counts.package_events_i_package_generic_delete_package
 description: A count of generic packages that have been deleted
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: all

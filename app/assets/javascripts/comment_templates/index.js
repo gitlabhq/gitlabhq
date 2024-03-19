@@ -6,6 +6,8 @@ import routes from './routes';
 import App from './components/app.vue';
 
 export const initCommentTemplates = ({
+  savedReplyType,
+  path,
   fetchAllQuery,
   fetchSingleQuery,
   createMutation,
@@ -31,6 +33,9 @@ export const initCommentTemplates = ({
     router,
     apolloProvider,
     provide: {
+      path,
+      namespaceId: el.dataset.namespaceId,
+      savedReplyType,
       fetchAllQuery,
       fetchSingleQuery,
       createMutation,

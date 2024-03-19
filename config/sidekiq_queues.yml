@@ -179,6 +179,8 @@
   - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
+- - ci_user_cancel_pipeline
+  - 1
 - - click_house_audit_event_partition_sync
   - 1
 - - click_house_ci_finished_builds_sync
@@ -187,21 +189,19 @@
   - 1
 - - compliance_management_chain_of_custody_report
   - 1
-- - compliance_management_framework_export_mailer
-  - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
 - - compliance_management_pending_status_check
   - 1
+- - compliance_management_project_framework_export_mailer
+  - 1
 - - compliance_management_standards_adherence_export_mailer
+  - 1
+- - compliance_management_standards_base
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals_group
-  - 1
-- - compliance_management_standards_gitlab_base
-  - 1
-- - compliance_management_standards_gitlab_group_base
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author
   - 1
@@ -211,7 +211,13 @@
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_committer_group
   - 1
+- - compliance_management_standards_group_base
+  - 1
 - - compliance_management_standards_refresh
+  - 1
+- - compliance_management_standards_soc2_at_least_one_non_author_approval
+  - 1
+- - compliance_management_standards_soc2_at_least_one_non_author_approval_group
   - 1
 - - compliance_management_update_default_framework
   - 1
@@ -326,8 +332,6 @@
 - - github_import_advance_stage
   - 1
 - - github_importer
-  - 1
-- - gitlab_performance_bar_stats
   - 1
 - - gitlab_subscriptions_add_on_purchases_bulk_refresh_user_assignments
   - 1
@@ -477,13 +481,13 @@
   - 1
 - - merge_requests_process_approval_auto_merge
   - 1
+- - merge_requests_process_auto_merge_from_event
+  - 1
 - - merge_requests_remove_user_approval_rules
   - 1
 - - merge_requests_resolve_todos
   - 1
 - - merge_requests_resolve_todos_after_approval
-  - 1
-- - merge_requests_set_reviewer_reviewed
   - 1
 - - merge_requests_stream_approval_audit_event
   - 1
@@ -653,7 +657,13 @@
   - 1
 - - requirements_management_process_requirements_reports
   - 1
+- - sbom_process_transfer_events
+  - 1
 - - sbom_reports
+  - 1
+- - sbom_sync_archived_status
+  - 1
+- - sbom_sync_project_traversal_ids
   - 1
 - - search_elastic_default_branch_changed
   - 1
@@ -674,8 +684,6 @@
 - - search_zoekt_namespace_indexer
   - 1
 - - search_zoekt_project_transfer
-  - 1
-- - security_auto_fix
   - 1
 - - security_generate_policy_violation_comment
   - 1
@@ -704,6 +712,8 @@
 - - security_scans
   - 2
 - - security_scans_purge_by_job_id
+  - 1
+- - security_sync_policy_violation_comment
   - 1
 - - security_sync_scan_policies
   - 1
@@ -753,6 +763,8 @@
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
+- - vulnerabilities_process_archived_events
+  - 1
 - - vulnerabilities_process_transfer_events
   - 1
 - - vulnerabilities_remove_all_vulnerabilities
@@ -765,6 +777,8 @@
   - 1
 - - vulnerability_exports_export_deletion
   - 1
+- - vulnerability_external_issue_links_update_vulnerability_read
+  - 1
 - - web_hook
   - 1
 - - web_hooks_log_destroy
@@ -775,7 +789,13 @@
   - 1
 - - work_items_import_work_items_csv
   - 1
+- - work_items_rolledup_dates_update_parent_rolledup_dates_event_handler
+  - 1
+- - work_items_rolledup_dates_update_rolledup_dates
+  - 1
 - - work_items_update_parent_objectives_progress
+  - 1
+- - work_items_validate_epic_work_item_sync
   - 1
 - - x509_certificate_revoke
   - 1

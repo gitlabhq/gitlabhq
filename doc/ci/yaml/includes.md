@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 
@@ -419,6 +419,7 @@ these keywords:
 
 - [`rules:if`](index.md#rulesif).
 - [`rules:exists`](index.md#rulesexists).
+- [`rules:changes`](index.md#ruleschanges).
 
 ### `include` with `rules:if`
 

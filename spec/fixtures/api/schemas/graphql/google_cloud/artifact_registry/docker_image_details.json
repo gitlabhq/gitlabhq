@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "./docker_image.json"
+    }
+  ],
+  "required": [
+    "imageSizeBytes",
+    "buildTime",
+    "mediaType",
+    "projectId",
+    "location",
+    "repository",
+    "artifactRegistryImageUrl"
+  ],
+  "properties": {
+    "uri": {
+      "type": "string"
+    },
+    "imageSizeBytes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "buildTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mediaType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "artifactRegistryUrl": {
+      "type": "string"
+    }
+  }
+}

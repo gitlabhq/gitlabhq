@@ -35,7 +35,7 @@ export default {
     <!-- eslint-disable vue/require-v-for-key-->
     <pre
       class="gl-w-full"
-    ><span v-if="prompt" class="gl-user-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-user-select-none"/></template></pre>
+    ><span v-if="prompt" class="gl-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-select-none"/></template></pre>
     <!-- eslint-enable vue/require-v-for-key-->
     <clipboard-button :text="clipboard" :title="__('Copy')" />
   </div>

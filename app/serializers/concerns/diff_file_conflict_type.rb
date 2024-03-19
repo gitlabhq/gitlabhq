@@ -6,19 +6,14 @@ module DiffFileConflictType
 
   included do
     expose :conflict_type do |diff_file, options|
-      conflict_file = conflict_file(options, diff_file)
+      next unless options[:conflicts]
 
-      next unless conflict_file
+      diff_file_conflict_type = options[:conflicts][diff_file.new_path]
 
-      conflict_file.conflict_type(diff_file)
-    end
-  end
+      next unless diff_file_conflict_type.present?
+      next diff_file_conflict_type[:conflict_type] unless diff_file.renamed_file?
 
-  private
-
-  def conflict_file(options, diff_file)
-    strong_memoize(:conflict_file) do
-      options[:conflicts] && options[:conflicts][diff_file.new_path]
+      diff_file_conflict_type[:conflict_type_when_renamed]
     end
   end
 end

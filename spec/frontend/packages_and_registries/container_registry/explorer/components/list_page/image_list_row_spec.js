@@ -161,7 +161,7 @@ describe('Image List Row', () => {
 
       expect(findDeleteBtn().props()).toMatchObject({
         title: REMOVE_REPOSITORY_LABEL,
-        tooltipDisabled: item.canDelete,
+        tooltipDisabled: item.userPermissions.destroyContainerRepository,
         tooltipTitle: LIST_DELETE_BUTTON_DISABLED,
       });
     });
@@ -174,15 +174,23 @@ describe('Image List Row', () => {
     });
 
     it.each`
-      canDelete | status                           | state
-      ${false}  | ${''}                            | ${true}
-      ${false}  | ${IMAGE_DELETE_SCHEDULED_STATUS} | ${true}
-      ${true}   | ${IMAGE_DELETE_SCHEDULED_STATUS} | ${true}
-      ${true}   | ${''}                            | ${false}
+      destroyContainerRepository | status                           | state
+      ${false}                   | ${''}                            | ${true}
+      ${false}                   | ${IMAGE_DELETE_SCHEDULED_STATUS} | ${true}
+      ${true}                    | ${IMAGE_DELETE_SCHEDULED_STATUS} | ${true}
+      ${true}                    | ${''}                            | ${false}
     `(
-      'disabled is $state when canDelete is $canDelete and status is $status',
-      ({ canDelete, status, state }) => {
-        mountComponent({ item: { ...item, canDelete, status } });
+      'disabled is $state when userPermissions.destroyContainerRepository is $destroyContainerRepository and status is $status',
+      ({ destroyContainerRepository, status, state }) => {
+        mountComponent({
+          item: {
+            ...item,
+            userPermissions: {
+              destroyContainerRepository,
+            },
+            status,
+          },
+        });
 
         expect(findDeleteBtn().props('disabled')).toBe(state);
       },

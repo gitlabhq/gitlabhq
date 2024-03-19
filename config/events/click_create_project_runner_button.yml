@@ -1,0 +1,20 @@
+---
+description: Project runner created
+category: InternalEventTracking
+action: click_create_project_runner_button
+identifiers:
+  - project
+  - namespace
+  - user
+product_section: ci
+product_stage: verify
+product_group: runner
+milestone: '16.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146063
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

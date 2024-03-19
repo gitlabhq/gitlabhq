@@ -63,7 +63,7 @@ export default {
   },
   i18n: {
     autoStopAtText: s__('Environments|Auto stops %{autoStopAt}'),
-    editButtonText: __('Edit'),
+    editButtonText: s__('Environments|Edit environment'),
     stopButtonText: s__('Environments|Stop'),
     deleteButtonText: s__('Environments|Delete'),
     externalButtonTitle: s__('Environments|Open live environment'),
@@ -89,7 +89,7 @@ export default {
 <template>
   <div>
     <deploy-freeze-alert :name="environment.name" />
-    <header class="top-area gl-justify-content-between">
+    <header class="top-area gl-justify-content-between gl-border-none">
       <div class="gl-display-flex gl-flex-grow-1 gl-align-items-center">
         <h1 class="page-title gl-font-size-h-display">
           {{ environment.name }}

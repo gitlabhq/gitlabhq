@@ -140,7 +140,7 @@ export default {
     >
       <span class="gl-mb-3">{{ percentCompleteText }}</span>
       <span class="gl-w-full">
-        <gl-progress-bar :value="issueCounts.closed" :max="issueCounts.total" variant="success" />
+        <gl-progress-bar :value="issueCounts.closed" :max="issueCounts.total" />
       </span>
     </div>
     <div

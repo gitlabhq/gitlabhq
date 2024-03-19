@@ -195,6 +195,30 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#parallel_diff_btn' do
+    let(:params) do
+      ActionController::Parameters.new({
+        controller: "projects/commit",
+        action: "show",
+        namespace_id: "foo",
+        project_id: "bar",
+        id: commit.sha,
+        view: 'parallel'
+      }).permit!
+    end
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+    end
+
+    subject(:diff_btn) { helper.parallel_diff_btn }
+
+    it 'renders button' do
+      expect(diff_btn).to include('Side-by-side')
+      expect(diff_btn).to include('gl-button btn btn-md btn-default selected')
+    end
+  end
+
   describe "#mark_inline_diffs" do
     let(:old_line) { %(abc 'def') }
     let(:new_line) { %(abc "def") }
@@ -657,6 +681,137 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       it 'returns an empty string' do
         output = helper.submodule_diff_compare_link(diff_file)
         expect(output).to eq('')
+      end
+    end
+  end
+
+  describe '#conflicts_with_types', :use_clean_rails_redis_caching do
+    let(:merge_request) do
+      create(
+        :merge_request,
+        :conflict,
+        merge_status: 'cannot_be_merged',
+        source_branch_sha: 'abc123',
+        target_branch_sha: 'def456'
+      )
+    end
+
+    let(:exception) { nil }
+    let(:conflict_file) { instance_double(Gitlab::Conflict::File, path: 'a') }
+    let(:files) { [conflict_file] }
+
+    before do
+      allow(helper).to receive(:merge_request).and_return(merge_request)
+
+      allow(conflict_file)
+        .to receive(:conflict_type)
+        .and_return(:removed_target_renamed_source)
+
+      allow(conflict_file)
+        .to receive(:conflict_type)
+        .with(when_renamed: true)
+        .and_return(:renamed_same_file)
+
+      allow_next_instance_of(MergeRequests::Conflicts::ListService, merge_request, allow_tree_conflicts: true) do |svc|
+        if exception.present?
+          allow(svc).to receive_message_chain(:conflicts, :files).and_raise(exception)
+        else
+          allow(svc).to receive_message_chain(:conflicts, :files).and_return(files)
+        end
+      end
+    end
+
+    it 'returns list of conflicts indexed by path' do
+      expect(helper.conflicts_with_types).to eq(
+        'a' => {
+          conflict_type: :removed_target_renamed_source,
+          conflict_type_when_renamed: :renamed_same_file
+        }
+      )
+    end
+
+    context 'when merge request can be merged' do
+      let(:merge_request) { create(:merge_request, merge_status: 'can_be_merged') }
+
+      it 'returns nil' do
+        expect(helper.conflicts_with_types).to be_nil
+      end
+    end
+
+    context 'when source branch does not exist' do
+      let(:merge_request) do
+        create(
+          :merge_request,
+          source_branch: 'i-do-no-exist',
+          merge_status: 'cannot_be_merged'
+        )
+      end
+
+      it 'returns nil' do
+        expect(helper.conflicts_with_types).to be_nil
+      end
+    end
+
+    context 'when target branch does not exist' do
+      let(:merge_request) do
+        create(
+          :merge_request,
+          target_branch: 'i-do-no-exist',
+          merge_status: 'cannot_be_merged'
+        )
+      end
+
+      it 'returns nil' do
+        expect(helper.conflicts_with_types).to be_nil
+      end
+    end
+
+    context 'when Gitlab::Git::Conflict::Resolver::ConflictSideMissing exception is raised' do
+      let(:exception) { Gitlab::Git::Conflict::Resolver::ConflictSideMissing }
+
+      it 'returns an empty hash' do
+        expect(helper.conflicts_with_types).to eq({})
+      end
+    end
+
+    context 'when cached' do
+      before do
+        helper.conflicts_with_types # Cache the result
+      end
+
+      it 'does not make a call to MergeRequests::Conflicts::ListService' do
+        expect(MergeRequests::Conflicts::ListService).not_to receive(:new)
+
+        expect(helper.conflicts_with_types).to eq(
+          'a' => {
+            conflict_type: :removed_target_renamed_source,
+            conflict_type_when_renamed: :renamed_same_file
+          }
+        )
+      end
+
+      context 'when source branch SHA changes' do
+        before do
+          allow(merge_request).to receive(:source_branch_sha).and_return('123abc')
+        end
+
+        it 'calls MergeRequests::Conflicts::ListService' do
+          expect(MergeRequests::Conflicts::ListService).to receive(:new)
+
+          helper.conflicts_with_types
+        end
+      end
+
+      context 'when target branch SHA changes' do
+        before do
+          allow(merge_request).to receive(:target_branch_sha).and_return('456def')
+        end
+
+        it 'calls MergeRequests::Conflicts::ListService' do
+          expect(MergeRequests::Conflicts::ListService).to receive(:new)
+
+          helper.conflicts_with_types
+        end
       end
     end
   end

@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Style/MutableConstant:
   Exclude:
-    - 'app/finders/group_members_finder.rb'
     - 'app/graphql/mutations/container_repositories/destroy_tags.rb'
     - 'app/graphql/mutations/packages/bulk_destroy.rb'
     - 'app/helpers/blame_helper.rb'

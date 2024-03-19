@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MemberEntity do
+RSpec.describe MemberEntity, feature_category: :groups_and_projects do
   let_it_be(:current_user) { create(:user) }
 
   let(:entity) { described_class.new(member, { current_user: current_user, group: group, source: source }) }
@@ -23,6 +23,28 @@ RSpec.describe MemberEntity do
       allow(member).to receive(:can_remove?).and_return(true)
 
       expect(entity_hash[:can_remove]).to be(true)
+    end
+
+    context 'when is_source_accessible_to_current_user is true' do
+      before do
+        allow(member).to receive(:is_source_accessible_to_current_user).and_return(true)
+      end
+
+      it 'exposes source and created_by' do
+        expect(entity_hash[:source]).to be_present
+        expect(entity_hash[:created_by]).to be_present
+      end
+    end
+
+    context 'when is_source_accessible_to_current_user is false' do
+      before do
+        allow(member).to receive(:is_source_accessible_to_current_user).and_return(false)
+      end
+
+      it 'does not exposes source and created_by' do
+        expect(entity_hash[:source]).to be_nil
+        expect(entity_hash[:created_by]).to be_nil
+      end
     end
   end
 
@@ -72,12 +94,20 @@ RSpec.describe MemberEntity do
   context 'group member' do
     let(:group) { create(:group) }
     let(:source) { group }
-    let(:member) { GroupMemberPresenter.new(create(:group_member, group: group), current_user: current_user) }
+    let(:member) do
+      GroupMemberPresenter.new(
+        create(:group_member, group: group, created_by: current_user), current_user: current_user
+      )
+    end
 
     it_behaves_like 'member.json'
 
     context 'invite' do
-      let(:member) { GroupMemberPresenter.new(create(:group_member, :invited, group: group), current_user: current_user) }
+      let(:member) do
+        GroupMemberPresenter.new(
+          create(:group_member, :invited, group: group, created_by: current_user), current_user: current_user
+        )
+      end
 
       it_behaves_like 'member.json'
       it_behaves_like 'invite'
@@ -125,12 +155,20 @@ RSpec.describe MemberEntity do
     let(:project) { create(:project) }
     let(:group) { project.group }
     let(:source) { project }
-    let(:member) { ProjectMemberPresenter.new(create(:project_member, project: project), current_user: current_user) }
+    let(:member) do
+      ProjectMemberPresenter.new(
+        create(:project_member, project: project, created_by: current_user), current_user: current_user
+      )
+    end
 
     it_behaves_like 'member.json'
 
     context 'invite' do
-      let(:member) { ProjectMemberPresenter.new(create(:project_member, :invited, project: project), current_user: current_user) }
+      let(:member) do
+        ProjectMemberPresenter.new(
+          create(:project_member, :invited, project: project, created_by: current_user), current_user: current_user
+        )
+      end
 
       it_behaves_like 'member.json'
       it_behaves_like 'invite'

@@ -27,21 +27,4 @@ RSpec.describe Banzai::Pipeline::PreProcessPipeline, feature_category: :team_pla
 
     expect(result[:output]).to eq('foo foo f...')
   end
-
-  context 'when multiline blockquote' do
-    it 'data-sourcepos references correct line in source markdown' do
-      markdown = <<~MD
-        >>>
-        foo
-        >>>
-      MD
-
-      pipeline_output = described_class.call(markdown, {})[:output]
-      pipeline_output = Banzai::Pipeline::PlainMarkdownPipeline.call(pipeline_output, {})[:output]
-      sourcepos = pipeline_output.at('blockquote')['data-sourcepos']
-      source_line = sourcepos.split(':').first.to_i
-
-      expect(markdown.lines[source_line - 1]).to eq "foo\n"
-    end
-  end
 end

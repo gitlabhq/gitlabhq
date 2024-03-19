@@ -1,6 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { GlSprintf, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -45,6 +45,7 @@ export default {
   },
   computed: {
     ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel', 'query']),
+    ...mapGetters(['currentScope']),
     zoektHelpUrl() {
       return helpPagePath(ZOEKT_HELP_PAGE);
     },
@@ -62,12 +63,12 @@ export default {
       });
     },
     isZoekt() {
-      return this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope === SCOPE_BLOB;
+      return this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope === SCOPE_BLOB;
     },
     isAdvancedSearch() {
       return (
         this.searchType === ADVANCED_SEARCH_TYPE ||
-        (this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope !== SCOPE_BLOB)
+        (this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope !== SCOPE_BLOB)
       );
     },
     searchTypeTestId() {
@@ -87,7 +88,7 @@ export default {
         case SEARCH_LEVEL_GROUP:
           return true;
         case SEARCH_LEVEL_PROJECT: {
-          if (this.query.scope !== SCOPE_BLOB) {
+          if (this.currentScope !== SCOPE_BLOB) {
             return true;
           }
           return !repoRef || repoRef === this.defaultBranchName;

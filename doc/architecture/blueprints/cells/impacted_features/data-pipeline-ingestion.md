@@ -15,7 +15,7 @@ we can document the reasons for not choosing this approach.
 
 # Cells: Data pipeline ingestion
 
-The Cells architecture will have a significant impact on the current [data pipeline](https://about.gitlab.com/handbook/business-technology/data-team/platform/pipelines/SAAS-Gitlab-com/) which exports data from Postgres to Snowflake for the use of data analytics. This data pipeline fulfils many use cases (i.e. SAAS Service ping, Gainsight metrics and Reporting and Analytics of the SAAS Platform).
+The Cells architecture will have a significant impact on the current [data pipeline](https://internal.gitlab.com/handbook/enterprise-data/platform/pipelines/saas-gitlab-com/) which exports data from Postgres to Snowflake for the use of data analytics. This data pipeline fulfils many use cases (i.e. SAAS Service ping, Gainsight metrics and Reporting and Analytics of the SAAS Platform).
 
 ## 1. Definition
 

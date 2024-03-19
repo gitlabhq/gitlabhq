@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md)
 
@@ -211,6 +211,112 @@ Example request:
 ```shell
 curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/allowlist/2" \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header 'Content-Type: application/json'
+```
+
+## Get a project's CI/CD job token allowlist of groups
+
+Fetch the CI/CD job token allowlist of groups (job token scope) of a project.
+
+```plaintext
+GET /projects/:id/job_token_scope/groups_allowlist
+```
+
+Supported attributes:
+
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+This endpoint supports [offset-based pagination](rest/index.md#offset-based-pagination).
+
+If successful, returns [`200`](rest/index.md#status-codes) and a list of groups with limited fields for each project.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 4,
+    "web_url": "https://gitlab.example.com/groups/diaspora/diaspora-group",
+    "name": "namegroup"
+  },
+  {
+    ...
+  }
+]
+```
+
+## Add a group to a CI/CD job token allowlist
+
+Add a group to the CI/CD job token allowlist of a project.
+
+```plaintext
+POST /projects/:id/job_token_scope/groups_allowlist
+```
+
+Supported attributes:
+
+| Attribute         | Type           | Required | Description |
+|-------------------|----------------|----------|-------------|
+| `id`              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `target_group_id` | integer        | Yes      | The ID of the group added to the CI/CD job token groups allowlist. |
+
+If successful, returns [`201`](rest/index.md#status-codes) and the following response attributes:
+
+| Attribute           | Type    | Description |
+|---------------------|---------|-------------|
+| `source_project_id` | integer | ID of the project containing the CI/CD job token inbound allowlist to update. |
+| `target_group_id`   | integer | ID of the group that is added to the source project's groups allowlist. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist" \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header 'Content-Type: application/json' \
+  --data '{ "target_group_id": 2 }'
+```
+
+Example response:
+
+```json
+{
+  "source_project_id": 1,
+  "target_group_id": 2
+}
+```
+
+## Remove a group from a CI/CD job token allowlist
+
+Remove a group from the CI/CD job token allowlist of a project.
+
+```plaintext
+DELETE /projects/:id/job_token_scope/groups_allowlist/:target_group_id
+```
+
+Supported attributes:
+
+| Attribute         | Type           | Required | Description |
+|-------------------|----------------|----------|-------------|
+| `id`              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `target_group_id` | integer        | Yes      | The ID of the group that is removed from the CI/CD job token groups allowlist. |
+
+If successful, returns [`204`](rest/index.md#status-codes) and no response body.
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "https://gitlab.example.com/api/v4/projects/1/job_token_scope/groups_allowlist/2" \
   --header 'PRIVATE-TOKEN: <your_access_token>' \
   --header 'Content-Type: application/json'
 ```

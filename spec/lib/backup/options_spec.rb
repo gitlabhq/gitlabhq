@@ -28,6 +28,11 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
       it { is_expected.to respond_to :force= }
     end
 
+    describe 'strategy' do
+      it { is_expected.to respond_to :strategy }
+      it { is_expected.to respond_to :strategy= }
+    end
+
     describe 'skippable_tasks' do
       it { is_expected.to respond_to :skippable_tasks }
       it { is_expected.to respond_to :skippable_tasks= }
@@ -119,6 +124,12 @@ RSpec.describe Backup::Options, feature_category: :backup_restore do
       stub_env('FORCE' => 'yes')
 
       expect { options.extract_from_env! }.to change { options.force }.to(true)
+    end
+
+    it 'extracts STRATEGY env' do
+      stub_env('STRATEGY' => 'copy')
+
+      expect { options.extract_from_env! }.to change { options.strategy }.to(::Backup::Options::Strategy::COPY)
     end
 
     it 'extracts GITLAB_BACKUP_MAX_CONCURRENCY env' do

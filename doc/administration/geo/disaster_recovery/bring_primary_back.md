@@ -105,7 +105,7 @@ Use-cases:
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 When you add a secondary site which has preexisting file data, then the secondary Geo site will avoid re-transferring that data. This applies to:
 

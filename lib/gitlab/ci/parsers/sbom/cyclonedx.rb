@@ -39,6 +39,8 @@ module Gitlab
           def parse_report
             parse_metadata_properties
             parse_components
+            parse_dependencies
+            report.ensure_ancestors!
           end
 
           def parse_metadata_properties
@@ -62,6 +64,15 @@ module Gitlab
               report.add_component(component) if component.ingestible?
             rescue ::Sbom::PackageUrl::InvalidPackageUrl
               report.add_error("/components/#{index}/purl is invalid")
+            end
+          end
+
+          def parse_dependencies
+            data['dependencies']&.each do |dependency_data|
+              ref = dependency_data['ref']
+              dependency_data['dependsOn']&.each do |dependency_ref|
+                report.add_dependency(ref, dependency_ref)
+              end
             end
           end
         end

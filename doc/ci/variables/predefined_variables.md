@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 
@@ -127,6 +127,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_RUNNER_SHORT_TOKEN`           | Jobs only   | all    | 12.3   | The runner's unique ID, used to authenticate new job requests. In [GitLab 14.9](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/2251) and later, the token contains a prefix, and the first 17 characters are used. Prior to 14.9, the first eight characters are used. |
 | `CI_RUNNER_TAGS`                  | Jobs only   | 8.10   | 0.5    | A comma-separated list of the runner tags. |
 | `CI_RUNNER_VERSION`               | Jobs only   | all    | 10.6   | The version of the GitLab Runner running the job. |
+| `CI_SERVER_FQDN`                  | Pipeline    | 16.10  | all    | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. |
 | `CI_SERVER_HOST`                  | Pipeline    | 12.1   | all    | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |
 | `CI_SERVER_NAME`                  | Pipeline    | all    | all    | The name of CI/CD server that coordinates jobs. |
 | `CI_SERVER_PORT`                  | Pipeline    | 12.8   | all    | The port of the GitLab instance URL, without host or protocol. For example `8080`. |

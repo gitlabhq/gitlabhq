@@ -16,7 +16,7 @@
     - else
       = _("Manage applications that you've authorized to use your account.")
   - if oauth_applications_enabled
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card oauth-applications js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container', data: { testid: 'oauth-applications' }}, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
       - c.with_header do
         .gl-new-card-title-wrapper
           %h3.gl-new-card-title
@@ -41,7 +41,7 @@
                   %th= _('Name')
                   %th= _('Callback URL')
                   %th= _('Clients')
-                  %th.last-heading
+                  %th.gl-w-4
               %tbody
                 - @applications.each do |application|
                   %tr{ id: "application_#{application.id}" }

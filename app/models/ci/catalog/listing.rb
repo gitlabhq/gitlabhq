@@ -21,8 +21,10 @@ module Ci
         when 'latest_released_at_desc' then relation.order_by_latest_released_at_desc
         when 'latest_released_at_asc' then relation.order_by_latest_released_at_asc
         when 'created_at_asc' then relation.order_by_created_at_asc
+        when 'created_at_desc' then relation.order_by_created_at_desc
+        when 'star_count_asc' then relation.order_by_star_count(:asc)
         else
-          relation.order_by_created_at_desc
+          relation.order_by_star_count(:desc)
         end
       end
 
@@ -48,7 +50,7 @@ module Ci
       end
 
       def by_scope(relation, scope)
-        if scope == :namespaces && Feature.enabled?(:ci_guard_for_catalog_resource_scope, current_user)
+        if scope == :namespaces
           relation.visible_to_user(current_user)
         else
           relation.public_or_visible_to_user(current_user)

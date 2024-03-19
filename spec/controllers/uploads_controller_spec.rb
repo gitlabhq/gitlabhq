@@ -778,8 +778,8 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
     end
 
     context 'when viewing an organization avatar' do
-      let(:organization_detail) { create(:organization_detail) }
-      let(:organization) { organization_detail.organization }
+      let_it_be(:organization) { create(:organization, :public) }
+      let!(:organization_detail) { create(:organization_detail, organization: organization) }
 
       subject(:request) do
         get(
@@ -793,26 +793,28 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
         )
       end
 
-      context 'when signed in' do
-        before do
-          sign_in(user)
+      context 'when organization is public' do
+        context 'when signed in' do
+          before do
+            sign_in(user)
+          end
+
+          it 'responds with status 200' do
+            request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it_behaves_like 'content publicly cached'
         end
 
-        it 'responds with status 200' do
-          request
-          expect(response).to have_gitlab_http_status(:ok)
+        context 'when not signed in' do
+          it 'responds with status 200' do
+            request
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it_behaves_like 'content publicly cached'
         end
-
-        it_behaves_like 'content publicly cached'
-      end
-
-      context 'when not signed in' do
-        it 'responds with status 200' do
-          request
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        it_behaves_like 'content publicly cached'
       end
     end
   end

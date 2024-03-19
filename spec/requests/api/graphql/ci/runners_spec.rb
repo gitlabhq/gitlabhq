@@ -375,9 +375,7 @@ RSpec.describe 'Group.runners' do
     end
 
     it 'contains custom edge information' do
-      r = GitlabSchema.execute(query,
-                               context: { current_user: group_owner },
-                               variables: { path: group.full_path })
+      r = GitlabSchema.execute(query, context: { current_user: group_owner }, variables: { path: group.full_path })
 
       edges = graphql_dig_at(r.to_h, :data, :group, :runners, :edges)
 

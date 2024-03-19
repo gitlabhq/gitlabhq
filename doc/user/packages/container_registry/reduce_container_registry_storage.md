@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:
@@ -23,7 +23,7 @@ to automatically manage your container registry usage.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
 
@@ -143,7 +143,7 @@ It may take multiple runs to delete all tags.
 
 WARNING:
 GitLab self-managed installations support third-party container registries that comply with the
-[Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
+[Docker Registry HTTP API V2](https://distribution.github.io/distribution/spec/api/)
 specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
 workaround to delete tags when interacting with third-party container registries. Refer to
 issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
@@ -287,7 +287,7 @@ For self-managed instances, those settings can be updated in the [Rails console]
 ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
 ```
 
-They are also available in the [administrator area](../../../administration/admin_area.md):
+They are also available in the [Admin Area](../../../administration/admin_area.md):
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**

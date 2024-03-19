@@ -4,7 +4,7 @@ key_path: redis_hll_counters.user_packages.i_package_rubygems_user_weekly
 description: A weekly count of distinct RubyGems packages published by a user
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 milestone: '13.10'

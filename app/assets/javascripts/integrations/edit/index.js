@@ -19,6 +19,7 @@ function parseDatasetToProps(data) {
   const {
     id,
     type,
+    projectId,
     commentDetail,
     projectKey,
     learnMorePath,
@@ -35,6 +36,9 @@ function parseDatasetToProps(data) {
     vulnerabilitiesIssuetype,
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
+    artifactRegistryPath,
+    personalAccessTokensPath,
+    workloadIdentityFederationPath,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -42,6 +46,7 @@ function parseDatasetToProps(data) {
   const {
     showActive,
     activated,
+    operating,
     activateDisabled,
     editable,
     canTest,
@@ -57,6 +62,7 @@ function parseDatasetToProps(data) {
 
   return {
     initialActivated: activated,
+    operating,
     showActive,
     activateDisabled,
     type,
@@ -66,6 +72,7 @@ function parseDatasetToProps(data) {
     testPath,
     resetPath,
     formPath,
+    personalAccessTokensPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -82,6 +89,10 @@ function parseDatasetToProps(data) {
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
     },
+    googleCloudArtifactRegistryProps: {
+      artifactRegistryPath,
+      workloadIdentityFederationPath,
+    },
     learnMorePath,
     aboutPricingUrl,
     triggerEvents: JSON.parse(triggerEvents),
@@ -90,6 +101,7 @@ function parseDatasetToProps(data) {
     inheritFromId: parseInt(inheritFromId, 10),
     integrationLevel,
     id: parseInt(id, 10),
+    projectId: parseInt(projectId, 10),
     redirectTo,
     shouldUpgradeSlack,
     upgradeSlackUrl,

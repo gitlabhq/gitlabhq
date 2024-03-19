@@ -21,13 +21,15 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     ]
   end
 
+  subject(:execute_service) { described_class.new(integration, batch, association).execute }
+
   shared_examples 'creates integration successfully' do
     def attributes(record)
       record.reload.attributes.except(*excluded_attributes)
     end
 
     it 'updates the inherited integrations' do
-      described_class.new(integration, batch, association).execute
+      execute_service
 
       expect(attributes(created_integration)).to eq attributes(integration)
     end
@@ -36,14 +38,14 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       let(:excluded_attributes) { %w[id service_id integration_id created_at updated_at] }
 
       it 'updates the data fields from inherited integrations' do
-        described_class.new(integration, batch, association).execute
+        execute_service
 
         expect(attributes(created_integration.data_fields))
           .to eq attributes(integration.data_fields)
       end
 
       it 'sets created_at and updated_at timestamps', :freeze_time do
-        described_class.new(integration, batch, association).execute
+        execute_service
 
         expect(created_integration.data_fields.reload).to have_attributes(
           created_at: eq(Time.current),
@@ -53,13 +55,13 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
 
     it 'updates inherit_from_id attributes' do
-      described_class.new(integration, batch, association).execute
+      execute_service
 
       expect(created_integration.reload.inherit_from_id).to eq(inherit_from_id)
     end
 
     it 'sets created_at and updated_at timestamps', :freeze_time do
-      described_class.new(integration, batch, association).execute
+      execute_service
 
       expect(created_integration.reload).to have_attributes(
         created_at: eq(Time.current),
@@ -68,17 +70,78 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     end
   end
 
+  shared_examples 'creates GitLab for Slack app data successfully' do
+    it 'creates associated SlackIntegration record and scopes' do
+      inherited_slack_integration = integration.slack_integration
+
+      execute_service
+
+      expect(created_integration.reload.slack_integration).to have_attributes(
+        team_id: inherited_slack_integration.team_id,
+        team_name: inherited_slack_integration.team_name,
+        alias: expected_alias,
+        user_id: inherited_slack_integration.user_id,
+        bot_user_id: inherited_slack_integration.bot_user_id,
+        bot_access_token: inherited_slack_integration.bot_access_token,
+        created_at: be_present,
+        updated_at: be_present,
+        authorized_scope_names: inherited_slack_integration.authorized_scope_names
+      )
+    end
+
+    context 'when integration is disabled' do
+      before do
+        integration.update!(active: false)
+      end
+
+      it 'does not create associated SlackIntegration record' do
+        execute_service
+
+        expect(created_integration.reload.slack_integration).to be_nil
+      end
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
+      end
+
+      it 'does not create associated SlackIntegration record' do
+        execute_service
+
+        expect(created_integration.reload.slack_integration).to be_nil
+      end
+    end
+  end
+
   context 'with an instance-level integration' do
     let(:integration) { instance_integration }
     let(:inherit_from_id) { integration.id }
 
+    let_it_be_with_reload(:instance_slack_integration) do
+      create(:gitlab_slack_application_integration, :instance,
+        slack_integration: build(:slack_integration,
+          team_id: 'instance_team_id',
+          team_name: 'instance_team_name',
+          alias: 'instance_alias',
+          bot_access_token: 'instance_bot_access_token',
+          authorized_scope_names: %w[instance_scope1 instance_scope2]
+        )
+      )
+    end
+
     context 'with a project association' do
       let!(:project) { create(:project) }
-      let(:created_integration) { project.jira_integration }
+      let(:created_integration) { Integration.find_by(project: project) }
       let(:batch) { Project.where(id: project.id) }
       let(:association) { 'project' }
 
       it_behaves_like 'creates integration successfully'
+
+      it_behaves_like 'creates GitLab for Slack app data successfully' do
+        let(:integration) { instance_slack_integration }
+        let(:expected_alias) { project.full_path }
+      end
     end
 
     context 'with a group association' do
@@ -88,16 +151,34 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       let(:association) { 'group' }
 
       it_behaves_like 'creates integration successfully'
+
+      it_behaves_like 'creates GitLab for Slack app data successfully' do
+        let(:integration) { instance_slack_integration }
+        let(:expected_alias) { group.full_path }
+      end
     end
   end
 
   context 'with a group-level integration' do
     let_it_be(:group) { create(:group) }
 
+    let_it_be_with_reload(:group_slack_integration) do
+      create(:gitlab_slack_application_integration, :group,
+        group: group,
+        slack_integration: build(:slack_integration,
+          team_id: 'group_team_id',
+          team_name: 'group_team_name',
+          alias: 'group_alias',
+          bot_access_token: 'group_bot_access_token',
+          authorized_scope_names: %w[group_scope1 group_scope2]
+        )
+      )
+    end
+
     context 'with a project association' do
       let!(:project) { create(:project, group: group) }
       let(:integration) { create(:jira_integration, :group, group: group) }
-      let(:created_integration) { project.jira_integration }
+      let(:created_integration) { Integration.find_by(project: project) }
       let(:batch) { Project.without_integration(integration).in_namespace(integration.group.self_and_descendants) }
       let(:association) { 'project' }
       let(:inherit_from_id) { integration.id }
@@ -106,9 +187,13 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
 
       context 'with different foreign key of data_fields' do
         let(:integration) { create(:zentao_integration, :group, group: group) }
-        let(:created_integration) { project.zentao_integration }
 
         it_behaves_like 'creates integration successfully'
+      end
+
+      it_behaves_like 'creates GitLab for Slack app data successfully' do
+        let(:integration) { group_slack_integration }
+        let(:expected_alias) { project.full_path }
       end
     end
 
@@ -128,6 +213,11 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
         end
 
         it_behaves_like 'creates integration successfully'
+      end
+
+      it_behaves_like 'creates GitLab for Slack app data successfully' do
+        let(:integration) { group_slack_integration }
+        let(:expected_alias) { subgroup.full_path }
       end
     end
   end

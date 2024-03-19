@@ -1,6 +1,7 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import GlobalSearchDefaultPlaces from '~/super_sidebar/components/global_search/components/global_search_default_places.vue';
+import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 import { contextSwitcherLinks } from '../../../mock_data';
 
 describe('GlobalSearchDefaultPlaces', () => {
@@ -20,6 +21,7 @@ describe('GlobalSearchDefaultPlaces', () => {
 
   const findGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
 
   describe('given no contextSwitcherLinks', () => {
     beforeEach(() => {
@@ -68,6 +70,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Explore',
           href: '/explore',
           extraAttrs: {
+            class: 'show-hover-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Explore"}',
             'data-track-label': 'item_without_id',
@@ -80,6 +83,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Admin area',
           href: '/admin',
           extraAttrs: {
+            class: 'show-hover-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Admin area"}',
             'data-track-label': 'item_without_id',
@@ -92,6 +96,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Leave admin mode',
           href: '/admin/session/destroy',
           extraAttrs: {
+            class: 'show-hover-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Leave admin mode"}',
             'data-track-label': 'item_without_id',
@@ -102,6 +107,10 @@ describe('GlobalSearchDefaultPlaces', () => {
           },
         },
       ]);
+    });
+
+    it('renders the layover component', () => {
+      expect(findLayover().exists()).toBe(true);
     });
   });
 });

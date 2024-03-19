@@ -100,4 +100,5 @@ export const EDITING_MODE_CONTENT_EDITOR = 'contentEditor';
 
 export const CLEAR_AUTOSAVE_ENTRY_EVENT = 'markdown_clear_autosave_entry';
 export const CONTENT_EDITOR_READY_EVENT = 'content_editor_ready';
+export const CONTENT_EDITOR_PASTE = 'content_editor_paste';
 export const MARKDOWN_EDITOR_READY_EVENT = 'markdown_editor_ready';

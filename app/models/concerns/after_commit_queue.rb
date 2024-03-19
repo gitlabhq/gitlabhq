@@ -14,6 +14,11 @@ module AfterCommitQueue
     true
   end
 
+  # When within a database transaction, execute the given block after the transaction is committed.
+  # Otherwise execute the given block
+  # ATTENTION: because this uses `instance_eval` to evaluate the block, instance variables
+  # within the block will be evaluated based on the object on which `run_after_commit_or_now` gets executed.
+  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146208#note_1800349073
   def run_after_commit_or_now(&block)
     if self.class.inside_transaction?
       if connection.current_transaction.records&.include?(self)

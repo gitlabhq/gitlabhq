@@ -168,9 +168,9 @@ The [epic for `~group::database`](https://gitlab.com/groups/gitlab-org/-/epics/6
 
 Identifying solutions for offending tables is driven by the [GitLab Database Team](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/) and respective stage groups.
 
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |    Andreas Brandl       |
-| Engineering Leader           |    Craig Gomes          |
+| Role               | Who |
+|--------------------|-----|
+| Author             | Andreas Brandl |
+| Engineering Leader | Craig Gomes |
 
 <!-- vale gitlab.Spelling = YES -->

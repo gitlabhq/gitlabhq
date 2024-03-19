@@ -7,7 +7,7 @@ import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DangerConfirmModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
@@ -34,6 +34,7 @@ describe('GroupsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findConfirmationModal = () => wrapper.findComponent(DangerConfirmModal);
+  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
 
   it('renders group avatar', () => {
     createComponent();
@@ -108,12 +109,39 @@ describe('GroupsListItem', () => {
     });
   });
 
-  it('renders access role badge', () => {
+  it('renders access level badge', () => {
     createComponent();
 
     expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
       ACCESS_LEVEL_LABELS[group.accessLevel.integerValue],
     );
+  });
+
+  describe('when access level is not available', () => {
+    const { accessLevel, ...groupWithoutAccessLevel } = group;
+    beforeEach(() => {
+      createComponent({
+        propsData: { group: groupWithoutAccessLevel },
+      });
+    });
+
+    it('does not render level role badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when access level is `No access`', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          group: { ...group, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
+        },
+      });
+    });
+
+    it('does not render level role badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
   });
 
   describe('when group has a description', () => {
@@ -186,7 +214,14 @@ describe('GroupsListItem', () => {
 
   describe('when group has actions', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        propsData: {
+          group: {
+            ...group,
+            actionLoadingStates: { [ACTION_DELETE]: false },
+          },
+        },
+      });
     });
 
     it('displays actions dropdown', () => {
@@ -212,12 +247,15 @@ describe('GroupsListItem', () => {
         expect(findConfirmationModal().props()).toMatchObject({
           visible: true,
           phrase: group.fullName,
+          confirmLoading: false,
         });
       });
 
       describe('when deletion is confirmed', () => {
         beforeEach(() => {
-          findConfirmationModal().vm.$emit('confirm');
+          findConfirmationModal().vm.$emit('confirm', {
+            preventDefault: jest.fn(),
+          });
         });
 
         it('emits `delete` event', () => {

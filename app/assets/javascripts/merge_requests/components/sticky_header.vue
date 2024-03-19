@@ -9,7 +9,10 @@ import {
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
+import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -115,6 +118,12 @@ export default {
 
       return this.getNoteableData.source_branch;
     },
+    copySourceBranchTooltip() {
+      const description = __('Copy branch name');
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>b</kbd>`);
+    },
   },
   watch: {
     discussionTabCounter(val) {
@@ -139,7 +148,7 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="gl-relative gl-top-n5"
+    class="gl-relative -gl-top-5"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >
@@ -166,11 +175,10 @@ export default {
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>
                 <clipboard-button
+                  v-gl-tooltip.bottom.html="copySourceBranchTooltip"
                   :text="getNoteableData.source_branch"
-                  :title="__('Copy branch name')"
                   size="small"
                   category="tertiary"
-                  tooltip-placement="bottom"
                   class="gl-m-0! gl-mx-1! js-source-branch-copy gl-align-self-center"
                 />
               </template>

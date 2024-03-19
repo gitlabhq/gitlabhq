@@ -25,7 +25,7 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
 
         expect(Gitlab::JobWaiter).to receive(:notify).with(waiter_key, anything)
 
-        worker.perform(project_id, {}, waiter_key)
+        worker.class.perform_inline(project_id, {}, waiter_key)
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
         expect(Gitlab::BitbucketImport::Logger).to receive(:info).twice
         expect_next(worker.importer_class, project, kind_of(Hash)).to receive(:execute)
 
-        worker.perform(project_id, {}, waiter_key)
+        worker.class.perform_inline(project_id, {}, waiter_key)
       end
 
       it_behaves_like 'notifies the waiter'
@@ -62,7 +62,7 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
         it 'tracks the error' do
           expect(Gitlab::Import::ImportFailureService).to receive(:track).once
 
-          worker.perform(project_id, {}, waiter_key)
+          worker.class.perform_inline(project_id, {}, waiter_key)
         end
       end
 
@@ -74,7 +74,7 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
         it 'tracks the error and raises the error' do
           expect(Gitlab::Import::ImportFailureService).to receive(:track).once
 
-          expect { worker.perform(project_id, {}, waiter_key) }.to raise_error(StandardError)
+          expect { worker.class.perform_inline(project_id, {}, waiter_key) }.to raise_error(StandardError)
         end
       end
     end
@@ -85,7 +85,7 @@ RSpec.shared_examples Gitlab::BitbucketImport::ObjectImporter do
       it 'does not call the importer' do
         expect_next(worker.importer_class).not_to receive(:execute)
 
-        worker.perform(project_id, {}, waiter_key)
+        worker.class.perform_inline(project_id, {}, waiter_key)
       end
 
       it_behaves_like 'notifies the waiter'

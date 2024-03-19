@@ -5,6 +5,21 @@ require 'spec_helper'
 RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_category: :system_access do
   subject(:worker) { described_class.new }
 
+  shared_examples 'sends notification about expiry of bot user tokens' do
+    it 'uses notification service to send the email' do
+      expect_next_instance_of(NotificationService) do |notification_service|
+        expect(notification_service).to receive(:resource_access_tokens_about_to_expire)
+                                          .with(project_bot, expiring_token.name)
+      end
+
+      worker.perform
+    end
+
+    it 'marks the notification as delivered' do
+      expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
+    end
+  end
+
   describe '#perform' do
     context 'when a token needs to be notified' do
       let_it_be(:user) { create(:user) }
@@ -36,7 +51,14 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
 
         # Query count increased for the user look up
-        expect { worker.perform }.not_to exceed_all_query_limit(control).with_threshold(4)
+        # there are still two N+1 queries one for token name look up and another for token update.
+        expect { worker.perform }.not_to exceed_all_query_limit(control).with_threshold(2)
+      end
+
+      it 'does not execute webhook' do
+        expect(::Projects::TriggeredHooks).not_to receive(:execute)
+
+        worker.perform
       end
     end
 
@@ -69,30 +91,65 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
     end
 
     context 'when a token is owned by a project bot' do
-      let_it_be(:maintainer1) { create(:user) }
-      let_it_be(:maintainer2) { create(:user) }
       let_it_be(:project_bot) { create(:user, :project_bot) }
       let_it_be(:project) { create(:project) }
       let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+      let(:fake_wh_service) { double }
 
       before_all do
         project.add_developer(project_bot)
-        project.add_maintainer(maintainer1)
-        project.add_maintainer(maintainer2)
       end
 
-      it 'uses notification service to send the email' do
-        expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).to receive(:resource_access_tokens_about_to_expire)
-                                            .with(project_bot, match_array([expiring_token.name]))
-        end
+      it_behaves_like 'sends notification about expiry of bot user tokens'
+
+      it 'executes access token webhook' do
+        hook_data = {}
+        project_hook = create(:project_hook, project: project, resource_access_token_events: true)
+
+        expect(Gitlab::DataBuilder::ResourceAccessToken).to receive(:build).and_return(hook_data)
+        expect(fake_wh_service).to receive(:async_execute).once
+
+        expect(WebHookService)
+        .to receive(:new).with(project_hook, {}, 'resource_access_token_hooks') { fake_wh_service }
 
         worker.perform
       end
 
-      it 'marks the notification as delivered' do
-        expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
+
+        user1 = create(:user, :project_bot, developer_projects: [project])
+        create(:personal_access_token, user: user1, expires_at: 5.days.from_now)
+
+        user2 = create(:user, :project_bot, developer_projects: [project])
+        create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
+
+        expect { worker.perform }.not_to exceed_all_query_limit(control)
       end
+
+      context 'when access_tokens_webhooks feature is disabled' do
+        before do
+          stub_feature_flags(access_tokens_webhooks: false)
+        end
+
+        it "does not execute access token webhook" do
+          expect(::Projects::TriggeredHooks).not_to receive(:execute)
+
+          worker.perform
+        end
+      end
+    end
+
+    context 'when a token is owned by a group bot' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:group) { create(:group) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+
+      before_all do
+        group.add_developer(project_bot)
+      end
+
+      it_behaves_like 'sends notification about expiry of bot user tokens'
     end
   end
 end

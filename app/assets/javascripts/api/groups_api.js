@@ -48,6 +48,12 @@ export function updateGroup(groupId, data = {}) {
   return axios.put(url, data);
 }
 
+export function deleteGroup(groupId) {
+  const url = buildApiUrl(GROUP_PATH).replace(':id', groupId);
+
+  return axios.delete(url);
+}
+
 export const getGroupTransferLocations = (groupId, params = {}) => {
   const url = buildApiUrl(GROUP_TRANSFER_LOCATIONS_PATH).replace(':id', groupId);
   const defaultParams = { per_page: DEFAULT_PER_PAGE };
@@ -60,4 +66,9 @@ export const getGroupMembers = (groupId, inherited = false) => {
   const url = buildApiUrl(path).replace(':id', groupId);
 
   return axios.get(url);
+};
+
+export const createGroup = (params) => {
+  const url = buildApiUrl(GROUPS_PATH);
+  return axios.post(url, params);
 };

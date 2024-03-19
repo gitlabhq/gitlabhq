@@ -4,7 +4,7 @@ key_path: redis_hll_counters.user_packages.i_package_helm_user_monthly
 description: Distinct user count events for Helm packages in recent 28 days
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 milestone: "14.0"

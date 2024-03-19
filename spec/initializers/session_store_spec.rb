@@ -15,7 +15,12 @@ RSpec.describe 'Session initializer for GitLab' do
 
   describe 'config#session_store' do
     it 'initialized as a redis_store with a proper servers configuration' do
-      expect(subject).to receive(:session_store).with(:redis_store, a_hash_including(redis_store: kind_of(::Redis::Store)))
+      expect(subject).to receive(:session_store).with(
+        Gitlab::Sessions::RedisStore,
+        a_hash_including(
+          redis_server: Gitlab::Redis::Sessions.params.merge(namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE)
+        )
+      )
 
       load_session_store
     end

@@ -21,11 +21,6 @@ export default {
       type: Object,
       required: true,
     },
-    suggestCiYmlData: {
-      type: Object,
-      required: false,
-      default: undefined,
-    },
   },
   data() {
     return {
@@ -56,7 +51,6 @@ export default {
       :filename="filename"
       :templates="templates"
       :initial-template="initialTemplate"
-      :suggest-ci-yml-data="suggestCiYmlData"
       @selected="onTemplateSelected"
     />
   </div>

@@ -5,7 +5,7 @@ description: A monthly count of package tags published to the registry using a d
   token
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: removed
 time_frame: 28d

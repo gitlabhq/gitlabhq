@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
@@ -23,7 +23,7 @@ For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitl
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flags](../administration/feature_flags.md) named `work_items`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
 
@@ -298,7 +298,7 @@ To add a task to a milestone:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
 > - Edit button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429137) in GitLab 16.7.
@@ -324,7 +324,7 @@ To set issue weight of a task:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
@@ -332,7 +332,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 You can add a task to an [iteration](group/iterations/index.md).
 You can see the iteration title and period only when you view a task.
@@ -492,11 +492,11 @@ system note in the task's comments, for example:
 
 ## Lock discussion
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `work_items_beta`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_beta`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 You can prevent public comments in a task.
@@ -517,18 +517,25 @@ If a task is closed with a locked discussion, then you cannot reopen it until th
 
 ## Two-column layout
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/446064) to feature flag named `work_items_beta` in GitLab 16.10. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_beta`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 When enabled, tasks use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-![Task two column view](img/task_two_column_view_v16_7.png)
+This feature is in [Beta](../policy/experiment-beta-support.md).
+If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442090).
+
+![Task two column view](img/task_two_column_view_v16_10.png)
 
 ## Linked items in tasks
 
@@ -538,7 +545,7 @@ or assignees, on the right.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Linked items are a bi-directional relationship and appear in a block below
 the emoji reactions section. You can link an objective, key result, or a task in the same project with each other.

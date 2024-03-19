@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
@@ -39,7 +39,7 @@ To complete this tutorial:
 1. [Grant permissions for the service principal](#grant-permissions-for-the-service-principal).
 1. [Retrieve a temporary credential](#retrieve-a-temporary-credential).
 
-For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/azure/active-directory/workload-identities/workload-identity-federation).
+For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation).
 
 ## Create Azure AD application and service principal
 
@@ -61,7 +61,7 @@ and service principal:
    az ad sp create --id $appId --query appId -otsv
    ```
 
-Instead of the Azure CLI, you can [use the Azure Portal to create these resources](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
+Instead of the Azure CLI, you can [use the Azure Portal to create these resources](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal).
 
 ## Create Azure AD federated identity credentials
 
@@ -112,7 +112,7 @@ You can find your subscription ID in:
 - The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
 - The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
 
-The command above grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Azure AD roles](https://learn.microsoft.com/en-us/azure/active-directory/roles/best-practices).
+The command above grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Azure AD roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices).
 
 ## Retrieve a temporary credential
 
@@ -140,7 +140,7 @@ The CI/CD variables are:
 
 - `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-azure-ad-application-and-service-principal).
 - `AZURE_TENANT_ID`: Your Azure Active Directory. You can
-  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/how-to-find-tenant).
+  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/entra/fundamentals/how-to-find-tenant).
 - `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/index.md#id_tokens).
 
 ## Troubleshooting

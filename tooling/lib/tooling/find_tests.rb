@@ -14,11 +14,11 @@ module Tooling
 
     def execute
       tff = TestFileFinder::FileFinder.new(paths: changed_files).tap do |file_finder|
-        file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
-
         if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true'
           file_finder.use TestFileFinder::MappingStrategies::DirectMatching.load_json(ENV['RSPEC_TESTS_MAPPING_PATH'])
         end
+
+        file_finder.use TestFileFinder::MappingStrategies::PatternMatching.load('tests.yml')
       end
 
       write_array_to_file(predictive_tests_pathname, tff.test_files.uniq)

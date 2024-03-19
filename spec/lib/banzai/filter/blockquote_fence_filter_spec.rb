@@ -2,24 +2,29 @@
 
 require 'spec_helper'
 
+# NOTE: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles multiline block quotes.
+# The Ruby parser is now only for benchmarking purposes.
 RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
+
+  let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
 
   it 'converts blockquote fences to blockquote lines', :unlimited_max_formatted_output_length do
     content = File.read(Rails.root.join('spec/fixtures/blockquote_fence_before.md'))
     expected = File.read(Rails.root.join('spec/fixtures/blockquote_fence_after.md'))
 
-    output = filter(content)
+    output = filter(content, context)
 
     expect(output).to eq(expected)
   end
 
   it 'does not require newlines at start or end of string' do
-    expect(filter(">>>\ntest\n>>>")).to eq("\n> test\n")
+    expect(filter(">>>\ntest\n>>>", context)).to eq("\n> test\n")
   end
 
   it 'allows trailing whitespace on blockquote fence lines' do
-    expect(filter(">>> \ntest\n>>> ")).to eq("\n> test\n")
+    expect(filter(">>> \ntest\n>>> ", context)).to eq("\n> test\n")
   end
 
   context 'when incomplete blockquote fences with multiple blocks are present' do
@@ -27,7 +32,7 @@ RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_pl
       test_string = ">>>#{"\n```\nfoo\n```" * 20}"
 
       expect do
-        Timeout.timeout(2.seconds) { filter(test_string) }
+        Timeout.timeout(2.seconds) { filter(test_string, context) }
       end.not_to raise_error
     end
   end

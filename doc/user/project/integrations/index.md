@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 NOTE:
 This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
@@ -135,7 +135,7 @@ To use custom settings for a project or group integration:
 | [GitGuardian](git_guardian.md)                                              | Reject commits based on GitGuardian policies.                         | **{dotted-circle}** No |
 | [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
-| [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a room in Google Chat. | **{dotted-circle}** No |
+| [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a space in Google Chat. | **{dotted-circle}** No |
 | [Harbor](harbor.md)                                                         | Use Harbor as the container registry for GitLab.                      | **{dotted-circle}** No |
 | [irker (IRC gateway)](irker.md)                                             | Send IRC messages.                                                    | **{dotted-circle}** No |
 | [Jenkins](../../../integration/jenkins.md)                                  | Run CI/CD pipelines with Jenkins.                                     | **{check-circle}** Yes |

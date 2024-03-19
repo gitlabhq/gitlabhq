@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
 
@@ -18,7 +18,8 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [Feature Flags configuration, instrumentation and use](https://www.youtube.com/watch?v=ViA6suScxkE).
+For an example of feature flags in action, see [Eliminating risk with feature flags](https://www.youtube.com/watch?v=U9WqoK9froI).
+<!-- Video published on 2024-02-01 -->
 
 For a click-through demo, see [Feature Flags](https://go.gitlab.com/YKuzLt).
 <!-- Demo published on 2023-07-13 -->
@@ -223,7 +224,7 @@ To remove users from a user list:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
@@ -412,7 +413,7 @@ this to GitLab on behalf of the client, which means the client can't override it
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.

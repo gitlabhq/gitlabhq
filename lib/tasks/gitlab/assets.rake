@@ -83,11 +83,21 @@ namespace :gitlab do
   namespace :assets do
     desc 'GitLab | Assets | Return the hash sum of all frontend assets'
     task :hash_sum do
+      Rake::Task['gitlab:assets:tailwind'].invoke('silent')
       print Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
     end
 
+    task :tailwind, [:silent] do |_t, args|
+      cmd = 'yarn tailwindcss:build'
+      cmd += '> /dev/null 2>&1' if args[:silent].present?
+
+      unless system(cmd)
+        abort 'Error: Unable to build Tailwind CSS bundle.'.color(:red)
+      end
+    end
+
     desc 'GitLab | Assets | Compile all frontend assets'
-    task :compile do
+    task compile: :tailwind do
       require 'fileutils'
 
       require_dependency 'gitlab/task_helpers'
@@ -102,7 +112,7 @@ namespace :gitlab do
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         # Skip Yarn Install when using Cssbundling
-        Rake::Task["css:install"].clear if defined?(Cssbundling)
+        Rake::Task["css:install"].clear
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

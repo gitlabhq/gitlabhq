@@ -1,6 +1,6 @@
 ---
 description: User clicks the "Start a review" button on the Merge Request Changes tab
-category: InternalEventTracking
+internal_events: true
 action: merge_request_click_start_review_on_changes_tab
 identifiers:
 - project

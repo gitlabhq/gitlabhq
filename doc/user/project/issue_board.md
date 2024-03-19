@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -57,7 +57,11 @@ the issue board feature.
 > - Multiple issue boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/53811) to GitLab Free in 12.1.
 > - Multiple issue boards per group are available in GitLab Premium.
 
-Multiple issue boards allow for more than one issue board for a given project in the Free tier or group in the Premium and Ultimate tier.
+Multiple issue boards allow for more than one issue board for:
+
+- A project in all tiers
+- A group in the Premium and Ultimate tier
+
 This is great for large projects with more than one team or when a repository hosts the code of multiple products.
 
 Using the search box at the top of the menu, you can filter the listed boards.
@@ -261,7 +265,7 @@ advanced functionality is present in [higher tiers only](https://about.gitlab.co
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 > - Moved to GitLab Premium in 13.9.
@@ -289,7 +293,7 @@ the configurable issue board feature.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -303,7 +307,7 @@ especially in combination with [assignee lists](#assignee-lists).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As in a regular list showing all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
@@ -330,7 +334,7 @@ To remove an assignee list, just as with a label list, select the trash icon.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board.
@@ -356,7 +360,7 @@ As in other list types, select the trash icon to remove a list.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75404) in GitLab 14.6. Feature flag `iteration_board_lists` removed.
@@ -383,7 +387,7 @@ to and from a iteration list to manipulate the iteration of the dragged issues.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in GitLab 13.6.
 > - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
@@ -433,7 +437,7 @@ You can also [drag issues](#move-issues-and-lists) to change their position and 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -464,7 +468,7 @@ To set a WIP limit for a list, in an issue board:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10: View blocking issues when hovering over the "blocked" icon.
 
@@ -674,7 +678,7 @@ and the target list.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an
 administrator to [enable the feature flag](../../administration/feature_flags.md) named `board_multi_select`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to

@@ -14,7 +14,7 @@ In cases of compound primary indexes, it's helpful to understand the data charac
 
 ClickHouse blog also has a very good post, [Super charging your ClickHouse queries](https://clickhouse.com/blog/clickhouse-faster-queries-with-projections-and-primary-indexes), that outlines almost all of the approaches listed above.
 
-It is possible to use [`EXPLAIN`](https://clickhouse.com/docs/en/sql-reference/statements/explain/) statements with queries to get visible steps of the query pipeline. Note the different [types](https://clickhouse.com/docs/en/sql-reference/statements/explain/#explain-types) of `EXPLAIN`.
+It is possible to use [`EXPLAIN`](https://clickhouse.com/docs/en/sql-reference/statements/explain) statements with queries to get visible steps of the query pipeline. Note the different [types](https://clickhouse.com/docs/en/sql-reference/statements/explain#explain-types) of `EXPLAIN`.
 
 Also, to get detailed query execution pipeline, you can toggle the logs level to `trace` via `clickhouse-client` and then execute the query.
 

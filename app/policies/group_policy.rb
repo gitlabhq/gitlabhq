@@ -246,9 +246,12 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_runners_registration_token
     enable :owner_access
     enable :update_git_access_protocol
+    enable :admin_cicd_variables
 
     enable :read_billing
     enable :edit_billing
+
+    enable :remove_group
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -370,6 +373,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { maintainer & ~raise_admin_package_to_owner_enabled }.enable :admin_package
   rule { owner & raise_admin_package_to_owner_enabled }.enable :admin_package
+
+  rule { can?(:remove_group) }.enable :view_edit_page
 
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?

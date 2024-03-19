@@ -2,7 +2,6 @@
 import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -11,19 +10,18 @@ const JUST_APPROVED = 'approved';
 
 const REVIEW_STATE_ICONS = {
   APPROVED: {
-    name: 'status-success',
+    name: 'check-circle',
     class: 'gl-text-green-500',
     title: __('Reviewer approved changes'),
   },
   REQUESTED_CHANGES: {
-    name: 'status-alert',
+    name: 'error',
     class: 'gl-text-red-500',
     title: __('Reviewer requested changes'),
   },
   REVIEWED: {
-    name: 'comment',
-    class: 'gl-bg-blue-500 gl-text-white gl-icon s16 gl-rounded-full gl--flex-center',
-    size: 8,
+    name: 'comment-lines',
+    class: 'gl-text-blue-500',
     title: __('Reviewer commented'),
   },
   UNREVIEWED: {
@@ -44,7 +42,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     users: {
       type: Array,
@@ -100,14 +97,6 @@ export default {
         this.loadingStates[userId] = null;
       }, 1500);
     },
-    approveAnimation(userId) {
-      return {
-        'merge-request-approved-icon': this.loadingStates[userId] === JUST_APPROVED,
-      };
-    },
-    approvedByTooltipTitle(user) {
-      return sprintf(s__('MergeRequest|Approved by @%{username}'), user);
-    },
     reviewedButNotApprovedTooltip(user) {
       return sprintf(s__('MergeRequest|Reviewed by @%{username} but not yet approved'), user);
     },
@@ -143,7 +132,7 @@ export default {
       return REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState];
     },
     showRequestReviewButton(user) {
-      if (this.glFeatures.mrRequestChanges && !user.mergeRequestInteraction.approved) {
+      if (!user.mergeRequestInteraction.approved) {
         return user.mergeRequestInteraction.reviewState !== 'UNREVIEWED';
       }
 
@@ -190,42 +179,20 @@ export default {
         data-testid="re-request-button"
         @click="reRequestReview(user.id)"
       />
-      <template v-if="glFeatures.mrRequestChanges">
-        <span
-          v-gl-tooltip.top.viewport
-          :title="reviewStateIcon(user).title"
-          :class="reviewStateIcon(user).class"
-          class="gl-float-right gl-my-2 gl-ml-auto gl-flex-shrink-0"
-        >
-          <gl-icon
-            :size="reviewStateIcon(user).size || 16"
-            :name="reviewStateIcon(user).name"
-            :aria-label="reviewStateIcon(user).title"
-            data-testid="reviewer-state-icon"
-          />
-        </span>
-      </template>
-      <template v-else>
+      <span
+        v-gl-tooltip.top.viewport
+        :title="reviewStateIcon(user).title"
+        :class="reviewStateIcon(user).class"
+        class="gl-float-right gl-my-2 gl-ml-auto gl-flex-shrink-0"
+        data-testid="reviewer-state-icon-parent"
+      >
         <gl-icon
-          v-if="user.mergeRequestInteraction.approved"
-          v-gl-tooltip.left
-          :size="16"
-          :title="approvedByTooltipTitle(user)"
-          name="status-success"
-          class="gl-float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
-          :class="approveAnimation(user.id)"
-          data-testid="approved"
+          :size="reviewStateIcon(user).size || 16"
+          :name="reviewStateIcon(user).name"
+          :aria-label="reviewStateIcon(user).title"
+          data-testid="reviewer-state-icon"
         />
-        <gl-icon
-          v-else-if="user.mergeRequestInteraction.reviewed"
-          v-gl-tooltip.left
-          :size="16"
-          :title="reviewedButNotApprovedTooltip(user)"
-          name="dash-circle"
-          class="gl-float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
-          data-testid="reviewed-not-approved"
-        />
-      </template>
+      </span>
     </div>
   </div>
 </template>

@@ -11,7 +11,8 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       feature_category: 'continuous_delivery',
       milestone: '15.4',
       saved_to_database: true,
-      streamed: true }
+      streamed: true,
+      scope: ["Group"] }
   end
 
   let(:path) { File.join('types', 'group_deploy_token_destroyed.yml') }
@@ -44,6 +45,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       :introduced_by_mr    | nil                             | %r{property '/introduced_by_mr' is not of type: string}
       :feature_category    | nil                             | %r{property '/feature_category' is not of type: string}
       :milestone           | nil                             | %r{property '/milestone' is not of type: string}
+      :scope               | nil                             | %r{property '/scope' is not of type: array}
     end
     # rubocop:enable Layout/LineLength
 
@@ -113,6 +115,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
         expect(audit_event_type_definition.milestone).to eq "15.4"
         expect(audit_event_type_definition.saved_to_database).to be true
         expect(audit_event_type_definition.streamed).to be true
+        expect(audit_event_type_definition.scope).to eq ["Group"]
       end
     end
   end

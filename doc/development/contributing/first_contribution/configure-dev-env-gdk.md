@@ -4,22 +4,18 @@ group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Configure the GDK development environment
+# Install the GDK development environment
 
 If you want to contribute to the GitLab codebase and want a development environment in which to test
 your changes, you can use [the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit),
 a local version of GitLab that's yours to play with.
 
-It's just like an installation of self-managed GitLab. It includes sample projects you can use
-to test functionality, and it gives you access to administrator functionality.
+The GDK is a local development environment that includes an installation of self-managed GitLab,
+sample projects, and administrator access with which you can test functionality.
 
 ![GDK](../img/gdk_home.png)
 
-To contribute code without the overhead of setting up a local development environment,
-you should use Gitpod.
-
-If you already have a working GDK,
-[update it to use the community fork](#update-an-existing-gdk-installation).
+If you prefer to use GDK in a local virtual machine, use the steps in [Configure GDK-in-a-box](configure-dev-env-gdk-in-a-box.md)
 
 [View an interactive demo of this step](https://gitlab.navattic.com/xtk20s8x).
 
@@ -35,8 +31,6 @@ Sometimes the installation needs some tweaks to make it work, so you should
 also set aside some time for troubleshooting.
 It might seem like a lot of work, but after you have the GDK running,
 you'll be able to make any changes.
-
-[View an interactive demo](https://gitlab.navattic.com/ak10d67) of this step.
 
 ![GitLab in GDK](../img/gdk_home.png)
 
@@ -117,7 +111,7 @@ To install the GDK:
 
 1. Continue to [Change the code with the GDK](contribute-gdk.md).
 
-### Update an existing GDK installation
+## Update an existing GDK installation
 
 If you have an existing GDK installation, you should update it to use the community fork.
 
@@ -134,9 +128,10 @@ To confirm it was successful:
 1. Ensure the `gitlab-development-kit/gitlab` directory exists.
 1. Go to the top `gitlab-development-kit` directory and run `gdk stop` and `gdk start`.
 
-If you get errors, run `gdk doctor` to troubleshoot. For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troubleshoot-gdk) section.
+If you get errors, run `gdk doctor` to troubleshoot.
+For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troubleshoot-gdk) section.
 
-### Troubleshoot GDK
+## Troubleshoot GDK
 
 If you encounter issues, go to the `gitlab-development-kit/gitlab`
 directory and run `gdk doctor`.

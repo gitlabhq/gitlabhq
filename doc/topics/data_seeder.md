@@ -56,7 +56,7 @@ $ docker exec gitlab cat /etc/gitlab/initial_root_password
 
 _If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`, please wait for a bit for GitLab to boot and try again._
 
-You can then sign into `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
+You can then sign in to `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
 
 ### Import the test resources
 

@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :ci_reports_sbom_component, class: '::Gitlab::Ci::Reports::Sbom::Component' do
     type { "library" }
 
+    sequence(:ref) { |n| "ref-#{n}" }
     sequence(:name) { |n| "component-#{n}" }
     sequence(:version) { |n| "v0.0.#{n}" }
 
@@ -42,6 +43,7 @@ FactoryBot.define do
 
     initialize_with do
       ::Gitlab::Ci::Reports::Sbom::Component.new(
+        ref: ref,
         type: type,
         name: name,
         purl: purl,

@@ -18,6 +18,7 @@ export default function mountBranchRules(el) {
   const {
     projectPath,
     protectedBranchesPath,
+    branchRulesPath,
     approvalRulesPath,
     statusChecksPath,
     branchesPath,
@@ -31,6 +32,7 @@ export default function mountBranchRules(el) {
     apolloProvider,
     provide: {
       projectPath,
+      branchRulesPath,
       protectedBranchesPath,
       approvalRulesPath,
       statusChecksPath,

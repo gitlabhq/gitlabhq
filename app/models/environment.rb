@@ -141,10 +141,9 @@ class Environment < ApplicationRecord
   end
 
   scope :for_name_like_within_folder, -> (query, limit: 5) do
-    within_folder = 'LOWER(ltrim(environments.name, environments.environment_type'\
-      ' || \'/\')) LIKE LOWER(?) || \'%\''
+    within_folder_name = "LOWER(ltrim(ltrim(environments.name, environments.environment_type), '/'))"
 
-    where(within_folder, sanitize_sql_like(query)).limit(limit)
+    where("#{within_folder_name} LIKE (LOWER(?) || '%')", sanitize_sql_like(query)).limit(limit)
   end
 
   scope :for_project, -> (project) { where(project_id: project) }

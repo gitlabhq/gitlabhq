@@ -107,7 +107,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/badges", stranger),
-               params: { name: example_name, link_url: example_url, image_url: example_url2 }
+            params: { name: example_name, link_url: example_url, image_url: example_url2 }
         end
       end
 
@@ -118,7 +118,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
               user = public_send(type)
 
               post api("/#{source_type.pluralize}/#{source.id}/badges", user),
-                   params: { link_url: example_url, image_url: example_url2 }
+                params: { link_url: example_url, image_url: example_url2 }
 
               expect(response).to have_gitlab_http_status(:forbidden)
             end
@@ -130,7 +130,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
         it 'creates a new badge' do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-                params: { name: example_name, link_url: example_url, image_url: example_url2 }
+              params: { name: example_name, link_url: example_url, image_url: example_url2 }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.badges.count }.by(1)
@@ -144,21 +144,21 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
 
       it 'returns 400 when link_url is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             params: { link_url: example_url }
+          params: { link_url: example_url }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when image_url is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             params: { image_url: example_url2 }
+          params: { image_url: example_url2 }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
-             params: { link_url: 'whatever', image_url: 'whatever' }
+          params: { link_url: 'whatever', image_url: 'whatever' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -179,7 +179,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", stranger),
-              params: { link_url: example_url }
+            params: { link_url: example_url }
         end
       end
 
@@ -190,7 +190,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
               user = public_send(type)
 
               put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", user),
-                  params: { link_url: example_url }
+                params: { link_url: example_url }
 
               expect(response).to have_gitlab_http_status(:forbidden)
             end
@@ -201,7 +201,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
       context 'when authenticated as a maintainer/owner' do
         it 'updates the member', :quarantine do
           put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
-              params: { name: example_name, link_url: example_url, image_url: example_url2 }
+            params: { name: example_name, link_url: example_url, image_url: example_url2 }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['name']).to eq(example_name)
@@ -213,7 +213,7 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
 
       it 'returns 400 when link_url or image_url is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
-            params: { link_url: 'whatever', image_url: 'whatever' }
+          params: { link_url: 'whatever', image_url: 'whatever' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end

@@ -43,18 +43,29 @@ class Gitlab::Ci::Build::AutoRetry
   end
 
   def options_retry_max
-    Integer(options_retry[:max], exception: false) if retry_on_reason_or_always?
+    Integer(options_retry[:max], exception: false) if retry_on_reason_or_always? || retry_on_exit_code?
   end
 
   def options_retry_when
-    default = ['always']
+    default = options_retry_exit_codes.nil? ? ['always'] : []
 
     options_retry.fetch(:when, default) || default
+  end
+
+  def options_retry_exit_codes
+    options_retry.fetch(:exit_codes, nil)
   end
 
   def retry_on_reason_or_always?
     options_retry_when.include?(failure_reason.to_s) ||
       options_retry_when.include?('always')
+  end
+
+  def retry_on_exit_code?
+    return false unless Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
+    return false unless @build.exit_code
+
+    options_retry_exit_codes&.include?(@build.exit_code)
   end
 
   # The format of the retry option changed in GitLab 11.5: Before it was

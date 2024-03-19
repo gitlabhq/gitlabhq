@@ -10,7 +10,7 @@ description: 'Learn how to scale operating on read-mostly data at scale'
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326037) in GitLab 14.0.
 
 This document describes the *read-mostly* pattern introduced in the
-[Database Scalability Working Group](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/#read-mostly-data).
+[Database Scalability Working Group](https://handbook.gitlab.com/handbook/company/working-groups/database-scalability/#read-mostly-data).
 We discuss the characteristics of *read-mostly* data and propose best practices for GitLab development
 to consider in this context.
 

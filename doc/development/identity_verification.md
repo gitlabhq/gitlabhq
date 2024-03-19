@@ -19,9 +19,7 @@ Before you enable these features, ensure [hard email confirmation](../security/u
 | `identity_verification` | Turns on email verification for all registration paths |
 | `identity_verification_phone_number` | Turns on phone verification for medium risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
 | `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
-| `arkose_labs_signup_challenge` | Enables Arkose challenge for all flows, except the Trial and OAuth flows |
-| `arkose_labs_trial_signup_challenge` | Enables Arkose challenge for the Trial flow (the `arkose_labs_signup_challenge` flag must be enabled as well for this to have effect) |
-| `arkose_labs_oauth_signup_challenge` | Enables Arkose challenge for the OAuth flow |
+| `arkose_labs_signup_challenge` | Enables Arkose challenge for all flows |
 
 ## Logging
 
@@ -70,9 +68,9 @@ Status update logs include the following fields:
 
 | Field  | Description |
 |---------|-------------|
-| `telesign_status` | Delivery status of the SMS. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible status codes and their descriptions. |
+| `telesign_status` | Delivery status of the SMS. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smsdeliveryreports#status-codes) for possible status codes and their descriptions. |
 | `telesign_status_updated_on` | A timestamp indicating when the SMS delivery status was last updated. |
-| `telesign_errors` | Errors that occurred during delivery. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible error codes and their descriptions. |
+| `telesign_errors` | Errors that occurred during delivery. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smsdeliveryreports#status-codes) for possible error codes and their descriptions. |
 
 ### View logs associated to a user and credit card verification
 

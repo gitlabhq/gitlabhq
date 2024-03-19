@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use Git branches to develop new features. Add branch protections to critical branches to ensure only trusted users can merge into them."
 ---
 
 # Default branch
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you create a new [project](../../index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
@@ -66,7 +67,7 @@ GitLab administrators can configure a new default branch name at the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2 [with a flag](../../../../administration/feature_flags.md) named `global_default_branch_name`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12. Feature flag `global_default_branch_name` removed.
@@ -104,7 +105,7 @@ unless a subgroup configuration overrides it.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
@@ -114,15 +115,15 @@ at the [instance level](#instance-level-default-branch-protection) and
 [group level](#group-level-default-branch-protection) with one of the following options:
 
 - **Fully protected** - Default value. Developers cannot push new commits, but maintainers can.
-   No one can force push.
+  No one can force push.
 - **Fully protected after initial push** - Developers can push the initial commit
   to a repository, but none afterward. Maintainers can always push. No one can force push.
 - **Protected against pushes** - Developers cannot push new commits, but are
-   allowed to accept merge requests to the branch. Maintainers can push to the branch.
+  allowed to accept merge requests to the branch. Maintainers can push to the branch.
 - **Partially protected** - Both developers and maintainers can push new commits,
-   but cannot force push.
+  but cannot force push.
 - **Not protected** - Both developers and maintainers can push new commits
-   and force push.
+  and force push.
 
 WARNING:
 Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
@@ -131,7 +132,7 @@ Unless **Fully protected** is chosen, a malicious developer could attempt to ste
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 This setting applies only to each repository's default branch. To protect other branches,
 you must either:
@@ -154,7 +155,7 @@ groups and subgroups can override this instance-wide setting for their projects.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
 
@@ -176,7 +177,7 @@ GitLab administrators can still update the default branch protection of a group.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
 > - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.

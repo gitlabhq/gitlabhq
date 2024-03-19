@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556) in GitLab 12.5 [with a flag](../administration/feature_flags.md) named `sourcegraph`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 12.5.
@@ -35,7 +35,7 @@ you can choose to enable Sourcegraph [through your user preferences](#enable-sou
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Before you can enable Sourcegraph code intelligence in GitLab you must:
 configure a Sourcegraph instance with your GitLab instance as an external service.
@@ -44,7 +44,7 @@ configure a Sourcegraph instance with your GitLab instance as an external servic
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 

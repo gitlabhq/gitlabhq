@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page describes how you can use the GraphiQL explorer to identify
 existing [issue boards](../../user/project/issue_board.md) in the `gitlab-docs` documentation repository.

@@ -9,29 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Experiment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Enabled by default in 16.9
-
-FLAG:
-On self-managed GitLab, by default this feature is enabled.
-To disable it, an administrator can [disable the feature flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9779) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/434041) in GitLab 16.9.
 
 With [Geo proxying for secondary sites](index.md), it is possible to register a `gitlab-runner` with a secondary site. This offloads load from the primary instance.
 
-## Enable or disable secondary runners
-
-To enable secondary runners, SSH into a Rails node on the **primary** Geo site and run:
-
-```ruby
-sudo gitlab-rails runner 'Feature.enable(:geo_proxy_check_pipeline_refs)'
-```
-
-To disable secondary runners, SSH into a Rails node on the **primary** Geo site and run:
-
-```ruby
-sudo gitlab-rails runner `Feature.disable(:geo_proxy_check_pipeline_refs)`
-```
+NOTE:
+The jobs that start during the first stage of a pipeline almost always have their Git clone requests forwarded to the primary site. This is because those clones usually occur before the Git data is replicated and verified by the secondary site. Later stages are not guaranteed to be served by the secondary site either, for example if the Git change is large, bandwidth is small, or pipeline stages are short. In most cases, the subsequent stages of the pipeline serve Git data from the secondary site. [Issue 446176](https://gitlab.com/gitlab-org/gitlab/-/issues/446176) proposes an enhancement to increase the chance of the first stage clone request is served from the secondary site.
 
 ## Use secondary runners with a Location Aware public URL (Unified URL)
 

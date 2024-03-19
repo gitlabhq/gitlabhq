@@ -280,8 +280,6 @@ depending on [how long a migration takes](#how-long-a-migration-should-take)
     When you use the existing helpers including `add_concurrent_index`,
     they automatically turn off the statement timeout as needed.
     In rare cases, you might need to set the timeout limit yourself by [using `disable_statement_timeout`](#temporarily-turn-off-the-statement-timeout-limit).
-  - Lock timeout: if your migration must execute as a transaction but can possibly time out while
-    acquiring a lock, [use `enable_lock_retries!`](#usage-with-transactional-migrations).
 
 NOTE:
 To run migrations, we directly connect to the primary database, bypassing PgBouncer
@@ -500,37 +498,21 @@ offers a method to retry the operations with different `lock_timeout` settings
 and wait time between the attempts. Multiple shorter attempts to acquire the necessary
 lock allow the database to process other statements.
 
-There are two distinct ways to use lock retries:
+Lock retries are controlled by two different helpers:
 
-1. Inside a transactional migration: use `enable_lock_retries!`.
-1. Inside a non-transactional migration: use `with_lock_retries`.
+1. `enable_lock_retries!`: enabled by default for all `transactional` migrations.
+1. `with_lock_retries`: enabled manually for a block within `non-transactional` migrations.
 
-If possible, enable lock-retries for any migration that touches a [high-traffic table](#high-traffic-tables).
+### Transactional migrations
 
-### Usage with transactional migrations
+Regular migrations execute the full migration in a transaction. lock-retry mechanism is enabled by default (unless `disable_ddl_transaction!`).
 
-Regular migrations execute the full migration in a transaction. We can enable the
-lock-retry methodology by calling `enable_lock_retries!` at the migration level.
-
-This leads to the lock timeout being controlled for this migration. Also, it can lead to retrying the full
+This leads to the lock timeout being controlled for the migration. Also, it can lead to retrying the full
 migration if the lock could not be granted within the timeout.
-
-Note that, while this is currently an opt-in setting, we prefer to use lock-retries for all migrations and
-plan to make this the default going forward.
 
 Occasionally a migration may need to acquire multiple locks on different objects.
 To prevent catalog bloat, ask for all those locks explicitly before performing any DDL.
 A better strategy is to split the migration, so that we only need to acquire one lock at the time.
-
-#### Removing a column
-
-```ruby
-enable_lock_retries!
-
-def change
-  remove_column :users, :full_name, :string
-end
-```
 
 #### Multiple changes on the same table
 
@@ -539,8 +521,6 @@ you should do as much as possible inside the transaction rather than trying to g
 Be careful about running long database statements within the block. The acquired locks are kept until the transaction (block) finishes and depending on the lock type, it might block other database operations.
 
 ```ruby
-enable_lock_retries!
-
 def up
   add_column :users, :full_name, :string
   add_column :users, :bio, :string
@@ -552,53 +532,18 @@ def down
 end
 ```
 
-#### Removing a foreign key
-
-```ruby
-enable_lock_retries!
-
-def up
-  remove_foreign_key :issues, :projects
-end
-
-def down
-  add_foreign_key :issues, :projects
-end
-```
-
 #### Changing default value for a column
 
 Note that changing column defaults can cause application downtime if a multi-release process is not followed.
 See [avoiding downtime in migrations for changing column defaults](database/avoiding_downtime_in_migrations.md#changing-column-defaults) for details.
 
 ```ruby
-enable_lock_retries!
-
 def up
   change_column_default :merge_requests, :lock_version, from: nil, to: 0
 end
 
 def down
   change_column_default :merge_requests, :lock_version, from: 0, to: nil
-end
-```
-
-#### Creating a new table with a foreign key
-
-We can wrap the `create_table` method with `with_lock_retries`:
-
-```ruby
-enable_lock_retries!
-
-def up
-  create_table :issues do |t|
-    t.references :project, index: true, null: false, foreign_key: { on_delete: :cascade }
-    t.string :title, limit: 255
-  end
-end
-
-def down
-  drop_table :issues
 end
 ```
 
@@ -666,7 +611,7 @@ def down
 end
 ```
 
-### Usage with non-transactional migrations (`disable_ddl_transaction!`)
+### Usage with non-transactional migrations
 
 Only when we disable transactional migrations using `disable_ddl_transaction!`, we can use
 the `with_lock_retries` helper to guard an individual sequence of steps. It opens a transaction

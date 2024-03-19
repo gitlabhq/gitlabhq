@@ -62,8 +62,6 @@ export default {
       @close="onToggleDrawer(false)"
     />
 
-    <gl-button :href="runnersPath" variant="confirm">{{
-      s__('Runners|Go to runners page')
-    }}</gl-button>
+    <gl-button :href="runnersPath" variant="confirm">{{ s__('Runners|View runners') }}</gl-button>
   </div>
 </template>

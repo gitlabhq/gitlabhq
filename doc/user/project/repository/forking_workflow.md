@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,
@@ -158,7 +158,7 @@ an `upstream` remote repository for your fork:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 

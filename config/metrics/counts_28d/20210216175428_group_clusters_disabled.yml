@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.configure.group_clusters_disabled
 description: Number of user ids GitLab Managed disabled clusters attached to groups
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 product_category: deployment_management
 value_type: number
 status: active

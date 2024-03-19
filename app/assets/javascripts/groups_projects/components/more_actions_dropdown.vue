@@ -23,12 +23,14 @@ export default {
   },
   inject: [
     'isGroup',
-    'id',
+    'groupOrProjectId',
     'leavePath',
     'leaveConfirmMessage',
     'withdrawPath',
     'withdrawConfirmMessage',
     'requestAccessPath',
+    'canEdit',
+    'editPath',
   ],
   computed: {
     namespaceType() {
@@ -36,6 +38,9 @@ export default {
     },
     hasPath() {
       return this.leavePath || this.withdrawPath || this.requestAccessPath;
+    },
+    settingsTitle() {
+      return this.isGroup ? this.$options.i18n.groupSettings : this.$options.i18n.projectSettings;
     },
     leaveTitle() {
       return this.isGroup
@@ -90,12 +95,21 @@ export default {
     },
     copyIdItem() {
       return {
-        text: sprintf(this.copyTitle, { id: this.id }),
+        text: sprintf(this.copyTitle, { id: this.groupOrProjectId }),
         action: () => {
           this.$toast.show(this.copiedToClipboard);
         },
         extraAttrs: {
           'data-testid': `copy-${this.namespaceType}-id`,
+        },
+      };
+    },
+    settingsItem() {
+      return {
+        text: this.settingsTitle,
+        href: this.editPath,
+        extraAttrs: {
+          'data-testid': `settings-${this.namespaceType}-link`,
         },
       };
     },
@@ -110,6 +124,8 @@ export default {
     requestAccessTitle: __('Request Access'),
     groupCopyTitle: s__('GroupPage|Copy group ID: %{id}'),
     projectCopyTitle: s__('ProjectPage|Copy project ID: %{id}'),
+    projectSettings: s__('ProjectPage|Project settings'),
+    groupSettings: s__('GroupPage|Group settings'),
   },
 };
 </script>
@@ -148,7 +164,12 @@ export default {
       </div>
     </template>
 
-    <gl-disclosure-dropdown-item v-if="id" :item="copyIdItem" :data-clipboard-text="id" />
+    <gl-disclosure-dropdown-item
+      v-if="groupOrProjectId"
+      :item="copyIdItem"
+      :data-clipboard-text="groupOrProjectId"
+    />
+    <gl-disclosure-dropdown-item v-if="canEdit" :item="settingsItem" />
 
     <gl-disclosure-dropdown-group v-if="hasPath" bordered>
       <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />

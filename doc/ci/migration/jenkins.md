@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
@@ -638,7 +638,7 @@ SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

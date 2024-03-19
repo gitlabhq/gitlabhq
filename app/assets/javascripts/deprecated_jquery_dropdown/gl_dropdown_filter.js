@@ -27,12 +27,7 @@ export class GitLabDropdownFilter {
       });
     }, 500);
 
-    $clearButton.on('click', (e) => {
-      // Clear click
-      e.preventDefault();
-      e.stopPropagation();
-      return this.input.val('').trigger('input').focus();
-    });
+    $clearButton.on('click', this.clear);
     // Key events
     this.input
       .on('keydown', (e) => {
@@ -129,5 +124,15 @@ export class GitLabDropdownFilter {
       .parent()
       .find('.dropdown-menu-empty-item')
       .toggleClass('hidden', elements.is(':visible'));
+  }
+
+  clear(e) {
+    if (this.input.val() === '') return;
+    if (e) {
+      // Clear click
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.input.val('').trigger('input').focus();
   }
 }

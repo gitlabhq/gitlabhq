@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
+RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching, feature_category: :integrations do
   include ReactiveCachingHelpers
   include StubRequests
 
-  let(:teamcity_url) { 'https://gitlab.teamcity.com' }
-  let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
   let_it_be(:project) { create(:project) }
+  let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
+  let(:teamcity_url) { 'https://gitlab.teamcity.com' }
+
+  it_behaves_like Integrations::HasAvatar
 
   subject(:integration) do
     described_class.create!(
@@ -302,6 +304,14 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       data = { object_kind: 'foo' }
 
       expect(integration.execute(data)).to be_nil
+    end
+  end
+
+  describe '#attribution_notice' do
+    it do
+      expect(subject.attribution_notice)
+      .to eq('Copyright © 2024 JetBrains s.r.o. JetBrains TeamCity and the JetBrains TeamCity logo are registered ' \
+             'trademarks of JetBrains s.r.o.')
     end
   end
 

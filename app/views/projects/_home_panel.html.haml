@@ -1,5 +1,4 @@
 - empty_repo = @project.empty_repo?
-- emails_disabled = @project.emails_disabled?
 - ff_reorg_disabled = Feature.disabled?(:project_overview_reorg)
 
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
@@ -14,17 +13,14 @@
           = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0' }
         - if @project.group
           = render_if_exists 'shared/tier_badge', source: @project
+        = render 'shared/projects/badges', project: @project
 
-    .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
+    .project-repo-buttons.gl-display-flex.gl-align-items-flex-start.gl-flex-wrap.gl-gap-3
       - if current_user
         - if current_user.admin?
           = link_button_to nil, [:admin, @project], icon: 'admin', title: _('View project in admin area'), data: {toggle: 'tooltip', placement: 'top', container: 'body'}
-        - if @notification_setting
-          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
 
-      = render 'projects/buttons/star', project: @project
-      = render 'projects/buttons/fork'
-      = render 'shared/groups_projects_more_actions_dropdown', source: @project
+      #js-home-panel{ data: home_panel_data_attributes }
 
   - if ff_reorg_disabled
     - if can?(current_user, :read_code, @project)

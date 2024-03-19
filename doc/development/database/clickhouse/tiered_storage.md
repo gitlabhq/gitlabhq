@@ -85,11 +85,11 @@ In this storage policy, the move happens implicitly. It is also possible to keep
 _hot_ data on local disks for a fixed period of time and then move them as _cold_.
 
 This approach is possible with
-[Table TTLs](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree/#mergetree-table-ttl),
+[Table TTLs](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#mergetree-table-ttl),
 which are also available with MergeTree table engine.
 
 The ClickHouse documentation shows this feature in detail, in the example of
-[implementing a hot - warm - cold architecture](https://clickhouse.com/docs/en/guides/developer/ttl/#implementing-a-hotwarmcold-architecture).
+[implementing a hot - warm - cold architecture](https://clickhouse.com/docs/en/guides/developer/ttl#implementing-a-hotwarmcold-architecture).
 
 You can take a similar approach for the example shown above. First, adjust the storage policy:
 
@@ -134,5 +134,5 @@ You can drop the data altogether, which can be a regulatory requirement.
 
 We don't mention modifying TTLs in this guide, but that is possible as well.
 See ClickHouse documentation for
-[modifying TTL](https://clickhouse.com/docs/en/sql-reference/statements/alter/ttl/#modify-ttl)
+[modifying TTL](https://clickhouse.com/docs/en/sql-reference/statements/alter/ttl#modify-ttl)
 for details.

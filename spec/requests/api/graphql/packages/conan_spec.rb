@@ -38,8 +38,7 @@ RSpec.describe 'conan package details', feature_category: :package_registry do
 
   it 'has the correct metadata' do
     expect(metadata_response).to match(
-      a_graphql_entity_for(package.conan_metadatum,
-                           :recipe, :package_channel, :package_username, :recipe_path)
+      a_graphql_entity_for(package.conan_metadatum, :recipe, :package_channel, :package_username, :recipe_path)
     )
   end
 

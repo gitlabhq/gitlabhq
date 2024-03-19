@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -34,7 +34,7 @@ You can use advanced search in:
 
 ## Enable advanced search
 
-- For [GitLab SaaS](../../subscriptions/gitlab_com/index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md),
+- For [GitLab.com](../../subscriptions/gitlab_com/index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md),
   advanced search is enabled in paid subscriptions.
 - For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
@@ -86,7 +86,7 @@ You can refine user search with [Elasticsearch syntax](#syntax).
 | [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=)  | Returns `helper` in all files except files with a `.yml` or `.js` extension.                        |
 | [<code>helper path:lib/git</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=helper+path%3Alib%2Fgit)  | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`).                        |
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD044 -->
 
 ## Known issues
 

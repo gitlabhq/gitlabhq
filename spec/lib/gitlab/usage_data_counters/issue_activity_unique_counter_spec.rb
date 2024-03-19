@@ -251,8 +251,12 @@ RSpec.describe Gitlab::UsageDataCounters::IssueActivityUniqueCounter, :clean_git
     end
 
     events = [described_class::ISSUE_TITLE_CHANGED, described_class::ISSUE_DESCRIPTION_CHANGED, described_class::ISSUE_ASSIGNEE_CHANGED]
-    week_count = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(event_names: events, start_date: time.beginning_of_week,
-      end_date: time + 1.week)
+    week_count = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+      event_names: events,
+      property_name: :user,
+      start_date: time.beginning_of_week,
+      end_date: time + 1.week
+    )
 
     expect(week_count).to eq(3)
   end

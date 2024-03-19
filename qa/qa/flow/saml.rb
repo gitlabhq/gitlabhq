@@ -53,8 +53,8 @@ module QA
         sleep 2
       end
 
-      def run_saml_idp_service(group_name)
-        Service::DockerRun::SamlIdp.new(Runtime::Scenario.gitlab_address, group_name).tap do |runner|
+      def run_saml_idp_service(group_name, users = nil)
+        Service::DockerRun::SamlIdp.new(Runtime::Scenario.gitlab_address, group_name, users).tap do |runner|
           runner.pull
           runner.register!
         end
@@ -67,6 +67,13 @@ module QA
 
       def login_to_idp_if_required(username, password)
         Vendor::SamlIdp::Page::Login.perform { |login_page| login_page.login_if_required(username, password) }
+      end
+
+      def sign_in(group_sso_url:, as: user)
+        page.visit group_sso_url
+        EE::Page::Group::SamlSSOSignIn.perform(&:click_sign_in)
+        Flow::Saml.login_to_idp_if_required(as.username, as.password)
+        Page::Main::Menu.validate_elements_present!
       end
     end
   end

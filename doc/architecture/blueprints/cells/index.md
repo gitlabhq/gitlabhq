@@ -32,10 +32,6 @@ For more information about Cells, see also:
 
 See [Goals, Glossary and Requirements](goals.md).
 
-## Deployment Architecture
-
-See [Deployment Architecture](deployment-architecture.md).
-
 ## Work streams
 
 We can't ship the entire Cells architecture in one go - it is too large.
@@ -192,9 +188,9 @@ flowchart TD
 
 See [Cells: Routing Service](routing-service.md).
 
-### 4. Cell deployment
+### 4. Infrastructure
 
-See [Cell: Application deployment](application-deployment.md).
+See [Cell: Infrastructure](infrastructure/index.md).
 
 ### 5. Migration
 
@@ -222,7 +218,7 @@ We are following the [Support for Experiment, Beta, and Generally Available feat
 
 Expectations:
 
-- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [Cell deployment](#4-cell-deployment) tooling.
+- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [infrastucture](#4-infrastructure) tooling.
 - User can create Organization, Group and Project, and run some of the [workflows](#2-workflows).
 - It is not expected to be able to run a router to serve all requests under a single domain.
 - We expect data loss of data stored on additional Cells.
@@ -305,6 +301,7 @@ The Cells architecture has long lasting implications to data processing, locatio
 This section links all different technical proposals that are being evaluated.
 
 - [Routing Service](routing-service.md)
+- [Feature Flags](feature_flags.md)
 
 ## Impacted features
 
@@ -351,13 +348,15 @@ The following list of impacted features only represents placeholders that still 
 
 ### What's the difference between Cells architecture and GitLab Dedicated?
 
+We've captured individual thoughts and differences between Cells and Dedicated over [here](infrastructure/diff-between-dedicated.md)
+
 The new Cells architecture is meant to scale GitLab.com.
 The way to achieve this is by moving Organizations into Cells, but different Organizations can still share server resources, even if the application provides isolation from other Organizations.
 But all of them still operate under the existing GitLab SaaS domain name `gitlab.com`.
 Also, Cells still share some common data, like `users`, and routing information of Groups and Projects.
 For example, no two users can have the same username even if they belong to different Organizations that exist on different Cells.
 
-With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned via dedicated server resources for each customer, while Cells use shared resources.
+With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned with dedicated server resources for each customer, while Cells use shared resources.
 This makes GitLab Dedicated more suited for bigger customers, and GitLab Cells more suitable for small to mid-size companies that are starting on GitLab.com.
 
 On the other hand, GitLab Dedicated is meant to provide a completely isolated GitLab instance for any Organization.
@@ -425,6 +424,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 ## Decision log
 
 - [ADR-001: Routing Technology using Cloudflare Workers](decisions/001_routing_technology.md)
+- [ADR-002: One GCP Project per Cell](decisions/002_gcp_project_boundary.md)
 
 ## Links
 

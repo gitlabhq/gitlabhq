@@ -2,6 +2,8 @@
 
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] = 'test'
+
 require 'optparse'
 require 'open3'
 require 'fileutils'
@@ -49,6 +51,7 @@ class SchemaRegenerator
       #
       # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135085#note_1628210334 for more info.
       #
+      load_tasks
       drop_db
       checkout_ref
       checkout_clean_schema
@@ -58,6 +61,7 @@ class SchemaRegenerator
       setup_db
       unhide_migrations
       migrate
+      dump_schema
       rollback if @rollback_testing
     ensure
       unhide_migrations
@@ -65,6 +69,11 @@ class SchemaRegenerator
   end
 
   private
+
+  def load_tasks
+    require_relative '../config/environment'
+    Gitlab::Application.load_tasks
+  end
 
   ##
   # Git checkout +CI_COMMIT_SHA+.
@@ -180,19 +189,25 @@ class SchemaRegenerator
   ##
   # Run rake task to drop the database.
   def drop_db
-    run %q(bin/rails db:drop RAILS_ENV=test)
+    run_rake_task 'db:drop'
   end
 
   ##
   # Run rake task to setup the database.
   def setup_db
-    run %q(bin/rails db:setup RAILS_ENV=test)
+    run_rake_task 'db:setup'
   end
 
   ##
   # Run rake task to run migrations.
   def migrate
-    run %q(bin/rails db:migrate RAILS_ENV=test)
+    run_rake_task 'db:migrate'
+  end
+
+  ##
+  # Run rake task to dump schema.
+  def dump_schema
+    run_rake_task 'db:schema:dump'
   end
 
   ##
@@ -217,6 +232,15 @@ class SchemaRegenerator
     raise("Command failed: #{stderr_str}") unless status.success?
 
     stdout_str
+  end
+
+  def run_rake_task(*tasks, env: {})
+    Array.wrap(tasks).each do |task|
+      env.each { |k, v| ENV[k.to_s] = v.to_s }
+
+      puts "\e[32m$ bin/rails #{task} RAILS_ENV=test #{env.map { |m| m.join('=') }.join(' ')}\e[37m"
+      Rake::Task[task].invoke
+    end
   end
 
   ##

@@ -214,6 +214,16 @@ describe('DynamicField', () => {
         expect(findGlFormGroup().find('small').html()).toContain(helpHTML);
       });
 
+      it('applies custom classes to the form group field', () => {
+        const fieldClass = 'class1 class2';
+
+        createComponent({
+          fieldClass,
+        });
+
+        expect(findGlFormGroup().attributes('class')).toContain(fieldClass);
+      });
+
       it('strips unsafe HTML from the help text', () => {
         const helpHTML =
           '[<code>1</code> <iframe>2</iframe> <a href="javascript:alert(document.cookie)">3</a> <a href="foo" target="_blank">4</a>]';
@@ -233,6 +243,16 @@ describe('DynamicField', () => {
         createComponent();
 
         expect(findGlFormGroup().find('label').text()).toBe(mockField.title);
+      });
+    });
+
+    describe('with label description', () => {
+      it('renders label description', () => {
+        createComponent({
+          labelDescription: 'This is a description',
+        });
+
+        expect(findGlFormGroup().props('labelDescription')).toBe('This is a description');
       });
     });
 

@@ -193,7 +193,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         job = create(:ci_build, :running, project: project, user: user)
 
         post api("/projects/#{project.id}/environments/stop_stale"),
-             params: { before: 1.week.ago.to_date.to_s, job_token: job.token }
+          params: { before: 1.week.ago.to_date.to_s, job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:ok)
       end
@@ -238,7 +238,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
     it 'returns a 200 if external_url is changed' do
       url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { external_url: url }
+        params: { external_url: url }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
@@ -247,7 +247,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
 
     it 'returns a 200 if tier is changed' do
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          params: { tier: 'production' }
+        params: { tier: 'production' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/environment')
@@ -258,7 +258,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       job = create(:ci_build, :running, project: project, user: user)
 
       put api("/projects/#{project.id}/environments/#{environment.id}"),
-          params: { tier: 'production', job_token: job.token }
+        params: { tier: 'production', job_token: job.token }
 
       expect(response).to have_gitlab_http_status(:ok)
     end
@@ -301,7 +301,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         job = create(:ci_build, :running, project: project, user: user)
 
         delete api("/projects/#{project.id}/environments/#{environment.id}"),
-               params: { job_token: job.token }
+          params: { job_token: job.token }
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
@@ -350,7 +350,7 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           job = create(:ci_build, :running, project: project, user: user)
 
           post api("/projects/#{project.id}/environments/#{environment.id}/stop"),
-               params: { job_token: job.token }
+            params: { job_token: job.token }
 
           expect(response).to have_gitlab_http_status(:ok)
         end

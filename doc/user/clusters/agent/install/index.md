@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/594) multi-arch images in GitLab 14.8. The first multi-arch release is `v14.8.1`. It supports AMD64 and ARM64 architectures.
@@ -23,7 +23,7 @@ Before you can install the agent in your cluster, you need:
 - An existing Kubernetes cluster. If you don't have a cluster, you can create one on a cloud provider, like:
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
-  - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/quickstart/)
+  - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
 - On self-managed GitLab instances, a GitLab administrator must set up the
   [agent server](../../../../administration/clusters/kas.md).
   Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
@@ -75,7 +75,7 @@ You can leave the file blank for now, and [configure it](#configure-your-agent) 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347240) in GitLab 14.9, the agent can be registered without creating an agent configuration file.
 
 FLAG:
-In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 Prerequisites:
 
@@ -158,11 +158,11 @@ To see the full list of customizations available, see the Helm chart's [README](
 ##### Use the agent when KAS is behind a self-signed certificate
 
 When [KAS](../../../../administration/clusters/kas.md) is behind a self-signed certificate,
-you can set the value of `config.caCert` to the certificate. For example:
+you can set the value of `config.kasCaCert` to the certificate. For example:
 
 ```shell
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
-  --set-file config.caCert=my-custom-ca.pem
+  --set-file config.kasCaCert=my-custom-ca.pem
 ```
 
 In this example, `my-custom-ca.pem` is the path to a local file that contains

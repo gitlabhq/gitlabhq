@@ -1,6 +1,11 @@
-%li
-  = link_to wiki_page.human_title, wiki_page_path(@wiki, wiki_page), data: { testid: 'wiki-page-link', qa_page_name: wiki_page.slug }
-  %small (#{wiki_page.format})
-  .gl-float-right
+%li{ class: 'gl-display-flex!' }
+  %div
+    = link_to wiki_page.human_title, wiki_page_path(@wiki, wiki_page), data: { testid: 'wiki-page-link', qa_page_name: wiki_page.slug }
+    %small.gl-pr-2 (#{wiki_page.format})
+    - if can?(current_user, :create_wiki, @wiki) && wiki_page.template?
+      = render Pajamas::ButtonComponent.new(category: :secondary, icon: 'pencil', href: wiki_page_path(@wiki, wiki_page, action: :edit), button_options: { title: s_('Edit template') })
+  .gl-flex-grow-1.gl-text-right
     - if wiki_page.last_version
-      %small= (s_("Last edited %{date}") % { date: time_ago_with_tooltip(wiki_page.last_version.authored_date) }).html_safe
+      %small
+        = (s_("Last edited %{date}") % { date: time_ago_with_tooltip(wiki_page.last_version.authored_date) }).html_safe
+

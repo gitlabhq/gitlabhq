@@ -39,6 +39,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   def preferences_param_names
     [
       :color_scheme_id,
+      :color_mode_id,
       :diffs_deletion_color,
       :diffs_addition_color,
       :home_organization_id,

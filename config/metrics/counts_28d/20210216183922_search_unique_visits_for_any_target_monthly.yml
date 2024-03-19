@@ -15,8 +15,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
   - i_search_total
   - i_search_advanced

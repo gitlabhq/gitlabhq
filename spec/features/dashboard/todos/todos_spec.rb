@@ -24,8 +24,10 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
       visit dashboard_todos_path
     end
 
-    it 'shows "All done" message' do
+    it 'shows empty state but not the page title' do
       expect(page).to have_content 'Your To-Do List shows what to work on next'
+      expect(page).to have_selector('.gl-empty-state')
+      expect(page).not_to have_selector('.page-title-holder')
     end
 
     context 'when user was assigned to an issue and marked it as done' do
@@ -301,7 +303,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
     describe 'restoring the todo' do
       before do
         within first('.todo') do
-          find_by_testid('todo-add-icon').click
+          find_by_testid('redo-icon').click
         end
       end
 

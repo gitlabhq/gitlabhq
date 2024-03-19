@@ -32,3 +32,10 @@ workflow:
 # valid rules:null
 rules-null:
   rules: null
+
+# valid rules:interruptible
+rules:interruptible as boolean:
+  script: exit 0
+  rules:
+    - if: $TEST
+      interruptible: true

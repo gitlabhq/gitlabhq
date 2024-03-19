@@ -15,19 +15,8 @@ module MembershipActions
       .new(current_user, update_params)
       .execute(member)
 
-    member = result[:members].first
-
-    member_data = if member.expires?
-                    {
-                      expires_soon: member.expires_soon?,
-                      expires_at_formatted: member.expires_at.to_time.in_time_zone.to_fs(:medium)
-                    }
-                  else
-                    {}
-                  end
-
     if result[:status] == :success
-      render json: member_data
+      render json: update_success_response(result)
     else
       render json: { message: result[:message] }, status: :unprocessable_entity
     end
@@ -161,14 +150,9 @@ module MembershipActions
     when 'exclude'
       [:direct]
     when 'only'
-      [:inherited]
+      [:inherited].concat(shared_members_relations)
     else
-      if Feature.enabled?(:webui_members_inherited_users, current_user)
-        project_relations = [:invited_groups, :shared_into_ancestors]
-        [:inherited, :direct, :shared_from_groups, *(project_relations if params[:project_id])]
-      else
-        [:inherited, :direct]
-      end
+      [:inherited, :direct].concat(shared_members_relations)
     end
   end
 
@@ -184,6 +168,27 @@ module MembershipActions
 
     message = member.request? ? _('You have already requested access.') : _('You already have access.')
     redirect_to polymorphic_path(membershipable), notice: message
+  end
+
+  private
+
+  def update_success_response(result)
+    member = result[:members].first
+    if member.expires?
+      {
+        expires_soon: member.expires_soon?,
+        expires_at_formatted: member.expires_at.to_time.in_time_zone.to_fs(:medium)
+      }
+    else
+      {}
+    end
+  end
+
+  def shared_members_relations
+    return [] unless Feature.enabled?(:webui_members_inherited_users, current_user)
+
+    project_relations = [:invited_groups, :shared_into_ancestors]
+    [:shared_from_groups, *(project_relations if params[:project_id])]
   end
 end
 

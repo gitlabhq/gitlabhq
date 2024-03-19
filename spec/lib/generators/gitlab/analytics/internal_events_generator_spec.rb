@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     let(:identifiers) { %w[project user namespace] }
     let(:event_definition) do
       {
-        "category" => "InternalEventTracking",
+        "internal_events" => true,
         "action" => event,
         "description" => description,
         "product_section" => section,

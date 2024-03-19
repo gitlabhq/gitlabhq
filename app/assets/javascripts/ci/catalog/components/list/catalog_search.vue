@@ -67,6 +67,7 @@ export default {
       :text="currentSortText"
       :sort-options="$options.sortOptions"
       :sort-by="currentSortOption"
+      data-testid="catalog-sorting-option-button"
       @sortByChange="setSelectedSortOption"
       @sortDirectionChange="onSortDirectionChange"
     />

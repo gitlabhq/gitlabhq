@@ -54,9 +54,11 @@ describe('App', () => {
       directives: {
         GlResizeObserver: createMockDirective('gl-resize-observer'),
       },
+      attachTo: document.body,
     });
   };
 
+  const getDrawer = () => wrapper.findComponent(GlDrawer);
   const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
   const findSkeletonLoader = () => wrapper.findComponent(SkeletonLoader);
 
@@ -86,7 +88,6 @@ describe('App', () => {
         );
       });
 
-      const getDrawer = () => wrapper.findComponent(GlDrawer);
       const getBackdrop = () => wrapper.find('.whats-new-modal-backdrop');
 
       it('contains a drawer', () => {
@@ -215,6 +216,15 @@ describe('App', () => {
 
         expect(scroll.exists()).toBe(true);
         expect(skeletonLoader.exists()).toBe(false);
+      });
+    });
+
+    describe('focus', () => {
+      it('takes focus after being opened', () => {
+        setup([], false);
+        expect(document.activeElement).not.toBe(getDrawer().element);
+        getDrawer().vm.$emit('opened');
+        expect(document.activeElement).toBe(getDrawer().element);
       });
     });
   });

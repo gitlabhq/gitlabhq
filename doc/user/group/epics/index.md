@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When [issues](../../project/issues/index.md) share a theme across projects and
 milestones, you can manage them by using epics.
@@ -60,7 +60,7 @@ To do it, paste the issue URL when
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, a visual

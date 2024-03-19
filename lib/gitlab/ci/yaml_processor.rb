@@ -71,6 +71,7 @@ module Gitlab
         check_circular_dependencies
       end
 
+      # Overridden in EE
       def validate_job!(name, job)
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
@@ -226,3 +227,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::YamlProcessor.prepend_mod

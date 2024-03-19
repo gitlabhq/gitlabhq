@@ -11,29 +11,68 @@
     "enable_ssl_verification",
     "alert_status",
     "disabled_until",
-    "url_variables"
+    "url_variables",
+    "custom_webhook_template"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "url": { "type": "string" },
-    "created_at": { "type": "string" },
-    "push_events": { "type": "boolean" },
-    "tag_push_events": { "type": "boolean" },
-    "merge_requests_events": { "type": "boolean" },
-    "repository_update_events": { "type": "boolean" },
-    "enable_ssl_verification": { "type": "boolean" },
-    "alert_status": { "type": "string", "enum": ["executable", "disabled", "temporarily_disabled"] },
-    "disabled_until": { "type": ["string", "null"] },
+    "id": {
+      "type": "integer"
+    },
+    "url": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "push_events": {
+      "type": "boolean"
+    },
+    "tag_push_events": {
+      "type": "boolean"
+    },
+    "merge_requests_events": {
+      "type": "boolean"
+    },
+    "repository_update_events": {
+      "type": "boolean"
+    },
+    "enable_ssl_verification": {
+      "type": "boolean"
+    },
+    "alert_status": {
+      "type": "string",
+      "enum": [
+        "executable",
+        "disabled",
+        "temporarily_disabled"
+      ]
+    },
+    "disabled_until": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "url_variables": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["key"],
+        "required": [
+          "key"
+        ],
         "properties": {
-          "key": { "type": "string" }
+          "key": {
+            "type": "string"
+          }
         }
       }
+    },
+    "custom_webhook_template": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

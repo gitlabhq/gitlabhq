@@ -66,11 +66,14 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
 
-        find('[data-testid="branch-more-actions"] button').click
+        within_testid('branch-more-actions') do
+          find('button').click
+        end
+
         wait_for_requests
         expect(page).to have_button('Delete protected branch', disabled: false)
 
-        find('[data-testid="delete-branch-button"]').click
+        find_by_testid('delete-branch-button').click
         fill_in 'delete_branch_input', with: 'fix'
         click_button 'Yes, delete protected branch'
 

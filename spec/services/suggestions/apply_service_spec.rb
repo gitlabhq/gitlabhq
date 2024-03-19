@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
+RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflow do
   include ProjectForksHelper
 
   def build_position(**optional_args)

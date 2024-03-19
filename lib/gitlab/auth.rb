@@ -3,7 +3,6 @@
 module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
-    IpBlocked = Class.new(StandardError)
 
     # Scopes used for GitLab internal API (Kubernetes cluster access)
     K8S_PROXY_SCOPE = :k8s_proxy

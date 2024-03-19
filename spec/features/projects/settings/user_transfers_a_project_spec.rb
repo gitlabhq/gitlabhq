@@ -18,10 +18,10 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
     visit edit_project_path(project)
 
     page.within('.js-project-transfer-form') do
-      page.find('[data-testid="transfer-project-namespace"]').click
+      find_by_testid('transfer-project-namespace').click
     end
 
-    page.within('[data-testid="transfer-project-namespace"]') do
+    within_testid('transfer-project-namespace') do
       page.find("li button", text: group.full_name).click
     end
 

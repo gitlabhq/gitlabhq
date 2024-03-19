@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use project [milestones](../user/project/milestones/index.md) with the REST API.
 There's a separate [group milestones API](group_milestones.md) page.
@@ -188,7 +188,7 @@ Parameters:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 > - Moved to GitLab Premium in 13.9.

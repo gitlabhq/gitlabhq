@@ -38,10 +38,10 @@ class StaticAnalysis
   # contain values that a FOSS installation won't find. To work
   # around this we will only enable this task on EE installations.
   TASKS_WITH_DURATIONS_SECONDS = [
-    (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 360) : nil),
     Task.new(%w[yarn run lint:prettier], 200),
     Task.new(%w[bin/rake gettext:lint], 105),
     Task.new(%W[scripts/license-check.sh #{project_path}], 200),
+    (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 40) : nil),
     Task.new(%w[bin/rake lint:static_verification], 40),
     Task.new(%w[bin/rake config_lint], 10),
     Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 15),

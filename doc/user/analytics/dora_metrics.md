@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
 > - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
@@ -115,12 +115,13 @@ High change failure rate may indicate an inefficient deployment process or insuf
 ### How change failure rate is calculated
 
 In GitLab, change failure rate is measured as the percentage of deployments that cause an incident in production in the given time period.
-GitLab calculates this as the number of incidents divided by the number of deployments to a production environment. This assumes:
+GitLab calculates change failure rate as the number of incidents divided by the number of deployments to a production environment. This calculation assumes:
 
 - [GitLab incidents](../../operations/incident_management/incidents.md) are tracked.
-- All incidents are related to a production environment.
-- Incidents and deployments have a strictly one-to-one relationship. An incident is related to only one production deployment, and any production deployment is related to no
-  more than one incident.
+- All incidents are production incidents, regardless of the environment.
+- Change failure rate is used primarily as high-level stability tracking, which is why in a given day, all incidents and deployments are aggregated into a joined daily rate. Adding specific relations between deployments and incidents is proposed in [issue 444295](https://gitlab.com/gitlab-org/gitlab/-/issues/444295).
+
+For example, if you have 10 deployments (considering one deployment per day) with two incidents on the first day and one incident on the last day, then your change failure rate is 0.3.
 
 ### How to improve change failure rate
 
@@ -134,14 +135,14 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 This feature is an [Experiment](../../policy/experiment-beta-support.md).
 To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
@@ -163,12 +164,34 @@ This feature supports only project-level propagation.
 To do this, in the Rails console run the following command:
 
 ```ruby
-Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master', 'main'\])
+Dora::Configuration.create!(project: my_project, branches_for_lead_time_for_changes: ['master', 'main'])
 ```
 
 ## Retrieve DORA metrics data
 
 To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+
+The following example uses the GraphQL API to retrieve the monthly deployment frequency for a given time period:
+
+```graphql
+{
+  project(fullPath: "gitlab-org/gitlab") {
+    dora {
+      metrics(
+        metric: DEPLOYMENT_FREQUENCY
+        startDate: "2023-12-01"
+        endDate: "2024-02-01"
+        interval: MONTHLY
+      ) {
+        date
+        value
+      }
+    }
+  }
+}
+```
+
+You can explore the GraphQL API resources with the interactive [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 
 ## Measure DORA metrics
 
@@ -177,7 +200,9 @@ To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) o
 Deployment frequency is calculated based on the deployments record, which is created for typical push-based deployments.
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
-To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. For more information, see [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
+You must set the environment name where the deployment tier is configured, because the tier variable is specified for the given environment, not for the deployments.
+For more information, see [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
 ### Measure DORA metrics with Jira
 

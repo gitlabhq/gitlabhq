@@ -411,6 +411,9 @@ export default {
           <template #statistics>
             <slot name="statistics" :issuable="issuable"></slot>
           </template>
+          <template #pipeline-status>
+            <slot name="pipeline-status" :issuable="issuable"></slot>
+          </template>
         </issuable-item>
       </component>
       <div v-else-if="issuables.length > 0 && isGridView">
@@ -419,7 +422,9 @@ export default {
       <slot v-else name="empty-state"></slot>
     </template>
 
-    <div class="gl-text-center gl-mt-6 gl-relative">
+    <div
+      class="gl-display-flex gl-justify-content-space-between gl-md-justify-content-center! gl-mt-6 gl-relative"
+    >
       <gl-keyset-pagination
         v-if="showPaginationControls && useKeysetPagination"
         :has-next-page="hasNextPage"
@@ -447,7 +452,7 @@ export default {
       >
         <page-size-selector
           :value="defaultPageSize"
-          class="gl-absolute gl-right-0"
+          class="gl-right-0 gl-relative md:gl-absolute"
           @input="handlePageSizeChange"
         />
       </local-storage-sync>

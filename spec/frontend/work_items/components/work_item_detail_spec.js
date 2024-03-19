@@ -102,6 +102,7 @@ describe('WorkItemDetail component', () => {
     mutationHandler,
     error = undefined,
     workItemsMvc2Enabled = false,
+    workItemsBeta = false,
     linkedWorkItemsEnabled = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -126,6 +127,7 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
           linkedWorkItems: linkedWorkItemsEnabled,
+          workItemsBeta,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
@@ -668,9 +670,9 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('work item two column view', () => {
-    describe('when `workItemsMvc2Enabled` is false', () => {
+    describe('when `workItemsBeta` is false', () => {
       beforeEach(async () => {
-        createComponent({ workItemsMvc2Enabled: false });
+        createComponent({ workItemsBeta: false });
         await waitForPromises();
       });
 
@@ -687,9 +689,9 @@ describe('WorkItemDetail component', () => {
       });
     });
 
-    describe('when `workItemsMvc2Enabled` is true', () => {
+    describe('when `workItemsBeta` is true', () => {
       beforeEach(async () => {
-        createComponent({ workItemsMvc2Enabled: true });
+        createComponent({ workItemsBeta: true });
         await waitForPromises();
       });
 
@@ -708,9 +710,9 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('edit button for work item title and description', () => {
-    describe('when `workItemsMvc2Enabled` is false', () => {
+    describe('when `workItemsBeta` is false', () => {
       beforeEach(async () => {
-        createComponent({ workItemsMvc2Enabled: false });
+        createComponent({ workItemsBeta: false });
         await waitForPromises();
       });
 
@@ -727,10 +729,10 @@ describe('WorkItemDetail component', () => {
       });
     });
 
-    describe('when `workItemsMvc2Enabled` is true', () => {
+    describe('when `workItemsBeta` is true', () => {
       describe('with permissions to update', () => {
         beforeEach(async () => {
-          createComponent({ workItemsMvc2Enabled: true });
+          createComponent({ workItemsBeta: true });
           await waitForPromises();
         });
 

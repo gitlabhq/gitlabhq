@@ -4,11 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a single project for issue triage
+# Tutorial: Set up a project for issue triage
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -70,8 +70,8 @@ For this tutorial, suppose you've decided on the following:
 For inspiration, see how we define these at GitLab:
 
 - [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
-- [Priority](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority)
-- [Severity](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity)
+- [Priority](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority)
+- [Severity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity)
 
 ## Document your criteria
 
@@ -87,7 +87,7 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Next, you'll create labels to add to issues to categorize them.
 
@@ -165,11 +165,11 @@ To set up your issue board:
 1. Select **Plan > Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
-1. In the **Title field**, enter `Issue triage (by severity)`.
+1. In the **Title** field, enter `Issue triage (by severity)`.
 1. Keep the **Show the Open list** checkbox selected and clear the **Show the Closed list** one.
 1. Select **Create board**. You should see an empty board.
 1. Create a list for the `severity::1` label:
-   1. In the upper-left corner of the issue board page, select **Create list**.
+   1. In the upper-right corner of the issue board page, select **Create list**.
    1. In the column that appears, from the **Value** dropdown list, select the `severity::1` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `severity::2`, `severity::3`, and `severity::4`.
@@ -236,5 +236,5 @@ Next, you can:
 
   ![Example triage report heatmap](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/)
+To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
 and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

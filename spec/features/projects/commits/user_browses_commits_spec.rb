@@ -115,7 +115,7 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
 
       click_button '2 changed files'
 
-      expect(find('[data-testid="diff-stats-dropdown"]')).to have_content('files/ruby/popen.rb')
+      expect(find_by_testid('diff-stats-dropdown')).to have_content('files/ruby/popen.rb')
     end
   end
 

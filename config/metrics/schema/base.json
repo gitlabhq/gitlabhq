@@ -33,8 +33,7 @@
       ]
     },
     "product_group": {
-      "type": "string",
-      "pattern": "^$|^([a-z]+_)*[a-z]+$"
+      "type": "string"
     },
     "value_type": {
       "type": "string",

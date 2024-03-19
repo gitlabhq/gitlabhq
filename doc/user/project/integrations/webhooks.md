@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
 that you define. They are usually triggered by an
@@ -46,7 +46,7 @@ including:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can configure a group webhook, which is triggered by events
 that occur across all projects in the group and its subgroups. If you configure identical webhooks
@@ -106,6 +106,39 @@ You must define the following variables:
 Variable names can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 You can define URL variables directly using the REST API.
 
+## Custom webhook template
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_template`.
+On GitLab.com and GitLab Dedicated, this feature is available.
+
+You can set a custom payload template in the webhook configuration. The request body is rendered from the template
+with the data for the current event. The template must render as valid JSON.
+
+You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
+for a deployment event. To access properties nested in objects, specify the path segments separated with `.`. For example:
+
+Given this custom payload template:
+
+```json
+{
+  "event": "{{object_kind}}",
+  "project_name": "{{project.name}}"
+}
+```
+
+You'll have this request payload that combines the template with a `push` event:
+
+```json
+{
+  "event": "push",
+  "project_name": "Example"
+}
+```
+
 ## Configure your webhook receiver endpoint
 
 Webhook receiver endpoints should be fast and stable.
@@ -142,7 +175,7 @@ For GitLab self-managed, an administrator can [change the webhook timeout limit]
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Project or group webhooks that fail four consecutive times are disabled automatically.
 
@@ -254,7 +287,13 @@ You can filter push events by branch. Use one of the following options to filter
 
 - **All branches**: push events from all branches.
 - **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
-- **Regular expression**: push events from a branch that matches a regular expression (for example, `^(feature|hotfix)/`).
+- **Regular expression**: push events from a branch that matches a regular expression (regex).
+  The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+  For example, to exclude `main`, you can use:
+
+  ```plaintext
+  \b(?:m(?!ain\b)|ma(?!in\b)|mai(?!n\b)|[a-l]|[n-z])\w*|\b\w{1,3}\b|\W+
+  ```
 
 To configure branch filtering for a project or group, see
 [Configure a webhook in GitLab](#configure-a-webhook-in-gitlab).
@@ -338,7 +377,7 @@ You can [review recently triggered webhook payloads](#troubleshooting) in GitLab
 ## Configure webhooks to support mutual TLS
 
 DETAILS:
-**Offering:** self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27450) in GitLab 16.9.
 

@@ -9,6 +9,7 @@ module Gitlab
             [[Status::Build::Erased,
               Status::Build::Scheduled,
               Status::Build::Manual,
+              Status::Build::Canceling,
               Status::Build::Canceled,
               Status::Build::Created,
               Status::Build::Preparing,

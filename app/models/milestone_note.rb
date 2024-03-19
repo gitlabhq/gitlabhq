@@ -19,7 +19,7 @@ class MilestoneNote < SyntheticNote
 
   def note_text(html: false)
     format = milestone&.group_milestone? ? :name : :iid
-    reference = milestone&.to_reference(project, format: format)
+    reference = milestone&.to_reference(project, format: format, full: true, absolute_path: true)
     event.remove? ? "removed milestone #{reference}" : "changed milestone to #{reference}"
   end
 end

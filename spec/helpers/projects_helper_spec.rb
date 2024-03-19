@@ -1078,6 +1078,124 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#star_count_data_attributes' do
+    before do
+      allow(user).to receive(:starred?).with(project).and_return(starred)
+      allow(helper).to receive(:new_session_path).and_return(sign_in_path)
+      allow(project).to receive(:star_count).and_return(5)
+    end
+
+    let(:sign_in_path) { 'sign/in/path' }
+    let(:common_data_attributes) do
+      {
+        project_id: project.id,
+        sign_in_path: sign_in_path,
+        star_count: 5,
+        starrers_path: "/#{project.full_path}/-/starrers"
+      }
+    end
+
+    subject { helper.star_count_data_attributes(project) }
+
+    context 'when user has already starred the project' do
+      let(:starred) { true }
+      let(:expected) { common_data_attributes.merge({ starred: "true" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'when user has not starred the project' do
+      let(:starred) { false }
+      let(:expected) { common_data_attributes.merge({ starred: "false" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#notification_data_attributes' do
+    before do
+      allow(helper).to receive(:help_page_path).and_return(notification_help_path)
+      allow(project).to receive(:emails_disabled?).and_return(false)
+    end
+
+    let(:notification_help_path) { 'notification/help/path' }
+    let(:notification_dropdown_items) { '["global","watch","participating","mention","disabled"]' }
+
+    context "returns default user notification settings" do
+      let(:expected) do
+        {
+          emails_disabled: "false",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "global"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context "returns configured users notification settings" do
+      before do
+        allow(project).to receive(:emails_disabled?).and_return(true)
+        setting = user.notification_settings_for(project)
+        setting.level = :watch
+        setting.save!
+      end
+
+      let(:expected) do
+        {
+          emails_disabled: "true",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "watch"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#home_panel_data_attributes' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
+      allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
+      allow(helper).to receive(:notification_data_attributes).and_return(nil)
+      allow(helper).to receive(:star_count_data_attributes).and_return({})
+    end
+
+    where(:can_read_project, :is_empty_repo) do
+      true  | true
+      false | false
+    end
+
+    with_them do
+      context "returns default user project details" do
+        before do
+          allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
+          allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+        end
+
+        let(:expected) do
+          {
+            can_read_project: can_read_project.to_s,
+            is_project_empty: is_empty_repo.to_s,
+            project_id: project.id
+          }
+        end
+
+        subject { helper.home_panel_data_attributes }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
+
   shared_examples 'configure import method modal' do
     context 'as a user' do
       it 'returns a link to contact an administrator' do
@@ -1102,6 +1220,46 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.import_from_bitbucket_message }
 
     it_behaves_like 'configure import method modal'
+  end
+
+  describe "#show_archived_project_banner?" do
+    shared_examples 'does not show the banner' do |pass_project: true|
+      it do
+        expect(project.archived?).to be(false)
+        expect(helper.show_archived_project_banner?(pass_project ? project : nil)).to be(false)
+      end
+    end
+
+    context 'with no project' do
+      it_behaves_like 'does not show the banner', pass_project: false
+    end
+
+    context 'with unsaved project' do
+      let_it_be(:project) { build(:project) }
+
+      it_behaves_like 'does not show the banner'
+    end
+
+    context 'with the setting enabled' do
+      context 'with an active project' do
+        it_behaves_like 'does not show the banner'
+      end
+
+      context 'with an inactive project' do
+        before do
+          project.archived = true
+          project.save!
+        end
+
+        it 'shows the banner' do
+          expect(project.present?).to be(true)
+          expect(project.saved?).to be(true)
+          expect(project.archived?).to be(true)
+          expect(helper.show_archived_project_banner?(project)).to be(true)
+          expect(helper.show_inactive_project_deletion_banner?(project)).to be(false)
+        end
+      end
+    end
   end
 
   describe '#show_inactive_project_deletion_banner?' do
@@ -1146,6 +1304,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it 'shows the banner' do
+          expect(helper.show_archived_project_banner?(project)).to be(false)
           expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
         end
       end
@@ -1583,6 +1742,53 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it_behaves_like 'returns visibility level content_tag'
+      end
+    end
+  end
+
+  describe '#hidden_issue_icon' do
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    before do
+      allow(helper).to receive(:hidden_resource_icon).with(resource).and_return(mock_svg)
+    end
+
+    context 'when issue is hidden' do
+      let_it_be(:banned_user) { build(:user, :banned) }
+      let_it_be(:resource) { build(:issue, author: banned_user) }
+
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issue_icon(resource)).to eq(mock_svg)
+      end
+    end
+
+    context 'when issue is not hidden' do
+      let_it_be(:resource) { build(:issue) }
+
+      it 'returns `nil`' do
+        expect(helper.hidden_issue_icon(resource)).to be_nil
+      end
+    end
+  end
+
+  describe '#issue_manual_ordering_class' do
+    context 'when sorting by relative position' do
+      before do
+        assign(:sort, 'relative_position')
+      end
+
+      it 'returns manual ordering class' do
+        expect(helper.issue_manual_ordering_class).to eq('manual-ordering')
+      end
+
+      context 'when manual sorting disabled' do
+        before do
+          allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
+        end
+
+        it 'returns nil' do
+          expect(helper.issue_manual_ordering_class).to eq(nil)
+        end
       end
     end
   end

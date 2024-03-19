@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use
@@ -72,7 +72,7 @@ This can save you a lot of time, if you mostly create issues for the same projec
 ## From another issue or incident
 
 > - New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
-> - **Relate to…** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
+> - **Relate to** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
 
 You can create a new issue from an existing one. The two issues can then be marked as related.
 
@@ -171,7 +171,7 @@ HTML page to create issues with certain fields prefilled.
 | Description template | `issuable_template`   | Must be [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding).                                                          |
 | Description          | `issue[description]`  | Must be [URL-encoded](../../../api/rest/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
 | Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
-| Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to…** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
+| Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
 
 Adapt these examples to form your new issue URL with prefilled fields.
 To create an issue in the GitLab project:

@@ -6,6 +6,7 @@
 - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
+- add_page_specific_style 'page_bundles/commit_description'
 
 #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
   - if Feature.enabled?(:project_overview_reorg)

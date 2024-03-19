@@ -9,11 +9,11 @@ import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
+import BoardNewIssue from 'ee_else_ce/boards/components/board_new_issue.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
-  toggleFormEventPrefix,
   DraggableItemTypes,
   listIssuablesQueries,
   ListType,
@@ -26,9 +26,7 @@ import {
   setError,
 } from '../graphql/cache_updates';
 import { shouldCloneCard, moveItemVariables } from '../boards_util';
-import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
-import BoardNewIssue from './board_new_issue.vue';
 import BoardCutLine from './board_cut_line.vue';
 
 export default {
@@ -72,12 +70,15 @@ export default {
       type: Object,
       required: true,
     },
+    showNewForm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       showCount: false,
-      showIssueForm: false,
-      showEpicForm: false,
       currentList: null,
       isLoadingMore: false,
       toListId: null,
@@ -191,9 +192,6 @@ export default {
         wipLimit: this.list.maxIssueCount,
       });
     },
-    toggleFormEventPrefix() {
-      return this.isEpicBoard ? toggleFormEventPrefix.epic : toggleFormEventPrefix.issue;
-    },
     boardItemsSizeExceedsMax() {
       return this.list.maxIssueCount > 0 && this.listItemsCount > this.list.maxIssueCount;
     },
@@ -204,10 +202,10 @@ export default {
       return this.$apollo.queries.currentList.loading && !this.isLoadingMore;
     },
     epicCreateFormVisible() {
-      return this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showEpicForm;
+      return this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showNewForm;
     },
     issueCreateFormVisible() {
-      return !this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showIssueForm;
+      return !this.isEpicBoard && this.list.listType !== STATUS_CLOSED && this.showNewForm;
     },
     listRef() {
       // When list is draggable, the reference to the list needs to be accessed differently
@@ -258,19 +256,6 @@ export default {
         this.showCount = this.scrollHeight() > Math.ceil(this.listHeight());
       });
     },
-    'list.id': {
-      handler(id, oldVal) {
-        if (id) {
-          eventHub.$on(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
-
-          eventHub.$off(`${this.toggleFormEventPrefix}${oldVal}`, this.toggleForm);
-        }
-      },
-      immediate: true,
-    },
-  },
-  beforeDestroy() {
-    eventHub.$off(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
   },
   methods: {
     listHeight() {
@@ -289,13 +274,6 @@ export default {
         },
       });
       this.isLoadingMore = false;
-    },
-    toggleForm() {
-      if (this.isEpicBoard) {
-        this.showEpicForm = !this.showEpicForm;
-      } else {
-        this.showIssueForm = !this.showIssueForm;
-      }
     },
     isObservableItem(index) {
       // observe every 6 item of 10 to achieve smooth loading state
@@ -572,7 +550,7 @@ export default {
       }
     },
     async addListItem(input) {
-      this.toggleForm();
+      this.$emit('toggleNewForm');
       this.addItemToListInProgress = true;
       let issuable;
       try {
@@ -655,12 +633,14 @@ export default {
       v-if="issueCreateFormVisible"
       :list="list"
       :board-id="boardId"
+      @toggleNewForm="$emit('toggleNewForm')"
       @addNewIssue="addListItem"
     />
     <board-new-epic
       v-if="epicCreateFormVisible"
       :list="list"
       :board-id="boardId"
+      @toggleNewForm="$emit('toggleNewForm')"
       @addNewEpic="addListItem"
     />
     <component
@@ -690,6 +670,7 @@ export default {
         :item="item"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
+        @setFilters="$emit('setFilters', $event)"
       >
         <board-card-move-to-position
           v-if="showMoveToPosition"
@@ -715,6 +696,7 @@ export default {
         :item="item"
         :data-draggable-item-type="$options.draggableItemTypes.card"
         :show-work-item-type-icon="!isEpicBoard"
+        @setFilters="$emit('setFilters', $event)"
       >
         <board-card-move-to-position
           v-if="showMoveToPosition"

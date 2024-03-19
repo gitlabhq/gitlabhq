@@ -64,4 +64,14 @@ RSpec.describe RuboCop::BatchedBackgroundMigrationsDictionary, feature_category:
       expect(described_class.new('random').finalize_after).to be_nil
     end
   end
+
+  describe '.checksum' do
+    let(:dictionary_data) { { c: "d", a: "b" } }
+
+    it 'returns a checksum of the dictionary_data' do
+      allow(described_class).to receive(:dictionary_data).and_return(dictionary_data)
+
+      expect(described_class.checksum).to eq(Digest::SHA256.hexdigest(dictionary_data.to_s))
+    end
+  end
 end

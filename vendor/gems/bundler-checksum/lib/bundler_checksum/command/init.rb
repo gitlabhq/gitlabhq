@@ -12,7 +12,10 @@ module BundlerChecksum::Command
       checksums = []
 
       require "bundler/vendored_uri"
-      args = [nil, Bundler::Source::Rubygems::Remote.new(Bundler::URI("https://rubygems.org")), nil]
+      # RubyGems v3.5.6 got rid of Bundler::URI in favor of a vendored Gem::URI: https://github.com/rubygems/rubygems/pull/7386
+      rubygems_source = 'https://rubygems.org'
+      remote = defined?(Gem::URI) ? Gem::URI(rubygems_source) : Bundler::URI(rubygems_source)
+      args = [nil, Bundler::Source::Rubygems::Remote.new(remote), nil]
       # gem_remote_fetcher added in https://github.com/rubygems/rubygems/pull/7092/
       args << nil if Gem::Version.new(Bundler::VERSION) >= Gem::Version.new("2.5.0")
 

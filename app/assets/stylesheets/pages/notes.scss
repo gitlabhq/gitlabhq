@@ -46,13 +46,9 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     .gl-dark & {
       background: var(--gray-10);
     }
-    
+
     .gl-dark .modal-body & {
       background: var(--gray-50, $gray-50);
-    }
-
-    &.note-comment {
-      top: 30px;
     }
   }
 }
@@ -792,6 +788,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 .note-header-info {
   min-width: 0;
   padding-left: $gl-padding-8;
+  word-break: break-word;
 
   &.discussion {
     padding-bottom: 0;

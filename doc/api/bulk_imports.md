@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
@@ -33,7 +33,7 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/ind
 Use this endpoint to start a new group or project migration. Specify:
 
 - `entities[group_entity]` to migrate a group.
-- `entities[project_entity]` to migrate a project (Beta).
+- `entities[project_entity]` to migrate a project. (**Status:** Beta)
 
 ```plaintext
 POST /bulk_imports

@@ -57,7 +57,7 @@ class GithubImport
     namespace_path, _sep, project_name = @project_path.rpartition('/')
     target_namespace = Namespace.find_by_full_path(namespace_path)
 
-    raise 'Namespace or group to import repository into does not exist.' unless target_namespace
+    raise s_('GithubImport|Namespace or group to import repository into does not exist.') unless target_namespace
 
     Project.transaction do
       project = Projects::CreateService.new(

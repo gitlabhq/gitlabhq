@@ -333,7 +333,7 @@ Further reading:
 
 - [GraphQL Best Practices Guide](https://graphql.org/learn/best-practices/#nullability).
 - GraphQL documentation on [Object types and fields](https://graphql.org/learn/schema/#object-types-and-fields).
-- [Using nullability in GraphQL](https://www.apollographql.com/blog/graphql/basics/using-nullability-in-graphql/)
+- [Using nullability in GraphQL](https://www.apollographql.com/blog/using-nullability-in-graphql)
 
 ### Exposing Global IDs
 
@@ -1059,6 +1059,14 @@ If necessary, provide the default. For example:
 Sets the issue to confidential. Default is false.
 ```
 
+#### Sort enums
+
+[Enums for sorting](#sort-arguments) should have the description `'Values for sorting {x}.'`. For example:
+
+```plaintext
+Values for sorting container repositories.
+```
+
 #### `Types::TimeType` field description
 
 For `Types::TimeType` GraphQL fields, include the word `timestamp`. This lets
@@ -1625,18 +1633,6 @@ Examples:
 
 If you need advice for mutation naming, canvass the Slack `#graphql` channel for feedback.
 
-### Object identifier arguments
-
-In keeping with the GitLab use of [Global IDs](#global-ids), mutation
-arguments should use Global IDs to identify an object and never database
-primary key IDs.
-
-Where an object has an `iid`, prefer to use the `full_path` or `group_path`
-of its parent in combination with its `iid` as arguments to identify an
-object rather than its `id`.
-
-See also [Deprecate Global IDs](#deprecate-global-ids).
-
 ### Fields
 
 In the most common situations, a mutation would return 2 fields:
@@ -2025,11 +2021,11 @@ defines these arguments (some
 ```ruby
 argument :project_path, GraphQL::Types::ID,
          required: true,
-         description: "The project the merge request to mutate is in."
+         description: "Project the merge request belongs to."
 
 argument :iid, GraphQL::Types::String,
          required: true,
-         description: "The IID of the merge request to mutate."
+         description: "IID of the merge request."
 
 argument :draft,
          GraphQL::Types::Boolean,
@@ -2042,6 +2038,92 @@ argument :draft,
 These arguments automatically generate an input type called
 `MergeRequestSetDraftInput` with the 3 arguments we specified and the
 `clientMutationId`.
+
+### Object identifier arguments
+
+Arguments that identify an object should be:
+
+- [A full path](#full-path-object-identifier-arguments) or [an IID](#iid-object-identifier-arguments) if an object has either.
+- [The object's Global ID](#global-id-object-identifier-arguments) for all other objects. Never use plain database primary key IDs.
+
+#### Full path object identifier arguments
+
+Historically we have been inconsistent with the naming of full path arguments, but prefer to name the argument:
+
+- `project_path` for a project full path
+- `group_path` for a group full path
+- `namespace_path` for a namespace full path
+
+Using an example from the
+[`ciJobTokenScopeRemoveProject` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/c40d5637f965e724c496f3cd1392cd8e493237e2/app/graphql/mutations/ci/job_token_scope/remove_project.rb#L13-15):
+
+```ruby
+argument :project_path, GraphQL::Types::ID,
+         required: true,
+         description: 'Project the CI job token scope belongs to.'
+```
+
+#### IID object identifier arguments
+
+Use the `iid` of an object in combination with its parent `project_path` or `group_path`. For example:
+
+```ruby
+argument :project_path, GraphQL::Types::ID,
+         required: true,
+         description: 'Project the issue belongs to.'
+
+argument :iid, GraphQL::Types::String,
+         required: true,
+         description: 'IID of the issue.'
+```
+
+#### Global ID object identifier arguments
+
+Using an example from the
+[`discussionToggleResolve` mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/3a9d20e72225dd82fe4e1a14e3dd1ffcd0fe81fa/app/graphql/mutations/discussions/toggle_resolve.rb#L10-13):
+
+```ruby
+argument :id, Types::GlobalIDType[Discussion],
+         required: true,
+         description: 'Global ID of the discussion.'
+```
+
+See also [Deprecate Global IDs](#deprecate-global-ids).
+
+### Sort arguments
+
+Sort arguments should use an [enum type](#enums) whenever possible to describe the set of available sorting values.
+
+The enum can inherit from `Types::SortEnum` to inherit some common values.
+
+The enum values should follow the format `{PROPERTY}_{DIRECTION}`. For example:
+
+```plaintext
+TITLE_ASC
+```
+
+Also see the [description style guide for sort enums](#sort-enums).
+
+Example from [`ContainerRepositoriesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/dad474605a06c8ed5404978b0a9bd187e9fded80/app/graphql/resolvers/container_repositories_resolver.rb#L13-16):
+
+```ruby
+# Types::ContainerRepositorySortEnum:
+module Types
+  class ContainerRepositorySortEnum < SortEnum
+    graphql_name 'ContainerRepositorySort'
+    description 'Values for sorting container repositories'
+
+    value 'NAME_ASC', 'Name by ascending order.', value: :name_asc
+    value 'NAME_DESC', 'Name by descending order.', value: :name_desc
+  end
+end
+
+# Resolvers::ContainerRepositoriesResolver:
+argument :sort, Types::ContainerRepositorySortEnum,
+          description: 'Sort container repositories by this criteria.',
+          required: false,
+          default_value: :created_desc
+```
 
 ## GitLab custom scalars
 

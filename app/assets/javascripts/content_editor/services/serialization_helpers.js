@@ -718,7 +718,7 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
-    const { href, title, sourceMarkdown, isReference } = mark.attrs;
+    const { href = '', title, sourceMarkdown, isReference } = mark.attrs;
 
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';

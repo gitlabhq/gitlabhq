@@ -248,9 +248,15 @@ DELETE /geo_sites/:id
 |-----------|---------|----------|-------------------------|
 | `id`      | integer | yes      | The ID of the Geo site. |
 
-## Repair a primary Geo site
+## Repair a Geo site
 
-Repairs the OAuth authentication of a primary Geo site.
+Repairs the OAuth authentication of a Geo site in the event that there is an
+OAuth synchronization problem between the primary or secondary Geo sites.
+In that case, this message may be displayed:
+
+```plaintext
+There are no OAuth application defined for this Geo node.
+```
 
 ```plaintext
 POST /geo_sites/:id/repair

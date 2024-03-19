@@ -60,4 +60,12 @@ describe('Header Search Store Mutations', () => {
       expect(state.search).toBe(MOCK_SEARCH);
     });
   });
+
+  describe('SET_COMMAND', () => {
+    it('sets search to value', () => {
+      mutations[types.SET_COMMAND](state, '>');
+
+      expect(state.commandChar).toBe('>');
+    });
+  });
 });

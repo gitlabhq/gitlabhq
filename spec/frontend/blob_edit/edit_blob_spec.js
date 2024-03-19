@@ -11,7 +11,13 @@ import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_edito
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
 import axios from '~/lib/utils/axios_utils';
+import { TEST_HOST } from 'helpers/test_constants';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { createAlert } from '~/alert';
+import Api from '~/api';
 
+jest.mock('~/api', () => ({ getRawFile: jest.fn().mockResolvedValue({ data: 'raw content' }) }));
 jest.mock('~/editor/source_editor');
 jest.mock('~/editor/extensions/source_editor_extension_base');
 jest.mock('~/editor/extensions/source_editor_file_template_ext');
@@ -19,6 +25,8 @@ jest.mock('~/editor/extensions/source_editor_markdown_ext');
 jest.mock('~/editor/extensions/source_editor_markdown_livepreview_ext');
 jest.mock('~/editor/extensions/source_editor_toolbar_ext');
 jest.mock('~/editor/extensions/source_editor_security_policy_schema_ext');
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/alert');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const defaultExtensions = [
@@ -37,6 +45,8 @@ const markdownExtensions = [
 describe('Blob Editing', () => {
   let blobInstance;
   let mock;
+  const projectId = '123';
+  const filePath = 'path/to/file.js';
   const useMock = jest.fn(() => markdownExtensions);
   const unuseMock = jest.fn();
   const emitter = new Emitter();
@@ -49,6 +59,7 @@ describe('Blob Editing', () => {
     onDidChangeModelLanguage: emitter.event,
     updateModelLanguage: jest.fn(),
   };
+
   beforeEach(() => {
     mock = new MockAdapter(axios);
     setHTMLFixture(`
@@ -56,7 +67,7 @@ describe('Blob Editing', () => {
       <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
       <form class="js-edit-blob-form">
         <div id="file_path"></div>
-        <div id="editor"></div>
+        <div id="editor" data-ref="main"></div>
         <textarea id="file-content"></textarea>
       </form>
     `);
@@ -73,8 +84,9 @@ describe('Blob Editing', () => {
     blobInstance = new EditBlob({
       isMarkdown,
       previewMarkdownPath: PREVIEW_MARKDOWN_PATH,
-      filePath: isSecurityPolicy ? '.gitlab/security-policies/policy.yml' : '',
+      filePath: isSecurityPolicy ? '.gitlab/security-policies/policy.yml' : filePath,
       projectPath: 'path/to/project',
+      projectId,
     });
     return blobInstance;
   };
@@ -83,6 +95,26 @@ describe('Blob Editing', () => {
     editorInst({ isMarkdown, isSecurityPolicy });
     await waitForPromises();
   };
+
+  describe('file content', () => {
+    beforeEach(() => initEditor());
+    it('requests raw file content', () => {
+      expect(Api.getRawFile).toHaveBeenCalledWith(
+        projectId,
+        filePath,
+        { ref: 'main' },
+        { responseType: 'text', transformResponse: expect.any(Function) },
+      );
+    });
+
+    it('creates an editor instance with the raw content', () => {
+      expect(SourceEditor.prototype.createInstance).toHaveBeenCalledWith(
+        expect.objectContaining({
+          blobContent: 'raw content',
+        }),
+      );
+    });
+  });
 
   it('loads SourceEditorExtension and FileTemplateExtension by default', async () => {
     await initEditor();
@@ -173,14 +205,56 @@ describe('Blob Editing', () => {
     );
   });
 
-  it('adds trailing newline to the blob content on submit', async () => {
-    const form = document.querySelector('.js-edit-blob-form');
-    const fileContentEl = document.getElementById('file-content');
+  describe('submit form', () => {
+    const findForm = () => document.querySelector('.js-edit-blob-form');
+    const content = 'some \r\n content \n';
+    const endpoint = `${TEST_HOST}/some/endpoint`;
 
-    await initEditor();
+    const setupSpec = async (method) => {
+      setHTMLFixture(`
+      <form class="js-edit-blob-form" data-form-method="${method}" action="${endpoint}">
+        <div id="file_path"></div>
+        <div id="editor"></div>
+        <button class="js-submit" type="submit">Submit</button>
+      </form>
+    `);
 
-    form.dispatchEvent(new Event('submit'));
+      await initEditor();
+      jest.spyOn(axios, method);
+      findForm().dispatchEvent(new Event('submit'));
+      await waitForPromises();
+    };
 
-    expect(fileContentEl.value).toBe('test value\n');
+    beforeEach(() => {
+      mockInstance.getValue = jest.fn().mockReturnValue(content);
+    });
+
+    it.each(['post', 'put'])(
+      'submits a "%s" request without mutating line endings',
+      async (method) => {
+        await setupSpec(method);
+
+        expect(axios[method]).toHaveBeenCalledWith(endpoint, { content });
+      },
+    );
+
+    it('redirects to the correct URL', async () => {
+      mock.onPost(endpoint).reply(HTTP_STATUS_OK, { filePath });
+      await setupSpec('post');
+
+      expect(visitUrl).toHaveBeenCalledWith(filePath);
+    });
+
+    it('creates an alert when an error occurs', async () => {
+      mock.onPost(endpoint).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      await setupSpec('post');
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'An error occurred editing the blob',
+          captureError: true,
+        }),
+      );
+    });
   });
 });

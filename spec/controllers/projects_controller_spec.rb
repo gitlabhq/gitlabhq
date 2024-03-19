@@ -173,38 +173,9 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         sign_in(user)
       end
 
-      context "user does not have access to project" do
-        let(:private_project) { create(:project, :private) }
-
-        it "does not initialize notification setting" do
-          get :show, params: { namespace_id: private_project.namespace, id: private_project }
-          expect(assigns(:notification_setting)).to be_nil
-        end
-      end
-
       context "user has access to project" do
         before do
           expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-        end
-
-        context "and does not have notification setting" do
-          it "initializes notification as disabled" do
-            get :show, params: { namespace_id: public_project.namespace, id: public_project }
-            expect(assigns(:notification_setting).level).to eq("global")
-          end
-        end
-
-        context "and has notification setting" do
-          before do
-            setting = user.notification_settings_for(public_project)
-            setting.level = :watch
-            setting.save!
-          end
-
-          it "shows current notification setting" do
-            get :show, params: { namespace_id: public_project.namespace, id: public_project }
-            expect(assigns(:notification_setting).level).to eq("watch")
-          end
         end
 
         context 'when ambiguous_ref_modal is disabled' do
@@ -338,7 +309,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           get :show, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to render_template('projects/issues/_issues')
+          expect(response).to render_template('projects/_issues')
           expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 

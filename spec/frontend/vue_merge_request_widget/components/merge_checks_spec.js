@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MergeChecksComponent from '~/vue_merge_request_widget/components/merge_checks.vue';
 import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.query.graphql';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 import StateContainer from '~/vue_merge_request_widget/components/state_container.vue';
 import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
@@ -140,7 +140,6 @@ describe('Merge request merge checks component', () => {
     ${'conflict'}                 | ${'conflict'}
     ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
     ${'need_rebase'}              | ${'need_rebase'}
-    ${'policies_denied'}          | ${'default'}
   `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 

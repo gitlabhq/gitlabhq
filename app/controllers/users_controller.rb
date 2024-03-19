@@ -224,7 +224,7 @@ class UsersController < ApplicationController
   end
 
   def contributed_projects
-    ContributedProjectsFinder.new(user).execute(current_user)
+    ContributedProjectsFinder.new(user).execute(current_user, order_by: 'latest_activity_desc')
   end
 
   def starred_projects

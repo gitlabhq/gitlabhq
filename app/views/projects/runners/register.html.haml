@@ -3,4 +3,4 @@
 - breadcrumb_title s_('Runners|Register runner')
 - page_title s_('Runners|Register'), runner_name
 
-#js-project-register-runner{ data: { runner_id: @runner.id, runners_path: project_runners_path(@project) } }
+#js-project-register-runner{ data: { runner_id: @runner.id, runners_path: project_runners_path(@project), project_path: @project.full_path } }

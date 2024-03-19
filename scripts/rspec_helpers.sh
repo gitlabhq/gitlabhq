@@ -342,15 +342,6 @@ function retry_failed_rspec_examples() {
 
   # The tests are flaky because they succeeded after being retried.
   if [[ $rspec_run_status -eq 0 ]]; then
-    # "53557338" is the project ID of https://gitlab.com/gitlab-org/quality/engineering-productivity/flaky-tests
-    if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]; then
-      bundle exec flaky-test-issues \
-        --token "${RAILS_FLAKY_TEST_PROJECT_TOKEN}" \
-        --project "53557338" \
-        --merge_request_iid "$CI_MERGE_REQUEST_IID" \
-        --input-files "rspec/rspec-retry-*.json" || true # We don't want this command to fail the job.
-    fi
-
     # Make the pipeline "pass with warnings" if the flaky tests are part of this MR.
     warn_on_successfully_retried_test
   fi

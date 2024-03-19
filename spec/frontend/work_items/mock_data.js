@@ -36,6 +36,14 @@ export const mockLabels = [
     color: '#b00',
     textColor: '#00b',
   },
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/3',
+    title: 'Label 3',
+    description: 'Label 3 description',
+    color: '#fff',
+    textColor: '#000',
+  },
 ];
 
 export const mockMilestone = {
@@ -628,6 +636,7 @@ export const workItemResponseFactory = ({
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
   weightWidgetPresent = true,
+  timeTrackingWidgetPresent = true,
   participantsWidgetPresent = true,
   progressWidgetPresent = true,
   milestoneWidgetPresent = true,
@@ -755,6 +764,14 @@ export const workItemResponseFactory = ({
                   __typename: 'IterationCadence',
                 },
               },
+            }
+          : { type: 'MOCK TYPE' },
+        timeTrackingWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetTimeTracking',
+              type: 'TIME_TRACKING',
+              timeEstimate: '5h',
+              totalTimeSpent: '3h',
             }
           : { type: 'MOCK TYPE' },
         participantsWidgetPresent
@@ -1916,6 +1933,36 @@ export const projectMembersResponseWithCurrentUser = {
   },
 };
 
+export const projectMembersAutocompleteResponseWithCurrentUser = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/7',
+      __typename: 'Project',
+      users: [
+        {
+          __typename: 'AutocompletedUser',
+          id: 'gid://gitlab/User/5',
+          avatarUrl: '/avatar2',
+          name: 'rookie',
+          username: 'rookie',
+          webUrl: 'rookie',
+          status: null,
+        },
+        {
+          __typename: 'AutocompletedUser',
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
+          name: 'Administrator',
+          username: 'root',
+          webUrl: '/root',
+          status: null,
+        },
+      ],
+    },
+  },
+};
+
 export const projectMembersResponseWithDuplicates = {
   data: {
     workspace: {
@@ -2027,6 +2074,16 @@ export const projectMembersResponseWithCurrentUserWithNextPage = {
   },
 };
 
+export const projectMembersAutocompleteResponseWithNoMatchingUsers = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: [],
+    },
+  },
+};
+
 export const projectMembersResponseWithNoMatchingUsers = {
   data: {
     workspace: {
@@ -2100,6 +2157,30 @@ export const projectLabelsResponse = {
     },
   },
 };
+
+export const groupLabelsResponse = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Group',
+      labels: {
+        nodes: mockLabels,
+      },
+    },
+  },
+};
+
+export const getProjectLabelsResponse = (labels) => ({
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      labels: {
+        nodes: labels,
+      },
+    },
+  },
+});
 
 export const mockIterationWidgetResponse = {
   description: 'Iteration description',

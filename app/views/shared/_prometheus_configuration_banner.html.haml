@@ -8,20 +8,11 @@
   .info-well{ class: info_well_classes }
     = s_('PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration.')
 - else
-  .container-fluid
-    .row
-      - if integration.prometheus_available?
-        .col-sm-2
-          .svg-container
-            = image_tag 'illustrations/monitoring/getting_started.svg'
-        .col-sm-10
-          %p.text-success.gl-mt-3
-            = s_('PrometheusService|You have a cluster with the Prometheus integration enabled.')
-          = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project)
-      - else
-        .col-sm-2
-          = image_tag 'illustrations/monitoring/loading.svg'
-        .col-sm-10
-          %p.gl-mt-3
-            = s_('PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters.')
-          = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), variant: :confirm
+  - if integration.prometheus_available?
+    %p.text-success.gl-mt-3
+      = s_('PrometheusService|You have a cluster with the Prometheus integration enabled.')
+    = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project)
+  - else
+    %p.gl-mt-3
+      = s_('PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters.')
+    = link_button_to s_('PrometheusService|Manage clusters'), project_clusters_path(project), variant: :confirm

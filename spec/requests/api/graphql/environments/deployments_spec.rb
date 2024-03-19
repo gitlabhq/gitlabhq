@@ -322,9 +322,13 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
 
       def set_deployment_attributes(deployment, factory_type)
         deployment.user = create(:user).tap { |u| project.add_developer(u) }
-        deployment.deployable =
-          create(factory_type, project: project, environment: environment.name, deployment: deployment,
-                               user: deployment.user)
+        deployment.deployable = create(
+          factory_type,
+          project: project,
+          environment: environment.name,
+          deployment: deployment,
+          user: deployment.user
+        )
       end
     end
 

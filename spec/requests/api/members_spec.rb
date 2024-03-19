@@ -272,7 +272,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
-               params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+            params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
         end
       end
 
@@ -283,7 +283,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
               it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
                 let(:route) do
                   post api("/#{source_type.pluralize}/#{source.id}/members", public_send(type)),
-                       params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+                    params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
                 end
               end
             end
@@ -302,7 +302,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                     params: { user_id: access_requester.id, access_level: Member::OWNER }
+                  params: { user_id: access_requester.id, access_level: Member::OWNER }
               end
             end
           end
@@ -311,7 +311,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                     params: { user_id: stranger.id, access_level: Member::OWNER }
+                  params: { user_id: stranger.id, access_level: Member::OWNER }
               end
             end
           end
@@ -324,7 +324,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             it 'transforms the requester into a proper member' do
               expect do
                 post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                     params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+                  params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
 
                 expect(response).to have_gitlab_http_status(:created)
               end.to change { source.members.count }.by(1)
@@ -338,7 +338,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         it 'creates a new member' do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+              params: { user_id: stranger.id, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
           end.to change { source.members.count }.by(1)
@@ -357,7 +357,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+              params: { user_id: stranger.id, access_level: Member::DEVELOPER }
           end.not_to change { source.members.count }
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['status']).to eq('error')
@@ -369,7 +369,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
           it 'tracks the invite source as api' do
             post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: params
+              params: params
 
             expect_snowplow_event(
               category: 'Members::CreateService',
@@ -382,7 +382,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
           it 'tracks the invite source from params' do
             post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                 params: params.merge(invite_source: '_invite_source_')
+              params: params.merge(invite_source: '_invite_source_')
 
             expect_snowplow_event(
               category: 'Members::CreateService',
@@ -400,7 +400,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           it 'returns success when it successfully create all members' do
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: user_ids, access_level: Member::DEVELOPER }
+                params: { user_id: user_ids, access_level: Member::DEVELOPER }
 
               expect(response).to have_gitlab_http_status(:created)
             end.to change { source.members.count }.by(2)
@@ -415,7 +415,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
             expect do
               post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-                   params: { user_id: user_ids, access_level: Member::DEVELOPER }
+                params: { user_id: user_ids, access_level: Member::DEVELOPER }
             end.not_to change { source.members.count }
             expect(json_response['status']).to eq('error')
             expect(json_response['message']).to eq(error_message)
@@ -432,10 +432,11 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           parent.add_developer(stranger)
 
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-               params: { user_id: stranger.id, access_level: Member::REPORTER }
+            params: { user_id: stranger.id, access_level: Member::REPORTER }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['access_level']).to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
+          expect(json_response['message']['access_level'])
+            .to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
         end
 
         it 'creates the member if group level is lower' do
@@ -446,7 +447,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           parent.add_developer(stranger)
 
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-               params: { user_id: stranger.id, access_level: Member::MAINTAINER }
+            params: { user_id: stranger.id, access_level: Member::MAINTAINER }
 
           expect(response).to have_gitlab_http_status(:created)
           expect(json_response['id']).to eq(stranger.id)
@@ -457,7 +458,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       context 'access expiry date' do
         subject do
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-               params: { user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: expires_at }
+            params: { user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: expires_at }
         end
 
         context 'when set to a date in the past' do
@@ -492,14 +493,14 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         source.add_guest(stranger)
 
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: maintainer.id, access_level: Member::MAINTAINER }
+          params: { user_id: maintainer.id, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:conflict)
       end
 
       it 'returns 404 when the user_id is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: non_existing_record_id, access_level: Member::MAINTAINER }
+          params: { user_id: non_existing_record_id, access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -507,21 +508,21 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
       it 'returns 400 when user_id is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { access_level: Member::MAINTAINER }
+          params: { access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: stranger.id }
+          params: { user_id: stranger.id }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'returns 400 when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-             params: { user_id: stranger.id, access_level: non_existing_record_access_level }
+          params: { user_id: stranger.id, access_level: non_existing_record_access_level }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -538,7 +539,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       it 'returns 400' do
         expect do
           post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
-               params: { user_id: project_bot.id, access_level: Member::DEVELOPER }
+            params: { user_id: project_bot.id, access_level: Member::DEVELOPER }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']['user_id']).to(
@@ -553,7 +554,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
-              params: { access_level: Member::MAINTAINER }
+            params: { access_level: Member::MAINTAINER }
         end
       end
 
@@ -563,7 +564,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", public_send(type)),
-                     params: { access_level: Member::MAINTAINER }
+                  params: { access_level: Member::MAINTAINER }
               end
             end
           end
@@ -582,7 +583,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
               let(:route) do
                 put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-                     params: { access_level: Member::OWNER }
+                  params: { access_level: Member::OWNER }
               end
             end
           end
@@ -593,7 +594,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         context 'when updating a member with the same or lower access level' do
           it 'updates the member' do
             put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-                params: { access_level: Member::MAINTAINER }
+              params: { access_level: Member::MAINTAINER }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['id']).to eq(developer.id)
@@ -614,7 +615,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
             let(:route) do
               put api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer),
-                   params: { access_level: Member::OWNER }
+                params: { access_level: Member::OWNER }
             end
           end
         end
@@ -623,7 +624,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       context 'access expiry date' do
         subject do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-              params: { expires_at: expires_at, access_level: Member::MAINTAINER }
+            params: { expires_at: expires_at, access_level: Member::MAINTAINER }
         end
 
         context 'when set to a date in the past' do
@@ -651,7 +652,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
       it 'returns 409 if member does not exist' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{non_existing_record_id}", maintainer),
-            params: { access_level: Member::MAINTAINER }
+          params: { access_level: Member::MAINTAINER }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -664,7 +665,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
       it 'returns 400 when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
-            params: { access_level: 15 }
+          params: { access_level: 15 }
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -825,7 +826,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
       it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
         let(:route) do
           post api("/projects/#{project.id}/members", maintainer),
-               params: { user_id: access_requester.id, access_level: Member::OWNER }
+            params: { user_id: access_requester.id, access_level: Member::OWNER }
         end
       end
     end

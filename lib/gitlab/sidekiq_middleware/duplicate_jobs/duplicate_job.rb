@@ -75,7 +75,7 @@ module Gitlab
           argv = []
           job_wal_locations.each do |connection_name, location|
             diff = pg_wal_lsn_diff(connection_name)
-            argv += [connection_name, diff || '', location]
+            argv += [connection_name, diff ? diff.to_f : '', location]
           end
 
           with_redis { |r| r.eval(UPDATE_WAL_COOKIE_SCRIPT, keys: [cookie_key], argv: argv) }

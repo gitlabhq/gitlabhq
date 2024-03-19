@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
 
@@ -84,12 +84,12 @@ The entire custom instance-level project templates repository is copied, includi
 If the user:
 
 - Has the Owner role on the custom instance-level project templates project or is a GitLab administrator,
-  all project settings are copied over to the new project.
+  all project settings, including project members, are copied over to the new project.
 - Doesn't have the Owner role or is not a GitLab administrator,
   project deploy keys and project webhooks aren't copied over because they contain sensitive data.
 
 To learn more about what is migrated, see
-[Items that are exported](../project/settings/import_export.md#items-that-are-exported).
+[Items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
 
 ## User assignments in templates
 
@@ -108,4 +108,4 @@ and tags. For example, if the template contains a protected branch:
 
 Custom group-level project templates are only available to group members.
 If the administrator account you are using is not a member of a group,
-you can't access the templates. 
+you can't access the templates.

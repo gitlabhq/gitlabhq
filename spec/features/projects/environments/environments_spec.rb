@@ -331,7 +331,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
 
             # Wait for UI to transition to ensure we an GraphQL request has been made
             within(actions_button_selector) { find('.gl-spinner') }
-            within(actions_button_selector) { find('[data-testid="play-icon"]') }
+            within(actions_button_selector) { find_by_testid('play-icon') }
 
             wait_for_requests
           end

@@ -19,8 +19,5 @@ tier:
   - free
   - premium
   - ultimate
-options:
-  events:
-    - visit_after_push_link_or_create_mr_banner
 events:
   - name: visit_after_push_link_or_create_mr_banner

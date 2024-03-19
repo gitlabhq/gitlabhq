@@ -11,6 +11,10 @@ module Projects
 
       feature_category :code_review_workflow
 
+      before_action do
+        push_frontend_feature_flag(:approval_rules_drawer, @project)
+      end
+
       def update
         result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 

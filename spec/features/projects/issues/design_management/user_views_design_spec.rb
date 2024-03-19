@@ -82,6 +82,27 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     expect(page.find('.image-notes .design-note .note-text')).to have_content(note.note)
   end
 
+  it 'allows toggling the replies on unresolved comment' do
+    click_link design.filename
+
+    page.within(find('.image-notes')) do
+      find('.js-vue-discussion-reply').click
+      find('.note-textarea').send_keys('Reply to comment')
+
+      find_by_testid('save-comment-button').click
+      wait_for_requests
+
+      expect(page).to have_content('Reply to comment')
+
+      expect(find_by_testid('toggle-comments-wrapper')).to have_content('Collapse replies')
+
+      find_by_testid('toggle-replies-button').click
+
+      expect(page).to have_selector('.gl-avatars-inline .gl-avatar-link')
+      expect(page).to have_content('1 reply')
+    end
+  end
+
   it_behaves_like 'design discussion emoji awards'
 
   context 'when user is guest' do

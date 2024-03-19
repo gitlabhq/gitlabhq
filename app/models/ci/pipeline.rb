@@ -151,7 +151,7 @@ module Ci
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
-    delegate :name, :auto_cancel_on_job_failure, to: :pipeline_metadata, allow_nil: true
+    delegate :name, to: :pipeline_metadata, allow_nil: true
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -187,7 +187,7 @@ module Ci
     state_machine :status, initial: :created do
       event :enqueue do
         transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
-        transition [:success, :failed, :canceled] => :running
+        transition [:success, :failed, :canceling, :canceled] => :running
 
         # this is needed to ensure tests to be covered
         transition [:running] => :running
@@ -224,6 +224,10 @@ module Ci
         # manual job transitions to the `manual` status.
         # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98967#note_1144718316
         transition any => :success
+      end
+
+      event :canceling do
+        transition any - [:canceling, :canceled] => :canceling
       end
 
       event :cancel do
@@ -769,7 +773,7 @@ module Ci
       ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
           id: job_artifacts.all_reports
-            .select('max(ci_job_artifacts.id) as id')
+            .select("max(#{Ci::JobArtifact.quoted_table_name}.id) as id")
             .group(:file_type)
         )
           .preload(:job)
@@ -866,6 +870,7 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
@@ -877,6 +882,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then canceling
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
@@ -886,6 +892,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
@@ -1132,6 +1139,14 @@ module Ci
       end
     end
 
+    def complete_or_manual_and_has_reports?(reports_scope)
+      return complete_and_has_reports?(reports_scope) unless include_manual_to_pipeline_completion_enabled?
+
+      return latest_report_builds(reports_scope).exists? if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
+
+      complete_or_manual? && has_reports?(reports_scope)
+    end
+
     def has_coverage_reports?
       pipeline_artifacts&.report_exists?(:code_coverage)
     end
@@ -1350,7 +1365,7 @@ module Ci
 
     def security_reports(report_types: [])
       reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
-      types_to_collect = report_types.empty? ? ::Ci::JobArtifact::SECURITY_REPORT_FILE_TYPES : report_types
+      types_to_collect = report_types.empty? ? ::EE::Enums::Ci::JobArtifact.security_report_file_types : report_types
 
       ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
         latest_report_builds_in_self_and_project_descendants(reports_scope).includes(pipeline: { project: :route }).each do |build| # rubocop:disable Rails/FindEach
@@ -1393,8 +1408,18 @@ module Ci
       merge_request.merge_request_diff_for(merge_request_diff_sha)
     end
 
+    def auto_cancel_on_job_failure
+      pipeline_metadata&.auto_cancel_on_job_failure || 'none'
+    end
+
     def auto_cancel_on_new_commit
       pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
+    end
+
+    def include_manual_to_pipeline_completion_enabled?
+      strong_memoize(:include_manual_to_pipeline_completion_enabled) do
+        ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :beta)
+      end
     end
 
     private
@@ -1438,7 +1463,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha, self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha, source: self.class.name)
     end
 
     def observe_age_in_minutes

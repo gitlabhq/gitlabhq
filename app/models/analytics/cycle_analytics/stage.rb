@@ -12,6 +12,7 @@ module Analytics
 
       validates :name, uniqueness: { scope: [:group_id, :group_value_stream_id] }
       validate :max_stages_count, on: :create
+      validate :validate_default_stage_name
 
       belongs_to :value_stream, class_name: 'Analytics::CycleAnalytics::ValueStream',
         foreign_key: :group_value_stream_id, inverse_of: :stages
@@ -44,6 +45,17 @@ module Analytics
         return unless value_stream.stages.count >= MAX_STAGES_PER_VALUE_STREAM
 
         errors.add(:value_stream, _('Maximum number of stages per value stream exceeded'))
+      end
+
+      def validate_default_stage_name
+        return if name.blank?
+        return if custom
+        return if Gitlab::Analytics::CycleAnalytics::DefaultStages.find_by_name(name.downcase)
+
+        names = Gitlab::Analytics::CycleAnalytics::DefaultStages.names.join(', ')
+        message = format(_('Invalid name %{input} was given for this default stage, allowed names: %{names}'),
+          input: name.downcase, names: names)
+        errors.add(:name, message)
       end
     end
   end

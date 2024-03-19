@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212199) in GitLab 13.5.
 > - The `encoding` field was [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81150) in GitLab 14.9.

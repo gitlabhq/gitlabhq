@@ -103,6 +103,7 @@ describe('CE IssuesListApp component', () => {
     autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
     calendarPath: 'calendar/path',
     canBulkUpdate: false,
+    canCreateIssue: false,
     canCreateProjects: false,
     canReadCrmContact: false,
     canReadCrmOrganization: false,
@@ -543,20 +544,16 @@ describe('CE IssuesListApp component', () => {
 
   describe('IssuableByEmail component', () => {
     describe.each`
-      initialEmail | hasAnyIssues | isSignedIn | exists
-      ${false}     | ${false}     | ${false}   | ${false}
-      ${false}     | ${true}      | ${false}   | ${false}
-      ${false}     | ${false}     | ${true}    | ${false}
-      ${false}     | ${true}      | ${true}    | ${false}
-      ${true}      | ${false}     | ${false}   | ${false}
-      ${true}      | ${true}      | ${false}   | ${false}
-      ${true}      | ${false}     | ${true}    | ${true}
-      ${true}      | ${true}      | ${true}    | ${true}
+      initialEmail | canCreateIssue | exists
+      ${false}     | ${false}       | ${false}
+      ${false}     | ${true}        | ${false}
+      ${true}      | ${false}       | ${false}
+      ${true}      | ${true}        | ${true}
     `(
       `when issue creation by email is enabled=$initialEmail`,
-      ({ initialEmail, hasAnyIssues, isSignedIn, exists }) => {
+      ({ initialEmail, canCreateIssue, exists }) => {
         it(`${initialEmail ? 'renders' : 'does not render'}`, () => {
-          wrapper = mountComponent({ provide: { initialEmail, hasAnyIssues, isSignedIn } });
+          wrapper = mountComponent({ provide: { initialEmail, canCreateIssue } });
 
           expect(findIssuableByEmail().exists()).toBe(exists);
         });

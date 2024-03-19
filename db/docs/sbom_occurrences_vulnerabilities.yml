@@ -1,5 +1,16 @@
 table_name: sbom_occurrences_vulnerabilities
+classes:
+  - Sbom::OccurrencesVulnerability
 feature_categories:
   - dependency_management
 milestone: '16.7'
 gitlab_schema: gitlab_main_cell
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: sbom_occurrence_id
+        table: sbom_occurrences
+        sharding_key: project_id
+        belongs_to: occurrence

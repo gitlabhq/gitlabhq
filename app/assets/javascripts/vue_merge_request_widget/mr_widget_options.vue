@@ -1,6 +1,5 @@
 <script>
 import { isEmpty, clamp } from 'lodash';
-import { registeredExtensions } from '~/vue_merge_request_widget/components/extensions';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -39,7 +38,6 @@ import ReadyToMergeState from './components/states/ready_to_merge.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
-import ExtensionsContainer from './components/extensions/container';
 import WidgetContainer from './components/widget/app.vue';
 import {
   STATE_MACHINE,
@@ -65,7 +63,6 @@ export default {
   },
   components: {
     Loading,
-    ExtensionsContainer,
     WidgetContainer,
     MrWidgetSuggestPipeline: WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
@@ -112,16 +109,20 @@ export default {
         return this.pollInterval;
       },
       result(response) {
-        if (!response.loading) {
-          this.pollInterval = this.apolloStateQueryPollingInterval;
+        // 7 is the value for when the network status is ready
+        if (response.networkStatus !== 7) return;
 
-          if (response.data?.project) {
-            this.mr.setGraphqlData(response.data.project);
-            this.loading = false;
-          }
-        } else {
-          this.checkStatus(undefined, undefined, false);
+        this.pollInterval = this.apolloStateQueryPollingInterval;
+
+        if (response.data?.project) {
+          this.mr.setGraphqlData(response.data.project);
+          this.loading = false;
         }
+
+        this.checkStatus(undefined, undefined, false);
+      },
+      error() {
+        this.pollInterval = null;
       },
       subscribeToMore: {
         document() {
@@ -247,9 +248,6 @@ export default {
 
       return !this.mr.mergeDetailsCollapsed;
     },
-    hasExtensions() {
-      return registeredExtensions.extensions.length;
-    },
     mergeBlockedComponentEnabled() {
       return (
         window.gon?.features?.mergeBlockedComponent &&
@@ -281,6 +279,13 @@ export default {
         this.initPostMergeDeploymentsPolling();
       }
     },
+    'mr.ciStatus': {
+      handler(newValue) {
+        if (!newValue || this.loading) return;
+
+        this.handleNotification();
+      },
+    },
   },
   mounted() {
     MRWidgetService.fetchInitialData()
@@ -296,7 +301,7 @@ export default {
       );
   },
   beforeDestroy() {
-    eventHub.$off('mr.discussion.updated', this.checkStatus);
+    this.unbindEventListeners();
 
     if (this.deploymentsInterval) {
       this.deploymentsInterval.destroy();
@@ -369,7 +374,8 @@ export default {
       return this.service
         .checkStatus()
         .then(({ data }) => {
-          this.handleNotification(data);
+          if (!Object.keys(data).length) return;
+
           this.mr.setData(data, isRebased);
           this.setFaviconHelper();
 
@@ -450,14 +456,15 @@ export default {
           }),
         );
     },
-    handleNotification(data) {
-      if (data.ci_status === this.mr.ciStatus) return;
-      if (!data.pipeline) return;
+    handleNotification() {
+      const { pipeline } = this.mr;
 
-      const { label } = data.pipeline.details.status;
+      if (!pipeline || !Object.keys(pipeline).length) return;
+
+      const { label } = pipeline.details.status;
       const title = sprintf(__('Pipeline %{label}'), { label });
       const message = sprintf(__('Pipeline %{label} for "%{dataTitle}"'), {
-        dataTitle: data.title,
+        dataTitle: this.mr.title,
         label,
       });
 
@@ -469,48 +476,47 @@ export default {
     stopPolling() {
       this.$apollo.queries.state.stopPolling();
     },
+    checkRebasedStatus(cb) {
+      this.checkStatus(cb, true);
+    },
+    setIsRemovingSourceBranch([value]) {
+      this.mr.isRemovingSourceBranch = value;
+    },
+    setMergeError(mergeError) {
+      this.mr.state = 'failedToMerge';
+      this.mr.mergeError = mergeError;
+    },
+    setMrData(data) {
+      this.mr.setData(data);
+    },
+    onFetchDeployments() {
+      this.fetchPreMergeDeployments();
+      if (this.shouldRenderMergedPipeline) {
+        this.fetchPostMergeDeployments();
+      }
+    },
     bindEventHubListeners() {
-      eventHub.$on('MRWidgetUpdateRequested', (cb) => {
-        this.checkStatus(cb);
-      });
-
-      eventHub.$on('MRWidgetRebaseSuccess', (cb) => {
-        this.checkStatus(cb, true);
-      });
-
-      // `params` should be an Array contains a Boolean, like `[true]`
-      // Passing parameter as Boolean didn't work.
-      eventHub.$on('SetBranchRemoveFlag', (params) => {
-        [this.mr.isRemovingSourceBranch] = params;
-      });
-
-      eventHub.$on('FailedToMerge', (mergeError) => {
-        this.mr.state = 'failedToMerge';
-        this.mr.mergeError = mergeError;
-      });
-
-      eventHub.$on('UpdateWidgetData', (data) => {
-        this.mr.setData(data);
-      });
-
-      eventHub.$on('FetchActionsContent', () => {
-        this.fetchActionsContent();
-      });
-
-      eventHub.$on('EnablePolling', () => {
-        this.resumePolling();
-      });
-
-      eventHub.$on('DisablePolling', () => {
-        this.stopPolling();
-      });
-
-      eventHub.$on('FetchDeployments', () => {
-        this.fetchPreMergeDeployments();
-        if (this.shouldRenderMergedPipeline) {
-          this.fetchPostMergeDeployments();
-        }
-      });
+      eventHub.$on('MRWidgetUpdateRequested', this.checkStatus);
+      eventHub.$on('MRWidgetRebaseSuccess', this.checkRebasedStatus);
+      eventHub.$on('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
+      eventHub.$on('FailedToMerge', this.setMergeError);
+      eventHub.$on('UpdateWidgetData', this.setMrData);
+      eventHub.$on('FetchActionsContent', this.fetchActionsContent);
+      eventHub.$on('EnablePolling', this.resumePolling);
+      eventHub.$on('DisablePolling', this.stopPolling);
+      eventHub.$on('FetchDeployments', this.onFetchDeployments);
+    },
+    unbindEventListeners() {
+      eventHub.$off('MRWidgetUpdateRequested', this.checkStatus);
+      eventHub.$off('MRWidgetRebaseSuccess', this.checkRebasedStatus);
+      eventHub.$off('SetBranchRemoveFlag', this.setIsRemovingSourceBranch);
+      eventHub.$off('FailedToMerge', this.setMergeError);
+      eventHub.$off('UpdateWidgetData', this.setMrData);
+      eventHub.$off('FetchActionsContent', this.fetchActionsContent);
+      eventHub.$off('EnablePolling', this.resumePolling);
+      eventHub.$off('DisablePolling', this.stopPolling);
+      eventHub.$off('FetchDeployments', this.onFetchDeployments);
+      eventHub.$off('mr.discussion.updated', this.checkStatus);
     },
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
@@ -545,7 +551,6 @@ export default {
     />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
-      <extensions-container v-if="hasExtensions" :mr="mr" />
       <widget-container :mr="mr" />
     </report-widget-container>
     <div class="mr-section-container mr-widget-workflow">

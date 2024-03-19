@@ -437,7 +437,7 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
       expect do
         snyk_params_list.map do |snyk_params|
           Thread.new do
-            response = execute_service(snyk_params)
+            response = Gitlab::ExclusiveLease.skipping_transaction_check { execute_service(snyk_params) }
             expect(response).to be_success
           end
         end.each(&:join)

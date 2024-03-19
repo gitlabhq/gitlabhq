@@ -26,7 +26,7 @@ module Releases
 
       return unless project.catalog_resource.versions.none?
 
-      project.catalog_resource.update!(state: 'draft')
+      project.catalog_resource.update!(state: 'unpublished')
     end
 
     def allowed?

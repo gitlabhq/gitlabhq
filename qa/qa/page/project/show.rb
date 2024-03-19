@@ -136,7 +136,7 @@ module QA
         end
 
         def new_merge_request
-          wait_until(reload: true) do
+          wait_until(reload: true, message: 'Wait for `Create merge request` push notification') do
             has_create_merge_request_button?
           end
 

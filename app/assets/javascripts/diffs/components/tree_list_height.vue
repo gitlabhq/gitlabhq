@@ -64,6 +64,7 @@ export default {
 
     window.addEventListener('resize', this.debouncedHeightCalc, { passive: true });
     window.addEventListener('scroll', this.debouncedRecordScroll, { passive: true });
+    window.mrTabs.eventHub.$on('MergeRequestTabChange', this.onTabChange);
 
     this.calculateScrollerHeight();
   },
@@ -72,6 +73,7 @@ export default {
     this.mediaQueryMatch = null;
     window.removeEventListener('resize', this.debouncedHeightCalc, { passive: true });
     window.removeEventListener('scroll', this.debouncedRecordScroll, { passive: true });
+    window.mrTabs.eventHub.$off('MergeRequestTabChange', this.onTabChange);
   },
   methods: {
     recordScroll() {
@@ -96,6 +98,10 @@ export default {
         // distance from element's top vertical position in the viewport to the bottom of the viewport minus offsets
         this.scrollerHeight = window.innerHeight - y - reviewBarOffset - BOTTOM_OFFSET;
       }
+    },
+    onTabChange(currentTab) {
+      if (currentTab !== 'diffs') return;
+      this.debouncedHeightCalc();
     },
   },
 };

@@ -1,3 +1,9 @@
+const userPermissionsData = {
+  userPermissions: {
+    destroyContainerRepository: true,
+  },
+};
+
 export const imagesListResponse = [
   {
     __typename: 'ContainerRepository',
@@ -7,7 +13,6 @@ export const imagesListResponse = [
     status: null,
     migrationState: 'default',
     location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-12009',
-    canDelete: true,
     createdAt: '2020-11-03T13:29:21Z',
     expirationPolicyStartedAt: null,
     expirationPolicyCleanupStatus: 'UNSCHEDULED',
@@ -15,6 +20,7 @@ export const imagesListResponse = [
       id: 'gid://gitlab/Project/22',
       path: 'GITLAB-TEST',
     },
+    ...userPermissionsData,
   },
   {
     __typename: 'ContainerRepository',
@@ -24,7 +30,6 @@ export const imagesListResponse = [
     status: null,
     migrationState: 'default',
     location: '0.0.0.0:5000/gitlab-org/gitlab-test/rails-20572',
-    canDelete: true,
     createdAt: '2020-09-21T06:57:43Z',
     expirationPolicyStartedAt: null,
     expirationPolicyCleanupStatus: 'UNSCHEDULED',
@@ -32,6 +37,7 @@ export const imagesListResponse = [
       id: 'gid://gitlab/Project/22',
       path: 'gitlab-test',
     },
+    ...userPermissionsData,
   },
 ];
 
@@ -125,7 +131,6 @@ export const containerRepositoryMock = {
   path: 'gitlab-org/gitlab-test/rails-12009',
   status: null,
   location: 'host.docker.internal:5000/gitlab-org/gitlab-test/rails-12009',
-  canDelete: true,
   createdAt: '2020-11-03T13:29:21Z',
   expirationPolicyStartedAt: null,
   expirationPolicyCleanupStatus: 'UNSCHEDULED',
@@ -139,6 +144,7 @@ export const containerRepositoryMock = {
     },
     __typename: 'Project',
   },
+  ...userPermissionsData,
 };
 
 export const tagsPageInfo = {
@@ -160,7 +166,9 @@ export const tagsMock = [
     createdAt: '2020-11-03T13:29:38+00:00',
     publishedAt: '2020-11-05T13:29:38+00:00',
     totalSize: '1099511627776',
-    canDelete: true,
+    userPermissions: {
+      destroyContainerRepositoryTag: true,
+    },
     __typename: 'ContainerRepositoryTag',
   },
   {
@@ -173,21 +181,26 @@ export const tagsMock = [
     createdAt: '2020-11-03T13:29:32+00:00',
     publishedAt: '2020-11-05T13:29:32+00:00',
     totalSize: '536870912000',
-    canDelete: true,
+    userPermissions: {
+      destroyContainerRepositoryTag: true,
+    },
     __typename: 'ContainerRepositoryTag',
   },
 ];
 
-export const imageTagsMock = ({ nodes = tagsMock, canDelete = true } = {}) => ({
+export const imageTagsMock = ({ nodes = tagsMock, userPermissions = {} } = {}) => ({
   data: {
     containerRepository: {
       id: containerRepositoryMock.id,
       tagsCount: nodes.length,
-      canDelete,
       tags: {
         nodes,
         pageInfo: { ...tagsPageInfo },
         __typename: 'ContainerRepositoryTagConnection',
+      },
+      userPermissions: {
+        ...userPermissionsData.userPermissions,
+        ...userPermissions,
       },
       __typename: 'ContainerRepositoryDetails',
     },

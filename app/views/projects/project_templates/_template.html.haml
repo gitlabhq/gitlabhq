@@ -8,7 +8,7 @@
     .text-muted
       = template.description
   .controls.d-flex.gl-align-items-center
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3', data: { track_label: "template_preview", track_property: template.name, track_action: "click_button", track_value: "" }, rel: 'noopener noreferrer' }, href: template.preview, target: '_blank') do
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3', data: { track_label: "template_preview", track_property: template.name, track_action: "click_button", track_value: "" } }, href: template.preview, target: '_blank') do
       = _("Preview")
     %label.btn.gl-button.btn-confirm.template-button.choose-template.gl-mb-0{ for: template.name,
       'data-testid': "use_template_#{template.name}" }

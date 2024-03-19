@@ -862,8 +862,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/458',
           illustration: {
-            image: 'illustrations/manual_action.svg',
-            size: 'svg-content svg-394',
+            image: 'illustrations/empty-state/empty-job-manual-md.svg',
+            size: '',
             title: 'This job requires a manual action',
             content:
               'This job depends on a user to trigger its process. Often they are used to deploy code to production environments',
@@ -896,8 +896,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/458',
               illustration: {
-                image: 'illustrations/manual_action.svg',
-                size: 'svg-content svg-394',
+                image: 'illustrations/empty-state/empty-job-manual-md.svg',
+                size: '',
                 title: 'This job requires a manual action',
                 content:
                   'This job depends on a user to trigger its process. Often they are used to deploy code to production environments',

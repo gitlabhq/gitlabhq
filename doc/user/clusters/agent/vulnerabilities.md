@@ -8,14 +8,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
 
+## Supported architectures
+
+Starting from GitLab Agent for Kubernetes v16.10.0 and with the GitLab Agent Helm Chart version v1.25.0, operational container scanning (OCS) is supported for `linux/arm64` and `linux/amd64`. For previous versions only `linux/amd64` is supported.
+
 ## Enable operational container scanning
 
-You can use operational container scanning (OCS) to scan container images in your cluster for security vulnerabilities.
+You can use OCS to scan container images in your cluster for security vulnerabilities.
 Starting from GitLab Agent release 16.9, OCS uses a [wrapper image](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) around [Trivy](https://github.com/aquasecurity/trivy) to scan images for vulnerabilities.
 Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurity/trivy) image.
 

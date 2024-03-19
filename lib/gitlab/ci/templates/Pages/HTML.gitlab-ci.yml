@@ -4,14 +4,13 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/HTML.gitlab-ci.yml
 
 # Full project: https://gitlab.com/pages/plain-html
+image: busybox
+
 pages:
   stage: deploy
   environment: production
   script:
-    - mkdir .public
-    - cp -r ./* .public
-    - rm -rf public
-    - mv .public public
+    - echo "The site will be deployed to $CI_PAGES_URL"
   artifacts:
     paths:
       - public

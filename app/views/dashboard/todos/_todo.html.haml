@@ -47,7 +47,6 @@
             %span.action-description<
             = first_line_in_markdown(todo, :body, 125, is_todo: true, project: todo.project, group: todo.group)
 
-          = render_if_exists "dashboard/todos/diff_summary", local_assigns: { todo: todo }
           = render_if_exists "dashboard/todos/review_summary", local_assigns: { todo: todo }
 
     .todo-timestamp.gl-white-space-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
@@ -65,6 +64,6 @@
           = gl_loading_icon(inline: true)
           = sprite_icon('redo', css_class: 'js-todo-button-icon')
       - else
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Add a to do')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Add a to do') do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-add-todo has-tooltip', title: _('Re-add this to-do item')}, method: :patch, href: restore_dashboard_todo_path(todo)), 'aria-label' => _('Re-add this to-do item') do
           = gl_loading_icon(inline: true)
-          = sprite_icon('todo-add', css_class: 'js-todo-button-icon')
+          = sprite_icon('redo', css_class: 'js-todo-button-icon')

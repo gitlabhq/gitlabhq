@@ -4,7 +4,7 @@ key_path: counts.jira_imports_projects_count
 description: Count of Projects that imported Issues from Jira
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: all

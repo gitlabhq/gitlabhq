@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you configure CI/CD, you specify an image, which is used to create the container
 where your jobs run. To specify this image, you use the `image` keyword.
@@ -85,12 +85,12 @@ write a `before_script` that queries the service.
 
 Services stop at the end of the job, even if the job fails.
 
-## What services are not for
+## Using software provided by a service image
 
-As mentioned before, this feature is designed to provide **network accessible**
+When you specify the `service`, this provides **network accessible**
 services. A database is the simplest example of such a service.
 
-The services feature is not designed to, and does not, add any software from the
+The services feature does not add any software from the
 defined `services` images to the job's container.
 
 For example, if you have the following `services` defined in your job, the `php`,
@@ -262,13 +262,13 @@ test:
 
 > - Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting    | Required | GitLab version | Description |
-|------------|----------|----------------| ----------- |
-| `name`       | yes, when used with any other option  | 9.4 | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
-| `entrypoint` | no     | 9.4 |Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint) directive, where each shell token is a separate string in the array. |
-| `command`    | no       | 9.4 |Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/engine/reference/builder/#cmd) directive, where each shell token is a separate string in the array. |
-| `alias` (1)     | no       | 9.4 | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
-| `variables` (2)     | no       | 14.5 | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). Service variables cannot reference themselves. |
+| Setting         | Required                             | GitLab version | Description |
+|-----------------|--------------------------------------|----------------|-------------|
+| `name`          | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
+| `entrypoint`    | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
+| `command`       | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
+| `alias` (1)     | no                                   | 9.4            | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+| `variables` (2) | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). Service variables cannot reference themselves. |
 
 (1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 
@@ -346,7 +346,7 @@ services:
     command: ["/usr/bin/super-sql", "run"]
 ```
 
-The syntax of `command` is similar to [Dockerfile `CMD`](https://docs.docker.com/engine/reference/builder/#cmd).
+The syntax of `command` is similar to [Dockerfile `CMD`](https://docs.docker.com/reference/dockerfile/#cmd).
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
 

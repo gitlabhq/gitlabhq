@@ -24,13 +24,13 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       )
     end
 
-    let(:release) { create(:release, project: project, sha: project.repository.root_ref_sha) }
+    let(:release) { create(:release, tag: '1.2.0', project: project, sha: project.repository.root_ref_sha) }
     let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
 
     context 'when the project is not a catalog resource' do
       it 'does not create a version' do
         project = create(:project, :repository)
-        release =  create(:release, project: project, sha: project.repository.root_ref_sha)
+        release =  create(:release, tag: '1.2.1', project: project, sha: project.repository.root_ref_sha)
 
         response = described_class.new(release).execute
 

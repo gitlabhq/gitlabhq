@@ -1,13 +1,11 @@
 - can_update_merge_request = can?(current_user, :update_merge_request, @merge_request)
 
 - if @commits.empty? && @context_commits.empty?
-  .commits-empty.mt-5
-    = custom_icon ('illustration_no_commits')
-    %h4
-      = _('There are no commits yet.')
-    - if can_update_merge_request
-      %p
-        = _('Push commits to the source branch or add previously merged commits to review them.')
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-commit-md.svg',
+    title: _('There are no commits yet')) do |c|
+
+    - c.with_description do
+      %p= _('Push commits to the source branch or add previously merged commits to review them.')
       = render Pajamas::ButtonComponent.new(variant: 'confirm', button_options: { class: 'add-review-item-modal-trigger', data: { commits_empty: 'true', context_commits_empty: 'true' } }) do
         = _('Add previously merged commits')
 - else

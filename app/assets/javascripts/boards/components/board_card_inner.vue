@@ -9,15 +9,14 @@ import {
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
-import { isScopedLabel } from '~/lib/utils/common_utils';
-import { updateHistory } from '~/lib/utils/url_utility';
+import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { ListType } from '../constants';
-import eventHub from '../eventhub';
 import { setError } from '../graphql/cache_updates';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
@@ -221,7 +220,10 @@ export default {
         updateHistory({
           url: `${filterPath}${filter}`,
         });
-        eventHub.$emit('updateTokens');
+
+        const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
+        const filters = convertObjectPropsToCamelCase(rawFilterParams, {});
+        this.$emit('setFilters', filters);
       }
     },
     showScopedLabel(label) {

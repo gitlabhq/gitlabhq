@@ -152,13 +152,13 @@ export default {
             </span>
             <span class="reaction-control-icon reaction-control-icon-positive">
               <gl-icon
-                class="award-control-icon-positive gl-button-icon gl-left-3!"
+                class="award-control-icon-positive gl-button-icon !gl-left-3"
                 name="smiley"
               />
             </span>
             <span class="reaction-control-icon reaction-control-icon-super-positive">
               <gl-icon
-                class="award-control-icon-super-positive gl-button-icon gl-left-3!"
+                class="award-control-icon-super-positive gl-button-icon !gl-left-3"
                 name="smile"
               />
             </span>

@@ -12,7 +12,9 @@ module Gitlab
         Gitlab::Redis::ALL_CLASSES.map do |redis_instance_class|
           instrumentation_class = Class.new(RedisBase)
 
-          instrumentation_class.enable_redis_cluster_validation unless redis_instance_class == Gitlab::Redis::Queues
+          unless Gitlab::Redis::Queues.instances.value?(redis_instance_class)
+            instrumentation_class.enable_redis_cluster_validation
+          end
 
           const_set(redis_instance_class.store_name, instrumentation_class)
           instrumentation_class

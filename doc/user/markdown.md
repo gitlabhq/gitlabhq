@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
@@ -712,9 +712,9 @@ GitLab Flavored Markdown recognizes the following:
 | Label by name (one word)                                       | `~bug`                         | `namespace/project~bug`                 | `project~bug`                      |
 | Label by name (multiple words)                                 | `~"feature request"`           | `namespace/project~"feature request"`   | `project~"feature request"`        |
 | Label by name (scoped)                                         | `~"priority::high"`            | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
-| Project milestone by ID                                        | `%123`                         | `namespace/project%123`                 | `project%123`                      |
-| Milestone by name (one word)                                   | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
-| Milestone by name (multiple words)                             | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
+| Project milestone by ID <sup>2</sup> | `%123`                         | `namespace/project%123`                 | `project%123`                      |
+| Milestone by name (one word) <sup>2</sup> | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
+| Milestone by name (multiple words) <sup>2</sup> | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
 | Commit (specific)                                              | `9ba12248`                     | `namespace/project@9ba12248`            | `project@9ba12248`                 |
 | Commit range comparison                                        | `9ba12248...b19a04f5`          | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
 | Repository file reference                                      | `[README](doc/README.md)`      |                                         |                                    |
@@ -722,14 +722,14 @@ GitLab Flavored Markdown recognizes the following:
 | [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
 | [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
 
-<ol>
-  <li>
-    <small>
-      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/384885">Introduced</a> in GitLab 16.9. Iteration cadence references are always rendered following the format <code>[cadence:&lt;ID>]</code>.
-    For example, the text reference <code>[cadence:"plan"]</code> renders as <code>[cadence:1]</code> if the referenced iterations cadence's ID is <code>1</code>.
-    </small>
-  </li>
-</ol>
+**Footnotes:**
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
+   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+   iterations cadence's ID is `1`.
+1. For milestones, prepend a `/` before `namespace/project` to specify the exact milestone,
+   removing any possible ambiguity.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
@@ -815,9 +815,17 @@ Quote break.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiline-blockquote).
 
-Create multi-line blockquotes fenced by `>>>`, with a blank line before and after the block:
+Create multi-line blockquotes fenced by `>>>`:
 
 ```markdown
+>>>
+If you paste a message from somewhere else
+
+that spans multiple lines,
+
+you can quote that without having to manually prepend `>` to every line!
+>>>
+```
 
 >>>
 If you paste a message from somewhere else
@@ -826,20 +834,6 @@ that spans multiple lines,
 
 you can quote that without having to manually prepend `>` to every line!
 >>>
-
-```
-
-<!--
-Use a standard blockquote here until https://gitlab.com/gitlab-org/gitlab/-/issues/390290
-gets properly fixed. The mixture of HTML comments and HTML tags
-trigger this problem.
--->
-
-> If you paste a message from somewhere else
->
-> that spans multiple lines,
->
-> you can quote that without having to manually prepend `>` to every line!
 
 ## Code spans and blocks
 
@@ -1483,7 +1477,7 @@ Some text to show that the reference links can follow later.
 
 &#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
 &#91;1]: https://slashdot.org
-&#91;link text itself]: https://www.reddit.com
+&#91;link text itself]: https://about.gitlab.com/
 </code></pre>
 
 - This line shows an [inline-style link](https://www.google.com)
@@ -1505,7 +1499,7 @@ Do not change to reference style links.
 
 - This line is a [reference-style link, see below](https://www.mozilla.org/en-US/)
 - You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
-- Or leave it empty and use the [link text itself](https://www.reddit.com), see below.
+- Or leave it empty and use the [link text itself](https://about.gitlab.com/), see below.
 
 Some text to show that the reference links can follow later.
 
@@ -1739,15 +1733,15 @@ When creating tables:
 - The first line contains the headers, separated by "pipes" (`|`).
 - The second line separates the headers from the cells.
   - The cells can contain only empty spaces, hyphens, and
-   (optionally) colons for horizontal alignment.
+    (optionally) colons for horizontal alignment.
   - Each cell must contain at least one hyphen, but adding more hyphens to a
-   cell does not change the cell's rendering.
+    cell does not change the cell's rendering.
   - Any content other than hyphens, whitespace, or colons is not allowed
 - The third, and any following lines, contain the cell values.
   - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
-   but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+    but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
   - The cell sizes **don't** have to match each other. They are flexible, but must be separated
-   by pipes (`|`).
+    by pipes (`|`).
   - You **can** have blank cells.
 - Column widths are calculated dynamically based on the content of the cells.
 - To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).

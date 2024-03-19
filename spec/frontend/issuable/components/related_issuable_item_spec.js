@@ -7,6 +7,7 @@ import { formatDate } from '~/lib/utils/datetime_utility';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import IssueAssignees from '~/issuable/components/issue_assignees.vue';
@@ -218,6 +219,27 @@ describe('RelatedIssuableItem', () => {
 
     it('renders the lock icon with the correct title', () => {
       expect(findLockIcon().attributes('title')).toBe(lockedMessage);
+    });
+  });
+
+  describe('when MR has pipeline status', () => {
+    const pipelineStatus = {
+      icon: 'status_success',
+      text: 'Passed',
+      details_path: '/pipelines/1',
+    };
+
+    beforeEach(() => {
+      mountComponent({
+        props: {
+          isMergeRequest: true,
+          pipelineStatus,
+        },
+      });
+    });
+
+    it('renders status in CI icon', () => {
+      expect(wrapper.findComponent(CiIcon).props('status')).toEqual(pipelineStatus);
     });
   });
 

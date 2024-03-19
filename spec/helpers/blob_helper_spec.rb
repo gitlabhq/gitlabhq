@@ -207,83 +207,6 @@ RSpec.describe BlobHelper do
         end
       end
     end
-
-    describe '#show_suggest_pipeline_creation_celebration?' do
-      let(:current_user) { create(:user) }
-
-      before do
-        assign(:project, project)
-        assign(:blob, blob)
-        assign(:commit, double('Commit', sha: 'whatever'))
-        helper.request.cookies["suggest_gitlab_ci_yml_commit_#{project.id}"] = 'true'
-        allow(helper).to receive(:current_user).and_return(current_user)
-      end
-
-      context 'when file is a pipeline config file' do
-        let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
-        let(:blob) { fake_blob(path: project.ci_config_path_or_default, data: data) }
-
-        it 'is true' do
-          expect(helper.show_suggest_pipeline_creation_celebration?).to be_truthy
-        end
-
-        context 'file is invalid format' do
-          let(:data) { 'foo' }
-
-          it 'is false' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-          end
-        end
-
-        context 'does not use the default ci config' do
-          before do
-            project.ci_config_path = 'something_bad'
-          end
-
-          it 'is false' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-          end
-        end
-
-        context 'does not have the needed cookie' do
-          before do
-            helper.request.cookies.delete "suggest_gitlab_ci_yml_commit_#{project.id}"
-          end
-
-          it 'is false' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-          end
-        end
-
-        context 'blob does not have auxiliary view' do
-          before do
-            allow(blob).to receive(:auxiliary_viewer).and_return(nil)
-          end
-
-          it 'is false' do
-            expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-          end
-        end
-      end
-
-      context 'when file is not a pipeline config file' do
-        let(:blob) { fake_blob(path: 'LICENSE') }
-
-        it 'is false' do
-          expect(helper.show_suggest_pipeline_creation_celebration?).to be_falsey
-        end
-      end
-    end
-  end
-
-  describe 'suggest_pipeline_commit_cookie_name' do
-    let(:project) { create(:project) }
-
-    it 'uses project id to make up the cookie name' do
-      assign(:project, project)
-
-      expect(helper.suggest_pipeline_commit_cookie_name).to eq "suggest_gitlab_ci_yml_commit_#{project.id}"
-    end
   end
 
   describe '#ide_edit_path' do
@@ -487,6 +410,51 @@ RSpec.describe BlobHelper do
         target_branch: ref,
         original_branch: ref
       })
+    end
+  end
+
+  describe "#copy_blob_source_button" do
+    let(:project) { build_stubbed(:project) }
+
+    context 'when blob is rendered as text' do
+      let(:blob) { fake_blob }
+
+      it 'returns HTML content for a copy button' do
+        expect(blob).to receive(:rendered_as_text?).and_return(true)
+
+        button_html = helper.copy_blob_source_button(blob)
+
+        expect(button_html).to include('<span class="btn-group has-tooltip js-copy-blob-source-btn-tooltip"')
+        expect(button_html).to include('<button class="gl-button btn btn-icon btn-md btn-default btn-default-tertiary js-copy-blob-source-btn"')
+      end
+    end
+
+    context 'when blob is not rendered as text' do
+      let(:blob) { fake_blob }
+
+      it 'returns nil' do
+        expect(blob).to receive(:rendered_as_text?).and_return(false)
+        expect(helper.copy_blob_source_button(blob)).to be_nil
+      end
+    end
+  end
+
+  describe '#edit_fork_button_tag' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    let(:current_user) { user }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    it 'renders the edit fork button' do
+      rendered_button = helper.edit_fork_button_tag('common-class', project, 'Edit Fork', { param_key: 'param_value' })
+
+      expect(rendered_button).to have_selector('button.gl-button.btn.btn-md.btn-confirm.common-class.js-edit-blob-link-fork-toggler', text: 'Edit Fork')
+      expect(rendered_button).to have_selector('button[data-action="edit"]')
     end
   end
 end

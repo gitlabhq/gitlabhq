@@ -233,14 +233,14 @@ gitlab_rails['omniauth_providers'] = [
 
 ### Configure Microsoft Azure
 
-The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
+The OpenID Connect (OIDC) protocol for Microsoft Azure uses the [Microsoft identity platform (v2) endpoints](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison).
 To get started, sign in to the [Azure Portal](https://portal.azure.com). For your app,
 you need the following information:
 
 - A tenant ID. You may already have one. For more information, see the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
-  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) documentation
+  [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
 Example configuration block for Linux package installations:
@@ -269,7 +269,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc).
+Microsoft has documented how its platform works with [the OIDC protocol](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc).
 
 ### Configure Microsoft Azure Active Directory B2C
 
@@ -278,7 +278,7 @@ configuration to work with [Azure Active Directory B2C](https://learn.microsoft.
 For your app, you need the following information from Azure:
 
 - A tenant ID. You may already have one. For more information, review the
-  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant) documentation.
+  [Microsoft Azure Tenant](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant) documentation.
 - A client ID and a client secret. Follow the instructions in the
   [Microsoft tutorial](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga) documentation to obtain the
   client ID and client secret for your app.
@@ -328,7 +328,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
    ```
 
 1. For OIDC discovery to work with B2C, configure the policy with an issuer compatible with the
-  [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
+   [OIDC specification](https://openid.net/specs/openid-connect-discovery-1_0.html#rfc.section.4.3).
    See the [token compatibility settings](https://learn.microsoft.com/en-us/azure/active-directory-b2c/configure-tokens?pivots=b2c-custom-policy#token-compatibility-settings).
    In `TrustFrameworkBase.xml` under `JwtIssuer`, set `IssuanceClaimPattern` to `AuthorityWithTfp`:
 
@@ -477,7 +477,7 @@ To use symmetric key encryption:
 
    For example, if you use PostgreSQL as the backend database for Keycloak:
 
-   - Sign into the database console.
+   - Sign in to the database console.
    - Run the following SQL query to extract the key:
 
      ```sql
@@ -757,7 +757,7 @@ For more information, see the [GitLab API user method documentation](https://pyt
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
 

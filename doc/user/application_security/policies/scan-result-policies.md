@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
 > - Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
@@ -202,19 +202,19 @@ the defined policy.
 > - Feature flag `scan_result_policies_block_force_push` [was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 The settings set in the policy overwrite settings in the project.
 
-| Field                               | Type                  | Required | Possible values                                               | Applicable rule type | Description                                                                                                                                                                                                                                                                                      |
-|-------------------------------------|-----------------------|----------|---------------------------------------------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `block_branch_modification`         | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. This ensures users cannot remove protection status from a branch to merge vulnerable code. |
-| `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [string] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`.                                                                                                        |
-| `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge.                                                                                                                                          |
-| `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge.                                                                                                                    |
-| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced.                                                                                    |
-| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security.                                                                                                                                                                           |
-| `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch.                                                              |
+| Field                               | Type                  | Required | Possible values                                               | Applicable rule type | Description                                                                                                                                                                                                                                                                                                                                                                                                 |
+|-------------------------------------|-----------------------|----------|---------------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `block_branch_modification`         | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy. This ensures users cannot remove protection status from a branch to merge vulnerable code. Enforced based on `branches`, `branch_type` and `policy_scope` and regardless of detected vulnerabilities. |
+| `block_group_branch_modification`   | `boolean` or `object` | false    | `true`, `false`, `{ enabled: boolean, exceptions: [string] }` | All                  | When enabled, prevents a user from removing group-level protected branches on every group the policy applies to. If `block_branch_modification` is `true`, implicitly defaults to `true`. Enforced based on `branches`, `branch_type` and `policy_scope` and regardless of detected vulnerabilities.                                                                                                        |
+| `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge.                                                                                                                                                                                                                                                     |
+| `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge.                                                                                                                                                                                                                               |
+| `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced.                                                                                                                                                                                               |
+| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security.                                                                                                                                                                                                                                                                                      |
+| `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch.                                                                                                                                                                         |
 
 ## Example security merge request approval policies project
 
@@ -315,8 +315,8 @@ actions:
 ### Scope of merge request approval policy comparison
 
 - To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
-- For the source branch, the comparison pipeline is its latest completed `HEAD` pipeline.
-- For the target branch, we compare to a common ancestor's latest completed pipeline.
+- For the source branch, the comparison pipelines are all completed pipelines for each supported pipeline source for the latest commit in the source branch.
+- For the target branch, we compare to all common ancestor's completed pipelines for each supported pipeline source.
 - Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
@@ -361,9 +361,10 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
 
-- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
-- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
+- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency)
+- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR widget. With `merge base` introduced in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases were addressed. Support for displaying more granular details about what caused security policy violations is proposed in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
+- When merged results pipelines are enabled for the project, along with branch pipelines for created MRs, the comparison between source and target branches depends on the order in which the source branch's pipeline finishes. This can create race conditions, a resolution of which is proposed in [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927). The approvals may behave differently, depending on which target branch pipeline is selected.
 
 ## Experimental features
 
@@ -381,6 +382,8 @@ Prerequisites:
   1. Expand **Permissions and group features**.
   1. Select the **Security Policy Scopes** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
@@ -451,7 +454,7 @@ approval_policy:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had merge request approval policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
 

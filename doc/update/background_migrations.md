@@ -84,7 +84,7 @@ Prerequisites:
 
 To query the database directly for the status of batched background migrations:
 
-1. Log into a `psql` prompt, according to the directions for your instance's
+1. Sign in to a `psql` prompt, according to the directions for your instance's
    installation method. For example, `sudo gitlab-psql` for Linux package installations.
 1. To see details on incomplete batched background migrations, run this query in
    the `psql` session:
@@ -179,7 +179,7 @@ Refer to this feature's history for more details.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `optimize_batched_migrations`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 To maximize throughput of batched background migrations (in terms of the number of tuples updated per time unit), batch sizes are automatically adjusted based on how long the previous batches took to complete.
 

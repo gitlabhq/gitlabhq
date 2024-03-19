@@ -24,6 +24,7 @@ class Issue < ApplicationRecord
   include FromUnion
   include EachBatch
   include PgFullTextSearchable
+  include IgnorableColumns
 
   extend ::Gitlab::Utils::Override
 
@@ -54,6 +55,9 @@ class Issue < ApplicationRecord
 
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
+
+  # prevent caching this column by rails, as we want to easily remove it after the backfilling
+  ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues

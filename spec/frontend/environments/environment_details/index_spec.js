@@ -1,109 +1,184 @@
-import Vue from 'vue';
+import { GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTableLite } from '@gitlab/ui';
-import resolvedEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.json';
-import emptyEnvironmentDetails from 'test_fixtures/graphql/environments/graphql/queries/environment_details.query.graphql.empty.json';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { updateHistory, getParameterValues, setUrlParams } from '~/lib/utils/url_utility';
 import EnvironmentsDetailPage from '~/environments/environment_details/index.vue';
-import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
-import EmptyState from '~/environments/environment_details/empty_state.vue';
-import getEnvironmentDetails from '~/environments/graphql/queries/environment_details.query.graphql';
+import DeploymentsHistory from '~/environments/environment_details/components/deployment_history.vue';
+import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
+import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { agent, kubernetesNamespace, fluxResourcePathMock } from '../graphql/mock_data';
 
-const GRAPHQL_ETAG_KEY = '/graphql/environments';
+const projectFullPath = 'gitlab-group/test-project';
+const environmentName = 'test-environment-name';
+const after = 'after';
+const before = null;
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('~/environments/environment_details/index.vue', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let routerMock;
 
-  const emptyEnvironmentToRollbackData = { id: '', name: '', lastDeployment: null, retryUrl: '' };
-  const environmentToRollbackMock = jest.fn();
-
-  const mockResolvers = {
-    Query: {
-      environmentToRollback: environmentToRollbackMock,
-    },
-  };
-
-  const defaultWrapperParameters = {
-    resolvedData: resolvedEnvironmentDetails,
-    environmentToRollbackData: emptyEnvironmentToRollbackData,
-  };
-
-  const createWrapper = ({
-    resolvedData,
-    environmentToRollbackData,
-  } = defaultWrapperParameters) => {
-    const mockApollo = createMockApollo(
-      [[getEnvironmentDetails, jest.fn().mockResolvedValue(resolvedData)]],
-      mockResolvers,
-    );
-    environmentToRollbackMock.mockReturnValue(
-      environmentToRollbackData || emptyEnvironmentToRollbackData,
-    );
-    const projectFullPath = 'gitlab-group/test-project';
-    routerMock = {
-      push: jest.fn(),
-    };
-
-    return mountExtended(EnvironmentsDetailPage, {
-      apolloProvider: mockApollo,
-      provide: {
-        projectPath: projectFullPath,
-        graphqlEtagKey: GRAPHQL_ETAG_KEY,
+  const createWrapper = (clusterAgent = agent) => {
+    const defaultEnvironmentData = {
+      data: {
+        project: {
+          id: '1',
+          environment: {
+            id: '1',
+            clusterAgent,
+            kubernetesNamespace,
+            fluxResourcePath: fluxResourcePathMock,
+          },
+        },
       },
+    };
+    const mockApollo = createMockApollo([
+      [environmentClusterAgentQuery, jest.fn().mockResolvedValue(defaultEnvironmentData)],
+    ]);
+
+    return shallowMount(EnvironmentsDetailPage, {
+      apolloProvider: mockApollo,
       propsData: {
         projectFullPath,
-        environmentName: 'test-environment-name',
+        environmentName,
+        after,
+        before,
       },
-      mocks: {
-        $router: routerMock,
-      },
+      stubs: { GlTab },
     });
   };
 
-  describe('when fetching data', () => {
-    it('should show a loading indicator', () => {
-      wrapper = createWrapper();
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findAllTabs = () => wrapper.findAllComponents(GlTab);
+  const findTabByIndex = (index) => findAllTabs().at(index);
+  const findDeploymentHistory = () => wrapper.findComponent(DeploymentsHistory);
+  const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
 
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-      expect(wrapper.findComponent(GlTableLite).exists()).not.toBe(true);
+  describe('loading state', () => {
+    beforeEach(() => {
+      wrapper = createWrapper();
+    });
+
+    it('renders loading indicator', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
+    it("doesn't render tabs", () => {
+      expect(findTabs().exists()).toBe(false);
+    });
+
+    it('hides loading indicator when the data is loaded', async () => {
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
     });
   });
 
-  describe('when data is fetched', () => {
-    describe('and there are deployments', () => {
-      beforeEach(async () => {
-        wrapper = createWrapper();
-        await waitForPromises();
-      });
-      it('should render a table when query is loaded', () => {
-        expect(wrapper.findComponent(GlLoadingIcon).exists()).not.toBe(true);
-        expect(wrapper.findComponent(GlTableLite).exists()).toBe(true);
-      });
-
-      describe('on rollback', () => {
-        it('sets the page back to default', () => {
-          wrapper.findComponent(ConfirmRollbackModal).vm.$emit('rollback');
-
-          expect(routerMock.push).toHaveBeenCalledWith({ query: {} });
-        });
-      });
+  describe('tabs', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      await waitForPromises();
     });
 
-    describe('and there are no deployments', () => {
-      beforeEach(async () => {
-        wrapper = createWrapper({ resolvedData: emptyEnvironmentDetails });
-        await waitForPromises();
-      });
+    it('renders tabs component with the correct prop', () => {
+      expect(findTabs().props('syncActiveTabWithQueryParams')).toBe(true);
+    });
 
-      it('should render empty state component', () => {
-        expect(wrapper.findComponent(GlTableLite).exists()).toBe(false);
-        expect(wrapper.findComponent(EmptyState).exists()).toBe(true);
+    it('sets proper CSS class to the active tab', () => {
+      expect(findTabByIndex(0).props('titleLinkClass')).toBe('gl-inset-border-b-2-theme-accent');
+      expect(findTabByIndex(1).props('titleLinkClass')).toBe('');
+    });
+
+    it('updates the CSS class when the active tab changes', async () => {
+      findTabs().vm.$emit('input', 1);
+      await nextTick();
+
+      expect(findTabByIndex(0).props('titleLinkClass')).toBe('');
+      expect(findTabByIndex(1).props('titleLinkClass')).toBe('gl-inset-border-b-2-theme-accent');
+    });
+  });
+
+  describe('kubernetes overview tab', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      await waitForPromises();
+    });
+    it('renders correct title', () => {
+      expect(findTabByIndex(0).attributes('title')).toBe('Kubernetes overview');
+    });
+
+    it('renders correct query param value', () => {
+      expect(findTabByIndex(0).attributes('query-param-value')).toBe('kubernetes-overview');
+    });
+
+    it('renders kubernetes_overview component with correct props', () => {
+      expect(findKubernetesOverview().props()).toEqual({
+        environmentName,
+        clusterAgent: agent,
+        kubernetesNamespace,
+        fluxResourcePath: fluxResourcePathMock,
       });
+    });
+  });
+
+  describe('deployment history tab', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      await waitForPromises();
+    });
+
+    it('renders correct title', () => {
+      expect(findTabByIndex(1).attributes('title')).toBe('Deployment history');
+    });
+
+    it('renders correct query param value', () => {
+      expect(findTabByIndex(1).attributes('query-param-value')).toBe('deployment-history');
+    });
+
+    it('renders deployment_history component with correct props', () => {
+      expect(findDeploymentHistory().props()).toEqual({
+        projectFullPath,
+        environmentName,
+        after,
+        before,
+      });
+    });
+  });
+
+  describe('when there is cluster agent data', () => {
+    beforeEach(async () => {
+      wrapper = createWrapper();
+      await waitForPromises();
+    });
+
+    it('shows the Kubernetes overview tab as active', () => {
+      expect(findTabs().props('value')).toBe(0);
+    });
+  });
+
+  describe('when there is no cluster agent data', () => {
+    it('navigates to the Deployments history tab if the tab was not specified in the URL', async () => {
+      getParameterValues.mockReturnValue([]);
+      wrapper = createWrapper(null);
+      await waitForPromises();
+
+      expect(setUrlParams).toHaveBeenCalledWith({ tab: 'deployment-history' });
+      expect(updateHistory).toHaveBeenCalled();
+    });
+
+    it("doesn't navigate to the Deployments history tab if the tab was specified in the URL", async () => {
+      getParameterValues.mockReturnValue([{ tab: 'kubernetes-overview' }]);
+      wrapper = createWrapper(null);
+      await waitForPromises();
+
+      expect(setUrlParams).not.toHaveBeenCalled();
+      expect(updateHistory).not.toHaveBeenCalled();
     });
   });
 });

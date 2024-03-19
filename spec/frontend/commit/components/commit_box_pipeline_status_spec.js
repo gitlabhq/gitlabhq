@@ -95,11 +95,17 @@ describe('Commit box pipeline status', () => {
   });
 
   describe('error state', () => {
-    it('createAlert should show if there is an error fetching the pipeline status', async () => {
+    beforeEach(async () => {
       createComponent(failedHandler);
 
       await waitForPromises();
+    });
 
+    it('does not show pipeline status', () => {
+      expect(findCiIcon().exists()).toBe(false);
+    });
+
+    it('createAlert should show if there is an error fetching the pipeline status', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: PIPELINE_STATUS_FETCH_ERROR,
       });

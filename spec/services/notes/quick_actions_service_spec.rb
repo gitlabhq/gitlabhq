@@ -387,6 +387,48 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/remove_child' do
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/remove_child #{child.to_reference}" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      before do
+        create(:parent_link, work_item_parent: noteable, work_item: child)
+      end
+
+      shared_examples 'removes child work item' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'removes child work item' do
+          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(-1)
+
+          expect(noteable.valid?).to be_truthy
+          expect(noteable.work_item_children).to be_empty
+        end
+      end
+
+      context 'when using work item reference' do
+        let_it_be(:note_text) { "/remove_child #{child.to_reference(full: true)}" }
+
+        it_behaves_like 'removes child work item'
+      end
+
+      context 'when using work item iid' do
+        it_behaves_like 'removes child work item'
+      end
+
+      context 'when using work item URL' do
+        let_it_be(:project_path) { "#{Gitlab.config.gitlab.url}/#{project.full_path}" }
+        let_it_be(:url) { "#{project_path}/work_items/#{child.iid}" }
+        let_it_be(:note_text) { "/remove_child #{url}" }
+
+        it_behaves_like 'removes child work item'
+      end
+    end
+
     describe '/set_parent' do
       let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
       let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }

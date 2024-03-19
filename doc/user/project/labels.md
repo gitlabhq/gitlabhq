@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 As your count of issues, merge requests, and epics grows in GitLab, it gets more challenging
 to keep track of those items. Especially as your organization grows from just a few people to
@@ -158,7 +158,7 @@ To create a group label:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
@@ -321,7 +321,7 @@ The following labels are created:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.
@@ -467,14 +467,14 @@ To learn what happens when you sort by priority or label priority, see
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
 
 FLAG:
-On self-managed GitLab, this feature is not available.
-On GitLab.com, this feature is only available for use by GitLab Inc. To make it available per group or per project, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`.
+On self-managed GitLab and GitLab Dedicated, this feature is not available.
+On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. To make it available per group or per project, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`.
 
 To comply with certain auditing requirements, you can set a label to be locked.
 When a merge request with locked labels gets merged, nobody can remove them from the MR.

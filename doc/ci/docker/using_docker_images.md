@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can run your CI/CD jobs in separate, isolated Docker containers.
 
@@ -68,6 +68,13 @@ to use local images.
 
 For more information about images and Docker Hub, see
 the [Docker overview](https://docs.docker.com/get-started/overview/).
+
+## Image requirements
+
+Any image used to run a CI/CD job must have the following applications installed:
+
+- `sh` or `bash`
+- `grep`
 
 ## Define `image` in the `.gitlab-ci.yml` file
 
@@ -159,7 +166,7 @@ a useless shell layer. However, that does not work for all Docker versions.
 - For Docker 17.03 and earlier, the `entrypoint` can be set to
   `/bin/sh -c`, `/bin/bash -c`, or an equivalent shell available in the image.
 
-The syntax of `image:entrypoint` is similar to [Dockerfile `ENTRYPOINT`](https://docs.docker.com/engine/reference/builder/#entrypoint).
+The syntax of `image:entrypoint` is similar to [Dockerfile `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint).
 
 Let's assume you have a `super/sql:experimental` image with a SQL database
 in it. You want to use it as a base image for your job because you
@@ -211,8 +218,8 @@ that runner.
 To access private container registries, the GitLab Runner process can use:
 
 - [Statically defined credentials](#use-statically-defined-credentials). That is, a username and password for a specific registry.
-- [Credentials Store](#use-a-credentials-store). For more information, see [the relevant Docker documentation](https://docs.docker.com/engine/reference/commandline/login/#credentials-store).
-- [Credential Helpers](#use-credential-helpers). For more information, see [the relevant Docker documentation](https://docs.docker.com/engine/reference/commandline/login/#credential-helpers).
+- [Credentials Store](#use-a-credentials-store). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-stores).
+- [Credential Helpers](#use-credential-helpers). For more information, see [the relevant Docker documentation](https://docs.docker.com/reference/cli/docker/login/#credential-helpers).
 
 To define which option should be used, the runner process reads the configuration in this order:
 

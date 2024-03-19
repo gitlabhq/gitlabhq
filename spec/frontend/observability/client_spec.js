@@ -203,6 +203,19 @@ describe('buildClient', () => {
       expectErrorToBeReported(new Error(FETCHING_TRACES_ERROR));
     });
 
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(tracingUrl).reply(200, { traces: [] });
+
+      const abortController = new AbortController();
+      await client.fetchTraces({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(tracingUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
+    });
+
     describe('sort order', () => {
       beforeEach(() => {
         axiosMock.onGet(tracingUrl).reply(200, {
@@ -429,6 +442,19 @@ describe('buildClient', () => {
       axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
 
       expect(await client.fetchTracesAnalytics()).toEqual([]);
+    });
+
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+
+      const abortController = new AbortController();
+      await client.fetchTracesAnalytics({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(tracingAnalyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
     });
 
     describe('query filter', () => {
@@ -782,6 +808,19 @@ describe('buildClient', () => {
       expect(result).toEqual(data.results);
     });
 
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      const abortController = new AbortController();
+      await client.fetchMetric('name', 'type', { abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+        signal: abortController.signal,
+      });
+    });
+
     describe('query filter params', () => {
       beforeEach(() => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
@@ -1016,40 +1055,59 @@ describe('buildClient', () => {
   });
 
   describe('fetchLogs', () => {
-    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
-    it('fetches logs from the tracing URL', async () => {
-      const mockResponse = {
-        results: [
-          {
-            timestamp: '2024-01-28T10:36:08.2960655Z',
-            trace_id: 'trace-id',
-            span_id: 'span-id',
-            trace_flags: 1,
-            severity_text: 'Information',
-            severity_number: 1,
-            service_name: 'a/service/name',
-            body: 'GetCartAsync called with userId={userId} ',
-            resource_attributes: {
-              'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
-              'k8s.deployment.name': 'otel-demo-cartservice',
-              'k8s.namespace.name': 'otel-demo-app',
-            },
-            log_attributes: {
-              userId: '',
-            },
+    const mockResponse = {
+      results: [
+        {
+          timestamp: '2024-01-28T10:36:08.2960655Z',
+          trace_id: 'trace-id',
+          span_id: 'span-id',
+          trace_flags: 1,
+          severity_text: 'Information',
+          severity_number: 1,
+          service_name: 'a/service/name',
+          body: 'GetCartAsync called with userId={userId} ',
+          resource_attributes: {
+            'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
+            'k8s.deployment.name': 'otel-demo-cartservice',
+            'k8s.namespace.name': 'otel-demo-app',
           },
-        ],
-      };
+          log_attributes: {
+            userId: '',
+          },
+        },
+      ],
+      next_page_token: 'test-token',
+    };
+    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
 
+    beforeEach(() => {
       axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+    });
 
+    it('fetches logs from the logs URL', async () => {
       const result = await client.fetchLogs();
 
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
         withCredentials: true,
+        params: expect.any(URLSearchParams),
       });
-      expect(result).toEqual(mockResponse.results);
+      expect(result).toEqual({
+        logs: mockResponse.results,
+        nextPageToken: mockResponse.next_page_token,
+      });
+    });
+
+    it('appends page_token if specified', async () => {
+      await client.fetchLogs({ pageToken: 'page-token' });
+
+      expect(getQueryParam()).toContain('page_token=page-token');
+    });
+
+    it('appends page_size if specified', async () => {
+      await client.fetchLogs({ pageSize: 10 });
+
+      expect(getQueryParam()).toContain('page_size=10');
     });
 
     it('rejects if logs are missing', async () => {
@@ -1060,10 +1118,50 @@ describe('buildClient', () => {
     });
 
     it('rejects if logs are invalid', async () => {
-      axiosMock.onGet(logsSearchUrl).reply(200, { logs: 'invalid' });
+      axiosMock.onGet(logsSearchUrl).reply(200, { results: 'invalid' });
 
       await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
+    });
+
+    describe('filters', () => {
+      describe('date range filter', () => {
+        it('handle predefined date range value', async () => {
+          await client.fetchLogs({
+            filters: { dateRange: { value: '5m' } },
+          });
+          expect(getQueryParam()).toContain(`period=5m`);
+        });
+
+        it('handle custom date range value', async () => {
+          await client.fetchLogs({
+            filters: {
+              dateRange: {
+                endDate: new Date('2020-07-06'),
+                startDate: new Date('2020-07-05'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+          );
+        });
+      });
+
+      it('ignores empty filter', async () => {
+        await client.fetchLogs({
+          filters: { dateRange: {} },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores undefined filter', async () => {
+        await client.fetchLogs({
+          filters: { dateRange: undefined },
+        });
+        expect(getQueryParam()).toBe('');
+      });
     });
   });
 });

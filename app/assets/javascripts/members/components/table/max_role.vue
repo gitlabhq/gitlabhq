@@ -5,9 +5,14 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { mapActions } from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
-import { roleDropdownItems, initialSelectedRole } from 'ee_else_ce/members/utils';
+import {
+  roleDropdownItems,
+  initialSelectedRole,
+  handleMemberRoleUpdate,
+} from 'ee_else_ce/members/utils';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { s__ } from '~/locale';
+import { logError } from '~/lib/logger';
 
 export default {
   components: {
@@ -84,16 +89,23 @@ export default {
         this.selectedRole = value;
         this.memberRoleId = newRole.memberRoleId;
 
-        await this.updateMemberRole({
+        const response = await this.updateMemberRole({
           memberId: this.member.id,
           accessLevel: newRole.accessLevel,
           memberRoleId: newRole.memberRoleId,
         });
 
-        this.$toast.show(s__('Members|Role updated successfully.'));
+        // EE has a flow where role change is not immediate but goes through an approval process.
+        // In that case we should restore previously selected user role
+        this.selectedRole = handleMemberRoleUpdate({
+          currentRole: previousRole,
+          requestedRole: newRole.value,
+          response,
+        });
       } catch (error) {
         this.selectedRole = previousRole;
         this.memberRoleId = previousMemberRoleId;
+        logError(error);
         Sentry.captureException(error);
       } finally {
         this.busy = false;

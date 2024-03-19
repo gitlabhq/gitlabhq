@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { formType } from '~/boards/constants';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
@@ -23,6 +24,8 @@ Vue.use(VueApollo);
 describe('BoardTopBar', () => {
   let wrapper;
   let mockApollo;
+
+  const findBoardsSelector = () => wrapper.findComponent(BoardsSelector);
 
   const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
   const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
@@ -45,6 +48,7 @@ describe('BoardTopBar', () => {
         boardId: 'gid://gitlab/Board/1',
         isSwimlanesOn: false,
         addColumnFormVisible: false,
+        filters: {},
       },
       provide: {
         swimlanesFeatureAvailable: false,
@@ -76,7 +80,7 @@ describe('BoardTopBar', () => {
     });
 
     it('renders BoardsSelector component', () => {
-      expect(wrapper.findComponent(BoardsSelector).exists()).toBe(true);
+      expect(findBoardsSelector().exists()).toBe(true);
     });
 
     it('renders IssueBoardFilteredSearch component', () => {
@@ -105,8 +109,14 @@ describe('BoardTopBar', () => {
     });
 
     it('emits updateBoard when updateBoard is emitted by boards selector', () => {
-      wrapper.findComponent(BoardsSelector).vm.$emit('updateBoard');
+      findBoardsSelector().vm.$emit('updateBoard');
       expect(wrapper.emitted('updateBoard')).toHaveLength(1);
+    });
+
+    it('passes current form to BoardsSelector when showBoardModal is emitted by config toggle', async () => {
+      wrapper.findComponent(ConfigToggle).vm.$emit('showBoardModal', formType.edit);
+      await nextTick();
+      expect(findBoardsSelector().props('boardModalForm')).toEqual(formType.edit);
     });
   });
 

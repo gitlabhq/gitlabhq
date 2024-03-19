@@ -56,6 +56,8 @@ namespace :admin do
 
   resources :groups, only: [:index, :new, :create]
 
+  resources :organizations, only: [:index]
+
   scope(
     path: 'groups/*id',
     controller: :groups,
@@ -152,6 +154,10 @@ namespace :admin do
         put :test
         post :reset
       end
+    end
+
+    resource :slack, only: [:destroy] do
+      get :slack_auth
     end
 
     get :usage_data

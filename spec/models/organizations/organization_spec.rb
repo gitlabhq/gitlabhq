@@ -88,6 +88,20 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '.default?' do
+    context 'when organization is default' do
+      it 'returns true' do
+        expect(described_class.default?(default_organization.id)).to eq(true)
+      end
+    end
+
+    context 'when organization is not default' do
+      it 'returns false' do
+        expect(described_class.default?(organization.id)).to eq(false)
+      end
+    end
+  end
+
   describe '#id' do
     context 'when organization is default' do
       it 'has id 1' do
@@ -98,6 +112,43 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     context 'when organization is not default' do
       it 'does not have id 1' do
         expect(organization.id).not_to eq(1)
+      end
+    end
+  end
+
+  describe '#visibility_level_field' do
+    it { expect(organization.visibility_level_field).to eq(:visibility_level) }
+  end
+
+  describe '#visibility_level' do
+    subject { organization.visibility_level }
+
+    context 'with default' do
+      it { is_expected.to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+
+    context 'with visibility possibilities' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:attribute_name, :value, :result) do
+        :visibility        | 'public'                         | Gitlab::VisibilityLevel::PUBLIC
+        :visibility_level  | Gitlab::VisibilityLevel::PUBLIC  | Gitlab::VisibilityLevel::PUBLIC
+        'visibility'       | 'public'                         | Gitlab::VisibilityLevel::PUBLIC
+        'visibility_level' | Gitlab::VisibilityLevel::PUBLIC  | Gitlab::VisibilityLevel::PUBLIC
+        :visibility        | 'private'                        | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | Gitlab::VisibilityLevel::PRIVATE | Gitlab::VisibilityLevel::PRIVATE
+        'visibility'       | 'private'                        | Gitlab::VisibilityLevel::PRIVATE
+        'visibility_level' | Gitlab::VisibilityLevel::PRIVATE | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | 12345                            | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | 'bogus'                          | Gitlab::VisibilityLevel::PRIVATE
+      end
+
+      with_them do
+        it 'sets the visibility level' do
+          org = described_class.new(attribute_name => value)
+
+          expect(org.visibility_level).to eq(result)
+        end
       end
     end
   end
@@ -237,6 +288,34 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
 
       expect(Gitlab::UrlBuilder).to receive(:build).with(organization, only_path: nil).and_return(web_url)
       expect(organization.web_url).to eq(web_url)
+    end
+  end
+
+  describe '.search' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.search(query) }
+
+    context 'when searching by name' do
+      where(:query, :expected_organizations) do
+        'Organization' | [ref(:organization)]
+        'default'      | [ref(:default_organization)]
+      end
+
+      with_them do
+        it { is_expected.to contain_exactly(*expected_organizations) }
+      end
+    end
+
+    context 'when searching by path' do
+      where(:query, :expected_organizations) do
+        'organization' | [ref(:organization)]
+        'default'      | [ref(:default_organization)]
+      end
+
+      with_them do
+        it { is_expected.to contain_exactly(*expected_organizations) }
+      end
     end
   end
 end

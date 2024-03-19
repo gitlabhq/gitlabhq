@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
 creating a [CI/CD project](index.md) to connect your GitHub repository to

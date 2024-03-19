@@ -130,10 +130,35 @@ RSpec.shared_examples 'diff file with conflict_type' do
     end
 
     context 'when there is matching conflict file' do
-      let(:options) { { conflicts: { diff_file.new_path => double(diff_lines_for_serializer: [], conflict_type: :both_modified) } } }
+      let(:renamed_file?) { false }
 
-      it 'returns false' do
-        expect(subject[:conflict_type]).to eq(:both_modified)
+      let(:options) do
+        {
+          conflicts: {
+            diff_file.new_path => {
+              conflict_type: :removed_target_renamed_source,
+              conflict_type_when_renamed: :renamed_same_file
+            }
+          }
+        }
+      end
+
+      before do
+        allow(diff_file)
+          .to receive(:renamed_file?)
+          .and_return(renamed_file?)
+      end
+
+      it 'returns conflict_type' do
+        expect(subject[:conflict_type]).to eq(:removed_target_renamed_source)
+      end
+
+      context 'when diff file is renamed' do
+        let(:renamed_file?) { true }
+
+        it 'returns conflict_type' do
+          expect(subject[:conflict_type]).to eq(:renamed_same_file)
+        end
       end
     end
   end

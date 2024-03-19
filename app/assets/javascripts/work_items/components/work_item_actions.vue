@@ -145,6 +145,11 @@ export default {
       required: false,
       default: false,
     },
+    hideSubscribe: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -185,7 +190,7 @@ export default {
       };
     },
     canLockWorkItem() {
-      return this.canUpdate && this.glFeatures.workItemsMvc;
+      return this.canUpdate && this.glFeatures.workItemsBeta;
     },
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
@@ -337,7 +342,7 @@ export default {
       no-caret
       right
     >
-      <template v-if="$options.isLoggedIn">
+      <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item
           class="gl-display-flex gl-justify-content-end gl-w-full"
           :data-testid="$options.notificationsToggleFormTestId"

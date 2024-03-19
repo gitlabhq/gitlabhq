@@ -22,7 +22,9 @@
     "releases_events",
     "alert_status",
     "disabled_until",
-    "emoji_events"
+    "emoji_events",
+    "custom_webhook_template",
+    "resource_access_token_events"
   ],
   "optional": [
     "url_variables"
@@ -98,6 +100,9 @@
     "emoji_events": {
       "type": "boolean"
     },
+    "resource_access_token_events": {
+      "type": "boolean"
+    },
     "alert_status": {
       "type": "string",
       "enum": [
@@ -126,6 +131,12 @@
           }
         }
       }
+    },
+    "custom_webhook_template": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

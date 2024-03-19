@@ -19,9 +19,6 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - random_name
 events:
 - name: random_name
   unique: user.id

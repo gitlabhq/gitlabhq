@@ -2,6 +2,7 @@
 table_name: p_ci_job_artifacts
 classes:
 - Ci::JobArtifact
+- Ci::JobArtifact::Partitioned
 feature_categories:
 - continuous_integration
 description: Routing table for ci_job_artifacts

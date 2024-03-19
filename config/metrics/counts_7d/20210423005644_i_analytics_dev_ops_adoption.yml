@@ -7,15 +7,12 @@ product_stage: manage
 product_group: optimize
 value_type: number
 status: active
-milestone: "13.11"
+milestone: '13.11'
 time_frame: 7d
 data_source: internal_events
-options:
-  events:
-  - i_analytics_dev_ops_adoption
 events:
-  - name: i_analytics_dev_ops_adoption
-    unique: user.id
+- name: i_analytics_dev_ops_adoption
+  unique: user.id
 distribution:
 - ce
 - ee

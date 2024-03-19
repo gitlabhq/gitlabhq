@@ -4,7 +4,7 @@ key_path: counts.projects_inheriting_redmine_active
 description: Count of active projects inheriting integrations for Redmine
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: all

@@ -1,4 +1,4 @@
-import { GlTable, GlAlert, GlLoadingIcon, GlDropdown, GlIcon, GlAvatar, GlLink } from '@gitlab/ui';
+import { GlTable, GlAlert, GlLoadingIcon, GlDropdown, GlAvatar, GlLink } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -174,7 +174,7 @@ describe('AlertManagementTable', () => {
       await nextTick();
 
       expect(wrapper.findComponent(GlTable).exists()).toBe(true);
-      expect(findAlertsTable().findComponent(GlIcon).classes('icon-critical')).toBe(true);
+      expect(findAlertsTable().find('[data-testid="severity-critical-icon"]').exists()).toBe(true);
     });
 
     it('renders severity text', () => {

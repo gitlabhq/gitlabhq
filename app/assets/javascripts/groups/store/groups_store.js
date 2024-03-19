@@ -102,6 +102,7 @@ export default class GroupsStore {
       lastActivityAt: rawGroupItem.last_activity_at
         ? rawGroupItem.last_activity_at
         : rawGroupItem.updated_at,
+      archived: rawGroupItem.archived,
     };
 
     if (!isEmpty(rawGroupItem.compliance_management_framework)) {

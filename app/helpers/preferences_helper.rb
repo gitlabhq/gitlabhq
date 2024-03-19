@@ -71,8 +71,12 @@ module PreferencesHelper
     @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end
 
+  def user_application_color_mode
+    @user_color_mode ||= Gitlab::ColorModes.for_user(current_user).css_class
+  end
+
   def user_application_dark_mode?
-    user_application_theme == 'gl-dark'
+    user_application_color_mode == 'gl-dark'
   end
 
   def user_theme_primary_color

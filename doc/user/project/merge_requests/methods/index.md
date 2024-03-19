@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.
@@ -186,6 +186,9 @@ NOTE:
 Projects that use the fast-forward merge strategy can't
 [filter merge requests](../index.md#filter-the-list-of-merge-requests)
 by deployment date, because no merge commit is created.
+Features that rely on the deployment-MR relationship do not work when fast-forward merges are
+enabled.
+This bug is tracked in [issue 398611](https://gitlab.com/gitlab-org/gitlab/-/issues/398611).
 
 When you visit the merge request page with `Fast-forward merge`
 method selected, you can accept it **only if a fast-forward merge is possible**.

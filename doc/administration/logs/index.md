@@ -193,7 +193,7 @@ which correspond to:
 - `elasticsearch_calls`: Total number of calls to Elasticsearch
 - `elasticsearch_duration_s`: Total time taken by Elasticsearch calls
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
-   timed out and therefore returned partial results
+  timed out and therefore returned partial results
 
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.
@@ -475,7 +475,7 @@ only. For example:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 NOTE:
 GitLab Free tracks a small number of different audit events.
@@ -655,10 +655,10 @@ Example log entries for `/var/log/gitlab/gitaly/current`:
 
 ## Gitaly logs
 
-This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
+This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](https://smarden.org/runit/).
 `runit` is packaged with the Linux package and a brief explanation of its purpose
 is available [in the Linux package documentation](https://docs.gitlab.com/omnibus/architecture/#runit).
-[Log files are rotated](http://smarden.org/runit/svlogd.8.html), renamed in
+[Log files are rotated](https://smarden.org/runit/svlogd.8), renamed in
 Unix timestamp format, and `gzip`-compressed (like `@1584057562.s`).
 
 ### `grpc.log`
@@ -914,10 +914,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
 
-This file logs information related to the
-[Exact code search](../../user/search/exact_code_search.md) feature which is
-powered by Zoekt.
-
+This file logs information related to [exact code search](../../user/search/exact_code_search.md).
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.
@@ -1058,7 +1055,7 @@ can be used.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 
@@ -1074,7 +1071,7 @@ This file is located at:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-Managed, SaaS
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
 

@@ -14,7 +14,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          attributes :if, :exists, :when, :start_in, :allow_failure
+          attributes :if, :exists, :when, :start_in, :allow_failure, :interruptible
 
           entry :changes, Entry::Rules::Rule::Changes,
             description: 'File change condition rule.'
@@ -41,6 +41,7 @@ module Gitlab
               validates :if, expression: true
               validates :exists, array_of_strings: true, length: { maximum: 50 }
               validates :allow_failure, boolean: true
+              validates :interruptible, boolean: true
             end
 
             validate do

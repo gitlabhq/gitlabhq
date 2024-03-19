@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.
@@ -138,7 +138,7 @@ To install `agentk`:
    ```
 
    Although this step does not follow GitOps principles, it simplifies configuration for new Flux users.
-   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides).
+   For a proper GitOps setup, you should use a secret management solution. See the [Flux documentation](https://fluxcd.io/flux/guides/).
 
 1. Commit and push the following file to `clusters/testing/agentk.yaml`, replacing the values of
    `.spec.values.config.kasAddress` and `.spec.values.config.secretName` with your saved `kas` address and secret `name`:

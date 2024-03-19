@@ -19,17 +19,23 @@ describe('Achievements app', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findNewAchievementButton = () => wrapper.findByTestId('new-achievement-button');
   const findPagingControls = () => wrapper.findComponent(GlKeysetPagination);
   const findTable = () => wrapper.findComponent(GlTableLite);
 
-  const mountComponent = ({ queryResponse = getGroupAchievementsResponse } = {}) => {
+  const mountComponent = ({
+    canAdminAchievement = true,
+    queryResponse = getGroupAchievementsResponse,
+  } = {}) => {
     queryHandler = jest.fn().mockResolvedValue(queryResponse);
     fakeApollo = createMockApollo([[getGroupAchievementsQuery, queryHandler]]);
     wrapper = shallowMountExtended(AchievementsApp, {
       provide: {
+        canAdminAchievement,
         groupFullPath: 'flightjs',
       },
       apolloProvider: fakeApollo,
+      stubs: ['router-link', 'router-view'],
     });
     return waitForPromises();
   };
@@ -50,6 +56,24 @@ describe('Achievements app', () => {
       expect(items).toContainEqual(expect.objectContaining({ name: 'Hero' }));
       expect(items).toContainEqual(expect.objectContaining({ name: 'Star' }));
       expect(items).toContainEqual(expect.objectContaining({ name: 'Legend' }));
+    });
+
+    describe('new achievement button', () => {
+      describe('when user can admin_achievement', () => {
+        it('should render', async () => {
+          await mountComponent();
+
+          expect(findNewAchievementButton().exists()).toBe(true);
+        });
+      });
+
+      describe('when user can not admin_achievement', () => {
+        it('should not render', async () => {
+          await mountComponent({ canAdminAchievement: false });
+
+          expect(findNewAchievementButton().exists()).toBe(false);
+        });
+      });
     });
 
     describe('with no achievements', () => {

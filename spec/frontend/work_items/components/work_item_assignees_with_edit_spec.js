@@ -4,7 +4,7 @@ import { sortNameAlphabetically } from '~/work_items/utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
-import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
@@ -14,15 +14,14 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
-  projectMembersResponseWithCurrentUser,
+  projectMembersAutocompleteResponseWithCurrentUser,
   mockAssignees,
   currentUserResponse,
   currentUserNullResponse,
   updateWorkItemMutationResponse,
-  projectMembersResponseWithCurrentUserWithNextPage,
-  projectMembersResponseWithNoMatchingUsers,
+  projectMembersAutocompleteResponseWithNoMatchingUsers,
 } from 'jest/work_items/mock_data';
-import { DEFAULT_PAGE_SIZE_ASSIGNEES, i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 
 const workItemId = 'gid://gitlab/WorkItem/1';
 
@@ -39,13 +38,10 @@ describe('WorkItemAssigneesWithEdit component', () => {
 
   const successSearchQueryHandler = jest
     .fn()
-    .mockResolvedValue(projectMembersResponseWithCurrentUser);
+    .mockResolvedValue(projectMembersAutocompleteResponseWithCurrentUser);
   const successGroupSearchQueryHandler = jest
     .fn()
-    .mockResolvedValue(projectMembersResponseWithCurrentUser);
-  const successSearchQueryHandlerWithMoreAssignees = jest
-    .fn()
-    .mockResolvedValue(projectMembersResponseWithCurrentUserWithNextPage);
+    .mockResolvedValue(projectMembersAutocompleteResponseWithCurrentUser);
   const successCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
   const noCurrentUserQueryHandler = jest.fn().mockResolvedValue(currentUserNullResponse);
   const successUpdateWorkItemMutationHandler = jest
@@ -53,7 +49,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
     .mockResolvedValue(updateWorkItemMutationResponse);
   const successSearchWithNoMatchingUsers = jest
     .fn()
-    .mockResolvedValue(projectMembersResponseWithNoMatchingUsers);
+    .mockResolvedValue(projectMembersAutocompleteResponseWithNoMatchingUsers);
 
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
@@ -116,6 +112,12 @@ describe('WorkItemAssigneesWithEdit component', () => {
 
       expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
     });
+
+    it('passes the correct props to clear search text on item select', () => {
+      createComponent();
+
+      expect(findSidebarDropdownWidget().props('clearSearchOnItemSelect')).toBe(true);
+    });
   });
 
   describe('when assigning to current user', () => {
@@ -144,7 +146,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
       await waitForPromises();
 
       expect(successSearchQueryHandler).toHaveBeenCalledWith({
-        first: DEFAULT_PAGE_SIZE_ASSIGNEES,
+        isProject: true,
         fullPath: 'test-project-path',
         search: '',
       });
@@ -158,14 +160,14 @@ describe('WorkItemAssigneesWithEdit component', () => {
       expect(findSidebarDropdownWidget().props('loading')).toBe(true);
     });
 
-    it('shows the iterations in dropdown when the items have finished fetching', async () => {
+    it('shows the assignees in dropdown when the items have finished fetching', async () => {
       showDropdown();
 
       await waitForPromises();
 
       expect(findSidebarDropdownWidget().props('loading')).toBe(false);
       expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(
-        projectMembersResponseWithCurrentUser.data.workspace.users.nodes.length,
+        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users.length,
       );
     });
   });
@@ -276,44 +278,6 @@ describe('WorkItemAssigneesWithEdit component', () => {
 
       expect(findSidebarDropdownWidget().props('showFooter')).toBe(true);
       expect(findInviteMembersTrigger().exists()).toBe(true);
-    });
-  });
-
-  describe('load more assignees', () => {
-    it('does not have infinite scroll when no matching users', async () => {
-      createComponent({ searchQueryHandler: successSearchWithNoMatchingUsers });
-
-      showDropdown();
-      await waitForPromises();
-
-      expect(findSidebarDropdownWidget().props('infiniteScroll')).toBe(false);
-    });
-
-    it('does not trigger load more when does not have next page', async () => {
-      createComponent();
-
-      showDropdown();
-      await waitForPromises();
-
-      expect(findSidebarDropdownWidget().props('infiniteScroll')).toBe(false);
-    });
-
-    it('triggers load more when there are more users', async () => {
-      createComponent({ searchQueryHandler: successSearchQueryHandlerWithMoreAssignees });
-
-      showDropdown();
-      await waitForPromises();
-
-      findSidebarDropdownWidget().vm.$emit('bottomReached');
-      await waitForPromises();
-
-      expect(successSearchQueryHandlerWithMoreAssignees).toHaveBeenCalledWith({
-        first: DEFAULT_PAGE_SIZE_ASSIGNEES,
-        after:
-          projectMembersResponseWithCurrentUserWithNextPage.data.workspace.users.pageInfo.endCursor,
-        search: '',
-        fullPath: 'test-project-path',
-      });
     });
   });
 });

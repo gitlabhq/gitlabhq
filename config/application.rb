@@ -230,6 +230,7 @@ module Gitlab
       sharedSecret
       redirect
       question
+      SAMLResponse
     ]
 
     # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
@@ -255,19 +256,6 @@ module Gitlab
     config.active_record.has_many_inversing = false
     config.active_record.belongs_to_required_by_default = false
 
-    # Switch between cssbundling-rails and sassc-rails conditionally
-    # To activate cssbundling-rails you can set `USE_NEW_CSS_PIPELINE=1`
-    # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
-    # Need to be loaded before initializers
-    config.before_configuration do
-      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"])
-        require 'cssbundling-rails'
-      else
-        require 'fileutils'
-        require 'sassc-rails'
-      end
-    end
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -281,6 +269,7 @@ module Gitlab
     config.assets.precompile << "application_utilities.css"
     config.assets.precompile << "application_utilities_dark.css"
     config.assets.precompile << "application_dark.css"
+    config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
@@ -303,6 +292,8 @@ module Gitlab
     config.assets.precompile << "page_bundles/ci_cd_settings.css"
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
+    config.assets.precompile << "page_bundles/commits.css"
+    config.assets.precompile << "page_bundles/commit_description.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
@@ -621,11 +612,8 @@ module Gitlab
     end
 
     # Add `app/assets/builds` as the highest precedence to find assets
-    # This is required if cssbundling-rails is used, but should not affect sassc-rails. it would be empty
-    if defined?(Cssbundling)
-      initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
-        app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
-      end
+    initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
+      app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
     end
 
     # We run the contents of active_record.clear_active_connections again

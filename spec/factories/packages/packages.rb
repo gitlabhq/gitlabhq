@@ -246,12 +246,6 @@ FactoryBot.define do
       end
     end
 
-    factory :golang_package do
-      sequence(:name) { |n| "golang.org/x/pkg-#{n}" }
-      sequence(:version) { |n| "v1.0.#{n}" }
-      package_type { :golang }
-    end
-
     factory :conan_package do
       conan_metadatum
 

@@ -12,7 +12,8 @@ module WikiPages
         execute_hooks(page)
         ServiceResponse.success(payload: { page: page })
       else
-        raise UpdateError, _('Could not update wiki page')
+        message = page.template? ? _('Could not update wiki template') : _('Could not update wiki page')
+        raise UpdateError, message
       end
     rescue UpdateError, WikiPage::PageChangedError, WikiPage::PageRenameError => e
       page.update_attributes(@params) # rubocop:disable Rails/ActiveRecordAliases

@@ -25,8 +25,9 @@ const maxFilesAllowed = 10
 
 // ErrInjectedClientParam means that the client sent a parameter that overrides one of our own fields
 var (
-	ErrInjectedClientParam  = errors.New("injected client parameter")
-	ErrTooManyFilesUploaded = fmt.Errorf("upload request contains more than %v files", maxFilesAllowed)
+	ErrInjectedClientParam    = errors.New("injected client parameter")
+	ErrTooManyFilesUploaded   = fmt.Errorf("upload request contains more than %v files", maxFilesAllowed)
+	ErrUnexpectedMultipartEOF = fmt.Errorf("unexpected EOF when reading multipart data")
 )
 
 var (
@@ -86,6 +87,14 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, fi
 		if err != nil {
 			if err == io.EOF {
 				break
+			}
+			// Unfortunately as described in https://github.com/golang/go/issues/54133,
+			// we don't have a good way to determine the actual error cause of NextPart()
+			// without an ugly string comparison.
+			// Note that io.EOF is treated differently from an unexpected EOF:
+			// https://github.com/golang/go/blob/69d6c7b8ee62b4db5a8f6399e15f27d47b209a29/src/mime/multipart/multipart.go#L395-L405
+			if err.Error() == "multipart: NextPart: EOF" {
+				return ErrUnexpectedMultipartEOF
 			}
 			return err
 		}

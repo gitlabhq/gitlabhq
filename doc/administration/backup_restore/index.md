@@ -21,7 +21,7 @@ You can mitigate all of these risks with a disaster recovery plan that includes 
 
 ## Back up GitLab
 
-For detailed information on backing up GitLab, see [Backup GitLab](backup_gitlab.md).
+For detailed information on backing up GitLab, see [Back up GitLab](backup_gitlab.md).
 
 ## Restore GitLab
 

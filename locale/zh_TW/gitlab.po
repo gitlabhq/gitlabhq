@@ -12981,8 +12981,8 @@ msgstr "使用 GitLab 所管理的範本在 `.gitlab-ci.yml` 中配置 SAST。�
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "在 `.gitlab-ci.yml` 中配置 SAST，如果該文件不存在則創建此文件"
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "使用 GitLab 所管理的範本在 `.gitlab-ci.yml` 中配置金鑰檢測。您可以[添加變量覆蓋](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) 來自定義密鑰檢測設置。"
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "使用 GitLab 所管理的範本在 `.gitlab-ci.yml` 中配置金鑰檢測。您可以[添加變量覆蓋](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) 來自定義密鑰檢測設置。"
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "在 `.gitlab-ci.yml` 中配置 Secret Detection，如果該文件不存在則創建此文件"

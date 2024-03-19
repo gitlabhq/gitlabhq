@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A security audit is a in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
@@ -45,6 +45,10 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 
 ### Group audit events
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 To view a group's audit events:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -54,6 +58,10 @@ To view a group's audit events:
 Group audit events can also be accessed using the [Group Audit Events API](../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
 
 ### Project audit events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Audit events**.
@@ -65,7 +73,7 @@ Project audit events can also be accessed using the [Project Audit Events API](.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
@@ -84,7 +92,7 @@ Instance audit events can also be accessed using the [Instance Audit Events API]
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
@@ -94,6 +102,10 @@ Successful sign-in events are the only audit events available at all tiers. To s
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
 ## Exporting audit events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
@@ -139,6 +151,10 @@ with a description of the values:
 All items are sorted by `created_at` in ascending order.
 
 ## User impersonation
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
 > - Impersonation session events included in group audit events in GitLab 14.8.

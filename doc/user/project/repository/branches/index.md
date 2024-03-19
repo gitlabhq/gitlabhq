@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Understand how to name, manage, and protect Git branches."
 ---
 
 # Branches
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Branches are versions of a project's working tree. When you create a new
 [project](../../index.md), GitLab creates a [default branch](default.md) (which
@@ -136,11 +137,11 @@ On this page, you can:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.10.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../feature_flags.md) named `branch_rules`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 Branches in your repository can be [protected](../../protected_branches.md) in multiple ways. You can:
 
@@ -298,7 +299,7 @@ To do this:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.

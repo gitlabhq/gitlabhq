@@ -9,12 +9,7 @@ module QA
       let(:address) { QA::Runtime::Scenario.gitlab_address }
       let(:uri) { URI.parse(address) }
       let(:ssh_port) { uri.port == 80 ? '' : '2222' }
-      let!(:ssh_key) do
-        Resource::SSHKey.fabricate_via_api! do |resource|
-          resource.title = "key for ssh tests #{Time.now.to_f}"
-          resource.api_client = user_api_client
-        end
-      end
+      let!(:ssh_key) { create(:ssh_key, title: "key for ssh tests #{Time.now.to_f}", api_client: user_api_client) }
 
       before do
         enable_2fa_for_user(user)

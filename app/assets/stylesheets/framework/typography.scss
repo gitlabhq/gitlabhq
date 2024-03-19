@@ -567,6 +567,30 @@
     content: '🔥';
   }
 
+  .admonitionblock, .sidebarblock, .openblock, .exampleblock {
+    margin: $gl-padding 0 $gl-padding;
+  }
+
+  .sidebarblock {
+    background: $gray-darker;
+    padding: $gl-padding-12 $gl-padding-24;
+    border-radius: $gl-border-radius-large;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .exampleblock > div:nth-of-type(1) {
+    border: $gl-border-size-3 solid $border-color;
+    border-radius: $gl-border-radius-base;
+    padding: $gl-padding-12 $gl-padding-24;
+
+    p {
+      margin: 0;
+    }
+  }
+
   .fa-square-o::before {
     content: '\2610';
   }

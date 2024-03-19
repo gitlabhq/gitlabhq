@@ -115,45 +115,12 @@ module Ci
     validates :ref, presence: true
 
     scope :unstarted, -> { where(runner_id: nil) }
-
-    scope :with_any_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-      )
-    end
-
-    scope :with_downloadable_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1)
-          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-          .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
-      )
-    end
-
-    scope :with_erasable_artifacts, -> do
-      where('EXISTS (?)',
-        Ci::JobArtifact.select(1)
-          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
-        .where(file_type: Ci::JobArtifact.erasable_file_types)
-      )
-    end
-
-    scope :in_pipelines, ->(pipelines) do
-      where(pipeline: pipelines)
-    end
-
-    scope :with_existing_job_artifacts, ->(query) do
-      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").merge(query))
-    end
-
-    scope :without_archived_trace, -> do
-      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").trace)
-    end
-
-    scope :with_artifacts, ->(artifact_scope) do
-      with_existing_job_artifacts(artifact_scope)
-        .eager_load_job_artifacts
-    end
+    scope :with_any_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build) }
+    scope :with_downloadable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.downloadable) }
+    scope :with_erasable_artifacts, -> { where_exists(Ci::JobArtifact.scoped_build.erasable) }
+    scope :with_existing_job_artifacts, ->(query) { where_exists(Ci::JobArtifact.scoped_build.erasable.merge(query)) }
+    scope :without_archived_trace, -> { where_not_exists(Ci::JobArtifact.scoped_build.trace) }
+    scope :with_artifacts, ->(artifact_scope) { with_existing_job_artifacts(artifact_scope).eager_load_job_artifacts }
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
@@ -183,7 +150,7 @@ module Ci
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
-    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
+    scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
     scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
@@ -395,6 +362,12 @@ module Ci
       in_merge_request(merge_request_ids).pluck(:id)
     end
 
+    # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
+    # but only a Ci::Build will transition to `canceling`` via `.cancel`
+    def supports_canceling?
+      Feature.enabled?(:ci_canceling_status, project, type: :wip) && cancel_gracefully?
+    end
+
     def build_matcher
       strong_memoize(:build_matcher) do
         Gitlab::Ci::Matching::BuildMatcher.new({
@@ -408,6 +381,10 @@ module Ci
 
     def auto_retry_allowed?
       auto_retry.allowed?
+    end
+
+    def exit_code=(value)
+      ensure_metadata.exit_code = value
     end
 
     def auto_retry_expected?
@@ -468,7 +445,7 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def cancelable?
-      active? || created?
+      (active? || created?) && !canceling?
     end
 
     def retries_count
@@ -1030,7 +1007,7 @@ module Ci
     end
 
     def exit_codes_defined?
-      options.dig(:allow_failure_criteria, :exit_codes).present?
+      options.dig(:allow_failure_criteria, :exit_codes).present? || options.dig(:retry, :exit_codes).present?
     end
 
     def create_queuing_entry!
@@ -1219,7 +1196,7 @@ module Ci
       report_types = options&.dig(:artifacts, :reports)&.keys || []
 
       report_types.each do |report_type|
-        next unless Ci::JobArtifact::REPORT_TYPES.include?(report_type)
+        next unless Enums::Ci::JobArtifact.report_types.include?(report_type)
 
         ::Gitlab::Ci::Artifacts::Metrics
           .build_completed_report_type_counter(report_type)
@@ -1245,8 +1222,6 @@ module Ci
     end
 
     def track_ci_build_created_event
-      return unless Feature.enabled?(:track_ci_build_created_internal_event, project, type: :gitlab_com_derisk)
-
       Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
     end
 

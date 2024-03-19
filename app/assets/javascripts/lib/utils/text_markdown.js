@@ -233,6 +233,25 @@ function moveCursor({
   }
 }
 
+/**
+ * Inserts the given MarkdownText into the given textArea or editor
+ *
+ * WARNING: This is a bit of legacy code that has some complicated logic.
+ * There are a lot of hidden contexts to consider here. Please proceed with caution.
+ *
+ * We've tried to document the parameter responsibilities as best as possible.
+ * Please look for actual usage in the code to verify any assumptions.
+ *
+ * @param {Object} options - Named parameters
+ * @param {HTMLTextAreaElement} options.textArea - The relevant text area
+ * @param {String} options.text - The current text of the text area
+ * @param {String} options.tag - The markdown tag we want to enter (Example: `- [ ] ` for lists)
+ * @param {Number} options.cursorOffset - Applied to the position after we insert the text (moves backward)
+ * @param {String} options.blockTag - The markdown tag to use if a block is detected (Example ` ``` ` vs. ` ` `)
+ * @param {Boolean} options.wrap - Flag for whether the tag is a wrapping tag (Example `**text**` vs `* text`)
+ * @param {String} options.select - The text to select after inserting (Example `url` of `({text})[url]`)
+ * @param {Object} options.editor - The instance of the SourceEditor which we are inserting MarkdownText into. This should be mutually exclusive with textArea.
+ */
 export function insertMarkdownText({
   textArea,
   text,
@@ -244,6 +263,13 @@ export function insertMarkdownText({
   select,
   editor,
 }) {
+  // If we aren't really inserting anything, let's just noop.
+  // Let's check for `selected` too because there might be hidden logic that actually
+  // is expected to run for this case.
+  if (!tag && !blockTag && !selected) {
+    return;
+  }
+
   let removedLastNewLine = false;
   let removedFirstNewLine = false;
   let currentLineEmpty = false;
@@ -359,7 +385,8 @@ export function insertMarkdownText({
   } else {
     insertText(textArea, textToInsert);
   }
-  return moveCursor({
+
+  moveCursor({
     textArea,
     tag: tag.replace(textPlaceholder, selected),
     cursorOffset,

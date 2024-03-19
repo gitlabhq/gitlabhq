@@ -15,6 +15,7 @@ export default {
       update: (r) => r.object?.savedReplies?.nodes,
       variables() {
         return {
+          path: this.path,
           ...this.pagination,
         };
       },
@@ -37,7 +38,10 @@ export default {
     CreateForm,
     List,
   },
-  inject: ['fetchAllQuery'],
+  inject: {
+    path: { default: '' },
+    fetchAllQuery: { required: true },
+  },
   data() {
     return {
       savedReplies: [],
@@ -72,7 +76,7 @@ export default {
     <template #header>
       <div class="gl-new-card-title-wrapper" data-testid="title">
         <h3 class="gl-new-card-title">
-          {{ __('My comment templates') }}
+          {{ __('Comment templates') }}
         </h3>
         <div class="gl-new-card-count">
           <gl-icon name="comment-lines" class="gl-mr-2" />

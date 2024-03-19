@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - create_ci_internal_pipeline
 events:
 - name: create_ci_internal_pipeline

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This document lists tokens used in GitLab, their purpose and, where applicable, security guidance.
 
@@ -59,7 +59,7 @@ You can use the [project access tokens API](../api/project_access_tokens.md) to
 programmatically take action, such as
 [rotating a project access token](../api/project_access_tokens.md#rotate-a-project-access-token).
 
-All project maintainers receive an email when project access tokens are 7 days or less from expiration.
+Project owners and maintainers receive an email when project access tokens are 7 days or less from expiration.
 
 ## Group access tokens
 
@@ -261,6 +261,7 @@ The following tables show the prefixes for each type of token where applicable.
 | GitLab Agent for Kubernetes token | `glagent-`         |
 | GitLab session cookies            | `_gitlab_session=` |
 | SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
+| Feature Flags Client token        | `glffct-`          |
 
 ### External system tokens
 
@@ -275,18 +276,20 @@ The following tables show the prefixes for each type of token where applicable.
 1. Treat access tokens like passwords and keep them secure.
 1. When creating a scoped token, consider using the most limited scope possible to reduce the impact of accidentally leaking the token.
 1. When creating a token, consider setting a token that expires when your task is complete. For example, if performing a one-off import, set the
-  token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
+   token to expire after a few hours or a day. This reduces the impact of a token that is accidentally leaked because it is useless when it expires.
 1. If you have set up a demo environment to showcase a project you have been working on and you are recording a video or writing a blog post describing that project, make sure you are not leaking sensitive secrets (for example a personal access token (PAT), feed token or trigger token) during that process. If you have finished the demo, you must revoke all the secrets created during that demo. For more information, see [revoking a PAT](../user/profile/personal_access_tokens.md#revoke-a-personal-access-token).
 1. Adding access tokens to URLs is a security risk, especially when cloning or adding a remote because Git then writes the URL to its `.git/config` file in plain text. URLs are
-  also generally logged by proxies and application servers, which makes those credentials visible to system administrators. Instead, pass API calls an access token using
-  headers like [the `Private-Token` header](../api/rest/index.md#personalprojectgroup-access-tokens).
+   also generally logged by proxies and application servers, which makes those credentials visible to system administrators. Instead, pass API calls an access token using
+   headers like [the `Private-Token` header](../api/rest/index.md#personalprojectgroup-access-tokens).
 1. You can also store token using a [Git credential storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 1. Do not:
+
    - Store tokens in plain text in your projects.
    - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, or comment.
+
    Consider an approach such as [using external secrets in CI](../ci/secrets/index.md).
 1. Do not log credentials in the console logs or artifacts. Consider [protecting](../ci/variables/index.md#protect-a-cicd-variable) and
-  [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
+   [masking](../ci/variables/index.md#mask-a-cicd-variable) your credentials.
 1. Review all active access tokens of all types on a regular basis and revoke any that are no longer needed. This includes:
    - Personal, project, and group access tokens.
    - Feed tokens.

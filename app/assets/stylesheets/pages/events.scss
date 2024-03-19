@@ -58,12 +58,8 @@
     }
   }
 
-  .event-title {
-    .event-type {
-      &::first-letter {
-        text-transform: capitalize;
-      }
-    }
+  .event-title .event-title-block::first-letter {
+    text-transform: capitalize;
   }
 
   .event-body {

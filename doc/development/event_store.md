@@ -259,13 +259,21 @@ end
 To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
 add a line like this to the `Gitlab::EventStore.configure!` method:
 
+NOTE:
+New workers should be introduced with a feature flag in order to
+[ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
+
 ```ruby
 module Gitlab
   module EventStore
     def self.configure!(store)
       # ...
 
-      store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+      store.subscribe ::Sbom::ProcessTransferEventsWorker, to: ::Projects::ProjectTransferedEvent,
+        if: ->(event) do
+          actor = ::Project.actor_from_id(event.data[:project_id])
+          Feature.enabled?(:sync_project_archival_status_to_sbom_occurrences, actor)
+        end
 
       # ...
     end
@@ -278,10 +286,6 @@ declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
 
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.
-
-NOTE:
-Before creating a subscription, make sure that the worker is already deployed to GitLab.com as the
-newly introduced workers are [not compatible with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
 
 ### Conditional dispatch of events
 

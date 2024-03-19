@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated
@@ -273,6 +273,26 @@ In an entry, the following variables are available (here `foo.bar` means that
   `gitlab-org/gitlab@0a4cdd86ab31748ba6dac0f69a8653f206e5cfc7`.
 - `commit.trailers`: an object containing all the Git trailers that were present
   in the commit body.
+
+  These trailers can be referenced using `commit.trailers.<name>`. For example, assuming the following commit:
+
+  ```plaintext
+  Add some impressive new feature
+
+  Changelog: added
+  Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/1234
+  Status: important
+  ```
+
+  The `Changelog`, `Issue` and `Status` trailers can be accessed in the template as follows:
+
+  ```yaml
+  {% each entries %}
+  {% if commit.trailers.Issue %} ([link to issue]({{ commit.trailers.Issue }})){% end %}
+  {% if commit.trailers.Status %}Status: {{ commit.trailers.Status }}{% end %}
+  {% end %}
+  ```
+
 - `merge_request.reference`: a reference to the merge request that first
   introduced the change (for example, `gitlab-org/gitlab!50063`).
 - `title`: the title of the changelog entry (this is the commit title).

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
@@ -151,7 +151,7 @@ Automatic class path correction also works for a Java project with:
 
 - A full path of `test-org/test-java-project`.
 - The following files relative to the project root:
-  
+
   ```shell
   src/main/java/com/gitlab/security_products/tests/App.java
   ```
@@ -300,7 +300,7 @@ run tests:
 The following `.gitlab-ci.yml` example for PHP uses [PHPUnit](https://phpunit.readthedocs.io/)
 to collect test coverage data and generate the report.
 
-With a minimal [`phpunit.xml`](https://docs.phpunit.de/en/10.2/configuration.html) file (you may reference
+With a minimal [`phpunit.xml`](https://docs.phpunit.de/en/11.0/configuration.html) file (you may reference
 [this example repository](https://gitlab.com/yookoala/code-coverage-visualization-with-php/)), you can run the test and
 generate the `coverage.xml`:
 

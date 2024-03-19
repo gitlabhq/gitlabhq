@@ -4,7 +4,7 @@ key_path: redis_hll_counters.user_packages.user_packages_total_unique_counts_wee
 description: A weekly count of users that have published a package to the registry
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: 7d
@@ -12,8 +12,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
   - i_package_composer_user
   - i_package_conan_user

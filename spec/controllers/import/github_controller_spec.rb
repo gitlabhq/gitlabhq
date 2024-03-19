@@ -125,8 +125,10 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         end
 
         get :status, params: params, format: :json
+        fine_grained = assigns(:fine_grained)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(fine_grained).to be false
         expect(json_response['imported_projects'].size).to eq 0
         expect(json_response['provider_repos'].size).to eq 0
         expect(json_response['incompatible_repos'].size).to eq 0
@@ -151,6 +153,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
           allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
             allow(instance).to receive(:for).with('example/repo').and_return('owned')
           end
+        elsif client_scope_error
+          allow(proxy).to receive(:repos).and_raise(Octokit::Forbidden)
         else
           allow(proxy).to receive(:repos).and_raise(Octokit::Unauthorized)
         end
@@ -184,6 +188,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
     context 'with invalid access token' do
       let(:client_auth_success) { false }
+      let(:client_scope_error) { false }
 
       it "handles an invalid token" do
         get :status, format: :json
@@ -191,6 +196,72 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         expect(session[:"#{provider}_access_token"]).to be_nil
         expect(controller).to redirect_to(new_import_url)
         expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
+      end
+    end
+
+    context 'with invalid access token scope' do
+      let(:client_auth_success) { false }
+      let(:client_scope_error) { true }
+
+      it "handles the invalid scopes" do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be_nil
+        expect(controller).to redirect_to(new_import_url)
+        expect(flash[:alert]).to eq("Your GitHub access token does not have the correct scope to import. " \
+                                    "Please use a token with the 'repo' scope, and with the 'read:org' " \
+                                    "scope if importing collaborators.")
+      end
+    end
+
+    context 'with fine_grained personal access token' do
+      let(:client_auth_success) { true }
+      let(:provider_token) { 'github_pat_23542334' }
+
+      it "detects the fine grained token" do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be(provider_token)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:fine_grained)).to be true
+      end
+    end
+
+    context 'with classic personal access token' do
+      let(:client_auth_success) { true }
+      let(:provider_token) { 'ghp_23542334' }
+
+      it 'sets fine_grained to false' do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be(provider_token)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:fine_grained)).to be false
+      end
+    end
+
+    context 'with non-classic personal access token' do
+      let(:client_auth_success) { true }
+      let(:provider_token) { 'ghu_23542334' }
+
+      it 'sets fine grained to false' do
+        get :status, format: :json
+
+        expect(session[:"#{provider}_access_token"]).to be(provider_token)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:fine_grained)).to be false
+      end
+    end
+
+    context 'when a gitea import' do
+      let(:provider) { :gitea }
+      let(:provider_token) { 'github_pat_23542334' }
+
+      it 'skips fine_grained check' do
+        get :status, format: :json
+
+        expect(assigns(:fine_grained)).to be nil
+        expect(controller).not_to receive(:fine_grained?)
       end
     end
 

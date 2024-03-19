@@ -67,6 +67,7 @@ describe('search_params.js', () => {
       'http://test.host/?runner_type[]=INSTANCE_TYPE',
       'http://test.host/?paused[]=true',
       'http://test.host/?search=my_text',
+      'http://test.host/?creator[]=root',
     ])('When a filter is removed, it is removed from the URL', (initialUrl) => {
       const search = { filters: [], sort: DEFAULT_SORT };
       const expectedUrl = `http://test.host/`;

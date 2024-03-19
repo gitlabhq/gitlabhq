@@ -4,6 +4,7 @@
     "id",
     "enabled",
     "url",
+    "auth_method",
     "update_status",
     "last_update_at",
     "last_update_started_at",
@@ -46,6 +47,13 @@
       "type": [
         "string",
         "null"
+      ]
+    },
+    "auth_method": {
+      "type": "string",
+      "enum": [
+        "password",
+        "ssh_public_key"
       ]
     },
     "only_protected_branches": {

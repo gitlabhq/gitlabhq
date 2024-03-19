@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 When you run jobs on SaaS runners on Linux, the runners are on auto-scaled ephemeral virtual machine (VM) instances.
 The default region for the VMs is `us-east1`.
@@ -67,20 +67,20 @@ For example:
 
 ```yaml
 job_small:
- script:
-  - echo "this job runs on the default (small) Linux instance"
+  script:
+    - echo "this job runs on the default (small) Linux instance"
 
 job_medium:
- tags:
-  - saas-linux-medium-amd64
- script:
-  - echo "this job runs on the medium Linux instance"
+  tags:
+    - saas-linux-medium-amd64
+  script:
+    - echo "this job runs on the medium Linux instance"
 
 job_large:
- tags:
-  - saas-linux-large-amd64
- script:
-  - echo "this job runs on the large Linux instance"
+  tags:
+    - saas-linux-large-amd64
+  script:
+    - echo "this job runs on the large Linux instance"
 ```
 
 ## SaaS runners for GitLab community contributions

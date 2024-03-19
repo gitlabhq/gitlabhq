@@ -47,7 +47,7 @@ module Gitlab
       end
 
       def can_sign_in_bot?(user)
-        user&.project_bot? && api_request?
+        (user&.project_bot? || user&.service_account?) && api_request?
       end
 
       # To prevent Rack Attack from incorrectly rate limiting

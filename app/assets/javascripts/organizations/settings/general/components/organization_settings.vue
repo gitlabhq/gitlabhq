@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <settings-block default-expanded slide-animated>
+  <settings-block id="organization-settings" default-expanded>
     <template #title>{{ $options.i18n.settingsBlock.title }}</template>
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>

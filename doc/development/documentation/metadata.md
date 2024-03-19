@@ -27,7 +27,7 @@ To populate the metadata, include this information:
 
 - `stage`: The [Stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
   that the majority of the page's content belongs to.
-- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+- `group`: The [Group](https://handbook.gitlab.com/handbook/company/structure/#product-groups)
   that the majority of the page's content belongs to.
 - `info`: How to find the Technical Writer associated with the page's stage and
   group.

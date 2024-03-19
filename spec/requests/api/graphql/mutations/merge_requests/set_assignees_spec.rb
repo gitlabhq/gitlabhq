@@ -89,7 +89,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'replaces the assignee' do
+    it 'replaces the assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444646' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -116,7 +116,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes assignee' do
+    it 'removes assignee', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -127,7 +127,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   context 'when passing append as true' do
     let(:mode) { Types::MutationOperationModeEnum.enum[:append] }
     let(:input) { { assignee_usernames: [assignee2.username], operation_mode: mode } }
-    let(:db_query_limit) { 25 }
+    let(:db_query_limit) { 26 }
 
     before do
       # In CE, APPEND is a NOOP as you can't have multiple assignees
@@ -138,7 +138,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'does not replace the assignee in CE' do
+    it 'does not replace the assignee in CE', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)
@@ -147,7 +147,7 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
   end
 
   context 'when passing remove as true' do
-    let(:db_query_limit) { 33 }
+    let(:db_query_limit) { 34 }
     let(:mode) { Types::MutationOperationModeEnum.enum[:remove] }
     let(:input) { { assignee_usernames: [assignee.username], operation_mode: mode } }
     let(:expected_result) { [] }
@@ -157,7 +157,8 @@ RSpec.describe 'Setting assignees of a merge request', :assume_throttled, featur
       merge_request.save!
     end
 
-    it 'removes the users in the list, while adding none' do
+    it 'removes the users in the list, while adding none',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446115' do
       run_mutation!
 
       expect(response).to have_gitlab_http_status(:success)

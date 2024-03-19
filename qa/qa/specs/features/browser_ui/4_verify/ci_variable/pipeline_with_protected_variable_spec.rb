@@ -6,15 +6,7 @@ module QA
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:protected_value) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:project) { create(:project, name: 'project-with-ci-vars', description: 'project with CI vars') }
-
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = executor
-          runner.tags = [executor]
-        end
-      end
-
+      let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
       let!(:ci_file) do
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
           {
@@ -51,6 +43,10 @@ module QA
       end
 
       it 'exposes variable on protected branch', :reliable,
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419506',
+          type: :investigating
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348005' do
         create_protected_branch
 
@@ -84,10 +80,7 @@ module QA
 
       def create_protected_branch
         # Using default setups, which allows access for developer and maintainer
-        Resource::ProtectedBranch.fabricate_via_api! do |resource|
-          resource.branch_name = 'protected-branch'
-          resource.project = project
-        end
+        create(:protected_branch, branch_name: 'protected-branch', project: project)
       end
 
       def user_commit_to_protected_branch(api_client)

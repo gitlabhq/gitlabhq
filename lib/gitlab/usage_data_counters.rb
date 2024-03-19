@@ -10,7 +10,6 @@ module Gitlab
       KubernetesAgentCounter,
       NoteCounter,
       SearchCounter,
-      ServiceUsageDataCounter,
       WebIdeCounter,
       WikiPageCounter,
       SnippetCounter,

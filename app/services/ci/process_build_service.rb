@@ -27,7 +27,7 @@ module Ci
     end
 
     def enqueue(processable)
-      return processable.drop!(:failed_outdated_deployment_job) if processable.outdated_deployment?
+      return processable.drop!(:failed_outdated_deployment_job) if processable.has_outdated_deployment?
 
       processable.enqueue
     end

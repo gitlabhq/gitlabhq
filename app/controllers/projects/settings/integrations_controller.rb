@@ -12,6 +12,9 @@ module Projects
       before_action :default_integration, only: [:edit, :update]
       before_action :web_hook_logs, only: [:edit, :update]
       before_action -> { check_test_rate_limit! }, only: :test
+      before_action only: [:edit] do
+        push_frontend_feature_flag(:jira_multiple_project_keys, project.group)
+      end
 
       respond_to :html
 

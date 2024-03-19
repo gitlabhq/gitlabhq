@@ -8,12 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `identity_verification`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
 This feature is not ready for production use.
 
 Identity verification provides multiple layers of GitLab account security.

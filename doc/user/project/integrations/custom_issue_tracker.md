@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can integrate an [external issue tracker](../../../integration/external-issue-tracker.md)
 with GitLab. If your preferred issue tracker is not listed in the

@@ -37,7 +37,7 @@
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
 
 .ruby-gems-cache: &ruby-gems-cache
-  key: "ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+  key: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - vendor/ruby/
   policy: pull
@@ -47,7 +47,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .ruby-coverage-gems-cache: &ruby-coverage-gems-cache
-  key: "ruby-coverage-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+  key: "ruby-coverage-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - vendor/ruby/
   policy: pull
@@ -61,7 +61,7 @@
     files:
       - GITALY_SERVER_VERSION
       - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-binaries-debian-${DEBIAN_VERSION}"
+    prefix: "gitaly-binaries-${BUILD_OS}-${OS_VERSION}"
   paths:
     - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
     - ${TMP_TEST_FOLDER}/gitaly/_build/deps/git/install/
@@ -76,7 +76,7 @@
   policy: pull
 
 .go-pkg-cache: &go-pkg-cache
-  key: "go-pkg-${DEBIAN_VERSION}"
+  key: "go-pkg-${BUILD_OS}-${OS_VERSION}"
   paths:
     - .go/pkg/mod/
   policy: pull
@@ -86,7 +86,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .node-modules-cache: &node-modules-cache
-  key: "node-modules-${DEBIAN_VERSION}-${NODE_ENV}"
+  key: "node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
   paths:
     - node_modules/
     - tmp/cache/webpack-dlls/
@@ -97,7 +97,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .assets-tmp-cache: &assets-tmp-cache
-  key: "assets-tmp-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
+  key: "assets-tmp-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
   paths:
     - tmp/cache/assets/sprockets/
     - tmp/cache/babel-loader/
@@ -109,7 +109,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure we don't pile up outdated cache files.
 
 .storybook-node-modules-cache: &storybook-node-modules-cache
-  key: "storybook-node-modules-${DEBIAN_VERSION}-${NODE_ENV}"
+  key: "storybook-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
   paths:
     - storybook/node_modules/
   policy: pull
@@ -119,7 +119,7 @@
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .rubocop-cache: &rubocop-cache
-  key: "rubocop-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+  key: "rubocop-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
   paths:
     - tmp/rubocop_cache/
   policy: pull
@@ -132,7 +132,7 @@
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
   key:
-    prefix: "qa-ruby-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
     files:
       - qa/Gemfile.lock
   paths:
@@ -234,6 +234,22 @@
     - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
+.code-quality-cache: &code-quality-cache
+  paths:
+    - gl-code-quality-report.json
+
+.code-quality-cache-push:
+  cache:
+    - key: $CI_COMMIT_BRANCH-code-quality-cache
+      <<: *code-quality-cache
+      policy: push
+
+.code-quality-cache-master-pull:
+  cache:
+    - key: master-code-quality-cache
+      <<: *code-quality-cache
+      policy: pull  # Docs pipelines can save time by pulling a copy of the code quality report from the latest master pipeline.
+
 .redis-services:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
@@ -286,7 +302,7 @@
 
 .zoekt-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.7
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.8
       alias: zoekt-ci-image
 
 .use-pg13:
@@ -316,6 +332,15 @@
     PG_VERSION: "15"
     REDIS_VERSION: "7.0"
 
+.use-pg16:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "16"
+    REDIS_VERSION: "7.0"
+
 .es7-services:
   services:
     - !reference [.zoekt-services, services]
@@ -341,6 +366,14 @@
 .use-pg15-es7-ee:
   extends:
     - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
+.use-pg16-es7-ee:
+  extends:
+    - .use-pg16
     - .zoekt-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
@@ -384,6 +417,15 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es8-services, services]
 
+.use-pg16-es8-ee:
+  extends:
+    - .use-pg16
+    - .zoekt-variables
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
+
 .os1-services:
   services:
     - !reference [.zoekt-services, services]
@@ -415,6 +457,14 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os1-services, services]
 
+.use-pg16-opensearch1-ee:
+  extends:
+    - .use-pg16
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
 .os2-services:
   services:
     - !reference [.zoekt-services, services]
@@ -441,6 +491,14 @@
 .use-pg15-opensearch2-ee:
   extends:
     - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
+
+.use-pg16-opensearch2-ee:
+  extends:
+    - .use-pg16
     - .zoekt-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
@@ -484,7 +542,7 @@
 
 .use-buildx:
   extends: .use-docker-in-docker
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim:docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim:docker-${DOCKER_VERSION}
   variables:
     QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
   before_script:
@@ -514,3 +572,8 @@
       curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${url}" --create-dirs --output scripts/utils.sh
     - source scripts/utils.sh
     - run_timed_command "download_files ${FILES_TO_DOWNLOAD}"
+
+.with_secret:
+  id_tokens:
+    GCP_ID_TOKEN:
+      aud: https://iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID}

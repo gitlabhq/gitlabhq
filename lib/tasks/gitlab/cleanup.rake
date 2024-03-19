@@ -80,12 +80,27 @@ namespace :gitlab do
 
         generator.run!
 
-        # TODO: Add back the log message here to instruct which rake task to run to process the
-        # generated CSV file and actually delete the orphan objects.
+        logger.info "To delete these objects run gitlab:cleanup:delete_orphan_job_artifact_final_objects".color(:yellow)
       rescue Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList::UnsupportedProviderError => e
         abort %(#{e.message}
 Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       end
+    end
+
+    desc 'GitLab | Cleanup | Delete orphan job artifact objects stored in the @final directory based on the CSV file'
+    task delete_orphan_job_artifact_final_objects: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      force_restart = ENV['FORCE_RESTART'].present?
+      filename = ENV['FILENAME']
+
+      processor = Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList.new(
+        force_restart: force_restart,
+        filename: filename,
+        logger: logger
+      )
+
+      processor.run!
     end
 
     desc 'GitLab | Cleanup | Clean orphan LFS file references'

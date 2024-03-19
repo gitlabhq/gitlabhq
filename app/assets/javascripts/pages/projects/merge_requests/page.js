@@ -29,8 +29,10 @@ export function initMrPage() {
   diffsEventHub.$on(EVT_MR_DIFF_GENERATED, (mergeRequestDiffGenerated) => {
     const { fileCount } = mergeRequestDiffGenerated.diffStatsSummary;
 
-    changesCountBadge.textContent = fileCount;
-    Vue.set(tabData.tabs[tabData.tabs.length - 1], 3, fileCount);
+    if (changesCountBadge.textContent === '-') {
+      changesCountBadge.textContent = fileCount;
+      Vue.set(tabData.tabs[tabData.tabs.length - 1], 3, fileCount);
+    }
   });
 }
 

@@ -75,7 +75,7 @@ The Stage labels are used to generate the [direction pages](https://about.gitlab
 
 ## Group labels
 
-Group labels specify which [groups](https://about.gitlab.com/company/team/structure/#product-groups) the issue belongs to.
+Group labels specify which [groups](https://handbook.gitlab.com/handbook/company/structure/#product-groups) the issue belongs to.
 
 It's highly recommended to add a group label, as it's used by our triage
 automation to
@@ -252,7 +252,7 @@ We have the following priority labels:
 - `~"priority::3"`
 - `~"priority::4"`
 
-Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
+Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#priority) section in our handbook to see how it's used.
 
 ## Severity labels
 
@@ -263,7 +263,7 @@ We have the following severity labels:
 - `~"severity::3"`
 - `~"severity::4"`
 
-Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
+Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity) section in our handbook to see how it's used.
 
 ## Label for community contributors
 

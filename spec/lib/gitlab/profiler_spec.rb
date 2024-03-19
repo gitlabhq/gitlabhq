@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Profiler do
 
       it 'logs the backtrace, ignoring lines as appropriate' do
         # Skip Rails's backtrace cleaning.
-        allow(Rails.backtrace_cleaner).to receive(:clean, &:itself)
+        allow(Gitlab::BacktraceCleaner.backtrace_cleaner).to receive(:clean, &:itself)
 
         expect(custom_logger).to receive(:add)
                                    .with(Logger::DEBUG,

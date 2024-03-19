@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
 Making pipelines more efficient helps you save developer time, which:

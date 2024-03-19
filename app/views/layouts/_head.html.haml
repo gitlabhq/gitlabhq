@@ -2,6 +2,10 @@
 - site_name = _('GitLab')
 - omit_og = sign_in_with_redirect?
 
+-# This is a temporary place for the page specific style migrations to be included on all pages like page_specific_files
+- if Feature.disabled?(:page_specific_styles, current_user)
+  - add_page_specific_style('page_bundles/commit_description')
+
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
@@ -21,7 +25,7 @@
   - diffs_colors = user_diffs_colors
   = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
-  - if user_application_theme == 'gl-dark'
+  - if user_application_dark_mode?
     %meta{ name: 'color-scheme', content: 'dark light' }
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles
@@ -30,6 +34,7 @@
     = stylesheet_link_tag_defer "application"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer 'application_utilities'
+  = stylesheet_link_tag_defer 'tailwind'
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 
@@ -43,7 +48,7 @@
   = render 'layouts/loading_hints'
 
   = render_if_exists 'layouts/header/translations'
-  - if Feature.enabled?(:enable_new_sentry_clientside_integration, current_user) && Gitlab::CurrentSettings.sentry_enabled
+  - if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
     = webpack_bundle_tag 'sentry'
   - elsif Gitlab.config.sentry.enabled
     = webpack_bundle_tag 'legacy_sentry'

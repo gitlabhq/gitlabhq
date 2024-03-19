@@ -5,17 +5,21 @@ module Backup
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'
     MANIFEST_NAME = 'backup_information.yml'
 
+    # Use the content from stdin instead of an actual filepath (used by tar as input or output)
+    USE_STDIN = '-'
+
     attr_reader :progress, :remote_storage, :options
 
-    def initialize(progress, definitions: nil)
+    def initialize(progress, backup_tasks: nil)
       @progress = progress
-      @definitions = definitions
+      @backup_tasks = backup_tasks
       @options = Backup::Options.new
       @metadata = Backup::Metadata.new(manifest_filepath)
       @options.extract_from_env! # preserve existing behavior
       @remote_storage = Backup::RemoteStorage.new(progress: progress, options: options)
     end
 
+    # @return [Boolean] whether all tasks succeeded
     def create
       # Deprecation: Using backup_id (ENV['BACKUP']) to specify previous backup was deprecated in 15.0
       previous_backup = options.previous_backup || options.backup_id
@@ -27,30 +31,32 @@ module Backup
            "and are not included in this backup. You will need these files to restore a backup.\n" \
            "Please back them up manually.".color(:red)
       puts_time "Backup #{backup_id} is done."
+      true
     end
 
-    def run_create_task(task_name)
+    # @param [Gitlab::Backup::Tasks::Task] task
+    # @return [Boolean] whether the task succeeded
+    def run_create_task(task)
       build_backup_information
 
-      definition = definitions[task_name]
-      destination_dir = File.join(Gitlab.config.backup.path, definition.destination_path)
-
-      unless definition.enabled?
-        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
-        return
+      unless task.enabled?
+        puts_time "Dumping #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+        return true
       end
 
-      if options.skip_task?(task_name)
-        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
-        return
+      if options.skip_task?(task.id)
+        puts_time "Dumping #{task.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
+        return true
       end
 
-      puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.target.dump(destination_dir, backup_id)
-      puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
+      puts_time "Dumping #{task.human_name} ... ".color(:blue)
+      task.backup!(backup_path, backup_id)
+      puts_time "Dumping #{task.human_name} ... ".color(:blue) + "done".color(:green)
+      true
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
-      puts_time "Dumping #{definition.human_name} failed: #{e.message}".color(:red)
+      puts_time "Dumping #{task.human_name} failed: #{e.message}".color(:red)
+      false
     end
 
     def restore
@@ -62,29 +68,28 @@ module Backup
       puts_time "Restore task is done."
     end
 
-    def run_restore_task(task_name)
+    # @param [Gitlab::Backup::Tasks::Task] task
+    def run_restore_task(task)
       read_backup_information
 
-      definition = definitions[task_name]
-
-      unless definition.enabled?
-        puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+      unless task.enabled?
+        puts_time "Restoring #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
-      puts_time "Restoring #{definition.human_name} ... ".color(:blue)
+      puts_time "Restoring #{task.human_name} ... ".color(:blue)
 
-      warning = definition.target.pre_restore_warning
+      warning = task.pre_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      definition.target.restore(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
+      task.restore!(backup_path, backup_id)
 
-      puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
+      puts_time "Restoring #{task.human_name} ... ".color(:blue) + "done".color(:green)
 
-      warning = definition.target.post_restore_warning
+      warning = task.post_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
@@ -95,13 +100,24 @@ module Backup
       exit 1
     end
 
+    # Finds a task by id
+    #
+    # @param [String] task_id
+    # @return [Backup::Tasks::Task]
+    def find_task(task_id)
+      backup_tasks[task_id].tap do |task|
+        raise ArgumentError, "Cannot find task with name: #{task_id}" unless task
+      end
+    end
+
     private
 
-    def definitions
-      @definitions ||= {
+    # @return [Hash<String, Backup::Tasks::Task>]
+    def backup_tasks
+      @backup_tasks ||= {
         Backup::Tasks::Database.id => Backup::Tasks::Database.new(progress: progress, options: options),
         Backup::Tasks::Repositories.id => Backup::Tasks::Repositories.new(progress: progress, options: options,
-          server_side: backup_information[:repositories_server_side]),
+          server_side_callable: -> { backup_information[:repositories_server_side] }),
         Backup::Tasks::Uploads.id => Backup::Tasks::Uploads.new(progress: progress, options: options),
         Backup::Tasks::Builds.id => Backup::Tasks::Builds.new(progress: progress, options: options),
         Backup::Tasks::Artifacts.id => Backup::Tasks::Artifacts.new(progress: progress, options: options),
@@ -123,9 +139,7 @@ module Backup
 
       build_backup_information
 
-      definitions.each_key do |task_name|
-        run_create_task(task_name)
-      end
+      backup_tasks.each_value { |task| run_create_task(task) }
 
       write_backup_information
 
@@ -144,9 +158,9 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      definitions.each do |task_name, definition|
-        if !options.skip_task?(task_name) && definition.enabled?
-          run_restore_task(task_name)
+      backup_tasks.each_value do |task|
+        if !options.skip_task?(task.id) && task.enabled?
+          run_restore_task(task)
         end
       end
 
@@ -226,9 +240,20 @@ module Backup
       Dir.chdir(backup_path) do
         # create archive
         puts_time "Creating backup archive: #{tar_file} ... ".color(:blue)
+
+        tar_utils = ::Gitlab::Backup::Cli::Utils::Tar.new
+        tar_command = tar_utils.pack_cmd(
+          archive_file: USE_STDIN,
+          target_directory: backup_path,
+          target: backup_contents)
+
         # Set file permissions on open to prevent chmod races.
-        tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
-        if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
+        archive_permissions = Gitlab.config.backup.archive_permissions
+        archive_file = [tar_file, 'w', archive_permissions]
+
+        result = tar_command.run_single_pipeline!(output: archive_file)
+
+        if result.status.success?
           puts_time "Creating backup archive: #{tar_file} ... ".color(:blue) + 'done'.color(:green)
         else
           puts_time "Creating archive #{tar_file} failed".color(:red)
@@ -245,15 +270,15 @@ module Backup
       puts_time "Deleting tar staging files ... ".color(:blue)
 
       remove_backup_path(MANIFEST_NAME)
-      definitions.each do |_, definition|
-        remove_backup_path(definition.cleanup_path || definition.destination_path)
+      backup_tasks.each_value do |task|
+        remove_backup_path(task.cleanup_path || task.destination_path)
       end
 
       puts_time "Deleting tar staging files ... ".color(:blue) + 'done'.color(:green)
     end
 
     def remove_backup_path(path)
-      absolute_path = File.join(backup_path, path)
+      absolute_path = backup_path.join(path)
       return unless File.exist?(absolute_path)
 
       puts_time "Cleaning up #{absolute_path}"
@@ -264,7 +289,7 @@ module Backup
       # delete tmp inside backups
       puts_time "Deleting backups/tmp ... ".color(:blue)
 
-      FileUtils.rm_rf(File.join(backup_path, "tmp"))
+      FileUtils.rm_rf(backup_path.join('tmp'))
       puts_time "Deleting backups/tmp ... ".color(:blue) + "done".color(:green)
     end
 
@@ -379,8 +404,7 @@ module Backup
     end
 
     def tar_version
-      tar_version, _ = Gitlab::Popen.popen(%w[tar --version])
-      tar_version.dup.force_encoding('locale').split("\n").first
+      Gitlab::Backup::Cli::Utils::Tar.new.version
     end
 
     def backup_file?(file)
@@ -392,11 +416,11 @@ module Backup
     end
 
     def manifest_filepath
-      File.join(backup_path, MANIFEST_NAME)
+      backup_path.join(MANIFEST_NAME)
     end
 
     def backup_path
-      Gitlab.config.backup.path
+      Pathname(Gitlab.config.backup.path)
     end
 
     def backup_file_list
@@ -408,10 +432,11 @@ module Backup
     end
 
     def backup_contents
-      [MANIFEST_NAME] + definitions.reject do |name, definition|
-        options.skip_task?(name) || !definition.enabled? ||
-          (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
-      end.values.map(&:destination_path)
+      [MANIFEST_NAME] + backup_tasks.values.reject do |task|
+        options.skip_task?(task.id) || # task skipped via CLI option
+          !task.enabled? || # task disabled via code/configuration
+          (task.destination_optional && !File.exist?(backup_path.join(task.destination_path)))
+      end.map(&:destination_path)
     end
 
     def tar_file

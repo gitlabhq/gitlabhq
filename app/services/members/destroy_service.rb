@@ -206,9 +206,15 @@ module Members
 
     def enqueue_unassign_issuables(member)
       source_type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+      current_user_id = current_user.id
 
       member.run_after_commit_or_now do
-        MembersDestroyer::UnassignIssuablesWorker.perform_async(member.user_id, member.source_id, source_type)
+        MembersDestroyer::UnassignIssuablesWorker.perform_async(
+          member.user_id,
+          member.source_id,
+          source_type,
+          current_user_id
+        )
       end
     end
   end

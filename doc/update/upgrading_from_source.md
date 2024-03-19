@@ -17,7 +17,7 @@ In each of the following examples, replace `BRANCH` with the branch of the versi
 branch for the version you are upgrading from (for example, `15-11-stable` for `15.11`).
 
 If the highest number stable branch is unclear check the
-[GitLab Blog](https://about.gitlab.com/blog/archives.html) for installation
+[GitLab Blog](https://about.gitlab.com/blog/archive/) for installation
 guide links by version.
 
 If you are changing from GitLab Community Edition to GitLab Enterprise Edition, see

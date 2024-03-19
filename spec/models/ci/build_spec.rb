@@ -102,18 +102,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         build.save!
       end
-
-      context 'with FF track_ci_build_created_internal_event disabled' do
-        before do
-          stub_feature_flags(track_ci_build_created_internal_event: false)
-        end
-
-        it 'does not track creation event' do
-          expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-          create(:ci_build)
-        end
-      end
     end
   end
 
@@ -176,13 +164,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    ::Ci::JobArtifact::DOWNLOADABLE_TYPES.each do |type|
+    ::Enums::Ci::JobArtifact.downloadable_types.each do |type|
       context "when job has a #{type} artifact" do
         it 'returns the job' do
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -218,7 +206,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, pipeline: pipeline)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -254,7 +242,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           job = create(:ci_build, project: project)
           create(
             :ci_job_artifact,
-            file_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym],
+            file_format: ::Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym],
             file_type: type,
             job: job
           )
@@ -2412,6 +2400,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
+          { key: 'CI_COMPONENT_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
+          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
           { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
           { key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s, public: true, masked: false },
@@ -5087,6 +5077,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.drop_with_exit_code!(:unknown_failure, exit_code)
     end
 
+    it 'correctly sets the exit code' do
+      expect { drop_with_exit_code }
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(1)
+    end
+
     shared_examples 'drops the build without changing allow_failure' do
       it 'does not change allow_failure' do
         expect { drop_with_exit_code }
@@ -5187,38 +5182,93 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.exit_codes_defined?
     end
 
-    context 'without allow_failure_criteria' do
+    context 'without allow_failure_criteria nor retry' do
       it { is_expected.to be_falsey }
     end
 
-    context 'when exit_codes is nil' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: nil
+    context 'with allow_failure_critera' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: nil
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when exit_codes is an empty array' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: []
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: []
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'when exit_codes are defined' do
+    context 'with retry' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: nil
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: []
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context "with exit_codes defined for retry and allow_failure_criteria" do
       let(:options) do
         {
           allow_failure_criteria: {
+            exit_codes: [1]
+          },
+          retry: {
             exit_codes: [5, 6]
           }
         }
@@ -5441,6 +5491,42 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it 'does not generate cross DB queries when a record is created via FactoryBot' do
     with_cross_database_modification_prevented do
       create(:ci_build, pipeline: pipeline)
+    end
+  end
+
+  describe '#supports_canceling?' do
+    let(:job) { create(:ci_build, :running, project: project) }
+
+    context 'when the builds runner does not support canceling' do
+      specify { expect(job.supports_canceling?).to be false }
+
+      context 'when the ci_canceling_status flag is disabled' do
+        before do
+          stub_feature_flags(ci_canceling_status: false)
+        end
+
+        it 'returns false' do
+          expect(job.supports_canceling?).to be false
+        end
+      end
+    end
+
+    context 'when the builds runner supports canceling' do
+      include_context 'when canceling support'
+
+      it 'returns true' do
+        expect(job.supports_canceling?).to be true
+      end
+
+      context 'when the ci_canceling_status flag is disabled' do
+        before do
+          stub_feature_flags(ci_canceling_status: false)
+        end
+
+        it 'returns false' do
+          expect(job.supports_canceling?).to be false
+        end
+      end
     end
   end
 
@@ -5728,7 +5814,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               :ci_job_artifact,
               job: build,
               file_type: type,
-              file_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS[type.to_sym]
+              file_format: Enums::Ci::JobArtifact.type_and_format_pairs[type.to_sym]
             )
           end
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
@@ -63,7 +63,7 @@ which package format you use.
 | [GitLab](../../maven_repository/index.md)                                                                                                | **{check-circle}** Yes      |
 | [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | **{check-circle}** Yes      |
 | [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | **{check-circle}** Yes      |
-| [Sonatype Nexus](https://help.sonatype.com/repomanager3/nexus-repository-administration/formats/maven-repositories)                      | **{check-circle}** Yes      |
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | **{check-circle}** Yes      |
 | [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | **{dotted-circle}** No      |
 
 ::EndTabs
@@ -108,7 +108,7 @@ For Maven packages, [all clients supported by the package registry](../../maven_
 - `gradle`
 - `sbt`
 
-For authentication, the Maven dependency proxy access all authentication methods accepted by the [Maven package registry](../../maven_repository/index.md#edit-the-client-configuration).
+For authentication, you can use all methods accepted by the [Maven package registry](../../maven_repository/index.md#edit-the-client-configuration).
 You should use the [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) method as it is less complex.
 
 To configure the client:
@@ -122,6 +122,10 @@ To configure the client:
 ::Tabs
 
 :::TabTitle mvn
+
+[Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) is accepted.
+However, you should use the [custom HTTP header authentication](../../maven_repository/index.md#custom-http-header),
+so that `mvn` uses fewer network requests.
 
 In the `pom.xml` file add a `repository` element:
 

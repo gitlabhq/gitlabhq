@@ -4,9 +4,6 @@ module Ci
   class PipelineMetadata < Ci::ApplicationRecord
     include Ci::Partitionable
     include Importable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     self.primary_key = :pipeline_id
 

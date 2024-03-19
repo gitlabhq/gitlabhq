@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - Introduced in GitLab 11.0.
 
@@ -45,7 +45,7 @@ To set up SSO with Azure as your identity provider:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
-1. Go to Azure and [follow the instructions for configuring SSO for an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+1. Go to Azure and [follow the instructions for configuring SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
 
    | GitLab setting                           | Azure field                                    |
    | -----------------------------------------| ---------------------------------------------- |
@@ -260,7 +260,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.
    - **Enforce SSO-only authentication for Git activity for this group**.
-   For more information, see the [SSO enforcement documentation](#sso-enforcement).
+     For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
 
 NOTE:
@@ -342,7 +342,7 @@ requires a different format. You can use any format except `Transient`.
 
 #### Change user **NameID**
 
-Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities .
+Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities.
 
 If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identities using the [SCIM API](../../../api/scim.md#update-extern_uid-field-for-a-scim-identity).
 

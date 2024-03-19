@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Page loading [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) to asynchronous in GitLab 14.9.
 > - Page slug encoding method [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71753) to `ERB::Util.url_encode` in GitLab 14.9.
@@ -203,6 +203,43 @@ You can export a wiki page as a PDF file:
 1. Select the vertical ellipsis (**{ellipsis_v}**), and then select **Print as PDF**.
 
 A PDF of the wiki page is created.
+
+## Wiki page templates
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442228) in GitLab 16.10.
+
+You can create templates to use when creating new pages, or to apply
+to existing pages. Templates are wiki pages that are stored in the `templates/`
+directory in the wiki repository.
+
+### Create a template
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Plan > Wiki**.
+1. On the right sidebar, select **Templates**.
+1. Select **New Template**.
+1. Enter template title, format and content, as if creating a regular wiki page.
+
+Templates of a particular format can only be applied to pages of the same format.
+For example, Markdown templates only apply to Markdown pages.
+
+### Apply a template
+
+When you are [creating](#create-a-new-wiki-page) or [editing](#edit-a-wiki-page) a wiki page,
+you can apply a template.
+
+Prerequisites:
+
+- You must have [created](#create-a-template) at least one template already.
+
+1. In the **Content** section, select the **Choose a template** dropdown list.
+1. Select a template from the list. If the page already has some content, a warning displays
+   indicating that the existing content will be overridden.
+1. Select **Apply template**.
 
 ## View history of a wiki page
 
@@ -403,7 +440,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 WARNING:
 This operation deletes all data in the wiki.

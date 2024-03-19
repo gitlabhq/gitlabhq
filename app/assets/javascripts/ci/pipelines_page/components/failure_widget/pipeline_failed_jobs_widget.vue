@@ -56,6 +56,9 @@ export default {
     popoverId() {
       return `popover-${this.pipelineIid}`;
     },
+    maximumJobs() {
+      return this.currentFailedJobsCount > 100;
+    },
   },
   watch: {
     failedJobsCount(val) {
@@ -94,9 +97,8 @@ export default {
         class="gl-text-gray-500! gl-font-weight-semibold"
         @click="toggleWidget"
       >
-        <gl-icon :name="iconName" />
-        {{ failedJobsCountText }}
-        <gl-icon :id="popoverId" name="information-o" class="gl-ml-2" />
+        <gl-icon :name="iconName" />{{ failedJobsCountText
+        }}<gl-icon v-if="maximumJobs" :id="popoverId" name="information-o" class="gl-ml-2" />
         <gl-popover :target="popoverId" placement="top">
           <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
           <slot>

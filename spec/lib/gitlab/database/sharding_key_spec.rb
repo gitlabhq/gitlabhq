@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
+  include ShardingKeySpecHelpers
+
   # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'abuse_report_assignees', # https://gitlab.com/gitlab-org/gitlab/-/issues/432365
       'sbom_occurrences_vulnerabilities', # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
       'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
-      'ml_model_metadata' # has a desired sharding key instead.
+      'ml_model_metadata', # has a desired sharding key instead.
+      'compliance_framework_security_policies' # has a desired sharding key instead
     ]
   end
 
@@ -20,7 +22,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     [
       *tables_with_alternative_not_null_constraint,
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
-      'labels.group_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
+      'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
+      'path_locks.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
+      'subscription_add_on_purchases.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
     ]
   end
 
@@ -49,7 +55,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
       'zoekt_indices.namespace_id',
       'zoekt_repositories.project_identifier',
-      'ci_namespace_monthly_usages.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'zoekt_tasks.project_identifier',
+      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_job_artifacts.project_id',
+      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_builds_metadata.project_id'
     ]
   end
 
@@ -140,6 +150,21 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
+  it 'does not allow tables that are permanently exempted from sharding to have sharding keys' do
+    tables_exempted_from_sharding.each do |entry|
+      expect(entry.sharding_key).to be_nil,
+        "#{entry.table_name} is exempted from sharding and hence should not have a sharding key defined"
+    end
+  end
+
+  it 'allows tables that have a sharding key to only have a cell-local schema' do
+    expect(tables_with_sharding_keys_not_in_cell_local_schema).to be_empty,
+      "Tables: #{tables_with_sharding_keys_not_in_cell_local_schema.join(',')} have a sharding key defined, " \
+      "but does not have a cell-local schema assigned. " \
+      "Tables having sharding keys should have a cell-local schema like `gitlab_main_cell` or `gitlab_ci`. " \
+      "Please change the `gitlab_schema` of these tables accordingly."
+  end
+
   private
 
   def error_message(table_name)
@@ -170,72 +195,14 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
-  def not_nullable?(table_name, column_name)
-    sql = <<~SQL
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public' AND
-    table_name = '#{table_name}' AND
-    column_name = '#{column_name}' AND
-    is_nullable = 'NO'
-    SQL
-
-    result = ApplicationRecord.connection.execute(sql)
-
-    result.count > 0
+  def tables_exempted_from_sharding
+    ::Gitlab::Database::Dictionary.entries.select(&:exempt_from_sharding?)
   end
 
-  def has_null_check_constraint?(table_name, column_name)
-    # This is a heuristic query to look for all check constraints on the table and see if any of them contain a clause
-    # column IS NOT NULL. This is to match tables that will have multiple sharding keys where either of them can be not
-    # null. Such cases may look like:
-    #    (project_id IS NOT NULL) OR (group_id IS NOT NULL)
-    # It's possible that this will sometimes incorrectly find a check constraint that isn't exactly as strict as we want
-    # but it should be pretty unlikely.
-    sql = <<~SQL
-    SELECT 1
-    FROM pg_constraint
-    INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
-    WHERE pg_class.relname = '#{table_name}'
-    AND contype = 'c'
-    AND pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
-    SQL
-
-    result = ApplicationRecord.connection.execute(sql)
-
-    result.count > 0
-  end
-
-  def has_foreign_key?(from_table_name, column_name, to_table_name: nil)
-    where_clause = {
-      constrained_table_name: from_table_name,
-      constrained_columns: [column_name]
-    }
-
-    where_clause[:referenced_table_name] = to_table_name if to_table_name
-
-    fk = ::Gitlab::Database::PostgresForeignKey.where(where_clause).first
-
-    lfk = ::Gitlab::Database::LooseForeignKeys.definitions.find do |d|
-      d.from_table == from_table_name &&
-        (to_table_name.nil? || d.to_table == to_table_name) &&
-        d.options[:column] == column_name
+  def tables_with_sharding_keys_not_in_cell_local_schema
+    ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
+      entry.table_name if entry.sharding_key.present? &&
+        !::Gitlab::Database::GitlabSchema.cell_local?(entry.gitlab_schema)
     end
-
-    fk.present? || lfk.present?
-  end
-
-  def column_exists?(table_name, column_name)
-    sql = <<~SQL
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public' AND
-    table_name = '#{table_name}' AND
-    column_name = '#{column_name}';
-    SQL
-
-    result = ApplicationRecord.connection.execute(sql)
-
-    result.count > 0
   end
 end

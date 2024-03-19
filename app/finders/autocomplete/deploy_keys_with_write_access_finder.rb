@@ -10,12 +10,14 @@ module Autocomplete
       @project = project
     end
 
-    def execute
+    def execute(title_search_term: nil)
       return DeployKey.none if project.nil?
 
       raise Gitlab::Access::AccessDeniedError unless current_user.can?(:admin_project, project)
 
-      project.deploy_keys.merge(DeployKeysProject.with_write_access)
+      relation = DeployKey.with_write_access.in_projects(project)
+      relation = relation.fuzzy_search(title_search_term, [:title]) if title_search_term.present?
+      relation
     end
   end
 end

@@ -20,6 +20,8 @@ describe('init markdown', () => {
   let outdentButton;
   let axiosMock;
 
+  let spyTextAreaInput;
+
   beforeAll(() => {
     setHTMLFixture(
       `<div class='md-area'>
@@ -34,6 +36,9 @@ describe('init markdown', () => {
     outdentButton = mdArea.querySelector('#outdentButton');
 
     textArea.focus();
+
+    spyTextAreaInput = jest.fn();
+    textArea.addEventListener('input', spyTextAreaInput);
 
     // needed for the underlying insertText to work
     document.execCommand = jest.fn(() => false);
@@ -57,14 +62,28 @@ describe('init markdown', () => {
 
       insertMarkdownText({
         textArea,
-        text: '',
-        tag: '',
+        text: '2',
+        tag: '*',
         blockTag: null,
         selected,
         wrap: false,
       });
 
-      expect(textArea.value).toBe(selected.toString());
+      expect(spyTextAreaInput).toHaveBeenCalled();
+      expect(textArea.value).toBe('*2');
+    });
+
+    it('will not do anything if tag, blockTag, and selected are falsey', () => {
+      insertMarkdownText({
+        textArea,
+        text: 'lorem ipsum',
+        tab: '',
+        blockTag: '',
+        selected: '',
+        wrap: false,
+      });
+
+      expect(spyTextAreaInput).not.toHaveBeenCalled();
     });
   });
 

@@ -1,4 +1,23 @@
+# frozen_string_literal: true
+
 require './spec/support/sidekiq_middleware'
+
+# Normally merge requests build their diffs in an async
+# job via NewMergeRequestWorker, but this method will
+# force the after_create actions to happen inline.
+def flush_after_commit_queue(merge_request)
+  # To prevent idle in transaction timeouts, defer the creation of the
+  # NewMergeRequestWorker in a real Sidekiq job.
+  Sidekiq::Testing.disable! do
+    Gitlab::ExclusiveLease.skipping_transaction_check do
+      # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
+      # hook won't run until after the fixture is loaded. That is too late
+      # since the Sidekiq::Testing block has already exited. Force clearing
+      # the `after_commit` queue to ensure the job is run now.
+      merge_request.send(:_run_after_commit_queue)
+    end
+  end
+end
 
 Gitlab::Seeder.quiet do
   # Limit the number of merge requests per project to avoid long seeds
@@ -36,7 +55,8 @@ Gitlab::Seeder.quiet do
       break unless developer
 
       Sidekiq::Worker.skipping_transaction_check do
-        MergeRequests::CreateService.new(project: project, current_user: developer, params: params).execute
+        merge_request = MergeRequests::CreateService.new(project: project, current_user: developer, params: params).execute
+        flush_after_commit_queue(merge_request)
       rescue Repository::AmbiguousRefError
         # Ignore pipelines creation errors for now, we can doing that after
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/55966. will be resolved.
@@ -55,7 +75,8 @@ Gitlab::Seeder.quiet do
     title: 'Can be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    merge_request = MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    flush_after_commit_queue(merge_request)
   end
   print '.'
 
@@ -65,7 +86,8 @@ Gitlab::Seeder.quiet do
     title: 'Cannot be automatically merged'
   }
   Sidekiq::Worker.skipping_transaction_check do
-    MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    merge_request = MergeRequests::CreateService.new(project: project, current_user: User.admins.first, params: params).execute
+    flush_after_commit_queue(merge_request)
   end
   print '.'
 end

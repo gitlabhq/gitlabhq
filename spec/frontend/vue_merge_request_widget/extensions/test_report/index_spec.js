@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import api from '~/api';
 import testReportExtension from '~/vue_merge_request_widget/extensions/test_report/index.vue';
 import { i18n } from '~/vue_merge_request_widget/extensions/test_report/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -65,6 +66,7 @@ describe('Test report extension', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(api, 'trackRedisCounterEvent').mockImplementation(() => {});
     mock = new MockAdapter(axios);
   });
 

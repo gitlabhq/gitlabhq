@@ -103,7 +103,7 @@ describe('WorkItemDescription', () => {
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
-        renderMarkdownPath: markdownPreviewPath(fullPath, iid),
+        renderMarkdownPath: markdownPreviewPath({ fullPath, iid }),
         autocompleteDataSources: autocompleteDataSources({ fullPath, iid }),
       });
     });

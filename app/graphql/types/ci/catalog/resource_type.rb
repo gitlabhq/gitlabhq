@@ -38,10 +38,6 @@ module Types
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver,
           alpha: { milestone: '16.2' }
 
-        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
-          description: 'Latest version of the catalog resource.',
-          alpha: { milestone: '16.1' }
-
         field :verification_level, Types::Ci::Catalog::Resources::Components::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.',
           alpha: { milestone: '16.9' }
@@ -53,6 +49,25 @@ module Types
         field :star_count, GraphQL::Types::Int, null: false,
           description: 'Number of times the catalog resource has been starred.',
           alpha: { milestone: '16.1' }
+
+        field :starrers_path, GraphQL::Types::String, null: true,
+          description: 'Relative path to the starrers page for the catalog resource project.',
+          alpha: { milestone: '16.10' }
+
+        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
+          description: 'Latest version of the catalog resource.',
+          alpha: { milestone: '16.1' }
+
+        # To be removed in a subsequent MR
+        def latest_version
+          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
+            versions = ::Ci::Catalog::Resources::Version.versions_for_catalog_resources(catalog_resources)
+
+            versions.group_by(&:catalog_resource).each do |catalog_resource, resource_versions|
+              loader.call(catalog_resource, resource_versions.first)
+            end
+          end
+        end
 
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
@@ -66,20 +81,13 @@ module Types
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end
 
-        def latest_version
-          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
-            latest_versions = ::Ci::Catalog::Resources::VersionsFinder.new(
-              catalog_resources, current_user, latest: true).execute
-
-            latest_versions.index_by(&:catalog_resource).each do |catalog_resource, latest_version|
-              loader.call(catalog_resource, latest_version)
-            end
-          end
-        end
-
         def readme_html_resolver
           markdown_context = context.to_h.dup.merge(project: object.project)
           ::MarkupHelper.markdown(object.project.repository.readme&.data, markdown_context)
+        end
+
+        def starrers_path
+          Gitlab::Routing.url_helpers.project_starrers_path(object.project)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

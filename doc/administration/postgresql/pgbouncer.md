@@ -232,9 +232,9 @@ You can find the parameters and respective documentation on the [official PgBoun
 Listed below are the most relevant ones and their defaults on a Linux package installation:
 
 - `pgbouncer['max_client_conn']` (default: `2048`, depends on server file descriptor limits)
-    This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.
+  This is the "frontend" pool in PgBouncer: connections from Rails to PgBouncer.
 - `pgbouncer['default_pool_size']` (default: `100`)
-    This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
+  This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
 
 The ideal number for `default_pool_size` must be enough to handle all provisioned services that need to access
 the database. Each of the listed services below use the following formula to define database pool size:

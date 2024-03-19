@@ -231,7 +231,7 @@ describe('Pipeline schedules form', () => {
   describe('Button text', () => {
     it.each`
       editing  | expectedText
-      ${true}  | ${'Edit pipeline schedule'}
+      ${true}  | ${'Save changes'}
       ${false} | ${'Create pipeline schedule'}
     `(
       'button text is $expectedText when editing is $editing',

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Coverage-guided fuzz testing sends random inputs to an instrumented version of your application in
 an effort to cause unexpected behavior. Such behavior indicates a bug that you should address.
@@ -76,7 +76,7 @@ To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 1. Add the `fuzz` stage to the list of stages.
 
 1. If your application is not written in Go, [provide a Docker image](../../../ci/yaml/index.md#image) using the matching fuzzing
-  engine. For example:
+   engine. For example:
 
    ```yaml
    image: python:latest

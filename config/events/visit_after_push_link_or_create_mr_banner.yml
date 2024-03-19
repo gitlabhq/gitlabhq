@@ -1,6 +1,6 @@
 ---
 description: 'Visit new MR link after push or create new MR from banner'
-category: InternalEventTracking
+internal_events: true
 action: visit_after_push_link_or_create_mr_banner
 identifiers:
   - project

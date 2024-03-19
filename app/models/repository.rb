@@ -153,7 +153,7 @@ class Repository
       ref: ref,
       path: opts[:path],
       author: opts[:author],
-      follow: Array(opts[:path]).length == 1,
+      follow: Array(opts[:path]).length == 1 && Feature.disabled?(:remove_file_commit_history_following, type: :ops),
       limit: opts[:limit],
       offset: opts[:offset],
       skip_merges: !!opts[:skip_merges],
@@ -326,8 +326,8 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  def keep_around(*shas)
-    Gitlab::Git::KeepAround.execute(self, shas)
+  def keep_around(*shas, source:)
+    Gitlab::Git::KeepAround.execute(self, shas, source: source)
   end
 
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
@@ -1239,7 +1239,7 @@ class Repository
   def remove_prohibited_branches
     return unless exists?
 
-    prohibited_branches = raw_repository.branch_names.select { |name| name.match(/\A\h{40}\z/) }
+    prohibited_branches = raw_repository.branch_names.select { |name| name.match(Gitlab::Git::COMMIT_ID) }
 
     return if prohibited_branches.blank?
 
@@ -1292,6 +1292,17 @@ class Repository
     end
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  def empty_tree_id
+    return Gitlab::Git::SHA1_EMPTY_TREE_ID unless exists?
+
+    case object_format
+    when FORMAT_SHA1
+      Gitlab::Git::SHA1_EMPTY_TREE_ID
+    when FORMAT_SHA256
+      Gitlab::Git::SHA256_EMPTY_TREE_ID
+    end
   end
 
   def blank_ref

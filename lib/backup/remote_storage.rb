@@ -141,7 +141,12 @@ module Backup
 
     # TODO: This is a temporary workaround for bad design in Backup::Manager
     def backup_id
-      if options.backup_id.present?
+      # Eventually the backup ID should only be fetched from
+      # backup_information, but we must have a fallback so that older backups
+      # can still be used.
+      if backup_information[:backup_id].present?
+        backup_information[:backup_id]
+      elsif options.backup_id.present?
         File.basename(options.backup_id)
       else
         "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}"
@@ -150,7 +155,7 @@ module Backup
 
     # TODO: This is a temporary workaround for bad design in Backup::Manager
     def backup_path
-      Gitlab.config.backup.path
+      Pathname(Gitlab.config.backup.path)
     end
   end
 end

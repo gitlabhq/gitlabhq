@@ -18,6 +18,8 @@ module API
         if: ->(_, options) { options[:with_url_variables] != false },
         documentation: { type: 'Hash', example: { "token" => "secr3t" }, is_array: true }
 
+      expose :custom_webhook_template, documentation: { type: 'string', example: '{"event":"{{object_kind}}"}' }
+
       def url_variables
         object.url_variables.keys.map { { key: _1 } }
       end

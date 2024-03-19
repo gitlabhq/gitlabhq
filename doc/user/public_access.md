@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Projects and groups in GitLab can be private, internal, or public.
 
@@ -27,7 +27,7 @@ For private projects, only members of the private project or group can:
 
 Users with the Guest role cannot clone the project.
 
-Private groups can have only private subgroups.
+Private groups can have only private subgroups and projects.
 
 NOTE:
 When you [share a private group with another group](group/manage.md#share-a-group-with-another-group),
@@ -39,7 +39,7 @@ However, the name and path of the private group are masked, and the users' membe
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 For internal projects, **any authenticated user**, including users with the Guest role, can:
 
@@ -50,7 +50,7 @@ Only internal members can view internal content.
 
 [External users](../administration/external_users.md) cannot clone the project.
 
-Internal groups can have internal or private subgroups.
+Internal groups can have internal or private subgroups and projects.
 
 ## Public projects and groups
 
@@ -59,7 +59,7 @@ For public projects, **unauthenticated users**, including users with the Guest r
 - Clone the project.
 - View the public access directory (`/public`).
 
-Public groups can have public, internal, or private subgroups.
+Public groups can have public, internal, or private subgroups and projects.
 
 NOTE:
 If an administrator restricts the
@@ -119,7 +119,7 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
 This setting can help prevent users from publicly exposing their repositories by accident.

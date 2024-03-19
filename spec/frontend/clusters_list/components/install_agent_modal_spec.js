@@ -81,7 +81,6 @@ describe('InstallAgentModal', () => {
   const findActionButton = () => findButtonByVariant('confirm');
   const findCancelButton = () => findButtonByVariant('default');
   const findPrimaryButton = () => wrapper.findByTestId('agent-primary-button');
-  const findImage = () => wrapper.findByRole('img', { alt: i18n.altText });
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {
@@ -311,10 +310,6 @@ describe('InstallAgentModal', () => {
 
       createWrapper(mockApolloProvider);
       await waitForPromises();
-    });
-
-    it('renders empty state image', () => {
-      expect(findImage().attributes('src')).toBe(emptyStateImage);
     });
 
     it('renders an instruction to enable the KAS', () => {

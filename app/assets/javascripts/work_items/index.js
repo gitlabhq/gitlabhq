@@ -4,12 +4,11 @@ import { WORKSPACE_GROUP } from '~/issues/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';
-import WorkItemRoot from './pages/work_item_root.vue';
 import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = (workspace) => {
+export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -30,16 +29,16 @@ export const initWorkItemsRoot = (workspace) => {
     reportAbusePath,
   } = el.dataset;
 
-  const Component = workspace === WORKSPACE_GROUP ? WorkItemRoot : App;
+  const isGroup = workspaceType === WORKSPACE_GROUP;
 
   return new Vue({
     el,
     name: 'WorkItemsRoot',
-    router: createRouter(el.dataset.fullPath),
+    router: createRouter({ fullPath, workItemType, workspaceType }),
     apolloProvider,
     provide: {
       fullPath,
-      isGroup: workspace === WORKSPACE_GROUP,
+      isGroup,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       issuesListPath,
@@ -51,9 +50,9 @@ export const initWorkItemsRoot = (workspace) => {
       reportAbusePath,
     },
     render(createElement) {
-      return createElement(Component, {
+      return createElement(App, {
         props: {
-          iid: workspace === WORKSPACE_GROUP ? iid : undefined,
+          iid: isGroup ? iid : undefined,
         },
       });
     },

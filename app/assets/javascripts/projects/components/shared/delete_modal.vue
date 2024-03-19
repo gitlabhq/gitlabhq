@@ -36,6 +36,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    confirmLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     issuesCount: {
       type: [Number, String],
       required: false,
@@ -74,6 +79,7 @@ export default {
           attributes: {
             variant: 'danger',
             disabled: this.confirmDisabled,
+            loading: this.confirmLoading,
             'data-testid': 'confirm-delete-button',
           },
         },
@@ -81,6 +87,15 @@ export default {
           text: __('Cancel, keep project'),
         },
       };
+    },
+  },
+  watch: {
+    confirmLoading(isLoading, wasLoading) {
+      // If the button was loading and now no longer is
+      if (!isLoading && wasLoading) {
+        // Hide the modal
+        this.$emit('change', false);
+      }
     },
   },
 };
@@ -94,7 +109,7 @@ export default {
     title-class="gl-text-red-500"
     :action-primary="modalActionProps.primary"
     :action-cancel="modalActionProps.cancel"
-    @primary="$emit('primary', $event)"
+    @primary.prevent="$emit('primary')"
     @change="$emit('change', $event)"
   >
     <template #modal-title>{{ $options.i18n.title }}</template>

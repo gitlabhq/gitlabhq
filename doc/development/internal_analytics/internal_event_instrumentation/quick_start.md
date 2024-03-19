@@ -38,10 +38,12 @@ Triggering an event and thereby updating a metric is slightly different on backe
   <iframe src="https://www.youtube-nocookie.com/embed/Teid7o_2Mmg" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-To trigger an event, call the `Gitlab::InternalEvents.track_event` method with the desired arguments:
+To trigger an event, call the `track_internal_event` method from the `Gitlab::InternalEventsTracking` module with the desired arguments:
 
 ```ruby
-Gitlab::InternalEvents.track_event(
+include Gitlab::InternalEventsTracking
+
+track_internal_event(
   "i_code_review_user_apply_suggestion",
   user: user,
   namespace: namespace,
@@ -50,12 +52,32 @@ Gitlab::InternalEvents.track_event(
 ```
 
 This method automatically increments all RedisHLL metrics relating to the event `i_code_review_user_apply_suggestion`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
+In addition, the name of the class triggering the event is saved in the `category` property of the Snowplow event.
 
 If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.
 
 It is encouraged to fill out as many of `user`, `namespace` and `project` as possible as it increases the data quality and make it easier to define metrics in the future.
 
 If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
+
+In some cases you might want to specify the `category` manually or provide none at all. To do that, you can call the `InternalEvents.track_event` method directly instead of using the module.
+
+#### Additional properties
+
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+
+Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
+
+```ruby
+Gitlab::InternalEvents.track_event(
+  "i_code_review_user_apply_suggestion",
+  user: user,
+  additional_properties: {
+    label: 'admin',
+    value: 20
+  }
+)
+```
 
 #### Controller and API helpers
 
@@ -165,6 +187,30 @@ For tracking events directly from arbitrary frontend JavaScript code, a module f
 ```javascript
 import { InternalEvents } from '~/tracking';
 InternalEvents.trackEvent('i_code_review_user_apply_suggestion');
+```
+
+#### Additional properties
+
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+
+For Vue Mixin:
+
+```javascript
+   this.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+    label: 'push_event',
+    property: 'golang',
+    value: 20
+   });
+```
+
+For raw JavaScript:
+
+```javascript
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+    label: 'admin',
+    property: 'system',
+    value: 20
+   });
 ```
 
 #### Data-track attribute

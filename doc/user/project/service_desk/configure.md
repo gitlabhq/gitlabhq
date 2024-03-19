@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 By default, Service Desk is active in new projects.
 If it's not active, you can do it in the project's settings.
@@ -317,9 +317,9 @@ To troubleshoot this:
 
 1. Find the correct email address to forward emails to. Either:
    - Note the address from the verification result email that all project owners and the user that
-      triggered the verification process receive.
+     triggered the verification process receive.
    - Copy the address from the **Service Desk email address to forward emails to** input in the
-      custom email setup form.
+     custom email setup form.
 1. Forward all emails to the custom email address to the correct target email address.
 
 ### Enable or disable the custom email address

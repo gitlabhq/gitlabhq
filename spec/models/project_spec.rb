@@ -49,6 +49,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
+    it { is_expected.to have_many(:ci_component_usages).class_name('Ci::Catalog::Resources::Components::Usage') }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
@@ -1418,6 +1419,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
 
+      context 'when absolute_path is true' do
+        it 'returns complete path to the project with leading slash', :aggregate_failures do
+          be_full_path = eq('/sample-namespace/sample-project')
+
+          expect(project.to_reference_base(full: true, absolute_path: true)).to be_full_path
+        end
+      end
+
       context 'when same project argument' do
         it 'returns nil' do
           expect(project.to_reference_base(project)).to be_nil
@@ -1489,6 +1498,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it 'returns name of the project' do
           expect(project.to_human_reference(another_project)).to eq 'Sample project'
         end
+      end
+    end
+
+    describe '#reference_pattern' do
+      it 'matches a normal reference' do
+        reference = project.to_reference
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq nil
+      end
+
+      it 'matches an absolute reference' do
+        reference = "/#{project.to_reference}"
+        match = reference.match(described_class.reference_pattern)
+
+        expect(match[:namespace]).to eq project.namespace.full_path
+        expect(match[:project]).to eq project.path
+        expect(match[:absolute_path]).to eq '/'
       end
     end
   end
@@ -2181,6 +2210,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.sorted_by_similarity_desc' do
+    let_it_be(:project_a) { create(:project, path: 'similar-1', name: 'similar-1', description: 'A similar project') }
+    let_it_be_with_reload(:project_b) { create(:project, path: 'similar-2', name: 'similar-2', description: 'A related project') }
+    let_it_be(:project_c) { create(:project, path: 'different-path', name: 'different-name', description: 'A different project') }
+
+    let(:search_term) { 'similar' }
+
+    subject(:relation) { described_class.sorted_by_similarity_desc(search_term) }
+
+    context 'when sorting with full similarity' do
+      it 'sorts projects based on path, name, and description similarity' do
+        expect(relation).to eq([project_a, project_b, project_c])
+      end
+    end
+
+    context 'when sorting with path-only similarity' do
+      let(:search_term) { 'diff' }
+
+      subject(:relation) { described_class.sorted_by_similarity_desc(search_term, full_path_only: true) }
+
+      it 'sorts projects based on path similarity only' do
+        expect(relation).to eq([project_c, project_b, project_a])
+      end
+    end
+  end
+
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 
@@ -2234,6 +2289,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       jira_dvcs_server_project = create(:project, :jira_dvcs_server)
 
       expect(described_class.with_jira_dvcs_server).to contain_exactly(jira_dvcs_server_project)
+    end
+  end
+
+  describe '.by_name' do
+    let_it_be(:project1) { create(:project, :small_repo, name: 'Project 1') }
+    let_it_be(:project2) { create(:project, :small_repo, name: 'Project 2') }
+
+    it 'includes correct projects' do
+      expect(described_class.by_name(project1.name)).to eq([project1])
+      expect(described_class.by_name(project2.name.chop)).to match_array([project1, project2])
     end
   end
 
@@ -2877,49 +2942,111 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#default_branch_protected?' do
-    let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project, namespace: namespace) }
-
-    subject { project.default_branch_protected? }
-
-    where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE                 | false
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
-      Gitlab::Access::PROTECTION_FULL                 | true
-      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+  context 'when feature flag `default_branch_protection_defaults` is disabled' do
+    before do
+      stub_feature_flags(default_branch_protection_defaults: false)
     end
 
-    with_them do
-      before do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+    describe '#default_branch_protected?' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      subject { project.default_branch_protected? }
+
+      where(:default_branch_protection_level, :result) do
+        Gitlab::Access::PROTECTION_NONE                 | false
+        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | false
+        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | true
+        Gitlab::Access::PROTECTION_FULL                 | true
+        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
       end
 
-      it { is_expected.to eq(result) }
+      with_them do
+        before do
+          expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+        end
+
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    describe 'initial_push_to_default_branch_allowed_for_developer?' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      subject { project.initial_push_to_default_branch_allowed_for_developer? }
+
+      where(:default_branch_protection_level, :result) do
+        Gitlab::Access::PROTECTION_NONE                 | true
+        Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | true
+        Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
+        Gitlab::Access::PROTECTION_FULL                 | false
+        Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+      end
+
+      with_them do
+        before do
+          expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+        end
+
+        it { is_expected.to eq(result) }
+      end
     end
   end
 
-  describe 'initial_push_to_default_branch_allowed_for_developer?' do
-    let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project, namespace: namespace) }
-
-    subject { project.initial_push_to_default_branch_allowed_for_developer? }
-
-    where(:default_branch_protection_level, :result) do
-      Gitlab::Access::PROTECTION_NONE                 | true
-      Gitlab::Access::PROTECTION_DEV_CAN_PUSH         | true
-      Gitlab::Access::PROTECTION_DEV_CAN_MERGE        | false
-      Gitlab::Access::PROTECTION_FULL                 | false
-      Gitlab::Access::PROTECTION_DEV_CAN_INITIAL_PUSH | true
+  context 'when feature flag `default_branch_protection_defaults` is enabled' do
+    before do
+      stub_feature_flags(default_branch_protection_defaults: true)
     end
 
-    with_them do
-      before do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(default_branch_protection_level)
+    describe '#default_branch_protected?' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      subject { project.default_branch_protected? }
+
+      where(:default_branch_protection_level, :result) do
+        Gitlab::Access::BranchProtection.protection_none                    | false
+        Gitlab::Access::BranchProtection.protection_partial                 | false
+        Gitlab::Access::BranchProtection.protected_against_developer_pushes | true
+        Gitlab::Access::BranchProtection.protected_fully                    | true
+        Gitlab::Access::BranchProtection.protected_after_initial_push       | true
       end
 
-      it { is_expected.to eq(result) }
+      with_them do
+        before do
+          expect(project.namespace)
+            .to receive(:default_branch_protection_settings)
+                  .and_return(default_branch_protection_level)
+        end
+
+        it { is_expected.to eq(result) }
+      end
+    end
+
+    describe 'initial_push_to_default_branch_allowed_for_developer?' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project, namespace: namespace) }
+
+      subject { project.initial_push_to_default_branch_allowed_for_developer? }
+
+      where(:default_branch_protection_level, :result) do
+        Gitlab::Access::BranchProtection.protection_none                    | true
+        Gitlab::Access::BranchProtection.protection_partial                 | true
+        Gitlab::Access::BranchProtection.protected_against_developer_pushes | false
+        Gitlab::Access::BranchProtection.protected_fully                    | false
+        Gitlab::Access::BranchProtection.protected_after_initial_push       | true
+      end
+
+      with_them do
+        before do
+          expect(project.namespace)
+            .to receive(:default_branch_protection_settings)
+                  .and_return(default_branch_protection_level)
+        end
+
+        it { is_expected.to eq(result) }
+      end
     end
   end
 
@@ -3129,22 +3256,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
               shard_name: project.repository_storage,
               object_format: 'sha256'
             )
-          end
-
-          context 'when feature flag "store_object_format" is disabled' do
-            before do
-              stub_feature_flags(store_object_format: false)
-            end
-
-            it 'tracks a SHA1 object format' do
-              project.track_project_repository
-
-              expect(project.project_repository).to have_attributes(
-                disk_path: project.disk_path,
-                shard_name: project.repository_storage,
-                object_format: 'sha1'
-              )
-            end
           end
         end
       end
@@ -5913,50 +6024,108 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    context 'branch protection' do
-      let_it_be(:namespace) { create(:namespace) }
-
-      let(:project) { create(:project, :repository, namespace: namespace) }
-
+    context 'when feature flag `default_branch_protection_defaults` is disabled' do
       before do
-        create(:import_state, :started, project: project)
+        stub_feature_flags(default_branch_protection_defaults: false)
       end
 
-      it 'does not protect when branch protection is disabled' do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
+      context 'branch protection' do
+        let_it_be(:namespace) { create(:namespace) }
+        let_it_be(:project) { create(:project, :repository, namespace: namespace) }
 
-        project.after_import
+        before do
+          create(:import_state, :started, project: project)
+        end
 
-        expect(project.protected_branches).to be_empty
+        it 'does not protect when branch protection is disabled' do
+          expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_NONE)
+
+          project.after_import
+
+          expect(project.protected_branches).to be_empty
+        end
+
+        it "gives developer access to push when branch protection is set to 'developers can push'" do
+          expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+        end
+
+        it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+          expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+        end
+
+        it 'protects default branch' do
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+          expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        end
+      end
+    end
+
+    context 'when feature flag `default_branch_protection_defaults` is enabled' do
+      before do
+        stub_feature_flags(default_branch_protection_defaults: true)
       end
 
-      it "gives developer access to push when branch protection is set to 'developers can push'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
+      context 'branch protection' do
+        let_it_be(:namespace) { create(:namespace) }
 
-        project.after_import
+        let_it_be(:project) { create(:project, :repository, namespace: namespace) }
 
-        expect(project.protected_branches).not_to be_empty
-        expect(project.default_branch).to eq(project.protected_branches.first.name)
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
-      end
+        before do
+          create(:import_state, :started, project: project)
+        end
 
-      it "gives developer access to merge when branch protection is set to 'developers can merge'" do
-        expect(project.namespace).to receive(:default_branch_protection).and_return(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        it 'does not protect when branch protection is disabled' do
+          expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_none)
 
-        project.after_import
+          project.after_import
 
-        expect(project.protected_branches).not_to be_empty
-        expect(project.default_branch).to eq(project.protected_branches.first.name)
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
-      end
+          expect(project.protected_branches).to be_empty
+        end
 
-      it 'protects default branch' do
-        project.after_import
+        it "gives developer access to push when branch protection is set to 'developers can push'" do
+          expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protection_partial)
 
-        expect(project.protected_branches).not_to be_empty
-        expect(project.default_branch).to eq(project.protected_branches.first.name)
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+        end
+
+        it "gives developer access to merge when branch protection is set to 'developers can merge'" do
+          expect(project.namespace).to receive(:default_branch_protection_settings).and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
+
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+        end
+
+        it 'protects default branch' do
+          project.after_import
+
+          expect(project.protected_branches).not_to be_empty
+          expect(project.default_branch).to eq(project.protected_branches.first.name)
+          expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+          expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        end
       end
     end
 
@@ -6215,6 +6384,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         create(:project_hook, emoji_events: true, project: project)
 
         expect(project.has_active_hooks?(:emoji_hooks)).to eq(true)
+      end
+    end
+
+    context 'with :access_token_hooks scope' do
+      it 'returns true when a matching access token hook exists' do
+        create(:project_hook, resource_access_token_events: true, project: project)
+
+        expect(project.has_active_hooks?(:resource_access_token_hooks)).to eq(true)
       end
     end
   end
@@ -6752,26 +6929,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#disabled_integrations' do
     subject { build(:project).disabled_integrations }
 
-    it { is_expected.to include('gitlab_slack_application') }
-    it { is_expected.not_to include('slack_slash_commands') }
-
-    context 'when slack_app_enabled setting is enabled' do
-      before do
-        stub_application_setting(slack_app_enabled: true)
-      end
-
-      it { is_expected.to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
-
-    context 'when Rails.env.development?' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
-      end
-
-      it { is_expected.not_to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
+    it { is_expected.to include('zentao') }
   end
 
   describe '#find_or_initialize_integration' do
@@ -7628,33 +7786,55 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
 
-    context 'when project storage_size does not exceed the application setting max_export_size' do
-      it 'starts project export worker' do
-        stub_application_setting(max_export_size: 1)
-        allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
-
-        expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+    context 'when parallel_project_export feature flag is enabled' do
+      it 'enqueues CreateionProjectExportWorker' do
+        expect(Projects::ImportExport::CreateRelationExportsWorker)
+          .to receive(:perform_async)
+          .with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)
       end
     end
 
-    context 'when project storage_size exceeds the application setting max_export_size' do
-      it 'raises Project::ExportLimitExceeded' do
-        stub_application_setting(max_export_size: 1)
-        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
-
-        expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
-        expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+    context 'when parallel_project_export feature flag is disabled' do
+      before do
+        stub_feature_flags(parallel_project_export: false)
       end
-    end
 
-    context 'when application setting max_export_size is not set' do
-      it 'starts project export worker' do
-        allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+      it 'enquques ProjectExportWorker' do
         expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
 
         project.add_export_job(current_user: user)
+      end
+
+      context 'when project storage_size does not exceed the application setting max_export_size' do
+        it 'starts project export worker' do
+          stub_application_setting(max_export_size: 1)
+          allow(project.statistics).to receive(:storage_size).and_return(0.megabytes)
+
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+          project.add_export_job(current_user: user)
+        end
+      end
+
+      context 'when project storage_size exceeds the application setting max_export_size' do
+        it 'raises Project::ExportLimitExceeded' do
+          stub_application_setting(max_export_size: 1)
+          allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+
+          expect(ProjectExportWorker).not_to receive(:perform_async).with(user.id, project.id, nil, {})
+          expect { project.add_export_job(current_user: user) }.to raise_error(Project::ExportLimitExceeded)
+        end
+      end
+
+      context 'when application setting max_export_size is not set' do
+        it 'starts project export worker' do
+          allow(project.statistics).to receive(:storage_size).and_return(2.megabytes)
+          expect(ProjectExportWorker).to receive(:perform_async).with(user.id, project.id, nil, {})
+
+          project.add_export_job(current_user: user)
+        end
       end
     end
   end
@@ -8643,12 +8823,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_items_mvc_feature_flag_enabled?' do
+  describe '#work_items_beta_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group feature flag' do
-      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_mvc }
+      let(:feature_flag_method) { :work_items_beta_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_beta }
       let(:subject_project) { group_project }
     end
   end
@@ -9166,14 +9346,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project) }
 
     subject(:on_demand_dast_available?) { project.on_demand_dast_available? }
-
-    it { is_expected.to be_falsy }
-  end
-
-  describe '#code_suggestions_enabled?' do
-    let(:project) { build_stubbed(:project) }
-
-    subject(:code_suggestions_enabled?) { project.code_suggestions_enabled? }
 
     it { is_expected.to be_falsy }
   end

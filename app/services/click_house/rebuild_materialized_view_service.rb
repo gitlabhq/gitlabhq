@@ -10,29 +10,34 @@ module ClickHouse
       table_schema = {database_name:String}
     SQL
 
-    def initialize(connection:, state: {})
+    def initialize(connection:, runtime_limiter: Gitlab::Metrics::RuntimeLimiter.new, state: {})
       @connection = connection
 
+      @runtime_limiter = runtime_limiter
       @view_name = state.fetch(:view_name)
       @tmp_view_name = state.fetch(:tmp_view_name)
       @view_table_name = state.fetch(:view_table_name)
       @tmp_view_table_name = state.fetch(:tmp_view_table_name)
       @source_table_name = state.fetch(:source_table_name)
+      @next_value = state[:next_value]
     end
 
     def execute
       create_tmp_materialized_view_table
       create_tmp_materialized_view
 
-      backfill_data
-
-      rename_table
-      drop_tmp_tables
+      backfill_data.tap do |service_response|
+        if service_response.payload[:status] == :finished
+          rename_table
+          drop_tmp_tables if Feature.enabled?(:rebuild_mv_drop_old_tables, type: :gitlab_com_derisk)
+        end
+      end
     end
 
     private
 
-    attr_reader :connection, :view_name, :tmp_view_name, :view_table_name, :tmp_view_table_name, :source_table_name
+    attr_reader :connection, :view_name, :tmp_view_name, :view_table_name, :tmp_view_table_name, :source_table_name,
+      :next_value, :runtime_limiter
 
     def create_tmp_materialized_view_table
       # Create a tmp table from the existing table, use IF NOT EXISTS to avoid failure when the table exists.
@@ -64,7 +69,8 @@ module ClickHouse
       })
       view_query = connection.select(query).first['view_definition']
 
-      iterator.each_batch(column: :id, of: INSERT_BATCH_SIZE) do |scope|
+      payload = { status: :finished }
+      iterator.each_batch(column: :id, of: INSERT_BATCH_SIZE) do |scope, _min, max|
         # Use the materialized view query to backfill the new temporary table.
         # The materialized view query selects from the source table, example: FROM events.
         # Replace the FROM part and select data from a batched subquery.
@@ -76,7 +82,14 @@ module ClickHouse
 
         # Insert the batch
         connection.execute("INSERT INTO #{quote(tmp_view_table_name)} #{query}")
+
+        if runtime_limiter.over_time?
+          payload.merge!(status: :over_time, next_value: max + 1)
+          break
+        end
       end
+
+      ServiceResponse.success(payload: payload)
     end
 
     def rename_table
@@ -103,7 +116,8 @@ module ClickHouse
 
     def iterator
       builder = ClickHouse::QueryBuilder.new(source_table_name)
-      ClickHouse::Iterator.new(query_builder: builder, connection: connection)
+      ClickHouse::Iterator.new(query_builder: builder, connection: connection, min_value: next_value,
+        min_max_strategy: :order_limit)
     end
   end
 end

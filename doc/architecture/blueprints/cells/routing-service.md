@@ -9,7 +9,7 @@ status: accepted
 
 This document describes design goals and architecture of Routing Service
 used by Cells. To better understand where the Routing Service fits
-into architecture take a look at [Deployment Architecture](deployment-architecture.md).
+into architecture take a look at [Infrastructure Architecture](infrastructure/index.md#architecture).
 
 ## Goals
 
@@ -260,6 +260,8 @@ Each Cell will publish a precompiled list of routing rules that will be consumed
   routing rules to call `/api/v4/internal/cells/classify`.
 - The routing rules should use `prefix` as a way to speed up classification. During the compilation phase
   the routing service transforms all found prefixes into a decision tree to speed up any subsequent regex matches.
+- Some of the prefixes need to be Cell independent, example Personal Access Tokens prefix need to be organization bound and not Cell bound.
+  We want the ability to move an organization from 1 cell to another without changing the Personal Access Token or any other token.
 - The routing rules is ideally compiled into source code to avoid expensive parsing and evaluation of the rules
   dynamically as part of deployment.
 

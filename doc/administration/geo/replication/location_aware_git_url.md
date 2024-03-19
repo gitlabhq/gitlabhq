@@ -69,15 +69,15 @@ routing configurations.
    ![Policy diagram](img/single_git_policy_diagram.png)
 
 1. Leave **DNS type** as `A: IP Address in IPv4 format`.
-1. Select **Connect to...** and select **Geolocation rule**.
+1. Select **Connect to** and select **Geolocation rule**.
 
    ![Add geolocation rule](img/single_git_add_geolocation_rule.png)
 
 1. For the first **Location**, leave it as `Default`.
-1. Select **Connect to...** and select **New endpoint**.
+1. Select **Connect to** and select **New endpoint**.
 1. Choose **Type** `value` and fill it in with `<your **primary** IP address>`.
 1. For the second **Location**, choose `Europe`.
-1. Select **Connect to...** and select **New endpoint**.
+1. Select **Connect to** and select **New endpoint**.
 1. Choose **Type** `value` and fill it in with `<your **secondary** IP address>`.
 
    ![Add traffic policy endpoints](img/single_git_add_traffic_policy_endpoints.png)

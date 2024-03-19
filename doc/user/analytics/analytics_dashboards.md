@@ -8,14 +8,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - Introduced in GitLab 15.9 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 Analytics dashboards help you visualize the collected data.
@@ -31,6 +31,8 @@ The following data sources are configured for analytics dashboards:
 - [Product analytics](../product_analytics/index.md)
 - [Value Stream Management](../analytics/value_streams_dashboard.md)
 
+To contribute, see [adding a new visualization data source](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
+
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
@@ -44,7 +46,7 @@ When [product analytics](../product_analytics/index.md) is enabled and onboarded
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
-For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/). To leave feedback about bugs or functionality:
+For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/). To leave feedback about bugs or functionality:
 
 - Comment on issue [391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.
@@ -110,7 +112,7 @@ To view a list of dashboards (both built-in and custom) for a project:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards` and `project_analytics_dashboard_dynamic_vsd`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 Prerequisites:
@@ -126,11 +128,17 @@ To view the Value Streams Dashboard as an analytics dashboard for a project:
 
 ## View group dashboards
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Experiment
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboards`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 Prerequisites:
 
@@ -147,8 +155,8 @@ To view a list of dashboards (both built-in and custom) for a group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
-On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 To view the Value Streams Dashboard as an analytics dashboard for a group:
@@ -192,7 +200,7 @@ You can share dashboards only between projects that are located in the same grou
 To change the location of project dashboards:
 
 1. On the left sidebar, select **Search or go to** and find your project,
-   or select **Create new...** (**{plus}**) and **New project/repository**
+   or select **Create new** (**{plus}**) and **New project/repository**
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
 1. Select **Settings > General**.
@@ -250,6 +258,8 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+To contribute, see [adding a new visualization render type](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-render-type).
 
 ## Create a custom dashboard
 

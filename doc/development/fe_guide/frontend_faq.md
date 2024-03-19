@@ -175,7 +175,7 @@ To return to the standard development mode:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28837) in GitLab 12.8.
 
 GitLab has enabled the Babel `preset-env` option
-[`useBuiltIns: 'usage'`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage).
+[`useBuiltIns: 'usage'`](https://babeljs.io/docs/babel-preset-env#usebuiltins-usage).
 This adds the appropriate `core-js` polyfills once for each JavaScript feature
 we're using that our target browsers don't support. You don't need to add `core-js`
 polyfills manually.

@@ -394,7 +394,7 @@ Service Ping reporting process state is monitored with [internal SiSense dashboa
 
 ## Related topics
 
-- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/analytics/analytics-instrumentation/)
+- [Analytics Instrumentation Direction](https://about.gitlab.com/direction/monitor/analytics-instrumentation/)
 - [Data Analysis Process](https://handbook.gitlab.com/handbook/business-technology/data-team/organization/analytics/#data-analysis-process)
 - [Data for Product Managers](https://handbook.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

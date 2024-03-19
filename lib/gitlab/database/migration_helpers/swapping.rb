@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module MigrationHelpers
       module Swapping
+        include ::Gitlab::Database::MigrationHelpers::V2
+
         def reset_trigger_function(function_name)
           execute("ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL")
         end
@@ -32,7 +34,7 @@ module Gitlab
           rename_constraint(table, :temp_name_for_renaming, foreign_key2)
         end
 
-        def swap_indexes(table, index1, index2)
+        def swap_indexes(table, index1, index2, schema: nil)
           identifier = "index_#{index1}_on_#{table}"
           # Check Gitlab::Database::MigrationHelpers#concurrent_foreign_key_name()
           # for info on why we use a hash
@@ -40,9 +42,9 @@ module Gitlab
 
           temp_index = "temp_#{hashed_identifier}"
 
-          rename_index(table, index1, temp_index)
-          rename_index(table, index2, index1)
-          rename_index(table, temp_index, index2)
+          rename_index_with_schema(table, index1, temp_index, schema: schema)
+          rename_index_with_schema(table, index2, index1, schema: schema)
+          rename_index_with_schema(table, temp_index, index2, schema: schema)
         end
       end
     end

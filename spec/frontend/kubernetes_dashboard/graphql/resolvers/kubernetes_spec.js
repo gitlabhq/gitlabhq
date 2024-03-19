@@ -29,13 +29,13 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     },
   };
 
+  const client = { writeQuery: jest.fn(), readQuery: jest.fn() };
+
   beforeEach(() => {
     mockResolvers = resolvers;
   });
 
-  describe('k8sPods', () => {
-    const client = { writeQuery: jest.fn() };
-
+  describe('k8sDashboardPods', () => {
     const mockWatcher = WatchApi.prototype;
     const mockPodsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -65,7 +65,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should request all pods from the cluster_client library and watch the events', async () => {
-        const pods = await mockResolvers.Query.k8sPods(
+        const pods = await mockResolvers.Query.k8sDashboardPods(
           null,
           {
             configuration,
@@ -80,12 +80,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should update cache with the new data when received from the library', async () => {
-        await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
+        await mockResolvers.Query.k8sDashboardPods(
+          null,
+          { configuration, namespace: '' },
+          { client },
+        );
 
         expect(client.writeQuery).toHaveBeenCalledWith({
           query: k8sDashboardPodsQuery,
           variables: { configuration, namespace: '' },
-          data: { k8sPods: [] },
+          data: { k8sDashboardPods: [] },
         });
       });
     });
@@ -99,7 +103,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }),
       );
 
-      await mockResolvers.Query.k8sPods(null, { configuration }, { client });
+      await mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client });
 
       expect(mockPodsListWatcherFn).not.toHaveBeenCalled();
     });
@@ -110,14 +114,12 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sPods(null, { configuration }, { client }),
+        mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });
 
   describe('k8sDeployments', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockDeploymentsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -204,8 +206,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sStatefulSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockStatefulSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -292,8 +292,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sReplicaSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockReplicaSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -380,8 +378,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sDaemonSets', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockDaemonSetsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -464,8 +460,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sJobs', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockJobsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -546,8 +540,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('k8sCronJobs', () => {
-    const client = { writeQuery: jest.fn() };
-
     const mockWatcher = WatchApi.prototype;
     const mockCronJobsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -627,9 +619,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
 
-  describe('k8sServices', () => {
-    const client = { writeQuery: jest.fn() };
-
+  describe('k8sDashboardServices', () => {
     const mockWatcher = WatchApi.prototype;
     const mockServicesListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -659,7 +649,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should request all Services from the cluster_client library and watch the events', async () => {
-        const Services = await mockResolvers.Query.k8sServices(
+        const Services = await mockResolvers.Query.k8sDashboardServices(
           null,
           {
             configuration,
@@ -674,12 +664,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should update cache with the new data when received from the library', async () => {
-        await mockResolvers.Query.k8sServices(null, { configuration, namespace: '' }, { client });
+        await mockResolvers.Query.k8sDashboardServices(
+          null,
+          { configuration, namespace: '' },
+          { client },
+        );
 
         expect(client.writeQuery).toHaveBeenCalledWith({
           query: k8sDashboardServicesQuery,
           variables: { configuration, namespace: '' },
-          data: { k8sServices: [] },
+          data: { k8sDashboardServices: [] },
         });
       });
     });
@@ -693,7 +687,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }),
       );
 
-      await mockResolvers.Query.k8sServices(null, { configuration }, { client });
+      await mockResolvers.Query.k8sDashboardServices(null, { configuration }, { client });
 
       expect(mockServicesListWatcherFn).not.toHaveBeenCalled();
     });
@@ -704,7 +698,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sServices(null, { configuration }, { client }),
+        mockResolvers.Query.k8sDashboardServices(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

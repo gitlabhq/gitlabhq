@@ -66,7 +66,7 @@ export default {
 </script>
 <template>
   <div class="row my-3">
-    <h4 class="gl-mt-0 col-lg-8 offset-lg-2">{{ titleText }}</h4>
+    <h4 class="gl-mt-0 col-lg-8 offset-lg-2" data-testid="metrics-header">{{ titleText }}</h4>
     <form ref="form" class="col-lg-8 offset-lg-2" :action="customMetricsPath" method="post">
       <custom-metrics-form-fields
         :form-operation="formOperation"
@@ -76,7 +76,13 @@ export default {
         @formValidation="formValidation"
       />
       <div class="form-actions">
-        <gl-button variant="confirm" category="primary" :disabled="!formIsValid" @click="submit">
+        <gl-button
+          data-testid="metrics-save-button"
+          variant="confirm"
+          category="primary"
+          :disabled="!formIsValid"
+          @click="submit"
+        >
           {{ saveButtonText }}
         </gl-button>
         <gl-button class="gl-float-right" :href="editIntegrationPath">{{ __('Cancel') }}</gl-button>

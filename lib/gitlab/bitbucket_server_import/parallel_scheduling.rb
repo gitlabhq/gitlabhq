@@ -83,9 +83,14 @@ module Gitlab
       end
 
       def calculate_job_delay(job_index)
-        multiplier = (job_index / BATCH_SIZE)
+        runtime = Time.current - job_started_at
+        multiplier = (job_index / BATCH_SIZE.to_f)
 
-        (multiplier * 1.minute) + 1.second
+        (multiplier * 1.minute) + 1.second - runtime
+      end
+
+      def job_started_at
+        @job_started_at ||= Time.current
       end
 
       def track_import_failure!(project, exception:, **args)

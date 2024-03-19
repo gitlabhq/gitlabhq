@@ -13,15 +13,14 @@ module Backup
 
       def destination_path = 'pages.tar.gz'
 
-      def target
-        excludes = [LEGACY_PAGES_TMP_PATH]
-
-        ::Backup::Targets::Files.new(progress, app_files_dir, options: options, excludes: excludes)
-      end
-
       private
 
-      def app_files_dir
+      def target
+        @target ||= ::Backup::Targets::Files.new(
+          progress, storage_path, options: options, excludes: [LEGACY_PAGES_TMP_PATH])
+      end
+
+      def storage_path
         Gitlab.config.pages.path
       end
     end

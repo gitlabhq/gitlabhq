@@ -67,7 +67,10 @@ class ProjectPolicy < BasePolicy
   condition(:default_issues_tracker, scope: :subject) { project.default_issues_tracker? }
 
   desc "Container registry is disabled"
-  condition(:container_registry_disabled, scope: :subject) do
+  # Do not use the scope option here as this condition depends
+  # on both the user and the subject, and can lead to bugs like
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/391551
+  condition(:container_registry_disabled) do
     if user.is_a?(DeployToken)
       (!user.read_registry? && !user.write_registry?) ||
       user.revoked? ||
@@ -593,6 +596,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment
     enable :read_import_error
+    enable :admin_cicd_variables
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

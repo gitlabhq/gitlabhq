@@ -6,7 +6,7 @@ describe('diffs helper', () => {
       parallel_diff_lines: ['line'],
       highlighted_diff_lines: ['line'],
       blob: {
-        readable_text: 'text',
+        readable_text: true,
       },
       ...withOverrides,
     };
@@ -94,11 +94,11 @@ describe('diffs helper', () => {
   });
 
   describe.each`
-    context                                     | inline       | parallel     | blob                         | expected
-    ${'only has inline lines'}                  | ${['line']}  | ${undefined} | ${undefined}                 | ${true}
-    ${'only has parallel lines'}                | ${undefined} | ${['line']}  | ${undefined}                 | ${true}
-    ${"doesn't have inline, parallel, or blob"} | ${undefined} | ${undefined} | ${undefined}                 | ${true}
-    ${'has blob readable text'}                 | ${undefined} | ${undefined} | ${{ readable_text: 'text' }} | ${false}
+    context                                     | inline       | parallel     | blob                       | expected
+    ${'only has inline lines'}                  | ${['line']}  | ${undefined} | ${undefined}               | ${true}
+    ${'only has parallel lines'}                | ${undefined} | ${['line']}  | ${undefined}               | ${true}
+    ${"doesn't have inline, parallel, or blob"} | ${undefined} | ${undefined} | ${undefined}               | ${true}
+    ${'has blob readable text'}                 | ${undefined} | ${undefined} | ${{ readable_text: true }} | ${false}
   `('when hasDiff', ({ context, inline, parallel, blob, expected }) => {
     it(`${context}`, () => {
       const diffFile = getDiffFile({

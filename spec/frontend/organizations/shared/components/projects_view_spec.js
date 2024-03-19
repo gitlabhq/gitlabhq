@@ -2,11 +2,14 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import { formatProjects } from '~/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
+import { deleteProject } from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -19,6 +22,7 @@ import {
 } from '~/organizations/mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/api/projects_api');
 
 Vue.use(VueApollo);
 
@@ -34,6 +38,9 @@ describe('ProjectsView', () => {
 
   const defaultPropsData = {
     listItemClass: 'gl-px-5',
+    search: 'foo',
+    sortName: SORT_ITEM_NAME.value,
+    sortDirection: SORT_DIRECTION_ASC,
   };
 
   const projects = {
@@ -67,6 +74,10 @@ describe('ProjectsView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
+  const findProjectsListProjectById = (projectId) =>
+    findProjectsList()
+      .props('projects')
+      .find((project) => project.id === projectId);
   const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
 
   afterEach(() => {
@@ -127,6 +138,20 @@ describe('ProjectsView', () => {
     describe('when there are projects', () => {
       beforeEach(() => {
         createComponent();
+      });
+
+      it('calls GraphQL query with correct variables', async () => {
+        await waitForPromises();
+
+        expect(successHandler).toHaveBeenCalledWith({
+          id: defaultProvide.organizationGid,
+          search: defaultPropsData.search,
+          sort: 'name_asc',
+          last: null,
+          first: DEFAULT_PER_PAGE,
+          before: null,
+          after: null,
+        });
       });
 
       it('renders `ProjectsList` component and passes correct props', async () => {
@@ -196,7 +221,7 @@ describe('ProjectsView', () => {
         });
 
         it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
+          expect(wrapper.emitted('page-change')[0]).toEqual([
             {
               endCursor: mockEndCursor,
               startCursor: null,
@@ -218,6 +243,8 @@ describe('ProjectsView', () => {
             first: DEFAULT_PER_PAGE,
             id: defaultProvide.organizationGid,
             last: null,
+            search: defaultPropsData.search,
+            sort: 'name_asc',
           });
         });
       });
@@ -256,7 +283,7 @@ describe('ProjectsView', () => {
         });
 
         it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
+          expect(wrapper.emitted('page-change')[0]).toEqual([
             {
               endCursor: null,
               startCursor: mockStartCursor,
@@ -278,6 +305,8 @@ describe('ProjectsView', () => {
             first: null,
             id: defaultProvide.organizationGid,
             last: DEFAULT_PER_PAGE,
+            search: defaultPropsData.search,
+            sort: 'name_asc',
           });
         });
       });
@@ -298,6 +327,79 @@ describe('ProjectsView', () => {
         message: ProjectsView.i18n.errorMessage,
         error,
         captureError: true,
+      });
+    });
+  });
+
+  describe('Deleting project', () => {
+    const MOCK_PROJECT = formatProjects(nodes)[0];
+
+    describe('when API call is successful', () => {
+      beforeEach(async () => {
+        deleteProject.mockResolvedValueOnce(Promise.resolve());
+
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      it('calls deleteProject, properly sets loading state, and refetches list when promise resolves', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+
+        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(true);
+
+        await waitForPromises();
+
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(false);
+        // Refetches list
+        expect(successHandler).toHaveBeenCalledTimes(2);
+      });
+
+      it('does not call createAlert', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+        await waitForPromises();
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when API call is not successful', () => {
+      const error = new Error();
+
+      beforeEach(async () => {
+        deleteProject.mockRejectedValue(error);
+
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+
+        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(true);
+
+        await waitForPromises();
+
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(false);
+
+        // Does not refetch list
+        expect(successHandler).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred deleting the project. Please refresh the page to try again.',
+          error,
+          captureError: true,
+        });
       });
     });
   });

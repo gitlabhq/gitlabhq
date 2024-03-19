@@ -5,11 +5,13 @@ import {
   GlAvatar,
   GlAlert,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
+import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
+import GlobalSearchNoResults from '~/super_sidebar/components/global_search/components/global_search_no_results.vue';
 
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
@@ -35,7 +37,7 @@ describe('GlobalSearchAutocompleteItems', () => {
       },
     });
 
-    wrapper = shallowMount(GlobalSearchAutocompleteItems, {
+    wrapper = mount(GlobalSearchAutocompleteItems, {
       store,
       propsData: {
         ...props,
@@ -59,6 +61,8 @@ describe('GlobalSearchAutocompleteItems', () => {
   const findGlLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAvatars = () => wrapper.findAllComponents(GlAvatar).wrappers.map((w) => w.props('src'));
   const findGlAlert = () => wrapper.findComponent(GlAlert);
+  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
+  const findNoResults = () => wrapper.findComponent(GlobalSearchNoResults);
 
   describe('template', () => {
     describe('when loading is true', () => {
@@ -82,6 +86,16 @@ describe('GlobalSearchAutocompleteItems', () => {
 
       it('renders Alert', () => {
         expect(findGlAlert().exists()).toBe(true);
+      });
+    });
+
+    describe('when search has no results', () => {
+      beforeEach(() => {
+        createComponent({ loading: false }, { autocompleteGroupedSearchOptions: () => [] });
+      });
+
+      it('renders no-results component', () => {
+        expect(findNoResults().exists()).toBe(true);
       });
     });
 
@@ -122,6 +136,40 @@ describe('GlobalSearchAutocompleteItems', () => {
             Boolean,
           );
           expect(findAvatars()).toStrictEqual(expectedAvatars);
+        });
+
+        it('does not render no-results-found component', () => {
+          expect(findNoResults().exists()).toBe(false);
+        });
+      });
+
+      describe.each`
+        group              | text
+        ${'asdfasdf'}      | ${'Go to %{kbdStart}↵%{kbdEnd}'}
+        ${'Users'}         | ${'Go to profile %{kbdStart}↵%{kbdEnd}'}
+        ${'Projects'}      | ${'Go to project %{kbdStart}↵%{kbdEnd}'}
+        ${'Recent issues'} | ${'Go to %{kbdStart}↵%{kbdEnd}'}
+        ${'Pages'}         | ${'Go to file %{kbdStart}↵%{kbdEnd}'}
+      `('renders the layover text for $group', ({ group, text }) => {
+        beforeEach(() => {
+          createComponent(
+            { loading: false },
+            {
+              autocompleteGroupedSearchOptions: () => [
+                {
+                  ...MOCK_GROUPED_AUTOCOMPLETE_OPTIONS[0],
+                  name: group,
+                },
+              ],
+            },
+          );
+        });
+
+        it('renders the layover component', () => {
+          expect(findLayover().exists()).toBe(true);
+        });
+        it('renders correct layover text', () => {
+          expect(findLayover().props('textMessage')).toBe(text);
         });
       });
     });

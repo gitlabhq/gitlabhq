@@ -58,6 +58,7 @@ module Gitlab
           state :finished, value: 3
           state :failed, value: 4
           state :finalizing, value: 5
+          state :finalized, value: 6
 
           event :pause do
             transition [:active, :paused] => :paused
@@ -77,6 +78,10 @@ module Gitlab
 
           event :finalize do
             transition any => :finalizing
+          end
+
+          event :confirm_finalize do
+            transition [:finalized, :finished] => :finalized
           end
 
           before_transition any => :finished do |migration|

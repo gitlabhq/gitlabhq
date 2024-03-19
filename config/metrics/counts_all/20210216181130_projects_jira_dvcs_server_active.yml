@@ -5,7 +5,7 @@ description: Distinct count of creator_id from projects with an active Jira Serv
   DVCS integration.
 product_section: dev
 product_stage: manage
-product_group: integration
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: all

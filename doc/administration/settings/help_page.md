@@ -82,7 +82,8 @@ You can redirect all `/help` links to a destination that meets the [necessary re
 1. In the **Documentation pages URL** field, enter the URL.
 1. Select **Save changes**.
 
-If the "Documentation pages URL" field is empty, the GitLab instance displays a basic version of the documentation sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab.
+If the **Documentation pages URL** field is empty, the GitLab instance displays a basic version of the documentation
+sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) of GitLab.
 
 ### Destination requirements
 

@@ -209,7 +209,7 @@ RSpec.shared_examples 'creates runner and shows register page' do
     end
 
     it 'warns from leaving page without finishing registration' do
-      click_on s_('Runners|Go to runners page')
+      click_on s_('Runners|View runners')
 
       alert = page.driver.browser.switch_to.alert
 

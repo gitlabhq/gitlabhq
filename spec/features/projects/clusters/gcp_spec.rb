@@ -66,9 +66,9 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
       context 'when user destroys the cluster' do
         before do
           click_link 'Advanced Settings'
-          find('[data-testid="remove-integration-button"]').click
+          find_by_testid('remove-integration-button').click
           fill_in 'confirm_cluster_name_input', with: cluster.name
-          find('[data-testid="remove-integration-modal-button"]').click
+          find_by_testid('remove-integration-modal-button').click
           click_link 'Certificate'
         end
 

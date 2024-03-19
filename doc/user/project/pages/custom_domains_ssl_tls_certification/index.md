@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
@@ -135,12 +135,11 @@ They require:
 - A DNS `ALIAS`/`CNAME` record for the subdomain.
 - A DNS `TXT` record for each.
 
-| From                                              | DNS Record | To                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | `A`        | `35.185.44.232`        |
+| From                                              | DNS Record | To |
+|---------------------------------------------------|------------|----|
+| `example.com`                                     | `A`        | `35.185.44.232` |
 | `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-|---------------------------------------------------+------------+------------------------|
-| `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io`  |
+| `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 If you're using Cloudflare, check
@@ -270,9 +269,9 @@ meet these requirements.
 
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy
-  and paste the root certificate (usually available from your CA website)
-  and paste it in the [same field as your PEM certificate](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
-  just jumping a line between them.
+   and paste the root certificate (usually available from your CA website)
+   and paste it in the [same field as your PEM certificate](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
+   just jumping a line between them.
 1. Copy your private key and paste it in the last field.
 
 **Do not** open certificates or encryption keys in

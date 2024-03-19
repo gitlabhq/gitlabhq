@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobAnnotation, feature_category: :build_artifacts do
-  let_it_be_with_reload(:job) { create(:ci_build, :success) }
+  let_it_be_with_refind(:job) { create(:ci_build, :success) }
 
   describe 'validations' do
     subject { create(:ci_job_annotation, job: job) }

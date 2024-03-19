@@ -35,13 +35,13 @@ describe('Diff', () => {
       const jsonPath = 'http://test.host/path/somewhere.json?params=exist';
       const simulatejQueryClick = {
         originalEvent: {
-          target: {
-            getAttribute() {
-              return clickPath;
-            },
-          },
           preventDefault: jest.fn(),
           stopPropagation: jest.fn(),
+        },
+        currentTarget: {
+          getAttribute() {
+            return clickPath;
+          },
         },
       };
 

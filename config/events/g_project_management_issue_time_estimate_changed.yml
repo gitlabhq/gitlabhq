@@ -1,6 +1,6 @@
 ---
 description: An issue's time estimate was changed
-category: InternalEventTracking
+internal_events: true
 action: g_project_management_issue_time_estimate_changed
 label_description:
 property_description:

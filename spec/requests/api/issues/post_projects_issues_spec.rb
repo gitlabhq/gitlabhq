@@ -290,7 +290,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid
             }
         end
@@ -302,7 +302,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid,
               discussion_to_resolve: discussion.id
             }
@@ -401,7 +401,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
         post api("/projects/#{project.id}/issues", user),
-        params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
+          params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
 
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
 

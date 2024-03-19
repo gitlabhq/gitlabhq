@@ -382,6 +382,11 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /marked\/.*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /swagger-ui-dist\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',

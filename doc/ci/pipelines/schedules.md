@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 
@@ -105,3 +105,19 @@ questions that you know someone might ask.
 Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
+
+## Troubleshooting
+
+### Short refs are expanded to Full refs
+
+This behavior is normal and it introduced in order to enforce explicit resources.
+The API still accepts both `short` (e.g. `main`) and `full` (e.g. `refs/heads/main` or `refs/tags/main`) refs and expands any `short`
+ref provided, to a `full` ref.
+
+### Ambiguous Refs
+
+When a ref is being expanded, there can be cases where the full ref can't be automatically inferred.
+Such cases can be:
+
+- A `short` ref is provided (e.g. `main`) but **both** a branch and a tag exist with the provided `short` ref name
+- A `short` ref is provided, but **neither** a branch or tag with the provided `short` ref name exist

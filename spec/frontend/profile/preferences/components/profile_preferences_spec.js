@@ -11,10 +11,11 @@ import {
   integrationViews,
   userFields,
   bodyClasses,
+  colorModes,
+  lightColorModeId,
+  darkColorModeId,
   themes,
-  lightModeThemeId1,
-  darkModeThemeId,
-  lightModeThemeId2,
+  themeId1,
 } from '../mock_data';
 
 jest.mock('~/alert');
@@ -28,6 +29,7 @@ describe('ProfilePreferences component', () => {
     integrationViews: [],
     userFields,
     bodyClasses,
+    colorModes,
     themes,
     profilePreferencesPath: '/update-profile',
     formEl: document.createElement('form'),
@@ -61,7 +63,16 @@ describe('ProfilePreferences component', () => {
     return wrapper.findComponent(GlButton);
   }
 
-  function createThemeInput(themeId = lightModeThemeId1) {
+  function createModeInput(modeId = lightColorModeId) {
+    const input = document.createElement('input');
+    input.setAttribute('name', 'user[color_mode_id]');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('value', modeId.toString());
+    input.setAttribute('checked', 'checked');
+    return input;
+  }
+
+  function createThemeInput(themeId = themeId1) {
     const input = document.createElement('input');
     input.setAttribute('name', 'user[theme_id]');
     input.setAttribute('type', 'radio');
@@ -70,11 +81,13 @@ describe('ProfilePreferences component', () => {
     return input;
   }
 
-  function createForm(themeInput = createThemeInput()) {
+  function createForm(inputs = [createModeInput(), createThemeInput()]) {
     const form = document.createElement('form');
     form.setAttribute('url', expectedUrl);
     form.setAttribute('method', 'put');
-    form.appendChild(themeInput);
+    inputs.forEach((input) => {
+      form.appendChild(input);
+    });
     return form;
   }
 
@@ -172,7 +185,8 @@ describe('ProfilePreferences component', () => {
     });
   });
 
-  describe('theme changes', () => {
+  describe('color mode changes', () => {
+    let colorModeInput;
     let themeInput;
     let form;
 
@@ -180,8 +194,8 @@ describe('ProfilePreferences component', () => {
       wrapper = createComponent({ provide: { formEl: form }, attachTo: document.body });
     }
 
-    function selectThemeId(themeId) {
-      themeInput.setAttribute('value', themeId.toString());
+    function selectColorModeId(modeId) {
+      colorModeInput.setAttribute('value', modeId.toString());
     }
 
     function dispatchBeforeSendEvent() {
@@ -196,15 +210,16 @@ describe('ProfilePreferences component', () => {
 
     beforeEach(() => {
       setupBody();
+      colorModeInput = createModeInput();
       themeInput = createThemeInput();
-      form = createForm(themeInput);
+      form = createForm([colorModeInput, themeInput]);
     });
 
     it('reloads the page when switching from light to dark mode', async () => {
-      selectThemeId(lightModeThemeId1);
+      selectColorModeId(lightColorModeId);
       setupWrapper();
 
-      selectThemeId(darkModeThemeId);
+      selectColorModeId(darkColorModeId);
       dispatchBeforeSendEvent();
       await nextTick();
 
@@ -215,10 +230,10 @@ describe('ProfilePreferences component', () => {
     });
 
     it('reloads the page when switching from dark to light mode', async () => {
-      selectThemeId(darkModeThemeId);
+      selectColorModeId(darkColorModeId);
       setupWrapper();
 
-      selectThemeId(lightModeThemeId1);
+      selectColorModeId(lightColorModeId);
       dispatchBeforeSendEvent();
       await nextTick();
 
@@ -226,20 +241,6 @@ describe('ProfilePreferences component', () => {
       await nextTick();
 
       expect(window.location.reload).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not reload the page when switching between light mode themes', async () => {
-      selectThemeId(lightModeThemeId1);
-      setupWrapper();
-
-      selectThemeId(lightModeThemeId2);
-      dispatchBeforeSendEvent();
-      await nextTick();
-
-      dispatchSuccessEvent();
-      await nextTick();
-
-      expect(window.location.reload).not.toHaveBeenCalled();
     });
   });
 });

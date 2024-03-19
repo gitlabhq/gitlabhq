@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineDetailsHeader from './header/pipeline_details_header.vue';
 
 Vue.use(VueApollo);
@@ -12,7 +11,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
     return;
   }
 
-  const { fullPath, pipelineIid, pipelinesPath, yamlErrors, trigger } = el.dataset;
+  const { fullPath, pipelineIid, pipelinesPath } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -28,12 +27,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
       pipelineIid,
     },
     render(createElement) {
-      return createElement(PipelineDetailsHeader, {
-        props: {
-          yamlErrors,
-          trigger: parseBoolean(trigger),
-        },
-      });
+      return createElement(PipelineDetailsHeader);
     },
   });
 };

@@ -1,0 +1,17 @@
+query getMergeRequestsCount($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    openedMergeRequests: mergeRequests(state: opened) {
+      count
+    }
+    mergedMergeRequests: mergeRequests(state: merged) {
+      count
+    }
+    closedMergeRequests: mergeRequests(state: closed) {
+      count
+    }
+    allMergeRequests: mergeRequests(state: all) {
+      count
+    }
+  }
+}

@@ -4,4 +4,4 @@
 - add_to_breadcrumbs _('Runners'), group_runners_path(@group)
 - add_to_breadcrumbs runner_name, register_group_runner_path(@group, @runner)
 
-#js-group-register-runner{ data: { runner_id: @runner.id, runners_path: group_runners_path(@group) } }
+#js-group-register-runner{ data: { runner_id: @runner.id, runners_path: group_runners_path(@group), group_path: @group.full_path } }

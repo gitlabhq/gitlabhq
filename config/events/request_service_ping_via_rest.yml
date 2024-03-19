@@ -1,6 +1,6 @@
 ---
 description: Service Ping was requested via REST API endpoint
-category: InternalEventTracking
+internal_events: true
 action: request_service_ping_via_rest
 product_section: analytics
 product_stage: monitor

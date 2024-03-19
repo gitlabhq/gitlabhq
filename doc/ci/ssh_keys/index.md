@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
@@ -32,7 +32,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 To create and use an SSH key in GitLab CI/CD:
 
-1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
+1. [Create a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair) locally with `ssh-keygen`.
 1. Add the private key as a [file type CI/CD variable](../variables/index.md#for-a-project) to
    your project. The variable value must end in a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
    at the end of the last line of the SSH key before saving it in the CI/CD settings.
@@ -61,8 +61,8 @@ to access it. In this case, you can use an SSH key pair.
 1. Create a new [file type CI/CD variable](../variables/index.md#for-a-project).
    - In the **Key** field, enter `SSH_PRIVATE_KEY`.
    - In the **Value** field, paste the content of your _private_ key from the key pair that you created earlier.
-   Make sure the file ends with a newline. To add a newline, press
-   <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
+     Make sure the file ends with a newline. To add a newline, press
+     <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
 
 1. Modify your `.gitlab-ci.yml` with a `before_script` action. In the following
    example, a Debian based image is assumed. Edit to your needs:

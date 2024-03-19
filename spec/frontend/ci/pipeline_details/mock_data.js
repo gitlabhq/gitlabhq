@@ -6,8 +6,6 @@ import pipelineHeaderRunningWithDuration from 'test_fixtures/graphql/pipelines/p
 import pipelineHeaderFailed from 'test_fixtures/graphql/pipelines/pipeline_header_failed.json';
 
 const PIPELINE_RUNNING = 'RUNNING';
-const PIPELINE_CANCELED = 'CANCELED';
-const PIPELINE_FAILED = 'FAILED';
 
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
@@ -18,6 +16,18 @@ export {
   pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
+};
+
+export const pipelineHeaderTrigger = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      pipeline: {
+        ...pipelineHeaderSuccess.data.project.pipeline,
+        trigger: true,
+      },
+    },
+  },
 };
 
 export const pipelineRetryMutationResponseSuccess = {
@@ -61,48 +71,6 @@ export const mockPipelineHeader = {
   },
 };
 
-export const mockFailedPipelineHeader = {
-  ...mockPipelineHeader,
-  status: PIPELINE_FAILED,
-  retryable: true,
-  cancelable: false,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'failed',
-    icon: 'status_failed',
-    label: 'failed',
-    text: 'failed',
-    detailsPath: 'path',
-  },
-};
-
-export const mockFailedPipelineNoPermissions = {
-  id: 123,
-  userPermissions: {
-    destroyPipeline: false,
-    updatePipeline: false,
-  },
-  createdAt: threeWeeksAgo.toISOString(),
-  user: {
-    id: 'user-1',
-    name: 'Foo',
-    username: 'foobar',
-    email: 'foo@bar.com',
-    avatarUrl: 'link',
-  },
-  status: PIPELINE_RUNNING,
-  retryable: true,
-  cancelable: false,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'running',
-    icon: 'status_running',
-    label: 'running',
-    text: 'running',
-    detailsPath: 'path',
-  },
-};
-
 export const mockRunningPipelineHeader = {
   ...mockPipelineHeader,
   status: PIPELINE_RUNNING,
@@ -114,63 +82,6 @@ export const mockRunningPipelineHeader = {
     icon: 'status_running',
     label: 'running',
     text: 'running',
-    detailsPath: 'path',
-  },
-};
-
-export const mockRunningPipelineNoPermissions = {
-  id: 123,
-  userPermissions: {
-    destroyPipeline: false,
-    updatePipeline: false,
-  },
-  createdAt: threeWeeksAgo.toISOString(),
-  user: {
-    id: 'user-1',
-    name: 'Foo',
-    username: 'foobar',
-    email: 'foo@bar.com',
-    avatarUrl: 'link',
-  },
-  status: PIPELINE_RUNNING,
-  retryable: false,
-  cancelable: true,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'running',
-    icon: 'status_running',
-    label: 'running',
-    text: 'running',
-    detailsPath: 'path',
-  },
-};
-
-export const mockCancelledPipelineHeader = {
-  ...mockPipelineHeader,
-  status: PIPELINE_CANCELED,
-  retryable: true,
-  cancelable: false,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'cancelled',
-    icon: 'status_cancelled',
-    label: 'cancelled',
-    text: 'cancelled',
-    detailsPath: 'path',
-  },
-};
-
-export const mockSuccessfulPipelineHeader = {
-  ...mockPipelineHeader,
-  status: 'SUCCESS',
-  retryable: false,
-  cancelable: false,
-  detailedStatus: {
-    id: 'status-1',
-    group: 'success',
-    icon: 'status_success',
-    label: 'success',
-    text: 'success',
     detailsPath: 'path',
   },
 };

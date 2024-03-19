@@ -51,7 +51,7 @@ module Ci
       end
 
       def execute(relation)
-        strategy.build_ids(relation)
+        strategy.build_and_partition_ids(relation)
       end
 
       private

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page contains possible solutions for problems you might encounter when using:
 
@@ -79,7 +79,7 @@ When the certificate used for your identity provider changes (for example when u
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can find the base64-encoded SAML Response in the [`production_json.log`](../../../administration/logs/index.md#production_jsonlog).
 This response is sent from the identity provider, and contains user information that is consumed by GitLab.
@@ -122,6 +122,12 @@ browser's console in the developers tools:
 
 ```javascript
 atob(decodeURI("<paste_SAML_response_here>"))
+```
+
+On MacOS, you can decode the clipboard data by running:
+
+```plaintext
+pbpaste | base64 -D
 ```
 
 You should get the SAML response in XML format as output.
@@ -222,7 +228,7 @@ initiated by the service provider and not only the identity provider.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 
@@ -236,7 +242,7 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
@@ -247,6 +253,14 @@ This means:
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
 The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
 this may be a generated unique ID, an email address, or other value.
+
+### Message: "Certificate element missing in response (ds:x509certificate) and not cert provided at settings"
+
+This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response. The X.509 certificate must be included in the response. 
+
+To resolve this problem, configure your IdP to include the X.509 certificate in the SAML response.
+
+For more information, see the documentation on [additional configuration for SAML apps on your IdP](../../../integration/saml.md#additional-configuration-for-saml-apps-on-your-idp).
 
 ## Other user sign in issues
 
@@ -270,7 +284,7 @@ For GitLab.com, alternatively, when users need to [link SAML to their existing G
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If the user receives a `404` after signing in successfully, check if you have IP restrictions configured. IP restriction settings are configured:
 
@@ -279,7 +293,7 @@ If the user receives a `404` after signing in successfully, check if you have IP
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
 If all users are receiving a `404` when attempting to sign in using SAML, confirm
-[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) being used in this SAML SSO namespace.
+[there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).
@@ -325,7 +339,7 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
 sign-in page, this could indicate that:
@@ -339,7 +353,7 @@ sign-in page, this could indicate that:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If you see a "422 error" in GitLab when you are redirected from the SAML
 sign-in page, you might have an incorrectly configured Assertion Consumer
@@ -369,7 +383,7 @@ To implement this workaround:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The following are the most likely reasons that a user is blocked when signing in through SAML:
 
@@ -388,7 +402,7 @@ Pay particular attention to the following 403 errors:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
 

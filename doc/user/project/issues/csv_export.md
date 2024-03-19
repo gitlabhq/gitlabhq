@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can export issues from GitLab to a plain-text CSV
 ([comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values))
@@ -41,7 +41,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
-1. Above the list of issues, select **Search or filter results...**.
+1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attributes to filter by.
    For more information about filter options, see
    [Filter the list of issues](managing_issues.md#filter-the-list-of-issues).

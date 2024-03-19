@@ -196,6 +196,10 @@ class Group < Namespace
 
   scope :excluding_groups, ->(groups) { where.not(id: groups) }
 
+  scope :by_visibility_level, ->(visibility) do
+    where(visibility_level: Gitlab::VisibilityLevel.level_value(visibility)) if visibility.present?
+  end
+
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)
       .where(members: { user_id: user_ids })
@@ -239,6 +243,27 @@ class Group < Namespace
       .where(group_group_links: { shared_group_id: group.self_and_ancestors })
   end
 
+  # Returns all groups that are shared with the given group (see :shared_with_group)
+  # and all descendents of the given group
+  # returns none if the given group is nil
+  scope :descendants_with_shared_with_groups, -> (group) do
+    return none if group.nil?
+
+    descendants_query = group.descendants.select(:id)
+    # since we're only interested in ids, we query GroupGroupLink directly instead of using :shared_with_group
+    # to avoid an extra JOIN in the resulting query
+    shared_groups_query = GroupGroupLink
+      .where(shared_group_id: group.id)
+      .select('shared_with_group_id AS id')
+
+    combined_query = Group
+      .from_union(descendants_query, shared_groups_query, alias_as: :combined)
+      .unscope(where: :type)
+      .select(:id)
+
+    id_in(combined_query)
+  end
+
   # WARNING: This method should never be used on its own
   # please do make sure the number of rows you are filtering is small
   # enough for this query
@@ -257,6 +282,7 @@ class Group < Namespace
 
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
+  scope :in_organization, -> (organization) { where(organization: organization) }
 
   class << self
     def sort_by_attribute(method)
@@ -350,6 +376,10 @@ class Group < Namespace
 
     def group_members_counts
       left_joins(:group_members).group(:id).count(:members)
+    end
+
+    def with_api_scopes
+      preload(:namespace_settings, :group_feature, :parent)
     end
 
     private
@@ -876,8 +906,8 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
 
-  def work_items_mvc_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc)
+  def work_items_beta_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_beta, type: :beta)
   end
 
   def work_items_mvc_2_feature_flag_enabled?
@@ -894,6 +924,10 @@ class Group < Namespace
 
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
+  end
+
+  def supports_saved_replies?
+    false
   end
 
   # Check for enabled features, similar to `Project#feature_available?`

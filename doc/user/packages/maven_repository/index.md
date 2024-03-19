@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -624,7 +624,7 @@ Your changes are automatically saved.
 
 FLAG:
 By default this feature is not available for self-managed. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`.
-This feature is not available for SaaS users.
+This feature is not available for GitLab.com or GitLab Dedicated users.
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).

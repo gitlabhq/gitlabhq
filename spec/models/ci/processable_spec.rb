@@ -98,7 +98,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       before_all do
         # Create artifacts to check that the associations are rejected when cloning
-        Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.each do |file_type, file_format|
+        Enums::Ci::JobArtifact.type_and_format_pairs.each do |file_type, file_format|
           create(:ci_job_artifact, file_format, file_type: file_type, job: processable, expire_at: processable.artifacts_expire_at)
         end
 

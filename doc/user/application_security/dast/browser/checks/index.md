@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The [DAST browser-based crawler](../index.md) provides vulnerability checks that are used to
 scan for vulnerabilities in the site under test.

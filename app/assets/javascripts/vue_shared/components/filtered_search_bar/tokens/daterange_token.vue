@@ -136,8 +136,10 @@ export default {
         class="gl-absolute gl-z-index-1 gl-bg-white gl-border-1 gl-border-gray-200 gl-my-2 gl-p-4 gl-rounded-base gl-shadow-x0-y2-b4-s0 gl-top-full"
       >
         <gl-daterange-picker
+          :max-date-range="computedConfig.maxDateRange"
           start-opened
           :default-start-date="defaultStartDate"
+          :default-max-date="defaultStartDate"
           @input="selectValue($event, submitValue)"
         />
       </div>

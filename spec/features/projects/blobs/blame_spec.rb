@@ -35,7 +35,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
   it 'displays the blame page without pagination' do
     visit_blob_blame(path)
 
-    within '[data-testid="blob-content-holder"]' do
+    within_testid 'blob-content-holder' do
       expect(page).to have_css('.blame-commit')
       expect(page).not_to have_css('.gl-pagination')
       expect(page).not_to have_link _('Show full blame')
@@ -50,7 +50,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
     it 'displays two first lines of the file with pagination' do
       visit_blob_blame(path)
 
-      within '[data-testid="blob-content-holder"]' do
+      within_testid 'blob-content-holder' do
         expect(page).to have_css('.blame-commit')
         expect(page).to have_css('.gl-pagination')
         expect(page).to have_link _('Show full blame')
@@ -69,7 +69,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       end
 
       it 'displays next two lines of the file with pagination' do
-        within '[data-testid="blob-content-holder"]' do
+        within_testid 'blob-content-holder' do
           expect(page).not_to have_css('#L1')
           expect(page).to have_css('#L3')
           expect(find('.page-link.active')).to have_text('2')
@@ -77,7 +77,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       end
 
       it 'correctly redirects to the prior blame page' do
-        within '[data-testid="blob-content-holder"]' do
+        within_testid 'blob-content-holder' do
           find('.version-link').click
 
           expect(find('.page-link.active')).to have_text('2')
@@ -93,7 +93,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
         end
 
         it 'displays the blame page without pagination' do
-          within '[data-testid="blob-content-holder"]' do
+          within_testid 'blob-content-holder' do
             expect(page).to have_css('#L1')
             expect(page).to have_css('#L667')
             expect(page).not_to have_css('.gl-pagination')
@@ -124,7 +124,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       it 'displays the blame page without pagination' do
         visit_blob_blame(path)
 
-        within '[data-testid="blob-content-holder"]' do
+        within_testid 'blob-content-holder' do
           expect(page).to have_css('.blame-commit')
           expect(page).not_to have_css('.gl-pagination')
           expect(page).not_to have_link _('Show full blame')
@@ -143,7 +143,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
     it 'displays two hundred lines of the file with pagination' do
       visit_blob_blame(path)
 
-      within '[data-testid="blob-content-holder"]' do
+      within_testid 'blob-content-holder' do
         expect(page).to have_css('.blame-commit')
         expect(page).to have_css('.gl-pagination')
 
@@ -159,7 +159,7 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
       end
 
       it 'displays next two hundred lines of the file with pagination' do
-        within '[data-testid="blob-content-holder"]' do
+        within_testid 'blob-content-holder' do
           find('.js-next-button').click
 
           expect(page).not_to have_css('#L1')

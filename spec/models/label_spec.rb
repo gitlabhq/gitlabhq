@@ -208,6 +208,20 @@ RSpec.describe Label, feature_category: :team_planning do
   end
 
   describe 'scopes' do
+    describe '.on_board' do
+      let(:board) { create(:board, project: project) }
+      let!(:list1) { create(:list, board: board, label: development) }
+      let!(:list2) { create(:list, board: board, label: testing) }
+
+      let!(:development) { create(:label, project: project, name: 'Development') }
+      let!(:testing) { create(:label, project: project, name: 'Testing') }
+      let!(:regression) { create(:label, project: project, name: 'Regression') }
+
+      it 'returns only the board labels' do
+        expect(described_class.on_board(board.id)).to match_array([development, testing])
+      end
+    end
+
     describe '.with_lock_on_merge' do
       let(:label) { create(:label, project: project, name: 'Label') }
       let(:label_locked) { create(:label, project: project, name: 'Label locked', lock_on_merge: true) }
@@ -400,6 +414,17 @@ RSpec.describe Label, feature_category: :team_planning do
       top_labels = described_class.top_labels_by_target(merge_requests)
 
       expect(top_labels).to match_array([popular_label])
+    end
+  end
+
+  describe '.sorted_by_similarity_desc' do
+    context 'when sorted by similarity' do
+      it 'returns most relevant labels first' do
+        label1 = create(:label, title: 'exact')
+        label2 = create(:label, title: 'less exact')
+        label3 = create(:label, title: 'other', description: 'mentions exact')
+        expect(described_class.sorted_by_similarity_desc('exact')).to eq([label1, label2, label3])
+      end
     end
   end
 

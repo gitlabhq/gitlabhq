@@ -9,11 +9,11 @@ workflow:
 
 .ce:
   variables:
-    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${CI_COMMIT_SHA}
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${RELEASE_IMAGE_TAG}"
 
 .ee:
   variables:
-    RELEASE: ${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
 
 # ==========================================
 # Prepare stage

@@ -106,7 +106,7 @@ RSpec.describe API::ConanInstancePackages, feature_category: :package_registry d
     describe 'GET /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/export/:file_name' do
       subject do
         get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/export/#{recipe_file.file_name}"),
-            headers: headers
+          headers: headers
       end
 
       it_behaves_like 'recipe file download endpoint'
@@ -116,7 +116,7 @@ RSpec.describe API::ConanInstancePackages, feature_category: :package_registry d
     describe 'GET /api/v4/packages/conan/v1/files/:package_name/package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       subject do
         get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision}/package/#{metadata.conan_package_reference}/#{metadata.package_revision}/#{package_file.file_name}"),
-            headers: headers
+          headers: headers
       end
 
       it_behaves_like 'package file download endpoint'

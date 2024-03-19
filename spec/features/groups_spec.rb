@@ -35,6 +35,33 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
         expect(page).to have_current_path(group_path(group), ignore_query: true)
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
       end
+
+      context 'with current organization setting in middleware' do
+        let_it_be(:another_organization) { create(:organization) }
+
+        before_all do
+          create(:organization, :default)
+        end
+
+        context 'for setting from the header' do
+          it 'sets the organization to another organization', :feature do
+            fill_in 'Group name', with: 'test-group'
+
+            inspect_requests(
+              inject_headers: {
+                ::Organizations::ORGANIZATION_HTTP_HEADER.sub(/^HTTP_/, '') => another_organization.id.to_s
+              }
+            ) do
+              click_button 'Create group'
+            end
+
+            group = Group.find_by(name: 'test-group')
+
+            expect(group.organization).to eq(another_organization)
+            expect(page).to have_current_path(group_path(group), ignore_query: true)
+          end
+        end
+      end
     end
 
     describe 'with expected fields' do

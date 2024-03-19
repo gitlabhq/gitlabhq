@@ -497,6 +497,12 @@ export const ISSUE_CLOSE_DESIGN = {
   defaultKeys: ['esc'],
 };
 
+export const SIDEBAR_CLOSE_WIDGET = {
+  id: 'sidebar.closeWidget',
+  description: __('Close sidebar widget'),
+  defaultKeys: ['esc'],
+};
+
 /**
  * Legacy Web IDE uses the same shortcuts as MR_GO_TO_FILE, from this shared component:
  * https://gitlab.com/gitlab-org/gitlab/-/blob/f3e807cdff5cf25765894163b4e92f8b2bcf8a68/app/assets/javascripts/vue_shared/components/file_finder/index.vue#L6

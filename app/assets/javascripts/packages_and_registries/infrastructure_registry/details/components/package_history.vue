@@ -15,7 +15,9 @@ export default {
     createdByPipelineText: s__(
       'PackageRegistry|Built by pipeline %{link} triggered %{datetime} by %{author}',
     ),
-    publishText: s__('PackageRegistry|Published to the %{project} Package Registry %{datetime}'),
+    publishText: s__(
+      'PackageRegistry|Published to the %{project} Terraform Module Registry %{datetime}',
+    ),
     combinedUpdateText: s__(
       'PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}',
     ),

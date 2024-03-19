@@ -12,7 +12,7 @@ module WorkItems
       end
 
       def execute
-        return error(_('No work item found.'), 403) unless can?(current_user, :admin_work_item_link, work_item)
+        return error(_('No work item found.'), 403) unless can_admin_work_item_link?(work_item)
         return error(_('No work item IDs provided.'), 409) if params[:item_ids].empty?
 
         destroy_links_for(params[:item_ids])
@@ -28,6 +28,10 @@ module WorkItems
 
       attr_reader :work_item, :current_user, :failed_ids, :removed_ids
 
+      def can_admin_work_item_link?(resource)
+        can?(current_user, :admin_work_item_link, resource)
+      end
+
       def destroy_links_for(item_ids)
         destroy_links(source: work_item, target: item_ids, direction: :target)
         destroy_links(source: item_ids, target: work_item, direction: :source)
@@ -37,7 +41,7 @@ module WorkItems
         WorkItems::RelatedWorkItemLink.for_source_and_target(source, target).each do |link|
           linked_item = link.try(direction)
 
-          if can?(current_user, :admin_work_item_link, linked_item)
+          if can_admin_work_item_link?(linked_item)
             link.destroy!
             removed_ids << linked_item.id
             create_notes(link)
@@ -83,3 +87,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::RelatedWorkItemLinks::DestroyService.prepend_mod_with('WorkItems::RelatedWorkItemLinks::DestroyService')

@@ -15,8 +15,6 @@ class GenerateAsIfFossEnv
     eslint
     generate-apollo-graphql-schema
     graphql-schema-dump
-    jest
-    jest-integration
     qa:internal
     qa:selectors
     static-analysis
@@ -76,7 +74,15 @@ class GenerateAsIfFossEnv
   end
 
   def detect_other_jobs(job)
-    other_jobs << job.name if FOSS_JOBS.member?(job.name)
+    # rubocop:disable Lint/AssignmentInCondition -- More clear without this cop
+    if FOSS_JOBS.member?(job.name)
+      other_jobs << job.name
+    elsif jest_type = job.name[%r{^(jest(?:-\w+)?)(?: \d+/\d+)?$}, 1]
+      other_jobs << jest_type
+    elsif cache_assets_type = job.name[%r{^(cache-assets)\b}, 1]
+      other_jobs << cache_assets_type
+    end
+    # rubocop:enable Lint/AssignmentInCondition
   end
 
   def rspec_variables

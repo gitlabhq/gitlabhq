@@ -173,7 +173,6 @@ export default {
 
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {
     const { latestDiff } = state;
-
     const originalStartLineCode = discussion.original_position?.line_range?.start?.line_code;
     const positionType = discussion.position?.position_type;
     const discussionLineCodes = [
@@ -182,7 +181,11 @@ export default {
       ...(discussion.line_codes || []),
     ];
     const fileHash = discussion.diff_file?.file_hash;
-    const lineCheck = (line) =>
+
+    const isHashTargeted = (discussionItem) =>
+      discussionItem.notes && discussionItem.notes.some((note) => hash === `note_${note.id}`);
+
+    const isTargetLine = (line) =>
       discussionLineCodes.some(
         (discussionLineCode) =>
           line.line_code === discussionLineCode &&
@@ -192,65 +195,42 @@ export default {
             latestDiff,
           }),
       );
-    const mapDiscussions = (line, extraCheck = () => true) => ({
-      ...line,
-      discussions: extraCheck()
-        ? line.discussions &&
-          line.discussions
-            .filter(() => !line.discussions.some(({ id }) => discussion.id === id))
-            .concat(lineCheck(line) ? discussion : line.discussions)
-        : [],
-    });
 
-    const setDiscussionsExpanded = (line) => {
-      const isLineNoteTargeted =
-        line.discussions &&
-        line.discussions.some(
-          (disc) => disc.notes && disc.notes.find((note) => hash === `note_${note.id}`),
-        );
-
-      return {
-        ...line,
-        discussionsExpanded:
-          line.discussionsExpanded ||
-          (line.discussions && line.discussions.length
-            ? line.discussions.some((disc) => !disc.resolved) || isLineNoteTargeted
-            : false),
-      };
+    const isExpandedDiscussion = (discussionItem) => {
+      return !discussionItem.resolved || isHashTargeted(discussionItem);
     };
 
-    state.diffFiles.forEach((file) => {
-      if (file.file_hash === fileHash) {
-        if (positionType === FILE_DIFF_POSITION_TYPE) {
-          const newDiscussions = (file.discussions || [])
-            .filter((d) => d.id !== discussion.id)
-            .concat(discussion);
+    const addDiscussion = (discussions) =>
+      discussions.filter(({ id }) => discussion.id !== id).concat(discussion);
 
-          Object.assign(file, {
-            discussions: newDiscussions,
-          });
-        } else {
-          if (file[INLINE_DIFF_LINES_KEY].length) {
-            file[INLINE_DIFF_LINES_KEY].forEach((line) => {
-              Object.assign(
-                line,
-                setDiscussionsExpanded(lineCheck(line) ? mapDiscussions(line) : line),
-              );
-            });
-          }
+    const file = state.diffFiles.find((diff) => diff.file_hash === fileHash);
+    // a file batch might not be loaded yet when we try to add a discussion
+    if (!file) return;
+    const diffLines = file[INLINE_DIFF_LINES_KEY];
 
-          if (!file[INLINE_DIFF_LINES_KEY].length) {
-            const newDiscussions = (file.discussions || [])
-              .filter((d) => d.id !== discussion.id)
-              .concat(discussion);
+    if (diffLines.length && positionType !== FILE_DIFF_POSITION_TYPE) {
+      const line = diffLines.find(isTargetLine);
+      // skip if none of the discussion positions matched a diff position
+      if (!line) return;
+      const discussions = addDiscussion(line.discussions || []);
+      Object.assign(line, {
+        discussions,
+        discussionsExpanded: line.discussionsExpanded || discussions.some(isExpandedDiscussion),
+      });
+    } else {
+      Object.assign(discussion, { expandedOnDiff: isExpandedDiscussion(discussion) });
+      Object.assign(file, {
+        discussions: addDiscussion(file.discussions || []),
+      });
+    }
+  },
 
-            Object.assign(file, {
-              discussions: newDiscussions,
-            });
-          }
-        }
-      }
-    });
+  [types.TOGGLE_FILE_DISCUSSION_EXPAND](state, discussion) {
+    Object.assign(discussion, { expandedOnDiff: !discussion.expandedOnDiff });
+    const fileHash = discussion.diff_file.file_hash;
+    const diff = state.diffFiles.find((f) => f.file_hash === fileHash);
+    // trigger Vue reactivity
+    Object.assign(diff, { discussions: [...diff.discussions] });
   },
 
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
@@ -275,6 +255,27 @@ export default {
 
     updateLineInFile(selectedFile, lineCode, (line) => {
       Object.assign(line, { discussionsExpanded: expanded });
+    });
+  },
+
+  [types.SET_EXPAND_ALL_DIFF_DISCUSSIONS](state, expanded) {
+    const lineHasDiscussion = (line) => Boolean(line.discussions?.length);
+    state.diffFiles.forEach((file) => {
+      const highlightedLines = file[INLINE_DIFF_LINES_KEY];
+      if (highlightedLines.length) {
+        const discussionLines = highlightedLines.filter(lineHasDiscussion);
+        discussionLines.forEach(({ line_code }) => {
+          updateLineInFile(file, line_code, (line) => {
+            Object.assign(line, { discussionsExpanded: expanded });
+          });
+        });
+      } else {
+        const discussions = file.discussions.map((discussion) => {
+          Object.assign(discussion, { expandedOnDiff: expanded });
+          return discussion;
+        });
+        Object.assign(file, { discussions });
+      }
     });
   },
 

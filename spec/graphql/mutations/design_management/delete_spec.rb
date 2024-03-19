@@ -125,8 +125,9 @@ RSpec.describe Mutations::DesignManagement::Delete do
           # 32. find project by id (same query as 10)
           # 33. create event
           # 34. find plan for standard context
+          # 35. find issue(work item) type, after query 09
           #
-          expect { run_mutation }.not_to exceed_query_limit(34)
+          expect { run_mutation }.not_to exceed_query_limit(35)
         end
       end
 

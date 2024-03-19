@@ -3,6 +3,7 @@ query getBranchRulesDetails($projectPath: ID!) {
     id
     branchRules {
       nodes {
+        id
         name
         matchingBranchesCount
         branchProtection {

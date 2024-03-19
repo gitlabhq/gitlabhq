@@ -226,26 +226,17 @@ class Projects::PipelinesController < Projects::ApplicationController
   private
 
   def serialize_pipelines
-    serializer_options = {
-      disable_coverage: true,
-      disable_manual_and_scheduled_actions: true,
-      preload: true
-    }
-
-    if Feature.enabled?(:skip_status_preload_in_pipeline_lists, @project, type: :gitlab_com_derisk)
-      serializer_options.merge!(
-        disable_failed_builds: true,
-        preload_statuses: false,
-        preload_downstream_statuses: false
-      )
-    end
-
     PipelineSerializer
       .new(project: @project, current_user: @current_user)
       .with_pagination(request, response)
       .represent(
         @pipelines,
-        **serializer_options
+        disable_coverage: true,
+        disable_failed_builds: true,
+        disable_manual_and_scheduled_actions: true,
+        preload: true,
+        preload_statuses: false,
+        preload_downstream_statuses: false
       )
   end
 

@@ -4,7 +4,7 @@ key_path: counts.operations_dashboard_users_with_projects_added
 description: Active users with projects on operations dashboard
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

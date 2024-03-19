@@ -42,15 +42,15 @@ export default {
       'resolvableDiscussionsCount',
       'unresolvedDiscussionsCount',
       'allResolvableDiscussions',
+      'allVisibleDiscussionsExpanded',
     ]),
     allResolved() {
       return this.unresolvedDiscussionsCount === 0;
     },
-    allExpanded() {
-      return this.allResolvableDiscussions.every((discussion) => discussion.expanded);
-    },
     toggleThreadsLabel() {
-      return this.allExpanded ? __('Collapse all threads') : __('Expand all threads');
+      return !this.allVisibleDiscussionsExpanded
+        ? __('Show all comments')
+        : __('Hide all comments');
     },
     nextUnresolvedDiscussionShortcutKey() {
       return shouldDisableShortcuts() ? null : keysFor(MR_NEXT_UNRESOLVED_DISCUSSION)[0];
@@ -85,7 +85,7 @@ export default {
       const options = [
         {
           text: this.toggleThreadsLabel,
-          action: this.handleExpandDiscussions,
+          action: this.toggleAllVisibleDiscussions,
           extraAttrs: {
             'data-testid': 'toggle-all-discussions-btn',
           },
@@ -109,13 +109,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setExpandDiscussions']),
-    handleExpandDiscussions() {
-      this.setExpandDiscussions({
-        discussionIds: this.allResolvableDiscussions.map((discussion) => discussion.id),
-        expanded: !this.allExpanded,
-      });
-    },
+    ...mapActions(['toggleAllVisibleDiscussions']),
   },
 };
 </script>

@@ -14,6 +14,7 @@ RSpec.describe Projects::Settings::BranchRulesHelper, feature_category: :source_
         protected_branches_path: project_settings_repository_path(project, anchor: 'js-protected-branches-settings'),
         approval_rules_path: project_settings_merge_requests_path(project,
           anchor: 'js-merge-request-approval-settings'),
+        branch_rules_path: project_settings_repository_path(project, anchor: 'branch-rules'),
         status_checks_path: project_settings_merge_requests_path(project, anchor: 'js-merge-request-settings'),
         branches_path: project_branches_path(project),
         show_status_checks: 'false',

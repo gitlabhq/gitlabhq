@@ -44,9 +44,22 @@
   }
 }
 
+.vue-settings-block {
+  // top border and padding for all settings blocks except the first one
+  &:not(:first-of-type) {
+    border-top: 1px solid var(--border-color, $border-color);
+    padding-top: $gl-spacing-scale-5;
+  }
+
+  // bottom padding for all settings blocks except the last one
+  &:not(:last-of-type) {
+    padding-bottom: $gl-spacing-scale-5;
+  }
+}
+
 .settings-header {
   position: relative;
-  padding: $gl-padding-24 110px 0 0;
+  padding: $gl-spacing-scale-5 110px 0 0;
 
   h4 {
     margin-top: 0;
@@ -58,9 +71,13 @@
 
   button {
     position: absolute;
-    top: 20px;
-    right: 6px;
-    min-width: 80px;
+    top: $gl-spacing-scale-5;
+    right: $gl-spacing-scale-3;
+    min-width: $gl-spacing-scale-12;
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -118,6 +135,14 @@
   .form-check .form-text.text-muted,
   .form-check + .form-text.text-muted {
     margin-top: 0;
+  }
+
+  .instance-runners-info {
+    .gl-alert-body {
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .form-check .form-text.text-muted {

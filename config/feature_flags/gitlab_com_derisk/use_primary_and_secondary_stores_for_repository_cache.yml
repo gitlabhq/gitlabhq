@@ -1,0 +1,9 @@
+---
+name: use_primary_and_secondary_stores_for_repository_cache
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2854
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144548
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442163
+milestone: '16.10'
+group: group::scalability
+type: gitlab_com_derisk
+default_enabled: false

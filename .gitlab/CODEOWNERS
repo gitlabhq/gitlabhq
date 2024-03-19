@@ -6,8 +6,8 @@
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
-## Allows release tooling to update the Gitaly Version
-GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
+## Allows release tooling and Gitaly team members to update the Gitaly Version
+GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
 
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates
@@ -462,9 +462,10 @@ lib/gitlab/checks/**
 # Begin rake-managed-docs-block
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
+/doc/administration/audit_event_reports.md @eread
+/doc/administration/audit_event_schema.md @eread
 /doc/administration/audit_event_streaming/ @eread
-/doc/administration/audit_events.md @eread
-/doc/administration/audit_reports.md @eread
+/doc/administration/audit_event_types.md @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
 /doc/administration/backup_restore/ @axil
@@ -490,7 +491,7 @@ lib/gitlab/checks/**
 /doc/administration/git_protocol.md @msedlakjakubowski
 /doc/administration/gitaly/ @eread
 /doc/administration/housekeeping.md @eread
-/doc/administration/inactive_project_deletion.md @eread
+/doc/administration/inactive_project_deletion.md @lciutacu
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/index.md @axil
 /doc/administration/instance_limits.md @axil
@@ -562,6 +563,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/project_integration_management.md @eread @ashrafkhamis
 /doc/administration/settings/push_event_activities_limit.md @msedlakjakubowski
 /doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
+/doc/administration/settings/rate_limit_on_members_api.md @lciutacu
 /doc/administration/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/administration/settings/rate_limit_on_pipelines_creation.md @marcel.amirault @lyspin
 /doc/administration/settings/rate_limit_on_projects_api.md @lciutacu
@@ -668,7 +670,7 @@ lib/gitlab/checks/**
 /doc/api/markdown.md @msedlakjakubowski
 /doc/api/member_roles.md @jglassman1
 /doc/api/members.md @jglassman1
-/doc/api/merge_request_approvals.md @msedlakjakubowski
+/doc/api/merge_request_approvals.md @aqualls
 /doc/api/merge_request_context_commits.md @aqualls
 /doc/api/merge_requests.md @aqualls
 /doc/api/merge_trains.md @marcel.amirault @lyspin
@@ -757,9 +759,12 @@ lib/gitlab/checks/**
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
 /doc/ci/interactive_web_terminal/ @fneill
-/doc/ci/jobs/ @marcel.amirault
+/doc/ci/jobs/ci_job_token.md @marcel.amirault
 /doc/ci/jobs/index.md @marcel.amirault @lyspin
+/doc/ci/jobs/job_artifacts.md @marcel.amirault
+/doc/ci/jobs/job_artifacts_troubleshooting.md @marcel.amirault
 /doc/ci/jobs/job_control.md @marcel.amirault @lyspin
+/doc/ci/jobs/job_troubleshooting.md @marcel.amirault @lyspin
 /doc/ci/pipelines/pipeline_security.md @marcel.amirault
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @fneill
@@ -769,6 +774,7 @@ lib/gitlab/checks/**
 /doc/ci/ssh_keys/ @marcel.amirault
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
+/doc/ci/testing/code_quality_troubleshooting.md @rdickenson
 /doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
@@ -777,10 +783,10 @@ lib/gitlab/checks/**
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/govern/authentication/approvers
-/doc/development/cells/ @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/cells/ @abdwdd @alexpooley @manojmj
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
-/doc/development/database/ @gitlab-org/maintainers/database
+/doc/development/database/ @abdwdd @alexpooley @manojmj
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @sselhorn
 /doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -790,11 +796,11 @@ lib/gitlab/checks/**
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
-/doc/development/image_scaling.md @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/navigation_sidebar.md @gitlab-org/manage/foundations/engineering
 /doc/development/omnibus.md @gitlab-org/distribution
-/doc/development/organization/ @gitlab-org/tenant-scale-group/backend-engineers
+/doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/ @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/custom_roles.md @gitlab-org/govern/authorization/approvers
@@ -814,6 +820,7 @@ lib/gitlab/checks/**
 /doc/integration/akismet.md @phillipwells
 /doc/integration/arkose.md @phillipwells
 /doc/integration/datadog.md @eread @ashrafkhamis
+/doc/integration/diffblue_cover.md @marcel.amirault @lyspin
 /doc/integration/external-issue-tracker.md @eread @ashrafkhamis
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
@@ -852,6 +859,7 @@ lib/gitlab/checks/**
 /doc/tutorials/dependency_scanning.md @rdickenson
 /doc/tutorials/export_sbom.md @rdickenson
 /doc/tutorials/fuzz_testing/ @rdickenson
+/doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
@@ -859,6 +867,7 @@ lib/gitlab/checks/**
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/scan_execution_policy/ @rdickenson
 /doc/tutorials/scan_result_policy/ @rdickenson
+/doc/tutorials/scrum_events/ @msedlakjakubowski
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
@@ -872,20 +881,22 @@ lib/gitlab/checks/**
 /doc/user/compliance/compliance_center/ @eread
 /doc/user/compliance/index.md @eread
 /doc/user/custom_roles.md @jglassman1
+/doc/user/custom_roles/ @jglassman1
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/gitlab_duo_chat.md @sselhorn
+/doc/user/gitlab_duo_examples.md @sselhorn
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
+/doc/user/group/compliance_pipelines.md @eread
 /doc/user/group/contribution_analytics/ @lciutacu
 /doc/user/group/custom_project_templates.md @msedlakjakubowski
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread @ashrafkhamis
 /doc/user/group/index.md @lciutacu
-/doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/manage.md @lciutacu
@@ -935,6 +946,8 @@ lib/gitlab/checks/**
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @eread @ashrafkhamis
+/doc/user/project/integrations/beyond_identity.md @msedlakjakubowski
+/doc/user/project/integrations/git_guardian.md @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
@@ -945,6 +958,8 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/reviews/data_usage.md @sselhorn
 /doc/user/project/merge_requests/squash_and_merge.md @msedlakjakubowski
 /doc/user/project/merge_requests/status_checks.md @eread
+/doc/user/project/ml/experiment_tracking/ @sselhorn
+/doc/user/project/ml/model_registry/ @sselhorn
 /doc/user/project/organize_work_with_projects.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
@@ -958,6 +973,7 @@ lib/gitlab/checks/**
 /doc/user/project/settings/migrate_projects.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/settings/project_features_permissions.md @lciutacu
+/doc/user/project/troubleshooting.md @lciutacu
 /doc/user/project/use_project_as_go_package.md @lciutacu
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu
@@ -982,6 +998,9 @@ lib/gitlab/checks/**
 /app/policies/
 /ee/app/policies/
 /ee/app/models/members/member_role.rb
+/ee/app/models/auth/member_role_ability_loader.rb
+/ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
+/ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
 /ee/app/services/member_roles/
 /ee/app/graphql/types/member_roles/
 /ee/app/graphql/mutations/member_roles/
@@ -1157,7 +1176,6 @@ lib/gitlab/checks/**
 /ee/app/helpers/ee/access_tokens_helper.rb
 /ee/app/helpers/ee/auth_helper.rb
 /ee/app/helpers/ee/personal_access_tokens_helper.rb
-/ee/app/models/auth/
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/app/models/concerns/password_complexity.rb
 /ee/app/models/ee/personal_access_token.rb
@@ -1281,7 +1299,6 @@ lib/gitlab/checks/**
 /app/views/projects/pipeline_schedules/
 /app/views/projects/pipelines/
 /app/views/projects/triggers/
-/app/workers/build_hooks_worker.rb
 /app/workers/build_queue_worker.rb
 /app/workers/build_success_worker.rb
 /app/workers/ci_platform_metrics_update_cron_worker.rb
@@ -1405,44 +1422,20 @@ ee/lib/ee/api/entities/project.rb
 [Compliance] @gitlab-org/govern/compliance/engineering
 /app/services/audit_events/build_service.rb
 /ee/app/services/ee/audit_events/build_service.rb
-/ee/spec/services/audit_events/custom_audit_event_service_spec.rb
 /app/models/audit_event.rb
 /app/services/audit_event_service.rb
 /app/services/concerns/audit_event_save_type.rb
-/app/views/profiles/audit_log.html.haml
-/ee/app/assets/javascripts/audit_events/
-/ee/app/controllers/admin/audit_log_reports_controller.rb
-/ee/app/controllers/admin/audit_logs_controller.rb
-/ee/app/controllers/concerns/audit_events/audit_events_params.rb
-/ee/app/controllers/groups/audit_events_controller.rb
-/ee/app/controllers/projects/audit_events_controller.rb
-/ee/app/finders/audit_event_finder.rb
-/ee/app/graphql/types/audit_events/
-/ee/app/helpers/audit_events_helper.rb
-/ee/app/helpers/auditor_user_helper.rb
-/ee/app/models/audit_events/external_audit_event_destination.rb
+/ee/app/models/audit_events/
+/ee/app/models/concerns/audit_events/
 /ee/app/models/concerns/auditable.rb
 /ee/app/models/ee/audit_event.rb
-/ee/app/policies/audit_events/external_audit_event_destination_policy.rb
-/ee/app/presenters/audit_event_presenter.rb
-/ee/app/serializers/audit_event_entity.rb
-/ee/app/serializers/audit_event_serializer.rb
-/ee/app/services/ci/audit_variable_change_service.rb
 /ee/app/services/ee/audit_event_service.rb
-/ee/app/views/admin/users/_auditor_access_level_radio.html.haml
-/ee/app/views/admin/users/_auditor_user_badge.html.haml
-/ee/app/views/shared/icons/_icon_audit_events_purple.svg
-/ee/app/views/shared/promotions/_promote_audit_events.html.haml
-/ee/app/workers/audit_events/audit_event_streaming_worker.rb
-/ee/lib/api/audit_events.rb
-/ee/lib/audit/
-/ee/lib/ee/api/entities/audit_event.rb
+/ee/app/workers/audit_events/
 /ee/lib/ee/gitlab/audit/
 /lib/gitlab/audit/auditor.rb
 /lib/gitlab/audit_json_logger.rb
-/ee/app/graphql/mutations/audit_events/
 /ee/app/models/concerns/audit_events/
-/ee/app/views/projects/audit_events/
+/config/audit_events/types/type_schema.json
 
 ^[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
 /ee/app/assets/javascripts/usage_quotas/components/
@@ -1510,7 +1503,7 @@ ee/lib/ee/api/entities/project.rb
 /gems/gitlab-housekeeper/
 /keeps/
 
-^[Storage Statistics] @gitlab-org/fulfillment/utilization/be
+^[Storage Statistics] @jagood @suraj_tripathy @vij
 /app/models/namespace/root_storage_statistics.rb
 /ee/app/models/ee/namespace/root_storage_statistics.rb
 /app/models/project_statistics.rb

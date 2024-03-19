@@ -6,6 +6,7 @@ import {
   filterOldReferrersCacheEntries,
   InternalEventHandler,
   createInternalEventPayload,
+  validateAdditionalProperties,
 } from '~/tracking/utils';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { REFERRER_TTL, URLS_CACHE_STORAGE_KEY } from '~/tracking/constants';
@@ -131,6 +132,43 @@ describe('~/tracking/utils', () => {
           expect(mockFunc).not.toHaveBeenCalled();
         }
       });
+    });
+  });
+
+  describe('validateAdditionalProperties', () => {
+    it('returns undefined for allowed additional properties', () => {
+      const additionalProperties = {
+        label: 'value',
+        property: 'property',
+        value: 123,
+      };
+
+      expect(validateAdditionalProperties(additionalProperties)).toBe(undefined);
+    });
+
+    it('throws an error if unallowed additional properties are passed', () => {
+      const additionalProperties = {
+        role: 'admin',
+      };
+
+      expect(() => {
+        validateAdditionalProperties(additionalProperties);
+      }).toThrow(
+        'Allowed additional properties are label, property, value for InternalEvents tracking.\nDisallowed additional properties were provided: role.',
+      );
+    });
+
+    it('throws an error and lists all disallowed additional properties if multiple are passed', () => {
+      const additionalProperties = {
+        node: 'admin',
+        lang: 'golang',
+      };
+
+      expect(() => {
+        validateAdditionalProperties(additionalProperties);
+      }).toThrow(
+        'Allowed additional properties are label, property, value for InternalEvents tracking.\nDisallowed additional properties were provided: node, lang.',
+      );
     });
   });
 });

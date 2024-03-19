@@ -24,6 +24,8 @@
       %strong= _('Signed in')
       = s_('ProfileSession|on')
       = l(active_session.created_at, format: :short)
+      - if active_session.try(:admin_mode)
+        %strong= _('with Admin Mode')
 
   - unless is_current_session
     .gl-float-right

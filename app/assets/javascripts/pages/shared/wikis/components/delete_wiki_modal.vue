@@ -2,6 +2,7 @@
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
+import { isTemplate } from '../utils';
 
 export default {
   components: {
@@ -15,23 +16,23 @@ export default {
     deleteWikiUrl: {
       type: String,
       required: true,
-      default: '',
     },
     pageTitle: {
       type: String,
       required: true,
-      default: '',
     },
     csrfToken: {
       type: String,
       required: true,
-      default: '',
     },
   },
   computed: {
+    isTemplate,
     title() {
       return sprintf(
-        s__('WikiPageConfirmDelete|Delete page %{pageTitle}?'),
+        this.isTemplate
+          ? this.$options.i18n.deleteTemplateTitle
+          : this.$options.i18n.deletePageTitle,
         {
           pageTitle: escape(this.pageTitle),
         },
@@ -40,12 +41,22 @@ export default {
     },
     primaryProps() {
       return {
-        text: this.$options.i18n.deletePageText,
+        text: this.isTemplate
+          ? this.$options.i18n.deleteTemplateText
+          : this.$options.i18n.deletePageText,
         attributes: {
           variant: 'danger',
           'data-testid': 'confirm-deletion-button',
         },
       };
+    },
+    deleteTemplateText() {
+      return this.isTemplate
+        ? this.$options.i18n.deleteTemplateText
+        : this.$options.i18n.deletePageText;
+    },
+    modalBody() {
+      return this.isTemplate ? this.$options.i18n.modalBodyTemplate : this.$options.i18n.modalBody;
     },
     cancelProps() {
       return {
@@ -60,8 +71,12 @@ export default {
     },
   },
   i18n: {
+    deletePageTitle: s__('WikiPageConfirmDelete|Delete page "%{pageTitle}"?'),
+    deleteTemplateTitle: s__('WikiPageConfirmDelete|Delete template "%{pageTitle}"?'),
     deletePageText: s__('WikiPageConfirmDelete|Delete page'),
+    deleteTemplateText: s__('WikiPageConfirmDelete|Delete template'),
     modalBody: s__('WikiPageConfirmDelete|Are you sure you want to delete this page?'),
+    modalBodyTemplate: s__('WikiPageConfirmDelete|Are you sure you want to delete this template?'),
     cancelButtonText: __('Cancel'),
   },
   modal: {
@@ -78,7 +93,7 @@ export default {
       variant="danger"
       data-testid="delete-button"
     >
-      {{ $options.i18n.deletePageText }}
+      {{ deleteTemplateText }}
     </gl-button>
     <gl-modal
       :title="title"
@@ -88,7 +103,7 @@ export default {
       size="sm"
       @ok="onSubmit"
     >
-      {{ $options.i18n.modalBody }}
+      {{ modalBody }}
       <form ref="form" :action="deleteWikiUrl" method="post" class="js-requires-input">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />

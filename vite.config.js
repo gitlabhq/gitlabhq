@@ -16,6 +16,7 @@ import {
 } from './config/webpack.constants';
 /* eslint-disable import/extensions */
 import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
+import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 /* eslint-enable import/extensions */
 
 let viteGDKConfig;
@@ -107,7 +108,8 @@ export default defineConfig({
     ],
   },
   plugins: [
-    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr === null }),
+    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
@@ -166,5 +168,8 @@ export default defineConfig({
               },
             ],
           },
+  },
+  worker: {
+    format: 'es',
   },
 });

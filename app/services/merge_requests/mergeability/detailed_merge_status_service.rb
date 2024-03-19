@@ -33,7 +33,7 @@ module MergeRequests
       attr_reader :merge_request, :checks, :ci_check
 
       def preparing?
-        merge_request.preparing? && !merge_request.merge_request_diff.persisted?
+        merge_request.preparing?
       end
 
       def checking?
@@ -48,7 +48,7 @@ module MergeRequests
         strong_memoize(:check_results) do
           merge_request
             .execute_merge_checks(
-              MergeRequest.mergeable_state_checks,
+              MergeRequest.all_mergeability_checks,
               params: { skip_ci_check: true }
             )
         end

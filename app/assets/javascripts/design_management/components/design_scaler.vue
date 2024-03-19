@@ -1,5 +1,6 @@
 <script>
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 
 const DEFAULT_SCALE = 1;
 const MIN_SCALE = 1;
@@ -22,9 +23,6 @@ export default {
     };
   },
   computed: {
-    disableReset() {
-      return this.scale <= MIN_SCALE;
-    },
     disableDecrease() {
       return this.scale === DEFAULT_SCALE;
     },
@@ -34,13 +32,15 @@ export default {
     stepSize() {
       return (this.maxScale - MIN_SCALE) / ZOOM_LEVELS;
     },
+    scaleLabel() {
+      return sprintf(__(`%{scaleValue}%%`), { scaleValue: Math.ceil(this.scale * 100) });
+    },
   },
   methods: {
     setScale(scale) {
       if (scale < MIN_SCALE) {
         return;
       }
-
       this.scale = Math.round(scale * 100) / 100;
       this.$emit('scale', this.scale);
     },
@@ -49,9 +49,6 @@ export default {
     },
     decrementScale() {
       this.setScale(Math.max(this.scale - this.stepSize, MIN_SCALE));
-    },
-    resetScale() {
-      this.setScale(DEFAULT_SCALE);
     },
   },
 };
@@ -65,7 +62,9 @@ export default {
       :aria-label="__('Decrease')"
       @click="decrementScale"
     />
-    <gl-button icon="redo" :disabled="disableReset" :aria-label="__('Reset')" @click="resetScale" />
+    <span data-testid="scale-value" class="gl-p-3 gl-bg-white gl-font-sm gl-border-t gl-border-b">{{
+      scaleLabel
+    }}</span>
     <gl-button
       icon="plus"
       :disabled="disableIncrease"

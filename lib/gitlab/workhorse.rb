@@ -347,7 +347,7 @@ module Gitlab
               commit_id: metadata['CommitId'],
               prefix: metadata['ArchivePrefix'],
               format: format,
-              path: path.presence || "",
+              path: Gitlab::EncodingHelper.encode_binary(path.presence || ""),
               include_lfs_blobs: true
             ).to_proto
           )

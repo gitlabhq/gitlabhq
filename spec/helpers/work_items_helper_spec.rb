@@ -25,12 +25,18 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   describe '#work_items_list_data' do
     let_it_be(:group) { build(:group) }
 
-    subject(:work_items_list_data) { helper.work_items_list_data(group) }
+    let(:current_user) { double.as_null_object }
+
+    subject(:work_items_list_data) { helper.work_items_list_data(group, current_user) }
 
     it 'returns expected data' do
+      allow(helper).to receive(:current_user).and_return(current_user)
+
       expect(work_items_list_data).to include(
         {
-          full_path: group.full_path
+          full_path: group.full_path,
+          initial_sort: current_user&.user_preference&.issues_sort,
+          is_signed_in: current_user.present?.to_s
         }
       )
     end

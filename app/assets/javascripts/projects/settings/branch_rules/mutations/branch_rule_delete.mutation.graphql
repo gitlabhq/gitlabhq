@@ -1,0 +1,5 @@
+mutation branchRuleDelete($input: BranchRuleDeleteInput!) {
+  branchRuleDelete(input: $input) {
+    errors
+  }
+}

@@ -200,6 +200,33 @@ audit-event-types-verify:
   script:
     - bundle exec rake gitlab:audit_event_types:check_docs
 
+custom-roles-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .custom-roles:rules:custom-roles-verify
+  stage: lint
+  needs: []
+  script:
+    - bundle exec rake gitlab:custom_roles:check_docs
+
+templates-shellcheck:
+  extends:
+    - .ci-templates:rules:shellcheck
+    - .default-before_script
+    - .default-retry
+    - .ruby-cache
+    - .use-pg16
+  stage: lint
+  needs:
+    - setup-test-env
+  script:
+    - apt update && apt install -y shellcheck=0.9.0-1
+    - bundle exec scripts/lint_templates_bash.rb
+
 ping-appsec-for-sast-findings:
   stage: lint
   image: alpine:latest

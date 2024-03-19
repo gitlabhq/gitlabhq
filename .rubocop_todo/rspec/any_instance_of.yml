@@ -332,7 +332,6 @@ RSpec/AnyInstanceOf:
     - 'spec/uploaders/records_uploads_spec.rb'
     - 'spec/uploaders/workers/object_storage/migrate_uploads_worker_spec.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'
-    - 'spec/workers/build_hooks_worker_spec.rb'
     - 'spec/workers/ci/build_schedule_worker_spec.rb'
     - 'spec/workers/ci/daily_build_group_report_results_worker_spec.rb'
     - 'spec/workers/clusters/cleanup/project_namespace_worker_spec.rb'

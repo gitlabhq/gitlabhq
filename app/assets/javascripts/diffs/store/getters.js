@@ -72,6 +72,25 @@ export const diffHasExpandedDiscussions = () => (diff) => {
 };
 
 /**
+ * Checks if every diff has every discussion open
+ * @returns {Boolean}
+ */
+export const allDiffDiscussionsExpanded = (state) => {
+  return state.diffFiles.every((diff) => {
+    const highlightedLines = diff[INLINE_DIFF_LINES_KEY];
+    if (highlightedLines.length) {
+      return highlightedLines
+        .filter((l) => l.discussions.length >= 1)
+        .every((l) => l.discussionsExpanded);
+    }
+    if (diff.viewer.name === 'image') {
+      return diff.discussions.every((discussion) => discussion.expandedOnDiff);
+    }
+    return true;
+  });
+};
+
+/**
  * Checks if the diff has any discussion
  * @param {Boolean} diff
  * @returns {Boolean}

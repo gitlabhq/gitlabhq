@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | CI/CD variable                                       | Description        |
 |------------------------------------------------------|--------------------|
 | `SECURE_ANALYZERS_PREFIX`                            | Specify the Docker registry base address from which to download the analyzer. |
-| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `2`. |
+| `DAST_API_VERSION`                                   | Specify DAST API container version. Defaults to `3`. |
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
 | `DAST_API_API_PORT`                                  | Specify the communication port number used by DAST API engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
 > - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
@@ -378,7 +378,7 @@ For example, an email with the reason `assigned` has this sentence in the footer
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 An [on-call alert](../../operations/incident_management/oncall_schedules.md)
 notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
@@ -392,7 +392,7 @@ notification email can have one of [the alert's](../../operations/incident_manag
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
 notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:

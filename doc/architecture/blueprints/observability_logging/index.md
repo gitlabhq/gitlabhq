@@ -600,7 +600,7 @@ All the existing logging libraries should instead use [bridge API](https://opent
 The majority of languages have already made the required adjustments, except for Go.
 There is only very minimal support for GO ([repo](https://github.com/agoda-com/opentelemetry-go), [repo](https://github.com/agoda-com/opentelemetry-logs-go)).
 The official Uber Zap repository has barely an [issue](https://github.com/uber-go/zap/issues/654) about emitting events in spans.
-Opentelemetry [status page](https://opentelemetry.io/docs/instrumentation/go/) states that Go support as not implemented yet.
+Opentelemetry [status page](https://opentelemetry.io/docs/languages/go/) states that Go support as not implemented yet.
 
 The lack of native OTEL SDK support for emitting logs in Go may be an issue for us if we want to dogfood logging.
 We could work around these limitations in large extent by parsing log files using [filelogreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/filelogreceiver) or [fluentd](https://docs.fluentbit.io/manual/pipeline/outputs/opentelemetry).

@@ -47,7 +47,14 @@ module Users
     end
 
     def log_event(user)
-      Gitlab::AppLogger.info(message: "User instance access request approved", user: user.username.to_s, email: user.email.to_s, approved_by: current_user.username.to_s, ip_address: current_user.current_sign_in_ip.to_s)
+      Gitlab::AppLogger.info(
+        message: "User instance access request approved",
+        username: user.username.to_s,
+        user_id: user.id,
+        email: user.email.to_s,
+        approved_by: current_user.username.to_s,
+        ip_address: current_user.current_sign_in_ip.to_s
+      )
     end
   end
 end

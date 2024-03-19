@@ -12,7 +12,7 @@ module QA
       DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
 
       class << self
-        delegate :configure!, :move_regenerated_report, :download_report, :upload_report, to: :new
+        delegate :configure!, :move_regenerated_report, :download_report, :upload_report, :merged_report, to: :new
       end
 
       def initialize(report_name = nil)
@@ -103,6 +103,16 @@ module QA
           client.put_object(BUCKET, file, JSON.pretty_generate(report))
         rescue StandardError => e
           logger.error("Failed to upload knapsack report for '#{name}'. Error: #{e}")
+        end
+      end
+
+      # Single merged knapsack report
+      #
+      # @return [Hash]
+      def merged_report
+        logger.info("Fetching all knapsack reports from GCS '#{BUCKET}' bucket")
+        client.list_objects(BUCKET).items.each_with_object({}) do |report, hash|
+          hash.merge!(JSON.parse(client.get_object(BUCKET, report.name)[:body]))
         end
       end
 

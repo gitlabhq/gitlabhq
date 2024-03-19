@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
@@ -29,8 +29,8 @@ A deploy key has a defined scope when it is created:
 
 - **Project deploy key:** Access is limited to the selected project.
 - **Public deploy key:** Access can be granted to _any_ project in a GitLab instance. Access to each
-    project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
-    the Maintainer role.
+  project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
+  the Maintainer role.
 
 You cannot change a deploy key's scope after creating it.
 
@@ -109,7 +109,7 @@ name and permissions. If the deploy key is enabled in more than one project, you
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 

@@ -9,6 +9,14 @@ class DeviseMailer < Devise::Mailer
   helper EmailsHelper
   helper ApplicationHelper
   helper RegistrationsHelper
+  include Gitlab::Email::SingleRecipientValidator
+
+  # Override devise_mail so that all emails, not just those redefined
+  # here, can only be sent to a single to: address.
+  def devise_mail(record, action, opts = {}, &block)
+    validate_single_recipient_in_opts!(opts)
+    super
+  end
 
   def password_change_by_admin(record, opts = {})
     devise_mail(record, :password_change_by_admin, opts)

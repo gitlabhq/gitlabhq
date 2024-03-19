@@ -8,18 +8,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
   describe 'GET /usage_data/service_ping' do
     let(:endpoint) { '/usage_data/service_ping' }
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(usage_data_api: false)
-      end
-
-      it 'returns not_found' do
-        get api(endpoint)
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'without authentication' do
       it 'returns 401 response' do
         get api(endpoint)
@@ -77,22 +65,11 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
     context 'without CSRF token' do
       it 'returns forbidden' do
-        stub_feature_flags(usage_data_api: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
 
         post api(endpoint, user), params: { event: known_event }
 
         expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'usage_data_api feature not enabled' do
-      it 'returns not_found' do
-        stub_feature_flags(usage_data_api: false)
-
-        post api(endpoint, user), params: { event: known_event }
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -106,7 +83,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
     context 'with authentication' do
       before do
-        stub_feature_flags(usage_data_api: true)
         stub_application_setting(usage_ping_enabled: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
@@ -122,7 +98,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       context 'with correct params' do
         before do
           stub_application_setting(usage_ping_enabled: true)
-          stub_feature_flags(usage_data_api: true)
+
           allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
         end
 
@@ -158,22 +134,11 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
     context 'without CSRF token' do
       it 'returns forbidden' do
-        stub_feature_flags(usage_data_api: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
 
         post api(endpoint, user), params: { event: known_event }
 
         expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'usage_data_api feature not enabled' do
-      it 'returns not_found' do
-        stub_feature_flags(usage_data_api: false)
-
-        post api(endpoint, user), params: { event: known_event }
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -187,7 +152,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
     context 'with authentication' do
       before do
-        stub_feature_flags(usage_data_api: true)
         stub_application_setting(usage_ping_enabled: true)
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
@@ -241,16 +205,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
-    context 'usage_data_api feature not enabled' do
-      it 'returns not_found' do
-        stub_feature_flags(usage_data_api: false)
-
-        post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     context 'without authentication' do
       it 'returns 401 response' do
         post api(endpoint), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
@@ -262,6 +216,12 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     context 'with authentication' do
       let_it_be(:namespace) { create(:namespace) }
       let_it_be(:project) { create(:project) }
+      let_it_be(:additional_properties) do
+        {
+          label: 'label3',
+          property: 'admin'
+        }
+      end
 
       before do
         stub_application_setting(usage_ping_enabled: true)
@@ -271,11 +231,42 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       context 'with correct params' do
         it 'returns status ok' do
           expect(Gitlab::InternalEvents).to receive(:track_event)
-            .with(known_event, send_snowplow_event: false, user: user, namespace: namespace, project: project)
+            .with(
+              known_event,
+              send_snowplow_event: false,
+              user: user,
+              namespace: namespace,
+              project: project,
+              additional_properties: additional_properties
+            )
 
-          post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
+          params = {
+            event: known_event,
+            namespace_id: namespace.id,
+            project_id: project.id,
+            additional_properties: additional_properties
+          }
+          post api(endpoint, user), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'with no additional_properties' do
+          it 'returns status ok' do
+            expect(Gitlab::InternalEvents).to receive(:track_event)
+              .with(
+                known_event,
+                send_snowplow_event: false,
+                user: user,
+                namespace: namespace,
+                project: project,
+                additional_properties: {}
+              )
+
+            post api(endpoint, user), params: { event: known_event, namespace_id: namespace.id, project_id: project.id }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
         end
       end
     end

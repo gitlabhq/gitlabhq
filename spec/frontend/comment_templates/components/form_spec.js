@@ -76,6 +76,7 @@ describe('Comment templates form component', () => {
         id: null,
         content: 'Test content',
         name: 'Test',
+        namespaceId: undefined,
       });
       expect(trackingSpy).toHaveBeenCalledWith(
         undefined,
@@ -167,6 +168,7 @@ describe('Comment templates form component', () => {
         id: '1',
         content: 'Test content',
         name: 'Test',
+        namespaceId: undefined,
       });
     });
   });

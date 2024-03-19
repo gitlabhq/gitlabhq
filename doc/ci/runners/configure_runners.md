@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -139,6 +139,10 @@ and the runner authentication token may be exposed. This means that anyone who r
 on an _instance runner_ can access another user's code that runs on the runner.
 Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
+
+## Configuring long polling
+
+To reduce job queueing times and load on your GitLab server, configure [long polling](long_polling.md).
 
 ### Using instance runners in forked projects
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -135,7 +135,7 @@ To create the **UX workflow** issue board:
 1. Clear the **Show the Open list** and **Show the Closed list** checkboxes.
 1. Select **Create board**. You should see an empty board.
 1. Create a list for the `Workflow::Ready for design` label:
-   1. In the upper-left corner of the issue board page, select **Create list**.
+   1. In the upper-right corner of the issue board page, select **Create list**.
    1. In the column that appears, from the **Value** dropdown list, select the `Workflow::Ready for design` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::Design` and `Workflow::Ready for development`.
@@ -152,7 +152,7 @@ To create the **Frontend workflow** board:
 1. Next to **Labels**, select **Edit** and select the `Frontend` label.
 1. Select **Create board**.
 1. Create a list for the `Workflow::Ready for development` label:
-   1. In the upper-left corner of the issue board page, select **Create list**.
+   1. In the upper-right corner of the issue board page, select **Create list**.
    1. In the column that appeared, from the **Value** dropdown list, select the `Workflow::Ready for development` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `Workflow::In development` and `Workflow::Complete`.

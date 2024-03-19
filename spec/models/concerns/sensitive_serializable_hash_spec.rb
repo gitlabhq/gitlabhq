@@ -55,7 +55,7 @@ RSpec.describe SensitiveSerializableHash do
             expect(model.attributes).to include(attribute) # double-check the attribute does exist
 
             expect(model.serializable_hash).not_to include(attribute)
-            expect(model.to_json).not_to include(attribute)
+            expect(model.to_json).not_to include(attribute.to_json)
             expect(model.as_json).not_to include(attribute)
           end
         end

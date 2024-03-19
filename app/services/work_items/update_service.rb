@@ -18,6 +18,7 @@ module WorkItems
       updated_work_item = super
 
       if updated_work_item.valid?
+        publish_event(work_item)
         success(payload(work_item))
       else
         error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))
@@ -79,6 +80,19 @@ module WorkItems
       Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_labels_changed_action(
         author: current_user
       )
+    end
+
+    def publish_event(work_item)
+      event = WorkItems::WorkItemUpdatedEvent.new(data: {
+        id: work_item.id,
+        namespace_id: work_item.namespace_id,
+        updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
+        updated_widgets: @widget_params&.keys&.map(&:to_s)
+      }.tap(&:compact_blank!))
+
+      work_item.run_after_commit_or_now do
+        Gitlab::EventStore.publish(event)
+      end
     end
   end
 end

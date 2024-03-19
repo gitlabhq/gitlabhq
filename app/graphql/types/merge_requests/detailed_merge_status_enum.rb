@@ -41,10 +41,7 @@ module Types
             description: 'Merge request must be approved before merging.'
       value 'BLOCKED_STATUS',
             value: :merge_request_blocked,
-            description: 'Merge request dependencies have been merged.'
-      value 'POLICIES_DENIED',
-            value: :policies_denied,
-            description: 'There are denied policies for the merge request.'
+            description: 'Merge request dependencies must be merged.'
       value 'EXTERNAL_STATUS_CHECKS',
             value: :status_checks_must_pass,
             description: 'Status checks must pass.'
@@ -54,6 +51,12 @@ module Types
       value 'JIRA_ASSOCIATION',
             value: :jira_association_missing,
             description: 'Either the title or description must reference a Jira issue.'
+      value 'CONFLICT',
+            value: :conflict,
+            description: 'There are conflicts between the source and target branches.'
+      value 'NEED_REBASE',
+            value: :need_rebase,
+            description: 'Merge request needs to be rebased.'
     end
   end
 end

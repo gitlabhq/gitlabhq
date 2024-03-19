@@ -97,7 +97,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
 
     it 'shows "Pipeline syntax is correct" in the lint widget' do
-      page.within('[data-testid="validation-segment"]') do
+      within_testid('validation-segment') do
         expect(page).to have_content("Pipeline syntax is correct")
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     it 'shows the graph in the visualization tab' do
       click_link "Visualize"
 
-      page.within('[data-testid="graph-container"') do
+      within_testid('graph-container') do
         expect(page).to have_content("job_a")
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     it 'renders the merged yaml in the full configuration tab' do
       click_link "Full configuration"
 
-      page.within('[data-testid="merged-tab"') do
+      within_testid('merged-tab') do
         expect(page).to have_content("job_a")
       end
     end
@@ -135,7 +135,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
 
     it 'shows "Syntax is invalid" in the lint widget' do
-      page.within('[data-testid="validation-segment"]') do
+      within_testid('validation-segment') do
         expect(page).to have_content("This GitLab CI configuration is invalid")
       end
     end
@@ -159,7 +159,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     it 'renders merged yaml config' do
       click_link "Full configuration"
 
-      page.within('[data-testid="merged-tab"') do
+      within_testid('merged-tab') do
         expect(page).to have_content("job3")
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     it 'renders an error in the merged yaml tab' do
       click_link "Full configuration"
 
-      page.within('[data-testid="merged-tab"') do
+      within_testid('merged-tab') do
         expect(page).not_to have_content("job_a")
         expect(page).to have_content("Could not load full configuration content")
       end
@@ -178,7 +178,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
   shared_examples 'default branch switcher behavior' do
     it 'displays current branch' do
-      page.within('[data-testid="branch-selector"]') do
+      within_testid('branch-selector') do
         expect(page).to have_content(default_branch)
         expect(page).not_to have_content(other_branch)
       end
@@ -187,7 +187,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     it 'displays updated current branch after switching branches' do
       switch_to_branch(other_branch)
 
-      page.within('[data-testid="branch-selector"]') do
+      within_testid('branch-selector') do
         expect(page).to have_content(other_branch)
         expect(page).not_to have_content(default_branch)
       end
@@ -202,7 +202,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
       click_button 'Commit changes'
 
-      page.within('[data-testid="branch-selector"]') do
+      within_testid('branch-selector') do
         expect(page).to have_content('new_branch')
         expect(page).not_to have_content(default_branch)
       end
@@ -216,9 +216,9 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   describe 'Branch Switcher' do
     def switch_to_branch(branch)
       # close button for the popover
-      find('[data-testid="close-button"]').click
+      find_by_testid('close-button').click
 
-      page.within '[data-testid="branch-selector"]' do
+      within_testid 'branch-selector' do
         toggle_listbox
         select_listbox_item(branch, exact_text: true)
       end

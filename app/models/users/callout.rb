@@ -28,7 +28,7 @@ module Users
       registration_enabled_callout: 25,
       new_user_signups_cap_reached: 26,          # EE-only
       unfinished_tag_cleanup_callout: 27,
-      eoa_bronze_plan_banner: 28,                # EE-only
+      # 28 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146309
       pipeline_needs_banner: 29,
       pipeline_needs_hover_tip: 30,
       web_ide_ci_environments_guidance: 31,
@@ -83,7 +83,8 @@ module Users
       code_suggestions_ga_owner_alert: 81, # EE-only
       product_analytics_dashboard_feedback: 82, # EE-only
       joining_a_project_alert: 83, # EE-only
-      transition_to_jihu_callout: 84
+      transition_to_jihu_callout: 84,
+      summarize_code_changes: 85 # EE-only
     }
 
     validates :feature_name,

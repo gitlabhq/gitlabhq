@@ -27,10 +27,18 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
   describe '#update' do
     subject { described_class.new(widget: widget, current_user: user).before_update_in_transaction(params: params) }
 
-    context 'when parent and children params are present' do
-      let(:params) { { parent: parent_work_item, children: [child_work_item] } }
+    context 'when multiple params are present' do
+      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+        let(:params) { { parent: parent_work_item, children: [child_work_item] } }
+      end
 
-      it_behaves_like 'raises a WidgetError', 'A Work Item can be a parent or a child, but not both.'
+      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+        let(:params) { { parent: parent_work_item, remove_child: child_work_item } }
+      end
+
+      it_behaves_like 'raises a WidgetError', 'One and only one of children, parent or remove_child is required' do
+        let(:params) { { remove_child: child_work_item, children: [child_work_item] } }
+      end
     end
 
     context 'when invalid params are present' do
@@ -101,6 +109,16 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
 
               it_behaves_like 'raises a WidgetError', described_class::CHILDREN_REORDERING_ERROR
             end
+          end
+        end
+
+        context 'with remove_child param' do
+          let(:params) { { remove_child: [child_work_item] } }
+
+          it 'correctly removes the work item child' do
+            expect { subject }.to change { WorkItems::ParentLink.count }.by(-1)
+
+            expect(work_item.reload.work_item_children).to be_empty
           end
         end
 

@@ -936,6 +936,9 @@
               },
               "needs": {
                 "$ref": "#/definitions/rulesNeeds"
+              },
+              "interruptible": {
+                "$ref": "#/definitions/interruptible"
               }
             }
           },
@@ -1044,8 +1047,9 @@
           "oneOf": [
             {
               "type": [
-                "string",
-                "number"
+                "boolean",
+                "number",
+                "string"
               ]
             },
             {
@@ -1088,8 +1092,9 @@
           "oneOf": [
             {
               "type": [
-                "string",
-                "number"
+                "boolean",
+                "number",
+                "string"
               ]
             },
             {
@@ -1116,8 +1121,9 @@
       "patternProperties": {
         ".*": {
           "type": [
-            "string",
-            "number"
+            "boolean",
+            "number",
+            "string"
           ]
         },
         "additionalProperties": false
@@ -1535,6 +1541,24 @@
                   "items": {
                     "$ref": "#/definitions/retry_errors"
                   }
+                }
+              ]
+            },
+            "exit_codes": {
+              "markdownDescription": "Either a single or array of exit codes to trigger job retry on. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#retryexit_codes).",
+              "oneOf": [
+                {
+                  "description": "Retry when the job exit code is included in the array's values.",
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "description": "Retry when the job exit code is equal to.",
+                  "type": "integer"
                 }
               ]
             }

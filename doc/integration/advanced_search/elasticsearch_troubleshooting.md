@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Use the following information to troubleshoot Elasticsearch issues.
 
@@ -219,7 +219,7 @@ If the results:
 - Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 NOTE:
-The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
+The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
@@ -431,7 +431,7 @@ There is also an easy way to check it automatically with `sudo gitlab-rake gitla
 [413] {"Message":"Request size exceeded 10485760 bytes"}
 ```
 
-This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
+This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10 MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
 
 AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) on the maximum size of HTTP request payloads based on the size of the underlying instance. Set the maximum bulk request size to a value lower than 10 MiB.
 

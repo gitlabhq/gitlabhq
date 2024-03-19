@@ -35,10 +35,6 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
-ci_job_artifacts:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_job_token_group_scope_links:
   - table: users
     column: added_by_id
@@ -153,10 +149,6 @@ ci_sources_projects:
   - table: projects
     column: source_project_id
     on_delete: async_delete
-ci_stages:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_subscriptions_projects:
   - table: projects
     column: downstream_project_id
@@ -242,6 +234,9 @@ member_approvals:
   - table: users
     column: reviewed_by_id
     on_delete: async_nullify
+  - table: users
+    column: user_id
+    on_delete: async_delete
 members:
   - table: users
     column: user_id
@@ -294,9 +289,17 @@ p_ci_builds_metadata:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_job_artifacts:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
+    on_delete: async_delete
+p_ci_stages:
+  - table: projects
+    column: project_id
     on_delete: async_delete
 packages_build_infos:
   - table: ci_pipelines
@@ -382,6 +385,13 @@ vulnerability_occurrence_pipelines:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_delete
+vulnerability_occurrences:
+  - table: ci_pipelines
+    column: initial_pipeline_id
+    on_delete: async_nullify
+  - table: ci_pipelines
+    column: latest_pipeline_id
+    on_delete: async_nullify
 vulnerability_state_transitions:
   - table: ci_pipelines
     column: state_changed_at_pipeline_id

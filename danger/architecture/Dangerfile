@@ -15,7 +15,7 @@ BLUEPRINT_LONG_MESSAGE = <<~MSG
 
 #{BLUEPRINT_SHORT_MESSAGE}
 
-Following files, that may require the additional review, have been changed:
+The following files, which might require the additional review, have been changed:
 #{helper.markdown_list(blueprint_changes.to_set)}
 MSG
 

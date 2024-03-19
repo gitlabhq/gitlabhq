@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -40,7 +40,7 @@ Prerequisites:
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+    see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 - Your username must be between 2 and 255 characters in length, and must not:
   - Contain special characters or emoji.
   - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
@@ -340,6 +340,9 @@ You can follow or unfollow users from either:
 
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
+
+In [GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/441774),
+blocked users don't appear in the followers list on user profiles.
 
 ### Disable following and being followed by other users
 

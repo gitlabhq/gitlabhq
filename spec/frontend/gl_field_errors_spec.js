@@ -28,7 +28,7 @@ describe('GL Style Field Errors', () => {
     expect(testContext.fieldErrors).toBeDefined();
     const { inputs } = testContext.fieldErrors.state;
 
-    expect(inputs.length).toBe(5);
+    expect(inputs.length).toBe(6);
   });
 
   it('should ignore elements with custom error handling', () => {
@@ -124,5 +124,16 @@ describe('GL Style Field Errors', () => {
 
     expect(noTitleErrorElem.text()).toBe('This field is required.');
     expect(hasTitleErrorElem.text()).toBe('Please provide a valid email address.');
+  });
+
+  it('sanitizes error messages before appending them to DOM', () => {
+    testContext.$form.submit();
+
+    const trackedInputs = testContext.fieldErrors.state.inputs;
+    const xssInput = trackedInputs[5];
+
+    const xssErrorElem = xssInput.inputElement.siblings('.gl-field-error');
+
+    expect(xssErrorElem.html()).toBe('xss:');
   });
 });

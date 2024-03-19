@@ -6,7 +6,7 @@
 # Build and publish a tag/branch to Gitlab Docker Registry using Kaniko and Gitlab Docker executor.
 # Kaniko can build Docker images without using Docker-In-Docker and it's permission
 # drawbacks. No additional configuration required.
-kaniko-build:
+.kaniko-build:
   variables:
     # Additional options for Kaniko executor.
     # For more details see https://github.com/GoogleContainerTools/kaniko/blob/master/README.md#additional-flags
@@ -73,3 +73,6 @@ kaniko-build:
     - if: $CONTAINERFILE_PATH
     # custom build context without an explicit Dockerfile path
     - if: $KANIKO_BUILD_CONTEXT != $CI_PROJECT_DIR
+
+kaniko-build:
+  extends: .kaniko-build

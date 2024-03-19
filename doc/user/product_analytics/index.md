@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
@@ -31,9 +31,9 @@ To leave feedback about Product Analytics bugs or functionality:
 
 Product analytics uses several tools:
 
-- [**Snowplow**](https://docs.snowplow.io/docs) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
 - [**ClickHouse**](../../integration/clickhouse.md) - A database suited to store, query, and retrieve analytical data.
-- [**Cube**](https://cube.dev/docs/) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
+- [**Cube**](https://cube.dev/docs/product/introduction) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
 The following diagram illustrates the product analytics flow:
 
@@ -98,8 +98,14 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Analytics**.
-1. Expand **Configure** and enter the configuration values.
+1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
+
+### Data retention
+
+If GitLab manages your product analytics instance, then your analytics data will be retained for 1 year.
+
+You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
 
 ## Onboard a GitLab project
 

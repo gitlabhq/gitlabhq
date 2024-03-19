@@ -26,12 +26,6 @@ module Backup
         raise NotImplementedError
       end
 
-      # a string returned here will be displayed to the user before calling #restore
-      def pre_restore_warning = ''
-
-      # a string returned here will be displayed to the user after calling #restore
-      def post_restore_warning = ''
-
       private
 
       attr_reader :progress

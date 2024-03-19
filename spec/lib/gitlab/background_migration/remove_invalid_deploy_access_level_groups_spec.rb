@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::RemoveInvalidDeployAccessLevelGroups,
-  :migration, schema: 20230519011151, feature_category: :continuous_delivery do
+  :migration, schema: 20230616082958, feature_category: :continuous_delivery do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:project) { table(:projects).create!(namespace_id: namespace.id, project_namespace_id: namespace.id) }
   let!(:group) { table(:namespaces).create!(name: 'group', path: 'group', type: 'Group') }

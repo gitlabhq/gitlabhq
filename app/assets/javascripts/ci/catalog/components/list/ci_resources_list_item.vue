@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlBadge, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
@@ -15,7 +15,7 @@ export default {
   components: {
     GlAvatar,
     GlBadge,
-    GlIcon,
+    GlButton,
     GlLink,
     GlSprintf,
   },
@@ -32,11 +32,17 @@ export default {
     authorName() {
       return this.latestVersion.author.name;
     },
+    authorUsername() {
+      return this.latestVersion.author.username;
+    },
+    authorId() {
+      return getIdFromGraphQLId(this.latestVersion.author.id);
+    },
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
     },
     componentNames() {
-      const components = this.resource.latestVersion?.components?.nodes;
+      const components = this.latestVersion?.components?.nodes;
       return components?.map((component) => component.name).join(', ') || null;
     },
     detailsPageHref() {
@@ -52,22 +58,22 @@ export default {
       return getIdFromGraphQLId(this.resource.id);
     },
     formattedDate() {
-      return formatDate(this.latestVersion?.releasedAt);
+      return formatDate(this.latestVersion?.createdAt);
     },
     hasComponents() {
       return Boolean(this.componentNames);
     },
     hasReleasedVersion() {
-      return Boolean(this.latestVersion?.releasedAt);
+      return Boolean(this.latestVersion?.createdAt);
     },
     latestVersion() {
-      return this.resource?.latestVersion || {};
+      return this.resource?.versions?.nodes[0] || [];
     },
     name() {
       return this.latestVersion?.name || this.$options.i18n.unreleased;
     },
-    releasedAt() {
-      return getTimeago().format(this.latestVersion?.releasedAt);
+    createdAt() {
+      return getTimeago().format(this.latestVersion?.createdAt);
     },
     resourceId() {
       return cleanLeadingSeparator(this.resource.webPath);
@@ -80,6 +86,9 @@ export default {
     },
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
+    },
+    starsHref() {
+      return this.resource.starrersPath;
     },
   },
   methods: {
@@ -126,17 +135,18 @@ export default {
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
           <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ name }}</gl-badge>
-          <span class="gl-display-flex gl-align-items-center gl-ml-5">
-            <span
-              v-gl-tooltip.top
-              :title="starCountText"
-              class="gl--flex-center"
-              data-testid="stats-favorites"
-            >
-              <gl-icon name="star-o" :size="14" class="gl-mr-2" />
-              <span class="gl-mr-3">{{ starCount }}</span>
-            </span>
-          </span>
+          <gl-button
+            v-gl-tooltip.top
+            data-testid="stats-favorites"
+            class="gl-reset-color!"
+            icon="star-o"
+            :title="starCountText"
+            :href="starsHref"
+            size="small"
+            variant="link"
+          >
+            {{ starCount }}
+          </gl-button>
         </div>
       </div>
       <div
@@ -158,11 +168,18 @@ export default {
             <gl-sprintf :message="$options.i18n.releasedMessage">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">
-                  {{ releasedAt }}
+                  {{ createdAt }}
                 </span>
               </template>
               <template #author>
-                <gl-link :href="authorProfileUrl" data-testid="user-link">
+                <gl-link
+                  :data-name="authorName"
+                  :data-user-id="authorId"
+                  :data-username="authorUsername"
+                  data-testid="user-link"
+                  :href="authorProfileUrl"
+                  class="js-user-link"
+                >
                   <span>{{ authorName }}</span>
                 </gl-link>
               </template>

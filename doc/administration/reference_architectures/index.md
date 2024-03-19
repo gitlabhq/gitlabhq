@@ -277,6 +277,32 @@ As a general rule, you should have robust monitoring in place to measure the imp
 inform any changes needed to be made. It's also strongly encouraged for you to reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/)
 for further guidance.
 
+### Load Balancers
+
+The Reference Architectures make use of up to two Load Balancers depending on the class:
+
+- External Load Balancer - Serves traffic to any external facing components, primarily Rails.
+- Internal Load Balancer - Serves traffic to select internal components that have been deployed in an HA fashion such as Praefect or PgBouncer.
+
+The specifics on which load balancer to use, or its exact configuration is beyond the scope of GitLab documentation. The most common options
+are to set up load balancers on machine nodes or to use a service such as one offered by Cloud Providers. If deploying a Cloud Native Hybrid environment the Charts can handle the set-up of the External Load Balancer via Kubernetes Ingress.
+
+For each Reference Architecture class a base machine size has given to help get you started if you elect to deploy directly on machines, but these may need to be adjusted accordingly depending on the load balancer used and amount of workload. Of note machines can have varying [network bandwidth](#network-bandwidth) that should also be taken into consideration.
+
+Note the following sections of additional guidance for Load Balancers.
+
+#### Balancing algorithm
+
+We recommend that a least-connection-based load balancing algorithm or equivalent is used wherever possible to ensure equal spread of calls to the nodes and good performance.
+
+We don’t recommend the use of round-robin algorithms as they are known to not spread connections equally in practice.
+
+#### Network Bandwidth
+
+The total network bandwidth available to a load balancer when deployed on a machine can vary notably across Cloud Providers. In particular some Cloud Providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
+
+The network bandwidth your environment's load balancers will require is dependent on numerous factors such as data shape and workload. The recommended base sizes for each Reference Architecture class have been selected to give a good level of bandwidth with adequate headroom but in some scenarios, such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
+
 ### No swap
 
 Swap is not recommended in the reference architectures. It's a failsafe that impacts performance greatly. The
@@ -447,7 +473,7 @@ This also applies to other third-party stateful components such as Postgres and 
 Deploying one GitLab environment over multiple data centers is not supported due to potential split brain edge cases
 if a data center were to go down. For example, several components of the GitLab setup, namely Consul, Redis Sentinel and Praefect require an odd number quorum to function correctly and splitting over multiple data centers can impact this notably.
 
-For deploying GitLab over multiple data centers or regions we offer [GitLab Geo](https://about.gitlab.com/solutions/geo/) as a comprehensive solution.
+For deploying GitLab over multiple data centers or regions we offer [GitLab Geo](../geo/index.md) as a comprehensive solution.
 
 ## Validation and test results
 
@@ -490,6 +516,8 @@ per 1,000 users:
 - Web: 2 RPS
 - Git (Pull): 2 RPS
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
+
+The above targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads along with additional substantial headroom added.
 
 ### How to interpret the results
 
@@ -729,14 +757,14 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2024:**
 
+- [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145436): Updated recommended sizings for Load Balancer nodes if deployed on VMs. Also added notes on network bandwidth considerations.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Remove the Sidekiq Max Concurrency setting in examples as this is deprecated and no longer required to be set explicitly.
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Adjusted the Sidekiq recommendations on 2k to disable Sidekiq on Rails nodes and updated architecture diagram.
 - [2024-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140465): Updated recommendations for Azure for all Reference Architecture sizes and latest cloud services.
 
 **2023:**
 
-- [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
-- [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
+- [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139557): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expanded details on what each Reference Architecture is designed for, the testing methodology used as well as added details on how to scale environments.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Added expanded notes on disk types, object storage and monitoring.
 - [2023-10-25](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134518): Adjusted Sidekiq configuration example to use Linux Package role.

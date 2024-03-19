@@ -50,9 +50,11 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       end
 
       # There is an N+1 query for max_member_access_for_user_ids
+      # There is an N+1 query for duo_features_enabled cascading setting
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/442164
       expect do
         post_graphql(query, current_user: current_user)
-      end.not_to exceed_all_query_limit(control).with_threshold(5)
+      end.not_to exceed_all_query_limit(control).with_threshold(17)
     end
 
     it 'returns the expected projects' do

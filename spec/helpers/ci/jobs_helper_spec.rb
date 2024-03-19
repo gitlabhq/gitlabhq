@@ -34,6 +34,7 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
 
     it 'returns job statuses' do
       expect(helper.job_statuses).to eq({
+        "canceling" => "CANCELING",
         "canceled" => "CANCELED",
         "created" => "CREATED",
         "failed" => "FAILED",

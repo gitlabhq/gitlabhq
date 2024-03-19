@@ -20,6 +20,7 @@ import PipelineNewForm, {
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
 import { resolvers } from '~/ci/pipeline_new/graphql/resolvers';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
+import VariableValuesListbox from '~/ci/pipeline_new/components/variable_values_listbox.vue';
 import {
   mockCreditCardValidationRequiredError,
   mockCiConfigVariablesResponse,
@@ -62,8 +63,7 @@ describe('Pipeline New Form', () => {
     wrapper.findAllByTestId('pipeline-form-ci-variable-type');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
   const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value-field');
-  const findCollapsableListWithVariableOptions = () =>
-    wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown').at(0);
+  const findCollapsableListWithVariableOptions = () => wrapper.findComponent(VariableValuesListbox);
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');

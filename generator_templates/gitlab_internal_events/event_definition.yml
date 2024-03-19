@@ -1,6 +1,6 @@
 ---
 description: <%= args.last %>
-category: InternalEventTracking
+internal_events: true
 action: <%= event %>
 label_description:
 property_description:

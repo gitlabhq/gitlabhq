@@ -3,12 +3,18 @@
 module Keeps
   module Helpers
     class Groups
+      GROUPS_JSON_URL = "https://about.gitlab.com/groups.json"
       Error = Class.new(StandardError)
 
       def group_for_feature_category(category)
-        @groups ||= {}
-        @groups[category] ||= fetch_groups.find do |_, group|
+        groups.find do |_, group|
           group['categories'].present? && group['categories'].include?(category)
+        end&.last
+      end
+
+      def group_for_group_label(group_label)
+        groups.find do |_, group|
+          group['label'] == group_label
         end&.last
       end
 
@@ -20,9 +26,13 @@ module Keeps
 
       private
 
+      def groups
+        @groups ||= fetch_groups
+      end
+
       def fetch_groups
         @groups_json ||= begin
-          response = Gitlab::HTTP.get('https://about.gitlab.com/groups.json')
+          response = Gitlab::HTTP.get(GROUPS_JSON_URL)
 
           unless (200..299).cover?(response.code)
             raise Error,

@@ -18,7 +18,7 @@ module Gitlab
 
           KEY_PREFIX = "{event_counters}_"
 
-          def self.redis_key(event_name, date = nil, _skip_file_list_validation = false)
+          def self.redis_key(event_name, date = nil, _used_in_aggregate_metric = false)
             base_key = KEY_PREFIX + event_name
             return base_key unless date
 

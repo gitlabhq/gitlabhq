@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
@@ -228,7 +228,7 @@ which can encourage user collaboration.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators on self-managed GitLab instances can mark snippets as spam.
 

@@ -3,8 +3,7 @@ import { GlButton } from '@gitlab/ui';
 import { unionBy } from 'lodash';
 import { sortNameAlphabetically } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
-import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
+import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
@@ -12,7 +11,7 @@ import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/share
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW, DEFAULT_PAGE_SIZE_ASSIGNEES } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
   components: {
@@ -55,37 +54,53 @@ export default {
       required: false,
       default: false,
     },
+    participants: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    workItemAuthor: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
       localAssigneeIds: this.assignees.map(({ id }) => id),
       searchStarted: false,
       searchKey: '',
-      users: {
-        nodes: [],
-      },
+      users: [],
       currentUser: null,
-      isLoadingMore: false,
       updateInProgress: false,
+      localUsers: [],
     };
   },
   apollo: {
     users: {
       query() {
-        return this.isGroup ? groupUsersSearchQuery : usersSearchQuery;
+        return usersSearchQuery;
       },
       variables() {
         return {
           fullPath: this.fullPath,
           search: this.searchKey,
-          first: DEFAULT_PAGE_SIZE_ASSIGNEES,
+          isProject: !this.isGroup,
         };
       },
       skip() {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace?.users;
+        return this.isGroup ? data.groupWorkspace?.users : data.workspace?.users;
+      },
+      result({ data }) {
+        if (!data) {
+          // when data is not available, skip the update
+          return;
+        }
+        const users = this.isGroup ? data?.groupWorkspace?.users : data?.workspace?.users;
+        this.localUsers = unionBy(this.localUsers, users, 'id');
       },
       error() {
         this.$emit('error', i18n.fetchError);
@@ -96,15 +111,18 @@ export default {
     },
   },
   computed: {
-    searchUsers() {
-      return this.users.nodes.map(({ user }) => ({
-        ...user,
-        value: user.id,
-        text: user.name,
-      }));
+    shouldShowParticipants() {
+      return this.searchKey === '';
     },
-    pageInfo() {
-      return this.users.pageInfo;
+    searchUsers() {
+      const allUsers = this.shouldShowParticipants
+        ? unionBy(this.users, this.participants, 'id')
+        : this.users;
+      return allUsers.map((user) => ({
+        ...user,
+        value: user?.id,
+        text: user?.name,
+      }));
     },
     tracking() {
       return {
@@ -114,10 +132,7 @@ export default {
       };
     },
     isLoadingUsers() {
-      return this.$apollo.queries.users.loading && !this.isLoadingMore;
-    },
-    hasNextPage() {
-      return this.pageInfo?.hasNextPage;
+      return this.$apollo.queries.users.loading;
     },
     selectedAssigneeIds() {
       return this.allowsMultipleAssignees ? this.localAssigneeIds : this.localAssigneeIds[0];
@@ -140,7 +155,12 @@ export default {
       return this.allowsMultipleAssignees ? __('Select assignees') : __('Select assignee');
     },
     filteredAssignees() {
-      return unionBy(this.assignees, this.searchUsers, 'id');
+      // assignees are the ones already assigned to the work item detail
+      // search users are the ones returned by the autocomplete query which can never be more than 20 , context
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/417757#note_1480434390
+      // we need the previous results of users after resetting the search since we want to show the name of thes user out of the 20 results searched as well
+      // participants are the ones which have sometime commented on the work item, same logic as legacy issues
+      return unionBy(this.assignees, this.searchUsers, this.participants, this.localUsers, 'id');
     },
     localAssignees() {
       return (
@@ -203,18 +223,6 @@ export default {
       const singleSelectAssignee = assignees === null ? [] : [assignees];
       this.localAssigneeIds = this.allowsMultipleAssignees ? assignees : singleSelectAssignee;
     },
-    async fetchMoreAssignees() {
-      if (this.isLoadingMore && !this.hasNextPage) return;
-
-      this.isLoadingMore = true;
-      await this.$apollo.queries.users.fetchMore({
-        variables: {
-          after: this.pageInfo.endCursor,
-          first: DEFAULT_PAGE_SIZE_ASSIGNEES,
-        },
-      });
-      this.isLoadingMore = false;
-    },
     setSearchKey(value) {
       this.searchKey = value;
       this.searchStarted = true;
@@ -232,6 +240,9 @@ export default {
     onDropdownShown() {
       this.searchStarted = true;
     },
+    onDropdownHide() {
+      this.setSearchKey('', false);
+    },
   },
 };
 </script>
@@ -244,8 +255,6 @@ export default {
     :can-update="canUpdate"
     dropdown-name="assignees"
     :show-footer="canInviteMembers"
-    :infinite-scroll="hasNextPage"
-    :infinite-scroll-loading="isLoadingMore"
     :loading="isLoadingUsers"
     :list-items="searchUsers"
     :item-value="selectedAssigneeIds"
@@ -253,12 +262,13 @@ export default {
     :header-text="headerText"
     :update-in-progress="updateInProgress"
     :reset-button-label="__('Clear')"
+    clear-search-on-item-select
     data-testid="work-item-assignees-with-edit"
     @dropdownShown="onDropdownShown"
     @searchStarted="setSearchKey"
     @updateValue="handleAssigneesInput"
     @updateSelected="handleAssigneeClick"
-    @bottomReached="fetchMoreAssignees"
+    @dropdownHidden="onDropdownHide"
   >
     <template #list-item="{ item }">
       <sidebar-participant :user="item" />

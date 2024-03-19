@@ -138,9 +138,9 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         configuration_help_path: "/help/user/application_security/container_scanning/index#configuration",
         type: "container_scanning" }
       :secret_detection | { name: "Secret Detection",
-        description: "Analyze your source code and git history for secrets.",
-        help_path: "/help/user/application_security/secret_detection/index",
-        configuration_help_path: "/help/user/application_security/secret_detection/index#configuration",
+        description: "Analyze your source code and Git history for secrets.",
+        help_path: "/help/user/application_security/secret_detection/pipeline/index",
+        configuration_help_path: "/help/user/application_security/secret_detection/pipeline/index#configuration",
         type: "secret_detection" }
       :api_fuzzing | { name: "API Fuzzing",
         description: "Find bugs in your code with API fuzzing.",

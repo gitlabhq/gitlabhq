@@ -42,6 +42,8 @@ module Ci
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
 
+    RUNNER_SHORT_SHA_LENGTH = 8
+
     # This `ONLINE_CONTACT_TIMEOUT` needs to be larger than
     #   `RUNNER_QUEUE_EXPIRY_TIME+UPDATE_CONTACT_COLUMN_EVERY`
     #
@@ -394,7 +396,7 @@ module Ci
       return unless token
 
       start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
-      token[start_index..start_index + 8]
+      token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH]
     end
 
     def tag_list

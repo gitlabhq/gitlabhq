@@ -10,7 +10,6 @@ Performance/FlatMap:
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/spec/lib/elastic/latest/user_class_proxy_spec.rb'
-    - 'ee/spec/models/analytics/issues_analytics_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/support/helpers/license_scanning_report_helpers.rb'
     - 'ee/spec/support/shared_examples/finders/security/findings_finder_shared_examples.rb'

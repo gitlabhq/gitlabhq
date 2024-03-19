@@ -76,11 +76,6 @@ module Gitlab
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
 
-        # Temporary log line until we close https://gitlab.com/gitlab-org/gitlab/-/issues/439942
-        if !@stream_only && ["email_created"].exclude?(@name)
-          Gitlab::AppLogger.info(message: "Event type and scope", event_type: @name, scope: @scope.class.name)
-        end
-
         return if @is_audit_event_yaml_defined
 
         raise StandardError, "Audit event type YML file is not defined for #{@name}. Please read " \

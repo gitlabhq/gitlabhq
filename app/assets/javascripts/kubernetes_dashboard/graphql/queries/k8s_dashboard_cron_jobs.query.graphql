@@ -1,18 +1,7 @@
-query getK8sDashboardCronJobs($configuration: LocalConfiguration) {
+#import "./workload_item.fragment.graphql"
+
+query getK8sDashboardCronJobs($configuration: K8sDashboardConfig) {
   k8sCronJobs(configuration: $configuration) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-      labels
-      annotations
-    }
-    status {
-      active
-      lastScheduleTime
-    }
-    spec {
-      suspend
-    }
+    ...WorkloadItem
   }
 }

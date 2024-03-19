@@ -24,7 +24,9 @@ import {
   groupLinkRequestFormatter,
   roleDropdownItems,
   initialSelectedRole,
+  handleMemberRoleUpdate,
 } from '~/members/utils';
+import showGlobalToast from '~/vue_shared/plugins/global_toast';
 import {
   member as memberMock,
   directMember,
@@ -38,6 +40,7 @@ import {
 } from './mock_data';
 
 jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}0`);
+jest.mock('~/vue_shared/plugins/global_toast');
 
 const IS_CURRENT_USER_ID = 123;
 const IS_NOT_CURRENT_USER_ID = 124;
@@ -361,6 +364,24 @@ describe('Members Utils', () => {
           },
         ),
       ).toBe('role-static-0');
+    });
+  });
+
+  describe('handleMemberRoleUpdate', () => {
+    const update = {
+      currentRole: 'guest',
+      requestedRole: 'dev',
+      response: { data: {} },
+    };
+
+    it('shows a toast', () => {
+      handleMemberRoleUpdate(update);
+      expect(showGlobalToast).toHaveBeenCalledWith('Role updated successfully.');
+    });
+
+    it('returns requested role', () => {
+      const role = handleMemberRoleUpdate(update);
+      expect(role).toBe(update.requestedRole);
     });
   });
 });

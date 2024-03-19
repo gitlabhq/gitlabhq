@@ -14,12 +14,19 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
       key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule)
   end
 
+  let_it_be_with_reload(:repository) { project.repository }
+
   before_all do
     project.add_maintainer(user)
     project.add_owner(project_owner)
     project.add_reporter(reporter)
+    repository.add_branch(project.creator, 'patch-x', 'master')
 
     pipeline_schedule.reload
+  end
+
+  before do
+    stub_feature_flags(enforce_full_refs_for_pipeline_schedules: false)
   end
 
   describe "execute" do
@@ -53,16 +60,55 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
 
       subject(:service) { described_class.new(pipeline_schedule, user, params) }
 
+      context 'when enforce_full_refs_for_pipeline_schedules is enabled' do
+        before do
+          stub_feature_flags(enforce_full_refs_for_pipeline_schedules: true)
+        end
+
+        it 'updates database values with passed params' do
+          expect do
+            service.execute
+            pipeline_schedule.reload
+          end.to change { pipeline_schedule.description }
+                   .from('pipeline schedule').to('updated_desc')
+                   .and change { pipeline_schedule.ref }
+                          .from("#{Gitlab::Git::BRANCH_REF_PREFIX}master")
+                          .to("#{Gitlab::Git::BRANCH_REF_PREFIX}patch-x")
+                          .and change {
+                            pipeline_schedule.active
+                          }.from(true).to(false)
+                           .and change {
+                             pipeline_schedule.cron
+                           }.from('0 1 * * *').to('*/1 * * * *')
+                            .and change {
+                              pipeline_schedule.variables.last.key
+                            }.from('foo').to('bar')
+                             .and change {
+                               pipeline_schedule.variables.last.value
+                             }.from('foovalue').to('barvalue')
+        end
+      end
+
       it 'updates database values with passed params' do
         expect do
           service.execute
           pipeline_schedule.reload
-        end.to change { pipeline_schedule.description }.from('pipeline schedule').to('updated_desc')
-          .and change { pipeline_schedule.ref }.from('master').to('patch-x')
-          .and change { pipeline_schedule.active }.from(true).to(false)
-          .and change { pipeline_schedule.cron }.from('0 1 * * *').to('*/1 * * * *')
-          .and change { pipeline_schedule.variables.last.key }.from('foo').to('bar')
-          .and change { pipeline_schedule.variables.last.value }.from('foovalue').to('barvalue')
+        end.to change { pipeline_schedule.description }
+                 .from('pipeline schedule').to('updated_desc')
+                 .and change { pipeline_schedule.ref }
+                        .from("#{Gitlab::Git::BRANCH_REF_PREFIX}master").to("patch-x")
+                        .and change {
+                          pipeline_schedule.active
+                        }.from(true).to(false)
+                         .and change {
+                           pipeline_schedule.cron
+                         }.from('0 1 * * *').to('*/1 * * * *')
+                          .and change {
+                            pipeline_schedule.variables.last.key
+                          }.from('foo').to('bar')
+                           .and change {
+                             pipeline_schedule.variables.last.value
+                           }.from('foovalue').to('barvalue')
       end
 
       context 'when the new branch is protected', :request_store do

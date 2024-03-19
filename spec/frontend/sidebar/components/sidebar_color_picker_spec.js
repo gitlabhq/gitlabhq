@@ -10,10 +10,11 @@ describe('SibebarColorPicker', () => {
   const findColorPicker = () => wrapper.findComponent(GlFormInput);
   const findColorPickerText = () => wrapper.findByTestId('selected-color-text');
 
-  const createComponent = ({ value = '' } = {}) => {
+  const createComponent = ({ value = '', autofocus = false } = {}) => {
     wrapper = shallowMountExtended(SibebarColorPicker, {
       propsData: {
         value,
+        autofocus,
       },
     });
   };
@@ -30,6 +31,12 @@ describe('SibebarColorPicker', () => {
   it('renders value of the color in textbox', () => {
     createComponent({ value: '#343434' });
     expect(findColorPickerText().attributes('value')).toBe('#343434');
+  });
+
+  it('sets autofocus attribute if the prop is passed as true', () => {
+    createComponent({ autofocus: true });
+
+    expect(findColorPickerText().attributes('autofocus')).toBe('true');
   });
 
   describe('color picker', () => {

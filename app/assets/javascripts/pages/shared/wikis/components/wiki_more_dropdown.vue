@@ -2,6 +2,7 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import printMarkdownDom from '~/lib/print_markdown_dom';
+import { isTemplate } from '../utils';
 
 export default {
   components: {
@@ -9,12 +10,13 @@ export default {
   },
   inject: ['print', 'history'],
   computed: {
+    isTemplate,
     dropdownItems() {
       const items = [];
 
       if (this.history) {
         items.push({
-          text: s__('Wiki|Page history'),
+          text: this.isTemplate ? s__('Wiki|Template history') : s__('Wiki|Page history'),
           href: this.history,
           extraAttrs: {
             'data-testid': 'page-history-button',
@@ -22,7 +24,7 @@ export default {
         });
       }
 
-      if (this.print) {
+      if (this.print && !this.isTemplate) {
         items.push({
           text: __('Print as PDF'),
           action: this.printPage,

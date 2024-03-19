@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.monitor.projects_with_enabled_alert_integratio
 description: Histogram (buckets 1 to 100) of projects with at least 1 enabled integration.
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: object
 status: active
 milestone: "13.10"

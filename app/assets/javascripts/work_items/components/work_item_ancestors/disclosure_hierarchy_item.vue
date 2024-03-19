@@ -2,6 +2,7 @@
 <script>
 import iconSpriteInfo from '@gitlab/svgs/dist/icons.json';
 import { GlIcon, GlLink } from '@gitlab/ui';
+import { ISSUABLE_EPIC } from '../../constants';
 
 export default {
   components: {
@@ -31,6 +32,7 @@ export default {
   },
   methods: {
     shouldDisplayIcon(icon) {
+      if (icon === ISSUABLE_EPIC) return true;
       return icon && iconSpriteInfo.icons.includes(icon);
     },
   },

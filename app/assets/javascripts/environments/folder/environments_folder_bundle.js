@@ -3,7 +3,6 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import Translate from '~/vue_shared/translate';
-import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import { apolloProvider } from '../graphql/client';
 import EnvironmentsFolderView from './environments_folder_view.vue';
 import EnvironmentsFolderApp from './environments_folder_app.vue';
@@ -22,7 +21,6 @@ export default () => {
     Vue.use(VueRouter);
 
     const folderPath = environmentsData.endpoint.replace('.json', '');
-    const kasTunnelUrl = removeLastSlashInUrlPath(environmentsData.kasTunnelUrl);
     const { projectPath, folderName, helpPagePath } = environmentsData;
 
     const router = new VueRouter({
@@ -54,7 +52,6 @@ export default () => {
       provide: {
         projectPath,
         helpPagePath,
-        kasTunnelUrl,
       },
       apolloProvider,
       router,

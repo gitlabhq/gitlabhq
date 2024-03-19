@@ -33,16 +33,5 @@ RSpec.describe MigrationCollisionChecker, feature_category: :database do
         )
       end
     end
-
-    context 'when migration class name clashes but they are marked to be skipped' do
-      let(:db_migration_path) { 'spec/fixtures/migrations/db/*/*.txt' }
-      let(:elasticsearch_migration_path) { 'spec/fixtures/migrations/elasticsearch/*.txt' }
-
-      before do
-        stub_const('MigrationCollisionChecker::SKIP_MIGRATIONS', %w[ClashMigration Gitlab::ClashMigrationTwo])
-      end
-
-      it { expect(checker.check).to be_nil }
-    end
   end
 end

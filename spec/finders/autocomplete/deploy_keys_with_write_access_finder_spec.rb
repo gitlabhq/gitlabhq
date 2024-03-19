@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Autocomplete::DeployKeysWithWriteAccessFinder do
+RSpec.describe Autocomplete::DeployKeysWithWriteAccessFinder, feature_category: :continuous_delivery do
   let_it_be(:user) { create(:user) }
 
   let(:finder) { described_class.new(user, project) }
@@ -33,18 +33,37 @@ RSpec.describe Autocomplete::DeployKeysWithWriteAccessFinder do
         end
 
         context 'when deploy key does not have write access to project' do
-          let(:deploy_key_project) { create(:deploy_keys_project, project: project) }
+          let!(:deploy_key_project) { create(:deploy_keys_project, project: project) }
 
           it 'returns an empty ActiveRecord::Relation' do
-            expect(execute).to eq(DeployKey.none)
+            expect(execute).to eq([])
           end
         end
 
         context 'when deploy key has write access to project' do
-          let(:deploy_key_project) { create(:deploy_keys_project, :write_access, project: project) }
+          let!(:deploy_key_project) { create(:deploy_keys_project, :write_access, project: project) }
 
           it 'returns the deploy keys' do
             expect(execute).to match_array([deploy_key_project.deploy_key])
+          end
+
+          context 'when searching by title' do
+            let(:query) { SecureRandom.uuid }
+
+            subject(:execute) { finder.execute(title_search_term: query) }
+
+            context 'and there are titles that match' do
+              let(:deploy_key) { create(:deploy_key, title: "contains #{query} in title") }
+              let!(:deploy_key_project) do
+                create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key)
+              end
+
+              let!(:non_matching_deploy_key_project) { create(:deploy_keys_project, :write_access, project: project) }
+
+              it 'only returns deploy keys with matching titles' do
+                expect(execute).to match_array([deploy_key])
+              end
+            end
           end
         end
       end

@@ -4,6 +4,8 @@ import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { CONTENT_EDITOR_PASTE } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import ContentEditor from '~/content_editor/components/content_editor.vue';
 import ContentEditorAlert from '~/content_editor/components/content_editor_alert.vue';
 import ContentEditorProvider from '~/content_editor/components/content_editor_provider.vue';
@@ -17,6 +19,7 @@ import LoadingIndicator from '~/content_editor/components/loading_indicator.vue'
 import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
 import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
+import { mockChainedCommands } from '../test_utils';
 
 describe('ContentEditor', () => {
   let wrapper;
@@ -289,5 +292,30 @@ describe('ContentEditor', () => {
     createWrapper();
 
     expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
+  });
+
+  it('pastes content when CONTENT_EDITOR_READY_PASTE event is emitted', async () => {
+    const markdown = 'hello world';
+
+    createWrapper({ markdown });
+
+    renderMarkdown.mockResolvedValueOnce(markdown);
+
+    await waitForPromises();
+
+    const editorContent = findEditorContent();
+    const commands = mockChainedCommands(editorContent.props('editor'), [
+      'focus',
+      'pasteContent',
+      'run',
+    ]);
+
+    markdownEditorEventHub.$emit(CONTENT_EDITOR_PASTE, 'Paste content');
+
+    await waitForPromises();
+
+    expect(commands.focus).toHaveBeenCalled();
+    expect(commands.pasteContent).toHaveBeenCalledWith('Paste content');
+    expect(commands.run).toHaveBeenCalled();
   });
 });

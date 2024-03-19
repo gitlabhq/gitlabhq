@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The [certificate-based Kubernetes integration with GitLab](../index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)

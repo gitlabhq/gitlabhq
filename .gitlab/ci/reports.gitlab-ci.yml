@@ -8,6 +8,7 @@ code_quality:
   extends:
     - .default-retry
     - .use-docker-in-docker
+    - .code-quality-cache-push
   stage: lint
   artifacts:
     paths:
@@ -16,6 +17,21 @@ code_quality:
   # Use !reference as a workaround here
   rules: !reference [".reports:rules:code_quality", rules]
   allow_failure: true
+
+code_quality cache:
+  image: busybox
+  extends:
+    - .default-retry
+    - .reports:rules:code_quality_cache
+    - .code-quality-cache-master-pull
+  stage: lint
+  needs: []
+  dependencies: []
+  allow_failure: true
+  script: echo "This job pulls and uses the cached code quality report from the master branch to speed up docs pipelines"
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
 
 .sast-analyzer:
   # We need to re-`extends` from `sast` as the `extends` here overrides the one from the template.

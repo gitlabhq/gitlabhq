@@ -81,6 +81,8 @@ module ProfilesHelper
       brand_profile_image_guidelines: current_appearance&.profile_image_guidelines? ? brand_profile_image_guidelines : '',
       cropper_css_path: ActionController::Base.helpers.stylesheet_path('lazy_bundles/cropper.css'),
       user_path: user_path(current_user),
+      timezones: timezone_data_with_unique_identifiers.to_json,
+      user_timezone: user.timezone,
       **user_status_properties(user)
     }
   end

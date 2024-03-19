@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
@@ -145,7 +145,7 @@ is sorted in descending order of compute usage.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If you're using GitLab SaaS, you can purchase additional packs of compute minutes.
 These additional compute minutes:
@@ -172,7 +172,7 @@ You can find pricing for additional compute minutes on the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -195,7 +195,7 @@ namespace.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -247,7 +247,7 @@ The cost factors for jobs running on instance runners on GitLab.com are:
 - Exceptions for public projects:
   - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
   - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
-  you use 1 compute minute.
+    you use 1 compute minute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:
@@ -291,8 +291,8 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 | Linux OS amd64               | `xlarge`               | 6           |
 | Linux OS amd64               | `2xlarge`              | 12          |
 | Linux OS amd64 + GPU-enabled | `medium`, GPU standard | 7           |
-| macOS M1                     | `medium`               | 6 (Beta)    |
-| Windows Server               | -                      | 1 (Beta)    |
+| macOS M1                     | `medium`               | 6 (**Status:** Beta)    |
+| Windows Server               | -                      | 1 (**Status:** Beta)    |
 
 ### Monthly reset of compute usage
 
@@ -377,18 +377,18 @@ See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 An administrator can reset the compute usage for a namespace for the current month.
 
 ### Reset usage for a personal namespace
 
-1. Find the [user in the admin area](../../administration/admin_area.md#administering-users).
+1. Find the [user in the Admin Area](../../administration/admin_area.md#administering-users).
 1. Select **Edit**.
 1. In **Limits**, select **Reset compute usage**.
 
 ### Reset usage for a group namespace
 
-1. Find the [group in the admin area](../../administration/admin_area.md#administering-groups).
+1. Find the [group in the Admin Area](../../administration/admin_area.md#administering-groups).
 1. Select **Edit**.
 1. In **Permissions and group features**, select **Reset compute usage**.

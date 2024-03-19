@@ -1,15 +1,16 @@
-import { GlButton } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlCollapse } from '@gitlab/ui';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('Settings Block', () => {
   let wrapper;
 
   const mountComponent = (propsData) => {
-    wrapper = shallowMountExtended(SettingsBlock, {
+    wrapper = mountExtended(SettingsBlock, {
       propsData,
       slots: {
-        title: '<div data-testid="title-slot"></div>',
+        title: '<div data-testid="title-slot">Advanced</div>',
         description: '<div data-testid="description-slot"></div>',
         default: '<div data-testid="default-slot"></div>',
       },
@@ -19,28 +20,9 @@ describe('Settings Block', () => {
   const findDefaultSlot = () => wrapper.findByTestId('default-slot');
   const findTitleSlot = () => wrapper.findByTestId('title-slot');
   const findDescriptionSlot = () => wrapper.findByTestId('description-slot');
-  const findExpandButton = () => wrapper.findComponent(GlButton);
-  const findSectionTitleButton = () => wrapper.findByTestId('section-title-button');
-  // we are using a non js class for this finder because this class determine the component structure
-  const findSettingsContent = () => wrapper.find('.settings-content');
-
-  const expectExpandedState = ({ expanded = true } = {}) => {
-    const settingsExpandButton = findExpandButton();
-
-    expect(wrapper.classes('expanded')).toBe(expanded);
-    expect(settingsExpandButton.text()).toBe(
-      expanded ? SettingsBlock.i18n.collapseText : SettingsBlock.i18n.expandText,
-    );
-    expect(settingsExpandButton.attributes('aria-label')).toBe(
-      expanded ? SettingsBlock.i18n.collapseAriaLabel : SettingsBlock.i18n.expandAriaLabel,
-    );
-  };
-
-  it('renders the correct markup', () => {
-    mountComponent();
-
-    expect(wrapper.element).toMatchSnapshot();
-  });
+  const findExpandButton = () => wrapper.findByRole('button', { name: 'Expand Advanced' });
+  const findCollapseButton = () => wrapper.findByRole('button', { name: 'Collapse Advanced' });
+  const findTitle = () => wrapper.findByRole('button', { name: 'Advanced' });
 
   it('has a default slot', () => {
     mountComponent();
@@ -60,99 +42,88 @@ describe('Settings Block', () => {
     expect(findDescriptionSlot().exists()).toBe(true);
   });
 
-  it('content is hidden before first expansion', async () => {
-    // this is a regression test for the bug described here: https://gitlab.com/gitlab-org/gitlab/-/issues/331774
-    mountComponent();
-
-    // content is hidden
-    expect(findDefaultSlot().isVisible()).toBe(false);
-
-    // expand
-    await findSectionTitleButton().trigger('click');
-
-    // content is visible
-    expect(findDefaultSlot().isVisible()).toBe(true);
-
-    // collapse
-    await findSectionTitleButton().trigger('click');
-
-    // content is still visible (and we have a closing animation)
-    expect(findDefaultSlot().isVisible()).toBe(true);
-  });
-
-  describe('slide animation behaviour', () => {
-    it('is animated by default', () => {
+  describe('when `defaultExpanded` prop is `false` and URL hash does not match `id`', () => {
+    it('renders collapse as closed', () => {
       mountComponent();
 
-      expect(wrapper.classes('no-animate')).toBe(false);
-    });
-
-    it.each`
-      slideAnimated | noAnimatedClass
-      ${true}       | ${false}
-      ${false}      | ${true}
-    `(
-      'sets the correct state when slideAnimated is $slideAnimated',
-      ({ slideAnimated, noAnimatedClass }) => {
-        mountComponent({ slideAnimated });
-
-        expect(wrapper.classes('no-animate')).toBe(noAnimatedClass);
-      },
-    );
-
-    it('sets the animating class only during the animation', async () => {
-      mountComponent();
-
-      expect(wrapper.classes('animating')).toBe(false);
-
-      await findSectionTitleButton().trigger('click');
-
-      expect(wrapper.classes('animating')).toBe(true);
-
-      await findSettingsContent().trigger('animationend');
-
-      expect(wrapper.classes('animating')).toBe(false);
+      expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(false);
     });
   });
 
-  describe('expanded behaviour', () => {
-    it('is collapsed by default', () => {
-      mountComponent();
+  describe('when `defaultExpanded` prop is `true`', () => {
+    it('renders collapse as expanded', () => {
+      mountComponent({ defaultExpanded: true });
 
-      expectExpandedState({ expanded: false });
+      expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
+    });
+  });
+
+  describe('when URL hash matches `id`', () => {
+    it('renders collapse as expanded', () => {
+      setWindowLocation('https://gitlab.test/#foo-bar');
+
+      mountComponent({ id: 'foo-bar' });
+
+      expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
+    });
+  });
+
+  describe('when collapse is closed', () => {
+    beforeEach(() => {
+      mountComponent();
     });
 
-    it('adds expanded class when the expand button is clicked', async () => {
-      mountComponent();
-
-      await findExpandButton().vm.$emit('click');
-
-      expectExpandedState({ expanded: true });
+    it('renders button with `Expand` text', () => {
+      expect(findExpandButton().exists()).toBe(true);
     });
 
-    it('adds expanded class when the section title is clicked', async () => {
-      mountComponent();
+    describe('when `Expand` button is clicked', () => {
+      beforeEach(async () => {
+        await findExpandButton().trigger('click');
+      });
 
-      await findSectionTitleButton().trigger('click');
-
-      expectExpandedState({ expanded: true });
+      it('expands the collapse', () => {
+        expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
+      });
     });
 
-    describe('when `collapsible` is `false`', () => {
-      beforeEach(() => {
-        mountComponent({ collapsible: false });
+    describe('when title is clicked', () => {
+      beforeEach(async () => {
+        await findTitle().trigger('click');
       });
 
-      it('does not render clickable section title', () => {
-        expect(findSectionTitleButton().exists()).toBe(false);
+      it('expands the collapse', () => {
+        expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
+      });
+    });
+  });
+
+  describe('when collapse is expanded', () => {
+    beforeEach(() => {
+      mountComponent({ defaultExpanded: true });
+    });
+
+    it('renders button with `Collapse` text', () => {
+      expect(findCollapseButton().exists()).toBe(true);
+    });
+
+    describe('when `Collapse` button is clicked', () => {
+      beforeEach(async () => {
+        await findCollapseButton().trigger('click');
       });
 
-      it('contains expanded class', () => {
-        expect(wrapper.classes('expanded')).toBe(true);
+      it('closes the collapse', () => {
+        expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(false);
+      });
+    });
+
+    describe('when title is clicked', () => {
+      beforeEach(async () => {
+        await findTitle().trigger('click');
       });
 
-      it('does not render expand toggle button', () => {
-        expect(findExpandButton().exists()).toBe(false);
+      it('closes the collapse', () => {
+        expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(false);
       });
     });
   });

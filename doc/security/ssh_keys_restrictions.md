@@ -55,7 +55,7 @@ By default, the GitLab.com and self-managed settings for the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24614) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `ssh_banned_key`. Enabled by default.
 > - Generally available in GitLab 15.2. [Feature flag `ssh_banned_key`](https://gitlab.com/gitlab-org/gitlab/-/issues/363410) removed.

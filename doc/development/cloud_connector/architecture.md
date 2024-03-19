@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Cloud Connector: Architecture
 
-[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector) is a way to access services common to
+[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
 dedicated service itself, but rather a collection of APIs and code that standardizes the approach to authentication and
 other items when integrating Cloud based services with a GitLab instance.

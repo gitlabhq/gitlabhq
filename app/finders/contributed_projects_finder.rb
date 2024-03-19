@@ -15,13 +15,13 @@ class ContributedProjectsFinder < UnionFinder
   #                     projects, regardless of their visibility to the current_user
   #
   # Returns an ActiveRecord::Relation.
-  def execute(current_user = nil, ignore_visibility: false)
+  def execute(current_user = nil, ignore_visibility: false, order_by: 'id_desc')
     # Do not show contributed projects if the user profile is private.
     return Project.none unless can_read_profile?(current_user)
 
     segments = all_projects(current_user, ignore_visibility)
 
-    find_union(segments, Project).with_namespace.order_id_desc
+    find_union(segments, Project).with_namespace.sort_by_attribute(order_by)
   end
 
   private

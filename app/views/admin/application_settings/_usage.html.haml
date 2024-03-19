@@ -17,33 +17,36 @@
       - usage_ping_help_text = s_('AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}').html_safe % { link_start: service_ping_link_start, link_end: link_end }
       - disabled_help_text = s_('AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}.').html_safe % { link_start: deactivating_service_ping_link_start, link_end: link_end }
       = f.gitlab_ui_checkbox_component :usage_ping_enabled, s_('AdminSettings|Enable Service Ping'),
-        help_text: can_be_configured ? usage_ping_help_text : disabled_help_text,
-        checkbox_options: { disabled: !can_be_configured, data: { testid: 'enable-usage-data-checkbox' } }
-      .form-text.gl-pl-6
-        - if @service_ping_data.present?
-          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } }) do
-            = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
-            %span.js-text.gl-display-inline= s_('AdminSettings|Preview payload')
-          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }) do
-            = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
-            %span.js-text.gl-display-inline= s_('AdminSettings|Download payload')
-          %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
-        - else
-          = render Pajamas::AlertComponent.new(variant: :warning,
-            dismissible: false,
-            title: s_('AdminSettings|Service Ping payload not found in the application cache')) do |c|
+      help_text: can_be_configured ? usage_ping_help_text : disabled_help_text,
+      checkbox_options: { disabled: !can_be_configured || ServicePing::ServicePingSettings.license_operational_metric_enabled?, data: { testid: 'enable-usage-data-checkbox' } }
+    - if Gitlab.ee?
+      = render_if_exists 'admin/application_settings/include_optional_metric_in_service_ping_checkbox', form: f
+    .form-text.gl-pl-6.gl-mb-6
+      - if @service_ping_data.present?
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } }) do
+          = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+          %span.js-text.gl-display-inline= s_('AdminSettings|Preview payload')
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }) do
+          = gl_loading_icon(css_class: 'js-spinner gl-display-none', inline: true)
+          %span.js-text.gl-display-inline= s_('AdminSettings|Download payload')
+        %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-display-none{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
+      - else
+        = render Pajamas::AlertComponent.new(variant: :warning,
+          dismissible: false,
+          title: s_('AdminSettings|Service Ping payload not found in the application cache')) do |c|
 
-            - c.with_body do
-              - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
-              = safe_format(s_('AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload.'), tag_pair(generate_manually_link, :generate_manually_link_start, :generate_manually_link_end))
-
+          - c.with_body do
+            - generate_manually_link = link_to('', help_page_path('development/internal_analytics/service_ping/troubleshooting', anchor: 'generate-service-ping'), target: '_blank', rel: 'noopener noreferrer')
+            = safe_format(s_('AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload.'), tag_pair(generate_manually_link, :generate_manually_link_start, :generate_manually_link_end))
     .form-group
       - usage_ping_enabled = @application_setting.usage_ping_enabled?
+      - include_optional_metrics_in_service_ping = @application_setting.include_optional_metrics_in_service_ping
       - label = s_('AdminSettings|Enable Registration Features')
       - label_link = link_to sprite_icon('question-o'), help_page_path('administration/settings/usage_statistics', anchor: 'registration-features-program')
-      - help_text = usage_ping_enabled ? s_('AdminSettings|You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service.') : s_('AdminSettings|To enable Registration Features, first enable Service Ping.')
+      - service_ping_help_text = usage_ping_enabled ? s_('AdminSettings|You can enable Registration Features because Service Ping is enabled.') : s_('AdminSettings|To enable Registration Features, first enable Service Ping.')
+      - optional_metrics_help_text = include_optional_metrics_in_service_ping ? s_('AdminSettings|You can enable Registration Features because optional data in Service Ping is enabled.') : s_('AdminSettings|To enable Registration Features, first enable optional data in Service Ping.')
       = f.gitlab_ui_checkbox_component :usage_ping_features_enabled?, '%{label} %{label_link}'.html_safe % { label: label, label_link: label_link },
-        help_text: '<span id="service_ping_features_helper_text">%{help_text}</span>'.html_safe % { help_text: help_text },
+        help_text: tag.span(Gitlab.ee? ? optional_metrics_help_text : service_ping_help_text, id: 'service_ping_features_helper_text'),
         checkbox_options: { id: 'application_setting_usage_ping_features_enabled' },
         label_options: { id: 'service_ping_features_label' }
       .form-text.gl-text-gray-500.gl-pl-6

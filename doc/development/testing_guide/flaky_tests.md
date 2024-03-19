@@ -194,6 +194,14 @@ bin/rspec --tag ~quarantine
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.
 
+#### Find quarantined tests by feature category
+
+To find all quarantined tests for a feature category, use `ripgrep`:
+
+```shell
+rg -l --multiline -w "(?s)feature_category:\s+:global_search.+quarantine:"
+```
+
 ### Jest
 
 For Jest specs, you can use the `.skip` method along with the `eslint-disable-next-line` comment to disable the `jest/no-disabled-tests` ESLint rule and include the issue URL. Here's an example:
@@ -350,7 +358,7 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 - [How to Deal With and Eliminate Flaky Tests](https://semaphoreci.com/community/tutorials/how-to-deal-with-and-eliminate-flaky-tests)
 - [Tips on Treating Flakiness in your Rails Test Suite](https://semaphoreci.com/blog/2017/08/03/tips-on-treating-flakiness-in-your-test-suite.html)
 - ['Flaky' tests: a short story](https://www.ombulabs.com/blog/rspec/continuous-integration/how-to-track-down-a-flaky-test.html)
-- [Using Insights to Discover Flaky, Slow, and Failed Tests](https://circleci.com/blog/using-insights-to-discover-flaky-slow-and-failed-tests/)
+- [Test Insights](https://circleci.com/docs/insights-tests/)
 
 ---
 

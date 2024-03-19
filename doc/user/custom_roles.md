@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
@@ -147,7 +147,7 @@ If you are assigning a custom role to an existing:
    code on the projects in the group or subgroup.
 1. Optional. If you do not know the `id` of the Guest user receiving a custom
    role, find that `id` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
-1. Use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project) to 
+1. Use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project) to
    associate the member with the Guest+1 role:
 
    ```shell

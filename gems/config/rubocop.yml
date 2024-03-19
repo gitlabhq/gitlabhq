@@ -76,6 +76,10 @@ Naming/FileName:
   Exclude:
     - spec/**/*.rb
 
+# Include behavior not honored. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145865/diffs#note_1791901400
+Rails/MigrationTimestamp:
+  Enabled: false
+
 # This cop doesn't make sense in the context of gems
 RSpec/AvoidConditionalStatements:
   Enabled: false

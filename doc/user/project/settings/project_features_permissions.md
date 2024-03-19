@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Configure project features and permissions
 
@@ -73,7 +73,7 @@ To disable this feature and remove the **Analyze** item from the left sidebar:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
@@ -128,87 +128,3 @@ To set this default:
 1. Select **Settings > Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
-
-## Project topics
-
-Topics are labels that you can assign to projects to help you organize and find them.
-A topic is typically a short name that describes the content or purpose of a project.
-You can assign a topic to several projects.
-
-For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
-
-Topics assigned to a project are listed in the **Project overview**, below the project name and activity information.
-
-Only users with access to the project can see the topics assigned to that project,
-but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
-Do not include sensitive information in the name of a topic.
-
-### Explore topics
-
-To explore project topics:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select **Explore**.
-1. On the left sidebar, select **Topics**.
-1. To view projects associated with a topic, select a topic.
-
-The **Explore topics** page shows a list of projects with this topic.
-
-### Filter and sort topics
-
-You can filter the list of projects that have a certain topic by:
-
-- Name
-- Language
-- Owner
-- Archive status
-- Visibility
-
-You can sort the projects by:
-
-- Date created
-- Date updated
-- Name
-- Number of stars
-
-### Subscribe to a topic
-
-If you want to know when new projects are added to a topic, you can use its RSS feed.
-
-You can do this either from the **Explore topics** page or a project with topics.
-
-To subscribe to a topic:
-
-- From the **Explore topics** page:
-
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-  1. Select **Explore**.
-  1. Select **Topics**.
-  1. Select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
-
-- From a project:
-
-  1. On the left sidebar, select **Search or go to** and find your project.
-  1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
-
-The results are displayed as an RSS feed in Atom format.
-The URL of the result contains a feed token and the list of projects that have the topic. You can add this URL to your feed reader.
-
-### Assign topics to a project
-
-To assign topics to a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
-1. Select **Save changes**.
-
-NOTE:
-The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
-
-### Administer topics
-
-Instance administrators can administer all project topics from the
-[Admin Area's Topics page](../../../administration/admin_area.md#administering-topics).

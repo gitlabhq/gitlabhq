@@ -11,17 +11,24 @@ module Banzai
         def parent_records(parent, ids)
           return Milestone.none unless valid_context?(parent)
 
-          milestone_iids = ids.map { |y| y[:milestone_iid] }.compact
-          unless milestone_iids.empty?
-            iid_relation = find_milestones(parent, true).where(iid: milestone_iids)
+          relation = []
+
+          # We need to handle relative and absolute paths separately
+          milestones_absolute_indexed = ids.group_by { |id| id[:absolute_path] }
+          milestones_absolute_indexed.each do |absolute_path, fitered_ids|
+            milestone_iids = fitered_ids&.pluck(:milestone_iid)&.compact
+
+            if milestone_iids.present?
+              relation << find_milestones(parent, true, absolute_path: absolute_path).where(iid: milestone_iids)
+            end
+
+            milestone_names = fitered_ids&.pluck(:milestone_name)&.compact
+            if milestone_names.present?
+              relation << find_milestones(parent, false, absolute_path: absolute_path).where(name: milestone_names)
+            end
           end
 
-          milestone_names = ids.map { |y| y[:milestone_name] }.compact
-          unless milestone_names.empty?
-            milestone_relation = find_milestones(parent, false).where(name: milestone_names)
-          end
-
-          relation = [iid_relation, milestone_relation].compact
+          relation.compact!
           return Milestone.none if relation.all?(Milestone.none)
 
           Milestone.from_union(relation).includes(:project, :group)
@@ -44,12 +51,14 @@ module Banzai
         # or the milestone_name, but not both.  But below, we have both pieces of information.
         # But it's accounted for in `find_object`
         def parse_symbol(symbol, match_data)
+          absolute_path = !!match_data&.named_captures&.fetch('absolute_path')
+
           if symbol
             # when parsing links, there is no `match_data[:milestone_iid]`, but `symbol`
             # holds the iid
-            { milestone_iid: symbol.to_i, milestone_name: nil }
+            { milestone_iid: symbol.to_i, milestone_name: nil, absolute_path: absolute_path }
           else
-            { milestone_iid: match_data[:milestone_iid]&.to_i, milestone_name: match_data[:milestone_name]&.tr('"', '') }
+            { milestone_iid: match_data[:milestone_iid]&.to_i, milestone_name: match_data[:milestone_name]&.tr('"', ''), absolute_path: absolute_path }
           end
         end
 
@@ -97,27 +106,27 @@ module Banzai
           escape_with_placeholders(unescaped_html, milestones)
         end
 
-        def find_milestones(parent, find_by_iid = false)
-          finder_params = milestone_finder_params(parent, find_by_iid)
+        def find_milestones(parent, find_by_iid = false, absolute_path: false)
+          finder_params = milestone_finder_params(parent, find_by_iid, absolute_path)
 
           MilestonesFinder.new(finder_params).execute
         end
 
-        def milestone_finder_params(parent, find_by_iid)
+        def milestone_finder_params(parent, find_by_iid, absolute_path)
           { order: nil, state: 'all' }.tap do |params|
             params[:project_ids] = parent.id if project_context?(parent)
 
             # We don't support IID lookups because IIDs can clash between
             # group/project milestones and group/subgroup milestones.
-            params[:group_ids] = group_and_ancestors_ids(parent) unless find_by_iid
+            params[:group_ids] = group_and_ancestors_ids(parent, absolute_path) unless find_by_iid
           end
         end
 
-        def group_and_ancestors_ids(parent)
+        def group_and_ancestors_ids(parent, absolute_path)
           if group_context?(parent)
-            parent.self_and_ancestors.select(:id)
+            absolute_path ? parent.id : parent.self_and_ancestors.select(:id)
           elsif project_context?(parent)
-            parent.group&.self_and_ancestors&.select(:id)
+            absolute_path ? nil : parent.group&.self_and_ancestors&.select(:id)
           end
         end
 

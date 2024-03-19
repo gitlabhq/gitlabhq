@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can define templates to use as descriptions
 for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
@@ -112,7 +112,7 @@ your merge request template with their values:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
@@ -125,7 +125,7 @@ that you can use when creating a new project in the instance.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.

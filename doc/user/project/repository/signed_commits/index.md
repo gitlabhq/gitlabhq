@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you add a cryptographic signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. If GitLab can verify a commit
@@ -49,6 +49,17 @@ they are signed.
 
 You can also [use the Commits API](../../../../api/commits.md#get-gpg-signature-of-a-commit)
 to check a commit's signature.
+
+### Verify commits made in the web UI
+
+GitLab signs the commits created using the web UI using SSH.
+To verify these commits locally, [follow the steps for SSH](ssh.md#verify-commits-locally)
+and add the following public key to the `allowed_signers` file:
+`ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIADOCCUoN3Q1UPQqUvp845fKy7haJH17qsSkVXzWXilW`.
+
+```plaintext
+noreply@gitlab.com namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIADOCCUoN3Q1UPQqUvp845fKy7haJH17qsSkVXzWXilW
+```
 
 ## Troubleshooting
 

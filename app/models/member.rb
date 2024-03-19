@@ -293,6 +293,9 @@ class Member < ApplicationRecord
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
+  # Only false when the current user is a member of the shared group or project but not of the invited private group
+  # so the current user can't see the source of the membership.
+  attribute :is_source_accessible_to_current_user, default: true
 
   class << self
     def search(query)
@@ -375,6 +378,28 @@ class Member < ApplicationRecord
 
     def pluck_user_ids
       pluck(:user_id)
+    end
+
+    def with_group_group_sharing_access
+      joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
+        .select(member_columns_with_group_sharing_access)
+    end
+
+    def member_columns_with_group_sharing_access
+      group_group_link_table = GroupGroupLink.arel_table
+
+      column_names.map do |column_name|
+        if column_name == 'access_level'
+          args = [group_group_link_table[:group_access], arel_table[:access_level]]
+          smallest_value_arel(args, 'access_level')
+        else
+          arel_table[column_name]
+        end
+      end
+    end
+
+    def smallest_value_arel(args, column_alias)
+      Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
     end
   end
 
@@ -680,7 +705,6 @@ class Member < ApplicationRecord
   end
 
   def create_organization_user_record
-    return if Feature.disabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
     return if invite?
     return if source.organization.blank?
 

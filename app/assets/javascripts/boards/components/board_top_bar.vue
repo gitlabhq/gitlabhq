@@ -45,10 +45,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       board: {},
+      currentForm: '',
     };
   },
   apollo: {
@@ -82,6 +87,11 @@ export default {
       return this.$apollo.queries.board.loading;
     },
   },
+  methods: {
+    setCurrentForm(formType) {
+      this.currentForm = formType;
+    },
+  },
 };
 </script>
 
@@ -96,32 +106,40 @@ export default {
         <boards-selector
           :board="board"
           :is-current-board-loading="isLoading"
+          :board-modal-form="currentForm"
           @switchBoard="$emit('switchBoard', $event)"
           @updateBoard="$emit('updateBoard', $event)"
+          @showBoardModal="setCurrentForm"
         />
-        <new-board-button />
+        <new-board-button @showBoardModal="setCurrentForm" />
         <issue-board-filtered-search
           v-if="isIssueBoard"
           :board="board"
           :is-swimlanes-on="isSwimlanesOn"
+          :filters="filters"
           @setFilters="$emit('setFilters', $event)"
         />
         <epic-board-filtered-search
           v-else
           :board="board"
+          :filters="filters"
           @setFilters="$emit('setFilters', $event)"
         />
       </div>
       <div
         class="filter-dropdown-container gl-md-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-align-items-flex-start"
       >
-        <toggle-labels />
-        <toggle-epics-swimlanes
-          v-if="swimlanesFeatureAvailable && isSignedIn"
-          :is-swimlanes-on="isSwimlanesOn"
-          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
-        />
-        <config-toggle />
+        <div
+          class="gl-display-flex gl-flex-direction-row gl-sm-align-items-flex-start gl-xs-justify-content-end gl-flex-wrap gl-md-flex-nowrap"
+        >
+          <toggle-labels />
+          <toggle-epics-swimlanes
+            v-if="swimlanesFeatureAvailable && isSignedIn"
+            :is-swimlanes-on="isSwimlanesOn"
+            @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+          />
+        </div>
+        <config-toggle @showBoardModal="setCurrentForm" />
         <board-add-new-column-trigger
           v-if="canAdminList"
           :is-new-list-showing="addColumnFormVisible"

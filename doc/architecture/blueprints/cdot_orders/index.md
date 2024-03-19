@@ -167,6 +167,26 @@ CDot currently receives and processes `Order Processed` Zuora callouts for Order
 
 This existing callout would not be sufficient to cover all changes to a Zuora Subscription though. In particular, changes to custom fields may not be captured by these existing callouts. We will need to create custom events and callouts for any custom field cached in CustomersDot for any of these resources to ensure CDot is in sync with Zuora. This should only affect `Zuora::Subscription` though as no custom fields are used by CustomersDot on any of the other proposed cached resources at this time.
 
+#### Read only models
+
+Given the data stored in these new models are a copy of Zuora data, it will important to ensure these models are modified within the appropriate context, not throughout the application. We want a clear separation when a cached model can be in "write" mode versus "read-only" mode. This separation helps avoid writing to a cached model inappropriately or mistakenly. We considered different options as part of [this Spike issue](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/8511).
+
+We aligned on creating a concern, `ReadOnlyRecord`, that will prevent a save when included in an ActiveRecord model.
+
+```ruby
+module ReadOnlyRecord
+  extend ActiveSupport::Concern
+
+  included do
+    after_initialize :readonly!
+  end
+end
+```
+
+- Attempting to save (e.g. create, update, or destroy) one of these models would raise an error (e.g. `ActiveRecord::ReadOnlyRecord: Subscription is marked as readonly`)
+- Even with this code, a record could still be deleted with `record.delete`. We could write a rubocop cop for avoiding using delete (possibly even for just these ReadOnlyModels). We could also overwrite this method to raise an error as well.
+- Within certain namespaces like the Zuora cache sync service, we want access to a model that have write privileges.
+
 #### Rollout of Zuora Cache models
 
 With the first iteration of introducing the cached Zuora data models, we will take an iterative approach to the rollout. There should be no impact to existing functionality as we build out the models, start populating the data through callouts, and backfill these models. Once this is in place, we will iteratively update existing features to use these cached data models instead of querying Zuora directly.

@@ -49,7 +49,7 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         context "valid branch, invalid file" do
           let(:id) { 'master/invalid-path.rb' }
 
-          it { is_expected.to respond_with(:not_found) }
+          it { is_expected.to redirect_to project_tree_path(project, 'master', '/') }
         end
 
         context "invalid branch, valid file" do

@@ -120,3 +120,6 @@ jest-snapshot-test-report.json
 
 # CSS compilation for cssbundling
 app/assets/builds/
+
+# ruby-lsp
+.index.yml

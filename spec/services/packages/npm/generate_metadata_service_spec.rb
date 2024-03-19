@@ -196,18 +196,6 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
 
           expect(subject.size).to eq(Packages::Tag.count)
         end
-
-        context 'with disabled package_registry_npm_fetch_all_tags feature flag' do
-          before do
-            stub_feature_flags(package_registry_npm_fetch_all_tags: false)
-          end
-
-          it 'adheres to the tags limit' do
-            expect(::Packages::Package).not_to receive(:preload_tags)
-
-            expect(subject.size).to eq(tags_limit)
-          end
-        end
       end
     end
   end

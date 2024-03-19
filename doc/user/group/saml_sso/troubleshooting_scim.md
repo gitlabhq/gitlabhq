@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This section contains possible solutions for problems you might encounter.
 
@@ -76,13 +76,16 @@ GitLab uses these IDs to look up users.
 If the identity provider does not know the current values for these fields,
 that provider may create duplicate users, or fail to complete expected actions.
 
-To change the identifier values to match:
+To change the identifier values to match, you can do one of the following:
 
-1. Have users unlink and relink themselves, based on the
+- Have users unlink and relink themselves, based on the
   [SAML authentication failed: User has already been taken](troubleshooting.md#message-saml-authentication-failed-user-has-already-been-taken)
   section.
-1. Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
-1. Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
+- Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
+
+  WARNING:
+  This resets all users' roles in the top level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
+- Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
 
 You must not:
@@ -107,7 +110,7 @@ When the SCIM app changes:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -143,7 +146,7 @@ To resolve this issue, you can do either of the following:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based
@@ -193,8 +196,10 @@ this:
 1. Locate your SCIM token.
 1. Use the API to [get a single SCIM provisioned user](/ee/development/internal_api/index.md#get-a-single-scim-provisioned-user).
 1. Check the returned information to make sure that:
+
    - The user's identifier (`id`) and email match what your identity provider is sending.
    - `active` is set to `false`.
+
    If any of this information does not match, [contact GitLab Support](https://support.gitlab.com/).
 1. Use the API to [update the SCIM provisioned user's `active` value to `true`](/ee/development/internal_api/index.md#update-a-single-scim-provisioned-user).
 1. If the update returns a status code `204`, have the user attempt to sign in

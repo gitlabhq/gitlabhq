@@ -39,6 +39,14 @@ RSpec.describe Release, feature_category: :release_orchestration do
       end
     end
 
+    it 'validates sha is not changed on update' do
+      release.sha = "new_sha"
+
+      release.validate
+
+      expect(release.errors.full_messages).to include("Sha cannot be changed")
+    end
+
     describe 'scopes' do
       let_it_be(:another_project) { create(:project) }
       let_it_be(:release) { create(:release, project: project, author: user, tag: 'v1') }

@@ -8,7 +8,16 @@ import findingsDrawer from '~/mr_notes/stores/drawer';
 
 Vue.use(Vuex);
 
-export default function createDiffsStore() {
+export default function createDiffsStore({ actions = {} } = {}) {
+  const diffs = diffsModule();
+
+  if (actions.diffs) {
+    diffs.actions = {
+      ...diffs.actions,
+      ...actions.diffs,
+    };
+  }
+
   return new Vuex.Store({
     modules: {
       page: {
@@ -17,7 +26,7 @@ export default function createDiffsStore() {
           activeTab: 'notes',
         },
       },
-      diffs: diffsModule(),
+      diffs,
       notes: notesModule(),
       batchComments: batchCommentsModule(),
       findingsDrawer: findingsDrawer(),

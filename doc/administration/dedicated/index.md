@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Dedicated
+**Offering:** GitLab Dedicated
 
 GitLab Dedicated is a single-tenant SaaS solution, fully managed and hosted by GitLab. For more information about this offering, see the [subscription page](../../subscriptions/gitlab_dedicated/index.md).
 

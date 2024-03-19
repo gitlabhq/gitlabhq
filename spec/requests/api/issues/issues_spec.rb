@@ -23,37 +23,43 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:objective) { create(:issue, :objective, author: user, project: project) }
 
   let_it_be(:closed_issue) do
-    create :closed_issue,
-           author: user,
-           assignees: [user],
-           project: project,
-           state: :closed,
-           milestone: milestone,
-           created_at: generate(:past_time),
-           updated_at: 3.hours.ago,
-           closed_at: 1.hour.ago
+    create(
+      :closed_issue,
+      author: user,
+      assignees: [user],
+      project: project,
+      state: :closed,
+      milestone: milestone,
+      created_at: generate(:past_time),
+      updated_at: 3.hours.ago,
+      closed_at: 1.hour.ago
+    )
   end
 
   let_it_be(:confidential_issue) do
-    create :issue,
-           :confidential,
-           project: project,
-           author: author,
-           assignees: [assignee],
-           created_at: generate(:past_time),
-           updated_at: 2.hours.ago
+    create(
+      :issue,
+      :confidential,
+      project: project,
+      author: author,
+      assignees: [assignee],
+      created_at: generate(:past_time),
+      updated_at: 2.hours.ago
+    )
   end
 
   let_it_be(:issue) do
-    create :issue,
-           author: user,
-           assignees: [user],
-           project: project,
-           milestone: milestone,
-           created_at: generate(:past_time),
-           updated_at: 1.hour.ago,
-           title: 'foo',
-           description: 'bar'
+    create(
+      :issue,
+      author: user,
+      assignees: [user],
+      project: project,
+      milestone: milestone,
+      created_at: generate(:past_time),
+      updated_at: 1.hour.ago,
+      title: 'foo',
+      description: 'bar'
+    )
   end
 
   let_it_be(:label) do
@@ -846,15 +852,17 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         context 'with 2 issues with same created_at' do
           let!(:closed_issue2) do
-            create :closed_issue,
-                   author: user,
-                   assignees: [user],
-                   project: project,
-                   milestone: milestone,
-                   created_at: closed_issue.created_at,
-                   updated_at: 1.hour.ago,
-                   title: 'foo',
-                   description: 'bar'
+            create(
+              :closed_issue,
+              author: user,
+              assignees: [user],
+              project: project,
+              milestone: milestone,
+              created_at: closed_issue.created_at,
+              updated_at: 1.hour.ago,
+              title: 'foo',
+              description: 'bar'
+            )
           end
 
           it 'page breaks first page correctly' do
@@ -1067,21 +1075,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
     context "when returns issue merge_requests_count for different access levels" do
       let!(:merge_request1) do
-        create(:merge_request,
-               :simple,
-               author: user,
-               source_project: private_mrs_project,
-               target_project: private_mrs_project,
-               description: "closes #{issue.to_reference(private_mrs_project)}")
+        create(
+          :merge_request,
+          :simple,
+          author: user,
+          source_project: private_mrs_project,
+          target_project: private_mrs_project,
+          description: "closes #{issue.to_reference(private_mrs_project)}"
+        )
       end
 
       let!(:merge_request2) do
-        create(:merge_request,
-               :simple,
-               author: user,
-               source_project: project,
-               target_project: project,
-               description: "closes #{issue.to_reference}")
+        create(
+          :merge_request,
+          :simple,
+          author: user,
+          source_project: project,
+          target_project: project,
+          description: "closes #{issue.to_reference}"
+        )
       end
 
       it_behaves_like 'accessible merge requests count' do

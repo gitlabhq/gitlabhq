@@ -71,6 +71,15 @@ export const typePolicies = {
   ProjectValueStreamAnalyticsFlowMetrics: {
     merge: true,
   },
+  ScanExecutionPolicy: {
+    keyFields: ['name'],
+  },
+  ApprovalPolicy: {
+    keyFields: ['name'],
+  },
+  ComplianceFrameworkConnection: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

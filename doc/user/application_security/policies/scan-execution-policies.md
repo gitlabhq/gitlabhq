@@ -8,14 +8,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
 > - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 > - Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
 > - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
+> - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Disabled by default.
 
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 Group, subgroup, or project owners can use scan execution policies to require that security scans
 run on a specified schedule or with the project pipeline. The security scan runs with multiple
 project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
@@ -27,8 +31,7 @@ implicitly so that the policies can be enforced. This ensures policies enabling 
 secret detection, static analysis, or other scanners that do not require a build in the
 project, are still able to execute and be enforced.
 
-In the event of a job name collision, GitLab appends a hyphen and a number to the job name. GitLab
-increments the number until the name no longer conflicts with existing job names. If you create a
+GitLab appends a hyphen and a number to the job name. The number is unique per policy action to avoid name conflicts.
 policy at the group level, it applies to every child project or subgroup. You cannot edit a
 group-level policy from a child project or subgroup.
 
@@ -107,7 +110,7 @@ the following sections and tables provide an alternative.
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -130,7 +133,7 @@ In GitLab 16.1 and earlier, you should **not** use [direct transfer](../../../ad
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 
@@ -228,13 +231,32 @@ Note the following:
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.
-- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
-  are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
-- By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/index.md#full-history-secret-detection).
-- For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/index.md#edit-the-gitlab-ciyml-file-manually).
+- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#custom-rulesets)
+  are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+- By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
+- For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
 - Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+- Preconfigured values are used for the following CI/CD variables in any project on which a scan
+  execution policy is enforced. Their values can be overridden, but **only** if they are declared in
+  a policy. They **cannot** be overridden by group or project CI/CD variables:
+
+  ```plaintext
+  DS_EXCLUDED_PATHS: spec, test, tests, tmp
+  SAST_EXCLUDED_PATHS: spec, test, tests, tmp
+  SECRET_DETECTION_EXCLUDED_PATHS: ''
+  SECRET_DETECTION_HISTORIC_SCAN: false
+  SAST_DISABLED_ANALYZERS: ''
+  DS_DISABLED_ANALYZERS: ''
+  ```
+
+  In GitLab 16.9 and earlier:
+
+  - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
+    be overridden by group or project CI/CD variables.
+  - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
+    ignored, regardless of where they were defined: policy, group, or project.  
 
 ## Example security policies project
 
@@ -343,11 +365,13 @@ Prerequisites:
 - To enable the pipeline execution policy action feature, a Group owner or administrator must enable
   the experimental feature:
 
-  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Permissions and group features**.
-  1. Select the **Run customized CI YAML as security policy actions** checkbox.
+  1. Select the **Security policy pipeline execution action** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 The pipeline execution policy action introduces a new scan action type into
 scan execution policies for creating and enforcing custom CI in your target
@@ -383,6 +407,11 @@ Note the following:
 - `custom` scans are being executed for triggered rules only.
 - Jobs variables from `custom` scans take precedence over the project's CI/CD configuration.
 - Users triggering a pipeline must have at least read access to CI files specified in the `ci_configuration_path` or included in the CI/CD configuration.
+- It is not possible to define custom stages using the `stages` keyword in a custom scan action. Instead three default stages will be added to the pipeline:
+  - `.pipeline-policy-pre`at the beginning of the pipeline, before the `.pre` stage.
+  - `.pipeline-policy-test` after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
+  - `.pipeline-policy-post` at the very end of the pipeline, after the .post stage.
+- Jobs without a stage are assigned to the `.pipeline-policy-test` stage by default.
 
 #### Example security policies project
 
@@ -422,6 +451,8 @@ Prerequisites:
   1. Expand **Permissions and group features**.
   1. Select the **Security Policy Scopes** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 Security policy enforcement depends first on establishing a link between the group, subgroup, or
 project on which you want to enforce policies, and the security policy project that contains the

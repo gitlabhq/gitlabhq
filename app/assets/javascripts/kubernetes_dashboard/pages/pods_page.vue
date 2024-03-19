@@ -26,15 +26,17 @@ export default {
       },
       update(data) {
         return (
-          data?.k8sPods?.map((pod) => {
+          data?.k8sDashboardPods?.map((pod) => {
             return {
-              name: pod.metadata?.name,
-              namespace: pod.metadata?.namespace,
+              name: pod.metadata.name,
+              namespace: pod.metadata.namespace,
               status: pod.status.phase,
-              age: getAge(pod.metadata?.creationTimestamp),
-              labels: pod.metadata?.labels,
-              annotations: pod.metadata?.annotations,
+              age: getAge(pod.metadata.creationTimestamp),
+              labels: pod.metadata.labels,
+              annotations: pod.metadata.annotations,
               kind: s__('KubernetesDashboard|Pod'),
+              spec: pod.spec,
+              fullStatus: pod.status,
             };
           }) || []
         );

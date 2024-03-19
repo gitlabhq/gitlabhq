@@ -11,17 +11,17 @@ import {
   urlParams,
   urlParamsWithSpecialValues,
 } from 'jest/issues/list/mock_data';
-import { urlSortParams } from '~/issues/list/constants';
+import { STATUS_CLOSED } from '~/issues/constants';
+import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
   groupMultiSelectFilterTokens,
-  isSortKey,
 } from '~/issues/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 
@@ -52,20 +52,31 @@ describe('getInitialPageParams', () => {
   });
 });
 
-describe('getSortKey', () => {
-  it.each(Object.keys(urlSortParams))('returns %s given the correct inputs', (sortKey) => {
-    const sort = urlSortParams[sortKey];
-    expect(getSortKey(sort)).toBe(sortKey);
-  });
-});
-
-describe('isSortKey', () => {
-  it.each(Object.keys(urlSortParams))('returns true given %s', (sort) => {
-    expect(isSortKey(sort)).toBe(true);
+describe('deriveSortKey', () => {
+  describe('when given a legacy sort', () => {
+    it.each(Object.keys(urlSortParams))('returns the equivalent GraphQL sort enum', (sort) => {
+      const legacySort = urlSortParams[sort];
+      expect(deriveSortKey({ sort: legacySort })).toBe(sort);
+    });
   });
 
-  it.each(['', 'asdf', null, undefined])('returns false given %s', (sort) => {
-    expect(isSortKey(sort)).toBe(false);
+  describe('when given a GraphQL sort enum', () => {
+    it.each(Object.keys(urlSortParams))('returns a GraphQL sort enum', (sort) => {
+      expect(deriveSortKey({ sort })).toBe(sort);
+    });
+  });
+
+  describe('when given neither a legacy sort nor a GraphQL sort enum', () => {
+    it.each(['', 'asdf', null, undefined])('returns CREATED_DESC by default', (sort) => {
+      expect(deriveSortKey({ sort })).toBe(CREATED_DESC);
+    });
+
+    it.each(['', 'asdf', null, undefined])(
+      'returns UPDATED_DESC when state=STATUS_CLOSED',
+      (sort) => {
+        expect(deriveSortKey({ sort, state: STATUS_CLOSED })).toBe(UPDATED_DESC);
+      },
+    );
   });
 });
 
@@ -172,6 +183,7 @@ describe('groupMultiSelectFilterTokens', () => {
       groupMultiSelectFilterTokens(filteredTokens, [
         { type: 'assignee', multiSelect: true },
         { type: 'author', multiSelect: true },
+        { type: 'label', multiSelect: true },
       ]),
     ).toEqual(groupedFilteredTokens);
   });

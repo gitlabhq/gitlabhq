@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_caching,
-feature_category: :system_access do
+  feature_category: :system_access do
   include RackAttackSpecHelpers
   include SessionHelpers
 

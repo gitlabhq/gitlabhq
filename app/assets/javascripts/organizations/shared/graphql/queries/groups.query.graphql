@@ -2,7 +2,7 @@
 query getOrganizationGroups(
   $id: OrganizationsOrganizationID!
   $search: String
-  $sort: OrganizationGroupSort
+  $sort: String
   $first: Int
   $last: Int
   $before: String
@@ -31,6 +31,12 @@ query getOrganizationGroups(
         projectsCount
         groupMembersCount
         visibility
+        userPermissions {
+          removeGroup
+        }
+        maxAccessLevel {
+          integerValue
+        }
       }
       pageInfo {
         ...PageInfo

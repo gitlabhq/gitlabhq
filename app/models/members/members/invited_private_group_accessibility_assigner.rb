@@ -1,0 +1,68 @@
+# frozen_string_literal: true
+
+module Members
+  # We allow the current user to see the invited private group when the current user is a member of the shared group to
+  # allow better collaboration between the two groups even though the current user is not a member of the invited group.
+  # We don't allow the current user to see the source of membership i.e. the group name, path, and other group info as
+  # it's sensitive information if the current user is not an owner of the group or at least maintainer of the project.
+  # This class deals with setting `is_source_accessible_to_current_user` which is used to hide or show the source of
+  # memberships as per the above cases.
+  class InvitedPrivateGroupAccessibilityAssigner
+    include Gitlab::Allowable
+    include Gitlab::Utils::StrongMemoize
+
+    def initialize(members, source:, current_user:)
+      if !members.is_a?(Array) && !members.is_a?(MembersPresenter)
+        raise ArgumentError, "members should be an instance of Array or MembersPresenter"
+      end
+
+      @members = members
+      @source = source
+      @current_user = current_user
+    end
+
+    def execute
+      # We don't need to calculate the access level of the current user in the invited groups if:
+      #
+      # 1. The current user can admin members then the user should be able to see the source of all memberships
+      #    to enable management of group/project memberships.
+      # 2. There are no members invited from a private group.
+      return if can_admin_members? || private_invited_group_members.nil?
+
+      private_invited_group_members.each do |member|
+        member.is_source_accessible_to_current_user = authorized_group_ids.include?(member.source_id)
+      end
+    end
+
+    private
+
+    attr_reader :members, :source, :current_user
+
+    def authorized_group_ids
+      return [] if current_user.nil?
+
+      private_invited_group_ids = private_invited_group_members.map(&:source_id).uniq
+      current_user.authorized_groups.id_in(private_invited_group_ids).map(&:id)
+    end
+    strong_memoize_attr(:authorized_group_ids)
+
+    def private_invited_group_members
+      members.select do |member|
+        # The user can see those members where:
+        # - The source is public.
+        # - The member is direct or inherited. ProjectMember type is always direct.
+        member.is_a?(GroupMember) &&
+          member.source.visibility_level != Gitlab::VisibilityLevel::PUBLIC &&
+          member.source_id != source.id && # Exclude direct member
+          member.source.traversal_ids.exclude?(source.id) # Exclude inherited member
+      end
+    end
+    strong_memoize_attr(:private_invited_group_members)
+
+    def can_admin_members?
+      return can?(current_user, :admin_project_member, source) if source.is_a?(Project)
+
+      can?(current_user, :admin_group_member, source)
+    end
+  end
+end

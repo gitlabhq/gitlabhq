@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Analyze GitLab usage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 GitLab provides different types of analytics insights at the instance, group, and project level.
 These insights appear on the left sidebar, under [**Analyze**](../project/settings/project_features_permissions.md#disable-project-analytics).
 

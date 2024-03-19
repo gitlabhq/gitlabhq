@@ -23,8 +23,8 @@ describe('FollowersTab', () => {
     loading: false,
     page: 1,
     totalItems: 50,
-    currentUserEmptyStateTitle: 'UserProfile|You do not have any followers.',
-    visitorEmptyStateTitle: "UserProfile|This user doesn't have any followers.",
+    currentUserEmptyStateTitle: 'UserProfile|You do not have any followers',
+    visitorEmptyStateTitle: "UserProfile|This user doesn't have any followers",
   };
 
   const defaultProvide = {

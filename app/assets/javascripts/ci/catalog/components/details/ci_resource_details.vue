@@ -1,7 +1,6 @@
 <script>
 import { GlTab, GlTabs } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ExperimentBadge from '~/vue_shared/components/badges/experiment_badge.vue';
 import CiResourceComponents from './ci_resource_components.vue';
 import CiResourceReadme from './ci_resource_readme.vue';
@@ -14,9 +13,12 @@ export default {
     GlTab,
     GlTabs,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     resourcePath: {
+      type: String,
+      required: true,
+    },
+    version: {
       type: String,
       required: true,
     },
@@ -35,16 +37,16 @@ export default {
 <template>
   <gl-tabs>
     <gl-tab :title-link-class="$options.tabClass" lazy>
-      <!-- This template is simply to add the line height class. 
+      <!-- This template is simply to add the line height class.
       We can remove this when we remove the experiment badge and use the title prop. -->
       <template #title>
         <div class="gl-line-height-20">
           {{ $options.i18n.tabs.readme }}
         </div>
       </template>
-      <ci-resource-readme :resource-path="resourcePath" />
+      <ci-resource-readme :resource-path="resourcePath" :version="version" />
     </gl-tab>
-    <gl-tab v-if="glFeatures.ciCatalogComponentsTab" :title-link-class="$options.tabClass" lazy>
+    <gl-tab :title-link-class="$options.tabClass" lazy>
       <template #title>
         <div class="gl--flex-center gl-line-height-20">
           {{ $options.i18n.tabs.components }}

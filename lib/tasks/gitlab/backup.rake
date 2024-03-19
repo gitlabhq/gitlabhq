@@ -9,8 +9,8 @@ module Tasks
       def self.create_backup
         lock_backup do
           ::Gitlab::TaskHelpers.warn_user_is_not_gitlab
-
-          ::Backup::Manager.new(backup_progress).create
+          success = ::Backup::Manager.new(backup_progress).create
+          exit 1 unless success
         end
       end
 
@@ -22,15 +22,21 @@ module Tasks
         end
       end
 
-      def self.create_task(task)
+      def self.create_task(task_id)
         lock_backup do
-          ::Backup::Manager.new(backup_progress).run_create_task(task)
+          backup_manager = ::Backup::Manager.new(backup_progress)
+          task = backup_manager.find_task(task_id)
+          success = backup_manager.run_create_task(task)
+          exit 1 unless success
         end
       end
 
-      def self.restore_task(task)
+      def self.restore_task(task_id)
         lock_backup do
-          ::Backup::Manager.new(backup_progress).run_restore_task(task)
+          backup_manager = ::Backup::Manager.new(backup_progress)
+          task = backup_manager.find_task(task_id)
+
+          backup_manager.run_restore_task(task)
         end
       end
 

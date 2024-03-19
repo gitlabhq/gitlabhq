@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
-import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { apolloProvider } from './graphql/client';
 import EnvironmentsApp from './components/environments_app.vue';
@@ -19,7 +18,6 @@ export default (el) => {
       projectPath,
       defaultBranchName,
       projectId,
-      kasTunnelUrl,
     } = el.dataset;
 
     return new Vue({
@@ -32,7 +30,6 @@ export default (el) => {
         newEnvironmentPath,
         helpPagePath,
         projectId,
-        kasTunnelUrl: removeLastSlashInUrlPath(kasTunnelUrl),
         canCreateEnvironment: parseBoolean(canCreateEnvironment),
       },
       render(h) {

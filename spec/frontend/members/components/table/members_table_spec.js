@@ -118,7 +118,9 @@ describe('MembersTable', () => {
         tableFields: [field],
       });
 
-      expect(wrapper.findByText(label, { selector: '[role="columnheader"]' }).exists()).toBe(true);
+      expect(wrapper.findByText(label, { selector: '[role="columnheader"] > div' }).exists()).toBe(
+        true,
+      );
 
       if (expectedComponent) {
         expect(

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
@@ -96,12 +96,12 @@ To enable container scanning in your pipeline, you need the following:
 ## Configuration
 
 To enable container scanning, add the
-[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
 to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 ```
 
 The included template:
@@ -123,7 +123,7 @@ registry, and scans the image:
 ```yaml
 include:
   - template: Jobs/Build.gitlab-ci.yml
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -148,7 +148,7 @@ enables verbose output for the analyzer:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 variables:
     SECURE_LOG_LEVEL: 'debug'
@@ -160,7 +160,7 @@ To scan images located in a registry other than the project's, use the following
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -184,7 +184,7 @@ container_scanning:
     - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
 
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 variables:
     CS_IMAGE: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<image>:<tag>
@@ -208,7 +208,7 @@ For example:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -232,7 +232,7 @@ By default, the report only includes packages managed by the Operating System (O
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -365,7 +365,7 @@ This example sets `GIT_STRATEGY` to `fetch`:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -414,7 +414,7 @@ duplicated:
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -454,7 +454,7 @@ The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variab
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -595,8 +595,8 @@ and you may be able to make occasional updates on your own.
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
-[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
+[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
 
 #### Set container scanning CI/CD variables to use local container scanner analyzers
 
@@ -604,7 +604,7 @@ For details on saving and transporting Docker images as a file, see the Docker d
 
    ```yaml
    include:
-     - template: Security/Container-Scanning.gitlab-ci.yml
+     - template: Jobs/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
      image: $CI_REGISTRY/namespace/container-scanning
@@ -651,11 +651,11 @@ If you use the GitLab [Container Registry](../../packages/container_registry/ind
 the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables)
 are set automatically and you can skip this configuration.
 
-This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/container-registry/):
+This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/artifact-registry):
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -679,7 +679,7 @@ Scanning images in external private registries is not supported when [FIPS mode]
 
 #### Create and use a Trivy Java database mirror
 
-When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
+When the `trivy` scanner is used and a `jar` file is encountered in a container image being scanned, `trivy` downloads an additional `trivy-java-db` vulnerability database. By default, the `trivy-java-db` database is hosted as an [OCI artifact](https://oras.land/docs/quickstart/) at `ghcr.io/aquasecurity/trivy-java-db:1`. If this registry is not accessible, for example in a network-isolated offline GitLab instance, one solution is to mirror the `trivy-java-db` to a container registry that can be accessed in the offline instance:
 
 ```yaml
 mirror trivy java db:
@@ -699,7 +699,7 @@ If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, th
 
 ```yaml
 include:
-  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
 
 container_scanning:
   variables:
@@ -804,7 +804,7 @@ After a vulnerability is found, you can [address it](../vulnerabilities/index.md
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

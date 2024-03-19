@@ -23,21 +23,25 @@ For a full list of reference architectures, see
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
 
-| Service                    | Nodes | Configuration          | GCP             | AWS          | Azure    |
-|----------------------------|-------|------------------------|-----------------|--------------|----------|
-| Load balancer<sup>3</sup>  | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
-| Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
-| Gitaly<sup>5</sup>         | 1     | 4 vCPU, 15 GB memory<sup>5</sup>   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| Sidekiq<sup>6</sup>        | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
-| GitLab Rails<sup>6</sup>   | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
-| Monitoring node            | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
-| Object storage<sup>4</sup> | -     | -                      | -               | -            | -        |
+| Service                            | Nodes | Configuration          | GCP             | AWS          | Azure    |
+|------------------------------------|-------|------------------------|-----------------|--------------|----------|
+| External Load balancer<sup>3</sup> | 1     | 4 vCPU, 3.6 GB memory  | `n1-highcpu-4`  | `c5n.xlarge` | `F4s v2` |
+| PostgreSQL<sup>1</sup>             | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`   | `D2s v3` |
+| Redis<sup>2</sup>                  | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`   | `D2s v3` |
+| Gitaly<sup>5</sup>                 | 1     | 4 vCPU, 15 GB memory<sup>5</sup> | `n1-standard-4` | `m5.xlarge` | `D4s v3` |
+| Sidekiq<sup>6</sup>                | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge`  | `D4s v3` |
+| GitLab Rails<sup>6</sup>           | 2     | 8 vCPU, 7.2 GB memory  | `n1-highcpu-8`  | `c5.2xlarge` | `F8s v2` |
+| Monitoring node                    | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
+| Object storage<sup>4</sup>         | -     | -                      | -               | -            | -        |
 
+**Footnotes:**
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
 1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
 2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-3. Can be optionally run on reputable third-party load balancing services (LB PaaS). See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
+   Also note that sizing depends on selected Load Balancer as well as additional factors such as Network Bandwidth. Refer to [Load Balancers](index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
@@ -138,21 +142,13 @@ To set up GitLab and its components to accommodate up to 2,000 users:
 
 ## Configure the external load balancer
 
-In a multi-node GitLab configuration, you'll need a load balancer to route
+In a multi-node GitLab configuration, you'll need an external load balancer to route
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation. It is expected however that any
-reputable load balancer should work and as such this section will focus on the specifics of
+is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
-
-### Balancing algorithm
-
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
-
-We don't recommend the use of round-robin algorithms as they are known to not
-spread connections equally in practice.
 
 ### Readiness checks
 
@@ -361,7 +357,7 @@ Refer to the [scaling documentation](index.md#scaling-an-environment) for more i
 
 You can optionally use a [third party external service for the Redis instance](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider) with the following guidance:
 
-- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
+- A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/memorystore-for-redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
@@ -847,7 +843,7 @@ On each node perform the following:
       'google_project' => '<gcp-project-name>',
       'google_json_key_location' => '<path-to-gcp-service-account-key>'
    }
-   
+
    ## Uncomment and edit the following options if you have set up NFS
    ##
    ## Prevent GitLab from starting if NFS data mounts are not available
@@ -1137,12 +1133,14 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
-| Service                    | Nodes | Configuration          | GCP             | AWS         |
-|----------------------------|-------|------------------------|-----------------|-------------|
-| PostgreSQL<sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
-| Redis<sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
-| Gitaly                     | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
-| Object storage<sup>3</sup> | -     | -                      | -               | -           |
+| Service                     | Nodes | Configuration          | GCP             | AWS         |
+|-----------------------------|-------|------------------------|-----------------|-------------|
+| PostgreSQL <sup>1</sup>     | 1     | 2 vCPU, 7.5 GB memory  | `n1-standard-2` | `m5.large`  |
+| Redis <sup>2</sup>          | 1     | 1 vCPU, 3.75 GB memory | `n1-standard-1` | `m5.large`  |
+| Gitaly                      | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
+| Object storage <sup>3</sup> | -     | -                      | -               | -           |
+
+**Footnotes:**
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

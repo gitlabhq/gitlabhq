@@ -4,7 +4,7 @@ key_path: counts_monthly.aggregated_metrics.incident_management_incidents_total_
 description: Count of unique users per month to take an action on an incident
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 28d
@@ -12,8 +12,7 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
     - 'incident_management_incident_created'
     - 'incident_management_incident_reopened'

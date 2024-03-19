@@ -96,7 +96,7 @@ module Types
           Types::Ci::GroupEnvironmentScopeType.connection_type,
           description: 'Environment scopes of the group.',
           null: true,
-          authorize: :admin_group,
+          authorize: :admin_cicd_variables,
           resolver: Resolvers::GroupEnvironmentScopesResolver
 
     field :milestones,
@@ -241,7 +241,7 @@ module Types
           Types::Ci::GroupVariableType.connection_type,
           null: true,
           description: "List of the group's CI/CD variables.",
-          authorize: :admin_group,
+          authorize: :admin_cicd_variables,
           resolver: Resolvers::Ci::VariablesResolver
 
     field :runners, Types::Ci::RunnerType.connection_type,

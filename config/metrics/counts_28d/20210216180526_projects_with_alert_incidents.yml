@@ -5,7 +5,7 @@ description: Count of unique projects with an incident from an alert created in 
   last month
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 28d

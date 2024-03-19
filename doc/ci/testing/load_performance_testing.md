@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10683) in GitLab 13.2.
 
@@ -63,7 +63,7 @@ Configuring your Load Performance Testing job can be broken down into several di
 
 ### Determine the test parameters
 
-The first thing you need to do is determine the [type of load test](https://k6.io/docs/test-types/load-test-types/)
+The first thing you need to do is determine the [type of load test](https://grafana.com/load-testing/types-of-load-testing/)
 you want to run, and how you want it to run (for example, the number of users, throughput, and so on).
 
 Refer to the [k6 docs](https://k6.io/docs/), especially the [k6 testing guides](https://k6.io/docs/testing-guides),
@@ -83,7 +83,7 @@ We strongly recommend [not running these tests against a production environment]
 ### Write the load performance test
 
 After the environment is prepared, you can write the k6 test itself. k6 is a flexible
-tool and can be used to run [many kinds of performance tests](https://k6.io/docs/test-types/load-test-types/).
+tool and can be used to run [many kinds of performance tests](https://grafana.com/load-testing/types-of-load-testing/).
 Refer to the [k6 documentation](https://k6.io/docs/) for detailed information on how to write tests.
 
 ### Configure the test in GitLab CI/CD
@@ -168,7 +168,7 @@ For example:
    1. Set the `.env` file to be a [job artifact](../jobs/job_artifacts.md).
 1. In the `load_performance` job:
    1. Set it to depend on the review job, so it inherits the environment file.
-   1. Set the `K6_DOCKER_OPTIONS` variable with the [Docker CLI option for environment files](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file), for example `--env-file review.env`.
+   1. Set the `K6_DOCKER_OPTIONS` variable with the [Docker CLI option for environment files](https://docs.docker.com/reference/cli/docker/container/run/#env), for example `--env-file review.env`.
 1. Configure the k6 test script to use the environment variable in it's steps.
 
 Your `.gitlab-ci.yml` file might be similar to:

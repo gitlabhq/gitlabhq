@@ -7,16 +7,18 @@ module Gitlab
         class Component
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :component_type, :version, :path
-          attr_accessor :properties, :purl, :source_package_name
+          attr_reader :ref, :component_type, :version, :path
+          attr_accessor :properties, :purl, :source_package_name, :ancestors
 
-          def initialize(type:, name:, purl:, version:, properties: nil, source_package_name: nil)
+          def initialize(ref:, type:, name:, purl:, version:, properties: nil, source_package_name: nil)
+            @ref = ref
             @component_type = type
             @name = name
             @purl = purl
             @version = version
             @properties = properties
             @source_package_name = source_package_name
+            @ancestors = []
           end
 
           def <=>(other)

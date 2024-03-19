@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Documentation for the REST API for merge requests in GitLab."
 ---
 
 # Merge requests API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - `reference` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
 > - `draft` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63473) as a replacement for `work_in_progress` in GitLab 14.0.
@@ -838,7 +839,6 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `mergeable`: The branch can merge cleanly into the target branch.
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
-  - `policies_denied`: The merge request contains denied policies.
   - `jira_association_missing`: The title or description must reference a Jira issue.
 
 ### Preparation steps
@@ -1117,6 +1117,7 @@ Example response:
 ## List merge request diffs
 
 > - `generated_file` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 
 List diffs of the files changed in a merge request.
 
@@ -1147,7 +1148,7 @@ following response attributes:
 | `new_file`     | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |
-| `generated_file` | boolean | Indicates if the file is marked as generated. |
+| `generated_file` | boolean | Indicates if the file is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9. |
 
 Example request:
 

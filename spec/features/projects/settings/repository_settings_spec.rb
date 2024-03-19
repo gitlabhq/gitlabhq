@@ -98,7 +98,9 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('.deploy-key', text: private_deploy_key.title).find('[data-testid="pencil-icon"]').click
+        within('.deploy-key', text: private_deploy_key.title) do
+          find_by_testid('pencil-icon').click
+        end
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
@@ -112,7 +114,9 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
         project.deploy_keys << public_deploy_key
         visit project_settings_repository_path(project)
 
-        find('.deploy-key', text: public_deploy_key.title).find('[data-testid="pencil-icon"]').click
+        within('.deploy-key', text: public_deploy_key.title) do
+          find_by_testid('pencil-icon').click
+        end
 
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
         click_button 'Save changes'
@@ -130,7 +134,9 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
 
         find('.js-deployKeys-tab-available_project_keys').click
 
-        find('.deploy-key', text: private_deploy_key.title).find('[data-testid="pencil-icon"]').click
+        within('.deploy-key', text: private_deploy_key.title) do
+          find_by_testid('pencil-icon').click
+        end
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         click_button 'Save changes'

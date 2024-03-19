@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When working with the [Jira issue integration](configure.md), you might encounter the following issues.
 
@@ -141,10 +141,11 @@ To change all Jira projects to use instance-level integration settings:
        integration.inherit_from_id = default_integration.id
 
        if integration.save(context: :manual_change)
-         # In GitLab 16.9 and later:
-         Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
-         # In GitLab 16.8 and earlier, instead do:
-         # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+         if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
+           Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+         else
+           BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+         end
        end
      end
      ```
@@ -178,22 +179,31 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
     integration.inherit_from_id = default_integration.id
 
     if integration.save(context: :manual_change)
-      # In GitLab 16.9 and later:
-      Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
-      # In GitLab 16.8 and earlier, instead do:
-      # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
+        Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+      else
+        BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      end
     end
   end
 
   parent_group = Group.find_by_full_path('top-level-group') # Add the full path of your top-level group
   current_user = User.find_by_username('admin-user') # Add the username of a user with administrator access
 
-  groups = GroupsFinder.new(current_user, { parent: parent_group, include_parent_descendants: true }).execute
+  unless parent_group.nil?
+    groups = GroupsFinder.new(current_user, { parent: parent_group, include_parent_descendants: true }).execute
 
-  groups.find_each do |group|
-    reset_integration(group)
+    # Reset any projects in subgroups to use the parent group integration settings
+    groups.find_each do |group|
+      reset_integration(group)
 
-    group.projects.find_each do |project|
+      group.projects.find_each do |project|
+        reset_integration(project)
+      end
+    end
+
+    # Reset any direct projects in the parent group to use the parent group integration settings
+    parent_group.projects.find_each do |project|
       reset_integration(project)
     end
   end
@@ -262,7 +272,7 @@ has permission to view issues associated with the specified Jira project key.
 
 To verify the Jira user has this permission, do one of the following:
 
-- In your browser, sign into Jira with the user you configured in the Jira issue integration. Because the Jira API supports
+- In your browser, sign in to Jira with the user you configured in the Jira issue integration. Because the Jira API supports
   [cookie-based authentication](https://developer.atlassian.com/server/jira/platform/security-overview/#cookie-based-authentication),
   you can see if any issues are returned in the browser:
 

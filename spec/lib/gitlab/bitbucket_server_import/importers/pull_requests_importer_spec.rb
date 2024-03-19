@@ -14,9 +14,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
     )
   end
 
+  let_it_be(:repository) { project.repository }
+
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute', :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
     let(:commit_sha) { 'aaaa1' }
 
     before do
@@ -88,7 +90,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
           'bbbb2:refs/keep-around/bbbb2'
         ]
 
-        expect(project.repository).to receive(:fetch_remote).with(
+        expect(repository).to receive(:fetch_remote).with(
           project.import_url,
           refmap: expected_refmap,
           prune: false
@@ -107,7 +109,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
             'bbbb2:refs/keep-around/bbbb2'
           ]
 
-          expect(project.repository).to receive(:fetch_remote).with(
+          expect(repository).to receive(:fetch_remote).with(
             project.import_url,
             refmap: expected_refmap,
             prune: false
@@ -123,7 +125,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
         end
 
         it 'does not fetch anything' do
-          expect(project.repository).not_to receive(:fetch_remote)
+          expect(repository).not_to receive(:fetch_remote)
           importer.execute
         end
       end
@@ -135,7 +137,25 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
         end
 
         it 'does not fetch anything' do
-          expect(project.repository).not_to receive(:fetch_remote)
+          expect(repository).not_to receive(:fetch_remote)
+
+          importer.execute
+        end
+      end
+
+      context 'when fetch causes an unadvertised object error' do
+        let(:exception) do
+          Gitlab::Git::CommandError.new(
+            'Server does not allow request for unadvertised object 0731e4'
+          )
+        end
+
+        before do
+          allow(repository).to receive(:fetch_remote).and_raise(exception)
+        end
+
+        it 'does not log the exception' do
+          expect(Gitlab::Import::ImportFailureService).not_to receive(:track)
 
           importer.execute
         end
@@ -145,7 +165,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
         let(:exception) { ArgumentError.new('blank or empty URL') }
 
         before do
-          allow(project.repository).to receive(:fetch_remote).and_raise(exception)
+          allow(repository).to receive(:fetch_remote).and_raise(exception)
         end
 
         it 'rescues and logs the exception' do

@@ -211,7 +211,7 @@ export default {
     >
       <template v-if="stageCount" #head(title)="data">
         <span>{{ data.label }}</span
-        ><gl-badge class="gl-ml-2" size="sm"
+        ><gl-badge class="gl-ml-3" size="sm"
           ><formatted-stage-count :stage-count="stageCount"
         /></gl-badge>
       </template>

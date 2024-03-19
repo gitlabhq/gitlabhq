@@ -7,18 +7,20 @@ module Gitlab
 
     attr_reader :contributor
     attr_reader :current_user
+    attr_reader :groups
     attr_reader :projects
 
     def initialize(contributor, current_user = nil)
       @contributor = contributor
       @contributor_time_instance = local_timezone_instance(contributor.timezone).now
       @current_user = current_user
+      @groups = [] # Overriden in EE
       @projects = ContributedProjectsFinder.new(contributor)
         .execute(current_user, ignore_visibility: @contributor.include_private_contributions?)
     end
 
     def activity_dates
-      return {} if projects.empty?
+      return {} if groups.blank? && projects.blank?
 
       start_time = @contributor_time_instance.years_ago(1).beginning_of_day
       end_time = @contributor_time_instance.end_of_day
@@ -39,6 +41,13 @@ module Gitlab
     private
 
     def contributions_between(start_time, end_time)
+      Event.from_union(
+        collect_events_between(start_time, end_time),
+        remove_duplicates: false
+      )
+    end
+
+    def collect_events_between(start_time, end_time)
       # Can't use Event.contributions here because we need to check 3 different
       # project_features for the (currently) 4 different contribution types
       repo_events =
@@ -55,11 +64,11 @@ module Gitlab
           .for_merge_request
           .for_action(%i[merged created closed approved])
 
-      note_events =
+      project_note_events =
         project_events_created_between(start_time, end_time, features: %i[issues merge_requests])
           .for_action(:commented)
 
-      Event.from_union([repo_events, issue_events, mr_events, note_events], remove_duplicates: false)
+      [repo_events, issue_events, mr_events, project_note_events]
     end
 
     def can_read_cross_project?
@@ -103,3 +112,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ContributionsCalendar.prepend_mod

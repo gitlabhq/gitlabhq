@@ -1,0 +1,31 @@
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+networking:
+  apiServerAddress: "0.0.0.0"
+nodes:
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          certSANs:
+            - "docker"
+    extraPortMappings:
+        # containerPort below must match the values file:
+        #   nginx-ingress.controller.service.nodePorts.http
+        # Change hostPort if port 80 is already in use.
+      - containerPort: 32080
+        hostPort: 80
+        listenAddress: "0.0.0.0"
+        # containerPort below must match the values file:
+        #   nginx-ingress.controller.service.nodePorts.ssh
+        # Using high-numbered hostPort assuming port 22 is
+        #   already in use.
+      - containerPort: 32022
+        hostPort: 32022
+        listenAddress: "0.0.0.0"

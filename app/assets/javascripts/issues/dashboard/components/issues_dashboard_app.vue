@@ -10,24 +10,16 @@ import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import { STATUS_ALL, STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import {
-  CREATED_DESC,
-  defaultTypeTokenOptions,
-  i18n,
-  PARAM_STATE,
-  UPDATED_DESC,
-  urlSortParams,
-} from '~/issues/list/constants';
+import { defaultTypeTokenOptions, i18n, PARAM_STATE, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
   convertToSearchQuery,
   convertToUrlParams,
+  deriveSortKey,
   getFilterTokens,
   getInitialPageParams,
-  getSortKey,
   getSortOptions,
-  isSortKey,
 } from '~/issues/list/utils';
 import { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
@@ -113,15 +105,6 @@ export default {
   data() {
     const state = getParameterByName(PARAM_STATE);
 
-    const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-    const dashboardSortKey = getSortKey(this.initialSort);
-    const graphQLSortKey =
-      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
-
-    // The initial sort is an old enum value when it is saved on the dashboard issues page.
-    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
-    const sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
-
     return {
       filterTokens: getFilterTokens(window.location.search),
       issues: [],
@@ -129,7 +112,7 @@ export default {
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
-      sortKey,
+      sortKey: deriveSortKey({ sort: this.initialSort, state }),
       state: state || STATUS_OPEN,
     };
   },

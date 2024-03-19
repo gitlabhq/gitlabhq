@@ -7,6 +7,7 @@ module Ml
     include SemanticVersionable
 
     semver_method :semver
+    validate_semver
 
     validates :project, :model, presence: true
 
@@ -61,6 +62,11 @@ module Ml
       def by_project_id_name_and_version(project_id, name, version)
         joins(:model).find_by(model: { name: name, project_id: project_id }, project_id: project_id, version: version)
       end
+    end
+
+    def version=(value)
+      self.semver = value
+      super(value)
     end
 
     private

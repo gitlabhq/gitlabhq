@@ -31,7 +31,7 @@ module ClickHouse
 
     def each_batch(column: :id, of: 10_000)
       min, max = min_max(column)
-      return if min.nil? || max == 0
+      return if min.nil? || max.nil? || max == 0
 
       loop do
         break if min > max

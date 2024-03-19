@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Environments describe where code is deployed.
 
@@ -36,14 +36,14 @@ There are a few ways to view a list of environments for a given project:
   ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
 
 - On the left sidebar, select **Operate > Environments**.
-   The environments are displayed.
+  The environments are displayed.
 
-   ![Environments list](img/environments_list_v14_8.png)
+  ![Environments list](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
-   for example, `staging`.
+  for example, `staging`.
 
-   ![Deployments list](img/deployments_list.png)
+  ![Deployments list](img/deployments_list.png)
 
 Deployments show up in this list only after a deployment job has created them.
 
@@ -314,28 +314,40 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 ## Track newly included merge requests per deployment
 
+> - Feature flag `link_fast_forward_merge_requests_to_deployment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384104) in GitLab 16.10. Disabled by default.
+
 GitLab can track newly included merge requests per deployment.
-When a deployment succeeded, the system calculates commit-diffs between the latest deployment and the previous deployment.
-This tracking information can be fetched via the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
-and displayed at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
+When a deployment succeeds, the system calculates commit-diffs between the latest deployment and the previous deployment.
+You can fetch tracking information with the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
+or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
 
-To activate this tracking, your environment must be configured in the following:
+To enable tracking:
 
-- [Environment name](../yaml/index.md#environmentname) is not using folders with `/` (that is, top-level/long-lived environments), _OR_
-- [Environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
+1. Set your [project's merge method](../../user/project/merge_requests/methods/index.md).
+   The merge method:
 
-Here are the example setups of [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
+   - Must _not_ be **Fast-forward merge**.
+   - Can be **Fast-forward merge** if the `link_fast_forward_merge_requests_to_deployment` feature flag is enabled.
 
-```yaml
-# Trackable
-environment: production
-environment: production/aws
-environment: development
+1. Configure your environment so either:
 
-# Non Trackable
-environment: review/$CI_COMMIT_REF_SLUG
-environment: testing/aws
-```
+   - The [environment name](../yaml/index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
+   - The [environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
+
+   Here are some example configurations using the [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
+
+   ```yaml
+   # Trackable
+   environment: production
+   environment: production/aws
+   environment: development
+
+   # Non Trackable
+   environment: review/$CI_COMMIT_REF_SLUG
+   environment: testing/aws
+   ```
+
+Configuration changes apply only to new deployments. Existing deployment records do not have merge requests linked or unlinked from them.
 
 ## Working with environments
 
@@ -484,7 +496,7 @@ stop_review:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `environment_stop_actions_include_all_finished_deployments`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 You can define a stop job for the environment with an [`on_stop` action](../yaml/index.md#environmenton_stop) in the environment's deploy job.
 
@@ -766,7 +778,7 @@ to get alerts when there are critical issues that need immediate attention.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
@@ -786,7 +798,7 @@ deployment tab from the environment page and select which deployment to roll bac
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
@@ -991,11 +1003,15 @@ See [Deployment-only access to protected environments](protected_environments.md
 
 ### The job with `action: stop` doesn't run
 
-In some cases, environments do not [stop when a branch is deleted](#stop-an-environment-when-a-branch-is-deleted).
+In some cases, environments do not stop despite an `on_stop` job being configured. This happens when the job
+with the `action: stop` is not in a runnable state due to its `stages:` or `needs:` configuration.
 
-For example, the environment might start in a stage that also has a job that failed.
+For example:
+
+- The environment might start in a stage that also has a job that failed.
 Then the jobs in later stages job don't start. If the job with the `action: stop`
 for the environment is also in a later stage, it can't start and the environment isn't deleted.
+- The job with the `action: stop` might have a dependency on a job that has not yet completed.
 
 To ensure the `action: stop` can always run when needed, you can:
 

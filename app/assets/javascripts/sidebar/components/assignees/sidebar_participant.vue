@@ -58,7 +58,7 @@ export default {
         name="warning-solid"
         aria-hidden="true"
         class="merge-icon"
-        :class="{ 'gl-left-6!': selected }"
+        :class="{ '!gl-left-6': selected }"
         :size="12"
       />
       <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-2">

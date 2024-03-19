@@ -8,7 +8,6 @@ RSpec.describe PersonalAccessTokens::RevokeService, feature_category: :system_ac
     it { expect(service.token.revoked?).to be true }
 
     it 'logs the event' do
-      allow(Gitlab::AppLogger).to receive(:info)
       expect(Gitlab::AppLogger).to receive(:info).with(
         class: described_class.to_s,
         message: 'PAT Revoked',

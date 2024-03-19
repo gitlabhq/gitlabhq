@@ -8,7 +8,8 @@ module Projects
       NUMBER_OF_RUNNERS_PER_PAGE = 20
 
       layout 'project_settings'
-      before_action :authorize_admin_pipeline!
+      before_action :authorize_admin_pipeline!, except: :show
+      before_action :authorize_admin_cicd_variables!, only: :show
       before_action :check_builds_available!
       before_action :define_variables
 

@@ -81,23 +81,31 @@ describe('Number Utils', () => {
 
   describe('numberToHumanSizeSplit', () => {
     it('should return bytes', () => {
-      expect(numberToHumanSizeSplit(654)).toEqual(['654', 'B']);
-      expect(numberToHumanSizeSplit(-654)).toEqual(['-654', 'B']);
+      expect(numberToHumanSizeSplit({ size: 654 })).toEqual(['654', 'B']);
+      expect(numberToHumanSizeSplit({ size: -654 })).toEqual(['-654', 'B']);
     });
 
     it('should return KiB', () => {
-      expect(numberToHumanSizeSplit(1079)).toEqual(['1.05', 'KiB']);
-      expect(numberToHumanSizeSplit(-1079)).toEqual(['-1.05', 'KiB']);
+      expect(numberToHumanSizeSplit({ size: 1079 })).toEqual(['1.05', 'KiB']);
+      expect(numberToHumanSizeSplit({ size: -1079 })).toEqual(['-1.05', 'KiB']);
     });
 
     it('should return MiB', () => {
-      expect(numberToHumanSizeSplit(10485764)).toEqual(['10.00', 'MiB']);
-      expect(numberToHumanSizeSplit(-10485764)).toEqual(['-10.00', 'MiB']);
+      expect(numberToHumanSizeSplit({ size: 10485764 })).toEqual(['10.00', 'MiB']);
+      expect(numberToHumanSizeSplit({ size: -10485764 })).toEqual(['-10.00', 'MiB']);
     });
 
     it('should return GiB', () => {
-      expect(numberToHumanSizeSplit(10737418240)).toEqual(['10.00', 'GiB']);
-      expect(numberToHumanSizeSplit(-10737418240)).toEqual(['-10.00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: 10737418240 })).toEqual(['10.00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: -10737418240 })).toEqual(['-10.00', 'GiB']);
+    });
+
+    it('should localize the delimiter', () => {
+      expect(numberToHumanSizeSplit({ size: 10737418240, locale: 'fr' })).toEqual(['10,00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: 10737418240 * 1000, locale: 'it' })).toEqual([
+        '10.000,00',
+        'GiB',
+      ]);
     });
   });
 
@@ -127,9 +135,11 @@ describe('Number Utils', () => {
     it.each`
       number       | expected
       ${123}       | ${'123'}
+      ${1000}      | ${'1k'}
       ${1234}      | ${'1.2k'}
       ${12345}     | ${'12.3k'}
       ${123456}    | ${'123.5k'}
+      ${1000000}   | ${'1m'}
       ${1234567}   | ${'1.2m'}
       ${12345678}  | ${'12.3m'}
       ${123456789} | ${'123.5m'}

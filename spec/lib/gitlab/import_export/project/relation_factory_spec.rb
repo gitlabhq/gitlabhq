@@ -65,6 +65,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'wiki_page_events' => true,
         'releases_events' => false,
         'emoji_events' => false,
+        'resource_access_token_events' => false,
         'token' => token
       }
     end
@@ -611,6 +612,27 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
           expect(created_object.change_position.line_range).to eq(expected_line_range)
         end
       end
+    end
+  end
+
+  describe 'note diff files' do
+    let(:relation_sym) { :note_diff_file }
+    let(:relation_hash) do
+      {
+        'diff' => 'diff',
+        'new_file' => true,
+        'renamed_file' => false,
+        'deleted_file' => false,
+        'a_mode' => '100644',
+        'b_mode' => '100644',
+        'new_path' => 'new_path',
+        'old_path' => 'old_path',
+        'diff_export' => 'diff_export'
+      }
+    end
+
+    it 'sets diff to diff_export value' do
+      expect(created_object.diff).to eq('diff_export')
     end
   end
 end

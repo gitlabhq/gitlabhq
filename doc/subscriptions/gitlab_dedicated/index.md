@@ -22,9 +22,13 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of available AWS regions](#available-aws-regions).
 
+### Advanced search
+
+GitLab Dedicated uses the [advanced search functionality](../../integration/advanced_search/elasticsearch.md).
+
 ### Availability and scalability
 
-GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
+GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab will match you to the closest reference architecture size based on your number of users. Learn about the [current Service Level Objective](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
 
 NOTE:
 The published [reference architectures](../../administration/reference_architectures/index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated costs differ from standard reference architecture costs.
@@ -33,7 +37,7 @@ The published [reference architectures](../../administration/reference_architect
 
 When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
 
-For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
+For more information, read about the [recovery plan for GitLab Dedicated](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
 
 ### Security
 
@@ -71,6 +75,7 @@ GitLab Dedicated offers the following [compliance certifications](https://about.
 - ISO/IEC 27001:2013
 - ISO/IEC 27017:2015
 - ISO/IEC 27018:2019
+- TISAX Assessment Level 3
 
 #### Isolation
 
@@ -78,7 +83,7 @@ As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level
 
 #### Access controls
 
-GitLab Dedicated adheres to the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege) to control access to customer tenant environments. Tenant AWS accounts live under a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization is restricted to select GitLab team members. All user accounts within the AWS Organization follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/). Direct access to customer tenant environments is restricted to a single Hub account. The GitLab Dedicated Control Plane uses the Hub account to perform automated actions over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments. In break glass situations, where access to resources in the tenant environment is required to address a high-severity issue, GitLab engineers must go through the Hub account to manage those resources. This is done via an approval process, and after permission is granted, the engineer will assume an IAM role on a temporary basis to access tenant resources through the Hub account. All actions within the hub account and tenant account are logged to CloudTrail.
+GitLab Dedicated adheres to the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege) to control access to customer tenant environments. Tenant AWS accounts live under a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization is restricted to select GitLab team members. All user accounts within the AWS Organization follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/). Direct access to customer tenant environments is restricted to a single Hub account. The GitLab Dedicated Control Plane uses the Hub account to perform automated actions over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments. In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md) situations, where access to resources in the tenant environment is required to address a high-severity issue, GitLab engineers must go through the Hub account to manage those resources. This is done via an approval process, and after permission is granted, the engineer will assume an IAM role on a temporary basis to access tenant resources through the Hub account. All actions within the hub account and tenant account are logged to CloudTrail.
 
 Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
 
@@ -106,24 +111,29 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 You can use GitLab Pages on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
 
-GitLab Pages are public by default. You can limit access to your Pages site by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+You can control access to your Pages website with [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
+
+In addition, you can limit access to your Pages website by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
 
 The following GitLab Pages features are not available:
 
-- Access control
 - Custom domains
 - PrivateLink access
+- Change of authentication scope
 
 In addition, GitLab Pages:
 
 - Only works in the primary site if [Geo](../../administration/geo/index.md) is enabled.
 - Is not included as part of instance migrations to GitLab Dedicated.
 
-To enable GitLab Pages for GitLab Dedicated, submit a [support request](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The feature is then enabled in the next scheduled maintenance window.
+GitLab Pages for GitLab Dedicated is enabled by default for all customers.
 
 #### GitLab Runners
 
-##### Hosted by GitLab (Beta)
+##### Hosted by GitLab
+
+DETAILS:
+**Status:** Beta
 
 On 2024-01-31, GitLab released Hosted runners in closed [Beta](../../policy/experiment-beta-support.md#beta).
 
@@ -139,6 +149,15 @@ The beta release of Hosted Runners provides the following features:
 Additional features will be included based on customer demand leading up to limited and general availability.
 
 Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed Beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
+
+##### Request runner IP ranges
+
+IP ranges for runners hosted by GitLab are available upon request. IP ranges are maintained on a best-effort basis and may change at any time during the Beta due to changes in the infrastructure.
+Please reach out to your Customer Success Manager or Account representative.
+
+##### Machine types available for Linux (x86-64)
+
+Instance runners available during the Beta are using EC2 `M7i` general-purpose machines.
 
 ##### Bring Your Own
 
@@ -194,6 +213,7 @@ The following is a list of AWS regions verified for use in GitLab Dedicated. Reg
 
 - Asia Pacific (Singapore)
 - Asia Pacific (Sydney)
+- Asia Pacific (Tokyo)
 - Europe (Frankfurt)
 - Europe (Ireland)
 - Europe (London)

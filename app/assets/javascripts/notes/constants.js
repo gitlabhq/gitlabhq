@@ -28,6 +28,8 @@ export const DESC = 'desc';
 
 export const DISCUSSION_FETCH_TIMEOUT = 750;
 
+export const FETCH_UPDATED_NOTES_DEBOUNCE_TIMEOUT = 750;
+
 export const NOTEABLE_TYPE_MAPPING = {
   Issue: ISSUE_NOTEABLE_TYPE,
   MergeRequest: MERGE_REQUEST_NOTEABLE_TYPE,
@@ -125,3 +127,4 @@ export const MR_FILTER_OPTIONS = [
     systemNoteIcons: ['timer'],
   },
 ];
+export const MR_FILTER_TRACKING_OPENED = 'user_clicks_comment_filter_dropdown';

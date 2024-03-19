@@ -86,8 +86,8 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
 
     context 'sorting' do
       def sort_page(by:, direction:)
-        within '[data-testid="releases-sort"]' do
-          find('[data-testid="base-dropdown-toggle"]').click
+        within_testid 'releases-sort' do
+          find_by_testid('base-dropdown-toggle').click
 
           find('li.gl-new-dropdown-item', text: by).click
 

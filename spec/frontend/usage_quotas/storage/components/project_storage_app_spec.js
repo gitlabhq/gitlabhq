@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getPreferredLocales } from '~/locale';
 import ProjectStorageApp from '~/usage_quotas/storage/components/project_storage_app.vue';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 import {
@@ -26,6 +27,11 @@ import {
 } from '../mock_data';
 
 Vue.use(VueApollo);
+
+jest.mock('~/locale', () => ({
+  ...jest.requireActual('~/locale'),
+  getPreferredLocales: jest.fn(),
+}));
 
 describe('ProjectStorageApp', () => {
   let wrapper;
@@ -70,6 +76,7 @@ describe('ProjectStorageApp', () => {
     const mockProjectData = mockGetProjectStorageStatisticsGraphQLResponse.data.project;
 
     beforeEach(async () => {
+      getPreferredLocales.mockImplementation(() => ['en']);
       mockApollo = createMockApolloProvider({
         mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
       });
@@ -105,6 +112,27 @@ describe('ProjectStorageApp', () => {
       );
 
       expect(findNamespaceDetailsTable().props('storageTypes')).toStrictEqual(expectedValue);
+    });
+
+    describe('with a different locale', () => {
+      beforeEach(() => {
+        getPreferredLocales.mockImplementation(() => ['it']);
+        mockApollo = createMockApolloProvider({
+          mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
+        });
+        createComponent({ mockApollo });
+        return waitForPromises();
+      });
+
+      it('passes namespace storage entities to namespace details table', () => {
+        const expectedValue = numberToHumanSize(
+          mockGetProjectStorageStatisticsGraphQLResponse.data.project.statistics.storageSize,
+          1,
+          ['it'],
+        );
+
+        expect(findUsagePercentage().text()).toBe(expectedValue);
+      });
     });
   });
 
@@ -195,6 +223,7 @@ describe('ProjectStorageApp', () => {
   describe('when displayCostFactoredStorageSizeOnProjectPages feature flag is enabled', () => {
     let mockApollo;
     beforeEach(async () => {
+      getPreferredLocales.mockImplementation(() => ['en']);
       mockApollo = createMockApolloProvider({
         mockedValue: mockGetProjectStorageStatisticsGraphQLResponse,
       });

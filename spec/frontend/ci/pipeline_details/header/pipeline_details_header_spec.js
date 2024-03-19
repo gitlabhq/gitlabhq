@@ -14,6 +14,7 @@ import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import {
   pipelineHeaderSuccess,
+  pipelineHeaderTrigger,
   pipelineHeaderRunning,
   pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
@@ -33,6 +34,7 @@ describe('Pipeline details header', () => {
   let glModalDirective;
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
+  const triggerHandler = jest.fn().mockResolvedValue(pipelineHeaderTrigger);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
   const runningHandlerNoPermissions = jest
     .fn()
@@ -70,6 +72,7 @@ describe('Pipeline details header', () => {
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
+  const findCommitCopyButton = () => wrapper.findByTestId('commit-copy-sha');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
   const findRetryButton = () => wrapper.findByTestId('retry-pipeline');
@@ -88,24 +91,16 @@ describe('Pipeline details header', () => {
     },
   };
 
-  const defaultProps = {
-    yamlErrors: '',
-    trigger: false,
-  };
-
   const createMockApolloProvider = (handlers) => {
     return createMockApollo(handlers);
   };
 
-  const createComponent = (handlers = defaultHandlers, props = defaultProps) => {
+  const createComponent = (handlers = defaultHandlers) => {
     glModalDirective = jest.fn();
 
     wrapper = shallowMountExtended(PipelineDetailsHeader, {
       provide: {
         ...defaultProvideOptions,
-      },
-      propsData: {
-        ...props,
       },
       directives: {
         glModal: {
@@ -147,7 +142,7 @@ describe('Pipeline details header', () => {
     });
 
     it('displays total jobs', () => {
-      expect(findTotalJobs().text()).toBe('3 Jobs');
+      expect(findTotalJobs().text()).toBe('3 jobs');
     });
 
     it('has link to commit', () => {
@@ -158,6 +153,17 @@ describe('Pipeline details header', () => {
       } = pipelineHeaderSuccess;
 
       expect(findCommitLink().attributes('href')).toBe(pipeline.commit.webPath);
+      expect(findCommitLink().text()).toBe(pipeline.commit.shortId);
+    });
+
+    it('copies the full commit ID', () => {
+      const {
+        data: {
+          project: { pipeline },
+        },
+      } = pipelineHeaderSuccess;
+
+      expect(findCommitCopyButton().props('text')).toBe(pipeline.commit.sha);
     });
 
     it('displays correct badges', () => {
@@ -191,10 +197,7 @@ describe('Pipeline details header', () => {
 
   describe('with triggered pipeline', () => {
     beforeEach(async () => {
-      createComponent(defaultHandlers, {
-        ...defaultProps,
-        trigger: true,
-      });
+      createComponent([[getPipelineDetailsQuery, triggerHandler]]);
 
       await waitForPromises();
     });

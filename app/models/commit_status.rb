@@ -165,15 +165,18 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :canceled
+      transition running: :canceling, if: :supports_canceling?
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :manual, :scheduled, :running] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
@@ -194,6 +197,7 @@ class CommitStatus < Ci::ApplicationRecord
 
       commit_status.failure_reason = reason.failure_reason_enum
       commit_status.allow_failure = true if reason.force_allow_failure?
+      commit_status.exit_code = reason.exit_code if Feature.enabled?(:ci_retry_on_exit_codes, Feature.current_request)
     end
 
     before_transition [:skipped, :manual] => :created do |commit_status, transition|
@@ -255,6 +259,10 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
+  end
+
+  def supports_canceling?
+    false
   end
 
   # Time spent running.
@@ -337,6 +345,9 @@ class CommitStatus < Ci::ApplicationRecord
   def stage_name
     ci_stage&.name
   end
+
+  # Handled only by ci_build
+  def exit_code=(value); end
 
   # For AiAction
   def to_ability_name

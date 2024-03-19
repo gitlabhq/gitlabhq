@@ -15,13 +15,19 @@ RSpec.describe 'Batch diffs', :js, feature_category: :code_review_workflow do
     visit diffs_project_merge_request_path(merge_request.project, merge_request)
     wait_for_requests
 
-    click_diff_line(get_first_diff.find('[data-testid="left-side"]', match: :first))
+    within(get_first_diff) do
+      click_diff_line(find_by_testid('left-side', match: :first))
+    end
+
     page.within get_first_diff.find('.js-discussion-note-form') do
       fill_in('note_note', with: 'First Line Comment')
       click_button('Add comment now')
     end
 
-    click_diff_line(get_second_diff.find('[data-testid="left-side"]', match: :first))
+    within(get_second_diff) do
+      click_diff_line(find_by_testid('left-side', match: :first))
+    end
+
     page.within get_second_diff.find('.js-discussion-note-form') do
       fill_in('note_note', with: 'Last Line Comment')
       click_button('Add comment now')

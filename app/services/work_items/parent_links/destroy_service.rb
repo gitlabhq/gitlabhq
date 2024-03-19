@@ -5,9 +5,10 @@ module WorkItems
     class DestroyService < IssuableLinks::DestroyService
       attr_reader :link, :current_user, :parent, :child
 
-      def initialize(link, user)
+      def initialize(link, user, params = {})
         @link = link
         @current_user = user
+        @params = params
         @parent = link.work_item_parent
         @child = link.work_item
       end

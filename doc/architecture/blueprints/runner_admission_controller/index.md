@@ -279,8 +279,8 @@ Each runner has a tag identifier unique to that runner, e.g. `DiscoveryOne`, `tu
 
 ## Technical issues to resolve
 
-| issue | resolution|
-| ------ | ------ |
-|Rule definition for the queue web hook|
-|What data to send to the admissions controller? Is it a subset or all of the [predefined variables](../../../ci/variables/predefined_variables.md)?|
-|Is the `queueing web hook` able to run at GitLab.com scale? On GitLab.com we would trigger millions of webhooks per second and the concern is that would overload Sidekiq or be used to abuse the system.
+| Issue                                                                                                                                                                                                     | Resolution |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| Rule definition for the queue web hook                                                                                                                                                                    |            |
+| What data to send to the admissions controller? Is it a subset or all of the [predefined variables](../../../ci/variables/predefined_variables.md)?                                                       |            |
+| Is the `queueing web hook` able to run at GitLab.com scale? On GitLab.com we would trigger millions of webhooks per second and the concern is that would overload Sidekiq or be used to abuse the system. |            |

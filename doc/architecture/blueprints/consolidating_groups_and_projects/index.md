@@ -18,7 +18,7 @@ However, there is growing demand to have group features in projects, and
 project features in groups. For example, having issues in groups, and epics
 in projects.
 
-The [Simplify Groups & Projects Working Group](https://about.gitlab.com/company/team/structure/working-groups/simplify-groups-and-projects/)
+The [Simplify Groups & Projects Working Group](https://handbook.gitlab.com/handbook/company/working-groups/simplify-groups-and-projects/)
 determined that our architecture is a significant hurdle in sharing features
 across groups and projects.
 

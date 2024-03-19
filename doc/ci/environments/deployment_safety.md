@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Deployment jobs](../jobs/index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,

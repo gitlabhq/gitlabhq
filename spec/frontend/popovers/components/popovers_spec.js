@@ -50,6 +50,14 @@ describe('popovers/components/popovers.vue', () => {
       expect(wrapper.findAllComponents(GlPopover)).toHaveLength(1);
     });
 
+    describe('title', () => {
+      it('does not render an empty header when there is no title', async () => {
+        const target = createPopoverTarget({ title: '' });
+        await buildWrapper(target);
+        expect(wrapper.find('.popover-header').exists()).toBe(false);
+      });
+    });
+
     describe('supports HTML content', () => {
       const svgIcon = '<svg><use xlink:href="icons.svg#test"></use></svg>';
       const escapedSvgIcon = '<svg><use xlink:href=&quot;icons.svg#test&quot;></use></svg>';

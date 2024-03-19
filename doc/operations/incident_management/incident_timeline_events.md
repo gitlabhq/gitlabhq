@@ -92,7 +92,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 A new timeline event is created when someone adds or removes [labels](../../user/project/labels.md) on an incident.

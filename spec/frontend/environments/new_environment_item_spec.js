@@ -3,7 +3,6 @@ import Vue from 'vue';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import { stubTransition } from 'helpers/stub_transition';
 import { getTimeago, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -11,40 +10,15 @@ import EnvironmentItem from '~/environments/components/new_environment_item.vue'
 import EnvironmentActions from '~/environments/components/environment_actions.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
-import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
-import getEnvironmentClusterAgent from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
-import {
-  resolvedEnvironment,
-  rolloutStatus,
-  agent,
-  fluxResourcePathMock,
-} from './graphql/mock_data';
-import { mockKasTunnelUrl } from './mock_data';
+import { resolvedEnvironment, rolloutStatus } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
 describe('~/environments/components/new_environment_item.vue', () => {
   let wrapper;
-  let queryResponseHandler;
 
-  const projectPath = '/1';
-
-  const createApolloProvider = (clusterAgent = null) => {
-    const response = {
-      data: {
-        project: {
-          id: '1',
-          environment: {
-            id: '1',
-            kubernetesNamespace: 'default',
-            fluxResourcePath: fluxResourcePathMock,
-            clusterAgent,
-          },
-        },
-      },
-    };
-    queryResponseHandler = jest.fn().mockResolvedValue(response);
-    return createMockApollo([[getEnvironmentClusterAgent, queryResponseHandler]]);
+  const createApolloProvider = () => {
+    return createMockApollo();
   };
 
   const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
@@ -54,8 +28,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       provide: {
         helpPagePath: '/help',
         projectId: '1',
-        projectPath,
-        kasTunnelUrl: mockKasTunnelUrl,
+        projectPath: '/1',
         ...provideData,
       },
       stubs: { transition: stubTransition() },
@@ -63,7 +36,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
   const findDeployment = () => wrapper.findComponent(Deployment);
   const findActions = () => wrapper.findComponent(EnvironmentActions);
-  const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
 
   const expandCollapsedSection = async () => {
     const button = wrapper.findByRole('button', { name: __('Expand') });
@@ -523,66 +495,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
 
       const deployBoard = wrapper.findComponent(DeployBoardWrapper);
       expect(deployBoard.exists()).toBe(false);
-    });
-  });
-
-  describe('kubernetes overview', () => {
-    it('should request agent data when the environment is visible', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        apolloProvider: createApolloProvider(agent),
-      });
-
-      await expandCollapsedSection();
-
-      expect(queryResponseHandler).toHaveBeenCalledWith({
-        environmentName: resolvedEnvironment.name,
-        projectFullPath: projectPath,
-      });
-    });
-
-    it('should render if the environment has an agent associated', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        apolloProvider: createApolloProvider(agent),
-      });
-
-      await expandCollapsedSection();
-      await waitForPromises();
-
-      expect(findKubernetesOverview().props()).toMatchObject({
-        clusterAgent: agent,
-        environmentName: resolvedEnvironment.name,
-      });
-    });
-
-    it('should render with the namespace if the environment has an agent associated', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        apolloProvider: createApolloProvider(agent),
-      });
-
-      await expandCollapsedSection();
-      await waitForPromises();
-
-      expect(findKubernetesOverview().props()).toEqual({
-        clusterAgent: agent,
-        environmentName: resolvedEnvironment.name,
-        namespace: 'default',
-        fluxResourcePath: fluxResourcePathMock,
-      });
-    });
-
-    it('should not render if the environment has no agent object', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        apolloProvider: createApolloProvider(),
-      });
-
-      await expandCollapsedSection();
-      await waitForPromises();
-
-      expect(findKubernetesOverview().exists()).toBe(false);
     });
   });
 });

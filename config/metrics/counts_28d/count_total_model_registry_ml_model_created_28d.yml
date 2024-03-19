@@ -7,7 +7,7 @@ product_group: mlops
 performance_indicator_type: []
 value_type: number
 status: active
-milestone: "16.8"
+milestone: '16.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139798
 time_frame: 28d
 data_source: internal_events
@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - model_registry_ml_model_created
 events:
-  - name: model_registry_ml_model_created
+- name: model_registry_ml_model_created

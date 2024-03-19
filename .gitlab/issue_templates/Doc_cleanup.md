@@ -1,7 +1,7 @@
 <!--
 * Use this template for documentation issues identified
-* by [Vale](https://docs.gitlab.com/ee/development/documentation/testing.html#vale)
-* or [markdownlint](https://docs.gitlab.com/ee/development/documentation/testing.html#markdownlint).
+* by [Vale](https://docs.gitlab.com/ee/development/documentation/testing/vale.html)
+* or [markdownlint](https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html).
 * This template is meant to describe work for first-time contributors or
 * for work during Hackathons.
 *

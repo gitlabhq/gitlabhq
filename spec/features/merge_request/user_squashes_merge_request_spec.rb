@@ -83,7 +83,7 @@ RSpec.describe 'User squashes a merge request', :js, feature_category: :code_rev
 
     context 'when squash message is the same as existing commit message' do
       before do
-        find('[data-testid="widget_edit_commit_message"]').click
+        find_by_testid('widget_edit_commit_message').click
         fill_in('Squash commit message', with: project.commit(source_branch).safe_message)
         accept_mr
       end

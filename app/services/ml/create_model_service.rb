@@ -12,34 +12,42 @@ module Ml
 
     def execute
       ApplicationRecord.transaction do
+        experiment_result = Ml::CreateExperimentService.new(@project, experiment_name, @user).execute
+
+        next experiment_result if experiment_result.error?
+
         model = Ml::Model.new(
           project: @project,
           name: @name,
           user: @user,
           description: @description,
-          default_experiment: default_experiment
+          default_experiment: experiment_result.payload
         )
 
         model.save
 
-        if model.persisted?
-          add_metadata(model, @metadata)
+        next error(model.errors.full_messages) unless model.persisted?
 
-          Gitlab::InternalEvents.track_event(
-            'model_registry_ml_model_created',
-            project: @project,
-            user: @user
-          )
-        end
+        Gitlab::InternalEvents.track_event(
+          'model_registry_ml_model_created',
+          project: @project,
+          user: @user
+        )
 
-        model
+        add_metadata(model, @metadata)
+
+        success(model)
       end
     end
 
     private
 
-    def default_experiment
-      @default_experiment ||= Ml::FindOrCreateExperimentService.new(@project, @name).execute
+    def success(model)
+      ServiceResponse.success(payload: model)
+    end
+
+    def error(reason)
+      ServiceResponse.error(message: reason)
     end
 
     def add_metadata(model, metadata_key_value)
@@ -56,6 +64,10 @@ module Ml
       entities.each do |entry|
         ::Ml::ModelMetadata.create!(entry)
       end
+    end
+
+    def experiment_name
+      Ml::Model.prefixed_experiment(@name)
     end
   end
 end

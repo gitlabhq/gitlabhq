@@ -77,7 +77,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
         expect(page.all('.search-result-row').last).to have_link(issue1.title)
       end
 
-      find('[data-testid="sort-highest-icon"]').click
+      find_by_testid('sort-highest-icon').click
 
       page.within('.results') do
         expect(page.all('.search-result-row').first).to have_link(issue1.title)
@@ -87,11 +87,11 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
 
     context 'when on a project page' do
       it 'finds an issue' do
-        find('[data-testid="project-filter"]').click
+        find_by_testid('project-filter').click
 
         wait_for_requests
 
-        page.within('[data-testid="project-filter"]') do
+        within_testid('project-filter') do
           select_listbox_item project.name
         end
 
@@ -107,7 +107,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
     it 'shows scopes when there is no search term' do
       search_for_issue('')
 
-      page.within('[data-testid="search-filter"]') do
+      within_testid('search-filter') do
         expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
       end
     end

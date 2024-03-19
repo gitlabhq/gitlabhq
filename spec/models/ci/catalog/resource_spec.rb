@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:project_a) { create(:project, name: 'A') }
-  let_it_be(:project_b) { create(:project, name: 'B') }
-  let_it_be(:project_c) { create(:project, name: 'C', description: 'B') }
+  let_it_be(:project_a) { create(:project, name: 'A', star_count: 20) }
+  let_it_be(:project_b) { create(:project, name: 'B', star_count: 10) }
+  let_it_be(:project_c) { create(:project, name: 'C', description: 'B', star_count: 30) }
 
   let_it_be_with_reload(:resource_a) do
     create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z')
@@ -28,6 +28,12 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it do
     is_expected.to(
+      have_many(:component_usages).class_name('Ci::Catalog::Resources::Components::Usage')
+        .with_foreign_key(:catalog_resource_id))
+  end
+
+  it do
+    is_expected.to(
       have_many(:versions).class_name('Ci::Catalog::Resources::Version').with_foreign_key(:catalog_resource_id))
   end
 
@@ -39,7 +45,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:star_count).to(:project) }
 
-  it { is_expected.to define_enum_for(:state).with_values({ draft: 0, published: 1 }) }
+  it { is_expected.to define_enum_for(:state).with_values({ unpublished: 0, published: 1 }) }
 
   it do
     is_expected.to define_enum_for(:verification_level)
@@ -122,6 +128,22 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     end
   end
 
+  describe 'order_by_star_count_desc' do
+    it 'returns catalog resources sorted by project star count in descending order' do
+      ordered_resources = described_class.order_by_star_count(:desc)
+
+      expect(ordered_resources).to eq([resource_c, resource_a, resource_b])
+    end
+  end
+
+  describe 'order_by_star_count_asc' do
+    it 'returns catalog resources sorted by project star count in ascending order' do
+      ordered_resources = described_class.order_by_star_count(:asc)
+
+      expect(ordered_resources).to eq([resource_b, resource_a, resource_c])
+    end
+  end
+
   describe 'authorized catalog resources' do
     let_it_be(:namespace) { create(:group) }
     let_it_be(:other_namespace) { create(:group) }
@@ -199,15 +221,15 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe '#state' do
-    it 'defaults to draft' do
-      expect(resource_a.state).to eq('draft')
+    it 'defaults to unpublished' do
+      expect(resource_a.state).to eq('unpublished')
     end
   end
 
   describe '#publish!' do
-    context 'when the catalog resource is in draft state' do
+    context 'when the catalog resource is in an unpublished state' do
       it 'updates the state of the catalog resource to published' do
-        expect(resource_a.state).to eq('draft')
+        expect(resource_a.state).to eq('unpublished')
 
         resource_a.publish!
 
@@ -277,11 +299,21 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_refind(:january_release) do
-      create(:release, :with_catalog_resource_version, project: project, tag: 'v1', released_at: '2023-01-01T00:00:00Z')
+      release = create(:release, :with_catalog_resource_version, project: project, tag: 'v1',
+        released_at: '2023-01-01T00:00:00Z')
+
+      release.catalog_resource_version.update!(version: '1.0.0')
+
+      release
     end
 
     let_it_be_with_refind(:february_release) do
-      create(:release, :with_catalog_resource_version, project: project, tag: 'v2', released_at: '2023-02-01T00:00:00Z')
+      release = create(:release, :with_catalog_resource_version, project: project, tag: 'v2',
+        released_at: '2023-02-01T00:00:00Z')
+
+      release.catalog_resource_version.update!(version: '2.0.0')
+
+      release
     end
 
     it 'has the expected latest_released_at value' do
@@ -292,6 +324,8 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       it 'updates the latest_released_at value' do
         march_release = create(:release, :with_catalog_resource_version, project: project, tag: 'v3',
           released_at: '2023-03-01T00:00:00Z')
+
+        march_release.catalog_resource_version.update!(version: '3.0.0')
 
         expect(resource.reload.latest_released_at).to eq(march_release.released_at)
       end
@@ -307,7 +341,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
     context 'when the released_at value of a release is updated' do
       it 'updates the latest_released_at value' do
-        january_release.update!(released_at: '2024-01-01T00:00:00Z')
+        january_release.update!(released_at: '2024-03-01T00:00:00Z')
+
+        january_release.catalog_resource_version.update!(version: '4.0.0')
 
         expect(resource.reload.latest_released_at).to eq(january_release.released_at)
       end

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Confidential issues are [issues](index.md) visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-issues).
@@ -40,7 +40,7 @@ To create a confidential issue:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**).
 1. From the dropdown list, select **New issue**.
 1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
-   - Select the **This issue is confidential...** checkbox.
+   - Select the **This issue is confidential** checkbox.
 1. Select **Create issue**.
 
 ### In an existing issue

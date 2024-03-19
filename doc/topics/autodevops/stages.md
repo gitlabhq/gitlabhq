@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The following sections describe the stages of [Auto DevOps](index.md).
 Read them carefully to understand how each one works.
@@ -47,7 +47,7 @@ Auto Build builds an application using a project's `Dockerfile` if present. If n
 [Cloud Native Buildpacks](https://buildpacks.io) to detect and build the
 application into a Docker image. The feature uses the
 [`pack` command](https://github.com/buildpacks/pack).
-The default [builder](https://buildpacks.io/docs/concepts/components/builder/)
+The default [builder](https://buildpacks.io/docs/for-app-developers/concepts/builder/)
 is `heroku/buildpacks:18` but a different builder can be selected using
 the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`.
 
@@ -91,7 +91,7 @@ buildjob:
     BUILDPACK_VOLUMES: /mnt/1:/etc/foo:ro|/mnt/2:/opt/foo:ro|/mnt/3:/var/opt/foo:rw
 ```
 
-Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/tools/pack/cli/pack_build/).
+Read more about defining volumes in the [`pack build` documentation](https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/cli/pack_build/).
 
 <!--- start_remove The following content will be removed on remove_date: '2024-08-22' -->
 
@@ -220,7 +220,7 @@ For more information, see
 ## Auto Secret Detection
 
 > - Introduced in GitLab 13.1.
-> - Select functionality [made available](../../user/application_security/secret_detection/index.md#features-per-tier) in all tiers in GitLab 13.3
+> - Select functionality [made available](../../user/application_security/secret_detection/pipeline/index.md#requirements) in all tiers in GitLab 13.3
 
 Secret Detection uses the
 [Secret Detection Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) to run Secret Detection on the current code, and checks for leaked secrets. Auto Secret Detection requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
@@ -235,7 +235,7 @@ For more information, see [Secret Detection](../../user/application_security/sec
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
 The Auto Dependency Scanning stage is skipped on licenses other than
@@ -301,7 +301,7 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Dynamic Application Security Testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
@@ -346,7 +346,7 @@ You can disable DAST:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 10.4.
 
@@ -371,7 +371,7 @@ Any browser performance differences between the source and target branches are a
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 13.2.
 

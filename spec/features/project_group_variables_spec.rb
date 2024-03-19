@@ -41,7 +41,7 @@ RSpec.describe 'Project group variables', :js, feature_category: :secrets_manage
 
   shared_examples 'renders correct column headers' do
     it "shows inherited CI variables table with correct columns" do
-      page.within('[data-testid="inherited-ci-variable-table"]') do
+      within_testid('inherited-ci-variable-table') do
         # Wait for vue app to load
         wait_for_requests
 

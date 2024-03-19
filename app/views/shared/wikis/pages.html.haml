@@ -19,4 +19,4 @@
   - @wiki_entries.each do |entry|
     = render partial: entry.to_partial_path, object: entry, locals: { context: 'pages' }
 
-= paginate @wiki_pages, theme: 'gitlab'
+= paginate @pages_list, theme: 'gitlab'

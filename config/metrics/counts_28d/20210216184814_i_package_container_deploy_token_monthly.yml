@@ -5,7 +5,7 @@ description: A monthly count of container images published to the registry using
   deploy token
 product_section: ops
 product_stage: package
-product_group: package
+product_group: container_registry
 value_type: number
 status: removed
 time_frame: 28d

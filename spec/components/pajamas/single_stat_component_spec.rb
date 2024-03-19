@@ -5,19 +5,25 @@ require "spec_helper"
 RSpec.describe Pajamas::SingleStatComponent, type: :component, feature_category: :shared do
   let(:title) { "Single Stat" }
   let(:stat_value) { "9,000" }
+  let(:stat_value_testid) { nil }
   let(:title_icon) { nil }
   let(:unit) { nil }
   let(:meta_text) { nil }
   let(:variant) { :success }
 
-  before do
-    render_inline(described_class.new(
+  let(:params) do
+    {
       title: title,
       title_icon: title_icon,
+      stat_value_testid: stat_value_testid,
       stat_value: stat_value,
       unit: unit,
       meta_text: meta_text
-    ))
+    }.compact
+  end
+
+  before do
+    render_inline(described_class.new(**params))
   end
 
   context "with default props" do
@@ -35,6 +41,14 @@ RSpec.describe Pajamas::SingleStatComponent, type: :component, feature_category:
 
     it 'does not show meta badge' do
       expect(page).not_to have_css('[data-testid=meta-badge]')
+    end
+  end
+
+  context 'with stat_value_testid' do
+    let(:stat_value_testid) { 'foo' }
+
+    it 'shows unique data-testid for stat_value' do
+      expect(page).to have_css("[data-testid=#{stat_value_testid}]")
     end
   end
 

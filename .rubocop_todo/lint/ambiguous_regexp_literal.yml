@@ -82,7 +82,6 @@ Lint/AmbiguousRegexpLiteral:
     - 'spec/services/loose_foreign_keys/cleaner_service_spec.rb'
     - 'spec/services/snippets/repository_validation_service_spec.rb'
     - 'spec/services/system_notes/merge_requests_service_spec.rb'
-    - 'spec/support/shared_examples/features/content_editor_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/sql/set_operator_shared_examples.rb'
     - 'spec/support_specs/database/multiple_databases_helpers_spec.rb'
     - 'spec/tasks/gitlab/gitaly_rake_spec.rb'

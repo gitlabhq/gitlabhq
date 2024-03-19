@@ -100,7 +100,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         __('Token name'),
         __('Scopes'),
         s__('AccessTokens|Created'),
-        __('Last Used'),
+        'Last Used The last time a token was used',
         __('Expires'),
         __('Action'),
       ]);
@@ -114,7 +114,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         __('Token name'),
         __('Scopes'),
         s__('AccessTokens|Created'),
-        __('Last Used'),
+        'Last Used The last time a token was used',
         __('Expires'),
         __('Role'),
         __('Action'),
@@ -192,7 +192,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           __('Token name'),
           __('Scopes'),
           s__('AccessTokens|Created'),
-          __('Last Used'),
+          'Last Used The last time a token was used',
           __('Expires'),
           __('Role'),
         ].forEach((text, index) => {

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Dedicated
+**Offering:** GitLab Dedicated
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
@@ -280,4 +280,4 @@ You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to 
 
 The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
-The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/kinesis/data-firehose/).
+The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).

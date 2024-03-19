@@ -93,6 +93,7 @@ export default {
       resolvedDiscussionsExpanded: false,
       prevCurrentUserTodos: null,
       maxScale: DEFAULT_MAX_SCALE,
+      isSidebarOpen: true,
     };
   },
   apollo: {
@@ -322,6 +323,9 @@ export default {
     setMaxScale(event) {
       this.maxScale = 1 / event;
     },
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
   },
   createImageDiffNoteMutation,
   DESIGNS_ROUTE_NAME,
@@ -330,7 +334,7 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top gl-w-full gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
+    class="design-detail js-design-detail fixed-top gl-w-full gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row gl-bg-gray-10"
   >
     <div
       class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
@@ -350,61 +354,74 @@ export default {
             :is-deleting="loading"
             :is-latest-version="isLatestVersion"
             :is-loading="isLoading"
+            :design="design"
+            :is-sidebar-open="isSidebarOpen"
             v-bind="design"
             @delete="mutate"
+            @toggle-sidebar="toggleSidebar"
           />
         </template>
       </design-destroyer>
 
-      <div v-if="errorMessage" class="gl-p-5">
-        <gl-alert variant="danger" @dismiss="errorMessage = null">
-          {{ errorMessage }}
-        </gl-alert>
-      </div>
-      <design-presentation
-        :image="design.image"
-        :image-name="design.filename"
-        :discussions="discussions"
-        :is-annotating="isAnnotating"
-        :scale="scale"
-        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-        :is-loading="isLoading"
-        @openCommentForm="openCommentForm"
-        @closeCommentForm="closeCommentForm"
-        @moveNote="onMoveNote"
-        @setMaxScale="setMaxScale"
-      />
-
       <div
-        class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+        class="gl-display-flex gl-overflow-hidden gl-flex-direction-column gl-lg-flex-direction-row gl-flex-grow-1 gl-relative"
       >
-        <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+        <div
+          class="gl-display-flex gl-overflow-hidden gl-flex-grow-2 gl-flex-direction-column gl-relative"
+        >
+          <div v-if="errorMessage" class="gl-p-5">
+            <gl-alert variant="danger" @dismiss="errorMessage = null">
+              {{ errorMessage }}
+            </gl-alert>
+          </div>
+          <design-presentation
+            :image="design.image"
+            :image-name="design.filename"
+            :discussions="discussions"
+            :is-annotating="isAnnotating"
+            :scale="scale"
+            :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+            :is-loading="isLoading"
+            :disable-commenting="!isSidebarOpen"
+            @openCommentForm="openCommentForm"
+            @closeCommentForm="closeCommentForm"
+            @moveNote="onMoveNote"
+            @setMaxScale="setMaxScale"
+          />
+
+          <div
+            class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+          >
+            <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+          </div>
+        </div>
+        <design-sidebar
+          :design="design"
+          :design-variables="designVariables"
+          :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+          :markdown-preview-path="markdownPreviewPath"
+          :is-loading="isLoading"
+          :is-open="isSidebarOpen"
+          @deleteNoteError="onDeleteNoteError"
+          @resolveDiscussionError="onResolveDiscussionError"
+          @toggleResolvedComments="toggleResolvedComments"
+          @todoError="onTodoError"
+        >
+          <template #reply-form>
+            <design-reply-form
+              v-if="isAnnotating"
+              ref="newDiscussionForm"
+              :design-note-mutation="$options.createImageDiffNoteMutation"
+              :mutation-variables="mutationVariables"
+              :markdown-preview-path="markdownPreviewPath"
+              :noteable-id="design.id"
+              :is-discussion="true"
+              @note-submit-complete="addImageDiffNoteToStore"
+              @cancel-form="closeCommentForm"
+            />
+          </template>
+        </design-sidebar>
       </div>
     </div>
-    <design-sidebar
-      :design="design"
-      :design-variables="designVariables"
-      :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-      :markdown-preview-path="markdownPreviewPath"
-      :is-loading="isLoading"
-      @deleteNoteError="onDeleteNoteError"
-      @resolveDiscussionError="onResolveDiscussionError"
-      @toggleResolvedComments="toggleResolvedComments"
-      @todoError="onTodoError"
-    >
-      <template #reply-form>
-        <design-reply-form
-          v-if="isAnnotating"
-          ref="newDiscussionForm"
-          :design-note-mutation="$options.createImageDiffNoteMutation"
-          :mutation-variables="mutationVariables"
-          :markdown-preview-path="markdownPreviewPath"
-          :noteable-id="design.id"
-          :is-discussion="true"
-          @note-submit-complete="addImageDiffNoteToStore"
-          @cancel-form="closeCommentForm"
-        />
-      </template>
-    </design-sidebar>
   </div>
 </template>

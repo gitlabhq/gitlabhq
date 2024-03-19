@@ -1,0 +1,25 @@
+- add_to_breadcrumbs _('Wiki'), wiki_path(@wiki)
+- breadcrumb_title s_("Wiki|Templates")
+- page_title s_("Wiki|Templates"), _("Wiki")
+- add_page_specific_style 'page_bundles/wiki'
+
+.wiki-page-header.top-area.flex-column.flex-lg-row
+  %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
+    = s_("Wiki|Wiki Templates")
+
+  .nav-controls.pb-md-3.pb-lg-0
+    = link_button_to wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), icon: 'plus' do
+      = s_("Wiki|New template")
+
+    .dropdown.inline.wiki-sort-dropdown
+      .btn-group{ role: 'group' }
+        = wiki_sort_controls(@wiki, params[:direction], action: :templates)
+
+%ul.wiki-pages-list.content-list
+  - if @templates_list.empty?
+    %li.no-wiki-pages
+      = s_("Wiki|No templates found")
+  - @wiki_entries.each do |entry|
+    = render partial: entry.to_partial_path, object: entry, locals: { context: 'pages' }
+
+= paginate @templates_list, theme: 'gitlab'

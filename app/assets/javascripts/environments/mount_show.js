@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import EnvironmentsDetailHeader from './components/environments_detail_header.vue';
 import { apolloProvider as createApolloProvider } from './graphql/client';
 import environmentsMixin from './mixins/environments_mixin';
@@ -98,6 +99,7 @@ export const initPage = async () => {
     provide: {
       projectPath: dataSet.projectFullPath,
       graphqlEtagKey: dataSet.graphqlEtagKey,
+      kasTunnelUrl: removeLastSlashInUrlPath(dataElement.dataset.kasTunnelUrl),
     },
     render(createElement) {
       return createElement('router-view');

@@ -2,11 +2,13 @@
 
 require('spec_helper')
 
-RSpec.describe Projects::ProjectMembersController do
+RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:sub_group) { create(:group, parent: group) }
   let_it_be(:project, reload: true) { create(:project, :public) }
+  let_it_be(:shared_group) { create(:group, parent: group) }
+  let_it_be(:shared_group_user) { create(:user) }
 
   shared_examples_for 'controller actions' do
     before do
@@ -32,13 +34,15 @@ RSpec.describe Projects::ProjectMembersController do
           before do
             group.add_owner(user_in_group)
             project_in_group.add_maintainer(user)
+            shared_group.add_owner(shared_group_user)
+            create(:group_group_link, shared_group: group, shared_with_group: shared_group)
             sign_in(user)
           end
 
-          it 'lists inherited project members by default' do
+          it 'lists all project members including members from shared group by default' do
             get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group }
 
-            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id, user_in_group.id)
+            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id, user_in_group.id, shared_group_user.id)
           end
 
           it 'lists direct project members only' do
@@ -47,10 +51,10 @@ RSpec.describe Projects::ProjectMembersController do
             expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id)
           end
 
-          it 'lists inherited project members only' do
+          it 'lists inherited project members and shared group members only' do
             get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group, with_inherited_permissions: 'only' }
 
-            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user_in_group.id)
+            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user_in_group.id, shared_group_user.id)
           end
         end
 
@@ -61,13 +65,15 @@ RSpec.describe Projects::ProjectMembersController do
           before do
             group.add_owner(user_in_group)
             project_in_group.add_maintainer(user)
+            shared_group.add_owner(shared_group_user)
+            create(:group_group_link, shared_group: sub_group, shared_with_group: shared_group)
             sign_in(user)
           end
 
-          it 'lists inherited project members by default' do
+          it 'lists all project members including members from shared group by default' do
             get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group }
 
-            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id, user_in_group.id)
+            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id, user_in_group.id, shared_group_user.id)
           end
 
           it 'lists direct project members only' do
@@ -76,10 +82,10 @@ RSpec.describe Projects::ProjectMembersController do
             expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user.id)
           end
 
-          it 'lists inherited project members only' do
+          it 'lists inherited project members and shared group members only' do
             get :index, params: { namespace_id: project_in_group.namespace, project_id: project_in_group, with_inherited_permissions: 'only' }
 
-            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user_in_group.id)
+            expect(assigns(:project_members).map(&:user_id)).to contain_exactly(user_in_group.id, shared_group_user.id)
           end
         end
 

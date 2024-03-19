@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.plan.projects_jira_active
 description: Distinct count of creator_id from projects with an active Jira integration.
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: 28d

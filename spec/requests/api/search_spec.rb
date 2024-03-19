@@ -773,7 +773,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
       context 'when requesting basic search' do
         it 'passes the parameter to search service' do
-          expect(SearchService).to receive(:new).with(user, hash_including(basic_search: 'true')).twice
+          expect(SearchService).to receive(:new).with(user, hash_including(basic_search: 'true'))
 
           get api(endpoint, user), params: { scope: 'issues', search: 'awesome', basic_search: 'true' }
         end

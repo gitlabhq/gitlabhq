@@ -26,6 +26,8 @@
           %strong
             - if event.project
               = link_to_project(event.project)
+            - elsif event.group
+              = link_to_group(event.group)
             - else
               = event.resource_parent_name
         - else

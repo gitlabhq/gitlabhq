@@ -83,7 +83,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
-      it_behaves_like 'organization - successful response'
+      it_behaves_like 'organization - not found response'
       it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
     end
 
@@ -94,6 +94,47 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
     subject(:gitlab_request) { get organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+  end
+
+  describe 'GET #activity' do
+    subject(:gitlab_request) { get activity_organization_path(organization) }
+
+    it_behaves_like 'controller action that does not require authentication'
+
+    context 'when requested in json format' do
+      let_it_be(:user) { create(:organization_user, organization: organization).user }
+
+      context 'without activities' do
+        before do
+          sign_in(user)
+        end
+
+        it 'renders empty array' do
+          get activity_organization_path(organization, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+          expect(json_response).to be_an(Array)
+          expect(json_response.size).to eq(0)
+        end
+      end
+
+      context 'with activities' do
+        let_it_be(:project) { create(:project, organization: organization) }
+
+        before_all do
+          project.add_developer(user)
+          sign_in(user)
+        end
+
+        it 'loads events' do
+          get activity_organization_path(organization, format: :json)
+
+          expect(response.media_type).to eq('application/json')
+          expect(json_response).to be_an(Array)
+          expect(json_response.size).to eq(1)
+        end
+      end
+    end
   end
 
   describe 'GET #groups_and_projects' do

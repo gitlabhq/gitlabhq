@@ -10,12 +10,15 @@ module Ci
     class Resource < ::ApplicationRecord
       include PgFullTextSearchable
       include Gitlab::VisibilityLevel
+      include Sortable
 
       self.table_name = 'catalog_resources'
 
       belongs_to :project
       has_many :components, class_name: 'Ci::Catalog::Resources::Component', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
+      has_many :component_usages, class_name: 'Ci::Catalog::Resources::Components::Usage',
+        foreign_key: :catalog_resource_id, inverse_of: :catalog_resource
       has_many :versions, class_name: 'Ci::Catalog::Resources::Version', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
       has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,
@@ -35,10 +38,19 @@ module Ci
       scope :order_by_name_asc, -> { reorder(arel_table[:name].asc.nulls_last) }
       scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
       scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
+      scope :order_by_star_count, ->(direction) do
+        build_keyset_order_on_joined_column(
+          scope: joins(:project),
+          attribute_name: 'project_star_count',
+          column: Project.arel_table[:star_count],
+          direction: direction,
+          nullable: :nulls_last
+        )
+      end
 
       delegate :avatar_path, :star_count, :full_path, to: :project
 
-      enum state: { draft: 0, published: 1 }
+      enum state: { unpublished: 0, published: 1 }
 
       before_create :sync_with_project
 
@@ -84,7 +96,6 @@ module Ci
         update!(latest_released_at: versions.latest&.released_at)
       end
 
-      # Required for Gitlab::VisibilityLevel module
       def visibility_level_field
         :visibility_level
       end

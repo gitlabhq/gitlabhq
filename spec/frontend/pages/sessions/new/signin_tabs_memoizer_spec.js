@@ -3,11 +3,14 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
+import { GlTabsBehavior } from '~/tabs';
+
+jest.mock('~/tabs');
 
 useLocalStorageSpy();
 
 describe('SigninTabsMemoizer', () => {
-  const tabSelector = 'ul.new-session-tabs';
+  const tabSelector = '#js-signin-tabs';
   const currentTabKey = 'current_signin_tab';
   let memo;
 
@@ -29,6 +32,12 @@ describe('SigninTabsMemoizer', () => {
     resetHTMLFixture();
   });
 
+  it('init GlTabsBehaviour', () => {
+    createMemoizer();
+
+    expect(GlTabsBehavior).toHaveBeenCalledWith(document.querySelector(tabSelector));
+  });
+
   it('does nothing if no tab was previously selected', () => {
     createMemoizer();
 
@@ -38,40 +47,23 @@ describe('SigninTabsMemoizer', () => {
   });
 
   it('shows last selected tab on boot', () => {
-    createMemoizer().saveData('#ldap');
-    const fakeTab = {
-      click: () => {},
-    };
-    jest.spyOn(document, 'querySelector').mockReturnValue(fakeTab);
-    jest.spyOn(fakeTab, 'click').mockImplementation(() => {});
+    createMemoizer().saveData('#login-pane');
+    const tab = document.querySelector(`${tabSelector} a[href="#login-pane"]`);
+    jest.spyOn(tab, 'click');
 
     memo.bootstrap();
 
-    // verify that triggers click on the last selected tab
-    expect(document.querySelector).toHaveBeenCalledWith(`${tabSelector} a[href="#ldap"]`);
-    expect(fakeTab.click).toHaveBeenCalled();
+    expect(tab.click).toHaveBeenCalled();
   });
 
   it('clicks the first tab if value in local storage is bad', () => {
     createMemoizer().saveData('#bogus');
-    const fakeTab = {
-      click: jest.fn().mockName('fakeTab_click'),
-    };
-    jest
-      .spyOn(document, 'querySelector')
-      .mockImplementation((selector) =>
-        selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab,
-      );
+    const tab = document.querySelector(`${tabSelector} a[href="#ldap"]`);
+    jest.spyOn(tab, 'click');
 
     memo.bootstrap();
 
-    // verify that triggers click on stored selector and fallback
-    expect(document.querySelector.mock.calls).toEqual([
-      ['ul.new-session-tabs a[href="#bogus"]'],
-      ['ul.new-session-tabs a'],
-    ]);
-
-    expect(fakeTab.click).toHaveBeenCalled();
+    expect(tab.click).toHaveBeenCalled();
   });
 
   it('saves last selected tab on change', () => {

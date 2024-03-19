@@ -110,7 +110,7 @@ module ExtractsRef
     return ['', ''] unless repository_container
 
     # If the ref appears to be a SHA, we're done, just split the string
-    return $~.captures if id =~ /^(\h{40})(.+)/
+    return $~.captures if id =~ /^(\h{40}\h{24}?)(.*)/
 
     # No slash means we must have a ref and no path
     return [id, ''] unless id.include?('/')

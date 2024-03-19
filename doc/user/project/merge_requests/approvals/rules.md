@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
@@ -224,15 +224,18 @@ You can override the merge request approval rules for a project by either:
 
 Prerequisites:
 
-- You must have administrator access.
-  [Issue 439388](https://gitlab.com/gitlab-org/gitlab/-/issues/439388) tracks fixing this bug and
-  lowering the minimum required role.
+- You must have administrator access or all of the following must be true:
+  - You must have at least the Developer role or the project must accept contributions from external members.
+  - You must be the author of the merge request.
+  - The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests) is disabled.
 
 To override approvers of a merge request:
 
-1. When creating a new merge request, scroll to the **Approval Rules** section,
+1. When [creating a new merge request](../creating_merge_requests.md), scroll to the **Approval Rules** section,
    and add or remove your desired approval rules before selecting **Create merge request**.
 1. When viewing an existing merge request:
+   1. On the left sidebar, select **Search or go to** and find your project.
+   1. Select **Code > Merge requests** and find your merge request.
    1. Select **Edit**.
    1. Scroll to the **Approval Rules** section.
    1. Add or remove your desired approval rules.
@@ -279,7 +282,7 @@ approval rule for certain branches:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.

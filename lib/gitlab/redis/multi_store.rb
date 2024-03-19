@@ -144,7 +144,7 @@ module Gitlab
         @primary_pool = primary_pool
         @secondary_pool = secondary_pool
 
-        @borrow_counter = "multi_store_borrowed_connection_#{instance_name}".to_sym
+        @borrow_counter = :"multi_store_borrowed_connection_#{instance_name}"
 
         validate_stores!
       end
@@ -252,18 +252,24 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
-        feature_flag = "use_primary_and_secondary_stores_for_#{instance_name.underscore}"
-
+        # We interpolate the feature flag name within `Feature.enabled?` instead of defining a variable to allow
+        # `RuboCop::Cop::Gitlab::MarkUsedFeatureFlags`'s optimistic matching to work.
         feature_table_exists? &&
-          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+          Feature.enabled?( # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+            "use_primary_and_secondary_stores_for_#{instance_name.underscore}",
+            type: feature_flag_type("use_primary_and_secondary_stores_for_#{instance_name.underscore}")
+          ) &&
           !same_redis_store?
       end
 
       def use_primary_store_as_default?
-        feature_flag = "use_primary_store_as_default_for_#{instance_name.underscore}"
-
+        # We interpolate the feature flag name within `Feature.enabled?` instead of defining a variable to allow
+        # `RuboCop::Cop::Gitlab::MarkUsedFeatureFlags`'s optimistic matching to work.
         feature_table_exists? &&
-          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+          Feature.enabled?( # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+            "use_primary_store_as_default_for_#{instance_name.underscore}",
+            type: feature_flag_type("use_primary_store_as_default_for_#{instance_name.underscore}")
+          ) &&
           !same_redis_store?
       end
 
@@ -432,16 +438,6 @@ module Gitlab
 
       # rubocop:disable GitlabSecurity/PublicSend
       def send_command(redis_instance, command_name, *args, **kwargs, &block)
-        # Run wrapped pipeline for each instance individually so that the fan-out is distinct.
-        # If both primary and secondary are Redis Clusters, the slot-node distribution could
-        # be different.
-        #
-        # We ignore args and kwargs since `pipelined` does not accept arguments
-        # See https://github.com/redis/redis-rb/blob/v4.8.0/lib/redis.rb#L164
-        if command_name.to_s == 'pipelined' && redis_instance._client.instance_of?(::Redis::Cluster)
-          return Gitlab::Redis::CrossSlot::Pipeline.new(redis_instance).pipelined(&block)
-        end
-
         if block
           # Make sure that block is wrapped and executed only on the redis instance that is executing the block
           redis_instance.send(command_name, *args, **kwargs) do |*params|
@@ -462,7 +458,7 @@ module Gitlab
       end
 
       def redis_store?(pool)
-        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) }
+        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) || c.is_a?(::Redis::Cluster) }
       end
 
       def validate_stores!

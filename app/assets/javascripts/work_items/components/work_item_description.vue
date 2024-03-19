@@ -136,7 +136,12 @@ export default {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
     markdownPreviewPath() {
-      return markdownPreviewPath(this.fullPath, this.workItem.iid);
+      const {
+        fullPath,
+        isGroup,
+        workItem: { iid },
+      } = this;
+      return markdownPreviewPath({ fullPath, iid, isGroup });
     },
     autocompleteDataSources() {
       const {
@@ -144,7 +149,7 @@ export default {
         isGroup,
         workItem: { iid },
       } = this;
-      return autocompleteDataSources({ fullPath, isGroup, iid });
+      return autocompleteDataSources({ fullPath, iid, isGroup });
     },
     saveButtonText() {
       return this.editMode ? __('Save changes') : __('Save');
@@ -263,6 +268,9 @@ export default {
     },
     handleDescriptionTextUpdated(newText) {
       this.descriptionText = newText;
+      if (this.disableInlineEditing) {
+        this.$emit('updateDraft', this.descriptionText);
+      }
       this.updateWorkItem();
     },
   },

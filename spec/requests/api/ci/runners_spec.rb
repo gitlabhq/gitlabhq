@@ -318,6 +318,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           expect(json_response['status']).to eq('never_contacted')
           expect(json_response['active']).to eq(true)
           expect(json_response['paused']).to eq(false)
+          expect(json_response['maintenance_note']).to be_nil
         end
       end
 
@@ -484,6 +485,14 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(shared_runner.reload.maximum_timeout).to eq(1234)
+        end
+
+        it 'maintenance note' do
+          maintenance_note = shared_runner.maintenance_note
+          update_runner(shared_runner.id, admin, maintenance_note: "#{maintenance_note}_updated")
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(shared_runner.reload.maintenance_note).to eq("#{maintenance_note}_updated")
         end
 
         it 'fails with no parameters' do

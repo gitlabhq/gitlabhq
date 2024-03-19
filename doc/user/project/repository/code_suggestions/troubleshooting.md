@@ -7,22 +7,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Troubleshooting Code Suggestions
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated. GitLab Duo Pro required.
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
 ## Code Suggestions are not displayed
 
-If Code Suggestions are not displayed, and you have [installed a supported IDE extension](index.md#supported-editor-extensions), try the following troubleshooting steps.
+If Code Suggestions are not displayed:
 
-In GitLab SaaS, ensure Code Suggestions is enabled for **at least one**
-[top-level group your account belongs to](saas.md#enable-code-suggestions).
-If you don't have a role that lets you view the top-level group's settings, contact a group owner.
+- Ensure you have [installed a supported IDE extension](supported_extensions.md#supported-editor-extensions)
+- Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+
+If Code Suggestions are still not displayed, try the following troubleshooting steps.
 
 ### Code Suggestions not displayed in VS Code or GitLab Web IDE
-
-Check all the steps in [Code Suggestions are not displayed](#code-suggestions-are-not-displayed) first.
 
 If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web IDE](../../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
 
@@ -45,8 +44,6 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 ```
 
 ### Code Suggestions not displayed in Microsoft Visual Studio
-
-Check all the steps in [Code Suggestions are not displayed](#code-suggestions-are-not-displayed) first.
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
 1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.

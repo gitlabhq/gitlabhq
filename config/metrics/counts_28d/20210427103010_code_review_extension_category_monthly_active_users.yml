@@ -14,8 +14,7 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
     - 'i_code_review_user_vs_code_api_request'
     - 'i_code_review_user_jetbrains_api_request'

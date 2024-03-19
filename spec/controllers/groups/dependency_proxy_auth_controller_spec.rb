@@ -38,6 +38,12 @@ RSpec.describe Groups::DependencyProxyAuthController do
           it { is_expected.to have_gitlab_http_status(:success) }
         end
 
+        context 'service account user' do
+          let_it_be(:user) { create(:user, :service_account) }
+
+          it { is_expected.to have_gitlab_http_status(:success) }
+        end
+
         context 'deploy token' do
           let_it_be(:user) { create(:deploy_token) }
 
@@ -72,6 +78,14 @@ RSpec.describe Groups::DependencyProxyAuthController do
 
         context 'group bot user from an expired token' do
           let_it_be(:user) { create(:user, :project_bot) }
+
+          let(:jwt) { build_jwt(user, expire_time: Time.zone.now - 1.hour) }
+
+          it { is_expected.to have_gitlab_http_status(:unauthorized) }
+        end
+
+        context 'service account user from an expired token' do
+          let_it_be(:user) { create(:user, :service_account) }
 
           let(:jwt) { build_jwt(user, expire_time: Time.zone.now - 1.hour) }
 

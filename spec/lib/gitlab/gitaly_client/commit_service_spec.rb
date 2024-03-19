@@ -43,7 +43,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863').raw
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
-          left_commit_id: Gitlab::Git::EMPTY_TREE_ID,
+          left_commit_id: Gitlab::Git::SHA1_EMPTY_TREE_ID,
           right_commit_id: initial_commit.id,
           collapse_diffs: false,
           enforce_limits: true,
@@ -135,7 +135,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
         request        = Gitaly::CommitDeltaRequest.new(
           repository: repository_message,
-          left_commit_id: Gitlab::Git::EMPTY_TREE_ID,
+          left_commit_id: Gitlab::Git::SHA1_EMPTY_TREE_ID,
           right_commit_id: initial_commit.id
         )
 
@@ -645,7 +645,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
   end
 
   describe '#find_commit' do
-    let(:revision) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:revision) { Gitlab::Git::SHA1_EMPTY_TREE_ID }
 
     it 'sends an RPC request' do
       request = Gitaly::FindCommitRequest.new(

@@ -39,4 +39,4 @@
   = form.fields_for :deploy_keys_projects, deploy_keys_project do |deploy_keys_project_form|
     .form-group
       = deploy_keys_project_form.gitlab_ui_checkbox_component :can_push, _('Grant write permissions to this key'),
-      help_text: _('Allow this key to push to this repository')
+        help_text: _('Allow this key to push to this repository')

@@ -37,7 +37,7 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       #
       before do
         post api("/projects/#{private_issue.project.id}/issues/#{private_issue.iid}/notes", user),
-             params: { body: 'Hi!' }
+          params: { body: 'Hi!' }
       end
 
       it 'responds with resource not found error' do
@@ -62,10 +62,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:ext_issue) { create(:issue, project: ext_proj) }
 
       let!(:cross_reference_note) do
-        create :note,
-        noteable: ext_issue, project: ext_proj,
-        note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
-        system: true
+        create(
+          :note,
+          noteable: ext_issue, project: ext_proj,
+          note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+          system: true
+        )
       end
 
       describe "GET /projects/:id/noteable/:noteable_id/notes" do
@@ -105,10 +107,12 @@ RSpec.describe API::Notes, feature_category: :team_planning do
 
         context "activity filters" do
           let!(:user_reference_note) do
-            create :note,
-                   noteable: ext_issue, project: ext_proj,
-                   note: "Hello there general!",
-                   system: false
+            create(
+              :note,
+              noteable: ext_issue, project: ext_proj,
+              note: "Hello there general!",
+              system: false
+            )
           end
 
           let(:test_url) { "/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes" }

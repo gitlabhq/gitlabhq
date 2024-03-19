@@ -28,8 +28,9 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
     end
 
     context 'when is with_merge_commits false' do
+      let(:commit) { project.commit("60ecb67744cb56576c30214ff52294f8ce2def98") }
+
       it 'excludes authors of merge commits' do
-        commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")
         create(:user, email: commit.committer_email.upcase)
 
         expect(collection.committers).to be_empty

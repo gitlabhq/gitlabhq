@@ -22,10 +22,6 @@ module Integrations
 
     include SlackMattermostFields
 
-    def update_active_status
-      update(active: !!slack_integration)
-    end
-
     def self.title
       s_('Integrations|GitLab for Slack app')
     end

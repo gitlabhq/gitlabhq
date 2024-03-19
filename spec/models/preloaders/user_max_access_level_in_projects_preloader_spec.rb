@@ -19,7 +19,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_catego
   end
 
   context 'without preloader' do
-    it 'runs some queries' do
+    it 'runs some queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444712' do
       # we have an existing N+1, one for each project for which user is not a member
       # in this spec, project_3, project_4, project_5
       # https://gitlab.com/gitlab-org/gitlab/-/issues/362890
@@ -35,14 +35,14 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_catego
         described_class.new(projects_arg, user).execute
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
         expect { query }.not_to make_queries
       end
 
       context 'when projects is an array of IDs' do
         let(:projects_arg) { projects.map(&:id) }
 
-        it 'avoids N+1 queries' do
+        it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
           expect { query }.not_to make_queries
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_catego
           Project.where(id: ProjectAuthorization.where(project_id: projects).select(:project_id))
         end
 
-        it 'avoids N+1 queries' do
+        it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446114' do
           expect { query }.not_to make_queries
         end
       end

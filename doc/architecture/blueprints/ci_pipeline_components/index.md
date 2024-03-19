@@ -95,15 +95,13 @@ This section defines some terms that are used throughout this document. With the
 identifying abstract concepts and are subject to changes as we refine the design by discovering new insights.
 
 - **Component** Is the generic term for a reusable unit of pipeline configuration. The component can be a template (usable via the `include` syntax) or a [step](../gitlab_steps/index.md).
-- **Components repository** is a GitLab repository that contains 1 or more components.
-- **Project** is the GitLab project attached to a single components repository.
-- **Catalog resource** is the generic term for a single item displayed in the catalog. A components repository is a catalog resource.
-- **Catalog** is a collection of resources like components repositories.
-- **Version** is a specific revision of the catalog resource. It maps to a project release and
-  allows components to be pinned to a specific revision.
+- **Component project** is a GitLab project that contains 1 or more components. Since a component project can be listed in the Catalog
+  we also refer to this as a **catalog resource** in the codebase.
+- **Catalog** is a collection of component projects.
+- **Version** is a component project release that is published in the Catalog.
+- **Publishing** is the act of listing a component project release in the Catalog.
 - **Step** is a type of component that contains a collection of instructions for job execution.
 - **Template** is a type of component that contains a snippet of CI/CD configuration that can be [included](../../../ci/yaml/includes.md) in a project's pipeline configuration.
-- **Publishing** is the act of listing a version of the resource (for example, a project release) on the Catalog.
 
 ## CI component
 
@@ -459,9 +457,9 @@ Today we have different use cases where using explicit input parameters would be
 
 1. `Run Pipeline` UI form.
     - **Problem today**: We are using top-level variables with `variables:*:description` to surface environment variables to the UI.
-    The problem with this is the mix of responsibilities as well as the jump in [precedence](../../../ci/variables/index.md#cicd-variable-precedence)
-    that a variable gets (from a YAML variable to a pipeline variable).
-    Building validation and features on top of this solution is challenging and complex.
+      The problem with this is the mix of responsibilities as well as the jump in [precedence](../../../ci/variables/index.md#cicd-variable-precedence)
+      that a variable gets (from a YAML variable to a pipeline variable).
+      Building validation and features on top of this solution is challenging and complex.
 1. Trigger a pipeline via API. For example `POST /projects/:id/pipelines/trigger` with `{ inputs: { provider: 'aws' } }`
 1. Trigger a pipeline via `trigger:` syntax.
 
@@ -760,27 +758,27 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                           | Who
-|--------------------------------|-------------------------|
-| Author                         | Fabio Pitino            |
-| Engineering Leaders            | Cheryl Li, Mark Nuzzo   |
-| Product Manager                | Dov Hershkovitch        |
+| Role                           | Who |
+|--------------------------------|-----|
+| Author                         | Fabio Pitino |
+| Engineering Leaders            | Cheryl Li, Mark Nuzzo |
+| Product Manager                | Dov Hershkovitch |
 | Architecture Evolution Coaches | Kamil Trzciński, Grzegorz Bizon |
 
 DRIs:
 
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Mark Nuzzo             |
-| Product                      | Dov Hershkovitch       |
-| Engineering                  | Fabio Pitino           |
-| UX                           | Sunjung Park           |
+| Role        | Who |
+|-------------|-----|
+| Leadership  | Mark Nuzzo |
+| Product     | Dov Hershkovitch |
+| Engineering | Fabio Pitino |
+| UX          | Sunjung Park |
 
 Domain experts:
 
-| Area                         | Who
-|------------------------------|------------------------|
-| Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Laura Montemayor       |
+| Area                        | Who |
+|-----------------------------|-----|
+| Verify / Pipeline authoring | Avielle Wolfe |
+| Verify / Pipeline authoring | Laura Montemayor |
 
 <!-- vale gitlab.Spelling = YES -->

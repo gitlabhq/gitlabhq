@@ -2,6 +2,30 @@
 
 module SystemNotes
   class MergeRequestsService < ::SystemNotes::BaseService
+    # Called when the auto merge is executed
+    def merge_when_checks_pass(sha)
+      body = "enabled an automatic merge when all merge checks for #{sha} pass"
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
+    end
+
+    # Called when the auto merge is canceled
+    def cancel_auto_merge
+      body = 'canceled the automatic merge'
+
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
+    end
+
+    # Called when the auto merge is aborted
+    def abort_auto_merge(reason)
+      body = "aborted the automatic merge because #{reason}"
+
+      ##
+      # TODO: Abort message should be sent by the system, not a particular user.
+      # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63187.
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
+    end
+
     # Called when 'merge when pipeline succeeds' is executed
     def merge_when_pipeline_succeeds(sha)
       body = "enabled an automatic merge when the pipeline for #{sha} succeeds"

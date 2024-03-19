@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 CI/CD is a continuous method of software development, where you continuously build,
 test, deploy, and monitor iterative code changes.
@@ -29,15 +29,6 @@ and has its own syntax.
 
 You can name this file anything you want, but `.gitlab-ci.yml` is the most common name.
 
-In the `.gitlab-ci.yml` file, you can define:
-
-- The tasks you want to complete, for example test and deploy your application.
-- Other configuration files and templates you want to include.
-- Dependencies and caches.
-- The commands you want to run in sequence and those you want to run in parallel.
-- The location to deploy your application to.
-- Whether you want to run the scripts automatically or trigger any of them manually.
-
 **Get started:**
 
 - [Create your first `.gitlab-ci.yml` file](quick_start/index.md).
@@ -52,7 +43,7 @@ Runners are the agents that run your jobs. These agents can run on physical mach
 In your `.gitlab-ci.yml` file, you can specify a container image you want to use when running the job.
 The runner loads the image, clones your project and runs the job either locally or in the container.
 
-If you use GitLab.com, SaaS runners on Linux, Windows, and macOS are already available for use. And you can register your own
+If you use GitLab.com, runners on Linux, Windows, and macOS are already available for use. And you can register your own
 runners on GitLab.com if you'd like.
 
 If you don't use GitLab.com, you can:

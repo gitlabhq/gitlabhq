@@ -193,31 +193,31 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Grzegorz Bizon          |
-| Architecture Evolution Coach | Kamil Trzciński         |
-| Engineering Leader           | Cheryl Li               |
-| Product Manager              | Jackie Porter           |
-| Domain Expert / Verify       | Fabio Pitino            |
-| Domain Expert / Database     | Jose Finotto            |
-| Domain Expert / PostgreSQL   | Nikolay Samokhvalov     |
+| Role                         | Who |
+|------------------------------|-----|
+| Author                       | Grzegorz Bizon |
+| Architecture Evolution Coach | Kamil Trzciński |
+| Engineering Leader           | Cheryl Li |
+| Product Manager              | Jackie Porter |
+| Domain Expert / Verify       | Fabio Pitino |
+| Domain Expert / Database     | Jose Finotto |
+| Domain Expert / PostgreSQL   | Nikolay Samokhvalov |
 
 DRIs:
 
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Cheryl Li              |
-| Product                      | Jackie Porter          |
-| Engineering                  | Grzegorz Bizon         |
+| Role        | Who |
+|-------------|-----|
+| Leadership  | Cheryl Li |
+| Product     | Jackie Porter |
+| Engineering | Grzegorz Bizon |
 
 Domain experts:
 
-| Area                         | Who
-|------------------------------|------------------------|
-| Domain Expert / Verify       | Fabio Pitino           |
-| Domain Expert / Verify       | Marius Bobin           |
-| Domain Expert / Database     | Jose Finotto           |
-| Domain Expert / PostgreSQL   | Nikolay Samokhvalov    |
+| Area                       | Who |
+|----------------------------|-----|
+| Domain Expert / Verify     | Fabio Pitino |
+| Domain Expert / Verify     | Marius Bobin |
+| Domain Expert / Database   | Jose Finotto |
+| Domain Expert / PostgreSQL | Nikolay Samokhvalov |
 
 <!-- vale gitlab.Spelling = YES -->

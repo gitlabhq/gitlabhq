@@ -5,7 +5,7 @@
 - add_page_specific_style 'page_bundles/environments'
 - add_page_specific_style 'page_bundles/ci_status'
 
-#environments-detail-view{ data: { details: environments_detail_data_json(current_user, @project, @environment) } }
+#environments-detail-view{ data: { details: environments_detail_data_json(current_user, @project, @environment), kas_tunnel_url: ::Gitlab::Kas.tunnel_url } }
   #environments-detail-view-header
 
   #environment_details_page

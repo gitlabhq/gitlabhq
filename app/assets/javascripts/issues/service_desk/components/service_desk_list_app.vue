@@ -13,11 +13,10 @@ import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/
 import {
   convertToSearchQuery,
   convertToApiParams,
+  deriveSortKey,
   getInitialPageParams,
   getFilterTokens,
-  isSortKey,
   getSortOptions,
-  getSortKey,
 } from '~/issues/list/utils';
 import {
   OPERATORS_IS_NOT,
@@ -513,20 +512,16 @@ export default {
           Sentry.captureException(error);
         });
     },
-    updateData(sortValue) {
+    updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      const defaultSortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
-      const dashboardSortKey = getSortKey(sortValue);
-      const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
-
-      let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+      let sortKey = deriveSortKey({ sort, state });
 
       if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
         this.showIssueRepositioningMessage();
-        sortKey = defaultSortKey;
+        sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
       this.filterTokens = getFilterTokens(window.location.search);

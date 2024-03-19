@@ -4,12 +4,6 @@ $diff-file-header: 41px;
 .diff-file {
   margin-bottom: $gl-padding;
 
-  &.has-body {
-    .file-title {
-      box-shadow: 0 -2px 0 0 var(--white);
-    }
-  }
-
   table.code tr:last-of-type td:last-of-type {
     border-bottom-right-radius: $border-radius-default - 1px;
   }

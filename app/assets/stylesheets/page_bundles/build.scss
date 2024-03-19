@@ -175,7 +175,7 @@
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
   border-radius: 0 0 $border-radius-default $border-radius-default;
-  min-height: 42px;
+  @include gl-min-h-8;
   background-color: $builds-log-bg;
 }
 

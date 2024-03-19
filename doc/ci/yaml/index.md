@@ -6,12 +6,11 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-
 # CI/CD YAML syntax reference
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
@@ -164,10 +163,16 @@ The time limit to resolve all files is 30 seconds.
 
 **Possible inputs**: The `include` subkeys:
 
+- [`include:component`](#includecomponent)
 - [`include:local`](#includelocal)
 - [`include:project`](#includeproject)
 - [`include:remote`](#includeremote)
 - [`include:template`](#includetemplate)
+
+And optionally:
+
+- [`include:inputs`](#includeinputs)
+- [`include:rules`](includes.md#use-rules-with-include)
 
 **Additional details**:
 
@@ -316,7 +321,7 @@ include:
     full 40-character SHA hash to ensure the desired commit is referenced, because
     using a short SHA hash for the `ref` might be ambiguous.
   - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
-  the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
+    the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 #### `include:remote`
 
@@ -359,7 +364,7 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 A [CI/CD template](../examples/index.md#cicd-templates):
 
-- Templates are stored in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+- All templates can be viewed in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
   Not all templates are designed to be used with `include:template`, so check template
   comments before using one.
 - You can use [certain CI/CD variables](includes.md#use-variables-with-include).
@@ -497,11 +502,7 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
 
 Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
 the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
@@ -532,6 +533,53 @@ In this example:
 
 - When a new commit is pushed to a branch, GitLab creates a new pipeline and `job1` and `job2` start.
 - If a new commit is pushed to the branch before the jobs complete, only `job1` is canceled.
+
+#### `workflow:auto_cancel:on_job_failure`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To enable the feature, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
+
+**Possible inputs**:
+
+- `all`: Cancel the pipeline and all running jobs as soon as one job fails.
+- `none`: Do not auto-cancel any jobs.
+
+**Example of `workflow:auto_cancel:on_job_failure`**:
+
+```yaml
+stages: [stage_a, stage_b]
+
+workflow:
+  auto_cancel:
+    on_job_failure: all
+
+job1:
+  stage: stage_a
+  script: sleep 60
+
+job2:
+  stage: stage_a
+  script:
+    - sleep 30
+    - exit 1
+
+job3:
+  stage: stage_b
+  script:
+    - sleep 30
+```
+
+In this example, if `job2` fails, `job1` is cancelled if it is still running and `job3` does not start.
+
+**Related topics:**
+
+- [Auto-cancel the parent pipeline from a downstream pipeline](../pipelines/downstream_pipelines.md#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline)
 
 #### `workflow:name`
 
@@ -714,11 +762,7 @@ When the branch is something else:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
 
 Use `workflow:rules:auto_cancel` to configure the behavior of
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
@@ -1972,7 +2016,7 @@ In this example:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
 
@@ -2451,19 +2495,25 @@ job1:
 ### `identity`
 
 DETAILS:
-**Status:** Experiment
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
 
 FLAG:
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
+
+This feature is in [Beta](../../policy/experiment-beta-support.md).
+To join the list of users testing this feature, join the [waitlist](https://forms.gle/XdxdTxC7DXj4NSaz9).
 
 Use `identity` to authenticate with third party services using identity federation.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
 
-**Possible inputs**: An identifier. Supported providers: `google_cloud` (Google Cloud).
+**Possible inputs**: An identifier. Supported providers:
+
+- `google_cloud`: Google Cloud. Must be configured with the [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
 **Example of `identity`**:
 
@@ -2477,6 +2527,7 @@ job_with_workload_identity:
 **Related topics**:
 
 - [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+- [Google Cloud IAM integration](../../integration/google_cloud_iam.md).
 
 ### `id_tokens`
 
@@ -2565,11 +2616,15 @@ The name of the Docker image that the job runs in. Similar to [`image`](#image) 
 - `<image-name>:<tag>`
 - `<image-name>@<digest>`
 
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
 **Example of `image:name`**:
 
 ```yaml
-image:
-  name: "registry.example.com/my/image:latest"
+test-job:
+  image:
+    name: "registry.example.com/my/image:latest"
+  script: echo "Hello world"
 ```
 
 **Related topics**:
@@ -2581,7 +2636,7 @@ image:
 Command or script to execute as the container's entry point.
 
 When the Docker container is created, the `entrypoint` is translated to the Docker `--entrypoint` option.
-The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/engine/reference/builder/#entrypoint),
+The syntax is similar to the [Dockerfile `ENTRYPOINT` directive](https://docs.docker.com/reference/dockerfile/#entrypoint),
 where each shell token is a separate string in the array.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -2594,9 +2649,11 @@ where each shell token is a separate string in the array.
 **Example of `image:entrypoint`**:
 
 ```yaml
-image:
-  name: super/sql:experimental
-  entrypoint: [""]
+test-job:
+  image:
+    name: super/sql:experimental
+    entrypoint: [""]
+  script: echo "Hello world"
 ```
 
 **Related topics**:
@@ -2618,7 +2675,7 @@ Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
 A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
-    the default is the same platform as the host runner.
+  the default is the same platform as the host runner.
 - `user`: Specify the username or UID to use when running the container.
 
 **Example of `image:docker`**:
@@ -2635,8 +2692,8 @@ arm-sql-job:
 
 **Additional details**:
 
-- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
-- `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
+- `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
+- `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
 
 #### `image:pull_policy`
 
@@ -2913,11 +2970,11 @@ This example creates four paths of execution:
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
   this feature is available by default.
-- In GitLab 14.0 and older, you can only refer to jobs in earlier stages. Stages must be
+- In GitLab 14.0 and earlier, you can only refer to jobs in earlier stages. Stages must be
   explicitly defined for all jobs that use the `needs` keyword, or are referenced
   in a job's `needs` section.
-- In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
-  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
+- If `needs` refers to a job that might not be added to
+  a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. Use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
 - If a pipeline has jobs with `needs: []` and jobs in the [`.pre`](#stage-pre) stage, they will
   all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
   and jobs in the `.pre` stage also start immediately.
@@ -2977,7 +3034,7 @@ In this example:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
@@ -3340,7 +3397,7 @@ as an artifact and published with GitLab Pages.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -3348,7 +3405,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 Use `pages.path_prefix` to configure a path prefix for [multiple deployments](../../user/project/pages/index.md#create-multiple-deployments) of GitLab Pages.
 
@@ -3795,7 +3852,7 @@ If not defined, defaults to `0` and jobs do not retry.
 When a job fails, the job is processed up to two more times, until it succeeds or
 reaches the maximum number of retries.
 
-By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen)
+By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen) or [`retry:exit_codes`](#retryexit_codes)
 to select which failures to retry on.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -3811,7 +3868,19 @@ to select which failures to retry on.
 test:
   script: rspec
   retry: 2
+
+test_advanced:
+  script:
+    - echo "Run a script that results in exit code 137."
+    - exit 137
+  retry:
+    max: 2
+    when: runner_system_failure
+    exit_codes: 137
 ```
+
+`test_advanced` will be retried up to 2 times if the exit code is `137` or if it had
+a runner system failure.
 
 #### `retry:when`
 
@@ -3872,6 +3941,48 @@ test:
     when:
       - runner_system_failure
       - stuck_or_timeout_failure
+```
+
+#### `retry:exit_codes`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`.
+
+Use `retry:exit_codes` with `retry:max` to retry jobs for only specific failure cases.
+`retry:max` is the maximum number of retries, like [`retry`](#retry), and can be
+`0`, `1`, or `2`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- A single exit code.
+- An array of exit codes.
+
+**Example of `retry:exit_codes`**:
+
+```yaml
+test_job_1:
+  script:
+    - echo "Run a script that results in exit code 1. This job isn't retried."
+    - exit 1
+  retry:
+    max: 2
+    exit_codes: 137
+
+test_job_2:
+  script:
+    - echo "Run a script that results in exit code 137. This job will be retried."
+    - exit 137
+  retry:
+    max: 1
+    exit_codes:
+      - 255
+      - 137
 ```
 
 **Related topics**:
@@ -4259,6 +4370,35 @@ job:
     - echo "Run another script if $IS_A_FEATURE exists"
 ```
 
+#### `rules:interruptible`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/194023) in GitLab 16.10.
+
+Use `interruptible` in rules to update a job's [`interruptible`](#interruptible) value for specific conditions.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `true` or `false`.
+
+**Example of `rules:interruptible`**:
+
+```yaml
+job:
+  script: echo "Hello, Rules!"
+  interruptible: true
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      interruptible: false  # Override interruptible defined at the job level.
+    - when: on_success
+```
+
+**Additional details**:
+
+- The rule-level `rules:interruptible` overrides the job-level [`interruptible`](#interruptible),
+  and only applies when the specific rule triggers the job.
+
 ### `script`
 
 Use `script` to specify commands for the runner to execute.
@@ -4303,7 +4443,7 @@ job2:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
@@ -4551,7 +4691,7 @@ Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
 A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
-    the default is the same platform as the host runner.
+  the default is the same platform as the host runner.
 - `user`: Specify the username or UID to use when running the container.
 
 **Example of `services:docker`**:
@@ -4569,8 +4709,8 @@ arm-sql-job:
 
 **Additional details**:
 
-- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/engine/reference/commandline/pull/#options).
-- `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/engine/reference/commandline/run/#options).
+- `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
+- `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
 
 #### `services:pull_policy`
 
@@ -5305,6 +5445,10 @@ In this example, the script:
 ## Deprecated keywords
 
 The following keywords are deprecated.
+
+NOTE:
+These keywords are still usable to ensure backwards compatibility,
+but could be scheduled for removal in a future major milestone.
 
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 

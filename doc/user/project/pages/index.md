@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With GitLab Pages, you can publish static websites directly from a repository
 in GitLab.
@@ -163,7 +163,7 @@ To ensure each project uses different cookies, enable the Pages [unique domains]
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -171,7 +171,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL. A prefix allows you
 to differentiate between multiple GitLab Pages deployments.

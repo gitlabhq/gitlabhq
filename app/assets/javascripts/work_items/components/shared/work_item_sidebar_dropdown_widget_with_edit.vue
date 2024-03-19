@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    clearSearchOnItemSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -131,6 +136,13 @@ export default {
       } else {
         this.isDirty = true;
         this.$emit('updateSelected', this.localSelectedItem);
+        this.clearSearch();
+      }
+    },
+    clearSearch() {
+      if (this.clearSearchOnItemSelect) {
+        this.setSearchKey('');
+        this.$refs.listbox.$refs.searchBox.clearInput();
       }
     },
     onListboxShown() {
@@ -138,6 +150,7 @@ export default {
     },
     onListboxHide() {
       this.isEditing = false;
+      this.$emit('dropdownHidden');
       if (this.multiSelect && this.isDirty) {
         this.$emit('updateValue', this.localSelectedItem);
       }
@@ -172,7 +185,7 @@ export default {
     </div>
     <gl-form v-if="isEditing">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <label :for="inputId" class="gl-mb-0">{{ dropdownLabel }}</label>
+        <label :for="inputId" class="gl-mb-0! gl-heading-5">{{ dropdownLabel }}</label>
         <gl-button
           data-testid="apply-button"
           category="tertiary"
@@ -184,6 +197,7 @@ export default {
       </div>
       <gl-collapsible-listbox
         :id="inputId"
+        ref="listbox"
         :multiple="multiSelect"
         block
         searchable
@@ -215,7 +229,6 @@ export default {
           </div>
         </template>
       </gl-collapsible-listbox>
-      {{ hasValue }}
     </gl-form>
     <slot v-else-if="hasValue" name="readonly"></slot>
     <slot v-else name="none">

@@ -3,7 +3,6 @@
  *
  */
 .file-holder {
-  background: $white;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
@@ -247,7 +246,7 @@ span.idiff {
     border-bottom: 1px solid $border-color;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
-    min-height: px-to-rem(42px);
+    min-height: px-to-rem($file-header-height);
     border-radius: $border-radius-default $border-radius-default 0 0;
 
     @include media-breakpoint-up(md) {

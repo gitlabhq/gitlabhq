@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FrequentItem from '~/super_sidebar/components/global_search/components/frequent_item.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { stubComponent } from 'helpers/stub_component';
+import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 
 describe('FrequentlyVisitedItem', () => {
   let wrapper;
@@ -29,6 +30,7 @@ describe('FrequentlyVisitedItem', () => {
 
   const findProjectAvatar = () => wrapper.findComponent(ProjectAvatar);
   const findSubtitle = () => wrapper.findByTestId('subtitle');
+  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
 
   beforeEach(() => {
     createComponent();
@@ -51,5 +53,9 @@ describe('FrequentlyVisitedItem', () => {
   it('does not render the subtitle if not given', async () => {
     await wrapper.setProps({ item: { ...mockItem, subtitle: null } });
     expect(findSubtitle().exists()).toBe(false);
+  });
+
+  it('renders the layover component', () => {
+    expect(findLayover().exists()).toBe(true);
   });
 });

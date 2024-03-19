@@ -267,7 +267,7 @@ class ProjectsFinder < UnionFinder
     return items.projects_order_id_desc unless params[:sort]
 
     if params[:sort] == 'similarity' && params[:search].present?
-      return items.sorted_by_similarity_desc(params[:search], include_in_select: true)
+      return items.sorted_by_similarity_desc(params[:search])
     end
 
     items.sort_by_attribute(params[:sort])

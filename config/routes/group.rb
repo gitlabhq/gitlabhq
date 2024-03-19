@@ -60,6 +60,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
       end
 
+      resource :slack, only: [:destroy] do
+        get :slack_auth
+      end
+
       resources :applications do
         put 'renew', on: :member
       end
@@ -160,6 +164,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :achievements, only: [:index, :new, :edit]
 
     resources :work_items, only: [:index, :show], param: :iid
+
+    post :preview_markdown
   end
 
   scope(

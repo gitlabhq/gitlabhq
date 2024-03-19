@@ -1,3 +1,7 @@
+NOTE: This is now a legacy filter, and is only used with the Ruby parser.
+The current markdown parser now properly handles multiline block quotes.
+The Ruby parser is now only for benchmarking purposes.
+
 Single `>>>` inside code block:
 
 ```

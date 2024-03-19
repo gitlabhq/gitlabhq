@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import mrStatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
+import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
 
 describe('MR widget status icon component', () => {
   let wrapper;

@@ -123,10 +123,12 @@ To enable the agent server on multiple nodes:
 | `gitlab_kas['api_secret_key']` | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
 | `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
 | `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
-| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>**1**</sup> or a GitLab external URL. <sup>**2**</sup> If blank, defaults to a GitLab external URL. |
+| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>1</sup> or a GitLab external URL. <sup>2</sup> If blank, defaults to a GitLab external URL. |
 | `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
 | `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS. |
+
+**Footnotes:**
 
 1. For example, `wss://kas.gitlab.example.com/`.
 1. For example, `wss://gitlab.example.com/-/kubernetes-agent/`.

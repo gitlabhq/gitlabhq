@@ -2,6 +2,7 @@ import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -12,7 +13,7 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
@@ -22,9 +23,16 @@ jest.mock('lodash/uniqueId');
 describe('ProjectsListItem', () => {
   let wrapper;
 
-  const [project] = convertObjectPropsToCamelCase(projects, { deep: true });
+  const [{ permissions, ...project }] = convertObjectPropsToCamelCase(projects, { deep: true });
 
-  const defaultPropsData = { project };
+  const defaultPropsData = {
+    project: {
+      ...project,
+      accessLevel: {
+        integerValue: permissions.projectAccess.accessLevel,
+      },
+    },
+  };
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(ProjectsListItem, {
@@ -45,6 +53,8 @@ describe('ProjectsListItem', () => {
   const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
+  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findInactiveBadge = () => wrapper.findComponent(ProjectListItemInactiveBadge);
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -90,33 +100,44 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  it('renders access role badge', () => {
+  it('renders access level badge', () => {
     createComponent();
 
-    expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
-      ACCESS_LEVEL_LABELS[project.permissions.projectAccess.accessLevel],
+    expect(findAccessLevelBadge().text()).toBe(
+      ACCESS_LEVEL_LABELS[defaultPropsData.project.accessLevel.integerValue],
     );
   });
 
-  describe('if project is archived', () => {
+  describe('when access level is not available', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: { project },
+      });
+    });
+
+    it('does not render access level badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when access level is `No access`', () => {
     beforeEach(() => {
       createComponent({
         propsData: {
-          project: {
-            ...project,
-            archived: true,
-          },
+          project: { ...project, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
         },
       });
     });
 
-    it('renders the archived badge', () => {
-      expect(
-        wrapper
-          .findAllComponents(GlBadge)
-          .wrappers.find((badge) => badge.text() === ProjectsListItem.i18n.archived),
-      ).not.toBeUndefined();
+    it('does not render access level badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
     });
+  });
+
+  it('renders inactive badge', () => {
+    createComponent();
+
+    expect(findInactiveBadge().exists()).toBe(true);
   });
 
   it('renders stars count', () => {
@@ -366,6 +387,7 @@ describe('ProjectsListItem', () => {
           project: {
             ...project,
             availableActions: [ACTION_EDIT, ACTION_DELETE],
+            actionLoadingStates: { [ACTION_DELETE]: false },
             isForked: true,
             editPath,
           },
@@ -400,6 +422,7 @@ describe('ProjectsListItem', () => {
           issuesCount: '0',
           forksCount: '0',
           starsCount: '0',
+          confirmLoading: false,
         });
       });
 

@@ -1,0 +1,9 @@
+---
+name: work_items_beta
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377912
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144141
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17549
+milestone: '16.10'
+group: group::project management
+type: beta
+default_enabled: false

@@ -1,0 +1,10 @@
+mutation deletePackagesProtectionRule($input: DeletePackagesProtectionRuleInput!) {
+  deletePackagesProtectionRule(input: $input) {
+    packageProtectionRule {
+      id
+      packageType
+      packageNamePattern
+    }
+    errors
+  }
+}

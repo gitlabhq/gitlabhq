@@ -8,9 +8,15 @@ module Ci
     include Gitlab::OptimisticLocking
     include Presentable
 
-    self.primary_key = :id
+    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_stages_routing_table
 
-    partitionable scope: :pipeline
+    self.primary_key = :id
+    self.sequence_name = :ci_job_stages_id_seq
+
+    partitionable scope: :pipeline, through: {
+      table: :p_ci_stages,
+      flag: ROUTING_FEATURE_FLAG
+    }
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 
@@ -116,6 +122,10 @@ module Ci
         transition any - [:success] => :success
       end
 
+      event :canceling do
+        transition any - [:canceling, :canceled] => :canceling
+      end
+
       event :cancel do
         transition any - [:canceled] => :canceled
       end
@@ -133,6 +143,7 @@ module Ci
       Ci::Pipeline.use_partition_id_filter?
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_stage_set_status') do
         case new_status
@@ -144,6 +155,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then canceling
         when 'canceled' then cancel
         when 'manual' then block
         when 'scheduled' then delay
@@ -153,6 +165,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     # This will be removed with ci_remove_ensure_stage_service
     def update_legacy_status

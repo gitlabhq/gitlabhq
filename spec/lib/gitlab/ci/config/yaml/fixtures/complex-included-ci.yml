@@ -1,0 +1,55 @@
+spec:
+  inputs:
+    compiler:
+      default: gcc
+    optimization_level:
+      type: number
+      default: 2
+    test_framework:
+      default: unittest
+    coverage_enabled:
+      type: boolean
+      default: false
+    environment:
+      default: staging
+    deploy_strategy:
+      type: string
+      options: ['blue-green', 'rolling']
+    job_prefix:
+      description: Define a prefix for the job name
+      default: my-job
+    job_stage:
+    version:
+      type: string
+      regex: ^\d+\.\d+\.\d+$
+      default: 1.0.0
+    parallel_jobs:
+      type: number
+      default: 2
+    allow_failure:
+      type: boolean
+      default: false
+
+---
+
+variables:
+  ALLOW_FAILURE: $[[ inputs.allow_failure ]]
+
+"$[[ inputs.job_prefix ]]-build":
+  stage: $[[ inputs.job_stage ]]
+  script:
+    - echo "Building with $[[ inputs.compiler ]] and optimization level $[[ inputs.optimization_level ]]"
+    - echo "$[[ inputs.version ]]"
+  parallel: $[[ inputs.parallel_jobs ]]
+
+"$[[ inputs.job_prefix ]]-test":
+  stage: $[[ inputs.job_stage ]]
+  script:
+    - echo "Testing with $[[ inputs.test_framework | expand_vars ]]"
+    - if [ $[[ inputs.coverage_enabled ]] == true ]; then echo "Coverage is enabled"; fi
+  allow_failure: $[[ inputs.allow_failure ]]
+
+"$[[ inputs.job_prefix ]]-deploy":
+  stage: $[[ inputs.job_stage ]]
+  script:
+    - echo "Deploying to $[[ inputs.environment ]] using $[[ inputs.deploy_strategy ]] strategy"

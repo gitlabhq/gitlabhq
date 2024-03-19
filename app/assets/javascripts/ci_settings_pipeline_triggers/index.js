@@ -13,6 +13,10 @@ const parseJsonArray = (triggers) => {
 export default (containerId = 'js-ci-pipeline-triggers-list') => {
   const containerEl = document.getElementById(containerId);
 
+  if (!containerEl) {
+    return null;
+  }
+
   const triggers = parseJsonArray(containerEl.dataset.triggers);
 
   return new Vue({

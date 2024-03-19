@@ -8,7 +8,7 @@ module Projects::IncidentsHelper
       'incident-template-name' => 'incident',
       'incident-type' => 'incident',
       'issue-path' => project_issues_path(project),
-      'empty-list-svg-path' => image_path('illustrations/incident-empty-state.svg'),
+      'empty-list-svg-path' => image_path('illustrations/empty-state/empty-scan-alert-md.svg'),
       'text-query': params[:search],
       'author-username-query': params[:author_username],
       'assignee-username-query': params[:assignee_username],

@@ -2,7 +2,7 @@
 
 module Gitlab
   module Redis
-    class RepositoryCache < ::Gitlab::Redis::Wrapper
+    class RepositoryCache < ::Gitlab::Redis::MultiStoreWrapper
       # We create a subclass only for the purpose of differentiating between different stores in cache metrics
       RepositoryCacheStore = Class.new(ActiveSupport::Cache::RedisCacheStore)
 
@@ -14,12 +14,16 @@ module Gitlab
 
         def cache_store
           @cache_store ||= RepositoryCacheStore.new(
-            redis: pool,
+            redis: multistore_pool,
             pool: false,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: Cache::CACHE_NAMESPACE,
             expires_in: Cache.default_ttl_seconds
           )
+        end
+
+        def multistore
+          MultiStore.new(ClusterRepositoryCache.pool, pool, store_name)
         end
       end
     end

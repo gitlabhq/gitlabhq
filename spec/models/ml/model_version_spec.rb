@@ -47,12 +47,13 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
     describe 'version' do
       where(:ctx, :version) do
-        'version is blank'                     | ''
-        'version is not valid package version' | '!!()()'
-        'version is too large'                 | ('a' * 256)
+        'can\'t be blank'                         | ''
+        'is invalid'                              | '!!()()'
+        'is too long (maximum is 255 characters)' | ('a' * 256)
+        'must follow semantic version'            | '1'
       end
       with_them do
-        it { expect(errors).to include(:version) }
+        it { expect(errors.messages.values.flatten).to include(ctx) }
       end
 
       context 'when version is not unique in project+name' do
@@ -272,7 +273,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   end
 
   context 'when parsing semver components' do
-    let(:model_version) { build(:ml_model_versions, model: model1, semver: semver, project: base_project) }
+    let(:model_version) { build(:ml_model_versions, model: model1, version: semver, project: base_project) }
 
     where(:semver, :valid, :major, :minor, :patch, :prerelease) do
       '1'             | false | nil | nil | nil | nil

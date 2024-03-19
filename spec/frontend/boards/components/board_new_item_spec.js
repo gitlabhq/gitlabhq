@@ -8,14 +8,12 @@ import { mockList } from '../mock_data';
 
 const createComponent = ({
   list = mockList,
-  formEventPrefix = 'toggle-issue-form-',
   disabledSubmit = false,
   submitButtonTitle = 'Create item',
 } = {}) =>
   mountExtended(BoardNewItem, {
     propsData: {
       list,
-      formEventPrefix,
       disabledSubmit,
       submitButtonTitle,
     },

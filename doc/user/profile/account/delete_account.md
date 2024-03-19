@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Users can be deleted from a GitLab instance, either by:
 
@@ -23,7 +23,7 @@ Deleting a user deletes all projects in that user namespace.
 > - Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 As a user, to delete your own account:
 
@@ -39,7 +39,7 @@ On GitLab.com, there is a seven day delay between a user deleting their own acco
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 As an administrator, to delete a user account:
 

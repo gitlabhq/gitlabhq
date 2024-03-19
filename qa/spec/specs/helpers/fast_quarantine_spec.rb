@@ -25,7 +25,6 @@ RSpec.describe QA::Specs::Helpers::FastQuarantine do
     expect(RSpec).to have_received(:configure)
     expect(File).to have_received(:write).with(fq_path, fq_contents)
     expect(RestClient::Request).to have_received(:execute).with(
-      cookies: {},
       method: :get,
       url: "https://gitlab-org.gitlab.io/quality/engineering-productivity/fast-quarantine/rspec/fast_quarantine-gitlab.txt",
       verify_ssl: true

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332227) in GitLab 14.0, the `resource_inclusions` and `resource_exclusions` attributes were removed and `reconcile_timeout`, `dry_run_strategy`, `prune`, `prune_timeout`, `prune_propagation_policy`, and `inventory_policy` attributes were added.
@@ -90,7 +90,7 @@ unnecessary pulls from GitLab.
 
 The agent for Kubernetes automatically detects Flux `GitRepository` objects that
 reference GitLab projects in the instance the agent is connected to,
-and configures a [`Receiver`](https://fluxcd.io/flux/components/notification/receiver/) for the instance.
+and configures a [`Receiver`](https://fluxcd.io/flux/components/notification/receivers/) for the instance.
 When the agent for Kubernetes detects a `git push` to a repository it has access to, the `Receiver` is triggered
 and Flux reconciles the cluster with any changes to the repository.
 
@@ -167,7 +167,7 @@ Support for automating deploy token creation, rotation, and reporting is propose
 
 ### Flux to GitLab notification
 
-If you configure Flux to synchronize from a Git source, [Flux can register an external job status](https://fluxcd.io/flux/components/notification/provider/#git-commit-status-updates) in GitLab pipelines.
+If you configure Flux to synchronize from a Git source, [Flux can register an external job status](https://fluxcd.io/flux/components/notification/providers/#git-commit-status-updates) in GitLab pipelines.
 
 To get external job statuses from Flux, you can use:
 

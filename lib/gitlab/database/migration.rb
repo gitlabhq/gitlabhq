@@ -16,6 +16,20 @@ module Gitlab
           end
         end
 
+        included do
+          private
+
+          attr_accessor :with_lock_retries_used
+        end
+
+        def with_lock_retries_used!
+          self.with_lock_retries_used = true
+        end
+
+        def with_lock_retries_used?
+          with_lock_retries_used
+        end
+
         delegate :enable_lock_retries?, to: :class
       end
 

@@ -137,7 +137,7 @@ module Ci
     def retryable?
       return false if retried? || archived? || deployment_rejected?
 
-      success? || failed? || canceled?
+      success? || failed? || canceled? || canceling?
     end
 
     def aggregated_needs_names

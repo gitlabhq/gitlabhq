@@ -98,15 +98,3 @@ module ActiveJob
     end
   end
 end
-
-module ActiveRecord
-  class Base
-    module SkipTransactionCheckAfterCommit
-      def committed!(*args, **kwargs)
-        Sidekiq::Worker.skipping_transaction_check { super }
-      end
-    end
-
-    prepend SkipTransactionCheckAfterCommit
-  end
-end

@@ -767,7 +767,7 @@ returns a `401` response along with a header detailing where to get an
 authentication token, in this case the GitLab instance. The client then
 requests a pull or push auth token from GitLab and retries the original request
 to the registry. For more information, see
-[token authentication](https://docs.docker.com/registry/spec/auth/token/).
+[token authentication](https://distribution.github.io/distribution/spec/auth/token/).
 
 An external registry can also be configured to use GitLab as an auth endpoint.
 
@@ -1115,7 +1115,7 @@ Many other settings are better placed in the app itself, in `ApplicationSetting`
 When adding a setting to `gitlab.yml`:
 
 1. Ensure that it is also
-  [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
+   [added to Omnibus](https://docs.gitlab.com/omnibus/settings/gitlab.yml#adding-a-new-setting-to-gitlabyml).
 1. Ensure that it is also [added to Charts](https://docs.gitlab.com/charts/development/style_guide.html), if needed.
 1. Ensure that it is also [added to GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/templates/gitlab/config/gitlab.yml.erb).
 

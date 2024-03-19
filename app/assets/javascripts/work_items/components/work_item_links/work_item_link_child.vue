@@ -59,6 +59,11 @@ export default {
       required: false,
       default: '',
     },
+    isTopLevel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -103,6 +108,12 @@ export default {
     },
     chevronTooltip() {
       return this.isExpanded ? __('Collapse') : __('Expand');
+    },
+    childItemClass() {
+      return {
+        'gl-ml-5': !this.hasChildren,
+        'gl-ml-0!': this.hasChildren || (!this.hasIndirectChildren && this.isTopLevel),
+      };
     },
   },
   watch: {
@@ -232,13 +243,14 @@ export default {
         category="tertiary"
         size="small"
         :loading="isLoadingChildren"
-        class="gl-px-0! gl-py-3! gl-mr-2"
+        class="gl-px-0! gl-py-3!"
         data-testid="expand-child"
         @click="toggleItem"
       />
       <work-item-link-child-contents
         :child-item="childItem"
         :can-update="canUpdate"
+        :class="childItemClass"
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
         :show-labels="showLabels"

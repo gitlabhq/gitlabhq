@@ -709,6 +709,9 @@ Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker'] ||= {}
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['job_class'] = 'Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker'
+Settings.cron_jobs['performance_bar_stats'] ||= {}
+Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
+Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -815,10 +818,10 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
   Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} #{rand(5..6)} * * * UTC"
-  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::Ai::SyncServiceTokenWorker'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker'] ||= {}
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker'
+  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker'] ||= {}
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['cron'] ||= '0 0 * * *'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CleanupPreviousVersionsRecordsWorker'
@@ -918,6 +921,9 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
     Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
     Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
+    Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker'] ||= {}
+    Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['cron'] ||= "*/10 * * * *"
+    Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['job_class'] = 'ClickHouse::RebuildMaterializedViewCronWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'

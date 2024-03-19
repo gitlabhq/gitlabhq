@@ -160,30 +160,34 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       project.repository.update_file(
         user, 'README.md', 'Readme v2', message: 'Update readme', branch_name: 'branch_v2')
 
-      project.repository.add_tag(user, 'v1', project.default_branch)
-      project.repository.add_tag(user, 'v2', 'branch_v2')
+      project.repository.add_tag(user, '1.0.0', project.default_branch)
+      project.repository.add_tag(user, '2.0.0', 'branch_v2')
     end
 
-    let_it_be(:author) { create(:user, name: 'author') }
-
     let_it_be(:version1) do
-      create(:release, :with_catalog_resource_version,
+      version = create(:release, :with_catalog_resource_version,
         project: project,
-        tag: 'v1',
-        sha: project.commit('v1').sha,
-        released_at: '2023-01-01T00:00:00Z',
-        author: author
+        tag: '1.0.0',
+        sha: project.commit('1.0.0').sha,
+        released_at: Date.yesterday
       ).catalog_resource_version
+
+      version.update!(version: '1.0.0')
+
+      version
     end
 
     let_it_be(:version2) do
-      create(:release, :with_catalog_resource_version,
+      version = create(:release, :with_catalog_resource_version,
         project: project,
-        tag: 'v2',
-        sha: project.commit('v2').sha,
-        released_at: '2023-02-01T00:00:00Z',
-        author: author
+        tag: '2.0.0',
+        sha: project.commit('2.0.0').sha,
+        released_at: Date.today
       ).catalog_resource_version
+
+      version.update!(version: '2.0.0')
+
+      version
     end
 
     describe 'versions' do
@@ -198,11 +202,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                   name
                   path
                   releasedAt
-                  author {
-                    id
-                    name
-                    webUrl
-                  }
                 }
               }
             }
@@ -222,15 +221,13 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
             version1,
             name: version1.name,
             path: project_tag_path(project, version1.name),
-            releasedAt: version1.released_at,
-            author: a_graphql_entity_for(author, :name)
+            releasedAt: version1.released_at
           ),
           a_graphql_entity_for(
             version2,
             name: version2.name,
             path: project_tag_path(project, version2.name),
-            releasedAt: version2.released_at,
-            author: a_graphql_entity_for(author, :name)
+            releasedAt: version2.released_at
           )
         )
       end
@@ -259,7 +256,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       end
 
       context 'when the name argument is provided' do
-        let(:name) { 'v1' }
+        let(:name) { '1.0.0' }
 
         let(:query) do
           <<~GQL
@@ -313,60 +310,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           post_query
 
           expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to eq([])
-        end
-      end
-    end
-
-    describe 'latestVersion' do
-      let(:query) do
-        <<~GQL
-          query {
-            ciCatalogResource(id: "#{resource.to_global_id}") {
-              id
-              latestVersion {
-                id
-                name
-                path
-                releasedAt
-                readmeHtml
-                author {
-                  id
-                  name
-                  webUrl
-                }
-              }
-            }
-          }
-        GQL
-      end
-
-      it 'returns the resource with the latest version data' do
-        post_query
-
-        expect(graphql_data_at(:ciCatalogResource)).to match(
-          a_graphql_entity_for(
-            resource,
-            latestVersion: a_graphql_entity_for(
-              version2,
-              name: version2.name,
-              path: project_tag_path(project, version2.name),
-              releasedAt: version2.released_at,
-              readmeHtml: a_string_including('Readme v2'),
-              author: a_graphql_entity_for(author, :name)
-            )
-          )
-        )
-      end
-
-      context 'when the resource does not have a version' do
-        it 'returns nil' do
-          resource.versions.delete_all(:delete_all)
-
-          post_query
-
-          expect(graphql_data_at(:ciCatalogResource)).to match(
-            a_graphql_entity_for(resource, latestVersion: nil)
-          )
         end
       end
     end

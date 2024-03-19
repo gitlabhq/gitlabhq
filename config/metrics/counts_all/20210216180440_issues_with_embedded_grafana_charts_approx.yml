@@ -4,7 +4,7 @@ key_path: counts.issues_with_embedded_grafana_charts_approx
 description: Count of issues where a user has embedded a Grafana chart
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

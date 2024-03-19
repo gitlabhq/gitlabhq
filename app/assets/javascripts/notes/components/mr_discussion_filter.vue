@@ -2,9 +2,10 @@
 import { GlCollapsibleListbox, GlButton, GlIcon, GlSprintf, GlButtonGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
+import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { __ } from '~/locale';
-import { MR_FILTER_OPTIONS } from '~/notes/constants';
+import { MR_FILTER_OPTIONS, MR_FILTER_TRACKING_OPENED } from '~/notes/constants';
 
 export default {
   components: {
@@ -15,6 +16,7 @@ export default {
     GlSprintf,
     LocalStorageSync,
   },
+  mixins: [InternalEvents.mixin()],
   data() {
     return {
       selectedFilters: MR_FILTER_OPTIONS.map((f) => f.value),
@@ -57,6 +59,9 @@ export default {
         direction: this.isSortAsc ? 'desc' : 'asc',
       });
     },
+    filterListShown() {
+      this.trackEvent(MR_FILTER_TRACKING_OPENED);
+    },
     applyFilters() {
       this.updateMergeRequestFilters(this.selectedFilters);
     },
@@ -97,6 +102,7 @@ export default {
         :reset-button-label="__('Deselect all')"
         multiple
         placement="right"
+        @shown="filterListShown"
         @hidden="applyFilters"
         @reset="deselectAll"
         @select-all="selectAll"

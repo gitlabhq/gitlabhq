@@ -11,7 +11,7 @@ const DEBOUNCE_DURATION = 1000;
 
 export default {
   i18n: {
-    placeholder: __('My awesome group'),
+    placeholder: __('my-awesome-group'),
     apiErrorMessage: __(
       'An error occurred while checking group path. Please refresh and try again.',
     ),

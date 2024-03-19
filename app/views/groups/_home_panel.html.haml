@@ -28,7 +28,7 @@
             = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { testid: 'new-project-button' }, class: 'gl-sm-w-auto gl-w-full' }) do
               = _('New project')
 
-        = render 'shared/groups_projects_more_actions_dropdown', source: @group
+        = render 'groups/more_actions_dropdown', source: @group
 
   - if @group.description.present?
     .group-home-desc.mt-1

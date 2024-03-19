@@ -141,8 +141,8 @@ describe('Design discussions component', () => {
       expect(findReplyPlaceholder().isVisible()).toBe(true);
     });
 
-    it('does not render toggle replies widget', () => {
-      expect(findRepliesWidget().exists()).toBe(false);
+    it('renders toggle replies widget', () => {
+      expect(findRepliesWidget().exists()).toBe(true);
     });
 
     it('renders a correct icon to resolve a thread', () => {
@@ -159,6 +159,14 @@ describe('Design discussions component', () => {
 
     it('does not render resolved message', () => {
       expect(findResolvedMessage().exists()).toBe(false);
+    });
+
+    it('renders toggle replies widget with correct props', () => {
+      expect(findRepliesWidget().exists()).toBe(true);
+      expect(findRepliesWidget().props()).toEqual({
+        collapsed: false,
+        replies: notes.slice(1),
+      });
     });
   });
 
@@ -439,5 +447,17 @@ describe('Design discussions component', () => {
         'delete-note-error': [[DELETE_NOTE_ERROR_MSG]],
       });
     });
+  });
+
+  it('does not render toggle replies widget if there are no threads', () => {
+    createComponent({
+      props: {
+        discussion: {
+          id: 'gid://gitlab/Discussion/fac4739884a66ebe979480dab8a7cc151f9ab63a',
+          notes: [{ ...notes[0], notes: [] }],
+        },
+      },
+    });
+    expect(findRepliesWidget().exists()).toBe(false);
   });
 });

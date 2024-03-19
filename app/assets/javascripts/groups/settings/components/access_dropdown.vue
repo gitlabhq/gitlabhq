@@ -96,7 +96,7 @@ export default {
         Promise.all([
           this.groups.length
             ? Promise.resolve({ data: this.groups })
-            : getSubGroups({ includeParentDescendants: true }),
+            : getSubGroups({ includeParentDescendants: true, includeParentSharedGroups: true }),
         ])
           .then(([groupsResponse]) => {
             this.consolidateData(groupsResponse.data);

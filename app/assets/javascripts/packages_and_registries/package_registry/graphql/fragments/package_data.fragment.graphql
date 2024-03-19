@@ -5,7 +5,6 @@ fragment PackageData on Package {
   packageType
   createdAt
   status
-  canDestroy
   tags {
     nodes {
       id
@@ -32,5 +31,8 @@ fragment PackageData on Package {
   }
   _links {
     webPath
+  }
+  userPermissions {
+    destroyPackage
   }
 }

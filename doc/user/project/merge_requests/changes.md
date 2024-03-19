@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
@@ -63,17 +63,18 @@ Files with many changes are collapsed to improve performance. GitLab displays th
 
 ### Collapse generated files
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
+
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+On self-managed GitLab, by default this feature is available. To disable it,
+an administrator can [disable the feature flag](../../../administration/feature_flags.md)
 named `collapse_generated_diff_files`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. These files are collapsed by default, because
@@ -86,9 +87,8 @@ they are unlikely to require code reviews:
 1. Source map reference files.
 1. Generated Go files, including the generated files by protocol buffer compiler.
 
-If you want to automatically collapse additional files or file types, you can use
-the `gitlab-generated` attribute, which marks or unmarks certain files/paths as generated. See [overriding syntax highlighting](../highlighting.md#override-syntax-highlighting-for-a-file-type) for more
-detail on how to use override attributes.
+To mark a file or path as generated, set the `gitlab-generated` attribute for it
+in your [`.gitattributes` file](../git_attributes.md).
 
 #### View a collapsed file
 
@@ -257,7 +257,7 @@ per conflicted file on the merge request diff:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can show scanner findings in the diff. For details, see:
 

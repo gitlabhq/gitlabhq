@@ -12,8 +12,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
   - users_viewing_analytics_group_devops_adoption
   - i_analytics_dev_ops_adoption

@@ -17,11 +17,11 @@ export default {
 
 <template>
   <gl-empty-state
+    :title="$options.i18n.title"
     :svg-path="emptyStateImage"
-    :svg-height="100"
     data-testid="cluster-agent-empty-state"
   >
-    <template #title>
+    <template #description>
       <gl-sprintf :message="$options.i18n.introText">
         <template #link="{ content }">
           <gl-link :href="$options.agentDocsUrl">

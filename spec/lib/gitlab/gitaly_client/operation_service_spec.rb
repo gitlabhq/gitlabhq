@@ -679,6 +679,15 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
   end
 
+  shared_examples '#user_revert with a gRPC error' do
+    it 'raises an exception' do
+      expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_revert)
+        .and_raise(raised_error)
+
+      expect { subject }.to raise_error(expected_error)
+    end
+  end
+
   describe '#user_revert', :freeze_time do
     let(:sha) { '54cec5282aa9f21856362fe321c800c236a61615' }
     let(:branch_name) { 'master' }
@@ -740,6 +749,78 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       end
 
       it_behaves_like 'cherry pick and revert errors'
+    end
+
+    context 'when MergeConflictError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: there are conflicting files',
+          Gitaly::UserRevertError.new(
+            merge_conflict: Gitaly::MergeConflictError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when ChangesAlreadyAppliedError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: could not apply because the result was empty',
+          Gitaly::UserRevertError.new(
+            changes_already_applied: Gitaly::ChangesAlreadyAppliedError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::Repository::CreateTreeError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when NotAncestorError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          'revert: branch diverged',
+          Gitaly::UserRevertError.new(
+            not_ancestor: Gitaly::NotAncestorError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::CommitError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when CustomHookError is raised' do
+      let(:raised_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::PERMISSION_DENIED,
+          'revert: custom hook error',
+          Gitaly::UserRevertError.new(
+            custom_hook: Gitaly::CustomHookError.new
+          )
+        )
+      end
+
+      let(:expected_error) { Gitlab::Git::PreReceiveError }
+
+      it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'when a non-detailed gRPC error is raised' do
+      let(:raised_error) { GRPC::Internal.new('non-detailed error') }
+      let(:expected_error) { GRPC::Internal }
+      let(:expected_error_message) {}
+
+      it_behaves_like '#user_revert with a gRPC error'
     end
   end
 

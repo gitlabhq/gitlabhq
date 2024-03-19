@@ -12,6 +12,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include Gitlab::Utils::StrongMemoize
   include Gitlab::Experiment::Dsl
   include SafeFormatHelper
+  include Projects::PagesHelper
 
   delegator_override_with GitlabRoutingHelper # TODO: Remove `GitlabRoutingHelper` inclusion as it's duplicate
   delegator_override_with Gitlab::Utils::StrongMemoize # This module inclusion is expected. See https://gitlab.com/gitlab-org/gitlab/-/issues/352884.
@@ -55,7 +56,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data,
       wiki_anchor_data,
-      integrations_anchor_data
+      integrations_anchor_data,
+      pages_anchor_data
     ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
@@ -89,7 +91,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end
@@ -478,6 +480,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def pages_anchor_data
+    return unless project.pages_deployed? && can?(current_user, :read_pages_content, project)
+
+    pages_url = build_pages_url(project, with_unique_domain: true)
+    AnchorData.new(false, statistic_icon('external-link') + _('GitLab Pages'), pages_url, 'btn-default', nil)
+  end
+
   private
 
   def integrations_anchor_data
@@ -510,7 +519,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end

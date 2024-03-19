@@ -1,4 +1,6 @@
 @import 'mixins_and_variables_and_functions';
+@import 'page_bundles/commits';
+@import 'page_bundles/commit_description';
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
@@ -56,19 +58,6 @@ $comparison-empty-state-height: 62px;
 
 .compare-commit-empty {
   min-height: $comparison-empty-state-height;
-}
-
-.commits-empty {
-  text-align: center;
-
-  h4 {
-    padding-top: 20px;
-    padding-bottom: 10px;
-  }
-
-  svg {
-    width: 230px;
-  }
 }
 
 .nothing-here-block {

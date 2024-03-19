@@ -19,7 +19,6 @@ class Projects::TreeController < Projects::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:encoding_logs_tree)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
   end
 

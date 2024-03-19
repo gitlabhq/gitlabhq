@@ -15,12 +15,10 @@ module Packages
             description: params[:description]&.truncate(::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH),
             description_content_type: params[:description_content_type],
             summary: params[:summary],
-            keywords: params[:keywords]
+            keywords: params[:keywords]&.truncate(::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH)
           )
 
-          unless meta.valid?
-            raise ActiveRecord::RecordInvalid, meta
-          end
+          raise ActiveRecord::RecordInvalid, meta unless meta.valid?
 
           params.delete(:md5_digest) if Gitlab::FIPS.enabled?
 

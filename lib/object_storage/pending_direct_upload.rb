@@ -18,6 +18,21 @@ module ObjectStorage
       end
     end
 
+    def self.with_pending_only(location_identifier, object_storage_paths)
+      with_redis do |redis|
+        keys = object_storage_paths.map do |path|
+          redis_key(location_identifier, path)
+        end
+
+        matches = redis.hmget(KEY, keys)
+        index = -1
+        object_storage_paths.select do
+          index += 1
+          matches[index].present?
+        end
+      end
+    end
+
     def self.exists?(location_identifier, object_storage_path)
       with_redis do |redis|
         redis.hexists(KEY, redis_key(location_identifier, object_storage_path))

@@ -13518,8 +13518,8 @@ msgstr "Налаштування SAST в `.gitlab-ci.yml` використову
 msgid "Configure SAST in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Налаштування SAST в `.gitlab-ci.yml`, створення цього файлу, якщо він ще не існує"
 
-msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) to customize Secret Detection settings."
-msgstr "Налаштувати виявлення секретів в `.gitlab-ci.yml` за допомогою керованого GitLab шаблону. Ви можете [налаштувати змінні](https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings) щоб налаштувати параметри виявлення секретів."
+msgid "Configure Secret Detection in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) to customize Secret Detection settings."
+msgstr "Налаштувати виявлення секретів в `.gitlab-ci.yml` за допомогою керованого GitLab шаблону. Ви можете [налаштувати змінні](https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization) щоб налаштувати параметри виявлення секретів."
 
 msgid "Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Налаштуйте виявлення Secret Detection в `.gitlab-ci.yml`, створення цього файлу, якщо він ще не існує"

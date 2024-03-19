@@ -1,15 +1,7 @@
 <script>
-import {
-  GlDisclosureDropdown,
-  GlButton,
-  GlIcon,
-  GlForm,
-  GlFormCheckbox,
-  GlFormRadioGroup,
-} from '@gitlab/ui';
+import { GlDisclosureDropdown, GlButton, GlIcon, GlForm, GlFormRadioGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -43,13 +35,11 @@ export default {
     GlIcon,
     GlForm,
     GlFormRadioGroup,
-    GlFormCheckbox,
     MarkdownEditor,
     ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
     SummarizeMyReview: () =>
       import('ee_component/batch_comments/components/summarize_my_review.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     canSummarize: { default: false },
   },
@@ -252,21 +242,11 @@ export default {
           />
         </div>
         <gl-form-radio-group
-          v-if="glFeatures.mrRequestChanges"
           v-model="noteData.reviewer_state"
           :options="radioGroupOptions"
           class="gl-mt-4"
           data-testid="reviewer_states"
         />
-        <template v-else-if="userPermissions.canApprove">
-          <gl-form-checkbox
-            v-model="noteData.approve"
-            data-testid="approve_merge_request"
-            class="gl-mt-4"
-          >
-            {{ __('Approve merge request') }}
-          </gl-form-checkbox>
-        </template>
         <approval-password
           v-if="userPermissions.canApprove && getNoteableData.require_password_to_approve"
           v-show="noteData.approve || noteData.reviewer_state === 'approved'"

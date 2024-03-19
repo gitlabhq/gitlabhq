@@ -18,7 +18,7 @@ module Gitlab
       SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
       # These labels from Gitlab::SidekiqMiddleware::MetricsHelper are included in SLI metrics
-      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies, :queue].freeze
+      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies, :queue, :destination_shard_redis].freeze
 
       class << self
         include ::Gitlab::SidekiqMiddleware::MetricsHelper
@@ -65,8 +65,6 @@ module Gitlab
           metrics = self.metrics
 
           metrics[:sidekiq_concurrency].set({}, Sidekiq.default_configuration[:concurrency].to_i)
-
-          return unless ::Feature.enabled?(:sidekiq_job_completion_metric_initialize)
 
           possible_sli_labels = []
           ::Gitlab::SidekiqConfig.current_worker_queue_mappings.each do |worker, queue|

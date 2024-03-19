@@ -33,6 +33,8 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
   let_it_be(:wiki)          { feature.wiki }
   let_it_be(:wiki_page)     { feature.wiki_page }
   let_it_be(:markdown_text) { feature.raw_markdown }
+  let_it_be(:glfm_engine)   { Banzai::Filter::MarkdownFilter::GLFM_ENGINE }
+  let_it_be(:cmark_engine)  { Banzai::Filter::MarkdownFilter::CMARK_ENGINE }
   let_it_be(:grafana_integration) { create(:grafana_integration, project: project) }
   let_it_be(:default_context) do
     {
@@ -75,6 +77,62 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
         x.report('Full pipeline') { Banzai::Pipeline::FullPipeline.call(markdown_text, context) }
         x.report('Wiki pipeline') { Banzai::Pipeline::WikiPipeline.call(markdown_text, context.merge(wiki: wiki, page_slug: wiki_page.slug)) }
         x.report('Plain pipeline') { Banzai::Pipeline::PlainMarkdownPipeline.call(markdown_text, context) }
+
+        x.compare!
+      end
+    end
+  end
+
+  context 'markdown engines' do
+    it 'benchmarks full pipeline using different markdown engines' do
+      puts "\n--> Benchmarking FullPipeline with Cmark and Glfm engines\n"
+
+      Benchmark.ips do |x|
+        x.config(time: 10, warmup: 2)
+
+        x.report('glfm') { Banzai::Pipeline::FullPipeline.call(markdown_text, context.merge(markdown_engine: glfm_engine)) }
+        x.report('cmark') { Banzai::Pipeline::FullPipeline.call(markdown_text, context.merge(markdown_engine: cmark_engine)) }
+
+        x.compare!
+      end
+    end
+
+    it 'benchmarks plain markdown pipeline using different markdown engines' do
+      puts "\n--> Benchmarking PlainMarkdownPipeline with Cmark and Glfm engines\n"
+
+      Benchmark.ips do |x|
+        x.config(time: 10, warmup: 2)
+
+        x.report('glfm') { Banzai::Pipeline::PlainMarkdownPipeline.call(markdown_text, context.merge(markdown_engine: glfm_engine)) }
+        x.report('cmark') { Banzai::Pipeline::PlainMarkdownPipeline.call(markdown_text, context.merge(markdown_engine: cmark_engine)) }
+
+        x.compare!
+      end
+    end
+
+    it 'benchmarks MarkdownFilter using different markdown engines' do
+      puts "\n--> Benchmarking MarkdownFilter with Cmark and Glfm engines\n"
+
+      pipeline      = Banzai::Pipeline[:plain_markdown]
+      filter_klass  = Banzai::Filter::MarkdownFilter
+      filter_source = build_filter_text(pipeline, markdown_text)
+
+      Benchmark.ips do |x|
+        x.config(time: 10, warmup: 2)
+
+        x.report('Markdown-glfm') do
+          filter = filter_klass.new(filter_source[filter_klass][:input_text],
+                                    context.merge(markdown_engine: glfm_engine),
+                                    filter_source[filter_klass][:input_result])
+          filter.call
+        end
+
+        x.report('Markdown-cmark') do
+          filter = filter_klass.new(filter_source[filter_klass][:input_text],
+                                    context.merge(markdown_engine: cmark_engine),
+                                    filter_source[filter_klass][:input_result])
+          filter.call
+        end
 
         x.compare!
       end
@@ -128,7 +186,7 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
     filter_source = build_filter_text(pipeline, markdown_text)
 
     filter_msg = filter_klass_list ? filter_klass_list.first.name.demodulize : 'all filters'
-    puts "\n--> Benchmarking #{filter_msg} for #{pipeline.name.demodulize}\n"
+    puts "\n--> Benchmarking #{filter_msg} for #{pipeline.name.demodulize} with Glfm\n"
 
     Benchmark.ips do |x|
       x.config(time: 10, warmup: 2)

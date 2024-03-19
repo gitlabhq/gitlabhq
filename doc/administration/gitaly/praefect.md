@@ -198,7 +198,7 @@ The following options are available:
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
   - Use a cloud-managed PostgreSQL service. AWS
-     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
+    [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 Setting up PostgreSQL creates empty Praefect tables. For more information, see the
 [relevant troubleshooting section](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
@@ -1728,29 +1728,29 @@ To migrate existing clusters:
 
    - If a short downtime is acceptable:
 
-      1. Shut down all Praefect nodes before changing the election strategy. Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
+     1. Shut down all Praefect nodes before changing the election strategy. Do this by running `gitlab-ctl stop praefect` on the Praefect nodes.
 
-      1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
+     1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
 
-      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefect nodes.
+     1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefect nodes.
 
    - If downtime is unacceptable:
 
-      1. Determine which Gitaly node is [the current primary](troubleshooting_gitaly_cluster.md#determine-primary-gitaly-node).
+     1. Determine which Gitaly node is [the current primary](troubleshooting_gitaly_cluster.md#determine-primary-gitaly-node).
 
-      1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
-      on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
-      strategies to elect the same Gitaly node as the primary.
+     1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
+        on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election
+        strategies to elect the same Gitaly node as the primary.
 
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all Praefect processes have restarted and
-      the old processes have exited. This can take up to one minute.
+     1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all Praefect processes have restarted and
+        the old processes have exited. This can take up to one minute.
 
-      1. On all Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
-      `praefect['failover_election_strategy'] = 'per_repository'`.
+     1. On all Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with
+        `praefect['failover_election_strategy'] = 'per_repository'`.
 
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all of the Praefect processes have restarted and
-      the old processes have exited. This can take up to one minute.
+     1. Run `gitlab-ctl reconfigure` on all Praefect nodes. Wait until all of the Praefect processes have restarted and
+        the old processes have exited. This can take up to one minute.
 
-      1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
+     1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
 
-      1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.
+     1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.

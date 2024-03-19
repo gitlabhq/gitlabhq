@@ -12,7 +12,8 @@ RSpec.shared_examples 'metrics middleware with worker attribution' do
       boundary: "",
       external_dependencies: "no",
       feature_category: "",
-      urgency: "low" }
+      urgency: "low",
+      destination_shard_redis: "main" }
   end
 
   context "when workers are not attributed" do

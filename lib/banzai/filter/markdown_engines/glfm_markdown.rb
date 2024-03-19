@@ -15,6 +15,7 @@ module Banzai
           full_info_string: true,
           github_pre_lang: true,
           hardbreaks: false,
+          multiline_block_quotes: true,
           relaxed_autolinks: false,
           sourcepos: true,
           smart: false,

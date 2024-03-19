@@ -1,5 +1,7 @@
 ---
 table_name: catalog_verified_namespaces
+classes:
+- Ci::Catalog::VerifiedNamespace
 feature_categories:
 - pipeline_composition
 description: Verified namespaces in the CI catalog.

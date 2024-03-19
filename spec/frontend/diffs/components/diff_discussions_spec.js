@@ -14,12 +14,12 @@ describe('DiffDiscussions', () => {
   let wrapper;
   const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
-  const createComponent = (props) => {
+  const createComponent = (props, discussions = getDiscussionsMockData()) => {
     store = createStore();
     wrapper = mount(DiffDiscussions, {
       store,
       propsData: {
-        discussions: getDiscussionsMockData(),
+        discussions,
         ...props,
       },
     });
@@ -43,7 +43,9 @@ describe('DiffDiscussions', () => {
     const findDiffNotesToggle = () => wrapper.find('.js-diff-notes-toggle');
 
     it('renders collapsible discussion button', () => {
-      createComponent({ shouldCollapseDiscussions: true });
+      const discussions = getDiscussionsMockData();
+      discussions[0].expandedOnDiff = true;
+      createComponent({ shouldCollapseDiscussions: true }, discussions);
       const diffNotesToggle = findDiffNotesToggle();
 
       expect(diffNotesToggle.exists()).toBe(true);
@@ -52,19 +54,19 @@ describe('DiffDiscussions', () => {
     });
 
     it('dispatches toggleDiscussion when clicking collapse button', () => {
-      createComponent({ shouldCollapseDiscussions: true });
+      const discussions = getDiscussionsMockData();
+      discussions[0].expandedOnDiff = true;
+      createComponent({ shouldCollapseDiscussions: true }, discussions);
       jest.spyOn(store, 'dispatch').mockImplementation();
 
       findDiffNotesToggle().trigger('click');
 
-      expect(store.dispatch).toHaveBeenCalledWith('toggleDiscussion', {
-        discussionId: discussionsMockData.id,
-      });
+      expect(store.dispatch).toHaveBeenCalledWith('diffs/toggleFileDiscussion', discussions[0]);
     });
 
     it('renders expand button when discussion is collapsed', () => {
       const discussions = getDiscussionsMockData();
-      discussions[0].expanded = false;
+      discussions[0].expandedOnDiff = false;
       createComponent({ discussions, shouldCollapseDiscussions: true });
       const diffNotesToggle = findDiffNotesToggle();
 
@@ -76,7 +78,7 @@ describe('DiffDiscussions', () => {
 
     it('hides discussion when collapsed', () => {
       const discussions = getDiscussionsMockData();
-      discussions[0].expanded = false;
+      discussions[0].expandedOnDiff = false;
       createComponent({ discussions, shouldCollapseDiscussions: true });
 
       expect(findNoteableDiscussion().isVisible()).toBe(false);

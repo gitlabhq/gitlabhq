@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require_dependency 'active_model'
+require 'spec_helper'
 
-RSpec.describe ::Gitlab::Ci::Config::Entry::Include do
+RSpec.describe ::Gitlab::Ci::Config::Entry::Include, feature_category: :pipeline_composition do
   subject(:include_entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -98,6 +97,12 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Include do
         let(:config) { { local: 'test.yml', rules: [{ if: '$VARIABLE' }] } }
 
         it { is_expected.to be_valid }
+
+        context 'when also using "inputs"' do
+          let(:config) { { local: 'test.yml', inputs: { stage: 'test' }, rules: [{ if: '$VARIABLE' }] } }
+
+          it { is_expected.to be_valid }
+        end
 
         context 'when rules is not an array of hashes' do
           let(:config) { { local: 'test.yml', rules: ['$VARIABLE'] } }

@@ -35,7 +35,7 @@ RSpec.describe 'Commit > Pipelines tab', :js, feature_category: :source_code_man
 
       wait_for_requests
 
-      page.within('[data-testid="pipeline-table-row"]') do
+      within_testid('pipeline-table-row') do
         expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Passed')
         expect(page).to have_content(pipeline.id)
         expect(page).to have_css('[data-testid="pipeline-mini-graph"]')

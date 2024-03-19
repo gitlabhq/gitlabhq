@@ -13,7 +13,7 @@ module Gitlab
         end
 
         def title
-          _('Deployment Frequency')
+          _('Deployment frequency')
         end
 
         def value

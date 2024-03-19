@@ -51,10 +51,7 @@ module QA
         Resource::ProjectWebHook.setup(session: session, issues: true, note: true) do |webhook, smocker|
           issue = create(:issue, project: webhook.project)
 
-          Resource::ProjectIssueNote.fabricate_via_api! do |note|
-            note.project = issue.project
-            note.issue = issue
-          end
+          create(:issue_note, project: issue.project, issue: issue)
 
           expect { smocker.events(session).size }.to eventually_eq(2)
                                                 .within(max_duration: 30, sleep_interval: 2),

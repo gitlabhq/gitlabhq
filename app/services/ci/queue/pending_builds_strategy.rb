@@ -42,8 +42,8 @@ module Ci
         ::Ci::PendingBuild.all
       end
 
-      def build_ids(relation)
-        relation.pluck(:build_id)
+      def build_and_partition_ids(relation)
+        relation.pluck(:build_id, :partition_id)
       end
 
       private

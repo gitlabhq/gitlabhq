@@ -6,44 +6,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
   include AfterNextHelpers
 
   RSpec.shared_examples 'creates work item in container' do |container_type|
-    let_it_be_with_reload(:project) { create(:project) }
-    let_it_be_with_reload(:group) { create(:group) }
-
-    let_it_be(:container) do
-      case container_type
-      when :project then project
-      when :project_namespace then project.project_namespace
-      when :group then group
-      end
-    end
-
-    let_it_be(:container_args) do
-      case container_type
-      when :project, :project_namespace then { project: project }
-      when :group then { namespace: group }
-      end
-    end
-
-    let_it_be(:parent) { create(:work_item, **container_args) }
-    let_it_be(:guest) { create(:user) }
-    let_it_be(:reporter) { create(:user) }
-    let_it_be(:user_with_no_access) { create(:user) }
-
-    let(:widget_params) { {} }
-    let(:perform_spam_check) { false }
-    let(:current_user) { guest }
-    let(:opts) do
-      {
-        title: 'Awesome work_item',
-        description: 'please fix'
-      }
-    end
-
-    before_all do
-      memberships_container = container.is_a?(Namespaces::ProjectNamespace) ? container.reload.project : container
-      memberships_container.add_guest(guest)
-      memberships_container.add_reporter(reporter)
-    end
+    include_context 'with container for work items service', container_type
 
     describe '#execute' do
       shared_examples 'fails creating work item and returns errors' do
@@ -53,16 +16,6 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
           expect(service_result[:status]).to be(:error)
           expect(service_result[:message]).to match(error_message)
         end
-      end
-
-      let(:service) do
-        described_class.new(
-          container: container,
-          current_user: current_user,
-          params: opts,
-          perform_spam_check: perform_spam_check,
-          widget_params: widget_params
-        )
       end
 
       subject(:service_result) { service.execute }
@@ -247,6 +200,15 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
             let(:error_message) { 'No matching work item found. Make sure that you are adding a valid work item ID.' }
           end
         end
+      end
+
+      it "publishes WorkItems::WorkItemCreatedEvent" do
+        expect { service_result }
+          .to change { WorkItem.count }.by(1)
+            .and publish_event(WorkItems::WorkItemCreatedEvent).with(
+              id: kind_of(Numeric),
+              namespace_id: kind_of(Numeric)
+            )
       end
     end
   end

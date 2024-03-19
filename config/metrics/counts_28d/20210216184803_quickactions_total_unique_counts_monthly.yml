@@ -12,8 +12,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
   - i_quickactions_approve
   - i_quickactions_assign_single

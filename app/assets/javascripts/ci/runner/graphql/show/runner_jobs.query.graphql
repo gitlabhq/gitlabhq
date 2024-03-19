@@ -1,3 +1,4 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query getRunnerJobs($id: CiRunnerID!, $first: Int, $last: Int, $before: String, $after: String) {
@@ -8,12 +9,7 @@ query getRunnerJobs($id: CiRunnerID!, $first: Int, $last: Int, $before: String, 
       nodes {
         id
         detailedStatus {
-          # fields for `<ci-icon>`
-          id
-          detailsPath
-          group
-          icon
-          text
+          ...CiIcon
         }
         project {
           id

@@ -174,7 +174,7 @@ export default {
         <h3 class="text-secondary gl-mt-0" data-testid="step-count">
           {{ sprintf($options.i18n.stepNofN, { currentStep, stepCount }) }}
         </h3>
-        <gl-progress-bar :value="progress" variant="success" />
+        <gl-progress-bar :value="progress" />
       </header>
       <section class="gl-mb-4">
         <commit-step

@@ -75,7 +75,7 @@ RSpec.describe Gitlab::SearchContext::ControllerConcern, type: :controller do
   end
 
   context 'exposing @ref' do
-    let(:ref) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:ref) { Gitlab::Git::SHA1_EMPTY_TREE_ID }
 
     it_behaves_like 'has the proper context'
   end

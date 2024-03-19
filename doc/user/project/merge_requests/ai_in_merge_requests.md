@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status**: Experiment
 
 AI-assisted features in merge requests are designed to provide contextually relevant information during the lifecycle of a merge request.
@@ -27,7 +27,7 @@ When creating a merge request, GitLab Duo can generate a description for the mer
 
 To generate the description:
 
-1. Create a new merge request, go to the **Description** field.
+1. [Create a new merge request](creating_merge_requests.md), and go to the **Description** field.
 1. Select **AI Actions** (**{tanuki}**).
 1. Select **Fill in merge request template**.
 
@@ -65,6 +65,8 @@ This feature is an [Experiment](../../../policy/experiment-beta-support.md) on G
 
 When you've completed your review of a merge request and are ready to [submit your review](reviews/index.md#submit-a-review), generate a GitLab Duo Code review summary:
 
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
 1. Select **Summarize my pending comments**.
 
@@ -88,6 +90,8 @@ When preparing to merge your merge request you might wish to edit the proposed s
 
 To generate a commit message with GitLab Duo:
 
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Create AI-generated commit message**.
 1. Review the commit message provide and choose **Insert** to add it to the commit.

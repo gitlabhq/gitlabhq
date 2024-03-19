@@ -1,0 +1,20 @@
+---
+table_name: project_repository_states
+classes:
+- ProjectRepositoryState
+feature_categories:
+- geo_replication
+description: Keeps checksums of repositories
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4428
+milestone: '10.6'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145195
+removed_in_milestone: '16.10'

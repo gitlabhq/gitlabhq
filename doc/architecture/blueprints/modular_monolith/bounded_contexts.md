@@ -29,9 +29,9 @@ The majority of the code is not properly namespaced and organized:
 1. Define a list of characteristics that bounded contexts should have. For example: must relate to at least 1 product category.
 1. Have a list of top-level bounded contexts where all domain code is broken down into.
 1. Engineers can clearly see the list of available bounded contexts and can make an easy decision where to add
-  new classes and modules.
+   new classes and modules.
 1. Define a process for adding a new bounded context to the application. This should occur quite infrequently
-  and new bounded contexts need to adhere to the characteristics defined previously.
+   and new bounded contexts need to adhere to the characteristics defined previously.
 1. Enforce the list of bounded contexts so that no new top-level namespaces can be used aside from the authorized ones.
 
 ## Iterations

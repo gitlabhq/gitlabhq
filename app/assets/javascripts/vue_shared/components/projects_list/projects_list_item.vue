@@ -11,8 +11,9 @@ import {
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -32,7 +33,6 @@ export default {
     forks: __('Forks'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
-    archived: __('Archived'),
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
@@ -53,6 +53,7 @@ export default {
     TimeAgoTooltip,
     DeleteModal,
     ListActions,
+    ProjectListItemInactiveBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,8 +75,8 @@ export default {
      *   issuesAccessLevel: string;
      *   forkingAccessLevel: string;
      *   openIssuesCount: number;
-     *   permissions: {
-     *     projectAccess: { accessLevel: 50 };
+     *   maxAccessLevel: {
+     *     integerValue: number;
      *   };
      *   descriptionHtml: string;
      *   updatedAt: string;
@@ -111,13 +112,13 @@ export default {
       return PROJECT_VISIBILITY_TYPE[this.visibility];
     },
     accessLevel() {
-      return this.project.permissions?.projectAccess?.accessLevel;
+      return this.project.accessLevel?.integerValue;
     },
     accessLevelLabel() {
       return ACCESS_LEVEL_LABELS[this.accessLevel];
     },
     shouldShowAccessLevel() {
-      return this.accessLevel !== undefined;
+      return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     starsHref() {
       return `${this.project.webUrl}/-/starrers`;
@@ -198,6 +199,9 @@ export default {
     hasActionDelete() {
       return this.project.availableActions?.includes(ACTION_DELETE);
     },
+    isActionDeleteLoading() {
+      return this.project.actionLoadingStates[ACTION_DELETE];
+    },
   },
   methods: {
     topicPath(topic) {
@@ -251,9 +255,13 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
-                    accessLevelLabel
-                  }}</gl-badge>
+                  <gl-badge
+                    v-if="shouldShowAccessLevel"
+                    size="sm"
+                    class="gl-display-block"
+                    data-testid="access-level-badge"
+                    >{{ accessLevelLabel }}</gl-badge
+                  >
                 </div>
               </div>
             </div>
@@ -325,9 +333,7 @@ export default {
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
         <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
-          <gl-badge v-if="project.archived" variant="warning">{{
-            $options.i18n.archived
-          }}</gl-badge>
+          <project-list-item-inactive-badge :project="project" />
           <gl-link
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"
@@ -390,6 +396,7 @@ export default {
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"
+      :confirm-loading="isActionDeleteLoading"
       :merge-requests-count="openMergeRequestsCount"
       :issues-count="openIssuesCount"
       :forks-count="forksCount"

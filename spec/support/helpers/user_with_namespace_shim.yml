@@ -276,7 +276,6 @@
 - ee/spec/views/admin/users/show.html.haml_spec.rb
 - ee/spec/views/compliance_management/compliance_framework/_project_settings.html.haml_spec.rb
 - ee/spec/views/profiles/preferences/show.html.haml_spec.rb
-- ee/spec/views/shared/billings/_eoa_bronze_plan_banner.html.haml_spec.rb
 - ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb
 - ee/spec/workers/groups/enterprise_users/associate_worker_spec.rb
 - ee/spec/workers/groups/enterprise_users/bulk_associate_by_domain_worker_spec.rb
@@ -659,7 +658,6 @@
 - spec/lib/gitlab/analytics/usage_trends/workers_argument_builder_spec.rb
 - spec/lib/gitlab/background_migration/backfill_environment_tiers_spec.rb
 - spec/lib/gitlab/background_migration/backfill_root_storage_statistics_fork_storage_sizes_spec.rb
-- spec/lib/gitlab/background_migration/backfill_snippet_repositories_spec.rb
 - spec/lib/gitlab/background_migration/backfill_user_details_fields_spec.rb
 - spec/lib/gitlab/background_migration/job_coordinator_spec.rb
 - spec/lib/gitlab/checks/container_moved_spec.rb
@@ -761,9 +759,7 @@
 - spec/migrations/20230328030101_add_secureflag_training_provider_spec.rb
 - spec/migrations/20230328100534_truncate_error_tracking_tables_spec.rb
 - spec/migrations/20230412141541_reschedule_links_avoiding_duplication_spec.rb
-- spec/migrations/20230412185837_queue_populate_vulnerability_dismissal_fields_spec.rb
 - spec/migrations/20230419105225_remove_phabricator_from_application_settings_spec.rb
-- spec/migrations/20230426085615_queue_backfill_resource_link_events_spec.rb
 - spec/migrations/20230426102200_fix_import_sources_on_application_settings_after_phabricator_removal_spec.rb
 - spec/migrations/20230428085332_remove_shimo_zentao_integration_records_spec.rb
 - spec/migrations/20230515153600_finalize_back_fill_prepared_at_merge_requests_spec.rb
@@ -774,7 +770,6 @@
 - spec/migrations/cleanup_bigint_conversion_for_merge_request_metrics_for_self_hosts_spec.rb
 - spec/migrations/cleanup_vulnerability_state_transitions_with_same_from_state_to_state_spec.rb
 - spec/migrations/delete_migrate_shared_vulnerability_scanners_spec.rb
-- spec/migrations/drop_packages_events_table_spec.rb
 - spec/migrations/ensure_commit_user_mentions_note_id_bigint_backfill_is_finished_for_gitlab_dot_com_spec.rb
 - spec/migrations/ensure_design_user_mentions_note_id_bigint_backfill_is_finished_for_gitlab_dot_com_spec.rb
 - spec/migrations/ensure_epic_user_mentions_bigint_backfill_is_finished_for_gitlab_dot_com_spec.rb
@@ -804,13 +799,6 @@
 - spec/migrations/set_email_confirmation_setting_before_removing_send_user_confirmation_email_column_spec.rb
 - spec/migrations/set_email_confirmation_setting_from_send_user_confirmation_email_setting_spec.rb
 - spec/migrations/set_email_confirmation_setting_from_soft_email_confirmation_ff_spec.rb
-- spec/migrations/swap_epic_user_mentions_note_id_to_bigint_for_gitlab_dot_com_spec.rb
-- spec/migrations/swap_merge_request_user_mentions_note_id_to_bigint_2_spec.rb
-- spec/migrations/swap_note_diff_files_note_id_to_bigint_for_gitlab_dot_com_spec.rb
-- spec/migrations/swap_sent_notifications_id_columns_spec.rb
-- spec/migrations/swap_snippet_user_mentions_note_id_to_bigint_for_gitlab_dot_com_spec.rb
-- spec/migrations/swap_suggestions_note_id_to_bigint_for_gitlab_dot_com_spec.rb
-- spec/migrations/swap_timelogs_note_id_to_bigint_for_gitlab_dot_com_spec.rb
 - spec/models/abuse_report_spec.rb
 - spec/models/analytics/cycle_analytics/aggregation_spec.rb
 - spec/models/analytics/cycle_analytics/issue_stage_event_spec.rb

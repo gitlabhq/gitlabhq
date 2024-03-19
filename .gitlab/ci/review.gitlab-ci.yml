@@ -94,7 +94,8 @@ start-review-app-pipeline:
       - REVIEW_APPS_GCP_REGION
       - REVIEW_APPS_IMAGE
       - RUBY_VERSION
-      - DEBIAN_VERSION
+      - BUILD_OS
+      - OS_VERSION
       - DOCKER_VERSION
       - CHROME_VERSION
       - BUNDLER_VERSION

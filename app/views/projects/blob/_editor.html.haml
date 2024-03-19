@@ -17,13 +17,8 @@
       = render 'filepath_form', input_options: input_options
 
     - if current_action?(:new, :create)
-      - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : ''), required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
+      - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || '', required: true, placeholder: "Filename", testid: 'file-name-field', class: 'new-file-name js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
-      - if should_suggest_gitlab_ci_yml?
-        .js-suggest-gitlab-ci-yml{ data: { track_label: 'suggest_gitlab_ci_yml',
-              merge_request_path: params[:mr_path],
-              dismiss_key: @project.id,
-              human_access: human_access } }
 
     - if Feature.enabled?(:source_editor_toolbar, current_user)
       #editor-toolbar
@@ -42,7 +37,7 @@
             = _("Soft wrap")
 
   .file-editor.code
-    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container' } }<
+    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container', ref: ref} }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide

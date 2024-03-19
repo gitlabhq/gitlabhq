@@ -113,6 +113,9 @@ module QA
       # @param [Hash] args the existing args passed to method
       # @return [Hash] args or args with merged canary cookie if it exists
       def with_canary(args)
+        canary_cookie = QA::Runtime::Env.canary_cookie
+        return args if canary_cookie.empty?
+
         args.deep_merge(cookies: QA::Runtime::Env.canary_cookie)
       end
 
@@ -177,6 +180,10 @@ module QA
 
           url = url.match?(/&page=\d+/) ? url.gsub(/&page=\d+/, "&page=#{next_page}") : "#{url}&page=#{next_page}"
         end
+      end
+
+      def success?(response_code)
+        [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED, HTTP_STATUS_OK, HTTP_STATUS_CREATED].include?(response_code)
       end
     end
   end

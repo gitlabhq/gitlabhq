@@ -31,7 +31,7 @@ RSpec.describe Projects::AlertManagementHelper do
           'enable-alert-management-path' => setting_path,
           'alerts-help-url' => 'http://test.host/help/operations/incident_management/alerts.md',
           'populating-alerts-help-url' => 'http://test.host/help/operations/incident_management/integrations.md#configuration',
-          'empty-alert-svg-path' => match_asset_path('/assets/illustrations/alert-management-empty-state.svg'),
+          'empty-alert-svg-path' => match_asset_path('/assets/illustrations/empty-state/empty-scan-alert-md.svg'),
           'user-can-enable-alert-management' => 'true',
           'alert-management-enabled' => 'false',
           'text-query': nil,

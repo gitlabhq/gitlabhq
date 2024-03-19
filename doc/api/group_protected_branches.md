@@ -15,7 +15,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `allow_protected_branches_for_group`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 ## Valid access levels
 

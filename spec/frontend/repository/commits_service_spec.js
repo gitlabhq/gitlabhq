@@ -14,7 +14,6 @@ describe('commits service', () => {
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    window.gon.features = { encodingLogsTree: true };
     mock.onGet(url).reply(HTTP_STATUS_OK, [], {});
 
     jest.spyOn(axios, 'get');
@@ -54,19 +53,6 @@ describe('commits service', () => {
     await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);
 
     expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
-  });
-
-  describe('when encodingLogsTree FF is off', () => {
-    beforeEach(() => {
-      window.gon.features = {};
-    });
-
-    it('encodes the path and ref with encodeURIComponent', async () => {
-      const encodedRef = encodeURIComponent(refWithSpecialCharMock);
-      const encodedUrl = `/some-project/-/refs/${encodedRef}/logs_tree/with%20%24peci%40l%20ch%40rs%2F`;
-      await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);
-      expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
-    });
   });
 
   it('calls axios get once per batch', async () => {

@@ -71,11 +71,11 @@ module Gitlab
           },
           secret_detection: {
             name: _('Secret Detection'),
-            description: _('Analyze your source code and git history for secrets.'),
+            description: _('Analyze your source code and Git history for secrets.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/index'),
+              'user/application_security/secret_detection/pipeline/index'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/index', anchor: 'configuration'),
+              'user/application_security/secret_detection/pipeline/index', anchor: 'configuration'),
             type: 'secret_detection'
           },
           api_fuzzing: {

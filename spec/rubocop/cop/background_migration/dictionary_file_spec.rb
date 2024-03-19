@@ -227,4 +227,12 @@ RSpec.describe RuboCop::Cop::BackgroundMigration::DictionaryFile, feature_catego
       end
     end
   end
+
+  describe '#external_dependency_checksum' do
+    it 'uses the RuboCop::BatchedBackgroundMigrationsDictionary.checksum' do
+      allow(RuboCop::BatchedBackgroundMigrationsDictionary).to receive(:checksum).and_return('aaaaa')
+
+      expect(cop.external_dependency_checksum).to eq('aaaaa')
+    end
+  end
 end

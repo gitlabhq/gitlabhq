@@ -96,9 +96,25 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
+      const {
+        diffFile,
+        codequalityData,
+        sastData,
+        hasParallelDraftLeft,
+        hasParallelDraftRight,
+        draftsForLine,
+      } = this;
       return (
-        this.diffLines(this.diffFile).map(mapParallel(this, this.codequalityData, this.sastData)) ||
-        []
+        this.diffLines(this.diffFile).map(
+          mapParallel({
+            diffFile,
+            codequalityData,
+            sastData,
+            hasParallelDraftLeft,
+            hasParallelDraftRight,
+            draftsForLine,
+          }),
+        ) || []
       );
     },
     imageDiscussions() {

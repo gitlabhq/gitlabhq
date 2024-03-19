@@ -314,7 +314,11 @@ describe('Tags List', () => {
 
   describe('when user does not have permission to delete list rows', () => {
     it('sets registry list hiddenDelete prop to true', async () => {
-      resolver = jest.fn().mockResolvedValue(imageTagsMock({ canDelete: false }));
+      resolver = jest
+        .fn()
+        .mockResolvedValue(
+          imageTagsMock({ userPermissions: { destroyContainerRepository: false } }),
+        );
       mountComponent();
       await waitForApolloRequestRender();
 

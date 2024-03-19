@@ -43,15 +43,6 @@ RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
       it_behaves_like 'find target'
       it_behaves_like 'build target', type_iid: nil
       it_behaves_like 'build target', type_iid: -1
-
-      context 'when issue belongs to a group' do
-        let(:container) { group }
-        let(:target) { create(:issue, :group_level, namespace: group) }
-
-        it_behaves_like 'find target'
-        it_behaves_like 'build target', type_iid: nil
-        it_behaves_like 'build target', type_iid: -1
-      end
     end
 
     context 'for work item' do

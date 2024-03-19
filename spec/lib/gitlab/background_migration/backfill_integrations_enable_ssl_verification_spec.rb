@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsEnableSslVerification, schema: 20230216060333 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillIntegrationsEnableSslVerification, schema: 20230616082958 do
   let(:migration) { described_class.new }
   let(:integrations) { described_class::Integration }
 

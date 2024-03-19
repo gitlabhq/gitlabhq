@@ -4,7 +4,7 @@ key_path: object_store.external_diffs.object_store.enabled
 description: Whether Object Storage is enabled for External Diffs
 product_section: enablement
 product_stage: enablement
-product_group: application_performance
+product_group: cloud_connector
 value_type: boolean
 status: active
 time_frame: none

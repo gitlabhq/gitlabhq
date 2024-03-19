@@ -110,12 +110,10 @@ RSpec.describe 'Discussion Lock', :js, feature_category: :team_planning do
     visit project_issue_path(project, issue)
     wait_for_all_requests
 
-    # rubocop:disable Capybara/TestidFinders -- within_testid does not work here
     expect(page).to be_axe_clean.within(locked_badge)
     expect(page).to be_axe_clean.within(issuable_note_warning)
 
     more_dropdown.click
-    expect(page).to be_axe_clean.within('[data-testid="lock-issue-toggle"] button')
-    # rubocop:enable Capybara/TestidFinders
+    expect(page).to be_axe_clean.within('[data-testid="lock-issue-toggle"] button') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
   end
 end

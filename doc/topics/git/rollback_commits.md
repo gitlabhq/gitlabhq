@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Roll back commits
 
 In Git, if you make a mistake, you can undo or roll back your changes.
-For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md).
+For more details, see [Undo options](undo.md).
 
 ## Undo commits by removing them
 

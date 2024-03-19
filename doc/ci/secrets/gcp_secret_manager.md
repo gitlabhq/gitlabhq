@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
 
@@ -128,3 +128,12 @@ Either modify your attribute mapping or the incoming assertion to produce a mapp
 
 For example, for a `gitlab-org/gitlab` branch, the payload would be `project_path:gitlab-org/gitlab:ref_type:branch:ref:{branch_name}`,
 so the branch name should be 76 characters or less.
+
+### `WARNING: Not resolved: no resolver that can handle the secret` warning
+
+The Google Cloud Secret Manager integration requires at least GitLab 16.8 and GitLab Runner 16.8.
+This warning appears if the job is executed by a runner using a version earlier than 16.8.
+
+On GitLab.com, there is a [known issue](https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/176)
+causing SaaS runners to run an older version. As a workaround until this issue is fixed,
+you can register your own GitLab Runner with version 16.8 or later.

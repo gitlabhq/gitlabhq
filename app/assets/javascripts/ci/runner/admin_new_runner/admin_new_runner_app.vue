@@ -60,7 +60,7 @@ export default {
       {{ s__('Runners|Platform') }}
     </h2>
 
-    <runner-platforms-radio-group v-model="platform" admin />
+    <runner-platforms-radio-group v-model="platform" />
 
     <hr aria-hidden="true" />
 

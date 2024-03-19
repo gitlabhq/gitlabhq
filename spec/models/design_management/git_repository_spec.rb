@@ -44,13 +44,6 @@ RSpec.describe DesignManagement::GitRepository, feature_category: :design_manage
     end
   end
 
-  describe '#copy_gitattributes' do
-    it 'always returns regardless of whether given a valid or invalid ref' do
-      expect(git_repository.copy_gitattributes('master')).to be true
-      expect(git_repository.copy_gitattributes('invalid')).to be true
-    end
-  end
-
   describe '#attributes' do
     it 'confirms that all files are LFS enabled' do
       %w[png zip anything].each do |filetype|

@@ -1,3 +1,4 @@
+import { GlIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
@@ -21,6 +22,7 @@ const mutate = jest.fn().mockResolvedValue();
 
 describe('Design management design todo button', () => {
   let wrapper;
+  const findIcon = () => wrapper.findComponent(GlIcon);
 
   function createComponent(props = {}, { mountFn = shallowMount } = {}) {
     wrapper = mountFn(DesignTodoButton, {
@@ -59,8 +61,8 @@ describe('Design management design todo button', () => {
       createComponent({ design: mockDesignWithPendingTodos }, { mountFn: mount });
     });
 
-    it('renders correct button text', () => {
-      expect(wrapper.text()).toBe('Mark as done');
+    it('renders correct button icon', () => {
+      expect(findIcon().props('name')).toBe('todo-done');
     });
 
     describe('when clicked', () => {
@@ -106,7 +108,7 @@ describe('Design management design todo button', () => {
     });
 
     it('renders correct button text', () => {
-      expect(wrapper.text()).toBe('Add a to do');
+      expect(findIcon().props('name')).toBe('todo-add');
     });
 
     describe('when clicked', () => {

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs should run in that pipeline. You can configure jobs to run depending on
@@ -312,8 +312,8 @@ Other commonly used variables for `if` clauses:
   projects with different default branches.
 - `if: $CI_COMMIT_BRANCH =~ /regex-expression/`: If the commit branch matches a regular expression.
 - `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
-   If the commit branch is the default branch and the commit message title matches a regular expression.
-   For example, the default commit message for a merge commit starts with `Merge branch`.
+  If the commit branch is the default branch and the commit message title matches a regular expression.
+  For example, the default commit message for a merge commit starts with `Merge branch`.
 - `if: $CUSTOM_VARIABLE !~ /regex-expression/`: If the [custom variable](../variables/index.md)
   `CUSTOM_VARIABLE` does **not** match a regular expression.
 - `if: $CUSTOM_VARIABLE == "value1"`: If the custom variable `CUSTOM_VARIABLE` is
@@ -624,7 +624,7 @@ You can also [add custom CI/CD variables when running a manual job](index.md#spe
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only

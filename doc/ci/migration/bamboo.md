@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)
@@ -47,7 +47,7 @@ GitLab uses a similar concept to agents called [runners](https://docs.gitlab.com
 which use [executors](https://docs.gitlab.com/runner/executors/) to run builds.
 
 Examples of executors are shell, Docker, or Kubernetes. You can choose to use GitLab [SaaS runners](../runners/index.md)
-or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.md).
+or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.html).
 
 ### Workflow
 
@@ -506,7 +506,7 @@ For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 workflow:
   rules:
     - changes:
-      - .gitlab/**/**.md
+        - .gitlab/**/**.md
       when: never
 ```
 
@@ -690,7 +690,7 @@ SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

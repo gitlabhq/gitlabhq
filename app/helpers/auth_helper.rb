@@ -69,7 +69,7 @@ module AuthHelper
   end
 
   def form_based_provider_priority
-    ['crowd', /^ldap/, 'kerberos']
+    ['crowd', /^ldap/]
   end
 
   def form_based_provider_with_highest_priority

@@ -228,7 +228,7 @@ Advancing stages is done in one of two ways:
 
 - Scheduling the worker for the next stage directly.
 - Scheduling a job for `Gitlab::GithubImport::AdvanceStageWorker` which will
-   advance the stage when all work of the current stage has been completed.
+  advance the stage when all work of the current stage has been completed.
 
 The first approach should only be used by workers that perform all their work in
 a single thread, while `AdvanceStageWorker` should be used for everything else.
@@ -309,14 +309,14 @@ We cache two types of lookups:
 
 - A positive lookup, meaning we found a GitLab user ID.
 - A negative lookup, meaning we didn't find a GitLab user ID. Caching this
-   prevents us from performing the same work for users that we know don't exist
-   in our GitLab database.
+  prevents us from performing the same work for users that we know don't exist
+  in our GitLab database.
 
 The expiration time of these keys is 24 hours. When retrieving the cache of a
 positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
-If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#conditional-requests) is made with a cached ETAG in the header once for every project.
+If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#use-conditional-requests-if-appropriate) is made with a cached ETAG in the header once for every project.
 Conditional Requests do not count towards the GitHub API rate limit.
 
 Because of this caching layer, it's possible newly registered GitLab accounts

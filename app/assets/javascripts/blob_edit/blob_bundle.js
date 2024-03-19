@@ -1,35 +1,6 @@
 import $ from 'jquery';
 import { createAlert } from '~/alert';
-import { setCookie } from '~/lib/utils/common_utils';
-import Tracking from '~/tracking';
 import NewCommitForm from '../new_commit_form';
-
-const initPopovers = () => {
-  const suggestEl = document.querySelector('.js-suggest-gitlab-ci-yml');
-
-  if (suggestEl) {
-    const commitButton = document.querySelector('#commit-changes');
-    if (commitButton) {
-      const { dismissKey, humanAccess } = suggestEl.dataset;
-      const urlParams = new URLSearchParams(window.location.search);
-      const mergeRequestPath = urlParams.get('mr_path') || true;
-
-      const commitCookieName = `suggest_gitlab_ci_yml_commit_${dismissKey}`;
-      const commitTrackLabel = 'suggest_gitlab_ci_yml_commit_changes';
-      const commitTrackValue = '20';
-
-      commitButton.addEventListener('click', () => {
-        setCookie(commitCookieName, mergeRequestPath);
-
-        Tracking.event(undefined, 'click_button', {
-          label: commitTrackLabel,
-          property: humanAccess,
-          value: commitTrackValue,
-        });
-      });
-    }
-  }
-};
 
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
@@ -37,7 +8,7 @@ export default () => {
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
     const assetsPath = editBlobForm.data('assetsPrefix');
-    const filePath = `${editBlobForm.data('blobFilename')}`;
+    const filePath = editBlobForm.data('blobFilename') && `${editBlobForm.data('blobFilename')}`;
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
     const projectPath = editBlobForm.data('project-path');
@@ -59,7 +30,6 @@ export default () => {
           isMarkdown,
           previewMarkdownPath,
         });
-        initPopovers();
       })
       .catch((e) =>
         createAlert({

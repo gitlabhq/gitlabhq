@@ -61,20 +61,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request.create_merge_request_diff
     end
 
-    context 'when merge_request_diff_generated_subscription flag is disabled' do
-      before do
-        stub_feature_flags(merge_request_diff_generated_subscription: false)
-      end
-
-      it 'does not call GraphqlTriggers.merge_request_diff_generated' do
-        merge_request = create(:merge_request, :skip_diff_creation)
-
-        expect(GraphqlTriggers).not_to receive(:merge_request_diff_generated)
-
-        merge_request.create_merge_request_diff
-      end
-    end
-
     context 'when diff_type is merge_head' do
       let_it_be(:merge_request) { create(:merge_request) }
 
@@ -93,6 +79,26 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it { expect(merge_head.head_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.head_sha) }
       it { expect(merge_head.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
       it { expect(merge_head.start_commit_sha).to eq(merge_request.target_branch_sha) }
+    end
+  end
+
+  describe '.by_head_commit_sha' do
+    subject(:by_head_commit_sha) { described_class.by_commit_sha(sha) }
+
+    context "with given sha equal to the diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.head_commit_sha }
+
+      it 'returns the merge request diff' do
+        expect(by_head_commit_sha).to eq([diff_with_commits])
+      end
+    end
+
+    context "with given sha not equal to any diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.base_commit_sha }
+
+      it 'returns an empty result' do
+        expect(by_head_commit_sha).to be_empty
+      end
     end
   end
 

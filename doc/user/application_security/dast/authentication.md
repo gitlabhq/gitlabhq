@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
 **DO NOT** use credentials that are valid for production systems, production servers, or any that
@@ -189,7 +189,7 @@ See [Custom CI/CD variables](../../../ci/variables/index.md#for-a-project) for m
 
 ### Configuration for Single Sign-On (SSO)
 
-If a user can log into an application, then in most cases, DAST is also able to log in.
+If a user can sign in to an application, then in most cases, DAST is also able to log in.
 Even when an application uses Single Sign-on. Applications using SSO solutions should configure DAST
 authentication using the [single-step](#configuration-for-a-single-step-login-form) or [multi-step](#configuration-for-a-multi-step-login-form) login form configuration guides.
 

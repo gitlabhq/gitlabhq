@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab plugin for JetBrains IDEs
 
-The [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab)
+The [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
 integrates GitLab with JetBrains IDEs. The following JetBrains IDEs are supported:
 
 - IntelliJ IDEA Ultimate — 2023.2
@@ -34,7 +34,7 @@ GitLab for JetBrains supports [GitLab Duo Code Suggestions](../../user/project/r
 
 ## Download the extension
 
-Download the extension from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab).
+Download the extension from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo).
 
 ## Configure the extension
 
@@ -47,6 +47,6 @@ Report any issues, bugs, or feature requests in the
 
 ## Related topics
 
-- [Download the plugin](https://plugins.jetbrains.com/plugin/22325-gitlab)
+- [Download the plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
 - [Plugin documentation](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/README.md)
 - [View source code](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin)

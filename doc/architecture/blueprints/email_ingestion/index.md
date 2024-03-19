@@ -38,7 +38,7 @@ Because we are using a fork of the `mail_room` gem ([`gitlab-mail_room`](https:/
 
 The [Service Desk Single-Engineer-Group (SEG)](https://handbook.gitlab.com/handbook/engineering/development/incubation/service-desk/) started work on [customizable email addresses for Service Desk](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) and [released the first iteration in beta in `16.4`](https://about.gitlab.com/releases/2023/09/22/gitlab-16-4-released/#custom-email-address-for-service-desk). As a [MVC we introduced a `Forwarding & SMTP` mode](https://gitlab.com/gitlab-org/gitlab/-/issues/329990#note_1201344150) where administrators set up email forwarding from their custom email address to the projects' `incoming_mail` email address. They also provide SMTP credentials so GitLab can send emails from the custom email address on their behalf. We don't need any additional email ingestion other than the existing mechanics for this approach to work.
 
-As a second iteration we'd like to add Microsoft Graph support for custom email addresses for Service Desk as well. Therefore we need a way to ingest more than the system defined two addresses. We will explore a solution path for Microsoft Graph support where privileged users can connect a custom email account and we can [receive messages via a Microsoft Graph webhook (`Outlook message`)](https://learn.microsoft.com/en-us/graph/webhooks#supported-resources). GitLab would need a public endpoint to receive updates on emails. That might not work for Self-managed instances, so we'll need direct email ingestion for Microsoft customers as well. But using the webhook approach could improve performance and efficiency for GitLab SaaS where we potentially have thousands of mailboxes to poll.
+As a second iteration we'd like to add Microsoft Graph support for custom email addresses for Service Desk as well. Therefore we need a way to ingest more than the system defined two addresses. We will explore a solution path for Microsoft Graph support where privileged users can connect a custom email account and we can [receive messages via a Microsoft Graph webhook (`Outlook message`)](https://learn.microsoft.com/en-us/graph/change-notifications-overview#supported-resources). GitLab would need a public endpoint to receive updates on emails. That might not work for Self-managed instances, so we'll need direct email ingestion for Microsoft customers as well. But using the webhook approach could improve performance and efficiency for GitLab SaaS where we potentially have thousands of mailboxes to poll.
 
 ### Goals
 
@@ -116,7 +116,7 @@ Remove all other legacy email ingestion infrastructure.**
 flowchart TB
   User --Sends email--> provider[(Email provider mailbox)]
   ingestion --Fetch unread emails via IMAP or Microsoft Graph API--> provider
-  controller --Triggers a job for each mailbox--> ingestion
+  controller --"Triggers a job for each mailbox"--> ingestion
   ingestion --Adds a job for each fetched email--> create
 
   subgraph GitLab
@@ -125,7 +125,7 @@ flowchart TB
     create["Existing Sidekiq email handler jobs
   that create issue/note based
   on email address"]
-  end
+end
 ```
 
 1. Use a `controller` job that is scheduled every minute or every two minutes. This job adds one job for each configured mailbox (`incoming_email` and `service_desk_email`).

@@ -18,7 +18,7 @@
       %p
         = s_('SlackIntegration|You must do this step only once.')
       %p
-        = render Pajamas::ButtonComponent.new(href: slack_app_manifest_share_admin_application_settings_path) do
+        = render Pajamas::ButtonComponent.new(href: slack_app_manifest_share_admin_application_settings_path, target: '_blank') do
           = s_("SlackIntegration|Create Slack app")
       %hr
     %h5
@@ -63,4 +63,3 @@
       %p
         = render Pajamas::ButtonComponent.new(href: slack_app_manifest_download_admin_application_settings_path, icon: 'download') do
           = s_("SlackIntegration|Download latest manifest file")
-

@@ -2,13 +2,14 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use Git tags to mark important points in a repository's history, and trigger CI/CD pipelines."
 ---
 
 # Tags
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -118,7 +119,7 @@ GitLab enforces these additional rules on all tags:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

@@ -8,14 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-
-NOTE:
-Starting in February 2024, Code Suggestions will be part of
-[GitLab Duo Pro](https://about.gitlab.com/gitlab-duo/),
-available to Premium and Ultimate users for purchase now.
 
 Repository X-Ray enhances [GitLab Duo Code Suggestions](index.md) by providing additional context to improve the accuracy and relevance of code recommendations.
 
@@ -33,6 +28,14 @@ By understanding the frameworks, libraries and other dependencies in use, Reposi
 | Python     | Poetry          | `pyproject.toml`     |
 | Python     | Pip             | `requirements.txt`   |
 | Python     | Conda           | `environment.yml`    |
+| PHP        | Composer        | `composer.json`      |
+| Java       | Maven           | `pom.xml`            |
+| Java       | Gradle          | `build.gradle`       |
+| Kotlin     | Gradle          | `build.gradle.kts`   |
+| C#         | NuGet           | `*.csproj`           |
+| C/C++      | Conan           | `conanfile.txt`      |
+| C/C++      | Conan           | `conanfile.py`       |
+| C/C++      | vcpkg           | `vcpkg.json`         |
 
 ## Enable Repository X-Ray
 
@@ -49,7 +52,7 @@ xray:
   image: registry.gitlab.com/gitlab-org/code-creation/repository-x-ray:latest
   allow_failure: true
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
     OUTPUT_DIR: reports
   script:

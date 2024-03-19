@@ -13,8 +13,9 @@ docs_paths_to_review = helper.changes_by_category[:docs]
 # Some docs do not need a review from a Technical Writer.
 # In these cases, we'll output a message specific to the section.
 sections_with_no_tw_review = {
-  'doc/solutions' => [],
-  'doc/development' => []
+  'doc/architecture' => [],
+  'doc/development' => [],
+  'doc/solutions' => []
 }.freeze
 
 # One exception to the exceptions above: Technical Writing docs should get a TW review.
@@ -36,12 +37,12 @@ def add_labels(labels)
   helper.labels_to_add.concat(%w[documentation type::maintenance maintenance::refactor] + labels)
 end
 
-SOLUTIONS_MESSAGE = <<~MSG
-This MR contains docs in the /solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
+ANY_MAINTAINER_CAN_MERGE_MESSAGE = <<~MSG
+This MR contains docs in the /%<directory>s directory, but any Maintainer (other than the author) can merge. You do not need tech writer review.
 MSG
 
-DEVELOPMENT_MESSAGE = <<~MSG
-This MR contains docs in the /development directory. Any Maintainer, other than the author, can merge. You do not need tech writer review.
+SOLUTIONS_MESSAGE = <<~MSG
+This MR contains docs in the /doc/solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
 MSG
 
 # For regular pages, prompt for a TW review
@@ -76,14 +77,18 @@ MSG
 # Output messages
 warn(DOCUMENTATION_UPDATE_MISSING) if docs_paths_to_review.empty? && feature_mr?
 
-if sections_with_no_tw_review["doc/solutions"].any?
-  add_labels(SOLUTIONS_LABELS)
-  message(SOLUTIONS_MESSAGE)
+if sections_with_no_tw_review["doc/architecture"].any?
+  message(format(ANY_MAINTAINER_CAN_MERGE_MESSAGE, directory: 'doc/architecture'))
 end
 
 if sections_with_no_tw_review["doc/development"].any?
   add_labels(DEVELOPMENT_LABELS)
-  message(DEVELOPMENT_MESSAGE)
+  message(format(ANY_MAINTAINER_CAN_MERGE_MESSAGE, directory: 'doc/development'))
+end
+
+if sections_with_no_tw_review["doc/solutions"].any?
+  add_labels(SOLUTIONS_LABELS)
+  message(SOLUTIONS_MESSAGE)
 end
 
 unless docs_paths_to_review.empty?

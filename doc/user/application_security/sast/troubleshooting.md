@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Debug-level logging
 
@@ -97,9 +97,56 @@ If your job is failing at the build step with the message "Project couldn't be b
 
 The solution is to use [pre-compilation](index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
 
+## SpotBugs Error: `java.lang.OutOfMemoryError`
+
+When a SAST job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory.
+
+To try to resolve this issue you can:
+
+- Choose a lower [level of effort](index.md#security-scanner-configuration).
+- Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
+- [Tag a larger runner](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64) in your `spotbugs-sast` job.
+
+### Links
+
+- [Overhauling memory tuning in OpenJDK containers updates](https://developers.redhat.com/articles/2023/03/07/overhauling-memory-tuning-openjdk-containers-updates)
+- [OpenJDK Configuration & Tuning](https://wiki.openjdk.org/display/zgc/Main#Main-Configuration&Tuning)
+- [Garbage First Garbage Collector Tuning](https://www.oracle.com/technical-resources/articles/java/g1gc.html)
+
+## SpotBugs message: `Exception analyzing ... using detector ...` followed by a Java stack trace
+
+If your job log contains a message of the form "Exception analyzing ... using detector ..." followed by a Java stack trace, this is **not** a failure of the SAST pipeline. SpotBugs has determined that the exception is [recoverable](https://github.com/spotbugs/spotbugs/blob/5ebd4439f6f8f2c11246b79f58c44324718d39d8/spotbugs/src/main/java/edu/umd/cs/findbugs/FindBugs2.java#L1200), logged it, and resumed analysis.
+
+The first "..." part of the message is the class being analyzed - if it's not part of your project, you can likely ignore the message and the stack trace that follows.
+
+If, on the other hand, the class being analyzed is part of your project, consider creating an issue with the SpotBugs project on [GitHub](https://github.com/spotbugs/spotbugs/issues).
+
 ## Flawfinder encoding error
 
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+
+You can configure the `before_script` section in each `.gitlab-ci.yml` file, or use a [pipeline execution policy action](../policies/scan-execution-policies.md#pipeline-execution-policy-action) to install the encoder and run the converter command. For example, you can add a `before_script` section to the `flawfinder-sast-0` job generated from the execution policy to convert all files with a `.cpp` extension.
+
+### Example pipeline execution policy YAML
+
+```yaml
+---
+scan_execution_policy:
+- name: SAST
+  description: 'Run SAST on C++ application'
+  enabled: true
+  rules:
+  - type: pipeline
+    branch_type: all
+  actions:
+  - scan: sast
+  - scan: custom
+    ci_configuration: |-
+      flawfinder-sast-0:
+          before_script:
+            - pip install cvt2utf
+            - cvt2utf convert "$PWD" -i cpp
+```
 
 ## Semgrep slowness, unexpected results, or other errors
 

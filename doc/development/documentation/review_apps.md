@@ -76,13 +76,13 @@ projects, you can use the following CI/CD template to add a manually triggered r
   image: ruby:3.1-alpine
   needs: []
   before_script:
-  - gem install gitlab --no-doc
-  # We need to download the script rather than clone the repo since the
-  # review-docs-cleanup job will not be able to run when the branch gets
-  # deleted (when merging the MR).
-  - apk add --update openssl
-  - wget https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/trigger-build.rb
-  - chmod 755 trigger-build.rb
+    - gem install gitlab --no-doc
+    # We need to download the script rather than clone the repo since the
+    # review-docs-cleanup job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/trigger-build.rb
+    - chmod 755 trigger-build.rb
   variables:
     GIT_STRATEGY: none
     DOCS_REVIEW_APPS_DOMAIN: docs.gitlab-review.app
@@ -96,7 +96,7 @@ projects, you can use the following CI/CD template to add a manually triggered r
 # https://docs.gitlab.com/ee/development/documentation/index.html#previewing-the-changes-live
 review-docs-deploy:
   extends:
-  - .review-docs
+    - .review-docs
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are CI variables
@@ -110,7 +110,7 @@ review-docs-deploy:
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
   extends:
-  - .review-docs
+    - .review-docs
   environment:
     name: review-docs/mr-${CI_MERGE_REQUEST_IID}
     action: stop

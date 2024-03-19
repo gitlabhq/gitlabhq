@@ -97,6 +97,8 @@ class Namespace < ApplicationRecord
   has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::Stage', foreign_key: :group_id, inverse_of: :namespace
   has_many :value_streams, class_name: 'Analytics::CycleAnalytics::ValueStream', foreign_key: :group_id, inverse_of: :namespace
 
+  has_many :jira_connect_subscriptions, class_name: 'JiraConnectSubscription', foreign_key: :namespace_id, inverse_of: :namespace
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
@@ -189,6 +191,7 @@ class Namespace < ApplicationRecord
   scope :by_root_id, -> (root_id) { where('traversal_ids[1] IN (?)', root_id) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
   scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -205,6 +208,11 @@ class Namespace < ApplicationRecord
         'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
         'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
       )
+  end
+
+  scope :with_jira_installation, ->(installation_id) do
+    joins(:jira_connect_subscriptions)
+    .where(jira_connect_subscriptions: { jira_connect_installation_id: installation_id })
   end
 
   scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
@@ -321,9 +329,12 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def to_reference_base(from = nil, full: false)
-    return full_path if full || cross_namespace_reference?(from)
-    return path if cross_project_reference?(from)
+  def to_reference_base(from = nil, full: false, absolute_path: false)
+    if full || cross_namespace_reference?(from)
+      absolute_path ? "/#{full_path}" : full_path
+    elsif cross_project_reference?(from)
+      path
+    end
   end
 
   def to_reference(*)

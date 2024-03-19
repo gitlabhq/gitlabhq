@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ResourceEvents
-  class AbuseReportEvent < ApplicationRecord
+  class AbuseReportEvent < MainClusterwide::ApplicationRecord
     include AbuseReportEventsHelper
 
     belongs_to :abuse_report, optional: false

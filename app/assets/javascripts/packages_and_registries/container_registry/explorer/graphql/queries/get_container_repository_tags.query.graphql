@@ -12,7 +12,9 @@ query getContainerRepositoryTags(
   containerRepository(id: $id) {
     id
     tagsCount
-    canDelete
+    userPermissions {
+      destroyContainerRepository
+    }
     tags(after: $after, before: $before, first: $first, last: $last, name: $name, sort: $sort) {
       nodes {
         digest
@@ -24,7 +26,9 @@ query getContainerRepositoryTags(
         createdAt
         publishedAt
         totalSize
-        canDelete
+        userPermissions {
+          destroyContainerRepositoryTag
+        }
       }
       pageInfo {
         ...PageInfo

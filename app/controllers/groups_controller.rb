@@ -21,7 +21,9 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :projects, :transfer, :export, :download_export]
+  before_action :authorize_view_edit_page!, only: :edit
+  before_action :authorize_remove_group!, only: :destroy
   before_action :authorize_create_group!, only: [:new]
   before_action :load_recaptcha, only: [:new], if: -> { captcha_required? }
 
@@ -36,7 +38,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc, group.work_items_mvc_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, group.work_items_mvc_2_feature_flag_enabled?)
     push_force_frontend_feature_flag(:linked_work_items, group.linked_work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)

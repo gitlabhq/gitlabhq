@@ -4,6 +4,10 @@
 // https://gitlab.com/gitlab-org/gitlab/-/issues/420777
 // https://gitlab.com/gitlab-org/gitlab/-/issues/421441
 
+import { organizationProjects } from 'ee_else_ce/organizations/mock_projects';
+
+export { organizationProjects };
+
 export const defaultOrganization = {
   id: 1,
   name: 'Default',
@@ -40,124 +44,6 @@ export const organizations = [
   },
 ];
 
-export const organizationProjects = [
-  {
-    id: 'gid://gitlab/Project/8',
-    nameWithNamespace: 'Twitter / Typeahead.Js',
-    webUrl: 'http://127.0.0.1:3000/twitter/Typeahead.Js',
-    topics: ['JavaScript', 'Vue.js', 'GraphQL', 'Jest', 'CSS', 'HTML'],
-    forksCount: 4,
-    avatarUrl: null,
-    starCount: 0,
-    visibility: 'public',
-    openMergeRequestsCount: 5,
-    openIssuesCount: 48,
-    descriptionHtml:
-      '<p data-sourcepos="1:1-1:59" dir="auto">Optio et reprehenderit enim doloremque deserunt et commodi. Sed sit amet iaculis neque. Morbi vel convallis elit. Aliquam vitae arcu orci. Aenean sem velit, dapibus eget enim id, tempor lobortis orci. Pellentesque dignissim nec velit eget sagittis. Maecenas lectus sapien, tincidunt ac cursus a, aliquam eu ipsum. Aliquam posuere maximus augue, ut vehicula elit vulputate condimentum. In libero leo, vehicula nec risus in, ullamcorper convallis risus. Phasellus sit amet lectus sit amet sem volutpat cursus. Nullam facilisis nulla nec lacus pretium, in pretium ex aliquam.</p>',
-    mergeRequestsAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    issuesAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    forkingAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-  },
-  {
-    id: 'gid://gitlab/Project/7',
-    nameWithNamespace: 'Flightjs / Flight',
-    webUrl: 'http://127.0.0.1:3000/flightjs/Flight',
-    topics: [],
-    forksCount: 0,
-    avatarUrl: null,
-    starCount: 0,
-    visibility: 'private',
-    openMergeRequestsCount: 10,
-    openIssuesCount: 37,
-    descriptionHtml:
-      '<p data-sourcepos="1:1-1:49" dir="auto">Dolor dicta rerum et ut eius voluptate earum qui.</p>',
-    mergeRequestsAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    issuesAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    forkingAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-  },
-  {
-    id: 'gid://gitlab/Project/6',
-    nameWithNamespace: 'Jashkenas / Underscore',
-    webUrl: 'http://127.0.0.1:3000/jashkenas/Underscore',
-    topics: [],
-    forksCount: 0,
-    avatarUrl: null,
-    starCount: 0,
-    visibility: 'private',
-    openMergeRequestsCount: 0,
-    openIssuesCount: 34,
-    descriptionHtml:
-      '<p data-sourcepos="1:1-1:52" dir="auto">Incidunt est aliquam autem nihil eveniet quis autem.</p>',
-    mergeRequestsAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    issuesAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    forkingAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-  },
-  {
-    id: 'gid://gitlab/Project/5',
-    nameWithNamespace: 'Commit451 / Lab Coat',
-    webUrl: 'http://127.0.0.1:3000/Commit451/lab-coat',
-    topics: [],
-    forksCount: 0,
-    avatarUrl: null,
-    starCount: 0,
-    visibility: 'internal',
-    openMergeRequestsCount: 3,
-    openIssuesCount: 49,
-    descriptionHtml:
-      '<p data-sourcepos="1:1-1:34" dir="auto">Sint eos dolorem impedit rerum et.</p>',
-    mergeRequestsAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    issuesAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    forkingAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-  },
-  {
-    id: 'gid://gitlab/Project/1',
-    nameWithNamespace: 'Toolbox / Gitlab Smoke Tests',
-    webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests',
-    topics: [],
-    forksCount: 0,
-    avatarUrl: null,
-    starCount: 0,
-    visibility: 'internal',
-    openMergeRequestsCount: 20,
-    openIssuesCount: 34,
-    descriptionHtml:
-      '<p data-sourcepos="1:1-1:40" dir="auto">Veritatis error laboriosam libero autem.</p>',
-    mergeRequestsAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    issuesAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-    forkingAccessLevel: {
-      stringValue: 'ENABLED',
-    },
-  },
-];
-
 export const organizationGroups = [
   {
     id: 'gid://gitlab/Group/29',
@@ -171,6 +57,12 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 2,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/33',
@@ -184,6 +76,12 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 1,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/24',
@@ -197,6 +95,12 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 2,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/27',
@@ -210,6 +114,12 @@ export const organizationGroups = [
     projectsCount: 2,
     groupMembersCount: 3,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/31',
@@ -222,6 +132,12 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 10,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/22',
@@ -235,6 +151,12 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 40,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/35',
@@ -248,6 +170,12 @@ export const organizationGroups = [
     projectsCount: 30,
     groupMembersCount: 100,
     visibility: 'public',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/73',
@@ -260,13 +188,17 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 1,
     visibility: 'private',
+    userPermissions: {
+      removeGroup: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/74',
     fullName: 'Twitter / test subgroup',
-    parent: {
-      id: 'gid://gitlab/Group/35',
-    },
+    parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/twitter/test-subgroup',
     descriptionHtml: '',
     avatarUrl: null,
@@ -274,6 +206,12 @@ export const organizationGroups = [
     projectsCount: 4,
     groupMembersCount: 4,
     visibility: 'internal',
+    userPermissions: {
+      removeGroup: false,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
 ];
 

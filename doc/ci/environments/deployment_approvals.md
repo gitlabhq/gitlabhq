@@ -9,7 +9,7 @@ description: Require approvals prior to deploying to a Protected Environment
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
@@ -175,6 +175,8 @@ To approve or reject a deployment:
 1. Select **Approve** or **Reject**.
 
 You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+
+The corresponding deployment job does not run automatically after a deployment is approved.
 
 ### View the approval details of a deployment
 

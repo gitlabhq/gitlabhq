@@ -7,14 +7,14 @@ import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.grap
 import { tableField } from '../utils';
 import RunnerBulkDelete from './runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
+import RunnerConfigurationPopover from './runner_configuration_popover.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
-import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerOwnerCell from './cells/runner_owner_cell.vue';
 
 const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-15p'] }),
-  tableField({ key: 'summary', label: s__('Runners|Runner') }),
+  tableField({ key: 'summary', label: s__('Runners|Runner configuration') }),
   tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-20p'] }),
   tableField({ key: 'actions', label: '', thClasses: ['gl-w-15p'] }),
 ];
@@ -27,7 +27,7 @@ export default {
     HelpPopover,
     RunnerBulkDelete,
     RunnerBulkDeleteCheckbox,
-    RunnerStatusPopover,
+    RunnerConfigurationPopover,
     RunnerSummaryCell,
     RunnerStatusCell,
     RunnerOwnerCell,
@@ -143,7 +143,6 @@ export default {
 
       <template #head(status)="{ label }">
         {{ label }}
-        <runner-status-popover />
       </template>
 
       <template #cell(status)="{ item }">
@@ -152,6 +151,11 @@ export default {
             <slot name="runner-job-status-badge" :runner="runner"></slot>
           </template>
         </runner-status-cell>
+      </template>
+
+      <template #head(summary)="{ label }">
+        {{ label }}
+        <runner-configuration-popover />
       </template>
 
       <template #cell(summary)="{ item }">

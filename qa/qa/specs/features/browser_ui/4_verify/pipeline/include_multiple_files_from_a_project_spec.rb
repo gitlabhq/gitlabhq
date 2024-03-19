@@ -53,23 +53,19 @@ module QA
       private
 
       def add_main_ci_file
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add config file'
-          commit.add_files([main_ci_file])
-        end
+        create(:commit, project: project, commit_message: 'Add config file', actions: [main_ci_file])
       end
 
       def add_included_files
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = other_project
-          commit.commit_message = 'Add files'
-          commit.add_files([included_file_1, included_file_2])
-        end
+        create(:commit,
+          project: other_project,
+          commit_message: 'Add files',
+          actions: [included_file_1, included_file_2])
       end
 
       def main_ci_file
         {
+          action: 'create',
           file_path: '.gitlab-ci.yml',
           content: <<~YAML
             include:
@@ -93,6 +89,7 @@ module QA
 
       def included_file_1
         {
+          action: 'create',
           file_path: 'file1.yml',
           content: <<~YAML
             test:
@@ -105,6 +102,7 @@ module QA
 
       def included_file_2
         {
+          action: 'create',
           file_path: 'file2.yml',
           content: <<~YAML
             deploy:

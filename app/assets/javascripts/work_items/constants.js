@@ -16,6 +16,7 @@ export const WIDGET_TYPE_NOTIFICATIONS = 'NOTIFICATIONS';
 export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
+export const WIDGET_TYPE_TIME_TRACKING = 'TIME_TRACKING';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_PARTICIPANTS = 'PARTICIPANTS';
 export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
@@ -87,6 +88,7 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
   'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
 );
 
+export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
 export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
@@ -320,8 +322,11 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
   [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
+  [WORK_ITEM_TYPE_VALUE_EPIC]: [WORK_ITEM_TYPE_ENUM_EPIC],
 };
 
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
+
+export const ISSUABLE_EPIC = 'issue-type-epic';

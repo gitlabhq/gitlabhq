@@ -70,6 +70,7 @@ issues:
 - issue_customer_relations_contacts
 - email
 - issuable_resource_links
+- synced_epic
 work_item_type:
 - issues
 - namespace
@@ -532,6 +533,7 @@ project:
 - catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
+- ci_component_usages
 - external_status_checks
 - base_tags
 - project_topics
@@ -571,6 +573,7 @@ project:
 - vulnerability_hooks_integrations
 - apple_app_store_integration
 - google_cloud_platform_artifact_registry_integration
+- google_cloud_platform_workload_identity_federation_integration
 - campfire_integration
 - confluence_integration
 - datadog_integration
@@ -968,6 +971,7 @@ design: &design
 - notes
 - user_mentions
 - events
+- subscriptions
 designs: *design
 actions:
 - design
@@ -1102,3 +1106,5 @@ timelog_category:
   - description
   - billable
   - billing_rate
+note_diff_file:
+  - diff_note

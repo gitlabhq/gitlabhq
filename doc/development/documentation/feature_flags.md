@@ -66,6 +66,7 @@ The note has three parts, and follows this structure:
 FLAG:
 <Self-managed GitLab availability information.>
 <GitLab.com availability information.>
+<GitLab Dedicated availability information.>
 <This feature is not ready for production use.>
 ```
 
@@ -73,7 +74,7 @@ A `FLAG` note renders on the GitLab documentation site as:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `example_flag`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 ### Self-managed GitLab availability information
@@ -94,9 +95,21 @@ This feature is not ready for production use.
 
 | If the feature is...                        | Use this text |
 |---------------------------------------------|---------------|
-| Available                                   | `On GitLab.com, this feature is available.` |
+| Available                                   | `On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.` |
 | Available to GitLab.com administrators only | `On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.` |
-| Unavailable                                 | `On GitLab.com, this feature is not available.`|
+| Unavailable                                 | `On GitLab.com and GitLab Dedicated, this feature is not available.`|
+
+### GitLab Dedicated availability information
+
+| If the feature is...                        | Use this text |
+|---------------------------------------------|---------------|
+| Available                                   | `On GitLab Dedicated, this feature is available.` |
+| Unavailable                                 | `On GitLab Dedicated, this feature is not available.`|
+
+- You can combine GitLab.com and GitLab Dedicated like this:
+  `On GitLab.com and GitLab Dedicated, this feature is not available.`
+- If the feature is behind a feature flag that is disabled for self-managed,
+  the feature is not available for GitLab Dedicated.
 
 ### Optional information
 
@@ -114,7 +127,7 @@ The following examples show the progression of a feature flag.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
-The feature is not ready for production use.
+The feature is not ready for production use. On GitLab.com and GitLab Dedicated, this feature is not available.
 ```
 
 When the feature is enabled in production, you can update the history:
@@ -126,6 +139,7 @@ When the feature is enabled in production, you can update the history:
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per user,
 an administrator can [disable the feature flag](../administration/feature_flags.md) named `forti_token_cloud`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 ```
 
 And, when the feature is done and fully available to all users:
@@ -149,16 +163,17 @@ Combine entries if they happened in the same release:
   > - [Introduced](issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
   > - [Enabled on GitLab.com](issue-link) in GitLab 14.3.
   > - [Enabled on self-managed](issue-link) in GitLab 14.3.
+  > - [Enabled on GitLab Dedicated](issue-link) in GitLab 14.3.
   ```
 
 - After:
 
   ```markdown
   > - [Introduced](issue-link) in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-  > - [Enabled on GitLab.com and self-managed](issue-link) in GitLab 14.3.
+  > - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](issue-link) in GitLab 14.3.
   ```
 
-Remove `Enabled on GitLab.com` entries when the feature is enabled by default for both GitLab.com and self-managed:
+Remove `Enabled on GitLab.com` entries when the feature is enabled by default for all offerings:
 
 - Before:
 

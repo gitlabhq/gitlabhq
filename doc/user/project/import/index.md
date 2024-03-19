@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
 
@@ -41,7 +41,7 @@ GitLab can import projects from these supported import sources.
 |:----------------------------------------------|:------------|
 | [Bitbucket Cloud](bitbucket.md)               | Using [Bitbucket.org as an OmniAuth provider](../../../integration/bitbucket.md), import Bitbucket repositories. |
 | [Bitbucket Server](bitbucket_server.md)       | Import repositories from Bitbucket Server (also known as Stash). |
-| [FogBugz](fogbugz.md)                         | Import FogBuz projects. |
+| [FogBugz](fogbugz.md)                         | Import FogBugz projects. |
 | [Gitea](gitea.md)                             | Import Gitea projects. |
 | [GitHub](github.md)                           | Import from either GitHub.com or GitHub Enterprise. |
 | [GitLab export](../settings/import_export.md) | Migrate projects one by one by using a GitLab export file. |

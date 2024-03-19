@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
@@ -16,7 +16,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, this feature is not available.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.

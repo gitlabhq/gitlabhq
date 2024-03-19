@@ -3,7 +3,8 @@
 class GroupMembersFinder < UnionFinder
   RELATIONS = %i[direct inherited descendants shared_from_groups].freeze
   DEFAULT_RELATIONS = %i[direct inherited].freeze
-  INVALID_RELATION_TYPE_ERROR_MSG = "is not a valid relation type. Valid relation types are #{RELATIONS.join(', ')}."
+  INVALID_RELATION_TYPE_ERROR_MSG =
+    "is not a valid relation type. Valid relation types are #{RELATIONS.join(', ')}.".freeze
 
   RELATIONS_DESCRIPTIONS = {
     direct: 'Members in the group itself',
@@ -100,39 +101,9 @@ class GroupMembersFinder < UnionFinder
     shared_from_groups = groups[:shared_from_groups]
     return members if shared_from_groups.nil?
 
-    shared_members = GroupMember.non_request.of_groups(shared_from_groups)
-    members_shared_with_group_access = members_shared_with_group_access(shared_members)
-
-    # `members` and `members_shared_with_group_access` should have even select values
-    find_union([members.select(group_member_columns), members_shared_with_group_access], GroupMember)
-  end
-
-  def members_shared_with_group_access(shared_members)
-    group_group_link_table = GroupGroupLink.arel_table
-    group_member_table = GroupMember.arel_table
-
-    member_columns = group_member_columns.map do |column_name|
-      if column_name == 'access_level'
-        args = [group_group_link_table[:group_access], group_member_table[:access_level]]
-        smallest_value_arel(args, 'access_level')
-      else
-        group_member_table[column_name]
-      end
-    end
-
-    # rubocop:disable CodeReuse/ActiveRecord
-    shared_members
-      .joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
-      .select(member_columns)
-    # rubocop:enable CodeReuse/ActiveRecord
-  end
-
-  def group_member_columns
-    GroupMember.column_names
-  end
-
-  def smallest_value_arel(args, column_alias)
-    Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
+    shared_members = GroupMember.non_request.of_groups(shared_from_groups).with_group_group_sharing_access
+    # `members` and `shared_members` should have even select values
+    find_union([members.select(Member.column_names), shared_members], GroupMember)
   end
 
   def check_relation_arguments!(include_relations)

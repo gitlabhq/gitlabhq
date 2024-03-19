@@ -225,8 +225,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
   context 'size field' do
     let(:size_response) { container_repository_details_response.dig('size') }
-    let(:on_com) { true }
-    let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT + 3.months }
     let(:variables) do
       { id: container_repository_global_id }
     end
@@ -239,11 +237,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
           }
         }
       GQL
-    end
-
-    before do
-      allow(::Gitlab).to receive(:com_except_jh?).and_return(on_com)
-      container_repository.update_column(:created_at, created_at)
     end
 
     it 'returns the size' do
@@ -270,26 +263,6 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       it 'returns nil' do
         stub_container_registry_gitlab_api_support(supported: false)
 
-        subject
-
-        expect(size_response).to eq(nil)
-      end
-    end
-
-    context 'not on .com' do
-      let(:on_com) { false }
-
-      it 'returns nil' do
-        subject
-
-        expect(size_response).to eq(nil)
-      end
-    end
-
-    context 'with an older container repository' do
-      let(:created_at) { ::ContainerRepository::MIGRATION_PHASE_1_STARTED_AT - 3.months }
-
-      it 'returns nil' do
         subject
 
         expect(size_response).to eq(nil)

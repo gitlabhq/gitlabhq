@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
 It allows you to store and manage sensitive information such as secret environment
@@ -124,7 +124,7 @@ Otherwise, anyone with a public account can access your Vault instance.
 1. If the `OIDC` method is not selected, open the dropdown list and select it.
 1. Select **Sign in With GitLab**, which opens a modal window:
 
-   ![Sign into Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
+   ![Sign in to Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
 
 1. To allow Vault to sign in through GitLab, select **Authorize**. This redirects you back to your Vault UI as an authenticated user.
 
@@ -132,7 +132,7 @@ Otherwise, anyone with a public account can access your Vault instance.
 
 ## Sign in using the Vault CLI (optional)
 
-You can also sign into Vault using the [Vault CLI](https://developer.hashicorp.com/vault/docs/commands).
+You can also sign in to Vault using the [Vault CLI](https://developer.hashicorp.com/vault/docs/commands).
 
 1. To sign in with the role configuration you created in the previous example,
    run the following command in your terminal:

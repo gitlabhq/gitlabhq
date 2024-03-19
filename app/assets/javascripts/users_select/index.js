@@ -434,6 +434,8 @@ function UsersSelect(currentUser, els, options = {}) {
             this.processData(inputValue, users, callback);
           }
 
+          deprecatedJQueryDropdown.filter.clear();
+
           if (this.multiSelect) {
             return getMultiSelectDropdownTitle(selected, $(el).hasClass('is-active'));
           }
@@ -446,6 +448,7 @@ function UsersSelect(currentUser, els, options = {}) {
             return selected.name;
           }
           $dropdown.find('.dropdown-toggle-text').addClass('is-default');
+
           return defaultLabel;
         },
         defaultLabel,

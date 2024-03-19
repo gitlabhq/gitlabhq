@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - UI [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
 > - [Subgroup events recording](https://gitlab.com/gitlab-org/gitlab/-/issues/366878) fixed in GitLab 15.2.
@@ -29,6 +29,8 @@ Each streaming destination can have up to 20 custom HTTP headers included with e
 GitLab can stream a single event more than once to the same destination. Use the `id` key in the payload to deduplicate
 incoming data.
 
+Audit events are sent using the POST request method protocol supported by HTTP.
+
 WARNING:
 Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust
 the streaming destination.
@@ -38,6 +40,10 @@ the streaming destination.
 Manage streaming destinations for top-level groups.
 
 ### HTTP destinations
+
+Prerequisites:
+
+- For better security, you should use an SSL certificate on the destination URL.
 
 Manage HTTP streaming destinations for top-level groups.
 
@@ -212,6 +218,7 @@ Manage Google Cloud Logging destinations for top-level groups.
 
 Before setting up Google Cloud Logging streaming audit events, you must:
 
+1. Enable [Cloud Logging API](https://console.cloud.google.com/marketplace/product/google/logging.googleapis.com) on your Google Cloud project.
 1. Create a service account for Google Cloud with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
    For more information, see [Creating and managing service accounts in the Google Cloud documentation](https://cloud.google.com/iam/docs/service-accounts-create#creating).
 1. Enable the **Logs Writer** role for the service account to enable logging on Google Cloud. For more information, see [Access control with IAM](https://cloud.google.com/logging/docs/access-control#logging.logWriter).
@@ -372,6 +379,10 @@ Manage streaming destinations for an entire instance.
 
 ### HTTP destinations
 
+Prerequisites:
+
+- For better security, you should use an SSL certificate on the destination URL.
+
 Manage HTTP streaming destinations for an entire instance.
 
 #### Add a new HTTP destination
@@ -527,6 +538,7 @@ Manage Google Cloud Logging destinations for an entire instance.
 
 Before setting up Google Cloud Logging streaming audit events, you must:
 
+1. Enable [Cloud Logging API](https://console.cloud.google.com/marketplace/product/google/logging.googleapis.com) on your Google Cloud project.
 1. Create a service account for Google Cloud with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
    For more information, see [Creating and managing service accounts in the Google Cloud documentation](https://cloud.google.com/iam/docs/service-accounts-create#creating).
 1. Enable the **Logs Writer** role for the service account to enable logging on Google Cloud. For more information, see [Access control with IAM](https://cloud.google.com/logging/docs/access-control#logging.logWriter).

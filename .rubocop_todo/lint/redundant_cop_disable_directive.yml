@@ -59,7 +59,6 @@ Lint/RedundantCopDisableDirective:
     - 'app/services/web_hook_service.rb'
     - 'app/uploaders/object_storage/cdn/google_ip_cache.rb'
     - 'app/workers/authorized_project_update/user_refresh_over_user_range_worker.rb'
-    - 'app/workers/build_hooks_worker.rb'
     - 'app/workers/bulk_imports/entity_worker.rb'
     - 'app/workers/ci/track_failed_build_worker.rb'
     - 'app/workers/container_registry/migration/enqueuer_worker.rb'

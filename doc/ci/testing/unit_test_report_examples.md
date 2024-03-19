@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Unit test reports](unit_test_reports.md) can be generated for many languages and packages.
 Use these examples as guidelines for configuring your pipeline to generate unit test reports
@@ -262,9 +262,9 @@ test:
 
 ## PHP
 
-This example uses [PHPUnit](https://phpunit.de/) with the `--log-junit` flag.
+This example uses [PHPUnit](https://phpunit.de/index.html) with the `--log-junit` flag.
 You can also add this option using
-[XML](https://docs.phpunit.de/en/10.2/configuration.html#the-junit-element)
+[XML](https://docs.phpunit.de/en/11.0/configuration.html#the-junit-element)
 in the `phpunit.xml` configuration file.
 
 ```yaml

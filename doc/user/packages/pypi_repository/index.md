@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208747) in GitLab 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -292,7 +292,7 @@ the three characters, such as `my-package`, `my_package`, and `my....package`.
 
 ## Using `requirements.txt`
 
-If you want pip to access your private registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
+If you want pip to access your public registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
 
 ```plaintext
 --extra-index-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple

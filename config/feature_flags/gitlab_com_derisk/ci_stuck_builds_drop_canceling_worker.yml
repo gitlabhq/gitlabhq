@@ -1,0 +1,9 @@
+---
+name: ci_stuck_builds_drop_canceling_worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441958
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145697
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443710
+milestone: '16.10'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

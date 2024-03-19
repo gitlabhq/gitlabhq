@@ -20,6 +20,8 @@ RSpec.shared_examples 'validate dictionary' do |objects, directory_path, require
         allow_cross_joins
         allow_cross_transactions
         allow_cross_foreign_keys
+        desired_sharding_key_migration_job_name
+        exempt_from_sharding
       ]
     end
 

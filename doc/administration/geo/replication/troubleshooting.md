@@ -364,9 +364,9 @@ The Ruby gem which performs the check is hard coded with `pool.ntp.org` as its r
 
   This issue occurs when the hostname `pool.ntp.org` resolves to a server which does not provide a time service.
 
-In this case, in GitLab 15.7 and newer, [specify a custom NTP server using environment variables](#health-check-rake-task).
+In this case, in GitLab 15.7 and later, [specify a custom NTP server using environment variables](#health-check-rake-task).
 
-In GitLab 15.6 and older, use one of the following workarounds:
+In GitLab 15.6 and earlier, use one of the following workarounds:
 
 - Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
   This fixes the long timeout and the timeout error.
@@ -776,7 +776,7 @@ The following configuration example:
 - Ignores five common check failures.
 
 [The Gitaly documentation has more details](../../gitaly/consistency_checks.md)
-about other Git check failures and older versions of GitLab.
+about other Git check failures and earlier versions of GitLab.
 
 ```ruby
 gitaly['configuration'] = {
@@ -1468,6 +1468,36 @@ Geo cannot reuse an existing tracking database.
 It is safest to use a fresh secondary, or reset the whole secondary by following
 [Resetting Geo secondary site replication](#resetting-geo-secondary-site-replication).
 
+It is risky to reuse a secondary site without resetting it because the secondary site may have missed some Geo events. For example, missed deletion events lead to the secondary site permanently having data that should be deleted. Similarly, losing an event which physically moves the location of data leads to data permanently orphaned in one location, and missing in the other location until it is re-verified. This is why GitLab switched to hashed storage, since it makes moving data unnecessary. There may be other unknown problems due to lost events.
+
+If these kinds of risks do not apply, for example in a test environment, or if you know that the main Postgres database still contains all Geo events since the Geo site was added, then you can bypass this health check:
+
+1. Get the last processed event time. In Rails console in the secondary site, run:
+
+   ```ruby
+   Geo::EventLogState.last.created_at.utc
+   ```
+
+1. Copy the output, for example `2024-02-21 23:50:50.676918 UTC`.
+1. Update the created time of the secondary site to make it appear older. In Rails console in the primary site, run:
+
+   ```ruby
+   GeoNode.secondary_nodes.last.update_column(:created_at, DateTime.parse('2024-02-21 23:50:50.676918 UTC') - 1.second)
+   ```
+
+   This command assumes that the affected secondary site is the one that was created last.
+
+1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the secondary site, run:
+
+   ```ruby
+   Geo::MetricsUpdateWorker.new.perform
+   ```
+
+1. The secondary site should appear healthy. If it does not, run `gitlab-rake gitlab:geo:check` on the secondary site, or try restarting Rails if you haven't done so since re-adding the secondary site.
+1. To resync missing or out-of-date data, navigate to **Admin > Geo > Sites**.
+1. Under the secondary site select **Replication Details**.
+1. Select **Reverify all** for every data type.
+
 ### Geo site has a database that is writable which is an indication it is not configured for replication with the primary site
 
 This error message refers to a problem with the database replica on a **secondary** site,
@@ -1671,6 +1701,22 @@ Example log (`gitlab-shell.log`):
 ```plaintext
 Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nError: Net::ReadTimeout\",\"result\":null}" code=500 method=POST pid=5483 url="http://127.0.0.1:3000/api/v4/geo/proxy_git_push_ssh/push"
 ```
+
+### Repair OAuth authorization between Geo sites
+
+When upgrading a Geo site, you might not be able to log in into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../operations/rails_console.md) session on your primary site and perform the following steps:
+
+1. To find the affected node, first list all the Geo Nodes you have:
+
+   ```ruby
+   GeoNode.all
+   ```
+
+1. Repair the affected Geo node by specifying the ID:
+
+   ```ruby
+   GeoNode.find(<id>).repair
+   ```
 
 ## Recovering from a partial failover
 

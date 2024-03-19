@@ -694,19 +694,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'namespace traversal'
 
     describe '#self_and_descendants' do
-      it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
+      it { expect(group.self_and_descendants.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
     end
 
     describe '#self_and_descendant_ids' do
-      it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
+      it { expect(group.self_and_descendant_ids.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
     end
 
     describe '#descendants' do
-      it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
+      it { expect(group.descendants.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
     end
 
     describe '#self_and_hierarchy' do
-      it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
+      it { expect(group.self_and_hierarchy.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
+    end
+
+    context 'when optimize_top_bound_lineage_search is off' do
+      before do
+        stub_feature_flags(optimize_top_bound_lineage_search: false)
+      end
+
+      it 'uses @> operator in queries' do
+        expect(group.self_and_descendants.to_sql).to include('traversal_ids @>')
+        expect(group.self_and_descendant_ids.to_sql).to include('traversal_ids @>')
+        expect(group.descendants.to_sql).to include('traversal_ids @>')
+        expect(group.self_and_hierarchy.to_sql).to include('traversal_ids @>')
+      end
     end
 
     describe '#ancestors' do
@@ -1229,6 +1242,26 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe 'by_visibility_level' do
+      let_it_be(:group1) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+      let_it_be(:group2) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+      context 'when visibility is present' do
+        it 'returns groups with the specified visibility level' do
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PUBLIC)).to contain_exactly(group, group1)
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::PRIVATE)).to contain_exactly(private_group, group2)
+          expect(described_class.by_visibility_level(Gitlab::VisibilityLevel::INTERNAL)).to contain_exactly(internal_group, group3)
+        end
+      end
+
+      context 'when visibility is not present' do
+        it 'returns all groups' do
+          expect(described_class.by_visibility_level(nil)).to include(group1, group2, group3)
+        end
+      end
+    end
+
     describe 'excluding_groups' do
       let!(:another_group) { create(:group) }
 
@@ -1278,6 +1311,50 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
           it { is_expected.to match_array([group, internal_group, public_group, accessible_group, accessible_subgroup]) }
         end
+      end
+    end
+
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:groups) { create_pair(:group, organization: organization) }
+
+      before do
+        create(:group)
+      end
+
+      subject { described_class.in_organization(organization) }
+
+      it { is_expected.to match_array(groups) }
+    end
+
+    describe 'descendants_with_shared_with_groups' do
+      subject { described_class.descendants_with_shared_with_groups(parent_group) }
+
+      let_it_be(:grand_parent_group) { create(:group, :public) }
+      let_it_be(:parent_group) { create(:group, :public, parent: grand_parent_group) }
+      let_it_be(:subgroup) { create(:group, :public, parent: parent_group) }
+      let_it_be(:subsubgroup) { create(:group, :public, parent: subgroup) }
+
+      let_it_be(:shared_to_group) { create(:group, :public) }
+      let_it_be(:shared_to_sub_group) { create(:group, :public) }
+
+      context 'when parent group is nil' do
+        let(:parent_group) { nil }
+
+        it { is_expected.to match_array([]) }
+      end
+
+      context 'when parent group is present and there are shared groups' do
+        before do
+          parent_group.shared_with_groups << shared_to_group
+          subgroup.shared_with_groups << shared_to_sub_group
+        end
+
+        it { is_expected.to match_array([subgroup, subsubgroup, shared_to_group]) }
+      end
+
+      context 'when parent group is present and there are no shared groups' do
+        it { is_expected.to match_array([subgroup, subsubgroup]) }
       end
     end
   end
@@ -3621,10 +3698,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_items_mvc_feature_flag_enabled?' do
+  describe '#work_items_beta_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_items_mvc }
-      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_beta }
+      let(:feature_flag_method) { :work_items_beta_feature_flag_enabled? }
     end
   end
 

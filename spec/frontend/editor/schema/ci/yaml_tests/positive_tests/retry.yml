@@ -1,0 +1,94 @@
+# valid retry
+valid_job_with_retry_int:
+  stage: "test"
+  script: "rspec"
+  retry: 2
+
+valid_job_with_retry_object_max:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+
+valid_job_with_retry_object_when:
+  stage: "test"
+  script: "rspec"
+  retry:
+    when: "runner_system_failure"
+
+valid_job_with_retry_object_exit_codes:
+  stage: "test"
+  script: "rspec"
+  retry:
+    exit_codes: 137
+
+valid_job_with_retry_object_all_properties:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 1
+    when: "runner_system_failure"
+    exit_codes: 137
+
+# valid retry:when
+valid_job_with_retry_single_when:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when: "runner_system_failure"
+
+valid_job_with_retry_multiple_when:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when:
+      - "runner_system_failure"
+      - "stuck_or_timeout_failure"
+
+valid_job_with_retry_all_when:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when:
+      - "always"
+      - "unknown_failure"
+      - "script_failure"
+      - "api_failure"
+      - "stuck_or_timeout_failure"
+      - "runner_system_failure"
+      - "runner_unsupported"
+      - "stale_schedule"
+      - "job_execution_timeout"
+      - "archived_failure"
+      - "unmet_prerequisites"
+      - "scheduler_failure"
+      - "data_integrity_failure"
+
+valid_job_with_retry_duplicate_when:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when:
+      - "runner_system_failure"
+      - "runner_system_failure"
+
+# valid retry:exit_codes
+valid_job_with_retry_single_exit_codes:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    exit_codes: 137
+
+valid_job_with_retry_multiple_exit_codes:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    exit_codes:
+      - 137
+      - 255

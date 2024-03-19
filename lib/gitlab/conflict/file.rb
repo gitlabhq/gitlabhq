@@ -227,7 +227,7 @@ module Gitlab
                                                      new_path: our_path)
       end
 
-      def conflict_type(diff_file)
+      def conflict_type(when_renamed: false)
         if ancestor_path.present?
           if our_path.present? && their_path.present?
             :both_modified
@@ -239,7 +239,7 @@ module Gitlab
         elsif our_path.present? && their_path.present?
           :both_added
         elsif their_path.blank?
-          diff_file.renamed_file? ? :renamed_same_file : :removed_target_renamed_source
+          when_renamed ? :renamed_same_file : :removed_target_renamed_source
         else
           :removed_source_renamed_target
         end

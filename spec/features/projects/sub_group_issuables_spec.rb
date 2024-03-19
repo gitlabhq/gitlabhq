@@ -26,7 +26,7 @@ RSpec.describe 'Subgroup Issuables', :js, feature_category: :groups_and_projects
   end
 
   def expect_to_have_breadcrumb_links
-    links = find('[data-testid="breadcrumb-links"]')
+    links = find_by_testid('breadcrumb-links')
 
     expect(links).to have_content 'group subgroup project'
   end

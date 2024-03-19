@@ -33,7 +33,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
       expect(project.notes).to receive(:id_not_in).with([]).and_return(stubbed_collection)
       expect(stubbed_collection).to receive(:user).and_return(stubbed_collection)
       expect(stubbed_collection)
-        .to receive(:select).with(:id, :note, :system, :noteable_type)
+        .to receive(:select).with(:id, :note)
         .and_return(stubbed_collection)
 
       importer.sequential_import

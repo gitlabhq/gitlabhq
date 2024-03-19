@@ -38,7 +38,9 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     select_new_tag_name(tag_name)
 
     expect(page).to have_button(project.default_branch)
-    expect(page.find('[data-testid="create-from-field"] .ref-selector button')).to have_content(project.default_branch)
+    within_testid('create-from-field') do
+      expect(page.find('.ref-selector button')).to have_content(project.default_branch)
+    end
   end
 
   context 'when the "Save release" button is clicked' do
@@ -115,7 +117,7 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     end
 
     it 'renders a preview of the release notes markdown' do
-      within('[data-testid="release-notes"]') do
+      within_testid('release-notes') do
         expect(page).to have_text('some markdown content')
       end
     end

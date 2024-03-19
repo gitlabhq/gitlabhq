@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 GitLab provides GPU-enabled SaaS runners to accelerate heavy compute workloads for ModelOps
 or HPC such as the training or deployment of Large Language Models (LLMs) as part of ModelOps workloads.

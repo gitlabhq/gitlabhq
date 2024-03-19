@@ -89,6 +89,10 @@ export default {
       return fullPath.replace(/.*?\s?\/\s?/, '');
     },
     isCostFactored(project) {
+      if (project.statistics.costFactoredStorageSize === undefined) {
+        return false;
+      }
+
       return project.statistics.storageSize !== project.statistics.costFactoredStorageSize;
     },
   },

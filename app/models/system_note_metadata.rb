@@ -4,6 +4,7 @@ class SystemNoteMetadata < ApplicationRecord
   include Importable
   include IgnorableColumns
 
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/442307
   ignore_column :id_convert_to_bigint, remove_with: '16.11', remove_after: '2024-03-15'
 
   # These notes's action text might contain a reference that is external.

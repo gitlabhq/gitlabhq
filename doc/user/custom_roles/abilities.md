@@ -34,32 +34,39 @@ These requirements are documented in the `Required permission` column in the fol
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) |  | Allows admin of group members. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) | `admin_group_member` | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136247) |
+| [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) |  | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) | `admin_group_member` | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136247) |
 
 ## Groups and projects
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`archive_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) |  | Allows archiving of projects. | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) | `archive_project` | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139260) |
+| [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) |  | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |  |  |
 | [`remove_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) |  | Allows deletion of projects. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) |  |  |
 
 ## Infrastructure as code
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`admin_terraform_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) |  | Allows to admin terraform state | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/421789) |  |  |
+| [`admin_terraform_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) |  | Execute terraform commands, lock/unlock terraform state files, and remove file versions. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/421789) |  |  |
+
+## Secrets management
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) |  | Allows to admin CI/CD variables. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |  |  |
 
 ## System access
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`manage_group_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) |  | Allows manage access to the group access tokens. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/428353) |  |  |
-| [`manage_project_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) |  | Allows manage access to the project access tokens. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) | `manage_project_access_tokens` | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141294) |
+| [`manage_group_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) |  | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/428353) |  |  |
+| [`manage_project_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) |  | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) | `manage_project_access_tokens` | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141294) |
 
 ## Vulnerability management
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) |  | Allows admin access to the vulnerability reports. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |  |  |
-| [`read_dependency`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) |  | Allows read-only access to the dependencies. | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/415255) |  |  |
-| [`read_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120704) |  | Allows read-only access to the vulnerability reports. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/399119) |  |  |
+| [`admin_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) |  | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/412536) |  |  |
+| [`read_dependency`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) |  | Allows read-only access to the dependencies and licenses. | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/415255) |  |  |
+| [`read_vulnerability`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120704) |  | Read vulnerability reports and security dashboards. | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/399119) |  |  |

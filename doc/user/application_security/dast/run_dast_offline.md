@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the DAST job to
@@ -43,10 +43,10 @@ These scanners are [periodically updated](../index.md#vulnerability-scanner-main
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/engine/reference/commandline/save/),
-[`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
-[`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and
-[`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
+[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/),
+[`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
+[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and
+[`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
 
 ## Set DAST CI/CD job variables to use local DAST analyzers
 

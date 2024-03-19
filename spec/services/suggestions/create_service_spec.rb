@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions do
+RSpec.describe Suggestions::CreateService, feature_category: :code_review_workflow do
   let(:project_with_repo) { create(:project, :repository) }
   let(:merge_request) do
     create(

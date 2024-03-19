@@ -9,7 +9,7 @@ description: "Autocomplete characters in Markdown fields."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36705) in GitLab 13.9: you can search using the full name in user autocomplete.
 

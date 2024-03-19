@@ -2,6 +2,7 @@ import { GlForm, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
+import { groupIterationsResponse } from 'jest/work_items/mock_data';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 
 describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
@@ -26,12 +27,14 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
     multiSelect = false,
     infiniteScroll = false,
     infiniteScrollLoading = false,
+    clearSearchOnItemSelect = false,
+    listItems = [],
   } = {}) => {
     wrapper = mountExtended(WorkItemSidebarDropdownWidgetWithEdit, {
       propsData: {
         dropdownLabel: __('Iteration'),
         dropdownName: 'iteration',
-        listItems: [],
+        listItems,
         itemValue,
         canUpdate,
         updateInProgress,
@@ -40,6 +43,7 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
         multiSelect,
         infiniteScroll,
         infiniteScrollLoading,
+        clearSearchOnItemSelect,
       },
       slots,
     });
@@ -181,6 +185,24 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
       await nextTick();
 
       expect(findCollapsibleListbox().props('multiple')).toBe(true);
+    });
+
+    it('clears search on item select when props passes', async () => {
+      const listItems = groupIterationsResponse.data.workspace.attributes.nodes;
+      createComponent({
+        isEditing: true,
+        clearSearchOnItemSelect: true,
+        listItems,
+        multiSelect: true,
+      });
+
+      await nextTick();
+
+      findCollapsibleListbox().vm.$emit('select', listItems[0].id);
+
+      await nextTick();
+
+      expect(wrapper.emitted('searchStarted')).toEqual([[''], ['']]);
     });
 
     it('supports infinite scrolling', async () => {

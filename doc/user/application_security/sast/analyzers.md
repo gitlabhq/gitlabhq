@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
@@ -30,16 +30,24 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
-- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
-- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
+- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman) <sup>1</sup>
+- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder) <sup>1</sup>
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
-- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF (beta))
-- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
-- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
+- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF) (**Status:** Beta)
+- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan) <sup>1</sup>
+- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit) <sup>1</sup>
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
+
+<html>
+<small>Footnotes:
+  <ol>
+    <li>These analyzers were <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431123">deprecated</a> in GitLab 16.9 and are planned for removal in 17.0. The <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep analyzer</a> is proposed as their replacement.</li>
+  </ol>
+</small>
+</html>
 
 SAST has used other analyzers in previous versions. These analyzers reached End of Support status and do not receive updates:
 
@@ -72,7 +80,7 @@ content directly. Instead, it enhances the results with additional properties, i
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Transition to Semgrep-based scanning
 
@@ -185,7 +193,7 @@ of `registry.gitlab.com/security-products/semgrep`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: my-docker-registry/gitlab-images
@@ -203,7 +211,7 @@ Example:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLED: "true"
@@ -221,7 +229,7 @@ For example, to disable the `spotbugs` analyzer:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_EXCLUDED_ANALYZERS: "spotbugs"

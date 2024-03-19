@@ -1252,7 +1252,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 

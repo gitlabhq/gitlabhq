@@ -34,15 +34,6 @@
   max-width: 864px;
 }
 
-.user-profile-image {
-  .gl-avatar {
-    @include media-breakpoint-up(md) {
-      height: 6.5rem;
-      width: 6.5rem;
-    }
-  }
-}
-
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   @include middle-dot-divider;
@@ -214,4 +205,42 @@
       flex-basis: 100%;
     }
   }
+}
+
+.provider-btn-group {
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: 1px solid $border-color;
+  border-radius: 3px;
+
+  &:last-child {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}
+
+.social-provider-btn-image {
+  > img {
+    width: 16px;
+    vertical-align: inherit;
+  }
+}
+
+.provider-btn-image {
+  display: inline-block;
+  padding: 5px 10px;
+  border-right: 1px solid $border-color;
+
+  > img {
+    width: 20px;
+  }
+}
+
+.provider-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: -3px;
+  line-height: 22px;
+  background-color: var(--gl-gray-10);
 }

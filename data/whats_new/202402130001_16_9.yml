@@ -1,0 +1,138 @@
+- name: GitLab Duo Chat Beta now available in Premium
+  description: |
+    In 16.8, we made GitLab Duo Chat available for self-managed instances. In 16.9, we are making Chat available to Premium customers while it is still in Beta.
+
+    GitLab Duo Chat can:
+
+    - Explain or summarize issues, epics, and code.
+    - Answer specific questions about these artifacts like "Collect all the arguments raised in comments regarding the solution proposed in this issue."
+    - Generate code or content based on the information in these artifacts. For example, "Can you write documentation for this code?"
+    - Help you start a process. For example, "Create a .gitlab-ci.yml configuration file for testing and building a Ruby on Rails application in a GitLab CI/CD pipeline."
+    - Answer all your DevSecOps related question, whether you are a beginner or an expert. For example, "How can I set up Dynamic Application Security Testing for a REST API?"
+    - Answer follow-up questions so you can iteratively work through all the previous scenarios.
+
+    GitLab Duo Chat is available as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature. It is also integrated into our Web IDE and GitLab Workflow extension for VS Code as [Experimental](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#experiment) features. In these IDEs, you can also use [predefined chat commands that help you do standard tasks more quickly](https://docs.gitlab.com/ee/user/gitlab_duo_chat.html#explain-code-in-the-ide) like writing tests.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/gitlab_duo_chat.html
+  image_url: https://about.gitlab.com/images/16_9/gitlab_duo_chat_beta_now_available_in_premium.png
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: Improvements to the CI/CD variables user interface
+  description: |
+    In GitLab 16.9, we have released a series of improvements to the CI/CD variables user experience. We have improved the variables creation flow through changes including:
+
+    - [Improved validation when variable values do not meet the requirements](https://gitlab.com/gitlab-org/gitlab/-/issues/365934).
+    - [Help text during variable creation](https://gitlab.com/gitlab-org/gitlab/-/issues/410220).
+    - [Allow resizing of the value field in the variables form](https://gitlab.com/gitlab-org/gitlab/-/issues/434667).
+
+    Other improvements include a new, [optional description field for group and project variables](https://gitlab.com/gitlab-org/gitlab/-/issues/378938) to assist with the management of variables. We have also made it easier to [add or edit multiple variables](https://gitlab.com/gitlab-org/gitlab/-/issues/434666), lowering the friction in the software development workflow and enabling developers to perform their job more efficiently.
+
+    Your [feedback for these changes](https://gitlab.com/gitlab-org/gitlab/-/issues/441177) is always valued and appreciated.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/variables/
+  image_url: https://img.youtube.com/vi/gdL2cEp3kw0/hqdefault.jpg
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: Request changes on merge requests
+  description: |
+    The last part of reviewing a merge request is communicating the outcome. While approving was unambiguous, leaving comments was not. They required the author to read your comments, then determine if the comments were purely informational, or described needed changes. Now, when you complete your review, you can select from three options:
+
+    - **Comment**: Submit general feedback without explicitly approving.
+    - **Approve**: Submit feedback and approve the changes.
+    - **Request changes**: Submit feedback that should be addressed before merging.
+
+    The sidebar now shows the outcome of your review next to your name. Currently, ending your review with **Request changes** doesn't block the merge request from being merged, but it provides extra context to other participants in the merge request.
+
+    You can leave feedback about the **Request changes** feature in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438573).
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/reviews/#submit-a-review
+  image_url: https://about.gitlab.com/images/16_9/create-request-changes-merge-requests.png
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: Expanded options for auto-canceling pipelines
+  description: |
+    Currently, to use the [auto-cancel redundant pipeline feature](https://docs.gitlab.com/ee/ci/pipelines/settings.html#auto-cancel-redundant-pipelines), you must set jobs that can be cancelled as [`interruptible: true`](https://docs.gitlab.com/ee/ci/yaml/index.html#interruptible) to determine whether or not a pipeline can be cancelled. But this only applies to jobs that are actively running when GitLab tries to cancel the pipeline. Any jobs that have not yet started (are in "pending" status) are also considered safe to cancel, regardless of their `interruptible` configuration.
+
+    This lack of flexibility hinders users who want more control over which exact jobs can be cancelled by the auto-cancel pipeline feature. To address this limitation, we are pleased to announce the introduction of the `auto_cancel:on_new_commit` keywords with more granular control over job cancellation. If the legacy behavior did not work for you, you now have the option to configure the pipeline to only cancel jobs that are explicitly set with `interruptible: true`, even if they haven't started yet. You can also set jobs to never be automatically cancelled.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/index.html#workflowauto_cancelon_new_commit
+  image_url: https://about.gitlab.com/images/16_9/interruptible.png
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: Validate Terraform modules from your group or subgroup
+  description: |
+    When using the GitLab Terraform registry, it is important to have a cross-project view of all your modules. Until recently, the user interface has been available only at the project level. If your group had a complex structure, you might have had difficulty finding and validating your modules.
+
+    From GitLab 16.9, you can view all of your group and subgroup modules in GitLab. The increased visibility provides a better understanding of your registry, and decreases the likelihood of name collisions.
+  stage: package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/packages/package_registry/#view-packages
+  image_url: https://img.youtube.com/vi/1Ocypvrrdiw/hqdefault.jpg
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: More detailed security findings in VS Code
+  description: |
+    We've improved how security findings are shown in the [GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#security-findings) for Visual Studio Code (VS Code).
+    You can now see more details of your security findings that weren't previously shown, including:
+
+    - Full descriptions, with rich-text formatting.
+    - The solution to the vulnerability, if one is available.
+    - A link to the location where the problem occurs in your codebase.
+    - Links to more information about the type of vulnerability discovered.
+
+    We've also:
+
+    - Improved how the extension shows the status of security scans before results are ready.
+    - Made other usability improvements.
+  stage: secure
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/editor_extensions/visual_studio_code/
+  image_url: https://about.gitlab.com/images/16_9/vs-code-security-finding-details.png
+  published_at: 2024-02-15
+  release: 16.9
+
+- name: Standards Adherence Report Improvements
+  description: |
+    The [standards adherence report](https://docs.gitlab.com/ee/user/compliance/compliance_center/#view-the-standards-adherence-dashboard), within the
+    [compliance center](https://docs.gitlab.com/ee/user/compliance/compliance_center/), is the destination for compliance teams to monitor their compliance posture.
+
+    In GitLab 16.5, we introduced the report with the GitLab Standard - a set of common compliance requirements all compliance teams should monitor. The standard helps
+    you understand which projects meet these requirements, which ones fall short, and how to bring them into compliance. Over time, we'll be introducing more standards
+    into the reporting.
+
+    In this milestone, we've made some improvements which will make reporting more robust and actionable. These include:
+
+    - Grouping results by project
+    - Grouping results by standard (starting with the GitLab standard)
+    - Filtering by project, compliance framework, name, and standard
+    - Export to CSV (delivered via email)
+    - Improved pagination
+  stage: govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/compliance/compliance_center/#standards-adherence-dashboard
+  image_url: https://about.gitlab.com/images/16_9/standards-adherence-grouping.png
+  published_at: 2024-02-15
+  release: 16.9

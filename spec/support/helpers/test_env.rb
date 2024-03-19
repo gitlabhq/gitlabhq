@@ -126,7 +126,6 @@ module TestEnv
   }.freeze
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests').freeze
-  SECOND_STORAGE_PATH = Rails.root.join('tmp', 'tests', 'second_storage')
   SETUP_METHODS = %i[setup_gitaly setup_gitlab_shell setup_workhorse setup_factory_repo setup_forked_repo].freeze
 
   # Can be overriden
@@ -173,10 +172,8 @@ module TestEnv
       end
     end
 
-    FileUtils.mkdir_p(
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access { GitalySetup.repos_path }
-    )
-    FileUtils.mkdir_p(SECOND_STORAGE_PATH)
+    FileUtils.mkdir_p(GitalySetup.storage_path)
+    FileUtils.mkdir_p(GitalySetup.second_storage_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
@@ -196,7 +193,7 @@ module TestEnv
       version: Gitlab::GitalyClient.expected_server_version,
       task: "gitlab:gitaly:clone",
       fresh_install: ENV.key?('FORCE_GITALY_INSTALL'),
-      task_args: [GitalySetup.gitaly_dir, GitalySetup.repos_path, gitaly_url].compact) do
+      task_args: [GitalySetup.gitaly_dir, GitalySetup.storage_path, gitaly_url].compact) do
       GitalySetup.setup_gitaly
     end
   end
@@ -332,10 +329,6 @@ module TestEnv
       system(git_env, *%W[#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all])
       puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
     end
-  end
-
-  def repos_path
-    @repos_path ||= GitalySetup.repos_path
   end
 
   def backup_path

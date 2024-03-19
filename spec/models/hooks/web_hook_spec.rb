@@ -23,6 +23,7 @@ RSpec.describe WebHook, feature_category: :webhooks do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:url) }
+    it { is_expected.to validate_length_of(:custom_webhook_template).is_at_most(4096) }
 
     describe 'url_variables' do
       it { is_expected.to allow_value({}).for(:url_variables) }

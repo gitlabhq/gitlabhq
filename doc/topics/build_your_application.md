@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Use CI/CD to build your application
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 Use CI/CD to generate your application.
 
 - [Getting started](../ci/index.md)
@@ -27,4 +23,4 @@ Use CI/CD to generate your application.
 - [ChatOps](../ci/chatops/index.md)
 - [Mobile DevOps](../ci/mobile_devops.md)
 - [External repository integrations](../ci/ci_cd_for_external_repos/index.md)
-- [Troubleshooting](../ci/troubleshooting.md)
+- [Debugging and troubleshooting](../ci/debugging.md)

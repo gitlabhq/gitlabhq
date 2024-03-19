@@ -57,13 +57,13 @@ module WikiHelper
     end
   end
 
-  def wiki_sort_controls(wiki, direction)
+  def wiki_sort_controls(wiki, direction, action: :pages)
     link_class = 'has-tooltip reverse-sort-btn rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
     title = direction == 'desc' ? _('Sort direction: Descending') : _('Sort direction: Ascending')
 
-    link_options = { action: :pages, direction: reversed_direction }
+    link_options = { action: action, direction: reversed_direction }
 
     render Pajamas::ButtonComponent.new(href: wiki_path(wiki, **link_options), icon: "sort-#{icon_class}", button_options: { class: link_class, title: title })
   end
@@ -136,6 +136,33 @@ module WikiHelper
 
   def wiki_page_render_api_endpoint_params(page)
     { id: page.container.id, slug: ERB::Util.url_encode(page.slug), params: { version: page.version.id } }
+  end
+
+  def wiki_page_info(page, uploads_path: '')
+    {
+      last_commit_sha: page.last_commit_sha,
+      persisted: page.persisted?,
+      title: page.title,
+      content: page.raw_content || '',
+      format: page.format.to_s,
+      uploads_path: uploads_path,
+      slug: page.slug,
+      path: wiki_page_path(page.wiki, page),
+      wiki_path: wiki_path(page.wiki),
+      help_path: help_page_path('user/project/wiki/index'),
+      markdown_help_path: help_page_path('user/markdown'),
+      markdown_preview_path: wiki_page_path(page.wiki, page, action: :preview_markdown),
+      create_path: wiki_path(page.wiki, action: :create)
+    }
+  end
+
+  def wiki_page_basic_info(page)
+    {
+      title: page.title,
+      format: page.format.to_s,
+      slug: page.slug,
+      path: wiki_page_path(page.wiki, page)
+    }
   end
 end
 

@@ -207,6 +207,55 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    context 'with job:rules:[interruptible:]' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          interruptible: false,
+          rules: rules
+        }
+      end
+
+      context 'when rule evaluates to true' do
+        let(:rules) { [{ if: '$VAR == null', interruptible: true }] }
+
+        it 'overrides the job interruptible value' do
+          is_expected.to include(interruptible: true)
+        end
+
+        context 'when job does not have an interruptible value' do
+          let(:attributes) do
+            {
+              name: 'rspec',
+              ref: 'master',
+              rules: rules
+            }
+          end
+
+          it 'adds interruptible value to the job' do
+            is_expected.to include(interruptible: true)
+          end
+        end
+
+        context 'when rules:interruptible is not specified' do
+          let(:rules) { [{ if: '$VAR == null' }] }
+
+          it 'does not change the job interruptible value' do
+            is_expected.to include(interruptible: false)
+          end
+        end
+      end
+
+      context 'when rule evaluates to false' do
+        let(:rules) { [{ if: '$VAR == true', interruptible: true }] }
+
+        it 'does not change the job interruptible value' do
+          is_expected.to include(interruptible: false)
+        end
+      end
+    end
+
     context 'with job:tags' do
       let(:attributes) do
         {

@@ -3,8 +3,8 @@ import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
+import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
 import organizationsQuery from '../../shared/graphql/queries/organizations.query.graphql';
-import OrganizationsView from './organizations_view.vue';
 
 export default {
   name: 'OrganizationsIndexApp',

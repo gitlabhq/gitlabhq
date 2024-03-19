@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
@@ -67,7 +67,7 @@ author can either retry any failed jobs, or push new commits to fix the failure:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 16.9.
@@ -76,7 +76,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To enable the feature,
 an administrator can [enable the feature flags](../../../administration/feature_flags.md)
 named `merge_when_checks_pass` and `additional_merge_when_checks_ready`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 In GitLab 16.9 and later, **Merge when checks pass** adds more checks to the auto-merge
 process. When set to auto-merge, all of these checks must pass for a merge request to merge:

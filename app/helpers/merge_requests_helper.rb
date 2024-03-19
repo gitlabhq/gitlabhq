@@ -218,7 +218,7 @@ module MergeRequestsHelper
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       target_branch: merge_request.target_branch,
-      reviewing_docs_path: help_page_path('user/project/merge_requests/reviews/index', anchor: "checkout-merge-requests-locally-through-the-head-ref")
+      reviewing_docs_path: help_page_path('user/project/merge_requests/merge_request_troubleshooting', anchor: "check-out-merge-requests-locally-through-the-head-ref")
     }
   end
 
@@ -267,7 +267,7 @@ module MergeRequestsHelper
                     ''
                   end
 
-    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
+    link_to branch, branch_path, title: branch_title, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-ml-2'
   end
 
   def merge_request_header(project, merge_request)
@@ -275,7 +275,7 @@ module MergeRequestsHelper
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"
-    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy gl-mx-1')
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
@@ -316,6 +316,17 @@ module MergeRequestsHelper
 
   def review_bar_data(_merge_request, _user)
     { new_comment_template_path: profile_comment_templates_path }
+  end
+
+  def project_merge_requests_list_data(project, current_user)
+    {
+      full_path: project.full_path,
+      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
+      initial_sort: current_user&.user_preference&.issues_sort,
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
+      is_signed_in: current_user.present?.to_s
+    }
   end
 end
 

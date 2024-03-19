@@ -90,6 +90,7 @@ class User < MainClusterwide::ApplicationRecord
   attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
   attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
+  attribute :color_mode_id, default: -> { Gitlab::ColorModes::APPLICATION_DEFAULT }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -168,6 +169,8 @@ class User < MainClusterwide::ApplicationRecord
 
   has_many :emails
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
+
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -180,7 +183,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :followees, through: :followed_users
 
   has_many :following_users, foreign_key: :followee_id, class_name: 'Users::UserFollowUser'
-  has_many :followers, through: :following_users
+  has_many :followers, -> { active }, through: :following_users
 
   # Namespaces
   has_many :members
@@ -335,7 +338,8 @@ class User < MainClusterwide::ApplicationRecord
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
                                                      message: ->(*) { _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } } }
-
+  validates :color_mode_id, allow_nil: true, inclusion: { in: Gitlab::ColorModes.valid_ids,
+                                                          message: ->(*) { _("%{placeholder} is not a valid color mode") % { placeholder: '%{value}' } } }
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
   validates :hide_no_ssh_key, allow_nil: false, inclusion: { in: [true, false] }
@@ -615,6 +619,12 @@ class User < MainClusterwide::ApplicationRecord
         .where('keys.user_id = users.id')
         .expiring_soon_and_not_notified)
   end
+
+  scope :with_personal_access_tokens_expiring_soon_and_ids, ->(ids) do
+    where(id: ids)
+    .includes(:expiring_soon_and_unnotified_personal_access_tokens)
+  end
+
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }
@@ -633,6 +643,14 @@ class User < MainClusterwide::ApplicationRecord
       .trusted_with_spam)
   end
 
+  # This scope to be used only for bot_users since for
+  # regular users this may lead to memory allocation issues
+  scope :with_personal_access_tokens_and_resources, -> do
+    includes(:personal_access_tokens)
+    .includes(:groups)
+    .includes(:projects)
+  end
+
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings
@@ -646,10 +664,6 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   strip_attributes! :name
-
-  def user_belongs_to_organization?(organization)
-    organization_users.exists?(organization: organization)
-  end
 
   def preferred_language
     read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
@@ -1392,6 +1406,12 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
+  def color_mode_id
+    return Gitlab::ColorModes::APPLICATION_DARK if theme_id == 11
+
+    read_attribute(:color_mode_id)
+  end
+
   def projects_limit_left
     projects_limit - personal_projects_count
   end
@@ -1656,10 +1676,13 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def assign_personal_namespace
+  def assign_personal_namespace(organization = nil)
     return namespace if namespace
 
-    build_namespace(path: username, name: name)
+    namespace_attributes = { path: username, name: name }
+    namespace_attributes[:organization] = organization if organization
+
+    build_namespace(namespace_attributes)
     namespace.build_namespace_settings
 
     namespace
@@ -2314,6 +2337,10 @@ class User < MainClusterwide::ApplicationRecord
 
   def deleted_own_account?
     custom_attributes.by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT).exists?
+  end
+
+  def supports_saved_replies?
+    true
   end
 
   protected

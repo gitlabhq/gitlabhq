@@ -172,7 +172,7 @@ describe('Design description form', () => {
         expect(mockDesignUpdateResponseHandler).toHaveBeenCalledWith({
           input: {
             description: 'Hello world',
-            id: 'gid::/gitlab/Design/1',
+            id: 'gid:/gitlab/Design/1',
           },
         });
 
@@ -266,7 +266,7 @@ describe('Design description form', () => {
         expect(mockDesignUpdateResponseHandler).toHaveBeenCalledWith({
           input: {
             description: expectedDesignDescription,
-            id: 'gid::/gitlab/Design/1',
+            id: 'gid:/gitlab/Design/1',
           },
         });
 

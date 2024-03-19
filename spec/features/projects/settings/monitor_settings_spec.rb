@@ -59,13 +59,13 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
       end
 
       def click_settings_tab
-        within '[data-testid="alert-integration-settings"]' do
+        within_testid 'alert-integration-settings' do
           click_link 'Alert settings'
         end
       end
 
       def save_form
-        page.within '[data-testid="alert-integration-settings"]' do
+        within_testid 'alert-integration-settings' do
           click_button 'Save changes'
         end
 

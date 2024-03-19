@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 All projects on GitLab SaaS have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
@@ -23,7 +23,7 @@ storage usage will be calculated across the entire namespace and project storage
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can view the following statistics for storage usage in projects and namespaces:
 

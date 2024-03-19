@@ -36,7 +36,7 @@ module Gitlab
       def initialize(data:)
         validate_schema!
         validate_data!(data)
-        @data = data
+        @data = data.with_indifferent_access
       end
 
       def schema

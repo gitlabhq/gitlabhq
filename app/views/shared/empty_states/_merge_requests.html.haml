@@ -1,4 +1,5 @@
 - button_path = local_assigns.fetch(:button_path, false)
+- button_text = _("New merge request")
 - closed_merged_count = issuables_count_for_state(:merged, :closed)
 - opened_merged_count = issuables_count_for_state(:merged, :opened)
 - is_opened_state = params[:state] == 'opened'
@@ -6,42 +7,43 @@
 - can_create_merge_request = merge_request_source_project_for_project(@project)
 - tracking_data = { event_tracking: 'click_new_merge_request_empty_list' }
 
-.row.empty-state.merge-requests{ data: { testid: 'issuable-empty-state' } }
-  .col-12
-    .svg-content.svg-150
-      = image_tag 'illustrations/empty-state/empty-merge-requests-md.svg', { auto_dark: true }
-  .col-12
-    .text-content
-      - if has_filter_bar_param?
-        %h4.text-center
-          = _("Sorry, your filter produced no results")
-        %p.text-center
-          = _("To widen your search, change or remove filters above")
-        .text-center
-          - if can_create_merge_request
-            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project),
-              title: _("New merge request"), variant: :confirm, data: tracking_data
-      - elsif is_opened_state && opened_merged_count == 0 && closed_merged_count > 0
-        %h4.text-center
-          = _("There are no open merge requests")
-        %p.text-center
-          = _("To keep this project going, create a new merge request")
-        .text-center
-          - if can_create_merge_request
-            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project),
-              title: _("New merge request"), variant: :confirm, data: tracking_data
-      - elsif is_closed_state && opened_merged_count > 0 && closed_merged_count == 0
-        %h4.text-center
-          = _("There are no closed merge requests")
-      - else
-        %h4
-          = _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")
-        %p
-          = _("Interested parties can even contribute by pushing commits if they want to.")
-        - if button_path
-          .text-center
-            = link_button_to _('New merge request'), button_path,
-              title: _('New merge request'),
-              id: 'new_merge_request_link',
-              variant: :confirm,
-              data: { testid: "new-merge-request-button", **tracking_data }
+- if has_filter_bar_param?
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+    empty_state_options: { data: { testid: 'issuable-empty-state' } },
+    title: _("Sorry, your filter produced no results")) do |c|
+
+    - c.with_description do
+      = _("To widen your search, change or remove filters above")
+      - if can_create_merge_request
+        .gl-mt-5= link_button_to button_text, button_path || project_new_merge_request_path(@project),
+          title: button_text, variant: :confirm, data: tracking_data
+
+- elsif is_opened_state && opened_merged_count == 0 && closed_merged_count > 0
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
+    empty_state_options: { data: { testid: 'issuable-empty-state' } },
+    title: _("There are no open merge requests")) do |c|
+
+    - c.with_description do
+      = _("To keep this project going, create a new merge request")
+      - if can_create_merge_request
+        .gl-mt-5= link_button_to button_text, button_path || project_new_merge_request_path(@project),
+          title: button_text, variant: :confirm, data: tracking_data
+
+- elsif is_closed_state && opened_merged_count > 0 && closed_merged_count == 0
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
+    empty_state_options: { data: { testid: 'issuable-empty-state' } },
+    title: _("There are no closed merge requests"))
+
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
+    empty_state_options: { data: { testid: 'issuable-empty-state' } },
+    title: _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")) do |c|
+
+    - c.with_description do
+      = _("Interested parties can even contribute by pushing commits if they want to.")
+      - if button_path
+        .gl-mt-5= link_button_to button_text, button_path,
+          title: button_text,
+          id: 'new_merge_request_link',
+          variant: :confirm,
+          data: { testid: "new-merge-request-button", **tracking_data }

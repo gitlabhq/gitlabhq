@@ -582,6 +582,12 @@ module SearchHelper
     end
   end
 
+  def issuable_visible_target_branch(issuable)
+    return unless issuable.is_a?(::MergeRequest)
+
+    issuable.target_branch unless issuable.target_branch == issuable.project.default_branch
+  end
+
   def sanitized_search_params
     sanitized_params = params.dup
 

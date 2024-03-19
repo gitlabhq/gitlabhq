@@ -35,7 +35,7 @@ RSpec.describe 'Importing Jira Users', feature_category: :importers do
     let(:current_user) { nil }
 
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
   end
 
   context 'with user without permissions' do
@@ -46,7 +46,7 @@ RSpec.describe 'Importing Jira Users', feature_category: :importers do
     end
 
     it_behaves_like 'a mutation that returns top-level errors',
-                    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
   end
 
   context 'when the user has permissions' do

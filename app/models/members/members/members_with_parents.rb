@@ -75,7 +75,7 @@ module Members
 
       # Instead of members.access_level, we need to maximize that access_level at
       # the respective group_group_links.group_access.
-      member_columns = GroupMember.attribute_names.map do |column_name|
+      member_columns = GroupMember.column_names.map do |column_name|
         if column_name == 'access_level'
           smallest_value_arel([cte_alias[:group_access], group_member_table[:access_level]], 'access_level')
         else

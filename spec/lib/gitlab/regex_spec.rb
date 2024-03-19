@@ -1025,7 +1025,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
 
   describe 'code, html blocks, or html comment blocks regex' do
     context 'code blocks' do
-      subject { described_class::MARKDOWN_CODE_BLOCK_REGEX }
+      subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_CODE_BLOCK_REGEX_UNTRUSTED, multiline: true) }
 
       let(:expected) { %(```code\nsome code\n\n>>>\nthat includes a multiline-blockquote\n>>>\n```) }
       let(:markdown) do
@@ -1049,7 +1049,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     end
 
     context 'HTML blocks' do
-      subject { described_class::MARKDOWN_HTML_BLOCK_REGEX }
+      subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED, multiline: true) }
 
       let(:expected) { %(<section>\n<p>paragraph</p>\n\n>>>\nthat includes a multiline-blockquote\n>>>\n</section>) }
       let(:markdown) do
@@ -1066,16 +1066,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
         MARKDOWN
       end
 
-      describe 'normal regular expression' do
-        it { is_expected.to match(%(<section>\nsomething\n</section>)) }
-        it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
-        it { is_expected.not_to match(%(<section>must be multi-line</section>)) }
-        it { expect(subject.match(markdown)[:html]).to eq expected }
-      end
-
       describe 'untrusted regular expression' do
-        subject { Gitlab::UntrustedRegexp.new(described_class::MARKDOWN_HTML_BLOCK_REGEX_UNTRUSTED, multiline: true) }
-
         it { is_expected.to match(%(<section>\nsomething\n</section>)) }
         it { is_expected.not_to match(%(must start in first column <section>\nsomething\n</section>)) }
         it { is_expected.not_to match(%(<section>must be multi-line</section>)) }

@@ -279,10 +279,10 @@ the migration that was used to enqueue it. Pay careful attention to:
 
 - The job arguments: Needs to exactly match or it will not find the queued migration
 - The `gitlab_schema`: Needs to exactly match or it will not find the queued
-   migration. Even if the `gitlab_schema` of the table has changed from
-   `gitlab_main` to `gitlab_main_cell` in the meantime you must finalize it
-   with `gitlab_main` if that's what was used when queueing the batched
-   background migration.
+  migration. Even if the `gitlab_schema` of the table has changed from
+  `gitlab_main` to `gitlab_main_cell` in the meantime you must finalize it
+  with `gitlab_main` if that's what was used when queueing the batched
+  background migration.
 
 When finalizing a batched background migration you also need to update the
 `finalized_by` in the corresponding `db/docs/batched_background_migrations`

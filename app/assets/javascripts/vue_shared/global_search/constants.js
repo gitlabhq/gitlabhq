@@ -12,16 +12,14 @@ export const ALL_GITLAB = __('All GitLab');
 export const PLACES = s__('GlobalSearch|Places');
 
 export const COMMAND_PALETTE = s__('GlobalSearch|Command palette');
+export const DESCRIBE_LABEL_FILTER = s__('GlobalSearch|List of filtered labels.');
+export const DESCRIBE_LABEL_FILTER_INPUT = s__('GlobalSearch|Type to filter labels.');
 export const SEARCH_DESCRIBED_BY_DEFAULT = s__(
   'GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list.',
 );
 export const SEARCH_DESCRIBED_BY_WITH_RESULTS = s__(
   'GlobalSearch|Type for new suggestions to appear below.',
 );
-export const SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN = s__(
-  'GlobalSearch|Type and press the enter key to submit search.',
-);
-export const SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN = SEARCH_DESCRIBED_BY_WITH_RESULTS;
 export const SEARCH_DESCRIBED_BY_UPDATED = s__(
   'GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit.',
 );
@@ -114,10 +112,10 @@ export const I18N = {
   SEARCH_DESCRIBED_BY_DEFAULT,
   SEARCH_RESULTS_LOADING,
   SEARCH_DESCRIBED_BY_UPDATED,
-  SEARCH_INPUT_DESCRIBE_BY_WITH_DROPDOWN,
-  SEARCH_INPUT_DESCRIBE_BY_NO_DROPDOWN,
   SEARCH_LABELS,
   DROPDOWN_HEADER,
   AGGREGATIONS_ERROR_MESSAGE,
   NO_LABELS_FOUND,
+  DESCRIBE_LABEL_FILTER,
+  DESCRIBE_LABEL_FILTER_INPUT,
 };

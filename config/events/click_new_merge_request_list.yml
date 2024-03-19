@@ -1,6 +1,6 @@
 ---
 description: User clicks New merge request on MR list
-category: InternalEventTracking
+internal_events: true
 action: click_new_merge_request_list
 identifiers:
   - project

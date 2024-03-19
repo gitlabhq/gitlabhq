@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 import { ICONS } from '~/ci/constants';
@@ -44,7 +44,7 @@ export default {
   components: {
     ActionComponent,
     JobNameComponent,
-    GlLink,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -72,8 +72,14 @@ export default {
     },
   },
   computed: {
-    boundary() {
-      return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
+    alternativeTooltipConfig() {
+      const boundary = this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
+
+      return {
+        boundary,
+        placement: 'bottom',
+        customClass: 'gl-pointer-events-none',
+      };
     },
     detailsPath() {
       return this.status?.details_path;
@@ -81,8 +87,17 @@ export default {
     hasDetails() {
       return this.status?.has_details;
     },
+    item() {
+      return {
+        text: this.job.name,
+        href: this.hasDetails ? this.detailsPath : '',
+      };
+    },
     status() {
       return this.job?.status ? this.job.status : {};
+    },
+    tooltipConfig() {
+      return this.hasDetails ? this.$options.tooltipConfig : this.alternativeTooltipConfig;
     },
     tooltipText() {
       const textBuilder = [];
@@ -123,6 +138,9 @@ export default {
         ? this.$options.i18n.runAgainTooltipText
         : title;
     },
+    testid() {
+      return this.hasDetails ? 'job-with-link' : 'job-without-link';
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('pipelines_job_item', `pipelines_job_item error: ${err}, info: ${info}`);
@@ -130,37 +148,38 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="ci-job-component gl-display-flex gl-align-items-center gl-justify-content-space-between"
+  <gl-disclosure-dropdown-item
+    :item="item"
+    class="ci-job-component"
+    :class="[
+      cssClassJobName,
+      {
+        'js-pipeline-graph-job-link gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none': hasDetails,
+        'js-job-component-tooltip non-details-job-component': !hasDetails,
+      },
+    ]"
+    :data-testid="testid"
   >
-    <gl-link
-      v-if="hasDetails"
-      v-gl-tooltip="$options.tooltipConfig"
-      :href="detailsPath"
-      :title="tooltipText"
-      :class="cssClassJobName"
-      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none"
-      data-testid="job-with-link"
-    >
-      <job-name-component :name="job.name" :status="job.status" />
-    </gl-link>
+    <template #list-item>
+      <div
+        class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mt-n2 gl-mb-n2 gl-ml-n2"
+      >
+        <job-name-component
+          v-gl-tooltip="tooltipConfig"
+          :title="tooltipText"
+          :name="job.name"
+          :status="job.status"
+          data-testid="job-name"
+        />
 
-    <div
-      v-else
-      v-gl-tooltip="{ boundary, placement: 'bottom', customClass: 'gl-pointer-events-none' }"
-      :title="tooltipText"
-      :class="cssClassJobName"
-      class="js-job-component-tooltip non-details-job-component menu-item"
-      data-testid="job-without-link"
-    >
-      <job-name-component :name="job.name" :status="job.status" />
-    </div>
-
-    <action-component
-      v-if="hasJobAction"
-      :tooltip-text="jobActionTooltipText"
-      :link="status.action.path"
-      :action-icon="status.action.icon"
-    />
-  </div>
+        <action-component
+          v-if="hasJobAction"
+          :tooltip-text="jobActionTooltipText"
+          :link="status.action.path"
+          :action-icon="status.action.icon"
+          class="gl-mt-n2 gl-mr-n2"
+        />
+      </div>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

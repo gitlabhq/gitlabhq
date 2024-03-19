@@ -27,7 +27,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      external_dependencies: 'no',
                                      feature_category: 'source_code_management',
                                      boundary: '',
-                                     job_status: 'done' })
+                                     job_status: 'done',
+                                     destination_shard_redis: 'main' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'merge',
@@ -36,7 +37,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      external_dependencies: 'no',
                                      feature_category: 'source_code_management',
                                      boundary: '',
-                                     job_status: 'fail' })
+                                     job_status: 'fail',
+                                     destination_shard_redis: 'main' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'default',
@@ -45,7 +47,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      external_dependencies: 'no',
                                      feature_category: 'continuous_integration',
                                      boundary: 'cpu',
-                                     job_status: 'done' })
+                                     job_status: 'done',
+                                     destination_shard_redis: 'main' })
 
           expect(completion_seconds_metric)
             .to receive(:get).with({ queue: 'default',
@@ -54,7 +57,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      external_dependencies: 'no',
                                      feature_category: 'continuous_integration',
                                      boundary: 'cpu',
-                                     job_status: 'fail' })
+                                     job_status: 'fail',
+                                     destination_shard_redis: 'main' })
 
           described_class.initialize_process_metrics
         end
@@ -67,15 +71,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
           it 'does not initialize sidekiq_jobs_completion_seconds' do
             expect(completion_seconds_metric).not_to receive(:get)
-
-            described_class.initialize_process_metrics
-          end
-        end
-
-        shared_examples "not initializing sidekiq SLIs" do
-          it 'does not initialize sidekiq SLIs' do
-            expect(Gitlab::Metrics::SidekiqSlis)
-              .not_to receive(initialize_sli_method)
 
             described_class.initialize_process_metrics
           end
@@ -96,14 +91,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                 urgency: 'high',
                 feature_category: 'source_code_management',
                 external_dependencies: 'no',
-                queue: 'merge'
+                queue: 'merge',
+                destination_shard_redis: 'main'
               },
               {
                 worker: 'Ci::BuildFinishedWorker',
                 urgency: 'high',
                 feature_category: 'continuous_integration',
                 external_dependencies: 'no',
-                queue: 'default'
+                queue: 'default',
+                destination_shard_redis: 'main'
               }
             ]
 
@@ -113,40 +110,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
               .to receive(:initialize_queueing_slis!).with(expected_labels)
 
             described_class.initialize_process_metrics
-          end
-        end
-
-        context 'when the sidekiq_job_completion_metric_initialize feature flag is disabled' do
-          before do
-            stub_feature_flags(sidekiq_job_completion_metric_initialize: false)
-          end
-
-          it 'sets the concurrency metric' do
-            expect(concurrency_metric).to receive(:set).with({}, Sidekiq.default_configuration[:concurrency].to_i)
-
-            described_class.initialize_process_metrics
-          end
-
-          it 'does not initialize sidekiq_jobs_completion_seconds' do
-            allow(Gitlab::SidekiqConfig)
-              .to receive(:current_worker_queue_mappings)
-                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
-
-            expect(completion_seconds_metric).not_to receive(:get)
-
-            described_class.initialize_process_metrics
-          end
-
-          context 'sidekiq execution SLIs' do
-            let(:initialize_sli_method) { :initialize_execution_slis! }
-
-            it_behaves_like 'not initializing sidekiq SLIs'
-          end
-
-          context 'sidekiq queueing SLIs' do
-            let(:initialize_sli_method) { :initialize_queueing_slis! }
-
-            it_behaves_like 'not initializing sidekiq SLIs'
           end
         end
       end
@@ -184,13 +147,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                                       :feature_category,
                                                       :urgency,
                                                       :external_dependencies,
-                                                      :queue), monotonic_time_duration)
+                                                      :queue,
+                                                      :destination_shard_redis), monotonic_time_duration)
           expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error)
                                                     .with(labels.slice(:worker,
                                                       :feature_category,
                                                       :urgency,
                                                       :external_dependencies,
-                                                      :queue), false)
+                                                      :queue,
+                                                      :destination_shard_redis), false)
 
           if queue_duration_for_job
             expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_queueing_apdex)
@@ -198,7 +163,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                                         :feature_category,
                                                         :urgency,
                                                         :external_dependencies,
-                                                        :queue), queue_duration_for_job)
+                                                        :queue,
+                                                        :destination_shard_redis), queue_duration_for_job)
           end
 
           subject.call(worker, job, :test) { nil }
@@ -258,7 +224,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                                         :feature_category,
                                                         :urgency,
                                                         :external_dependencies,
-                                                        :queue), true)
+                                                        :queue,
+                                                        :destination_shard_redis), true)
 
             expect { subject.call(worker, job, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
           end
@@ -472,7 +439,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
         boundary: "",
         external_dependencies: "no",
         feature_category: "",
-        urgency: "low" }
+        urgency: "low",
+        destination_shard_redis: "main" }
     end
 
     before do

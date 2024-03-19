@@ -14,7 +14,7 @@ module Gitlab
           ttl_jitter = 2.hours.to_i
 
           Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
+            redis.pipelined do |pipeline|
               keys.each { |key| pipeline.expire(key, ttl_duration + rand(-ttl_jitter..ttl_jitter)) }
             end
           end
@@ -25,7 +25,7 @@ module Gitlab
         end
 
         def redis
-          @redis ||= ::Redis.new(Gitlab::Redis::Cache.params)
+          @redis ||= Gitlab::Redis::Cache.redis
         end
       end
     end

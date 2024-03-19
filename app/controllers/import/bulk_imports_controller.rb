@@ -5,7 +5,7 @@ class Import::BulkImportsController < ApplicationController
 
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
-  before_action :bulk_import, only: [:history]
+  before_action :bulk_import, only: [:history, :failures]
 
   feature_category :importers
   urgency :low
@@ -52,7 +52,9 @@ class Import::BulkImportsController < ApplicationController
 
   def history; end
 
-  def details; end
+  def failures
+    bulk_import_entity
+  end
 
   def create
     return render json: { success: false }, status: :too_many_requests if throttled_request?
@@ -83,6 +85,10 @@ class Import::BulkImportsController < ApplicationController
 
     @bulk_import ||= BulkImport.find(params[:id])
     @bulk_import || render_404
+  end
+
+  def bulk_import_entity
+    @bulk_import_entity ||= @bulk_import.entities.find(params[:entity_id])
   end
 
   def pagination_headers

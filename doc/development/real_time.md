@@ -552,9 +552,9 @@ as Action Cable broadcastings, which as mentioned above represent Redis PubSub c
 This means that for each subscriber, two PubSub channels are used:
 
 - One `graphql-event:<namespace>:<topic>` channel per each topic. This channel is used to track which client is subscribed
-   to which event and is shared among all potential clients. The use of a `namespace` is optional and it can be blank.
+  to which event and is shared among all potential clients. The use of a `namespace` is optional and it can be blank.
 - One `graphql-subscription:<subscription-id>` channel per each client. This channel is used to transmit the query result
-   back to the respective client and hence cannot be shared between different clients.
+  back to the respective client and hence cannot be shared between different clients.
 
 The next section describes how the GitLab frontend uses GraphQL subscriptions to implement real-time updates.
 

@@ -12,9 +12,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
+  ignore_column :instance_level_code_suggestions_enabled, remove_with: '17.0', remove_after: '2024-04-22' # See https://gitlab.com/gitlab-org/gitlab/-/issues/440636
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -597,11 +597,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :terminal_max_session_time,
-      :users_get_by_id_limit
+      :users_get_by_id_limit,
+      :downstream_pipeline_trigger_limit_per_project_user_sha
   end
 
   jsonb_accessor :rate_limits,
-    members_delete_limit: [:integer, { default: 60 }]
+    members_delete_limit: [:integer, { default: 60 }],
+    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
@@ -673,16 +675,15 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, message: N_('must be a value between 0 and 1') }
 
-  validates :instance_level_code_suggestions_enabled,
-    allow_nil: false,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
-
   validates :package_registry_allow_anyone_to_pull_option,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :security_txt_content,
     length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
+
+  validates :asciidoc_max_includes,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
 
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
@@ -719,6 +720,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :external_pipeline_validation_service_token, encryption_options_base_32_aes_256_gcm
   attr_encrypted :mailgun_signing_key, encryption_options_base_32_aes_256_gcm.merge(encode: false)
   attr_encrypted :database_grafana_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_client_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :arkose_labs_client_secret, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_data_exchange_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)

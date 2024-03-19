@@ -1,4 +1,5 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import {
   CONFIRM_DANGER_WARNING,
   CONFIRM_DANGER_MODAL_BUTTON,
@@ -26,47 +27,51 @@ describe('Confirm Danger Modal', () => {
   const findCancelAction = () => findModal().props('actionCancel');
   const findPrimaryActionAttributes = (attr) => findPrimaryAction().attributes[attr];
 
-  const createComponent = ({ provide = {} } = {}) =>
-    shallowMountExtended(ConfirmDangerModal, {
+  const createComponent = ({ props = {}, provide = {} } = {}) => {
+    wrapper = shallowMountExtended(ConfirmDangerModal, {
       propsData: {
         modalId,
         phrase,
         visible: false,
+        ...props,
       },
       provide,
       stubs: { GlSprintf },
     });
+  };
 
-  beforeEach(() => {
-    wrapper = createComponent({
-      provide: { confirmDangerMessage, confirmButtonText, cancelButtonText },
+  describe('with injected data', () => {
+    beforeEach(() => {
+      createComponent({
+        provide: { confirmDangerMessage, confirmButtonText, cancelButtonText },
+      });
     });
-  });
 
-  it('renders the default warning message', () => {
-    expect(findDefaultWarning().text()).toBe(CONFIRM_DANGER_WARNING);
-  });
+    it('renders the default warning message', () => {
+      expect(findDefaultWarning().text()).toBe(CONFIRM_DANGER_WARNING);
+    });
 
-  it('renders any additional messages', () => {
-    expect(findAdditionalMessage().text()).toBe(confirmDangerMessage);
-  });
+    it('renders any additional messages', () => {
+      expect(findAdditionalMessage().text()).toBe(confirmDangerMessage);
+    });
 
-  it('renders the confirm button', () => {
-    expect(findPrimaryAction().text).toBe(confirmButtonText);
-    expect(findPrimaryActionAttributes('variant')).toBe('danger');
-  });
+    it('renders the confirm button', () => {
+      expect(findPrimaryAction().text).toBe(confirmButtonText);
+      expect(findPrimaryActionAttributes('variant')).toBe('danger');
+    });
 
-  it('renders the cancel button', () => {
-    expect(findCancelAction().text).toBe(cancelButtonText);
-  });
+    it('renders the cancel button', () => {
+      expect(findCancelAction().text).toBe(cancelButtonText);
+    });
 
-  it('renders the correct confirmation phrase', () => {
-    expect(findConfirmationPhrase().text()).toBe(`Please type ${phrase} to proceed.`);
+    it('renders the correct confirmation phrase', () => {
+      expect(findConfirmationPhrase().text()).toBe(`Please type ${phrase} to proceed.`);
+    });
   });
 
   describe('without injected data', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('does not render any additional messages', () => {
@@ -84,7 +89,7 @@ describe('Confirm Danger Modal', () => {
 
   describe('with a valid confirmation phrase', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      createComponent();
     });
 
     it('enables the confirm button', async () => {
@@ -95,17 +100,22 @@ describe('Confirm Danger Modal', () => {
       expect(findPrimaryActionAttributes('disabled')).toBe(false);
     });
 
-    it('emits a `confirm` event when the button is clicked', async () => {
+    it('emits a `confirm` event with the $event when the button is clicked', async () => {
+      const MOCK_EVENT = new Event('primaryEvent');
       expect(wrapper.emitted('confirm')).toBeUndefined();
 
       await findConfirmationInput().vm.$emit('input', phrase);
-      await findModal().vm.$emit('primary');
+      await findModal().vm.$emit('primary', MOCK_EVENT);
 
-      expect(wrapper.emitted('confirm')).not.toBeUndefined();
+      expect(wrapper.emitted('confirm')).toEqual([[MOCK_EVENT]]);
     });
   });
 
   describe('v-model', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('emit `change` event', () => {
       findModal().vm.$emit('change', true);
 
@@ -114,6 +124,23 @@ describe('Confirm Danger Modal', () => {
 
     it('sets `visible` prop', () => {
       expect(findModal().props('visible')).toBe(false);
+    });
+  });
+
+  describe('when confirm loading is true', () => {
+    beforeEach(() => {
+      createComponent({ props: { confirmLoading: true } });
+    });
+
+    it('when confirmLoading switches from true to false, emits `change event`', async () => {
+      // setProps is justified here because we are testing the component's
+      // reactive behavior which constitutes an exception
+      // See https://docs.gitlab.com/ee/development/fe_guide/style/vue.html#setting-component-state
+      wrapper.setProps({ confirmLoading: false });
+
+      await nextTick();
+
+      expect(wrapper.emitted('change')).toEqual([[false]]);
     });
   });
 });

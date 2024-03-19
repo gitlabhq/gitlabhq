@@ -14,7 +14,7 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
   end
 
   let(:current_user) { reporter }
-  let(:params) do
+  let(:non_string_params) do
     {
       time_estimate: 12.hours.to_i,
       spend_time: {
@@ -25,9 +25,23 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
     }
   end
 
+  let(:string_params) do
+    {
+      time_estimate: "12h",
+      timelog: {
+        time_spent: "2h",
+        summary: "some summary"
+      }
+    }
+  end
+
   let(:callback) { described_class.new(issuable: issuable, current_user: current_user, params: params) }
 
   describe '#after_initialize' do
+    shared_examples 'raises a WidgetError' do
+      it { expect { subject }.to raise_error(::WorkItems::Widgets::BaseService::WidgetError, message) }
+    end
+
     shared_examples 'sets work item time tracking data' do
       it 'correctly sets time tracking data', :aggregate_failures do
         callback.after_initialize
@@ -60,7 +74,17 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
       context 'and work item is not persisted' do
         let(:project_work_item) { build(:work_item, :incident, project: project) }
 
-        it_behaves_like 'sets work item time tracking data'
+        context 'with non string params' do
+          let(:params) { non_string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+
+        context 'with string params' do
+          let(:params) { string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
 
         context 'when time tracking param is not present' do
           let(:params) { {} }
@@ -69,6 +93,8 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
         end
 
         context 'when widget does not exist in new type' do
+          let(:params) { non_string_params }
+
           before do
             allow(callback).to receive(:excluded_in_new_type?).and_return(true)
           end
@@ -84,7 +110,35 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
 
         let_it_be(:timelog) { create(:timelog, issue: project_work_item, time_spent: 3.hours.to_i) }
 
-        it_behaves_like 'sets work item time tracking data'
+        context 'with non string params' do
+          let(:params) { non_string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+
+        context 'with string params' do
+          let(:params) { string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+
+        context 'when resetting time spent' do
+          let(:params) do
+            {
+              timelog: {
+                time_spent: ":reset",
+                summary: "remove spent data"
+              }
+            }
+          end
+
+          it 'resets timelogs' do
+            callback.after_initialize
+
+            # latest timelog entry is not persisted yet so we cannot use total_time_spent
+            expect(issuable.timelogs.sum(&:time_spent)).to eq(0)
+          end
+        end
 
         context 'when time tracking param is not present' do
           let(:params) { {} }
@@ -93,6 +147,8 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
         end
 
         context 'when widget does not exist in new type' do
+          let(:params) { string_params }
+
           before do
             allow(callback).to receive(:excluded_in_new_type?).and_return(true)
           end
@@ -108,7 +164,17 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
       context 'and work item is not persisted' do
         let(:group_work_item) { build(:work_item, :task, :group_level, namespace: group) }
 
-        it_behaves_like 'sets work item time tracking data'
+        context 'with non string params' do
+          let(:params) { non_string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+
+        context 'with string params' do
+          let(:params) { string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
 
         context 'when time tracking param is not present' do
           let(:params) { {} }
@@ -124,7 +190,39 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
 
         let_it_be(:timelog) { create(:timelog, issue: group_work_item, time_spent: 3.hours.to_i) }
 
-        it_behaves_like 'sets work item time tracking data'
+        context 'with non string params' do
+          let(:params) { non_string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+
+        context 'with string params' do
+          let(:params) { string_params }
+
+          it_behaves_like 'sets work item time tracking data'
+        end
+      end
+    end
+
+    context 'with invalid data' do
+      let_it_be(:issuable) { create(:work_item, :task, project: project, time_estimate: 2.hours.to_i) }
+
+      subject(:after_initialize) { callback.after_initialize }
+
+      context 'when time_estimate is invalid' do
+        let(:params) { { time_estimate: "12abc" } }
+
+        it_behaves_like 'raises a WidgetError' do
+          let(:message) { 'Time estimate must be formatted correctly. For example: 1h 30m.' }
+        end
+      end
+
+      context 'when time_spent is invalid' do
+        let(:params) { { timelog: { time_spent: "2abc" } } }
+
+        it_behaves_like 'raises a WidgetError' do
+          let(:message) { 'Time spent must be formatted correctly. For example: 1h 30m.' }
+        end
       end
     end
   end

@@ -1,6 +1,6 @@
 <script>
 import {
-  GlLoadingIcon,
+  GlSkeletonLoader,
   GlTable,
   GlLink,
   GlButtonGroup,
@@ -12,6 +12,7 @@ import {
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { createAlert } from '~/alert';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
@@ -20,7 +21,6 @@ import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes 
 import bulkDestroyJobArtifactsMutation from '../graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
 import { removeArtifactFromStore } from '../graphql/cache_update';
 import {
-  STATUS_BADGE_VARIANTS,
   I18N_DOWNLOAD,
   I18N_BROWSE,
   I18N_DELETE,
@@ -58,7 +58,7 @@ const INITIAL_PAGINATION_STATE = {
 export default {
   name: 'JobArtifactsTable',
   components: {
-    GlLoadingIcon,
+    GlSkeletonLoader,
     GlTable,
     GlLink,
     GlButtonGroup,
@@ -142,6 +142,7 @@ export default {
         this.canBulkDestroyArtifacts && {
           key: 'checkbox',
           label: '',
+          thClass: 'gl-w-5p',
         },
         ...this.$options.fields,
       ];
@@ -209,6 +210,8 @@ export default {
           currentPage: page,
         };
       }
+
+      scrollToElement(this.$el);
     },
     handleRowToggle(toggleDetails, hasArtifacts, id, detailsShowing) {
       if (!hasArtifacts) return;
@@ -351,7 +354,6 @@ export default {
       tdClass: 'gl-text-right',
     },
   ],
-  STATUS_BADGE_VARIANTS,
   i18n: {
     download: I18N_DOWNLOAD,
     browse: I18N_BROWSE,
@@ -391,8 +393,15 @@ export default {
       details-td-class="gl-bg-gray-10! gl-p-0! gl-overflow-auto"
     >
       <template #table-busy>
-        <gl-loading-icon size="lg" />
+        <gl-skeleton-loader v-for="i in 20" :key="i" :width="1000" :height="75">
+          <rect width="90" height="20" x="40" y="5" rx="4" />
+          <rect width="300" height="40" x="180" y="5" rx="4" />
+          <rect width="80" height="20" x="610" y="5" rx="4" />
+          <rect width="80" height="20" x="710" y="5" rx="4" />
+          <rect width="100" height="30" x="900" y="5" rx="4" />
+        </gl-skeleton-loader>
       </template>
+
       <template v-if="canBulkDestroyArtifacts" #head(checkbox)>
         <gl-form-checkbox
           v-gl-tooltip.right

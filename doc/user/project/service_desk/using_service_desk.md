@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
@@ -44,6 +44,23 @@ Any responses they send via email are displayed in the issue itself.
 For information about headers used for treating email, see
 [the incoming email documentation](../../../administration/incoming_email.md#accepted-headers).
 
+### Create a Service Desk ticket in GitLab UI
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
+
+To create a Service Desk ticket from the UI:
+
+1. [Create an issue](../issues/create_issues.md)
+1. Add a comment that contains only the quick action `/convert_to_ticket user@example.com`.
+   You should see a comment from the [GitLab Support Bot](configure.md#support-bot-user).
+1. Reload the page so the UI reflects the type change.
+1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a walkthrough, see [Create Service Desk tickets via the UI and API (GitLab 16.10)](https://youtu.be/ibUGNc2wifQ).
+<!-- Video published on 2024-03-05 -->
+
 ## As a responder to the issue
 
 For responders to the issue, everything works just like other GitLab issues.
@@ -75,13 +92,9 @@ To view Service Desk issues:
 #### Redesigned issue list
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `service_desk_vue_list`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, the Service Desk issue list more closely matches the regular issue list.
+The Service Desk issue list more closely matches the regular issue list.
 Available features include:
 
 - The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).
@@ -95,7 +108,7 @@ a dedicated email address.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Service Desk**.
-1. Above the list of issues, select **Search or filter results...**.
+1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -152,15 +165,11 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 ## Convert a regular issue to a Service Desk ticket
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`.
-On GitLab.com, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
 
 Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
-and add them to the list of external participants. They receive Service Desk emails for any public
+and adds them to the list of external participants. They receive Service Desk emails for any public
 comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
 
 GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-the-requester).

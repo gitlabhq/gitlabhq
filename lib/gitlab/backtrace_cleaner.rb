@@ -29,8 +29,14 @@ module Gitlab
     def self.clean_backtrace(backtrace)
       return unless backtrace
 
-      Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
+      Array(backtrace_cleaner.clean(backtrace)).reject do |line|
         IGNORED_BACKTRACES_REGEXP.match?(line)
+      end
+    end
+
+    def self.backtrace_cleaner
+      @backtrace_cleaner ||= Rails.backtrace_cleaner.dup.tap do |cleaner|
+        cleaner.add_silencer { |line| !Gitlab::APP_DIRS_PATTERN.match?(line) }
       end
     end
   end

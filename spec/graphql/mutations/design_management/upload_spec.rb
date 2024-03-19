@@ -65,7 +65,7 @@ RSpec.describe Mutations::DesignManagement::Upload do
         end
 
         describe 'running requests in parallel' do
-          it 'does not cause errors' do
+          it 'does not cause errors', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/442468' do
             creates_designs do
               run_parallel(files.map { |f| -> { run_mutation([f]) } })
             end

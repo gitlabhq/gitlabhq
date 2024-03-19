@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Secure your application
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 GitLab can check your applications for security vulnerabilities.
 
 - [Get started](get-started-security.md)

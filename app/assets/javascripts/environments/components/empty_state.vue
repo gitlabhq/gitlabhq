@@ -1,4 +1,5 @@
 <script>
+import emptyEntironmentsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
 import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
@@ -39,10 +40,15 @@ export default {
     newEnvironmentButtonLabel: s__('Environments|Create an environment'),
     enablingReviewButtonLabel: s__('Environments|Enable review apps'),
   },
+  emptyEntironmentsSvgPath,
 };
 </script>
 <template>
-  <gl-empty-state class="gl-layout-w-limited gl-mx-auto" :title="title">
+  <gl-empty-state
+    class="gl-layout-w-limited gl-mx-auto"
+    :title="title"
+    :svg-path="$options.emptyEntironmentsSvgPath"
+  >
     <template #description>
       <gl-sprintf :message="content">
         <template #link="{ content: contentToDisplay }">

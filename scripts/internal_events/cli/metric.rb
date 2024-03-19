@@ -18,7 +18,6 @@ module InternalEventsCli
     :product_category,
     :distribution,
     :tier,
-    :options,
     :events
   ].freeze
 
@@ -43,7 +42,7 @@ module InternalEventsCli
     performance_indicator_type: []
   }.freeze
 
-  Metric = Struct.new(*NEW_METRIC_FIELDS, *ADDITIONAL_METRIC_FIELDS, :identifier, keyword_init: true) do
+  Metric = Struct.new(*NEW_METRIC_FIELDS, *ADDITIONAL_METRIC_FIELDS, :identifier, :actions, keyword_init: true) do
     def formatted_output
       METRIC_DEFAULTS
         .merge(to_h.compact)
@@ -102,7 +101,7 @@ module InternalEventsCli
     end
 
     def actions
-      options&.dig('events')&.sort || []
+      self[:actions] || []
     end
 
     def identifier_prefix

@@ -109,6 +109,34 @@ mapping:
       - 'spec/requests/api/markdown_snapshot_spec.rb'
       - 'ee/spec/requests/api/markdown_snapshot_spec.rb'
 
+  ## Remote development GraphQL resolvers
+  - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_agent_resolver\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_actual_states_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_no_args_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_project_ids_arg_spec.rb'
+
+  - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_current_user_resolver\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_actual_states_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_agent_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_no_args_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_project_ids_arg_spec.rb'
+
+  - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_query_root_resolver\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_actual_states_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_agent_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_no_args_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_project_ids_arg_spec.rb'
+
+  - source: 'ee/app/graphql/types/remote_development/workspace_type\.rb'
+    test:
+      - 'ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb'
+
   # Any change to metrics definition should trigger the specs in the ee/spec/config/metrics/ folder.
   #
   # Note: We only have those tests for ee, even though we have non-ee metrics.

@@ -20,7 +20,7 @@ If the DAST API testing job still takes longer than expected reach after followi
 
 The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some common issues we see are:
 
-- DAST API is running on a slow or single-CPU GitLab Runner (GitLab Shared Runners are single-CPU)
+- DAST API is running on a low-vCPU runner
 - The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
 - The application contains a slow operation that impacts the overall test speed (> 1/2 second)
 - The application contains an operation that returns a large amount of data (> 500K+)
@@ -51,8 +51,7 @@ An average response time of 2 seconds is a good initial indicator that this spec
 
 For this issue, the team might decide to:
 
-- Use a multi-CPU runner. Using a multi-CPU runner allows DAST API to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test.
-  - Trade off between how many CPUs and cost.
+- Use a runner with more vCPUs, as this allows DAST API to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test. While larger runners are more costly, you also pay for less minutes if the job executions are quicker.
 - [Exclude this operation](#excluding-slow-operations) from the DAST API test. While this is the simplest, it has the downside of a gap in security test coverage.
 - [Exclude the operation from feature branch DAST API tests, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
 - [Split up the DAST API testing into multiple jobs](#splitting-a-test-into-multiple-jobs).
@@ -63,40 +62,35 @@ The likely solution is to use a combination of these solutions to reach an accep
 
 The following sections document various options for addressing performance issues for DAST API:
 
-- [Using a multi-CPU Runner](#using-a-multi-cpu-runner)
+- [Using a larger runner](#using-a-larger-runner)
 - [Excluding slow operations](#excluding-slow-operations)
 - [Splitting a test into multiple jobs](#splitting-a-test-into-multiple-jobs)
 - [Excluding operations in feature branches, but not default branch](#excluding-operations-in-feature-branches-but-not-default-branch)
 
-### Using a multi-CPU Runner
+### Using a larger runner
 
-One of the easiest performance boosts can be achieved using a multi-CPU runner with DAST API. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and DAST API share a single runner instance.
+One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64) with DAST API. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and DAST API share a single runner instance.
 
-| CPU Count            | Request per Second |
-|----------------------|--------------------|
-| 1 CPU (Shared Runner)| 75  |
-| 4 CPU                | 255 |
-| 8 CPU                | 400 |
+| SaaS runner on Linux tag           | Requests per Second |
+|------------------------------------|-----------|
+| `saas-linux-small-amd64` (default) | 255 |
+| `saas-linux-medium-amd64`          | 400 |
 
-As we can see from this table, increasing the CPU count of the runner can have a large impact on testing speed/performance.
+As we can see from this table, increasing the size of the runner and vCPU count can have a large impact on testing speed/performance.
 
-To use a multi-CPU typically requires deploying a self-managed GitLab Runner onto a multi-CPU machine or cloud compute instance.
-
-When multiple types of GitLab Runners are available for use, the various instances are commonly set up with tags that can be used in the job definition to select a type of runner.
-
-Here is an example job definition for DAST API that adds a `tags` section with the tag `multi-cpu`. The job automatically extends the job definition included through the DAST API template.
+Here is an example job definition for DAST API that adds a `tags` section to use the medium SaaS runner on Linux. The job extends the job definition included through the DAST API template.
 
 ```yaml
 dast_api:
   tags:
-  - multi-cpu
+  - saas-linux-medium-amd64
 ```
 
-To verify that DAST API can detect multiple CPUs in the runner, download the `gl-api-security-scanner.log` file from a completed job's artifacts. Search the file for the string `Starting work item processor` and inspect the reported max DOP (degree of parallelism). The max DOP should be greater than or equal to the number of CPUs assigned to the runner. The value is never lower than 2, even on single CPU runners, unless forced through a configuration variable. If the value reported is less than the number of CPUs assigned to the runner, then something is wrong with the runner deployment. If unable to identify the problem, open a ticket with support to assist.
+In the `gl-api-security-scanner.log` file you can search for the string `Starting work item processor` to inspect the reported max DOP (degree of parallelism). The max DOP should be greater than or equal to the number of vCPUs assigned to the runner. If unable to identify the problem, open a ticket with support to assist.
 
 Example log entry:
 
-`17:00:01.084 [INF] <Peach.Web.Core.Services.WebRunnerMachine> Starting work item processor with 2 max DOP`
+`17:00:01.084 [INF] <Peach.Web.Core.Services.WebRunnerMachine> Starting work item processor with 4 max DOP`
 
 ### Excluding slow operations
 

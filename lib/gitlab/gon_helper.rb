@@ -25,10 +25,9 @@ module Gitlab
         gon.sentry_environment = Gitlab.config.sentry.environment
       end
 
-      # Support for Sentry setup via configuration files will be removed in 16.0
+      # Support for Sentry setup via configuration files will be removed in 17.0
       # in favor of Gitlab::CurrentSettings.
-      if Feature.enabled?(:enable_new_sentry_clientside_integration,
-                          current_user) && Gitlab::CurrentSettings.sentry_enabled
+      if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
         gon.sentry_clientside_traces_sample_rate = Gitlab::CurrentSettings.sentry_clientside_traces_sample_rate
@@ -37,6 +36,7 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
+      gon.organization_http_header_name = ::Organizations::ORGANIZATION_HTTP_HEADER
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
@@ -72,14 +72,12 @@ module Gitlab
 
       # Initialize gon.features with any flags that should be
       # made globally available to the frontend
-      push_frontend_feature_flag(:usage_data_api, type: :ops)
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:encoding_logs_tree)
       push_frontend_feature_flag(:group_user_saml)
     end
 

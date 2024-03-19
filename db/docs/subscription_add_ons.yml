@@ -7,4 +7,4 @@ feature_categories:
 - subscription_management
 classes:
 - GitlabSubscriptions::AddOn
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_clusterwide

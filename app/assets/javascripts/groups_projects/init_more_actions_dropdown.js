@@ -17,6 +17,8 @@ export default function InitMoreActionsDropdown() {
     withdrawPath,
     withdrawConfirmMessage,
     requestAccessPath,
+    canEdit,
+    editPath,
   } = el.dataset;
 
   return new Vue({
@@ -24,12 +26,14 @@ export default function InitMoreActionsDropdown() {
     name: 'MoreActionsDropdownRoot',
     provide: {
       isGroup: parseBoolean(isGroup),
-      id,
+      groupOrProjectId: id,
       leavePath,
       leaveConfirmMessage,
       withdrawPath,
       withdrawConfirmMessage,
       requestAccessPath,
+      canEdit: parseBoolean(canEdit),
+      editPath,
     },
     render: (createElement) => createElement(MoreActionsDropdown),
   });

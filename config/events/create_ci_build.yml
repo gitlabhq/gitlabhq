@@ -1,6 +1,6 @@
 ---
 description: Tracks the number of Ci Builds created
-category: InternalEventTracking
+internal_events: true
 action: create_ci_build
 identifiers:
 - project

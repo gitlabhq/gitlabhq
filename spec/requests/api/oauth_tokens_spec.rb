@@ -8,8 +8,8 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
   context 'Resource Owner Password Credentials' do
     def request_oauth_token(user, headers = {}, password = user.password)
       post '/oauth/token',
-         params: { username: user.username, password: password, grant_type: 'password' },
-         headers: headers
+        params: { username: user.username, password: password, grant_type: 'password' },
+        headers: headers
     end
 
     let_it_be(:client) { create(:oauth_application) }

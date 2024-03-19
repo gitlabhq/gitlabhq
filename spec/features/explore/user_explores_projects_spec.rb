@@ -82,7 +82,7 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
         it 'shows correct empty state message', :js do
           fill_in 'name', with: 'zzzzzzzzzzzzzzzzzzz'
 
-          expect(page).to have_content('Explore public groups to find projects to contribute to.')
+          expect(page).to have_content('Explore public groups to find projects to contribute to')
         end
       end
 
@@ -133,7 +133,7 @@ RSpec.describe 'User explores projects', feature_category: :user_profile do
   context 'when there are no projects' do
     shared_examples 'explore page empty state' do
       it 'shows correct empty state message' do
-        expect(page).to have_content('Explore public groups to find projects to contribute to.')
+        expect(page).to have_content('Explore public groups to find projects to contribute to')
       end
     end
 

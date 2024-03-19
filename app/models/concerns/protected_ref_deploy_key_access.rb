@@ -29,7 +29,7 @@ module ProtectedRefDeployKeyAccess
     super
   end
 
-  def check_access(current_user)
+  def check_access(current_user, current_project = project)
     super do
       break enabled_deploy_key_for_user?(current_user) if deploy_key?
 

@@ -65,8 +65,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
           click_link user2.name
         end
 
-        find('.js-assignee-search').click
-        find('.js-dropdown-input-clear').click
+        click_button user2.name
 
         page.within '.dropdown-menu-user' do
           expect(page).to have_content user.name

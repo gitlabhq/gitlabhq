@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::UsageDataCounters::BaseCounter do
   describe '.fetch_supported_event' do

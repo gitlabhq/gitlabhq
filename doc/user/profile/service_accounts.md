@@ -8,19 +8,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A service account is a type of machine user that is not tied to an individual human
 user.
 
 A service account:
 
-- Does not use a licensed seat.
+- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html).
 - Is not a:
   - Billable user.
   - Bot user.
 - Is listed in group membership as a service account.
-- Cannot sign into GitLab through the UI.
+- Cannot sign in to GitLab through the UI.
 
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.

@@ -23,4 +23,7 @@ export default {
   [types.SET_SEARCH](state, value) {
     state.search = value;
   },
+  [types.SET_COMMAND](state, value) {
+    state.commandChar = value;
+  },
 };

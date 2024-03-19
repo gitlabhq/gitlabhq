@@ -39,7 +39,7 @@ Users are visible across all Organizations. This allows Users to move between Or
 
 The creator of an Organization automatically becomes the Organization Owner. It is not necessary to become a User of a specific Organization to comment on or create public issues, for example. All existing Users can create and comment on all public issues.
 
-## How do Users log into an Organization?
+## How do Users sign in to an Organization?
 
 TBD
 

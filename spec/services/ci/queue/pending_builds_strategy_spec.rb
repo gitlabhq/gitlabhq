@@ -21,4 +21,18 @@ RSpec.describe Ci::Queue::PendingBuildsStrategy, feature_category: :continuous_i
       expect(strategy.builds_for_group_runner).to eq([pending_build_3, pending_build_1, pending_build_2])
     end
   end
+
+  describe 'build_and_partition_ids' do
+    it 'returns build id with partition id' do
+      strategy = described_class.new(group_runner)
+      relation = strategy.builds_for_group_runner
+      expect(strategy.build_and_partition_ids(relation)).to match_array(
+        [
+          [pending_build_3.build_id, pending_build_3.partition_id],
+          [pending_build_1.build_id, pending_build_1.partition_id],
+          [pending_build_2.build_id, pending_build_2.partition_id]
+        ]
+      )
+    end
+  end
 end

@@ -619,14 +619,14 @@ to `gitaly['configuration'][:cgroups]` in `/etc/gitlab/gitlab.rb`:
 
 - `mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-   is expected to be owned by the user and group Gitaly runs as. A Linux package installation
-   creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
-   when Gitaly starts.
+  is expected to be owned by the user and group Gitaly runs as. A Linux package installation
+  creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
+  when Gitaly starts.
 - `memory_bytes` is the total memory limit that is imposed collectively on all
-   Git processes that Gitaly spawns. 0 implies no limit.
+  Git processes that Gitaly spawns. 0 implies no limit.
 - `cpu_shares` is the CPU limit that is imposed collectively on all Git
-   processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
-   which represents 100% of CPU.
+  processes that Gitaly spawns. 0 implies no limit. The maximum is 1024 shares,
+  which represents 100% of CPU.
 - `cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
   to throttle the cgroups' processes if they exceed this quota value. We set
   `cfs_period_us` to `100ms` so 1 core is `100000`. 0 implies no limit.
@@ -673,14 +673,14 @@ To configure repository cgroups in Gitaly using the legacy method, use the follo
 in `/etc/gitlab/gitlab.rb`:
 
 - `cgroups_count` is the number of cgroups created. Each time a new
-   command is spawned, Gitaly assigns it to one of these cgroups based
-   on the command line arguments of the command. A circular hashing algorithm assigns
-   commands to these cgroups.
+  command is spawned, Gitaly assigns it to one of these cgroups based
+  on the command line arguments of the command. A circular hashing algorithm assigns
+  commands to these cgroups.
 - `cgroups_mountpoint` is where the parent cgroup directory is mounted. Defaults to `/sys/fs/cgroup`.
 - `cgroups_hierarchy_root` is the parent cgroup under which Gitaly creates groups, and
-   is expected to be owned by the user and group Gitaly runs as. A Linux package installation
-   creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
-   when Gitaly starts.
+  is expected to be owned by the user and group Gitaly runs as. A Linux package installation
+  creates the set of directories `mountpoint/<cpu|memory>/hierarchy_root`
+  when Gitaly starts.
 - `cgroups_memory_enabled` enables or disables the memory limit on cgroups.
 - `cgroups_memory_bytes` is the total memory limit each cgroup imposes on the processes added to it.
 - `cgroups_cpu_enabled` enables or disables the CPU limit on cgroups.
@@ -1130,7 +1130,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1170,7 +1170,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
-1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['gpg_signing_key_path']`:
+1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['git']['signing_key']`:
 
    ```ruby
    gitaly['configuration'] = {

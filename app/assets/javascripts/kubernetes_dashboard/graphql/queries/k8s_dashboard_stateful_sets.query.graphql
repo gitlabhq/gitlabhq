@@ -1,17 +1,7 @@
-query getK8sDashboardStatefulSets($configuration: LocalConfiguration) {
+#import "./workload_item.fragment.graphql"
+
+query getK8sDashboardStatefulSets($configuration: K8sDashboardConfig) {
   k8sStatefulSets(configuration: $configuration) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-      labels
-      annotations
-    }
-    status {
-      readyReplicas
-    }
-    spec {
-      replicas
-    }
+    ...WorkloadItem
   }
 }

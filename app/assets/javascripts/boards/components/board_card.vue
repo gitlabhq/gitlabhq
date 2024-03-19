@@ -164,6 +164,7 @@ export default {
       :update-filters="true"
       :index="index"
       :show-work-item-type-icon="showWorkItemTypeIcon"
+      @setFilters="$emit('setFilters', $event)"
     >
       <slot></slot>
     </board-card-inner>

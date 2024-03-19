@@ -68,7 +68,7 @@ describe('CiResourceHeader', () => {
         isLoadingSharedData: false,
         openIssuesCount: defaultProps.openIssuesCount,
         openMergeRequestsCount: defaultProps.openMergeRequestsCount,
-        latestVersion: resource.latestVersion,
+        latestVersion: resource.versions.nodes[0],
         webPath: resource.webPath,
       });
     });
@@ -77,7 +77,7 @@ describe('CiResourceHeader', () => {
   describe('Version badge', () => {
     describe('without a version', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+        createComponent({ props: { resource: { ...resource, versions: null } } });
       });
 
       it('does not render', () => {

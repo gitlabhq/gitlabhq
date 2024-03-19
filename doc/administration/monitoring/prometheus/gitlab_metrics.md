@@ -185,6 +185,8 @@ The following metrics are available:
 | `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process merge request approval policies | |
 | `gitlab_highlight_usage` | Counter | 16.8 | The number of times `Gitlab::Highlight` is used | `used_on` |
 | `dependency_linker_usage` | Counter | 16.8 | The number of times dependency linker is used | `used_on` |
+| `gitlab_keeparound_refs_requested_total` | Counter | 16.10 | Counts the number of keep-around refs requested to be created | `source` |
+| `gitlab_keeparound_refs_created_total` | Counter | 16.10 | Counts the number of keep-around refs actually created | `source` |
 
 ## Metrics controlled by a feature flag
 

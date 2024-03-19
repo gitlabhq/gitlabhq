@@ -1,5 +1,6 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { validateAdditionalProperties } from '~/tracking/utils';
 import axios from './lib/utils/axios_utils';
 import { joinPaths } from './lib/utils/url_utility';
 
@@ -813,12 +814,12 @@ const Api = {
     return axios.delete(url, { data });
   },
 
-  getRawFile(id, path, params = {}) {
+  getRawFile(id, path, params = {}, options = {}) {
     const url = Api.buildUrl(this.rawFilePath)
       .replace(':id', encodeURIComponent(id))
       .replace(':path', encodeURIComponent(path));
 
-    return axios.get(url, { params });
+    return axios.get(url, { params, ...options });
   },
 
   updateIssue(project, issue, data = {}) {
@@ -886,10 +887,6 @@ const Api = {
   },
 
   trackRedisCounterEvent(event) {
-    if (!gon.features?.usageDataApi) {
-      return null;
-    }
-
     const url = Api.buildUrl(this.serviceDataIncrementCounterPath);
     const headers = {
       'Content-Type': 'application/json',
@@ -899,7 +896,7 @@ const Api = {
   },
 
   trackRedisHllUserEvent(event) {
-    if (!gon.current_user_id || !gon.features?.usageDataApi) {
+    if (!gon.current_user_id) {
       return null;
     }
 
@@ -911,10 +908,11 @@ const Api = {
     return axios.post(url, { event }, { headers });
   },
 
-  trackInternalEvent(event) {
-    if (!gon.current_user_id || !gon.features?.usageDataApi) {
+  trackInternalEvent(event, additionalProperties = {}) {
+    if (!gon.current_user_id) {
       return null;
     }
+    validateAdditionalProperties(additionalProperties);
     const url = Api.buildUrl(this.serviceDataInternalEventPath);
     const headers = {
       'Content-Type': 'application/json',
@@ -922,7 +920,11 @@ const Api = {
 
     const { data = {} } = { ...window.gl?.snowplowStandardContext };
     const { project_id, namespace_id } = data;
-    return axios.post(url, { event, project_id, namespace_id }, { headers });
+    return axios.post(
+      url,
+      { event, project_id, namespace_id, additional_properties: additionalProperties },
+      { headers },
+    );
   },
 
   buildUrl(url) {

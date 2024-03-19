@@ -4,7 +4,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
 
 describe('formatProjects', () => {
-  it('correctly formats the projects', () => {
+  it('correctly formats the projects with delete permissions', () => {
     const [firstMockProject] = organizationProjects;
     const formattedProjects = formatProjects(organizationProjects);
     const [firstFormattedProject] = formattedProjects;
@@ -15,14 +15,41 @@ describe('formatProjects', () => {
       mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
       issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
       forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
+      accessLevel: {
+        integerValue: 30,
+      },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     });
+
+    expect(formattedProjects.length).toBe(organizationProjects.length);
+  });
+
+  it('correctly formats the projects without delete permissions', () => {
+    const nonDeletableProject = organizationProjects[organizationProjects.length - 1];
+    const formattedProjects = formatProjects(organizationProjects);
+    const nonDeletableFormattedProject = formattedProjects[formattedProjects.length - 1];
+
+    expect(nonDeletableFormattedProject).toMatchObject({
+      id: getIdFromGraphQLId(nonDeletableProject.id),
+      name: nonDeletableProject.nameWithNamespace,
+      mergeRequestsAccessLevel: nonDeletableProject.mergeRequestsAccessLevel.stringValue,
+      issuesAccessLevel: nonDeletableProject.issuesAccessLevel.stringValue,
+      forkingAccessLevel: nonDeletableProject.forkingAccessLevel.stringValue,
+      availableActions: [ACTION_EDIT],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
+    });
+
     expect(formattedProjects.length).toBe(organizationProjects.length);
   });
 });
 
 describe('formatGroups', () => {
-  it('correctly formats the groups', () => {
+  it('correctly formats the groups with delete permissions', () => {
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGroups(organizationGroups);
     const [firstFormattedGroup] = formattedGroups;
@@ -31,8 +58,35 @@ describe('formatGroups', () => {
       id: getIdFromGraphQLId(firstMockGroup.id),
       parent: null,
       editPath: `${firstFormattedGroup.webUrl}/-/edit`,
+      accessLevel: {
+        integerValue: 30,
+      },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     });
+    expect(formattedGroups.length).toBe(organizationGroups.length);
+  });
+
+  it('correctly formats the groups without delete permissions', () => {
+    const nonDeletableGroup = organizationGroups[organizationGroups.length - 1];
+    const formattedGroups = formatGroups(organizationGroups);
+    const nonDeletableFormattedGroup = formattedGroups[formattedGroups.length - 1];
+
+    expect(nonDeletableFormattedGroup).toMatchObject({
+      id: getIdFromGraphQLId(nonDeletableGroup.id),
+      parent: null,
+      editPath: `${nonDeletableFormattedGroup.webUrl}/-/edit`,
+      accessLevel: {
+        integerValue: 30,
+      },
+      availableActions: [ACTION_EDIT],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
+    });
+
     expect(formattedGroups.length).toBe(organizationGroups.length);
   });
 });

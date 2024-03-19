@@ -9,7 +9,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
   let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
-  let_it_be(:new_group_path) { '/groups/new' }
+  let_it_be(:new_group_path) { '/-/organizations/default/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
   let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
   let_it_be(:organizations_path) { '/-/organizations/' }
@@ -18,10 +18,19 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
   let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
+  let_it_be(:users_organization_path) { '/-/organizations/default/users' }
+
+  let(:stubbed_results) do
+    {
+      'groups' => 10,
+      'projects' => 50,
+      'users' => 1050
+    }
+  end
 
   before do
     allow(organization).to receive(:to_global_id).and_return(organization_gid)
-    allow(helper).to receive(:new_group_path).and_return(new_group_path)
+    allow(helper).to receive(:new_groups_organization_path).with(organization).and_return(new_group_path)
     allow(helper).to receive(:new_project_path).and_return(new_project_path)
     allow(helper).to receive(:image_path).with(organizations_empty_state_svg_path)
       .and_return(organizations_empty_state_svg_path)
@@ -31,6 +40,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
     allow(helper).to receive(:preview_markdown_organizations_path).and_return(preview_markdown_organizations_path)
     allow(helper).to receive(:current_user).and_return(user)
+    allow_next_instance_of(Organizations::OrganizationAssociationCounter) do |finder|
+      allow(finder).to receive(:execute).and_return(stubbed_results)
+    end
   end
 
   shared_examples 'includes that the user can create a group' do |method|
@@ -94,6 +106,10 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       allow(helper).to receive(:groups_and_projects_organization_path)
         .with(organization)
         .and_return(groups_and_projects_organization_path)
+
+      allow(helper).to receive(:users_organization_path)
+        .with(organization)
+        .and_return(users_organization_path)
     end
 
     context 'when the user can create a group' do
@@ -137,15 +153,12 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'avatar_url' => 'avatar.jpg'
           },
           'groups_and_projects_organization_path' => groups_and_projects_organization_path,
+          'users_organization_path' => users_organization_path,
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
           'projects_empty_state_svg_path' => projects_empty_state_svg_path,
-          'association_counts' => {
-            'groups' => 10,
-            'projects' => 5,
-            'users' => 1050
-          }
+          'association_counts' => stubbed_results
         }
       )
     end
@@ -285,6 +298,17 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'restricted_visibility_levels' => [],
           'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
           'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
+        }
+      )
+    end
+  end
+
+  describe '#admin_organizations_index_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.admin_organizations_index_app_data)).to eq(
+        {
+          'new_organization_url' => new_organization_path,
+          'organizations_empty_state_svg_path' => organizations_empty_state_svg_path
         }
       )
     end

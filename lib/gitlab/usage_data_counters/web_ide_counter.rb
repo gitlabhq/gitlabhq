@@ -15,10 +15,6 @@ module Gitlab
           count('merge_requests')
         end
 
-        def increment_views_count
-          count('views')
-        end
-
         def increment_terminals_count
           count('terminals')
         end

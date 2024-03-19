@@ -1,0 +1,9 @@
+---
+name: enforce_full_refs_for_pipeline_schedules
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435357
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144953
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17604
+milestone: '16.10'
+group: group::pipeline execution
+type: development
+default_enabled: false

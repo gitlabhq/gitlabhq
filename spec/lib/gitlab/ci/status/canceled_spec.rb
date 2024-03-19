@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Canceled do
+RSpec.describe Gitlab::Ci::Status::Canceled, feature_category: :continuous_integration do
   subject do
     described_class.new(double('subject'), double('user'))
   end

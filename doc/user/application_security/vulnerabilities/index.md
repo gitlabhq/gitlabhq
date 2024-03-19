@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:
@@ -32,7 +32,7 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
@@ -44,9 +44,9 @@ GitLab can help you with a vulnerability by using a large language model to:
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
-### Explain a vulnerability
+### Vulnerability explanation
 
-Explain a vulnerability with GitLab Duo Vulnerability summary. Use the explanation to better
+Explain a vulnerability with GitLab Duo Vulnerability explanation. Use the explanation to better
 understand a vulnerability and its possible mitigation.
 
 Prerequisites:
@@ -90,7 +90,7 @@ The following data is shared with third-party AI APIs:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
@@ -184,7 +184,6 @@ vulnerability's action log.
 ## Create a GitLab issue for a vulnerability
 
 You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
-
 To create a GitLab issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -192,7 +191,7 @@ To create a GitLab issue for a vulnerability:
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
-A GitLab issue is created in the project with information from the vulnerability report.
+The issue is created in the GitLab project with information from the vulnerability report.
 
 To create a Jira issue, see [Create a Jira issue for a vulnerability](../../../integration/jira/configure.md#create-a-jira-issue-for-a-vulnerability).
 

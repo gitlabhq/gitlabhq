@@ -36,9 +36,10 @@
               .description
                 = markdown_field(project, :description)
 
+          = render 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
+
           .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex.gl-gap-3
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
-            = render 'project_badges', project: project
           .controls.gl-flex-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
               variant: :link,

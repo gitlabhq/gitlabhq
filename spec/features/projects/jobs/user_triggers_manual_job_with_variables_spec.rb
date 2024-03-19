@@ -19,12 +19,12 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
   end
 
   it 'passes values correctly' do
-    page.within(find("[data-testid='ci-variable-row']")) do
-      find("[data-testid='ci-variable-key']").set('key_name')
-      find("[data-testid='ci-variable-value']").set('key_value')
+    within_testid('ci-variable-row') do
+      find_by_testid('ci-variable-key').set('key_name')
+      find_by_testid('ci-variable-value').set('key_value')
     end
 
-    find("[data-testid='run-manual-job-btn']").click
+    find_by_testid('run-manual-job-btn').click
 
     wait_for_requests
 

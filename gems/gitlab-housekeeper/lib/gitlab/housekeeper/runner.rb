@@ -2,9 +2,11 @@
 
 require 'active_support/core_ext/string'
 require 'gitlab/housekeeper/keep'
+require 'gitlab/housekeeper/keeps/rubocop_fixer'
 require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'
+require 'gitlab/housekeeper/substitutor'
 require 'awesome_print'
 require 'digest'
 
@@ -29,7 +31,7 @@ module Gitlab
       def run
         created = 0
 
-        git.with_branch_from_branch do
+        git.with_clean_state do
           @keeps.each do |keep_class|
             keep = keep_class.new
             keep.each_change do |change|
@@ -38,21 +40,44 @@ module Gitlab
                 next
               end
 
-              branch_name = git.commit_in_branch(change)
+              change.keep_class ||= keep_class
+
+              branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
-              # Must be done after we commit so that we don't keep around changed files. We could checkout those files
-              # but then it might be riskier in local development in case we lose unrelated changes.
               unless change.matches_filters?(@filter_identifiers)
-                puts "Skipping change: #{change.identifiers} due to not matching filter"
+                # At this point the keep has already run and edited files so we need to
+                # restore the local working copy. We could simply checkout all
+                # changed_files but this is very risky as it could mean losing work that
+                # cannot be recovered. Instead we commit all the work to the branch and
+                # move on without pushing the branch.
+                git.in_branch(branch_name) do
+                  git.create_commit(change)
+                end
+
+                puts "Skipping change: #{change.identifiers} due to not matching filter."
+                puts "Modified files have been committed to branch #{branch_name.yellowish}, but will not be pushed."
+                puts
+
                 next
               end
 
-              if @dry_run
-                dry_run(change, branch_name)
-              else
-                create(change, branch_name)
+              # If no merge request exists yet, create an empty one to allow keeps to use the web URL.
+              unless @dry_run
+                merge_reqeust = get_existing_merge_request(branch_name) || create(change, branch_name)
+
+                change.mr_web_url = merge_reqeust['web_url']
               end
+
+              git.in_branch(branch_name) do
+                Gitlab::Housekeeper::Substitutor.perform(change)
+
+                git.create_commit(change)
+              end
+
+              print_change_details(change, branch_name)
+
+              create(change, branch_name) unless @dry_run
 
               created += 1
               break if created >= @max_mrs
@@ -79,7 +104,8 @@ module Gitlab
         end
       end
 
-      def dry_run(change, branch_name)
+      def print_change_details(change, branch_name)
+        puts "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}".yellowish
         puts "=> #{change.identifiers.join(': ')}".purple
 
         puts '=> Title:'.purple
@@ -90,9 +116,10 @@ module Gitlab
         puts change.description
         puts
 
-        if change.labels.present?
+        if change.labels.present? || change.reviewers.present?
           puts '=> Attributes:'
           puts "Labels: #{change.labels.join(', ')}"
+          puts "Reviewers: #{change.reviewers.join(', ')}"
           puts
         end
 
@@ -103,8 +130,6 @@ module Gitlab
       end
 
       def create(change, branch_name)
-        dry_run(change, branch_name)
-
         non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
@@ -116,7 +141,7 @@ module Gitlab
           Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
         end
 
-        mr = gitlab_client.create_or_update_merge_request(
+        gitlab_client.create_or_update_merge_request(
           change: change,
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
@@ -127,8 +152,15 @@ module Gitlab
           update_labels: !non_housekeeper_changes.include?(:labels),
           update_reviewers: !non_housekeeper_changes.include?(:reviewers)
         )
+      end
 
-        puts "Merge request URL: #{mr['web_url'].yellowish}"
+      def get_existing_merge_request(branch_name)
+        gitlab_client.get_existing_merge_request(
+          source_project_id: housekeeper_fork_project_id,
+          source_branch: branch_name,
+          target_branch: 'master',
+          target_project_id: housekeeper_target_project_id
+        )
       end
 
       def housekeeper_fork_project_id

@@ -58,6 +58,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   context 'when primary_store is not a ::Redis instance' do
     before do
       allow(primary_store).to receive(:is_a?).with(::Redis).and_return(false)
+      allow(primary_store).to receive(:is_a?).with(::Redis::Cluster).and_return(false)
     end
 
     it 'fails with exception' do
@@ -69,6 +70,7 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   context 'when secondary_store is not a ::Redis instance' do
     before do
       allow(secondary_store).to receive(:is_a?).with(::Redis).and_return(false)
+      allow(secondary_store).to receive(:is_a?).with(::Redis::Cluster).and_return(false)
     end
 
     it 'fails with exception' do
@@ -615,35 +617,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
 
             subject
           end
-        end
-      end
-
-      context 'when either store is a an instance of ::Redis::Cluster' do
-        let(:pipeline) { double }
-        let(:client) { double }
-
-        before do
-          allow(client).to receive(:instance_of?).with(::Redis::Cluster).and_return(true)
-          allow(pipeline).to receive(:pipelined)
-          multi_store.with_borrowed_connection do
-            allow(multi_store.default_store).to receive(:_client).and_return(client)
-          end
-        end
-
-        it 'calls cross-slot pipeline within multistore' do
-          if name == :pipelined
-            # we intentionally exclude `.and_call_original` since primary_store/secondary_store
-            # may not be running on a proper Redis Cluster.
-            multi_store.with_borrowed_connection do
-              expect(Gitlab::Redis::CrossSlot::Pipeline).to receive(:new)
-                                                              .with(multi_store.default_store)
-                                                              .exactly(:once)
-                                                              .and_return(pipeline)
-              expect(Gitlab::Redis::CrossSlot::Pipeline).not_to receive(:new).with(multi_store.non_default_store)
-            end
-          end
-
-          subject
         end
       end
 

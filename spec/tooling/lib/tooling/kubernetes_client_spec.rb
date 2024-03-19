@@ -48,9 +48,16 @@ RSpec.describe Tooling::KubernetesClient do
     subject { instance.cleanup_namespaces_by_created_at(created_before: two_days_ago) }
 
     before do
-      allow(instance).to receive(:run_command).with(
-        "kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
-      ).and_return(kubectl_namespaces_json)
+      allow(instance).to receive(:run_command).with([
+        'kubectl',
+        'get',
+        'namespace',
+        '--all-namespaces',
+        '--sort-by',
+        '{.metadata.creationTimestamp}',
+        '-o',
+        'json'
+      ]).and_return(kubectl_namespaces_json)
     end
 
     context 'when no namespaces are stale' do
@@ -73,8 +80,9 @@ RSpec.describe Tooling::KubernetesClient do
         let(:namespace_2_name) { 'review-apps' } # This is not a review apps namespace, so we should not try to delete it
 
         it 'only deletes the review app namespaces' do
-          expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespace_1_name}")
-
+          expect(instance).to receive(:run_command).with(
+            %W[kubectl delete namespace --now --ignore-not-found #{namespace_1_name}]
+          )
           subject
         end
       end
@@ -84,8 +92,10 @@ RSpec.describe Tooling::KubernetesClient do
         let(:namespace_2_name) { 'review-another-review-app' }
 
         it 'deletes all of the stale namespaces' do
-          expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespace_1_name} #{namespace_2_name}")
-
+          namespaces = [namespace_1_name, namespace_2_name].join(' ')
+          expect(instance).to receive(:run_command).with(
+            %W[kubectl delete namespace --now --ignore-not-found #{namespaces}]
+          )
           subject
         end
       end
@@ -109,7 +119,9 @@ RSpec.describe Tooling::KubernetesClient do
       let(:namespaces) { %w[review-ns-1 review-ns-2] }
 
       it 'deletes the namespaces' do
-        expect(instance).to receive(:run_command).with("kubectl delete namespace --now --ignore-not-found #{namespaces.join(' ')}")
+        expect(instance).to receive(:run_command).with(
+          %W[kubectl delete namespace --now --ignore-not-found #{namespaces.join(' ')}]
+        )
 
         subject
       end
@@ -150,9 +162,16 @@ RSpec.describe Tooling::KubernetesClient do
     end
 
     it 'returns an array of namespaces' do
-      allow(instance).to receive(:run_command).with(
-        "kubectl get namespace --all-namespaces --sort-by='{.metadata.creationTimestamp}' -o json"
-      ).and_return(kubectl_namespaces_json)
+      allow(instance).to receive(:run_command).with([
+        'kubectl',
+        'get',
+        'namespace',
+        '--all-namespaces',
+        '--sort-by',
+        '{.metadata.creationTimestamp}',
+        '-o',
+        'json'
+      ]).and_return(kubectl_namespaces_json)
 
       expect(subject).to match_array(%w[review-first-review-app])
     end
@@ -170,10 +189,10 @@ RSpec.describe Tooling::KubernetesClient do
     end
 
     context 'when executing a successful command' do
-      let(:command) { 'true' } # https://linux.die.net/man/1/true
+      let(:command) { ['true'] } # https://linux.die.net/man/1/true
 
       it 'displays the name of the command to stdout' do
-        expect(instance).to receive(:puts).with("Running command: `#{command}`")
+        expect(instance).to receive(:puts).with("Running command: `#{command.join(' ')}`")
 
         subject
       end
@@ -184,10 +203,10 @@ RSpec.describe Tooling::KubernetesClient do
     end
 
     context 'when executing an unsuccessful command' do
-      let(:command) { 'false' } # https://linux.die.net/man/1/false
+      let(:command) { ['false'] } # https://linux.die.net/man/1/false
 
       it 'displays the name of the command to stdout' do
-        expect(instance).to receive(:puts).with("Running command: `#{command}`")
+        expect(instance).to receive(:puts).with("Running command: `#{command.join(' ')}`")
 
         expect { subject }.to raise_error(described_class::CommandFailedError)
       end

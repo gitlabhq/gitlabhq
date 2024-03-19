@@ -28,6 +28,7 @@ module Gitlab
       instrument_rate_limiting_gates(payload)
       instrument_global_search_api(payload)
       instrument_ldap(payload)
+      instrument_exclusive_lock(payload)
     end
 
     def instrument_gitaly(payload)
@@ -137,6 +138,14 @@ module Gitlab
       return if ldap_count == 0
 
       payload.merge! Gitlab::Metrics::Subscribers::Ldap.payload
+    end
+
+    def instrument_exclusive_lock(payload)
+      requested_count = Gitlab::Instrumentation::ExclusiveLock.requested_count
+
+      return if requested_count == 0
+
+      payload.merge!(Gitlab::Instrumentation::ExclusiveLock.payload)
     end
 
     # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the

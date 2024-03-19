@@ -3,10 +3,6 @@
 module Ci
   # Enqueues the downstream pipeline worker.
   class TriggerDownstreamPipelineService
-    # This is a temporary constant. It may be converted into an application setting
-    # in the future. See https://gitlab.com/gitlab-org/gitlab/-/issues/425941.
-    DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA = 200
-
     def initialize(bridge)
       @bridge = bridge
       @current_user = bridge.user
@@ -19,7 +15,7 @@ module Ci
         return ServiceResponse.success(message: 'Does not trigger a downstream pipeline')
       end
 
-      if rate_limit_throttled? && enforce_rate_limit?
+      if rate_limit_throttled?
         bridge.drop!(:reached_downstream_pipeline_trigger_rate_limit)
 
         return ServiceResponse.error(message: 'Reached downstream pipeline trigger rate limit')
@@ -52,10 +48,6 @@ module Ci
         downstream_type: bridge.triggers_child_pipeline? ? 'child' : 'multi-project',
         message: 'Activated downstream pipeline trigger rate limit'
       )
-    end
-
-    def enforce_rate_limit?
-      ::Feature.enabled?(:ci_rate_limit_downstream_pipelines, project, type: :gitlab_com_derisk)
     end
   end
 end

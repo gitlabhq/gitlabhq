@@ -1,6 +1,6 @@
 ---
 stage: Create
-group: Source Code
+group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
 > - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
@@ -26,14 +26,71 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [Experiment](../policy/experiment-beta-support.md).
 
+### Get group-level approval rules
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440638) in GitLab 16.10.
+
+Group admins can request information about a group's approval rules using the following endpoint:
+
+```plaintext
+GET /groups/:id/approval_rules
+```
+
+Use the `page` and `per_page` [pagination](rest/index.md#offset-based-pagination) parameters to restrict the list of approval rules.
+
+Supported attributes:
+
+| Attribute | Type              | Required               | Description                                                                   |
+|-----------|-------------------|------------------------|-------------------------------------------------------------------------------|
+| `id`      | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 2,
+    "name": "rule1",
+    "rule_type": "any_approver",
+    "eligible_approvers": [],
+    "approvals_required": 3,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  },
+  {
+    "id": 3,
+    "name": "rule2",
+    "rule_type": "code_owner",
+    "eligible_approvers": [],
+    "approvals_required": 2,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  }
+]
+
+```
+
 ### Create group-level approval rules
 
-Users with at least the Maintainer role can create group level approval rules using the following endpoint:
+Group admins can create group level approval rules using the following endpoint:
 
 ```plaintext
 POST /groups/:id/approval_rules
@@ -48,7 +105,7 @@ Supported attributes:
 | `name`                              | string            | Yes | The name of the approval rule.                                                                                                                                                                                                                                      |
 | `group_ids`                         | array             | No | The IDs of groups as approvers.                                                                                                                                                                                                                                     |
 | `report_type`                       | string            | No | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`. |
-| `rule_type`                         | string            | No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` and `report_approver`.                                                                                                                |
+| `rule_type`                         | string            | No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../../ee/user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../../ee/user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
 | `user_ids`                          | array             | No | The IDs of users as approvers.                                                                                                                                                       |
 
 Example request:
@@ -67,6 +124,80 @@ Example response:
   "rule_type": "any_approver",
   "eligible_approvers": [],
   "approvals_required": 2,
+  "users": [],
+  "groups": [],
+  "contains_hidden_groups": false,
+  "protected_branches": [
+    {
+      "id": 5,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "deploy_key_id": null,
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "allow_force_push": false,
+      "unprotect_access_levels": [],
+      "code_owner_approval_required": false,
+      "inherited": false
+    }
+  ],
+  "applies_to_all_protected_branches": true
+}
+```
+
+### Update group-level approval rules
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440639) in GitLab 16.10.
+
+Group admins can update group level approval rules using the following endpoint:
+
+```shell
+PUT /groups/:id/approval_rules/:approval_rule_id
+```
+
+Supported attributes:
+
+| Attribute            | Type              | Required | Description                                                                                                                                          |
+|----------------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `approval_rule_id`.  | integer           | Yes      | The ID of the approval rule.                                                                                                                         |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/index.md#namespaced-path-encoding).                                                                     |
+| `approvals_required` | string            | No       | The number of required approvals for this rule.                                                                                                      |
+| `group_ids`          | integer           | No       | The IDs of users as approvers.                                                                                                                       |
+| `name`               | string            | No       | The name of the approval rule.                                                                                                                       |
+| `rule_type`          | array             | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../../ee/user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../../ee/user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
+| `user_ids`           | array             | No       | The IDs of groups as approvers.                                                                                                                      |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules/5?name=security2&approvals_required=1"
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "security2",
+  "rule_type": "any_approver",
+  "eligible_approvers": [],
+  "approvals_required": 1,
   "users": [],
   "groups": [],
   "contains_hidden_groups": false,
@@ -404,7 +535,7 @@ Supported attributes:
 | `group_ids`                         | Array             | No | The IDs of groups as approvers.                                                                                                                                                                                                 |
 | `protected_branch_ids`              | Array             | No | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches).                                                                                           |
 | `report_type`                       | string            | No | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`.                                                                                        |
-| `rule_type`                         | string            | No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` and `report_approver`.                                                                                                  |
+| `rule_type`                         | string            | No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../../ee/user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../../ee/user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
 | `user_ids`                          | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
 | `usernames`                         | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 

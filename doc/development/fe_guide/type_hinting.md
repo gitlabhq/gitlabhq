@@ -22,7 +22,7 @@ supported [by many IDEs](https://en.wikipedia.org/wiki/JSDoc#JSDoc_in_use).
 
 #### Describing functions
 
-Use [`@param`](https://jsdoc.app/tags-param.html) and [`@returns`](https://jsdoc.app/tags-returns.html)
+Use [`@param`](https://jsdoc.app/tags-param) and [`@returns`](https://jsdoc.app/tags-returns)
 to describe function type:
 
 ```javascript
@@ -77,7 +77,7 @@ function createUrl(config) {
 #### Annotating types of variables that are not immediately assigned a value
 
 For tools and IDEs it's hard to infer type of a value that doesn't immediately receive a value. We
-can use [`@type`](https://jsdoc.app/tags-type.html) notation to assign type to such variables:
+can use [`@type`](https://jsdoc.app/tags-type) notation to assign type to such variables:
 
 ```javascript
 /** @type {number} */
@@ -155,7 +155,7 @@ work for our code. Here's an example of such approach:
 ```diff
 - export const mountExtended = (...args) => extendedWrapper(mount(...args));
 + import { compose } from 'lodash/fp';
-+ export const mountExtended = compose(extendedWrapper, mount); 
++ export const mountExtended = compose(extendedWrapper, mount);
 ```
 
 Here we use TypeScript type definitions from `compose` function, to add inferred type definitions to

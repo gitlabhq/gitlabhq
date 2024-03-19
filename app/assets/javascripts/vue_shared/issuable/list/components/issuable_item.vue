@@ -91,14 +91,14 @@ export default {
     externalAuthor() {
       return this.issuable.externalAuthor;
     },
-    webUrl() {
-      return this.issuable.gitlabWebUrl || this.issuable.webUrl;
+    issuableLinkHref() {
+      return this.issuable.webPath || this.issuable.gitlabWebUrl || this.issuable.webUrl;
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
     isIssuableUrlExternal() {
-      return isExternal(this.webUrl ?? '');
+      return isExternal(this.issuableLinkHref ?? '');
     },
     reference() {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
@@ -190,7 +190,18 @@ export default {
       );
     },
     issuableNotesLink() {
-      return setUrlFragment(this.webUrl, 'notes');
+      return setUrlFragment(this.issuableLinkHref, 'notes');
+    },
+    statusBadgeVariant() {
+      if (this.isMergeRequest && this.isClosed) {
+        return 'danger';
+      }
+
+      return 'info';
+    },
+    isMergeRequest() {
+      // eslint-disable-next-line no-underscore-dangle
+      return this.issuable.__typename === 'MergeRequest';
     },
   },
   methods: {
@@ -227,7 +238,7 @@ export default {
         return;
       }
       e.preventDefault();
-      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.webUrl });
+      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.issuableLinkHref });
     },
   },
 };
@@ -278,7 +289,7 @@ export default {
         <gl-link
           class="issue-title-text"
           dir="auto"
-          :href="webUrl"
+          :href="issuableLinkHref"
           data-testid="issuable-title-link"
           v-bind="issuableTitleProps"
           @click="handleIssuableItemClick"
@@ -368,11 +379,12 @@ export default {
       <ul v-if="showIssuableMeta" class="controls">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status">
-          <gl-badge v-if="isNotOpen" size="sm" variant="info">
+          <gl-badge v-if="isNotOpen" size="sm" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
+        <slot name="pipeline-status"></slot>
         <li v-if="assignees.length">
           <issuable-assignees
             :assignees="assignees"

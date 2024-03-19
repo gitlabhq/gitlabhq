@@ -109,7 +109,7 @@ module Banzai
           parent = project || group
 
           if project || full_path_ref?(matches)
-            project_path    = reference_cache.full_project_path(matches[:namespace], matches[:project])
+            project_path    = reference_cache.full_project_path(matches[:namespace], matches[:project], matches)
             parent_from_ref = from_ref_cached(project_path)
             reference       = parent_from_ref.to_human_reference(parent)
 

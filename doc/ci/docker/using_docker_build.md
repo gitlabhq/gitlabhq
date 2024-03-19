@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -457,7 +457,7 @@ For complex Docker-in-Docker setups like Code Quality checks using Code Climate,
 
 When the Docker daemon starts inside the service container, it uses
 the default configuration. You might want to configure a
-[registry mirror](https://docs.docker.com/registry/recipes/mirror/) for
+[registry mirror](https://docs.docker.com/docker-hub/mirror/) for
 performance improvements and to ensure you do not exceed Docker Hub rate limits.
 
 ##### The service in the `.gitlab-ci.yml` file

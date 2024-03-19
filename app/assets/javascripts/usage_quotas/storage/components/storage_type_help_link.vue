@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <gl-link :href="helpLinks[storageType]" target="_blank" :aria-label="ariaLabel">
-    <gl-icon name="question-o" :size="12" />
+  <gl-link :href="helpLinks[storageType]" target="_blank" :aria-label="ariaLabel" class="gl-ml-3">
+    <gl-icon name="question-o" :size="16" />
   </gl-link>
 </template>

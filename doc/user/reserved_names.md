@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 To not conflict with existing routes used by GitLab, some words cannot be used as project or group names.
 These words are listed in the
@@ -19,12 +19,12 @@ where:
 - `PROJECT_WILDCARD_ROUTES` are names reserved for child groups or projects.
 - `GROUP_ROUTES` are names reserved for all groups or projects.
 
-## Limitations on project and group names
+## Limitations on usernames, project and group names
 
-- Project or group names must start with a letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). Additionally:
+- Usernames, project and group names must start and end with a letter (`a-zA-Z`) or a digit (`0-9`). Additionally:
+  - Usernames and group names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), parentheses (`()`), dashes (`-`), or spaces.
   - Project names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), pluses (`+`), dashes (`-`), or spaces.
-  - Group names can contain only letters (`a-zA-Z`), digits (`0-9`), emoji, underscores (`_`), dots (`.`), parentheses (`()`), dashes (`-`), or spaces.
-- Project or group slugs:
+- Usernames, project or group slugs:
   - Must start with a letter (`a-zA-Z`) or digit (`0-9`).
   - Must not contain consecutive special characters.
   - Cannot start or end with a special character.

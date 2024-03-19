@@ -70,7 +70,9 @@ RSpec.describe 'import:github rake tasks', feature_category: :importers do
         let(:target_namespace) { 'unknown_namespace_path' }
 
         it 'aborts with an error' do
-          expect { import_task }.to raise_error('Namespace or group to import repository into does not exist.')
+          expect do
+            import_task
+          end.to raise_error(s_('GithubImport|Namespace or group to import repository into does not exist.'))
         end
       end
     end

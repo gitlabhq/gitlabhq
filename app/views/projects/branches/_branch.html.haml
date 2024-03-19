@@ -11,9 +11,9 @@
         = branch.name
       = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if is_default_branch
-        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :neutral, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2' }
       - if protected_branch?(@project, branch)
-        = gl_badge_tag s_('Branches|protected'), { variant: :muted, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('Branches|protected'), { variant: :neutral, size: :sm }, { class: 'gl-ml-2' }
 
       = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 

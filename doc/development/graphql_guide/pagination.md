@@ -115,11 +115,11 @@ The cursor is created by encoding a JSON object which contains the relevant orde
 ```ruby
 ordering = {"id"=>"72410125", "created_at"=>"2020-10-08 18:05:21.953398000 UTC"}
 json = ordering.to_json
-cursor = Base64Bp.urlsafe_encode64(json, padding: false)
+cursor = Base64.urlsafe_encode64(json, padding: false)
 
 "eyJpZCI6IjcyNDEwMTI1IiwiY3JlYXRlZF9hdCI6IjIwMjAtMTAtMDggMTg6MDU6MjEuOTUzMzk4MDAwIFVUQyJ9"
 
-json = Base64Bp.urlsafe_decode64(cursor)
+json = Base64.urlsafe_decode64(cursor)
 Gitlab::Json.parse(json)
 
 {"id"=>"72410125", "created_at"=>"2020-10-08 18:05:21.953398000 UTC"}

@@ -232,6 +232,7 @@ semgrep-sast:
         - '**/*.html'
         - '**/*.scala'
         - '**/*.sc'
+        - '**/*.php'
 
 sobelow-sast:
   extends: .sast-analyzer

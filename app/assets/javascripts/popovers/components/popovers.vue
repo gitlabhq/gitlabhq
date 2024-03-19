@@ -80,7 +80,7 @@ export default {
 <template>
   <div>
     <gl-popover v-for="(popover, index) in popovers" :key="index" v-bind="popover">
-      <template #title>
+      <template v-if="popover.title" #title>
         <span v-if="popover.html" v-safe-html:[$options.safeHtmlConfig]="popover.title"></span>
         <span v-else>{{ popover.title }}</span>
       </template>

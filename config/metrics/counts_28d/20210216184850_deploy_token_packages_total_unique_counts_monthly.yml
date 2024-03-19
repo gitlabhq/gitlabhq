@@ -5,7 +5,7 @@ description: A monthly count of unique users who published packages to the regis
   token
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: 28d
@@ -13,8 +13,7 @@ data_source: redis_hll
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
-    attribute: user_id
+    attribute: user.id
   events:
   - i_package_composer_deploy_token
   - i_package_conan_deploy_token

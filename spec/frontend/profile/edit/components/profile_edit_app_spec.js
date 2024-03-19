@@ -1,5 +1,6 @@
 import { GlButton, GlForm } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import mockTimezones from 'test_fixtures/timezones/full.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -7,6 +8,7 @@ import axios from '~/lib/utils/axios_utils';
 import ProfileEditApp from '~/profile/edit/components/profile_edit_app.vue';
 import UserAvatar from '~/profile/edit/components/user_avatar.vue';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
+import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import { timeRanges } from '~/vue_shared/constants';
@@ -23,6 +25,8 @@ const defaultProvide = {
   currentAvailability: AVAILABILITY_STATUS.NOT_SET,
   defaultEmoji: 'speech_balloon',
   currentClearStatusAfter: oneMinute.shortcut,
+  timezones: mockTimezones,
+  userTimezone: '',
 };
 
 describe('Profile Edit App', () => {
@@ -57,6 +61,7 @@ describe('Profile Edit App', () => {
   const findButtons = () => wrapper.findAllComponents(GlButton);
   const findAvatar = () => wrapper.findComponent(UserAvatar);
   const findSetStatusForm = () => wrapper.findComponent(SetStatusForm);
+  const findTimezoneDropdown = () => wrapper.findComponent(TimezoneDropdown);
   const submitForm = () => findForm().vm.$emit('submit', new Event('submit'));
   const setAvatar = () => findAvatar().vm.$emit('blob-change', mockAvatarFile);
   const setStatus = () => {
@@ -66,6 +71,11 @@ describe('Profile Edit App', () => {
     setStatusForm.vm.$emit('emoji-click', 'baseball');
     setStatusForm.vm.$emit('clear-status-after-click', oneHour);
     setStatusForm.vm.$emit('availability-input', true);
+  };
+  const setTimezone = (index = 0) => {
+    const timezoneForm = findTimezoneDropdown();
+
+    timezoneForm.vm.$emit('input', mockTimezones[index]);
   };
 
   it('renders the form for users to interact with', () => {
@@ -86,6 +96,13 @@ describe('Profile Edit App', () => {
       availability: false,
       clearStatusAfter: null,
       currentClearStatusAfter: defaultProvide.currentClearStatusAfter,
+    });
+  });
+
+  it('renders `TimezoneForm` component and passes correct props', () => {
+    expect(findTimezoneDropdown().props()).toMatchObject({
+      timezoneData: mockTimezones,
+      value: '',
     });
   });
 
@@ -132,6 +149,25 @@ describe('Profile Edit App', () => {
       expect(axiosRequestData.get('user[status][clear_status_after]')).toBe(oneHour.shortcut);
       expect(axiosRequestData.get('user[status][message]')).toBe('Foo bar baz');
       expect(axiosRequestData.get('user[status][availability]')).toBe(AVAILABILITY_STATUS.BUSY);
+    });
+
+    it('contains changes from timezone form', async () => {
+      mockAxios.onPut(stubbedProfilePath).reply(200, {
+        message: successMessage,
+      });
+      const selectedTimezoneIndex = 2;
+      setTimezone(selectedTimezoneIndex);
+      submitForm();
+
+      await waitForPromises();
+      const axiosRequestData = mockAxios.history.put[0].data;
+      expect(findTimezoneDropdown().props('value')).toBe(
+        mockTimezones[selectedTimezoneIndex].identifier,
+      );
+
+      expect(axiosRequestData.get('user[timezone]')).toBe(
+        mockTimezones[selectedTimezoneIndex].identifier,
+      );
     });
 
     describe('when clear status after has not been changed', () => {

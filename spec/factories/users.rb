@@ -11,6 +11,7 @@ FactoryBot.define do
     confirmation_token { nil }
     can_create_group { true }
     color_scheme_id { 1 }
+    color_mode_id { 1 }
 
     after(:build) do |user, evaluator|
       # UserWithNamespaceShim is not defined in gdk reset-data. We assume the shim is enabled in this case.
@@ -20,7 +21,7 @@ FactoryBot.define do
                     true
                   end
 
-      user.assign_personal_namespace if assign_ns
+      user.assign_personal_namespace(create(:organization)) if assign_ns
     end
 
     trait :without_default_org do
@@ -28,7 +29,9 @@ FactoryBot.define do
     end
 
     trait :with_namespace do
-      namespace { assign_personal_namespace }
+      # rubocop: disable RSpec/FactoryBot/InlineAssociation -- We need to pass an Organization to this method
+      namespace { assign_personal_namespace(create(:organization)) }
+      # rubocop: enable RSpec/FactoryBot/InlineAssociation
     end
 
     trait :admin do
@@ -52,7 +55,9 @@ FactoryBot.define do
     end
 
     trait :locked do
-      after(:build) { |user, _| user.lock_access! }
+      after(:build) do |user, _|
+        Gitlab::ExclusiveLease.skipping_transaction_check { user.lock_access! }
+      end
     end
 
     trait :disallowed_password do

@@ -8,6 +8,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Number of project or group members a user can delete per minute."
+    },
+    "downstream_pipeline_trigger_limit_per_project_user_sha": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
     }
   }
 }

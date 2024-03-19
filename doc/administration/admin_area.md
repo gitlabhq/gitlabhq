@@ -20,6 +20,22 @@ self-managed instances. If you are an administrator, to access the Admin Area:
 NOTE:
 Only administrators can access the Admin Area.
 
+## Administering organizations
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+You can administer all organizations in the GitLab instance from the Admin Area's Organizations page.
+
+To access the Organizations page:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Organizations**.
+
 ## Administering projects
 
 You can administer all projects in the GitLab instance from the Admin Area's Projects page.
@@ -71,7 +87,7 @@ To filter only projects in that namespace, select from the **Namespace** dropdow
 You can combine the filter options. For example, to list only public projects with `score` in their name:
 
 1. Select the **Public** tab.
-1. Enter `score` in the **Filter by name...** input box.
+1. Enter `score` in the **Filter by name** text box.
 
 ## Administering users
 
@@ -238,7 +254,7 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 > - Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
-[Topics](../user/project/settings/project_features_permissions.md#project-topics) are used to categorize and find similar projects.
+You can categorize and find similar projects with [topics](../user/project/project_topics.md).
 
 ### View all topics
 
@@ -347,17 +363,17 @@ To access the **Runners** page:
 
 To search runners' descriptions:
 
-1. In the **Search or filter results...** field, type the description of the runner you want to
+1. In the **Search or filter results** text box, type the description of the runner you want to
    find.
 1. Press <kbd>Enter</kbd>.
 
 You can also filter runners by status, type, and tag. To filter:
 
-1. Select a tab or the **Search or filter results...** field.
+1. Select a tab or the **Search or filter results** text box.
 1. Select any **Type**, or filter by **Status** or **Tags**.
 1. Select or enter your search criteria.
 
-![Attributes of a runner, with the **Search or filter results...** field active](img/index_runners_search_or_filter_v14_5.png)
+![Attributes of a runner filtered by status](img/index_runners_search_or_filter_v14_5.png)
 
 #### Bulk delete runners
 

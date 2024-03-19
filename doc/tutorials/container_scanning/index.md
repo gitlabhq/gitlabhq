@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use [container scanning](../../user/application_security/container_scanning/index.md) to check for vulnerabilities
 in container images stored in the [container registry](../../user/packages/container_registry/index.md).
@@ -67,7 +67,7 @@ To create the pipeline configuration:
 
    ```yaml
    include:
-     - template: Security/Container-Scanning.gitlab-ci.yml
+     - template: Jobs/Container-Scanning.gitlab-ci.yml
 
    container_scanning:
      variables:
@@ -106,7 +106,7 @@ reports vulnerabilities:
 1. In the root directory of your project, select the existing `Dockerfile` file.
 1. Select **Edit**.
 1. Replace `FROM hello-world:latest` with a different Docker image for the
-   [`FROM`](https://docs.docker.com/engine/reference/builder/#from) instruction. The best Docker images to demonstrate
+   [`FROM`](https://docs.docker.com/reference/dockerfile/#from) instruction. The best Docker images to demonstrate
    container scanning have:
    - Operating system packages. For example, from Debian, Ubuntu, Alpine, or Red Hat.
    - Programming language packages. For example, NPM packages or Python packages.

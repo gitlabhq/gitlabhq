@@ -61,8 +61,7 @@ module Deployments
       # deployment we may end up running a handful of queries to get and insert
       # the data.
       commits.each_slice(COMMITS_PER_QUERY) do |slice|
-        merge_requests =
-          project.merge_requests.merged.by_merge_commit_sha(slice)
+        merge_requests = merge_requests_with_commits(slice)
 
         deployment.link_merge_requests(merge_requests)
 
@@ -77,6 +76,14 @@ module Deployments
         picked_merge_requests = project.merge_requests.id_in(mr_ids)
 
         deployment.link_merge_requests(picked_merge_requests)
+      end
+    end
+
+    def merge_requests_with_commits(commits)
+      if Feature.enabled?(:link_fast_forward_merge_requests_to_deployment, project, type: :gitlab_com_derisk)
+        project.merge_requests.merged.by_merge_commit_sha_or_head_commit_sha(commits)
+      else
+        project.merge_requests.merged.by_merge_commit_sha(commits)
       end
     end
 

@@ -85,7 +85,7 @@ export default {
   <list-item :selected="selected" v-bind="$attrs">
     <template #left-action>
       <gl-form-checkbox
-        v-if="packageEntity.canDestroy"
+        v-if="packageEntity.userPermissions.destroyPackage"
         class="gl-m-0"
         :checked="selected"
         @change="$emit('select')"
@@ -138,7 +138,7 @@ export default {
       </span>
     </template>
 
-    <template v-if="packageEntity.canDestroy" #right-action>
+    <template v-if="packageEntity.userPermissions.destroyPackage" #right-action>
       <gl-disclosure-dropdown
         data-testid="delete-dropdown"
         icon="ellipsis_v"

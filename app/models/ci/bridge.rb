@@ -37,6 +37,10 @@ module Ci
         end
       end
 
+      event :canceling do
+        transition CANCELABLE_STATUSES.map(&:to_sym) => :canceling
+      end
+
       event :pending do
         transition all => :pending
       end

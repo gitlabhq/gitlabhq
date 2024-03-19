@@ -401,7 +401,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/sbom/ingest_reports_worker.rb'
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/app/workers/search/index_curation_worker.rb'
-    - 'ee/app/workers/security/auto_fix_worker.rb'
     - 'ee/app/workers/security/create_orchestration_policy_worker.rb'
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb'
     - 'ee/app/workers/security/process_scan_result_policy_worker.rb'

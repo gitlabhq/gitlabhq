@@ -308,6 +308,7 @@ module ApplicationSettingsHelper
       :inactive_projects_delete_after_months,
       :inactive_projects_min_size_mb,
       :inactive_projects_send_warning_email_after_months,
+      :include_optional_metrics_in_service_ping,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
       :jira_connect_public_key_storage_enabled,
@@ -514,7 +515,9 @@ module ApplicationSettingsHelper
       :ci_max_total_yaml_size_bytes,
       :project_jobs_api_rate_limit,
       :security_txt_content,
-      :allow_project_creation_for_guest_and_below
+      :allow_project_creation_for_guest_and_below,
+      :downstream_pipeline_trigger_limit_per_project_user_sha,
+      :asciidoc_max_includes
     ].tap do |settings|
       next if Gitlab.com?
 

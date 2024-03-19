@@ -1,5 +1,5 @@
 const runningPod = {
-  status: { phase: 'Running' },
+  status: { phase: 'Running', ready: true, restartCount: 4 },
   metadata: {
     name: 'pod-1',
     namespace: 'default',
@@ -7,6 +7,8 @@ const runningPod = {
     labels: { key: 'value' },
     annotations: { annotation: 'text', another: 'text' },
   },
+  spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
+  __typename: 'LocalWorkloadItem',
 };
 const pendingPod = {
   status: { phase: 'Pending' },
@@ -14,9 +16,11 @@ const pendingPod = {
     name: 'pod-2',
     namespace: 'new-namespace',
     creationTimestamp: '2023-11-21T11:50:59Z',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const succeededPod = {
   status: { phase: 'Succeeded' },
@@ -27,6 +31,8 @@ const succeededPod = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const failedPod = {
   status: { phase: 'Failed' },
@@ -37,6 +43,8 @@ const failedPod = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
@@ -69,24 +77,29 @@ export const mockPodsTableItems = [
     labels: { key: 'value' },
     annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
+    fullStatus: { phase: 'Running', ready: true, restartCount: 4 },
   },
   {
     name: 'pod-1',
     namespace: 'default',
     status: 'Running',
     age: '114d',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: {},
+    fullStatus: { phase: 'Running', ready: true, restartCount: 4 },
   },
   {
     name: 'pod-2',
     namespace: 'new-namespace',
     status: 'Pending',
     age: '1d',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-3',
@@ -96,6 +109,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-4',
@@ -105,6 +119,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-4',
@@ -114,6 +129,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
 ];
 
@@ -131,6 +147,8 @@ const pendingDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const readyDeployment = {
   status: {
@@ -146,6 +164,8 @@ const readyDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const failedDeployment = {
   status: {
@@ -161,6 +181,8 @@ const failedDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sDeploymentsMock = [
@@ -234,6 +256,7 @@ const readyStatefulSet = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 const failedStatefulSet = {
   status: { readyReplicas: 1 },
@@ -245,6 +268,7 @@ const failedStatefulSet = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sStatefulSetsMock = [readyStatefulSet, readyStatefulSet, failedStatefulSet];
@@ -305,6 +329,8 @@ const readyDaemonSet = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedDaemonSet = {
@@ -316,6 +342,8 @@ const failedDaemonSet = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockDaemonSetsStats = [
@@ -362,6 +390,7 @@ const completedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedJob = {
@@ -374,6 +403,7 @@ const failedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const anotherFailedJob = {
@@ -386,6 +416,7 @@ const anotherFailedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockJobsStats = [
@@ -441,6 +472,7 @@ const readyCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const suspendedCronJob = {
@@ -453,6 +485,7 @@ const suspendedCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedCronJob = {
@@ -465,6 +498,7 @@ const failedCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockCronJobsStats = [
@@ -536,6 +570,8 @@ export const k8sServicesMock = [
       externalIP: '-',
       type: 'ClusterIP',
     },
+    status: {},
+    __typename: 'LocalWorkloadItem',
   },
   {
     metadata: {
@@ -568,6 +604,8 @@ export const k8sServicesMock = [
       externalIP: '-',
       type: 'NodePort',
     },
+    status: {},
+    __typename: 'LocalWorkloadItem',
   },
 ];
 

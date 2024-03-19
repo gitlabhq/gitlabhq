@@ -8,12 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../user/feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
 
 FLAG:
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Use this API to create, read and delete SSH certificates for a group.
 Only top-level groups can store SSH certificates.

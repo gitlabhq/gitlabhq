@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import api from '~/api';
 import Cookies from '~/lib/utils/cookies';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -1059,62 +1060,6 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('toggleFileDiscussions', () => {
-    it('should dispatch collapseDiscussion when all discussions are expanded', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => true),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'collapseDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when all discussions are collapsed', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => true),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ expanded: false, id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-  });
-
   describe('scrollToLineIfNeededInline', () => {
     const lineMock = {
       line_code: 'ABC_123',
@@ -1500,6 +1445,7 @@ describe('DiffsStoreActions', () => {
     let putSpy;
 
     beforeEach(() => {
+      jest.spyOn(api, 'trackRedisHllUserEvent').mockImplementation(() => {});
       putSpy = jest.spyOn(axios, 'put');
 
       mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});

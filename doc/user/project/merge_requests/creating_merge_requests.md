@@ -9,7 +9,7 @@ description: "How to create merge requests in GitLab."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides many different ways to create a merge request.
 

@@ -107,24 +107,32 @@ RSpec.describe Gitlab::ApplicationContext do
     it 'correctly loads the expected values when they are wrapped in a block' do
       context = described_class.new(user: -> { user }, project: -> { project }, namespace: -> { subgroup })
 
-      expect(result(context))
-        .to include(user: user.username, user_id: user.id, project: project.full_path,
-                    root_namespace: namespace.full_path)
+      expect(result(context)).to include(
+        user: user.username,
+        user_id: user.id,
+        project: project.full_path,
+        root_namespace: namespace.full_path
+      )
     end
 
     it 'correctly loads the expected values when passed directly' do
       context = described_class.new(user: user, project: project, namespace: subgroup)
 
-      expect(result(context))
-        .to include(user: user.username, user_id: user.id, project: project.full_path,
-                    root_namespace: namespace.full_path)
+      expect(result(context)).to include(
+        user: user.username,
+        user_id: user.id,
+        project: project.full_path,
+        root_namespace: namespace.full_path
+      )
     end
 
     it 'falls back to a projects namespace when a project is passed but no namespace' do
       context = described_class.new(project: project)
 
-      expect(result(context))
-        .to include(project: project.full_path, root_namespace: project.full_path_components.first)
+      expect(result(context)).to include(
+        project: project.full_path,
+        root_namespace: project.full_path_components.first
+      )
     end
 
     it 'contains known keys' do

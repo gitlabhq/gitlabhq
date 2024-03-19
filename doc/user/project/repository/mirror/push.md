@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in GitLab 13.5: LFS support over HTTPS.
 
@@ -85,9 +85,9 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 To configure a mirror from GitLab to GitHub:
 
 1. Create a [GitHub fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
-   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-contents). If your
+   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-contents). If your
    repository contains a `.github/workflows` directory, you must also grant
-   read and write access for the [Workflows](https://docs.github.com/en/rest/overview/permissions-required-for-fine-grained-personal-access-tokens#repository-permissions-for-workflows).
+   read and write access for the [Workflows](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-workflows).
    For a more fine-grained access, you can configure your token to only apply
    to the specific repository.
 1. Enter a **Git repository URL** with this format, changing the variables as needed:

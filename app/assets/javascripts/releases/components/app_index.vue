@@ -1,14 +1,13 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { historyPushState } from '~/lib/utils/common_utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { setUrlParams, getParameterByName } from '~/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
-import { PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
+import { i18n, PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import allReleasesQuery from '../graphql/queries/all_releases.query.graphql';
 import ReleaseBlock from './release_block.vue';
@@ -19,6 +18,11 @@ import ReleasesSort from './releases_sort.vue';
 
 export default {
   name: 'ReleasesIndexApp',
+  i18n,
+  links: {
+    alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
+    alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'release-a-component' }),
+  },
   components: {
     GlAlert,
     GlButton,
@@ -29,6 +33,9 @@ export default {
     ReleasesEmptyState,
     ReleasesPagination,
     ReleasesSort,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     projectPath: {
@@ -158,6 +165,11 @@ export default {
     isFullRequestLoaded() {
       return Boolean(!this.isFullRequestLoading && this.fullGraphqlResponse?.data.project);
     },
+    releaseBtnTitle() {
+      return this.isCatalogResource
+        ? this.$options.i18n.catalogResourceReleaseBtnTitle
+        : this.$options.i18n.defaultReleaseBtnTitle;
+    },
     releases() {
       if (this.isFullRequestLoaded) {
         return convertAllReleasesGraphQLResponse(this.fullGraphqlResponse).data;
@@ -245,20 +257,6 @@ export default {
       this.sort = newSort;
     },
   },
-  i18n: {
-    alertButtonLink: helpPagePath('ci/components/index', { anchor: 'release-a-component' }),
-    alertButtonText: __('View the publishing guide'),
-    alertInfoMessage: s__(
-      'CiCatalog|The CI/CD components in this project can be published in the CI/CD Catalog by creating a release. We recommend using the %{linkStart}release%{linkEnd} keyword in a CI/CD job to release new component versions for the Catalog.',
-    ),
-    alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
-    alertTitle: __('Publish the CI/CD components in this project to the CI/CD Catalog'),
-    catalogResourceQueryError: s__(
-      'CiCatalog|There was a problem fetching the CI/CD Catalog setting.',
-    ),
-    errorMessage: __('An error occurred while fetching the releases. Please try again.'),
-    newRelease: __('New release'),
-  },
 };
 </script>
 <template>
@@ -266,8 +264,6 @@ export default {
     <gl-alert
       v-if="isCatalogResource"
       :title="$options.i18n.alertTitle"
-      :primary-button-text="$options.i18n.alertButtonText"
-      :primary-button-link="$options.i18n.alertButtonLink"
       :dismissible="false"
       variant="warning"
       class="mb-3 mt-2"
@@ -275,26 +271,38 @@ export default {
       <gl-sprintf :message="$options.i18n.alertInfoMessage">
         <template #link="{ content }">
           <gl-link
-            :href="$options.i18n.alertInfoMessageLink"
+            :href="$options.links.alertInfoMessageLink"
             target="_blank"
-            class="gl-text-decoration-none!"
+            class="gl-text-decoration-none! gl-mr-2"
           >
-            {{ content }}
+            <code class="gl-pr-0">
+              {{ content }}
+            </code>
           </gl-link>
         </template>
       </gl-sprintf>
+      <gl-link :href="$options.links.alertInfoPublishLink" target="_blank">
+        {{ $options.i18n.alertInfoPublishMessage }}
+      </gl-link>
     </gl-alert>
     <releases-empty-state v-if="shouldRenderEmptyState" />
-    <div v-else class="gl-align-self-end gl-mb-3">
+    <div v-else class="gl-align-self-end gl-mb-3 gl-display-flex">
       <releases-sort :value="sort" class="gl-mr-2" @input="onSortChanged" />
 
-      <gl-button
+      <div
         v-if="newReleasePath"
-        :href="newReleasePath"
-        category="primary"
-        variant="confirm"
-        >{{ $options.i18n.newRelease }}</gl-button
+        v-gl-tooltip.hover
+        :title="releaseBtnTitle"
+        data-testid="new-release-btn-tooltip"
       >
+        <gl-button
+          :disabled="isCatalogResource"
+          :href="newReleasePath"
+          category="primary"
+          variant="confirm"
+          >{{ $options.i18n.newRelease }}</gl-button
+        >
+      </div>
     </div>
 
     <release-block

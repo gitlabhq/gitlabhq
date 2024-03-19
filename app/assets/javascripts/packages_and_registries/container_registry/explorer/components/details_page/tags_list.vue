@@ -103,7 +103,7 @@ export default {
       return this.containerRepository?.tags?.nodes || [];
     },
     hideBulkDelete() {
-      return !this.containerRepository?.canDelete;
+      return !this.containerRepository?.userPermissions.destroyContainerRepository;
     },
     tagsPageInfo() {
       return this.containerRepository?.tags?.pageInfo;

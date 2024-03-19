@@ -33,8 +33,8 @@ describe('CiResourcesListItem', () => {
     },
   };
   const release = {
-    author: { name: 'author', webUrl: '/user/1' },
-    releasedAt: Date.now(),
+    author: { id: 'author-id', name: 'author', username: 'author-username', webUrl: '/user/1' },
+    createdAt: Date.now(),
     name: '1.0.0',
   };
   const defaultProps = {
@@ -100,7 +100,7 @@ describe('CiResourcesListItem', () => {
   describe('components', () => {
     describe('when there are no components', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+        createComponent({ props: { resource: { ...resource, versions: null } } });
       });
 
       it('does not render the component names', () => {
@@ -110,9 +110,7 @@ describe('CiResourcesListItem', () => {
 
     describe('when there are components', () => {
       beforeEach(() => {
-        createComponent({
-          props: { resource: { ...resource, latestVersion: { ...componentList, ...release } } },
-        });
+        createComponent();
       });
 
       it('renders the component name template', () => {
@@ -129,7 +127,7 @@ describe('CiResourcesListItem', () => {
   describe('release time', () => {
     describe('when there is no release data', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+        createComponent({ props: { resource: { ...resource, versions: null } } });
       });
 
       it('does not render the release', () => {
@@ -144,12 +142,26 @@ describe('CiResourcesListItem', () => {
 
     describe('when there is release data', () => {
       beforeEach(() => {
-        createComponent({ props: { resource: { ...resource, latestVersion: { ...release } } } });
+        createComponent();
       });
 
       it('renders the user link', () => {
         expect(findUserLink().exists()).toBe(true);
         expect(findUserLink().attributes('href')).toBe(release.author.webUrl);
+      });
+
+      it('the user link has the correct attributes', () => {
+        expect(findUserLink().attributes()).toEqual({
+          'data-name': release.author.name,
+          'data-username': release.author.username,
+          'data-testid': 'user-link',
+          href: release.author.webUrl,
+          class: 'js-user-link',
+        });
+      });
+
+      it('the user link renders the author name', () => {
+        expect(findUserLink().text()).toBe(release.author.name);
       });
 
       it('renders the time since the resource was released', () => {
@@ -204,6 +216,27 @@ describe('CiResourcesListItem', () => {
   });
 
   describe('statistics', () => {
+    describe('starrers link button', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders the correct link to starrers', () => {
+        expect(findFavorites().attributes('href')).toBe(resource.starrersPath);
+      });
+
+      it('has the correct attributes', () => {
+        expect(findFavorites().attributes('icon')).toBe('star-o');
+        expect(findFavorites().attributes('size')).toBe('small');
+        expect(findFavorites().attributes('variant')).toBe('link');
+        expect(findFavorites().attributes('title')).toBe('Stars');
+      });
+
+      it('has the correct styling', () => {
+        expect(findFavorites().classes()).toEqual(['gl-reset-color!']);
+      });
+    });
+
     describe('when there are no statistics', () => {
       it('render favorites as 0', () => {
         createComponent({

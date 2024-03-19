@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Interact with [groups](../user/group/index.md) by using the REST API.
 
@@ -38,6 +38,7 @@ Parameters:
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
+| `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
@@ -126,12 +127,15 @@ GET /groups?statistics=true
       "snippets_size": 50,
       "uploads_size": 0
     },
-    "wiki_access_level": "private"
+    "wiki_access_level": "private",
+    "duo_features_enabled": true,
+    "lock_duo_features_enabled": false,
   }
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 You can search for groups by name or path, see below.
 
@@ -204,7 +208,8 @@ GET /groups/:id/subgroups
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 ## List a group's descendant groups
 
@@ -291,7 +296,8 @@ GET /groups/:id/descendant_groups
 ]
 ```
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and `lock_duo_features_enabled` attributes.
 
 ## List a group's projects
 
@@ -310,7 +316,7 @@ Parameters:
 | `id`                                   | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                             | boolean        | no       | Limit by archived status |
 | `visibility`                           | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                             | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at` |
 | `sort`                                 | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                               | string         | no       | Return list of authorized projects matching the search criteria |
 | `simple`                               | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
@@ -328,7 +334,7 @@ Parameters:
 <html>
 <small>Footnotes:
   <ol>
-    <li>Order by similarity: Orders the results by a similarity score calculated from the provided `search` URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.</li>
+    <li>Order by similarity: Orders the results by a similarity score calculated from the provided <code>search</code> URL parameter. When using <code>order_by=similarity</code>, the <code>sort</code> parameter is ignored. When the <code>search</code> parameter is not provided, the API returns the projects ordered by <code>name</code>.</li>
   </ol>
 </small>
 </html>
@@ -398,7 +404,7 @@ Parameters:
 | `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
-| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count` or `last_activity_at` fields. Default is `created_at` |
 | `sort`                        | string         | no       | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search`                      | string         | no       | Return list of authorized projects matching the search criteria |
 | `simple`                      | boolean        | no       | Return only limited fields for each project. This is a no-op without authentication where only simple fields are returned. |
@@ -734,6 +740,8 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 - `marked_for_deletion_on`
 - `membership_lock`
 - `wiki_access_level`
+- `duo_features_enabled`
+- `lock_duo_features_enabled`
 
 Additional response attributes:
 
@@ -746,6 +754,8 @@ Additional response attributes:
   "marked_for_deletion_on": "2020-04-03",
   "membership_lock": false,
   "wiki_access_level": "disabled",
+  "duo_features_enabled": true,
+  "lock_duo_features_enabled": false,
   ...
 }
 ```
@@ -802,7 +812,7 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -1041,6 +1051,8 @@ PUT /groups/:id
 | `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.|
 | `math_rendering_limits_enabled`                         | boolean | no       | Indicates if math rendering limits are used for this group.|
 | `lock_math_rendering_limits_enabled`                    | boolean | no       | Indicates if math rendering limits are locked for all descendent groups.|
+| `duo_features_enabled`                                  | boolean | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
+| `lock_duo_features_enabled`                             | boolean | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1127,13 +1139,14 @@ Example response:
 
 The `prevent_sharing_groups_outside_hierarchy` attribute is present in the response only for top-level groups.
 
-Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
+Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level`,
+`duo_features_enabled`, and`lock_duo_features_enabled` attributes.
 
 ### Disable the results limit
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -1222,7 +1235,7 @@ A GitLab.com group can't be removed if it is linked to a subscription. To remove
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
@@ -1261,7 +1274,7 @@ GET /groups?search=foobar
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 14.8.
 
@@ -1338,7 +1351,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [Experiment](../policy/experiment-beta-support.md).
@@ -1424,13 +1437,13 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ### Create Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
 
-Creates a service account user with an auto-generated email address and username.
+Creates a service account user. You can specify username and name. If you do not specify these attributes, the default name is `Service account user` and the username is automatically generated.
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -1439,6 +1452,13 @@ POST /groups/:id/service_accounts
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
 ```
+
+Supported attributes:
+
+| Attribute                  | Type           | Required                  | Description                                                                    |
+|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
+| `name`       | string | no | Name of the user |
+| `username`   | string | no | Username of the user |
 
 Example response:
 
@@ -1516,7 +1536,7 @@ Example response:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1570,7 +1590,9 @@ GET /groups/:id/hooks/:hook_id
   "alert_status": "executable",
   "disabled_until": null,
   "url_variables": [ ],
-  "created_at": "2012-10-12T17:04:47Z"
+  "created_at": "2012-10-12T17:04:47Z",
+  "resource_access_token_events": true,
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
 }
 ```
 
@@ -1602,6 +1624,8 @@ POST /groups/:id/hooks
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
+| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string         | No       | Custom webhook template for the hook. |
 
 ### Edit group hook
 
@@ -1633,6 +1657,8 @@ PUT /groups/:id/hooks/:hook_id
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
 | `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
+| `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
+| `custom_webhook_template`    | string         | No       | Custom webhook template for the hook. |
 
 ### Delete group hook
 
@@ -1652,7 +1678,7 @@ DELETE /groups/:id/hooks/:hook_id
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
@@ -1702,7 +1728,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
+Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium and Ultimate tier.
 
 ```plaintext
 POST /groups/:id/ldap_group_links
@@ -1754,7 +1780,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
+Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium and Ultimate tier.
 
 ```plaintext
 DELETE /groups/:id/ldap_group_links
@@ -1774,7 +1800,7 @@ To delete the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
@@ -1993,7 +2019,7 @@ DELETE /groups/:id/share/:group_id
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Introduced in GitLab 13.4.
 
@@ -2040,6 +2066,8 @@ Only available to group owners and administrators.
 POST /groups/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
@@ -2055,6 +2083,8 @@ POST /groups/:id/push_rule
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
 | `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+
+<!-- markdownlint-enable MD056 -->
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
@@ -2089,6 +2119,8 @@ Only available to group owners and administrators.
 PUT /groups/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
@@ -2104,6 +2136,8 @@ PUT /groups/:id/push_rule
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
 | `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+
+<!-- markdownlint-enable MD056 -->
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"

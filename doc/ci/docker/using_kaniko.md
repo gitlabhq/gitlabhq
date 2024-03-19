@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45512) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build
 container images from a Dockerfile, inside a container or Kubernetes cluster.

@@ -21,6 +21,29 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
         expect(page).to have_button 'Merge'
       end
     end
+
+    context 'when an active pipeline running' do
+      let!(:pipeline) do
+        create(
+          :ci_empty_pipeline,
+          project: project,
+          sha: merge_request.diff_head_sha,
+          ref: merge_request.source_branch,
+          status: :running,
+          head_pipeline_of: merge_request
+        )
+      end
+
+      it 'allows MR to be merged' do
+        visit project_merge_request_path(project, merge_request)
+
+        wait_for_requests
+
+        page.within('.mr-state-widget') do
+          expect(page).to have_button 'Set to auto-merge'
+        end
+      end
+    end
   end
 
   context 'when project has CI enabled' do

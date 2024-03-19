@@ -26,7 +26,7 @@ describe('Kubernetes dashboard services page', () => {
   const createApolloProvider = () => {
     const mockResolvers = {
       Query: {
-        k8sServices: jest.fn().mockReturnValue(k8sServicesMock),
+        k8sDashboardServices: jest.fn().mockReturnValue(k8sServicesMock),
       },
     };
 
@@ -85,7 +85,7 @@ describe('Kubernetes dashboard services page', () => {
     const createErroredApolloProvider = () => {
       const mockResolvers = {
         Query: {
-          k8sServices: jest.fn().mockRejectedValueOnce(error),
+          k8sDashboardServices: jest.fn().mockRejectedValueOnce(error),
         },
       };
 

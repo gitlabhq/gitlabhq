@@ -94,6 +94,16 @@ To customize the logo on your sign-in and register pages:
 
 You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
 
+### Disable cookie-based language selector
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `disable_preferred_language_cookie`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+You can remove the cookie-based language selector from the footer of the sign-in and register pages by enabling the `disable_preferred_language_cookie` feature flag.
+
 ## Customize the Progressive Web App
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.

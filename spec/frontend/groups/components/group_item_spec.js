@@ -221,7 +221,7 @@ describe('GroupItemComponent', () => {
         const badgeEl = wrapper.vm.$el.querySelector('.badge-warning');
 
         expect(badgeEl).toBeDefined();
-        expect(badgeEl.innerHTML).toContain('pending deletion');
+        expect(badgeEl.innerHTML).toContain('Pending deletion');
       });
     });
 
@@ -234,7 +234,7 @@ describe('GroupItemComponent', () => {
       it('does not render the group pending deletion badge', () => {
         const groupTextContainer = wrapper.vm.$el.querySelector('.group-text-container');
 
-        expect(groupTextContainer).not.toContain('pending deletion');
+        expect(groupTextContainer).not.toContain('Pending deletion');
       });
 
       it('renders `item-actions` component and passes correct props to it', () => {

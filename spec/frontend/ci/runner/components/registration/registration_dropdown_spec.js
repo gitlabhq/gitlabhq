@@ -211,7 +211,7 @@ describe('RegistrationDropdown', () => {
         findRegistrationToken().vm.$emit('copy');
         await nextTick();
 
-        expect(findDropdownBtn().attributes('aria-expanded')).toBeUndefined();
+        expect(findDropdownBtn().attributes('aria-expanded')).toBe('false');
       });
     });
   });

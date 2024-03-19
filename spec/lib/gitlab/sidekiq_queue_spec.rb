@@ -76,6 +76,30 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_r
       end
     end
 
+    context 'when there extra queue shard instances are used' do
+      let(:search_metadata) { { user: sidekiq_queue_user.username } }
+      let(:sidekiq_queue) { described_class.new('foobar') }
+      let_it_be(:sidekiq_queue_user) { create(:user) }
+
+      before do
+        allow(Gitlab::Redis::Queues)
+            .to receive(:instances).and_return({ 'main' => Gitlab::Redis::Queues, 'shard' => Gitlab::Redis::Queues })
+
+        add_job([1], user: create(:user))
+        add_job([2], user: sidekiq_queue_user, klass: 'MergeWorker')
+        add_job([3], user: sidekiq_queue_user)
+      end
+
+      it 'tracks queues from both instances' do
+        expect(Sidekiq::Queue).to receive(:all).twice.and_call_original
+
+        expect(sidekiq_queue.drop_jobs!(search_metadata, timeout: 10))
+            .to eq(completed: true,
+                   deleted_jobs: 2,
+                   queue_size: 2) # Note: intentional double count
+      end
+    end
+
     context 'when there are no valid metadata keys passed' do
       it 'raises NoMetadataError' do
         add_job([1], user: create(:user))

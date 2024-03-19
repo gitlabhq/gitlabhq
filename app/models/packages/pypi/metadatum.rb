@@ -4,7 +4,7 @@ class Packages::Pypi::Metadatum < ApplicationRecord
   self.primary_key = :package_id
 
   MAX_REQUIRED_PYTHON_LENGTH = 255
-  MAX_KEYWORDS_LENGTH = 255
+  MAX_KEYWORDS_LENGTH = 1024
   MAX_METADATA_VERSION_LENGTH = 16
   MAX_AUTHOR_EMAIL_LENGTH = 2048
   MAX_SUMMARY_LENGTH = 255

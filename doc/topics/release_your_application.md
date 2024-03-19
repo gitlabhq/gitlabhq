@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deploy and release your application
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 Deployment is the step of the software delivery process when your
 application gets deployed to its final, target infrastructure.
 

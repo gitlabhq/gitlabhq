@@ -13,12 +13,14 @@ describe('moreActionsDropdown', () => {
     wrapper = shallowMountExtended(moreActionsDropdown, {
       provide: {
         isGroup: false,
-        id: 1,
+        groupOrProjectId: 1,
         leavePath: '',
         leaveConfirmMessage: '',
         withdrawPath: '',
         withdrawConfirmMessage: '',
         requestAccessPath: '',
+        canEdit: false,
+        editPath: '',
         ...provideData,
       },
       propsData,
@@ -33,13 +35,15 @@ describe('moreActionsDropdown', () => {
     findDropdown().vm.$emit('show');
   };
   const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
+  const findGroupSettings = () => wrapper.findByTestId('settings-group-link');
+  const findProjectSettings = () => wrapper.findByTestId('settings-project-link');
 
   describe('copy id', () => {
     describe('project namespace type', () => {
       beforeEach(async () => {
         createComponent({
           provideData: {
-            id: 22,
+            groupOrProjectId: 22,
           },
         });
         await showDropdown();
@@ -60,7 +64,7 @@ describe('moreActionsDropdown', () => {
         createComponent({
           provideData: {
             isGroup: true,
-            id: 11,
+            groupOrProjectId: 11,
           },
         });
         await showDropdown();
@@ -195,6 +199,69 @@ describe('moreActionsDropdown', () => {
 
         expect(wrapper.findByTestId('leave-project-link').exists()).toBe(false);
         expect(wrapper.findByTestId('leave-group-link').exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('settings', () => {
+    describe('when `canEdit` is `true`', () => {
+      const provideData = {
+        editPath: '/settings',
+        canEdit: true,
+      };
+
+      describe('when `isGroup` is set to `false`', () => {
+        beforeEach(() => {
+          createComponent({
+            provideData,
+          });
+          showDropdown();
+        });
+
+        it('renders `Project settings` dropdown item', () => {
+          const settingsDropdownItem = findProjectSettings();
+
+          expect(settingsDropdownItem.text()).toBe('Project settings');
+          expect(settingsDropdownItem.attributes('href')).toBe(provideData.editPath);
+        });
+      });
+
+      describe('when `isGroup` is set to `true`', () => {
+        beforeEach(() => {
+          createComponent({
+            provideData: {
+              ...provideData,
+              isGroup: true,
+            },
+          });
+          showDropdown();
+        });
+
+        it('renders `Group settings` dropdown item', () => {
+          const settingsDropdownItem = findGroupSettings();
+
+          expect(settingsDropdownItem.text()).toBe('Group settings');
+          expect(settingsDropdownItem.attributes('href')).toBe(provideData.editPath);
+        });
+      });
+    });
+
+    describe('when `canEdit` is `false`', () => {
+      const provideData = {
+        editPath: '/settings',
+        canEdit: false,
+      };
+
+      beforeEach(() => {
+        createComponent({
+          provideData,
+        });
+        showDropdown();
+      });
+
+      it('does not render dropdown item', () => {
+        expect(findGroupSettings().exists()).toBe(false);
+        expect(findProjectSettings().exists()).toBe(false);
       });
     });
   });

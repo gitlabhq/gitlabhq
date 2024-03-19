@@ -1,5 +1,4 @@
 import { GlSprintf } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { s__ } from '~/locale';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -14,9 +13,7 @@ import {
   PROJECT_TYPE,
   DEFAULT_PLATFORM,
   WINDOWS_PLATFORM,
-  GOOGLE_CLOUD_PLATFORM,
 } from '~/ci/runner/constants';
-import RunnerCloudConnectionForm from '~/ci/runner/components/runner_cloud_connection_form.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
@@ -39,9 +36,8 @@ describe('ProjectRunnerRunnerApp', () => {
   const findRegistrationCompatibilityAlert = () =>
     wrapper.findComponent(RegistrationCompatibilityAlert);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
-  const findRunnerCloudForm = () => wrapper.findComponent(RunnerCloudConnectionForm);
 
-  const createComponent = (gcpRunner = false) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(ProjectRunnerRunnerApp, {
       propsData: {
         projectId: mockProjectId,
@@ -49,11 +45,6 @@ describe('ProjectRunnerRunnerApp', () => {
       },
       stubs: {
         GlSprintf,
-      },
-      provide: {
-        glFeatures: {
-          gcpRunner,
-        },
       },
     });
   };
@@ -126,24 +117,5 @@ describe('ProjectRunnerRunnerApp', () => {
         });
       });
     });
-  });
-
-  describe('Runner cloud form', () => {
-    it.each`
-      flagState | visible
-      ${true}   | ${true}
-      ${false}  | ${false}
-    `(
-      'shows runner cloud form: $visible when flag is set to $flagState and platform is google',
-      async ({ flagState, visible }) => {
-        createComponent(flagState);
-
-        findRunnerPlatformsRadioGroup().vm.$emit('input', GOOGLE_CLOUD_PLATFORM);
-
-        await nextTick();
-
-        expect(findRunnerCloudForm().exists()).toBe(visible);
-      },
-    );
   });
 });

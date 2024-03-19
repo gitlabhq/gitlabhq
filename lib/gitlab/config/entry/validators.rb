@@ -364,6 +364,19 @@ module Gitlab
           end
         end
 
+        class ScalarValidator < ActiveModel::EachValidator
+          def self.validate(value)
+            value.is_a?(String) || value.is_a?(Symbol) || value.is_a?(Integer) ||
+              value.is_a?(Float) || [true, false].include?(value)
+          end
+
+          def validate_each(record, attribute, value)
+            unless self.class.validate(value)
+              record.errors.add(attribute, 'must be a scalar')
+            end
+          end
+        end
+
         class ExpressionValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             unless value.is_a?(String) && ::Gitlab::Ci::Pipeline::Expression::Statement.new(value).valid?

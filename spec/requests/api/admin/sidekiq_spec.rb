@@ -38,9 +38,7 @@ RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category
         it 'returns info about the deleted jobs' do
           delete api(path, admin, admin_mode: true)
 
-          expect(json_response).to eq('completed' => true,
-                                      'deleted_jobs' => 2,
-                                      'queue_size' => 1)
+          expect(json_response).to eq('completed' => true, 'deleted_jobs' => 2, 'queue_size' => 1)
         end
       end
 

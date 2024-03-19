@@ -56,29 +56,81 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
 
+If the issue persists, verify that your self-managed GitLab instance can connect to
+`connect-install-keys.atlassian.com` to get the public key from Atlassian.
+To test connectivity, run the following command:
+
+```shell
+# A `404 Not Found` is expected because you're not passing a token
+curl --head "https://connect-install-keys.atlassian.com"
+```
+
 ## Data sync fails with `Invalid JWT`
 
-If the GitLab for Jira Cloud app continuously fails to sync data, it may be due to an outdated secret token. Atlassian can send new secret tokens that must be processed and stored by GitLab.
-If GitLab fails to store the token or misses the new token request, an `Invalid JWT` error occurs.
+If the GitLab for Jira Cloud app continuously fails to sync data from a self-managed GitLab instance,
+a secret token might be outdated. Atlassian can send new secret tokens to GitLab.
+If GitLab fails to process or store these tokens, an `Invalid JWT` error occurs.
 
-To resolve this issue on GitLab self-managed, follow one of the solutions below, depending on your app installation method.
+To resolve this issue on your self-managed GitLab instance:
 
-- If you installed the app from the official marketplace listing:
+- Confirm your self-managed GitLab instance is publicly available to:
+  - GitLab.com (if you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app)).
+  - Jira Cloud (if you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)).
+- Ensure the token request sent to the `/-/jira_connect/events/installed` endpoint when you install the app is accessible from Jira.
+  The following command should return a `401 Unauthorized`:
 
-  1. Open the GitLab for Jira Cloud app on Jira.
+  ```shell
+  curl --include --request POST "https://gitlab.example.com/-/jira_connect/events/installed"
+  ```
+
+- If your self-managed GitLab instance has [SSL configured](https://docs.gitlab.com/omnibus/settings/ssl/), check your
+  [certificates are valid and publicly trusted](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html#useful-openssl-debugging-commands).
+
+Depending on how you installed the app, you might want to check the following:
+
+- If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
+  switch between GitLab versions in the GitLab for Jira Cloud app:
+
+<!-- markdownlint-disable MD044 -->
+
+  1. In Jira, on the top bar, select **Apps > Manage your apps**.
+  1. Expand **GitLab for Jira (gitlab.com)**.
+  1. Select **Get started**.
   1. Select **Change GitLab version**.
-  1. Select **GitLab.com (SaaS)**.
+  1. Select **GitLab.com (SaaS)**, then select **Save**.
   1. Select **Change GitLab version** again.
-  1. Select **GitLab (self-managed)**.
-  1. Enter your **GitLab instance URL**.
-  1. Select **Save**.
+  1. Select **GitLab (self-managed)**, then select **Next**.
+  1. Select all checkboxes, then select **Next**.
+  1. Enter your **GitLab instance URL**, then select **Save**.
 
-- If you [installed the GitLab for Jira Cloud app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
+<!-- markdownlint-enable MD044 -->
 
-  - In GitLab 14.9 and later:
-    - Contact the [Jira Software Cloud support](https://support.atlassian.com/jira-software-cloud/) and ask to trigger a new installed lifecycle event for the GitLab for Jira Cloud app in your group.
-  - In all GitLab versions:
-    - Re-install the GitLab for Jira Cloud app. This method might remove all synced data from the [Jira development panel](../../integration/jira/development_panel.md).
+  If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
+  Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
+
+  ```ruby
+  # Check if GitLab.com can connect to the self-managed instance
+  checker = Gitlab::TcpChecker.new("gitlab.example.com", 443)
+
+  # Returns `true` if successful
+  checker.check
+
+  # Returns an error if the check fails
+  checker.error
+  ```
+
+  ```ruby
+  # Locate the installation record for the self-managed instance
+  installation = JiraConnectInstallation.find_by_instance_url("https://gitlab.example.com")
+
+  # Try to send the token again from GitLab.com to the self-managed instance
+  ProxyLifecycleEventService.execute(installation, :installed, installation.instance_url)
+  ```
+
+- If you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
+  - Ask [Jira Cloud Support](https://support.atlassian.com/jira-software-cloud/) to verify that Jira can connect to your
+    self-managed GitLab instance.
+  - [Reinstall the app](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually). This method might remove all [synced data](../../integration/jira/connect-app.md#gitlab-data-synced-to-jira) from the [Jira development panel](../../integration/jira/development_panel.md).
 
 ## `Failed to update the GitLab instance`
 
@@ -121,16 +173,17 @@ You should see a `GET` request to `https://gitlab.com/-/jira_connect/installatio
 This request should return a `200 OK`, but it might return a `422 Unprocessable Entity` if there was a problem.
 You can check the response body for the error.
 
-If you cannot resolve the problem and you are a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance. Provide
-GitLab Support with:
+If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
+Provide GitLab Support with:
 
-1. Your GitLab self-managed instance URL.
-1. Your GitLab.com username.
-1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
-1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) that you have
-   processed with the [harcleaner](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) utility.
+- Your self-managed instance URL.
+- Your GitLab.com username.
+- Optional. The `X-Request-Id` response header for the failed `GET`
+  request to `https://gitlab.com/-/jira_connect/installations`.
+- Optional. [A HAR file](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting)
+  you've processed with [`harcleaner`](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) that captures the issue.
 
-The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
+GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 
@@ -145,8 +198,8 @@ Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_conn
 
 For the first log:
 
-- `json.status` is `422`.
-- `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+- `json.status` is `422 Unprocessable Entity`.
+- `json.params.value` should match the self-managed GitLab URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
 For the second log, you might have one of the following scenarios:
 
@@ -154,31 +207,47 @@ For the second log, you might have one of the following scenarios:
   - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
   - `json.message` is `Proxy lifecycle event received error response` or similar.
   - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
-  - If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
-  `https://gitlab.com`.
+  - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is empty,
+    [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
 
-## Error when connecting the app
+## `Failed to link group`
 
-When you connect the GitLab for Jira Cloud app, you might get one of these errors:
-
-```plaintext
-Failed to load Jira Connect Application ID. Please try again.
-```
+When you link a group, you might get the following error:
 
 ```plaintext
 Failed to link group. Please try again.
 ```
 
-When you check the browser console, you might see the following message:
+A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+
+To resolve this issue, ensure the Jira user that installs and configures the app
+meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
+
+## `Failed to load Jira Connect Application ID`
+
+When you sign in to the GitLab for Jira Cloud app after you point the app
+to your self-managed instance, you might get the following error:
+
+```plaintext
+Failed to load Jira Connect Application ID. Please try again.
+```
+
+When you check the browser console, you might also see the following message:
 
 ```plaintext
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
 ```
 
-A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+To resolve this issue:
 
-To resolve this issue, ensure the Jira user that installs and configures the app meets certain
-[requirements](jira_cloud_app.md#jira-user-requirements).
+1. Ensure `/-/jira_connect/oauth_application_id` is publicly accessible and returns a JSON response:
+
+   ```shell
+   curl --include "https://gitlab.example.com/-/jira_connect/oauth_application_id"
+   ```
+
+1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
+   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.

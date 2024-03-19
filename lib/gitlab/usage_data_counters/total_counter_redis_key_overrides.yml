@@ -1,0 +1,12 @@
+# This file holds a list of Redis keys for Internal Events tracking total
+# counters in the new format, mapped to the existing legacy keys, in order
+# to keep the continuity of past data and not have to migrate the keys.
+#
+# Format:
+# NEW_KEY_1: LEGACY_KEY_1
+# NEW_KEY_2: LEGACY_KEY_2
+# ...
+#
+'{event_counters}_licenses_list_viewed': USAGE_LICENSES_LIST_VIEWS
+'{event_counters}_usage_data_download_payload_clicked': USAGE_SERVICE_USAGE_DATA_DOWNLOAD_PAYLOAD_CLICK
+'{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT

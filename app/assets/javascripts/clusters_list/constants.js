@@ -80,10 +80,10 @@ export const I18N_AGENT_TABLE = {
   ),
   versionOutdatedTitle: s__('ClusterAgents|Agent version update required'),
   versionOutdatedText: s__(
-    'ClusterAgents|Your agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version.',
+    'ClusterAgents|Your agent version is out of sync with your GitLab KAS version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version.',
   ),
   versionMismatchOutdatedTitle: s__('ClusterAgents|Agent version mismatch and update'),
-  viewDocsText: s__('ClusterAgents|How to update an agent?'),
+  viewDocsText: s__('ClusterAgents|How do I update an agent?'),
   defaultConfigText: s__('ClusterAgents|Default configuration'),
   defaultConfigTooltip: s__('ClusterAgents|What is default configuration?'),
   sharedBadgeText: s__('ClusterAgents|shared'),
@@ -180,6 +180,7 @@ export const AGENT_STATUSES = {
 };
 
 export const I18N_AGENTS_EMPTY_STATE = {
+  title: s__("ClusterIntegration|Your project doesn't have any GitLab agents"),
   introText: s__(
     'ClusterIntegration|Use the %{linkStart}GitLab agent%{linkEnd} to safely connect your Kubernetes clusters to GitLab. You can deploy your applications, run your pipelines, use Review Apps, and much more.',
   ),

@@ -1,16 +1,20 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package_registry do
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+
   let(:app_name) { 'my-app' }
   let(:version) { '1.0-SNAPSHOT' }
   let(:path) { "my/company/app/#{app_name}" }
   let(:path_with_version) { "#{path}/#{version}" }
 
   describe '#execute' do
-    subject(:package) { described_class.new(project, user, params).execute }
+    let(:package) { subject[:package] }
+
+    subject { described_class.new(project, user, params).execute }
 
     context 'with version' do
       let(:params) do
@@ -20,6 +24,8 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
           version: version
         }
       end
+
+      it_behaves_like 'returning a success service response'
 
       it 'creates a new package with metadatum' do
         expect(package).to be_valid
@@ -45,9 +51,9 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
         }
       end
 
-      it 'creates a new package with metadatum' do
-        package = described_class.new(project, user, params).execute
+      it_behaves_like 'returning a success service response'
 
+      it 'creates a new package with metadatum' do
         expect(package).to be_valid
         expect(package.name).to eq(path)
         expect(package.version).to be nil
@@ -61,7 +67,7 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
       it_behaves_like 'assigns the package creator'
     end
 
-    context 'path is missing' do
+    context 'without path' do
       let(:params) do
         {
           name: path,
@@ -69,10 +75,9 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
         }
       end
 
-      it 'raises an error' do
-        service = described_class.new(project, user, params)
-
-        expect { service.execute }.to raise_error(ActiveRecord::RecordInvalid)
+      it_behaves_like 'returning an error service response',
+        message: "Validation failed: Maven metadatum path can't be blank" do
+        it { is_expected.to have_attributes(reason: :invalid_parameter) }
       end
     end
   end

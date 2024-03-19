@@ -115,5 +115,38 @@ RSpec.describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state d
         end
       end
     end
+
+    describe 'instrumentation', :request_store do
+      let!(:lease) { stub_exclusive_lease_taken(unique_key) }
+
+      subject do
+        class_instance.in_lock(unique_key, sleep_sec: 0.1, retries: 3) do
+          sleep 0.1
+        end
+      end
+
+      it 'increments lock requested count and computes the duration waiting for the lock and holding the lock' do
+        expect(lease).to receive(:try_obtain).exactly(3).times.and_return(nil)
+        expect(lease).to receive(:try_obtain).once.and_return(unique_key)
+
+        subject
+
+        expect(Gitlab::Instrumentation::ExclusiveLock.requested_count).to eq(1)
+        expect(Gitlab::Instrumentation::ExclusiveLock.wait_duration).to be_between(0.3, 0.31)
+        expect(Gitlab::Instrumentation::ExclusiveLock.hold_duration).to be_between(0.1, 0.11)
+      end
+
+      context 'when exclusive lease is not obtained' do
+        it 'increments lock requested count and computes the duration waiting for the lock' do
+          expect(lease).to receive(:try_obtain).exactly(4).times.and_return(nil)
+
+          expect { subject }.to raise_error('Failed to obtain a lock')
+
+          expect(Gitlab::Instrumentation::ExclusiveLock.requested_count).to eq(1)
+          expect(Gitlab::Instrumentation::ExclusiveLock.wait_duration).to be_between(0.3, 0.31)
+          expect(Gitlab::Instrumentation::ExclusiveLock.hold_duration).to eq(0)
+        end
+      end
+    end
   end
 end

@@ -325,6 +325,9 @@ class MergeRequest < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
+  scope :by_head_commit_sha, ->(sha) do
+    joins(:latest_merge_request_diff).where('merge_request_diffs.head_commit_sha' => sha)
+  end
   scope :by_merge_commit_sha, -> (sha) do
     where(merge_commit_sha: sha)
   end
@@ -336,6 +339,9 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_merged_or_merge_or_squash_commit_sha, -> (sha) do
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
+  end
+  scope :by_merge_commit_sha_or_head_commit_sha, -> (sha) do
+    from_union([by_merge_commit_sha(sha), by_head_commit_sha(sha)])
   end
   scope :by_related_commit_sha, -> (sha) do
     from_union(
@@ -668,8 +674,14 @@ class MergeRequest < ApplicationRecord
     [:assignees, :reviewers] + super
   end
 
-  def committers(with_merge_commits: false)
-    @committers ||= commits.committers(with_merge_commits: with_merge_commits)
+  def committers(with_merge_commits: false, lazy: false)
+    strong_memoize_with(:committers, with_merge_commits, lazy) do
+      if Feature.enabled?(:lazy_merge_request_committers, project)
+        commits.committers(with_merge_commits: with_merge_commits, lazy: lazy)
+      else
+        commits.committers(with_merge_commits: with_merge_commits)
+      end
+    end
   end
 
   # Verifies if title has changed not taking into account Draft prefix
@@ -1105,23 +1117,7 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.persisted? || create_merge_request_diff
   end
 
-  def eager_fetch_ref!
-    return unless valid?
-
-    # has_internal_id normally attempts to allocate the iid in the
-    # before_create hook, but we need the iid to be available before
-    # that to fetch the ref into the target project.
-    track_target_project_iid!
-    ensure_target_project_iid!
-
-    fetch_ref!
-    # Prevent the after_create hook from fetching the source branch again.
-    @skip_fetch_ref = true
-  end
-
   def create_merge_request_diff
-    # Callers such as MergeRequests::BuildService may not call eager_fetch_ref!. Just
-    # in case they haven't, we fetch the ref.
     fetch_ref! unless skip_fetch_ref
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
@@ -1246,6 +1242,7 @@ class MergeRequest < ApplicationRecord
   # skip_draft_check
   # skip_approved_check
   # skip_blocked_check
+  # skip_external_status_check
   def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
     return false unless mergeable_state?(**mergeable_state_check_params)
 
@@ -1284,6 +1281,7 @@ class MergeRequest < ApplicationRecord
   # skip_draft_check
   # skip_approved_check
   # skip_blocked_check
+  # skip_external_status_check
   def mergeable_state?(**mergeable_state_check_params)
     additional_checks = execute_merge_checks(
       self.class.mergeable_state_checks,
@@ -1840,11 +1838,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
   end
 
   def has_secret_detection_reports?
-    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
   end
 
   def compare_sast_reports(current_user)
@@ -2018,7 +2016,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def keep_around_commit
-    project.repository.keep_around(self.merge_commit_sha)
+    project.repository.keep_around(self.merge_commit_sha, source: self.class.name)
   end
 
   def has_commits?

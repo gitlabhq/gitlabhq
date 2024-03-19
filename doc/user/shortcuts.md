@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -320,7 +320,7 @@ These shortcuts are available when using a [filtered search input](search/index.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 

@@ -8,15 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_metrics`.
-On GitLab.com, this feature is not available.
+This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
 The feature is not ready for production use.
 
 Metrics provide insight about the operational health of monitored systems.
@@ -41,7 +39,7 @@ You must have at least the Maintainer role for the project.
    1. On the left sidebar, select **Search or go to** and find your project.
    1. Select **Settings > Access Tokens**.
    1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`. Be sure to save the access token value for later.
-   1. Select **Monitor > Tracing**, and then select **Enable**.
+   1. Select **Monitor > Metrics**, and then select **Enable**.
 1. To configure your application to send GitLab metrics, set the following environment variables:
 
    ```shell

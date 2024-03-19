@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
@@ -60,7 +60,7 @@ Prerequisites:
 - [Group single sign-on](index.md) is configured.
 
 The SAML application created during [single sign-on](index.md) set up for
-[Azure Active Directory](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
+[Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
 NOTE:
@@ -144,18 +144,20 @@ The following table provides attribute mappings that are required for GitLab.
 | Source attribute                                                           | Target attribute               | Matching precedence |
 |:---------------------------------------------------------------------------|:-------------------------------|:--------------------|
 | `objectId`                                                                 | `externalId`                   | 1                   |
-| `userPrincipalName` OR `mail` (1)                                 | `emails[type eq "work"].value` |                     |
+| `userPrincipalName` OR `mail` <sup>1</sup>                                 | `emails[type eq "work"].value` |                     |
 | `mailNickname`                                                    | `userName`                     |                     |
-| `displayName` OR `Join(" ", [givenName], [surname])` (2)          | `name.formatted`               |                     |
-| `Switch([IsSoftDeleted], , "False", "True", "True", "False")` (3) | `active`                       |                     |
+| `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
+| `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
 
-<!-- markdownlint-disable MD029 -->
-
-1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
-2. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
-3. This is an expression mapping type, not a direct mapping. Select "Expression" in the "Mapping type" dropdown list.
-
-<!-- markdownlint-enable MD029 -->
+<html>
+<small>
+  <ol>
+    <li>Use <code>mail</code> as a source attribute when the <code>userPrincipalName</code> is not an email address or is not deliverable.</li>
+    <li>Use the <code>Join</code> expression if your <code>displayName</code> does not match the format of <code>Firstname Lastname</code>.</li>
+    <li>This is an expression mapping type, not a direct mapping. Select <b>Expression</b> in the <b>Mapping type</b> dropdown list.</li>
+  </ol>
+</small>
+</html>
 
 Each attribute mapping has:
 

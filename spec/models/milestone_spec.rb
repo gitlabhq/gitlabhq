@@ -470,7 +470,7 @@ RSpec.describe Milestone, feature_category: :team_planning do
       end
 
       it 'does supports cross-project references within a group' do
-        expect(milestone.to_reference(another_project, format: :name)).to eq '%"milestone"'
+        expect(milestone.to_reference(another_project, format: :name)).to eq "#{group.full_path}%\"milestone\""
       end
 
       it 'raises an error when using iid format' do

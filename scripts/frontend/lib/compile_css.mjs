@@ -1,10 +1,13 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { env } from 'node:process';
+import autoprefixer from 'autoprefixer';
+import postcss from 'postcss';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
+import tailwindcss from 'tailwindcss/lib/plugin.js';
+import tailwindConfig from '../../../config/tailwind.config.js';
 import IS_EE from '../../../config/helpers/is_ee_env.js';
 import IS_JH from '../../../config/helpers/is_jh_env.js';
 /* eslint-enable import/extensions */
@@ -164,14 +167,30 @@ function resolveCompilationTargets() {
   return Object.fromEntries([...result.entries()].map((entry) => entry.reverse()));
 }
 
+function createPostCSSProcessors() {
+  return {
+    tailwind: postcss([tailwindcss(tailwindConfig), autoprefixer()]),
+    default: postcss([autoprefixer()]),
+  };
+}
+
 export async function compileAllStyles({ shouldWatch = false }) {
   const reverseDependencies = {};
 
   const compilationTargets = resolveCompilationTargets();
 
+  const processors = createPostCSSProcessors();
+
   const sassCompilerOptions = {
     loadPaths: resolveLoadPaths(),
     logger: Logger.silent,
+    // For now we compress CSS directly with SASS if we do not watch
+    // We probably want to change this later if there are more
+    // post-processing steps, because we would compress
+    // _after_ things like auto-prefixer, etc. happened
+    style: shouldWatch ? 'expanded' : 'compressed',
+    sourceMap: shouldWatch,
+    sourceMapIncludeSources: shouldWatch,
   };
 
   let fileWatcher = null;
@@ -180,9 +199,25 @@ export async function compileAllStyles({ shouldWatch = false }) {
     fileWatcher = watch([]);
   }
 
+  async function postProcessCSS(content, source) {
+    const processor = content.css.includes('@apply') ? processors.tailwind : processors.default;
+
+    return processor.process(content.css, {
+      from: source,
+      map: content.sourceMap
+        ? {
+            from: source,
+            prev: content.sourceMap,
+            inline: true,
+            sourcesContent: true,
+          }
+        : false,
+    });
+  }
+
   async function compileSCSSFile(source, dest) {
     console.log(`\tcompiling source ${source} to ${dest}`);
-    const content = compile(source, sassCompilerOptions);
+    let content = compile(source, sassCompilerOptions);
     if (fileWatcher) {
       for (const dependency of content.loadedUrls) {
         if (dependency.protocol === 'file:') {
@@ -193,9 +228,10 @@ export async function compileAllStyles({ shouldWatch = false }) {
         }
       }
     }
+    content = await postProcessCSS(content, source);
     // Create target folder if it doesn't exist
     await mkdir(path.dirname(dest), { recursive: true });
-    return writeFile(dest, content.css, 'utf-8');
+    await writeFile(dest, content.css, 'utf-8');
   }
 
   if (fileWatcher) {
@@ -218,14 +254,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
   return fileWatcher;
 }
 
-function shouldUseNewPipeline() {
-  return /^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`);
-}
-
 export function viteCSSCompilerPlugin({ shouldWatch = true }) {
-  if (!shouldUseNewPipeline()) {
-    return null;
-  }
   let fileWatcher = null;
   return {
     name: 'gitlab-css-compiler',
@@ -239,9 +268,6 @@ export function viteCSSCompilerPlugin({ shouldWatch = true }) {
 }
 
 export function simplePluginForNodemon({ shouldWatch = true }) {
-  if (!shouldUseNewPipeline()) {
-    return null;
-  }
   let fileWatcher = null;
   return {
     async start() {

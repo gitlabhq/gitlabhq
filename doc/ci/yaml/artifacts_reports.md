@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -96,7 +96,7 @@ The following is an example of what a job annotations report might look like:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/index.md)
 as artifacts.
@@ -112,7 +112,7 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
@@ -168,7 +168,7 @@ The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) value is set to
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -184,7 +184,7 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/index.md).
 The collected coverage fuzzing report uploads to GitLab as an artifact.
@@ -224,7 +224,7 @@ artifacts:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -240,7 +240,7 @@ GitLab can display the results of one or more reports in:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -318,7 +318,7 @@ concatenate them into a single file. Use either:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
@@ -332,7 +332,7 @@ GitLab cannot display the combined results of multiple `load_performance` report
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
@@ -344,7 +344,7 @@ GitLab can display the results of one or more reports in the merge request
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
@@ -356,7 +356,7 @@ GitLab can display the results of one or more reports in the
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 
@@ -376,12 +376,12 @@ For more information, see:
 
 ## `artifacts:reports:secret_detection`
 
-The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/index.md).
+The `secret-detection` report collects [detected secrets](../../user/application_security/secret_detection/pipeline/index.md).
 The collected Secret Detection report is uploaded to GitLab.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [secret scanning widget](../../user/application_security/secret_detection/index.md).
+- The merge request [secret scanning widget](../../user/application_security/secret_detection/pipeline/index.md).
 - The [pipeline security tab](../../user/application_security/index.md#pipeline-security-tab).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 

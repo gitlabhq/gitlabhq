@@ -25,6 +25,7 @@ setup-test-env:
     - section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
     - select_gitlab_workhorse_essentials
     - section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
+    - strip_executable_binaries "${TMP_TEST_FOLDER}"
   artifacts:
     expire_in: 7d
     paths:
@@ -49,12 +50,10 @@ setup-test-env:
 setup-test-env-fips:
   extends:
     - setup-test-env
-  before_script:
-    - yum install -y libpq libpq-devel
-    - source scripts/prepare_build.sh
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ubi-${UBI_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
   variables:
-    DEBIAN_VERSION: ubi-${UBI_VERSION}
+    BUILD_OS: "ubi"
+    OS_VERSION: ${UBI_VERSION}
 
 update-setup-test-env-cache:
   extends:
@@ -64,6 +63,12 @@ update-setup-test-env-cache:
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
 
+update-setup-test-env-cache-fips:
+  extends:
+    - setup-test-env-fips
+    - .setup-test-env-cache-push
+    - .shared:rules:update-cache
+
 update-gitaly-binaries-cache:
   extends:
     - setup-test-env
@@ -71,6 +76,12 @@ update-gitaly-binaries-cache:
     - .shared:rules:update-gitaly-binaries-cache
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
+
+update-gitaly-binaries-cache-fips:
+  extends:
+    - setup-test-env-fips
+    - .gitaly-binaries-cache-push
+    - .shared:rules:update-gitaly-binaries-cache
 
 update-ruby-gems-coverage-cache-push:
   extends:
@@ -309,7 +320,7 @@ rspec fast_spec_helper:
   script:
     - fast_spec_helper_specs=$(git grep -l -E '^require.*fast_spec_helper')
     # Load fast_spec_helper as well just in case there are no specs available.
-    - bin/rspec --dry-run spec/fast_spec_helper.rb $fast_spec_helper_specs
+    - rspec_section bin/rspec --dry-run spec/fast_spec_helper.rb ${fast_spec_helper_specs}
 
 rspec unit clickhouse:
   extends:
@@ -461,7 +472,7 @@ rspec:artifact-collector ee remainder:
     - !reference ['.rails:rules:ee-only-system', rules]
 
 rspec:coverage:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim-ruby-${RUBY_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}
   extends:
     - .coverage-base
     - .rails:rules:rspec-coverage
@@ -492,10 +503,6 @@ rspec:coverage:
       optional: true
     - job: rspec:artifact-collector ee remainder
       optional: true
-    # Memory jobs
-    - job: memory-on-boot
-      optional: true
-      artifacts: false
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -512,7 +519,7 @@ rspec:coverage:
         path: coverage/coverage.xml
 
 rspec:undercoverage:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim-ruby-${RUBY_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}
   extends:
     - .coverage-base
     - .rails:rules:rspec-undercoverage
@@ -941,6 +948,39 @@ rspec system pg15:
     - .rspec-base-pg15
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-system-parallel
+
+# PG16
+rspec migration pg16:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-migration-parallel
+
+rspec background_migration pg16:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-background-migration-parallel
+
+rspec unit pg16:
+  extends:
+    - .rspec-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-unit-parallel
+
+rspec integration pg16:
+  extends:
+    - .rspec-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-integration-parallel
+
+rspec system pg16:
+  extends:
+    - .rspec-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage
+    - .rspec-system-parallel
 # EE/FOSS: default branch nightly scheduled jobs #
 ##########################################
 
@@ -1098,6 +1138,93 @@ rspec-ee system pg15 es8:
   extends:
     - .rspec-ee-base-pg15-es8
     - .rspec-ee-system-parallel
+
+# PG16
+rspec-ee unit pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee unit pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee integration pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee integration pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg16 opensearch1:
+  extends:
+    - .rspec-ee-base-pg16-opensearch1
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee system pg16 opensearch2:
+  extends:
+    - .rspec-ee-base-pg16-opensearch2
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+
+rspec-ee migration pg16:
+  extends:
+    - .rspec-ee-base-pg16
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-migration-parallel
+
+rspec-ee background_migration pg16:
+  extends:
+    - .rspec-ee-base-pg16
+    - .rspec-base-migration
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-background-migration-parallel
+
+rspec-ee unit pg16:
+  extends:
+    - .rspec-ee-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
+
+rspec-ee unit pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-unit-parallel
+
+rspec-ee integration pg16:
+  extends:
+    - .rspec-ee-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
+
+rspec-ee integration pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-integration-parallel
+
+rspec-ee system pg16:
+  extends:
+    - .rspec-ee-base-pg16
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-system-parallel
+
+rspec-ee system pg16 es8:
+  extends:
+    - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
+    - .rspec-ee-system-parallel
 # EE: default branch nightly scheduled jobs #
 #####################################
 
@@ -1109,7 +1236,7 @@ rspec-ee system pg15 es8:
   stage: test
   script:
     - !reference [.base-script, script]
-    - rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
+    - rspec_section rspec_fail_fast "${MATCHING_TESTS_PATH}" "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~zoekt --tag ~click_house"
 
 rspec fail-fast:
   extends:
@@ -1188,7 +1315,7 @@ fail-pipeline-early:
     - job: "detect-previous-failed-tests"
   script:
     - !reference [.base-script, script]
-    - rspec_rerun_previous_failed_tests "${PREVIOUS_FAILED_TESTS_FILE}"
+    - rspec_section rspec_rerun_previous_failed_tests "${PREVIOUS_FAILED_TESTS_FILE}"
 
 rspec rspec-pg14-rerun-previous-failed-tests:
   extends:

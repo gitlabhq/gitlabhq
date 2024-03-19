@@ -81,6 +81,9 @@ export const initGitlabWebIDE = async (el) => {
       userPreferences: el.dataset.userPreferencesPath,
       signIn: el.dataset.signInPath,
     },
+    featureFlags: {
+      settingsSync: gon.features.webIdeSettingsSync || false,
+    },
     editorFont,
     codeSuggestionsEnabled,
     handleTracking,

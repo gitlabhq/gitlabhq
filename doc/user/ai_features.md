@@ -18,40 +18,98 @@ Some features are still in development. View details about [support for each sta
 
 | Goal | Feature | Tier/Offering/Status |
 |---|---|---|
-| Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Free Open Access** subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) available through February 14, 2024:<br>- SaaS, All subscription tiers <br>- Self-managed, Premium and Ultimate tiers<br><br> **Generally Available** starting February 15, 2024: <br> - SaaS, self-managed <br>- Premium and Ultimate tiers as part of [GitLab Duo Pro](https://about.gitlab.com/press/releases/2024-01-17-gitlab-announces-pricing-of-gitLab-duo-pro.html/) |
-| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Beta Access** subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/):<br>- SaaS, self-managed <br>- Premium and Ultimate tiers<br><br>**Status:** Beta |
-| Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page. | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** SaaS <br>**Status:** Experiment |
-| Automates repetitive tasks and helps catch bugs early. | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Ultimate <br>**Offering:** SaaS, self-managed <br>**Status:** Beta |
-| Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Ultimate<br>**Offering:** SaaS <br>**Status:** Experiment |
-| Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw) | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | **Tier:** Ultimate <br>**Offering:** SaaS<br>**Status:** Generally Available  |
-| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Beta |
-| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
-| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** SaaS, self-managed <br>**Status:** Experiment |
-| Processes and responds to your questions about your application's usage data. | [Product Analytics](product_analytics/index.md) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
+| Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
+| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** Premium, Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta (Subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)) |
+| Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page. | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Automates repetitive tasks and helps catch bugs early. | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta |
+| Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw) | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | **Tier:** Ultimate <br>**Offering:** GitLab.com<br>**Status:** Generally Available  |
+| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
+| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
 
 ## Enable AI/ML features
 
-- Experiment and Beta features
-  - All features categorized as
-    [Experiment features](../policy/experiment-beta-support.md#experiment) or
-    [Beta features](../policy/experiment-beta-support.md#beta)
-    (besides Code Suggestions) require that this setting is enabled at the group
-    level.
-  - Their usage is subject to the
-    [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-  - Experiment and Beta features are disabled by default.
-  - This setting is available to Ultimate groups on SaaS and can be set by a user
-    who has the Owner role in the group.
-  - View [how to enable this setting](group/manage.md#enable-experiment-and-beta-features).
-- Code Suggestions
-  - View [how to enable for self-managed](project/repository/code_suggestions/self_managed.md#enable-code-suggestions).
-  - View [how to enable for SaaS](project/repository/code_suggestions/saas.md#enable-code-suggestions).
+For features listed as Experiment and Beta:
+
+- These features are disabled by default.
+- To enable, a user with the Owner role for the group must [turn on this setting](group/manage.md#enable-experiment-and-beta-features).
+  On GitLab.com, this setting is available for Ultimate subscriptions only.
+- These features are subject to the
+  [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+For all self-managed features:
+
+- Your firewalls and HTTP proxy servers must allow outbound connections
+  to `https://cloud.gitlab.com:443`. To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
+  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+
+For other features:
+
+- [Code Suggestions](project/repository/code_suggestions/index.md) is enabled when you purchase the
+  GitLab Duo Pro add-on and assign seats to users.
+- [Chat](gitlab_duo_chat.md)
+  - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-users).
+  - View [how to enable for GitLab.com](gitlab_duo_chat.md#for-saas-users).
+
+### Disable GitLab Duo features
+
+> - [Settings to disable AI features were introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+You can disable GitLab Duo AI features for a group, project, or instance.
+When it's disabled, any attempt to use GitLab Duo features on the group, project, or instance is blocked and an error is displayed.
+GitLab Duo features are also blocked for resources in the group or project, like epics,
+issues, and vulnerabilities.
+
+#### For the group or project
+
+Prerequisites:
+
+- You must have the Owner role for the group or project.
+
+To disable GitLab Duo:
+
+1. Use the [GitLab GraphQL API](../api/graphql/getting_started.md)
+   `groupUpdate` or `projectSettingsUpdate` mutation.
+1. Disable GitLab Duo for the project or group by setting the `duo_features_enabled` setting to `false`.
+   (The default is `true`.)
+1. Optional. To make all groups or projects in the hierarchy inherit the value for a top-level group,
+   set `lock_duo_features_enabled` to `true`. (The default is `false`.)
+   The child groups and projects cannot override this value.
+
+#### For an instance
+
+Prerequisites:
+
+- You must be an administrator.
+
+To disable GitLab Duo:
+
+1. Use the [application settings API](../api/settings.md).
+1. Disable GitLab Duo for the instance by setting the `duo_features_enabled` setting to `false`.
+   (The default is `true`.)
+1. Optional. To ensure this setting cannot be overridden at the group or project level,
+   set `lock_duo_features_enabled` to `true`. (The default is `false`.)
+   The child groups and projects cannot override this value.
+
+#### Future plans
+
+- An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) for making this setting
+  available in the UI.
+- An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/448709) for making the setting
+  cascade to all groups and projects. Right now the projects and groups do not
+  display the setting of the top-level group. To ensure the setting cascades,
+  ensure `lock_duo_features_enabled` is set to `true`.
 
 ## Experimental AI features and how to use them
 
@@ -61,7 +119,7 @@ The following subsections describe the experimental AI features in more detail.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
@@ -111,7 +169,7 @@ We cannot guarantee that the large language model produces results that are corr
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
@@ -132,14 +190,14 @@ The summary is displayed only for you.
 
 Provide feedback on this experimental feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
 
-**Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
+**Data usage**: When you use this feature, the text of all comments on the issue are sent to the large
 language model referenced above.
 
 ### Forecast deployment frequency with Value stream forecasting
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
@@ -169,7 +227,7 @@ Provide feedback on this experimental feature in [issue 416833](https://gitlab.c
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
@@ -188,7 +246,7 @@ reason for the failure.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
@@ -216,25 +274,25 @@ language model referenced above.
 
 | Feature | Large Language Model |
 |---|---|
-| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) |
-| [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
+| [Discussion summary](#summarize-issue-discussions-with-discussion-summary) |Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
-| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
+| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
-| [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | GitLab creates a machine learning model for each project, which is used to generate reviewers    [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10) |
-| [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
-| [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
-| [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text)    Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) if degraded performance |
-| [Vulnerability resolution](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-generation) |
-| [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) |
-| [GitLab Duo Chat](gitlab_duo_chat.md) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)    Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings) |
-| [Root cause analysis](#root-cause-analysis) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
+| [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
+| [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)    Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) if degraded performance |
+| [Vulnerability resolution](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-generation) |
+| [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
+| [GitLab Duo Chat](gitlab_duo_chat.md) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)    Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings) |
+| [Root cause analysis](#root-cause-analysis) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | Statistical forecasting |
 
 ## Data usage
 
-GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function. GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Models](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview#genai-models) and [Anthropic Claude](https://www.anthropic.com/product).
+GitLab AI features leverage generative AI to help increase velocity and aim to help make you more productive. Each feature operates independently of other features and is not required for other features to function. GitLab selects the best-in-class large-language models for specific tasks. We use [Google Vertex AI Models](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview#genai-models) and [Anthropic Claude](https://www.anthropic.com/product).
 
 ### Progressive enhancement
 
@@ -257,6 +315,8 @@ The below reflects the current retention periods of GitLab AI model [Sub-Process
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
+GitLab retains input and output for up to 30 days for the purpose of troubleshooting, debugging, and addressing latency issues.
+
 ### Telemetry
 
 GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
@@ -274,8 +334,8 @@ GitLab does not train generative AI models based on private (non-public) data. T
 
 For more information on our AI [sub-processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors), see:
 
-- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
-- Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
+- Google Vertex AI Models APIs [data governance](https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai).
+- Anthropic Claude's [constitution](https://www.anthropic.com/news/claudes-constitution).
 
 ### Model accuracy and quality
 

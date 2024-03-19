@@ -322,7 +322,7 @@ describe('PackagesApp', () => {
       expect(findPackageFiles().exists()).toBe(true);
 
       expect(findPackageFiles().props()).toMatchObject({
-        canDelete: packageData().canDestroy,
+        canDelete: packageData().userPermissions.destroyPackage,
         packageId: packageData().id,
         packageType: packageData().packageType,
         projectPath: 'gitlab-test',

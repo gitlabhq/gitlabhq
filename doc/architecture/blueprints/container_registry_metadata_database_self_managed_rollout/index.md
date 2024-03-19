@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2023-06-09"
 authors: [ "@hswimelar" ]
 coach: "@grzesiek"
-approvers: [ "@trizzi ", "@sgoldstein" ]
+approvers: [ "@trizzi", "@sgoldstein" ]
 owning-stage: "~devops::package"
 participating-stages: []
 ---

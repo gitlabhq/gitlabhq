@@ -1,9 +1,20 @@
 <script>
-import { GlSprintf, GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
-import { sprintf, n__ } from '~/locale';
-import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
+import {
+  GlSprintf,
+  GlLink,
+  GlLoadingIcon,
+  GlIcon,
+  GlButton,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
+import { sprintf, n__, s__ } from '~/locale';
+import { getParameterByName, mergeUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import { createAlert } from '~/alert';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
 import { getAccessLevels } from '../../../utils';
 import Protection from './protection.vue';
 import {
@@ -16,6 +27,7 @@ import {
   NOT_REQUIRED_ICON,
   REQUIRED_ICON_CLASS,
   NOT_REQUIRED_ICON_CLASS,
+  DELETE_RULE_MODAL_ID,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
@@ -24,14 +36,22 @@ const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
 export default {
   name: 'RuleView',
   i18n: I18N,
+  modalId: DELETE_RULE_MODAL_ID,
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
-  components: { Protection, GlSprintf, GlLink, GlLoadingIcon, GlIcon },
+  components: { Protection, GlSprintf, GlLink, GlLoadingIcon, GlIcon, GlButton, GlModal },
+  directives: {
+    GlModal: GlModalDirective,
+  },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     projectPath: {
       default: '',
     },
     protectedBranchesPath: {
+      default: '',
+    },
+    branchRulesPath: {
       default: '',
     },
     branchesPath: {
@@ -141,134 +161,188 @@ export default {
   },
   methods: {
     getAccessLevels,
+    deleteBranchRule() {
+      this.$apollo
+        .mutate({
+          mutation: deleteBranchRuleMutation,
+          variables: {
+            input: {
+              id: this.branchRule.id,
+            },
+          },
+        })
+        .then(
+          // eslint-disable-next-line consistent-return
+          ({ data: { branchRuleDelete } = {} } = {}) => {
+            const [error] = branchRuleDelete.errors;
+            if (error) {
+              return createAlert({
+                message: error.message,
+                captureError: true,
+              });
+            }
+            visitUrl(this.branchRulesPath);
+          },
+        )
+        .catch(() => {
+          return createAlert({
+            message: s__('BranchRules|Something went wrong while deleting branch rule.'),
+            captureError: true,
+          });
+        });
+    },
   },
 };
 </script>
 
 <template>
-  <gl-loading-icon v-if="$apollo.loading" />
-  <div v-else-if="!branchRule">{{ $options.i18n.noData }}</div>
-  <div v-else>
-    <strong data-testid="branch-title">{{ branchTitle }}</strong>
-    <p v-if="!allBranches" class="gl-mb-3 gl-text-gray-400">
-      <gl-sprintf :message="$options.i18n.wildcardsHelpText">
+  <div>
+    <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+      <h3 class="gl-mb-5">{{ $options.i18n.pageTitle }}</h3>
+      <gl-button
+        v-if="glFeatures.addBranchRule"
+        v-gl-modal="$options.modalId"
+        data-testid="delete-rule-button"
+        category="secondary"
+        variant="danger"
+        >{{ $options.i18n.deleteRule }}
+      </gl-button>
+    </div>
+    <gl-loading-icon v-if="$apollo.loading" />
+    <div v-else-if="!branchRule">{{ $options.i18n.noData }}</div>
+    <div v-else>
+      <strong data-testid="branch-title">{{ branchTitle }}</strong>
+      <p v-if="!allBranches" class="gl-mb-3 gl-text-gray-400">
+        <gl-sprintf :message="$options.i18n.wildcardsHelpText">
+          <template #link="{ content }">
+            <gl-link :href="$options.wildcardsHelpDocLink">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
+
+      <div v-if="allBranches" class="gl-mt-2" data-testid="branch">
+        {{ allBranchesLabel }}
+      </div>
+      <code v-else class="gl-mt-2" data-testid="branch">{{ branch }}</code>
+
+      <p v-if="matchingBranchesCount" class="gl-mt-3">
+        <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
+      </p>
+
+      <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h4>
+      <gl-sprintf :message="$options.i18n.protectBranchDescription">
         <template #link="{ content }">
-          <gl-link :href="$options.wildcardsHelpDocLink">
+          <gl-link :href="$options.protectedBranchesHelpDocLink">
             {{ content }}
           </gl-link>
         </template>
       </gl-sprintf>
-    </p>
 
-    <div v-if="allBranches" class="gl-mt-2" data-testid="branch">
-      {{ allBranchesLabel }}
-    </div>
-    <code v-else class="gl-mt-2" data-testid="branch">{{ branch }}</code>
-
-    <p v-if="matchingBranchesCount" class="gl-mt-3">
-      <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
-    </p>
-
-    <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h4>
-    <gl-sprintf :message="$options.i18n.protectBranchDescription">
-      <template #link="{ content }">
-        <gl-link :href="$options.protectedBranchesHelpDocLink">
-          {{ content }}
-        </gl-link>
-      </template>
-    </gl-sprintf>
-
-    <!-- Allowed to push -->
-    <protection
-      class="gl-mt-3"
-      :header="allowedToPushHeader"
-      :header-link-title="$options.i18n.manageProtectionsLinkTitle"
-      :header-link-href="protectedBranchesPath"
-      :roles="pushAccessLevels.roles"
-      :users="pushAccessLevels.users"
-      :groups="pushAccessLevels.groups"
-      data-testid="allowed-to-push-content"
-    />
-
-    <!-- Allowed to merge -->
-    <protection
-      :header="allowedToMergeHeader"
-      :header-link-title="$options.i18n.manageProtectionsLinkTitle"
-      :header-link-href="protectedBranchesPath"
-      :roles="mergeAccessLevels.roles"
-      :users="mergeAccessLevels.users"
-      :groups="mergeAccessLevels.groups"
-      data-testid="allowed-to-merge-content"
-    />
-
-    <!-- Force push -->
-    <div class="gl-display-flex gl-align-items-center">
-      <gl-icon
-        :size="14"
-        data-testid="force-push-icon"
-        :name="forcePushAttributes.icon"
-        :class="forcePushAttributes.iconClass"
+      <!-- Allowed to push -->
+      <protection
+        class="gl-mt-3"
+        :header="allowedToPushHeader"
+        :header-link-title="$options.i18n.manageProtectionsLinkTitle"
+        :header-link-href="protectedBranchesPath"
+        :roles="pushAccessLevels.roles"
+        :users="pushAccessLevels.users"
+        :groups="pushAccessLevels.groups"
+        data-testid="allowed-to-push-content"
       />
-      <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
-    </div>
 
-    <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+      <!-- Allowed to merge -->
+      <protection
+        :header="allowedToMergeHeader"
+        :header-link-title="$options.i18n.manageProtectionsLinkTitle"
+        :header-link-href="protectedBranchesPath"
+        :roles="mergeAccessLevels.roles"
+        :users="mergeAccessLevels.users"
+        :groups="mergeAccessLevels.groups"
+        data-testid="allowed-to-merge-content"
+      />
 
-    <!-- EE start -->
-    <!-- Code Owners -->
-    <div v-if="showCodeOwners">
+      <!-- Force push -->
       <div class="gl-display-flex gl-align-items-center">
         <gl-icon
-          data-testid="code-owners-icon"
           :size="14"
-          :name="codeOwnersApprovalAttributes.icon"
-          :class="codeOwnersApprovalAttributes.iconClass"
+          data-testid="force-push-icon"
+          :name="forcePushAttributes.icon"
+          :class="forcePushAttributes.iconClass"
         />
-        <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+        <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
       </div>
 
-      <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+      <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+
+      <!-- EE start -->
+      <!-- Code Owners -->
+      <div v-if="showCodeOwners">
+        <div class="gl-display-flex gl-align-items-center">
+          <gl-icon
+            data-testid="code-owners-icon"
+            :size="14"
+            :name="codeOwnersApprovalAttributes.icon"
+            :class="codeOwnersApprovalAttributes.iconClass"
+          />
+          <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+        </div>
+
+        <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+      </div>
+
+      <!-- Approvals -->
+      <template v-if="showApprovers">
+        <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
+        <gl-sprintf :message="$options.i18n.approvalsDescription">
+          <template #link="{ content }">
+            <gl-link :href="$options.approvalsHelpDocLink">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+
+        <protection
+          class="gl-mt-3"
+          :header="approvalsHeader"
+          :header-link-title="$options.i18n.manageApprovalsLinkTitle"
+          :header-link-href="approvalRulesPath"
+          :approvals="approvalRules"
+        />
+      </template>
+
+      <!-- Status checks -->
+      <template v-if="showStatusChecks">
+        <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
+        <gl-sprintf :message="$options.i18n.statusChecksDescription">
+          <template #link="{ content }">
+            <gl-link :href="$options.statusChecksHelpDocLink">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+
+        <protection
+          class="gl-mt-3"
+          :header="statusChecksHeader"
+          :header-link-title="$options.i18n.statusChecksLinkTitle"
+          :header-link-href="statusChecksPath"
+          :status-checks="statusChecks"
+        />
+      </template>
+      <!-- EE end -->
+      <gl-modal
+        v-if="glFeatures.addBranchRule"
+        :ref="$options.modalId"
+        :modal-id="$options.modalId"
+        :title="$options.i18n.deleteRuleModalTitle"
+        :ok-title="$options.i18n.deleteRuleModalDeleteText"
+        ok-variant="danger"
+        @ok="deleteBranchRule"
+      >
+        <p>{{ $options.i18n.deleteRuleModalText }}</p>
+      </gl-modal>
     </div>
-
-    <!-- Approvals -->
-    <template v-if="showApprovers">
-      <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h4>
-      <gl-sprintf :message="$options.i18n.approvalsDescription">
-        <template #link="{ content }">
-          <gl-link :href="$options.approvalsHelpDocLink">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-
-      <protection
-        class="gl-mt-3"
-        :header="approvalsHeader"
-        :header-link-title="$options.i18n.manageApprovalsLinkTitle"
-        :header-link-href="approvalRulesPath"
-        :approvals="approvalRules"
-      />
-    </template>
-
-    <!-- Status checks -->
-    <template v-if="showStatusChecks">
-      <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
-      <gl-sprintf :message="$options.i18n.statusChecksDescription">
-        <template #link="{ content }">
-          <gl-link :href="$options.statusChecksHelpDocLink">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-
-      <protection
-        class="gl-mt-3"
-        :header="statusChecksHeader"
-        :header-link-title="$options.i18n.statusChecksLinkTitle"
-        :header-link-href="statusChecksPath"
-        :status-checks="statusChecks"
-      />
-    </template>
-    <!-- EE end -->
   </div>
 </template>

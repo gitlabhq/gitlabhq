@@ -324,48 +324,38 @@ export default {
       failure.text
     }}</gl-alert>
     <div class="gl-mb-3">
-      <h3>{{ s__('PipelineCharts|CI/CD Analytics') }}</h3>
+      <h4>{{ s__('PipelineCharts|CI/CD Analytics') }}</h4>
     </div>
-    <h4 class="gl-my-4">{{ s__('PipelineCharts|Overall statistics') }}</h4>
-    <div class="row">
-      <div class="col-md-6">
-        <gl-skeleton-loader v-if="loading" :lines="5" />
-        <statistics-list v-else :counts="formattedCounts" />
-      </div>
-      <div v-if="!loading" class="col-md-6">
-        <strong>{{ __('Pipeline durations for the last 30 commits') }}</strong>
-        <gl-column-chart
-          :height="$options.chartContainerHeight"
-          :option="chartOptions"
-          :bars="timesChartTransformedData"
-          :y-axis-title="__('Minutes')"
-          :x-axis-title="__('Commit')"
-          x-axis-type="category"
-        />
-      </div>
-    </div>
-    <template v-if="!loading">
-      <hr />
-      <h4 class="gl-my-4">{{ __('Pipelines charts') }}</h4>
-      <ci-cd-analytics-charts
-        :charts="areaCharts"
-        :chart-options="$options.areaChartOptions"
-        :format-tooltip-text="formatTooltipText"
-      >
-        <template #tooltip-title>{{ tooltipTitle }}</template>
-        <template #tooltip-content>
-          <div
-            v-for="{ key, name, color, value } in tooltipContent"
-            :key="key"
-            class="gl-display-flex gl-justify-content-space-between"
-          >
-            <gl-chart-series-label class="gl-font-sm gl-mr-7" :color="color">
-              {{ name }}
-            </gl-chart-series-label>
-            <div class="gl-font-weight-bold">{{ value }}</div>
-          </div>
-        </template>
-      </ci-cd-analytics-charts>
-    </template>
+    <gl-skeleton-loader v-if="loading" :lines="5" />
+    <statistics-list v-else :counts="formattedCounts" />
+    <h4>{{ __('Pipelines charts') }}</h4>
+    <ci-cd-analytics-charts
+      :charts="areaCharts"
+      :chart-options="$options.areaChartOptions"
+      :format-tooltip-text="formatTooltipText"
+    >
+      <template #tooltip-title>{{ tooltipTitle }}</template>
+      <template #tooltip-content>
+        <div
+          v-for="{ key, name, color, value } in tooltipContent"
+          :key="key"
+          class="gl-display-flex gl-justify-content-space-between"
+        >
+          <gl-chart-series-label class="gl-font-sm gl-mr-7" :color="color">
+            {{ name }}
+          </gl-chart-series-label>
+          <div class="gl-font-weight-bold">{{ value }}</div>
+        </div>
+      </template>
+    </ci-cd-analytics-charts>
+    <h4 class="gl-mt-6">{{ __('Pipeline durations for the last 30 commits') }}</h4>
+    <gl-column-chart
+      :height="$options.chartContainerHeight"
+      :option="chartOptions"
+      :bars="timesChartTransformedData"
+      :y-axis-title="__('Minutes')"
+      :x-axis-title="__('Commit')"
+      x-axis-type="category"
+    />
   </div>
 </template>

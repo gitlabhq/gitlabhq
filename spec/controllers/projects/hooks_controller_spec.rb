@@ -138,6 +138,8 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
         wiki_page_events: true,
         deployment_events: true,
 
+        custom_webhook_template: '{"test":"test"}',
+
         url_variables: [{ key: 'token', value: 'some secret value' }]
       }
 

@@ -7,3 +7,4 @@ feature_category: mlops
 milestone: '16.7'
 saved_to_database: true
 streamed: true
+scope: [Project]

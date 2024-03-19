@@ -2,13 +2,14 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Propose, review, and collaborate on changes to a project."
 ---
 
 # Merge requests
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
@@ -81,10 +82,6 @@ or:
 
 ## Filter the list of merge requests
 
-> - Filtering by `approved-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30335) in GitLab 13.0.
-> - Filtering by `reviewer` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47605) in GitLab 13.7.
-> - Filtering by potential approvers was moved to GitLab Premium in 13.9.
-> - Filtering by `approved-by` moved to GitLab Premium in 13.9.
 > - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
 > - Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
 
@@ -92,7 +89,7 @@ To filter the list of merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
-1. Above the list of merge requests, select **Search or filter results...**.
+1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
@@ -114,8 +111,6 @@ To filter the list of merge requests:
    or **{sort-highest}** for ascending order.
 
 ### By environment or deployment date
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
 To filter merge requests by deployment data, such as the environment or a date,
 you can type (or select from the dropdown list) the following:
@@ -174,7 +169,7 @@ The merge request is added to the user's assigned merge request list.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 
@@ -202,7 +197,8 @@ GitLab recommends you close the merge request rather than
 Developer, Maintainer, or Owner [roles](../../permissions.md) in a project
 can close merge requests in the project:
 
-1. Go to the merge request you want to close.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
 1. Scroll to the comment box at the bottom of the page.
 1. Following the comment box, select **Close merge request**.
 
@@ -212,15 +208,17 @@ its comments, and any associated pipelines.
 ### Delete a merge request
 
 GitLab recommends you close, rather than delete, merge requests.
-
-WARNING:
 You cannot undo the deletion of a merge request.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
 
 To delete a merge request:
 
-1. Sign in to GitLab as a user with the project Owner role.
-   Only users with this role can delete merge requests in a project.
-1. Go to the merge request you want to delete, and select **Edit**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find the merge request you want to delete.
+1. Select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
 
 ### Delete the source branch on merge
@@ -238,10 +236,13 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
 > - Chained merge requests [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/323329) to automatically rebase on the new target branch in GitLab 16.9.
+> - Chained merge requests [no longer automatically rebase](https://gitlab.com/gitlab-org/gitlab/-/issues/441232) on the new target branch in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `:rebase_when_retargetting_mrs`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it
+available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `:rebase_when_retargetting_mrs`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Merge requests are often chained together, with one merge request depending on
 the code added or changed in another merge request. To support keeping individual
@@ -253,7 +254,7 @@ target branch merges into `main`. For example:
 
 If these merge requests are open at the same time, and merge request 1 (`feature-alpha`)
 merges into `main`, GitLab updates the destination of merge request 2 from `feature-alpha`
-to `main` and then rebases the source branch onto the new target branch.
+to `main`.
 
 Merge requests with interconnected content updates are usually handled in one of these ways:
 
@@ -353,21 +354,23 @@ sort order by clicking the sort button on the right.
 
 ## Resolve a thread
 
-> - Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
+When you want to finish a conversation in a merge request,
+[resolve a thread](../../discussions/index.md#resolve-a-thread).
 
-In a merge request, you can [resolve a thread](../../discussions/index.md#resolve-a-thread) when you want to finish a conversation.
-
-At the top of the page, the number of unresolved threads is updated:
-
-![Count of unresolved threads](img/unresolved_threads_v15_4.png)
+The number of unresolved threads is shown in the top right corner of a
+merge request, like this: **7 unresolved threads**.
 
 ### Move all unresolved threads in a merge request to an issue
 
 If you have multiple unresolved threads in a merge request, you can
-create an issue to resolve them separately. In the merge request, at the top of the page,
-select the ellipsis icon button (**{ellipsis_v}**) in the threads control and then select **Resolve all with new issue**:
+create an issue to resolve them separately:
 
-![Open new issue for all unresolved threads](img/create_new_issue_v15_4.png)
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. In the merge request, in the top right, find the **Unresolved threads**
+   dropdown list, and select **Thread options** (**{ellipsis_v}**).
+1. Select **Resolve all with new issue**.
+1. Fill out the fields in the new issue, and select **Create issue**.
 
 All threads are marked as resolved, and a link is added from the merge request to
 the newly created issue.
@@ -375,10 +378,14 @@ the newly created issue.
 ### Move one unresolved thread in a merge request to an issue
 
 If you have one specific unresolved thread in a merge request, you can
-create an issue to resolve it separately. In the merge request, under the last reply
-to the thread, next to **Resolve thread**, select **Create issue to resolve thread** (**{issue-new}**):
+create an issue to resolve it separately:
 
-![Create issue for thread](img/new-issue-one-thread_v14_3.png)
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. In the merge request, find the thread you want to move.
+1. Below the last reply to the thread, next to **Resolve thread**, select
+   **Create issue to resolve thread** (**{issue-new}**).
+1. Fill out the fields in the new issue, and select **Create issue**.
 
 The thread is marked as resolved, and a link is added from the merge request to
 the newly created issue.
@@ -419,7 +426,7 @@ DETAILs:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 When this feature flag is enabled, the notifications and to-do item buttons are moved to the upper right corner of the page.
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
 
@@ -124,7 +124,7 @@ of duties requires more granular permission configuration.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 To enforce policies against subgroups and projects, create a subgroup to contain the SPPs, separate
 to the subgroups containing the projects. Using separate subgroups allows for separation of duties,
@@ -167,7 +167,7 @@ The high-level workflow for enforcing policies across multiple subgroups:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To enforce policies against multiple groups, create a group to contain the SPPs, separate to the
 groups containing the projects. Using separate groups allows for separation of duties, with the SPP
@@ -348,9 +348,6 @@ The workaround is to amend your group or instance push rules to allow branches f
 - When creating a Scan Result Policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist.
-- When configuring pipeline and merge request approval policies, it's important to remember that security scans
-  performed in manual jobs are not verified to determine whether MR approval is required. When you
-  run a manual job with security scans, it does not ensure approval even if vulnerabilities are
-  introduced.
+- When merge request approval policies are enforced on projects containing manual jobs in their pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the manual jobs are run, the policy re-evaluates the MR.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

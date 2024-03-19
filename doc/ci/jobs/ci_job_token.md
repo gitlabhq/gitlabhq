@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When a CI/CD pipeline job is about to run, GitLab generates a unique token and makes it available
 to the job as the [`CI_JOB_TOKEN` predefined variable](../variables/predefined_variables.md).
@@ -171,7 +171,7 @@ To disable the job token scope allowlist:
 1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
-You can also enable and disable the setting [with the API](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate).
+You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
 
 ## Use a job token to clone a private project's repository
 

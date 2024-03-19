@@ -14,7 +14,7 @@ import {
 
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
 import getGroupPackagesSettingsQuery from '~/packages_and_registries/settings/group/graphql/queries/get_group_packages_settings.query.graphql';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import { updateGroupPackagesSettingsOptimisticResponse } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
 import {
   packageSettings,

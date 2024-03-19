@@ -104,6 +104,12 @@ export const linksData = {
   },
 };
 
+const userPermissionsData = {
+  userPermissions: {
+    destroyPackage: true,
+  },
+};
+
 export const defaultPackageGroupSettings = {
   mavenPackageRequestsForwarding: true,
   npmPackageRequestsForwarding: true,
@@ -118,10 +124,10 @@ export const packageVersions = () => [
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
     packageType: 'NPM',
-    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.1',
     ...linksData,
+    ...userPermissionsData,
     __typename: 'Package',
   },
   {
@@ -130,10 +136,10 @@ export const packageVersions = () => [
     name: '@gitlab-org/package-15',
     status: 'DEFAULT',
     packageType: 'NPM',
-    canDestroy: true,
     tags: { nodes: packageTags() },
     version: '1.0.2',
     ...linksData,
+    ...userPermissionsData,
     __typename: 'Package',
   },
 ];
@@ -141,7 +147,6 @@ export const packageVersions = () => [
 export const packageData = (extend) => ({
   __typename: 'Package',
   id: 'gid://gitlab/Packages::Package/1',
-  canDestroy: true,
   name: '@gitlab-org/package-15',
   packageType: 'NPM',
   version: '1.0.0',
@@ -159,6 +164,7 @@ export const packageData = (extend) => ({
     'http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
   publicPackage: false,
   pypiSetupUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/pypi',
+  ...userPermissionsData,
   ...extend,
 });
 

@@ -32,7 +32,7 @@ class ClickHouseTestRunner
     schema_migration.ensure_table
     migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection,
       migrations_paths, schema_migration)
-    migrate(migration_context, nil)
+    Gitlab::ExclusiveLease.skipping_transaction_check { migrate(migration_context, nil) }
 
     @ensure_schema = true
   end

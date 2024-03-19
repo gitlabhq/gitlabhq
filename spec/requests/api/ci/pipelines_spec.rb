@@ -1256,14 +1256,31 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
     end
 
-    let_it_be(:build) { create(:ci_build, :running, pipeline: pipeline) }
+    let_it_be(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
     context 'authorized user', :aggregate_failures do
-      it 'retries failed builds', :sidekiq_might_not_need_inline do
-        post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+      context 'when supports canceling is true' do
+        include_context 'when canceling support'
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['status']).to eq('canceled')
+        it 'cancels builds', :sidekiq_inline do
+          post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('canceling')
+        end
+
+        context 'when ci_canceling_status is disabled' do
+          before do
+            stub_feature_flags(ci_canceling_status: false)
+          end
+
+          it 'cancels builds', :sidekiq_inline do
+            post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['status']).to eq('canceled')
+          end
+        end
       end
     end
 

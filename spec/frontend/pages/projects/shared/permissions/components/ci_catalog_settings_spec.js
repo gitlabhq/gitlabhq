@@ -151,7 +151,7 @@ describe('CiCatalogSettings', () => {
 
           await setCatalogResource();
 
-          expect(showToast).toHaveBeenCalledWith('This project is now a CI/CD Catalog resource.');
+          expect(showToast).toHaveBeenCalledWith('This project is now a CI/CD Catalog project.');
         });
       });
     });
@@ -200,7 +200,7 @@ describe('CiCatalogSettings', () => {
         await removeCatalogResource();
 
         expect(showToast).toHaveBeenCalledWith(
-          'This project is no longer a CI/CD Catalog resource.',
+          'This project is no longer a CI/CD Catalog project.',
         );
       });
     });
@@ -219,10 +219,10 @@ describe('CiCatalogSettings', () => {
     it.each`
       name         | errorType                                     | jestResolver           | mockResponse                 | expectedMessage
       ${'create'}  | ${'unhandled server error with a message'}    | ${'mockRejectedValue'} | ${new Error('server error')} | ${'server error'}
-      ${'create'}  | ${'unhandled server error without a message'} | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to set project as a CI/CD Catalog resource.'}
+      ${'create'}  | ${'unhandled server error without a message'} | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to set project as a CI/CD Catalog project.'}
       ${'create'}  | ${'handled Graphql error'}                    | ${'mockResolvedValue'} | ${createGraphqlError}        | ${'graphql error'}
       ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error('server error')} | ${'server error'}
-      ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to remove project as a CI/CD Catalog resource.'}
+      ${'destroy'} | ${'unhandled server'}                         | ${'mockRejectedValue'} | ${new Error()}               | ${'Unable to remove project as a CI/CD Catalog project.'}
       ${'destroy'} | ${'handled Graphql error'}                    | ${'mockResolvedValue'} | ${destroyGraphqlError}       | ${'graphql error'}
     `(
       'when $name mutation returns an $errorType',

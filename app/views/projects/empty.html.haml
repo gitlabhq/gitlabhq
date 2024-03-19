@@ -7,14 +7,13 @@
 = render 'clusters_deprecation_alert'
 
 = render "home_panel"
-= render "archived_notice", project: @project
 
 - if Feature.enabled?(:project_overview_reorg)
   - add_page_specific_style 'page_bundles/project'
 
   .project-page-indicator.js-show-on-project-root
 
-  .project-page-layout
+  #js-project-show-empty-page.project-page-layout
     .project-page-layout-content.gl-mt-5
       .project-buttons.gl-mb-5{ data: { testid: 'quick-actions-container' } }
         .project-clone-holder.d-block.d-sm-none
@@ -96,7 +95,7 @@
     .project-clone-holder.d-block.d-sm-none.gl-mt-3.gl-mr-3
       = render "shared/mobile_clone_panel"
 
-    .project-clone-holder.gl-display-none.gl-sm-display-inline-block.gl-mb-3.gl-mr-3.float-left
+    #js-project-show-empty-page.project-clone-holder.gl-display-none.gl-sm-display-inline-block.gl-mb-3.gl-mr-3.gl-float-left
       = render "projects/buttons/code", ref: @ref
     = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
 

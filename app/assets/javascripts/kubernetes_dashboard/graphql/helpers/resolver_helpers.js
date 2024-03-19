@@ -1,4 +1,13 @@
-import { CoreV1Api, Configuration, WatchApi, EVENT_DATA } from '@gitlab/cluster-client';
+import {
+  CoreV1Api,
+  Configuration,
+  WatchApi,
+  EVENT_DATA,
+  EVENT_TIMEOUT,
+  EVENT_ERROR,
+} from '@gitlab/cluster-client';
+import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
+import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
 
 export const handleClusterError = async (err) => {
   if (!err.response) {
@@ -14,89 +23,14 @@ export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => 
 };
 
 export const mapWorkloadItem = (item) => {
-  if (item.metadata) {
-    const metadata = {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    };
-    return { status: item.status, metadata };
-  }
-  return { status: item.status };
-};
-
-export const mapSetItem = (item) => {
-  const status = {
-    ...item.status,
-    readyReplicas: item.status?.readyReplicas || null,
-  };
-
-  const metadata =
-    {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    } || null;
-
-  const spec = item.spec || null;
-
-  return { status, metadata, spec };
-};
-
-export const mapJobItem = (item) => {
+  const status = item.status || {};
+  const spec = item.spec || {};
   const metadata = {
     ...item.metadata,
     annotations: item.metadata?.annotations || {},
     labels: item.metadata?.labels || {},
   };
-
-  const status = {
-    failed: item.status?.failed || 0,
-    succeeded: item.status?.succeeded || 0,
-  };
-
-  return {
-    status,
-    metadata,
-    spec: item.spec,
-  };
-};
-
-export const mapServicesItems = (item) => {
-  const { type, clusterIP, externalIP, ports } = item.spec;
-
-  return {
-    metadata: {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    },
-    spec: {
-      type,
-      clusterIP: clusterIP || '-',
-      externalIP: externalIP || '-',
-      ports,
-    },
-  };
-};
-
-export const mapCronJobItem = (item) => {
-  const metadata = {
-    ...item.metadata,
-    annotations: item.metadata?.annotations || {},
-    labels: item.metadata?.labels || {},
-  };
-
-  const status = {
-    active: item.status?.active || 0,
-    lastScheduleTime: item.status?.lastScheduleTime || null,
-  };
-
-  return {
-    status,
-    metadata,
-    spec: item.spec,
-  };
+  return { status, spec, metadata, __typename: 'LocalWorkloadItem' };
 };
 
 export const watchWorkloadItems = ({
@@ -106,10 +40,16 @@ export const watchWorkloadItems = ({
   namespace,
   watchPath,
   queryField,
-  mapFn = mapWorkloadItem,
 }) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
+
+  updateConnectionStatus(client, {
+    configuration,
+    namespace,
+    resourceType: queryField,
+    status: connectionStatus.connecting,
+  });
 
   watcherApi
     .subscribeToStream(watchPath, { watch: true })
@@ -117,12 +57,38 @@ export const watchWorkloadItems = ({
       let result = [];
 
       watcher.on(EVENT_DATA, (data) => {
-        result = data.map(mapFn);
-
+        result = data.map(mapWorkloadItem);
         client.writeQuery({
           query,
           variables: { configuration, namespace },
           data: { [queryField]: result },
+        });
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.connected,
+        });
+      });
+
+      watcher.on(EVENT_TIMEOUT, () => {
+        result = [];
+
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.disconnected,
+        });
+      });
+
+      watcher.on(EVENT_ERROR, () => {
+        result = [];
+        updateConnectionStatus(client, {
+          configuration,
+          namespace,
+          resourceType: queryField,
+          status: connectionStatus.disconnected,
         });
       });
     })
@@ -138,6 +104,7 @@ export const getK8sPods = ({
   namespace = '',
   enableWatch = false,
   mapFn = mapWorkloadItem,
+  queryField = 'k8sPods',
 }) => {
   const config = new Configuration(configuration);
 
@@ -156,7 +123,7 @@ export const getK8sPods = ({
           configuration,
           namespace,
           watchPath,
-          queryField: 'k8sPods',
+          queryField,
         });
       }
 

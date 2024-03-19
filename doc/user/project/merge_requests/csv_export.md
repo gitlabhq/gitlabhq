@@ -8,9 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3619) in GitLab 13.6.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Export all the data collected from a project's merge requests into a comma-separated values (CSV) file.
 

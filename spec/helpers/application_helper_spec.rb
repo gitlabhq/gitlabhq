@@ -5,6 +5,16 @@ require 'spec_helper'
 RSpec.describe ApplicationHelper do
   include Devise::Test::ControllerHelpers
 
+  # This spec targets CI environment with precompiled assets to trigger
+  # Sprockets' `File.binread` and find encoding issues.
+  #
+  # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17627#note_1782396646
+  describe '#error_css' do
+    it 'returns precompiled error CSS with proper encoding' do
+      expect(error_css.encoding.name).to eq('UTF-8')
+    end
+  end
+
   describe 'current_controller?' do
     before do
       stub_controller_name('foo')

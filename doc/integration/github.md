@@ -20,7 +20,7 @@ To enable the GitHub OmniAuth provider, you need an OAuth 2.0 client ID and clie
 secret from GitHub:
 
 1. Sign in to GitHub.
-1. [Create an OAuth App](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+1. [Create an OAuth App](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
    and provide the following information:
    - The URL of your GitLab instance, such as `https://gitlab.example.com`.
    - The authorization callback URL, such as, `https://gitlab.example.com/users/auth`.

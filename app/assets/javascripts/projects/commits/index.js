@@ -1,7 +1,7 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { encodeSaferUrl, joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import AuthorSelectApp from './components/author_select.vue';
 import store from './store';
@@ -34,11 +34,14 @@ export const initCommitsRefSwitcher = () => {
 
   if (!el) return false;
 
-  const { projectId, ref, commitsPath, refType } = el.dataset;
+  const { projectId, ref, commitsPath, refType, treePath } = el.dataset;
   const commitsPathPrefix = commitsPath.match(COMMITS_PATH_REGEX)?.[0];
+
   const generateRefDestinationUrl = (selectedRef, selectedRefType) => {
+    const selectedRefURI = selectedRef ? encodeURIComponent(selectedRef) : '';
+    const selectedTreePath = treePath ? encodeSaferUrl(treePath) : ''; // Do not escape '/'.
     const commitsPathSuffix = selectedRefType ? `?ref_type=${selectedRefType}` : '';
-    return `${commitsPathPrefix}/${encodeURIComponent(selectedRef)}${commitsPathSuffix}`;
+    return joinPaths(commitsPathPrefix, selectedRefURI, selectedTreePath) + commitsPathSuffix;
   };
   const useSymbolicRefNames = Boolean(refType);
   return new Vue({

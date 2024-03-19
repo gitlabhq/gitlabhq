@@ -347,7 +347,7 @@ Let's define their differences first;
 - A failed job;
   - It is a machine response of the CI system to executing the job content. It indicates that execution failed for some reason.
   - It is equal answer of the system to success. The fact that something is failed is relative,
-  and might be desired outcome of CI execution, like in when executing tests that some are failing.
+    and might be desired outcome of CI execution, like in when executing tests that some are failing.
   - We know the result and [there can be artifacts](../../../ci/yaml/index.md#artifactswhen).
   - `after_script` is run.
   - Its eventual state is "failed" so subsequent jobs can run depending on their `when` values.

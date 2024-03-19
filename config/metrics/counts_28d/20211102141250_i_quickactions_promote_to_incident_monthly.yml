@@ -3,7 +3,7 @@ key_path: redis_hll_counters.quickactions.i_quickactions_promote_to_incident_mon
 description: Count of MAU using the `/promote_to_incident` quick action
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 milestone: "14.5"

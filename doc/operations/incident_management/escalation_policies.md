@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4638) in GitLab 14.1.
 
@@ -45,6 +45,8 @@ When configuring an escalation rule, you can designate who to page:
 
 When a notification is sent to a user through an on-call schedule or directly, a system note listing
 the paged users is created on the alert.
+
+The time specified for an escalation rule must be between 0 and 1440 minutes.
 
 ## Edit an escalation policy
 

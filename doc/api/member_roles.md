@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96996) in GitLab 15.4. [Deployed behind the `customizable_roles` flag](../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
@@ -24,10 +24,6 @@ DETAILS:
 > - [Delete project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) in GitLab 16.8.
 > - [Manage group access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) in GitLab 16.8.
 > - [Admin terraform state introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) in GitLab 16.8.
-
-FLAG:
-On self-managed GitLab, by default these features are not available. To make them available, an administrator can [enable the feature flags](../administration/feature_flags.md) named `admin_group_member` and `manage_project_access_tokens`.
-On GitLab.com, these features are not available.
 
 ## List all member roles of a group
 

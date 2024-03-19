@@ -134,6 +134,12 @@ describe('~/environments/components/namespace_selector.vue', () => {
 
       expect(wrapper.emitted('change')).toEqual([['agent']]);
     });
+
+    it('emits `null` to the namespace on reset', () => {
+      findNamespaceSelector().vm.$emit('reset');
+
+      expect(wrapper.emitted('change')).toEqual([[null]]);
+    });
   });
 
   describe('custom select button', () => {

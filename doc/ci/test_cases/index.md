@@ -9,12 +9,18 @@ description: Test cases in GitLab can help your teams create testing scenarios i
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 
 Now your Implementation and Testing teams can collaborate better, as they no longer have to
 use external test planning tools, which require additional overhead, context switching, and expense.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+To learn how to use issues and epics to manage your requirements and testing needs
+while integrating with your development workflows, see
+[Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).
+<!-- Video published on 2024-02-21 -->
 
 NOTE:
 [Requirements](../../user/project/requirements/index.md) and test cases are being
@@ -84,7 +90,7 @@ Prerequisites:
 
 To make a test case confidential:
 
-- When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential...** checkbox.
+- When you [create a test case](#create-a-test-case): under **Confidentiality**, select the **This test case is confidential** checkbox.
 - When you [edit a test case](#edit-a-test-case): on the right sidebar, next to **Confidentiality**, select **Edit**, then select **Turn on**.
 
 You can also use the `/confidential` [quick action](../../user/project/quick_actions.md) when both creating a new test case

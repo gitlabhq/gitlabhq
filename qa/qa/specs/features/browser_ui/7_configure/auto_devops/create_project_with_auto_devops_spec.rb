@@ -6,18 +6,8 @@ module QA
     describe 'Auto DevOps with a Kubernetes Agent' do
       let!(:app_project) { create(:project, :auto_devops, name: 'autodevops-app-project', template_name: 'express') }
       let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::Gcloud).create! }
-      let!(:kubernetes_agent) do
-        Resource::Clusters::Agent.fabricate_via_api! do |agent|
-          agent.name = 'agent1'
-          agent.project = app_project
-        end
-      end
-
-      let!(:agent_token) do
-        Resource::Clusters::AgentToken.fabricate_via_api! do |token|
-          token.agent = kubernetes_agent
-        end
-      end
+      let!(:kubernetes_agent) { create(:cluster_agent, name: 'agent1', project: app_project) }
+      let!(:agent_token) { create(:cluster_agent_token, agent: kubernetes_agent) }
 
       before do
         cluster.install_kubernetes_agent(agent_token.token, kubernetes_agent.name)

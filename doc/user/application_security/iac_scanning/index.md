@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
 
@@ -34,9 +34,8 @@ Prerequisites:
 - The `test` stage is required in the `.gitlab-ci.yml` file.
 - On GitLab self-managed you need GitLab Runner with the
   [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. On GitLab.com this
-  is enabled by default on the shared runners. The analyzer images provided are for the Linux/amd64
-  architecture.
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 To enable IaC scanning of a project:
 
@@ -47,7 +46,7 @@ To enable IaC scanning of a project:
 
    ```yaml
    include:
-     - template: Security/SAST-IaC.gitlab-ci.yml
+     - template: Jobs/SAST-IaC.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -87,7 +86,7 @@ Supported configuration formats:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 
@@ -203,7 +202,7 @@ This example uses a specific minor version of the IaC analyzer:
 
 ```yaml
 include:
-  - template: Security/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 
 kics-iac-sast:
   variables:
@@ -231,7 +230,7 @@ variables:
   SAST_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/SAST-IaC.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
 ```
 
 ## Automatic vulnerability resolution

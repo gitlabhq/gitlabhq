@@ -926,7 +926,7 @@ panel_groups:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
@@ -1044,7 +1044,9 @@ See the limits in the [Add a design to an issue](../user/project/issues/design_m
 
 ### Max push size
 
-The maximum allowed [push size](../administration/settings/account_and_limit_settings.md#max-push-size) is set to 5 GB.
+The maximum allowed [push size](../administration/settings/account_and_limit_settings.md#max-push-size).
+
+Not set by default on self-managed instances. For GitLab.com, see [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings)
 
 ### Webhooks and Project Services
 

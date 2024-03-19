@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with work_items_mvc_2' do |flag|
+RSpec.shared_context 'with work_items_beta' do |flag|
   before do
-    stub_feature_flags(work_items_mvc_2: flag)
+    stub_feature_flags(work_items_beta: flag)
+    stub_feature_flags(notifications_todos_buttons: false)
 
     page.refresh
     wait_for_all_requests
@@ -13,8 +14,8 @@ RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
   let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
 
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
@@ -27,8 +28,8 @@ RSpec.shared_examples 'work items title' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
-    include_context 'with work_items_mvc_2', true
+  context 'when the work_items_beta FF is enabled' do
+    include_context 'with work_items_beta', true
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
@@ -167,8 +168,8 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully assigns the current user by searching',
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
@@ -237,10 +238,10 @@ RSpec.shared_examples 'work items assignees' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
+  context 'when the work_items_beta FF is enabled' do
     let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'successfully assigns the current user by searching',
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
@@ -294,101 +295,169 @@ RSpec.shared_examples 'work items labels' do
   let(:label_title_selector) { '[data-testid="labels-title"]' }
   let(:labels_input_selector) { '[data-testid="work-item-labels-input"]' }
 
-  it 'successfully assigns a label' do
-    find(labels_input_selector).fill_in(with: label.title)
-    wait_for_requests
-    # submit and simulate blur to save
-    send_keys(:enter)
-    find(label_title_selector).click
-    wait_for_requests
+  context 'when work_items_beta is disabled' do
+    include_context 'with work_items_beta', false
 
-    expect(work_item.labels).to include(label)
-  end
-
-  it 'successfully assigns multiple labels' do
-    label2 = create(:label, project: project, title: "testing-label-2")
-
-    find(labels_input_selector).fill_in(with: label.title)
-    wait_for_requests
-    send_keys(:enter)
-
-    find(labels_input_selector).fill_in(with: label2.title)
-    wait_for_requests
-    send_keys(:enter)
-
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(work_item.labels).to include(label)
-    expect(work_item.labels).to include(label2)
-  end
-
-  it 'removes all labels on clear all button click' do
-    find(labels_input_selector).fill_in(with: label.title)
-    wait_for_requests
-    send_keys(:enter)
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(work_item.labels).to include(label)
-
-    within(labels_input_selector) do
-      find('input').click
-      click_button 'Clear all'
-    end
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(work_item.labels).not_to include(label)
-  end
-
-  it 'removes label on clicking badge cross button' do
-    find(labels_input_selector).fill_in(with: label.title)
-    wait_for_requests
-    send_keys(:enter)
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(page).to have_text(label.title)
-
-    within(labels_input_selector) do
-      click_button 'Remove label'
-    end
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(work_item.labels).not_to include(label)
-  end
-
-  it 'updates the labels in real-time' do
-    Capybara::Session.new(:other_session)
-
-    using_session :other_session do
-      visit work_items_path
-      expect(page).not_to have_text(label.title)
-    end
-
-    find(labels_input_selector).fill_in(with: label.title)
-    wait_for_requests
-    send_keys(:enter)
-    find(label_title_selector).click
-    wait_for_requests
-
-    expect(page).to have_text(label.title)
-
-    using_session :other_session do
+    it 'successfully assigns a label' do
+      find(labels_input_selector).fill_in(with: label.title)
       wait_for_requests
+      # submit and simulate blur to save
+      send_keys(:enter)
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(work_item.labels).to include(label)
+    end
+
+    it 'successfully assigns multiple labels' do
+      label2 = create(:label, project: project, title: "testing-label-2")
+
+      find(labels_input_selector).fill_in(with: label.title)
+      wait_for_requests
+      send_keys(:enter)
+
+      find(labels_input_selector).fill_in(with: label2.title)
+      wait_for_requests
+      send_keys(:enter)
+
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(work_item.labels).to include(label)
+      expect(work_item.labels).to include(label2)
+    end
+
+    it 'removes all labels on clear all button click' do
+      find(labels_input_selector).fill_in(with: label.title)
+      wait_for_requests
+      send_keys(:enter)
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(work_item.labels).to include(label)
+
+      within(labels_input_selector) do
+        find('input').click
+        click_button 'Clear all'
+      end
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(work_item.labels).not_to include(label)
+    end
+
+    it 'removes label on clicking badge cross button' do
+      find(labels_input_selector).fill_in(with: label.title)
+      wait_for_requests
+      send_keys(:enter)
+      find(label_title_selector).click
+      wait_for_requests
+
       expect(page).to have_text(label.title)
+
+      within(labels_input_selector) do
+        click_button 'Remove label'
+      end
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(work_item.labels).not_to include(label)
+    end
+
+    it 'updates the labels in real-time' do
+      Capybara::Session.new(:other_session)
+
+      using_session :other_session do
+        visit work_items_path
+        expect(page).not_to have_text(label.title)
+      end
+
+      find(labels_input_selector).fill_in(with: label.title)
+      wait_for_requests
+      send_keys(:enter)
+      find(label_title_selector).click
+      wait_for_requests
+
+      expect(page).to have_text(label.title)
+
+      using_session :other_session do
+        wait_for_requests
+        expect(page).to have_text(label.title)
+      end
+    end
+  end
+
+  context 'when work_items_beta is enabled' do
+    let(:work_item_labels_selector) { '[data-testid="work-item-labels-with-edit"]' }
+
+    include_context 'with work_items_beta', true
+
+    it 'successfully applies the label by searching' do
+      expect(work_item.reload.labels).not_to include(label)
+
+      find_and_click_edit(work_item_labels_selector)
+
+      select_listbox_item(label.title)
+
+      find("body").click
+      wait_for_all_requests
+
+      expect(work_item.reload.labels).to include(label)
+      within(work_item_labels_selector) do
+        expect(page).to have_link(label.title)
+      end
+    end
+
+    it 'successfully removes all users on clear all button click' do
+      expect(work_item.reload.labels).not_to include(label)
+
+      find_and_click_edit(work_item_labels_selector)
+
+      select_listbox_item(label.title)
+
+      find("body").click
+      wait_for_requests
+
+      expect(work_item.reload.labels).to include(label)
+
+      find_and_click_edit(work_item_labels_selector)
+
+      find_and_click_clear(work_item_labels_selector)
+      wait_for_all_requests
+
+      expect(work_item.reload.labels).not_to include(label)
+    end
+
+    it 'updates the assignee in real-time' do
+      Capybara::Session.new(:other_session)
+
+      using_session :other_session do
+        visit work_items_path
+        expect(work_item.reload.labels).not_to include(label)
+      end
+
+      find_and_click_edit(work_item_labels_selector)
+
+      select_listbox_item(label.title)
+
+      find("body").click
+      wait_for_all_requests
+
+      expect(work_item.reload.labels).to include(label)
+
+      using_session :other_session do
+        expect(work_item.reload.labels).to include(label)
+      end
     end
   end
 end
 
 RSpec.shared_examples 'work items description' do
-  context 'for work_items_mvc_2 FF' do
-    [true, false].each do |work_items_mvc_2_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
-      let(:edit_button) { work_items_mvc_2_flag ? 'Edit' : 'Edit description' }
+  context 'for work_items_beta FF' do
+    [true, false].each do |work_items_beta_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
+      let(:edit_button) { work_items_beta_flag ? 'Edit' : 'Edit description' }
 
-      include_context 'with work_items_mvc_2', work_items_mvc_2_flag
+      include_context 'with work_items_beta', work_items_beta_flag
 
       it 'shows GFM autocomplete', :aggregate_failures do
         click_button edit_button, match: :first
@@ -418,6 +487,7 @@ RSpec.shared_examples 'work items description' do
 
         before do
           project.add_developer(other_user)
+          stub_feature_flags(notifications_todos_buttons: false)
         end
 
         it 'shows conflict message when description changes', :aggregate_failures do
@@ -447,8 +517,8 @@ end
 RSpec.shared_examples 'work items invite members' do
   include Features::InviteMembersModalHelpers
 
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully assigns the current user by searching' do
       # The button is only when the mouse is over the input
@@ -463,10 +533,10 @@ RSpec.shared_examples 'work items invite members' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
+  context 'when the work_items_beta FF is enabled' do
     let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'successfully assigns the current user by searching' do
       # The button is only when the mouse is over the input
@@ -483,8 +553,8 @@ RSpec.shared_examples 'work items invite members' do
 end
 
 RSpec.shared_examples 'work items milestone' do
-  context 'on work_items_mvc_2 FF off' do
-    include_context 'with work_items_mvc_2', false
+  context 'on work_items_beta FF off' do
+    include_context 'with work_items_beta', false
 
     it 'searches and sets or removes milestone for the work item' do
       click_button s_('WorkItem|Add to milestone')
@@ -500,12 +570,14 @@ RSpec.shared_examples 'work items milestone' do
     end
   end
 
-  context 'on work_items_mvc_2 FF on' do
+  context 'on work_items_beta FF on' do
     let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'passes axe automated accessibility testing in closed state' do
+      find(work_item_milestone_selector)
+
       expect(page).to be_axe_clean.within(work_item_milestone_selector)
     end
 
@@ -556,14 +628,21 @@ end
 
 RSpec.shared_examples 'work items notifications' do
   it 'displays toast when notification is toggled' do
-    click_button _('More actions'), match: :first
+    if Feature.enabled?(:notifications_todos_buttons)
+      def notification_button
+        find('button[data-testid="subscribe-button"]')
+      end
+      notification_button.click
+      expect(page).to have_selector('svg[data-testid="notifications"]')
+    else
+      click_button _('More actions'), match: :first
+      within_testid('notifications-toggle-form') do
+        expect(page).not_to have_button(class: 'gl-toggle is-checked')
 
-    within_testid('notifications-toggle-form') do
-      expect(page).not_to have_button(class: 'gl-toggle is-checked')
+        click_button(class: 'gl-toggle')
 
-      click_button(class: 'gl-toggle')
-
-      expect(page).to have_button(class: 'gl-toggle is-checked')
+        expect(page).to have_button(class: 'gl-toggle is-checked')
+      end
     end
 
     expect(page).to have_css('.gl-toast', text: _('Notifications turned on.'))
@@ -719,7 +798,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  include_context 'with work_items_mvc_2', true
+  include_context 'with work_items_beta', true
 
   context 'for accessibility' do
     it 'has the work item iteration with edit' do

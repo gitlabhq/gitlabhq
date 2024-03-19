@@ -75,6 +75,10 @@ module Gitlab
           return unless Feature.enabled?(:fetch_commits_for_bitbucket_server, project.group)
 
           project.repository.fetch_remote(project.import_url, refmap: commits_to_fetch, prune: false)
+        rescue Gitlab::Git::CommandError => e
+          # When we try to fetch commit from the submodule, then the process might fail
+          # with "unadvertised object" error. We are going to ignore it, to unblock the import
+          track_import_failure!(project, exception: e) unless e.message.include?('unadvertised object')
         rescue StandardError => e
           track_import_failure!(project, exception: e)
         end

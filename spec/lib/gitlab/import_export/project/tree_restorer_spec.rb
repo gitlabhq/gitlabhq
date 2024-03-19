@@ -39,7 +39,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
           project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
-          @restored_project_json = project_tree_restorer.restore
+          @restored_project_json = Gitlab::ExclusiveLease.skipping_transaction_check do
+            project_tree_restorer.restore
+          end
         end
       end
 
@@ -445,7 +447,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
           aggregate_failures do
             expect(pipeline_schedule.description).to eq('Schedule Description')
-            expect(pipeline_schedule.ref).to eq('master')
+            expect(pipeline_schedule.ref).to eq('refs/heads/master')
             expect(pipeline_schedule.cron).to eq('0 4 * * 0')
             expect(pipeline_schedule.cron_timezone).to eq('UTC')
             expect(pipeline_schedule.active).to eq(false)
@@ -531,6 +533,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
               award_emoji = merge_request_note.award_emoji.first
 
               expect(award_emoji.name).to eq('tada')
+            end
+
+            it 'has diff note diff file' do
+              merge_request_note = match_mr1_note('MR1 diff note')
+              note_diff_file = merge_request_note.note_diff_file
+
+              expect(note_diff_file.diff).to eq("@@ -14,3 +14,18 @@\n 1")
             end
           end
         end

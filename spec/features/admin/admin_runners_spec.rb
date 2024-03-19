@@ -221,6 +221,41 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
         end
       end
 
+      describe 'filter by creator' do
+        before_all do
+          create(:ci_runner, :instance, description: 'runner-creator-admin', creator: admin)
+          create(:ci_runner, :instance, description: 'runner-creator-user', creator: user)
+        end
+
+        before do
+          visit admin_runners_path
+        end
+
+        it 'shows all runners' do
+          expect(page).to have_link('All 2')
+
+          expect(page).to have_content 'runner-creator-admin'
+          expect(page).to have_content 'runner-creator-user'
+        end
+
+        it 'shows filtered runner based on creator' do
+          input_filtered_search_filter_is_only(s_('Runners|Creator'), admin.username)
+
+          expect(page).to have_link('All 1')
+
+          expect(page).to have_content 'runner-creator-admin'
+          expect(page).not_to have_content 'runner-creator-user'
+        end
+
+        it 'shows filtered search suggestions' do
+          open_filtered_search_suggestions(s_('Runners|Creator'))
+          page.within(search_bar_selector) do
+            expect(page).to have_content admin.username
+            expect(page).to have_content user.username
+          end
+        end
+      end
+
       describe 'filter by status' do
         let_it_be(:never_contacted) do
           create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)

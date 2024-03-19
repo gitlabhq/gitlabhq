@@ -20,7 +20,7 @@ RSpec.describe 'User views the Confluence page', feature_category: :integrations
       expect(page).to have_css('a[aria-current="page"]', text: 'Confluence')
     end
 
-    element = page.find('.row.empty-state')
+    element = find_by_testid('wiki-empty-state')
 
     expect(element).to have_link('Go to Confluence', href: service.confluence_url)
     expect(element).to have_link('Confluence epic', href: 'https://gitlab.com/groups/gitlab-org/-/epics/3629')

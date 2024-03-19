@@ -922,6 +922,31 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
         expect(gl_user.username).to eq('admin1')
       end
     end
+
+    context 'with leading or trailing _.- characters in username' do
+      let(:info_hash) do
+        {
+          nickname: '___opie.-_!the$_#^^opossum---',
+          email: 'admin@othermail.com'
+        }
+      end
+
+      it 'creates valid user with sanitized username' do
+        expect(gl_user).to be_valid
+        expect(gl_user.username).to eq('opie.the_opossum')
+      end
+
+      context 'and extra_slug_path_sanitization feature is disabled' do
+        before do
+          stub_feature_flags(extra_slug_path_sanitization: false)
+        end
+
+        it 'fails to create user' do
+          expect(gl_user).not_to be_valid
+          expect(gl_user.errors[:username]).to be_present
+        end
+      end
+    end
   end
 
   describe 'updating email with sync profile' do

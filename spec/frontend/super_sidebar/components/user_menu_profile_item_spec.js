@@ -1,5 +1,5 @@
 import { GlDisclosureDropdownItem, GlTooltip } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
 import { userMenuMockData, userMenuMockStatus } from '../mock_data';
 
@@ -13,7 +13,7 @@ describe('UserMenuProfileItem component', () => {
   const GlEmoji = { template: '<img/>' };
 
   const createWrapper = (userDataChanges = {}) => {
-    wrapper = shallowMountExtended(UserMenuProfileItem, {
+    wrapper = mountExtended(UserMenuProfileItem, {
       propsData: {
         user: {
           ...userMenuMockData,

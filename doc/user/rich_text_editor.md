@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) for [wikis](project/wiki/index.md#rich-text-editor) in GitLab 14.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371931) for editing issue descriptions in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.

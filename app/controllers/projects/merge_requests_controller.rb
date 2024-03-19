@@ -44,11 +44,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:mr_request_changes, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:pinned_file, project)
-    push_frontend_feature_flag(:merge_request_diff_generated_subscription, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
@@ -149,27 +147,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    serializer_options = {
-      disable_coverage: true,
-      disable_failed_builds: true,
-      preload: true
-    }
-
-    if Feature.enabled?(:skip_status_preload_in_pipeline_lists, @project, type: :gitlab_com_derisk)
-      serializer_options.merge!(
-        disable_manual_and_scheduled_actions: true,
-        preload_statuses: false,
-        preload_downstream_statuses: false
-      )
-    end
-
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
         .represent(
           @pipelines,
-          **serializer_options
+          disable_coverage: true,
+          disable_failed_builds: true,
+          disable_manual_and_scheduled_actions: true,
+          preload: true,
+          preload_statuses: false,
+          preload_downstream_statuses: false
         ),
       count: {
         all: @pipelines.count
@@ -651,6 +640,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       file_hash: params[:pin],
       diff_head: true
     )
+  end
+
+  def append_info_to_payload(payload)
+    super
+
+    return unless action_name == 'diffs' && @merge_request&.merge_request_diff.present?
+
+    payload[:metadata] ||= {}
+    payload[:metadata]['meta.diffs_files_count'] = @merge_request.merge_request_diff.files_count
   end
 end
 

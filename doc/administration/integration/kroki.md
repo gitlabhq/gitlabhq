@@ -14,14 +14,25 @@ DETAILS:
 > - Support for reStructuredText and Textile documents [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324766) in GitLab 13.12.
 
 With the [Kroki](https://kroki.io) integration,
-you can create diagrams in AsciiDoc, Markdown, reStructuredText, and Textile.
+you can create diagrams-as-code within AsciiDoc, Markdown, reStructuredText, and Textile.
+
+## Enable Kroki in GitLab
+
+You need to enable Kroki integration from Settings under Admin Area.
+To do that, sign in with an administrator account and follow these steps:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Go to **Settings > General**.
+1. Expand the **Kroki** section.
+1. Select **Enable Kroki** checkbox.
+1. Enter the **Kroki URL**, for example, `https://kroki.io`.
 
 ## Kroki server
 
 When you enable Kroki, GitLab sends diagrams to an instance of Kroki to display them as images.
 You can use the free public cloud instance `https://kroki.io` or you can [install Kroki](https://docs.kroki.io/kroki/setup/install/)
 on your own infrastructure.
-After you've installed Kroki, make sure to update the server URL to point to your instance.
+After you've installed Kroki, make sure to update the **Kroki URL** in the settings to point to your instance.
 
 ### Docker
 
@@ -33,10 +44,10 @@ docker run -d --name kroki -p 8080:8000 yuzutech/kroki
 
 The **Kroki URL** is the hostname of the server running the container.
 
-The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) Docker image contains several diagram
-libraries out of the box. For a complete list, see the
-[`asciidoctor-kroki` README](https://github.com/ggrossetie/asciidoctor-kroki/blob/master/README.md#supported-diagram-types).
-Supported libraries include:
+The [`yuzutech/kroki`](https://hub.docker.com/r/yuzutech/kroki) Docker image supports most diagram
+types out of the box. For a complete list, see the [Kroki installation docs](https://docs.kroki.io/kroki/setup/install/#_the_kroki_container).
+
+Supported diagram types include:
 
 <!-- vale gitlab.Spelling = NO -->
 
@@ -49,6 +60,7 @@ Supported libraries include:
 - [Nomnoml](https://github.com/skanaar/nomnoml)
 - [PlantUML](https://github.com/plantuml/plantuml)
   - [C4 model](https://github.com/RicardoNiepel/C4-PlantUML) (with PlantUML)
+- [Structurizr](https://structurizr.com/) (great for C4 Model diagrams)
 - [Svgbob](https://github.com/ivanceras/svgbob)
 - [UMlet](https://github.com/umlet/umlet)
 - [Vega](https://github.com/vega/vega)
@@ -59,17 +71,6 @@ Supported libraries include:
 
 If you want to use additional diagram libraries,
 read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images) to learn how to start Kroki companion containers.
-
-## Enable Kroki in GitLab
-
-You need to enable Kroki integration from Settings under Admin Area.
-To do that, sign in with an administrator account and follow these steps:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Go to **Settings > General**.
-1. Expand the **Kroki** section.
-1. Select **Enable Kroki** checkbox.
-1. Enter the **Kroki URL**.
 
 ## Create diagrams
 

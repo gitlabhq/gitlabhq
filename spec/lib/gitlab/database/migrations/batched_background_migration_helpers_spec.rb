@@ -533,6 +533,25 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
     end
 
+    context 'when the migration is `finished`' do
+      let(:finished_status) { 3 }
+      let(:finalized_status) { 6 }
+      let(:migration_record) { create(:batched_background_migration, :finished) }
+
+      let(:configuration) do
+        {
+          job_class_name: migration_record.job_class_name,
+          table_name: migration_record.table_name,
+          column_name: migration_record.column_name,
+          job_arguments: migration_record.job_arguments
+        }
+      end
+
+      it 'updates the status to `finalized`' do
+        expect { ensure_batched_background_migration_is_finished }.to change { migration_record.reload.status }.from(finished_status).to(finalized_status)
+      end
+    end
+
     context 'when within transaction' do
       before do
         allow(migration).to receive(:transaction_open?).and_return(true)

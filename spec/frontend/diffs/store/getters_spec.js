@@ -1,4 +1,8 @@
-import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import {
+  PARALLEL_DIFF_VIEW_TYPE,
+  INLINE_DIFF_VIEW_TYPE,
+  INLINE_DIFF_LINES_KEY,
+} from '~/diffs/constants';
 import * as getters from '~/diffs/store/getters';
 import state from '~/diffs/store/modules/diff_state';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
@@ -525,6 +529,65 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no pinned file is set', () => {
       expect(getters.pinnedFile({}, {})).toBe(null);
+    });
+  });
+
+  describe('allDiffDiscussionsExpanded', () => {
+    it('returns true when all line discussions are expanded', () => {
+      localState.diffFiles = [
+        {
+          [INLINE_DIFF_LINES_KEY]: [
+            { discussionsExpanded: true, discussions: [{}] },
+            { discussionsExpanded: true, discussions: [{}] },
+          ],
+        },
+      ];
+      expect(getters.allDiffDiscussionsExpanded(localState)).toBe(true);
+    });
+
+    it('returns false if at least one line discussion is collapsed', () => {
+      localState.diffFiles = [
+        {
+          [INLINE_DIFF_LINES_KEY]: [
+            { discussionsExpanded: true, discussions: [{}] },
+            { discussionsExpanded: false, discussions: [{}] },
+          ],
+        },
+      ];
+      expect(getters.allDiffDiscussionsExpanded(localState)).toBe(false);
+    });
+
+    it('returns false if at least one image discussion is collapsed', () => {
+      localState.diffFiles = [
+        {
+          [INLINE_DIFF_LINES_KEY]: [
+            { discussionsExpanded: true, discussions: [{}] },
+            { discussionsExpanded: true, discussions: [{}] },
+          ],
+        },
+        {
+          [INLINE_DIFF_LINES_KEY]: [],
+          viewer: { name: 'image' },
+          discussions: [{ expandedOnDiff: false }],
+        },
+      ];
+      expect(getters.allDiffDiscussionsExpanded(localState)).toBe(false);
+    });
+
+    it('returns true if all image discussions are expanded', () => {
+      localState.diffFiles = [
+        {
+          viewer: { name: 'text' },
+          [INLINE_DIFF_LINES_KEY]: [],
+          discussions: [],
+        },
+        {
+          viewer: { name: 'image' },
+          [INLINE_DIFF_LINES_KEY]: [],
+          discussions: [{ expandedOnDiff: true }, { expandedOnDiff: true }],
+        },
+      ];
+      expect(getters.allDiffDiscussionsExpanded(localState)).toBe(true);
     });
   });
 });

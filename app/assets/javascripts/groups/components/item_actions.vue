@@ -1,5 +1,10 @@
 <script>
-import { GlTooltipDirective, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { COMMON_STR } from '../constants';
 import eventHub from '../event_hub';
 
@@ -7,8 +12,9 @@ const { LEAVE_BTN_TITLE, EDIT_BTN_TITLE, REMOVE_BTN_TITLE, OPTIONS_DROPDOWN_TITL
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,6 +39,38 @@ export default {
     removeButtonHref() {
       return `${this.group.editPath}#js-remove-group-form`;
     },
+    showDangerousActions() {
+      return this.group.canRemove || this.group.canLeave;
+    },
+    editItem() {
+      return {
+        text: this.$options.i18n.editBtnTitle,
+        href: this.group.editPath,
+        extraAttrs: {
+          'data-testid': `edit-group-${this.group.id}-btn`,
+        },
+      };
+    },
+    leaveItem() {
+      return {
+        text: this.$options.i18n.leaveBtnTitle,
+        action: this.onLeaveGroup,
+        extraAttrs: {
+          class: 'gl-text-red-500!',
+          'data-testid': `leave-group-${this.group.id}-btn`,
+        },
+      };
+    },
+    removeItem() {
+      return {
+        text: this.$options.i18n.removeBtnTitle,
+        href: this.removeButtonHref,
+        extraAttrs: {
+          class: 'gl-text-red-500!',
+          'data-testid': `remove-group-${this.group.id}-btn`,
+        },
+      };
+    },
   },
   methods: {
     onLeaveGroup() {
@@ -49,40 +87,20 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-end gl-ml-5">
-    <gl-dropdown
+  <div class="gl-display-flex gl-justify-content-end gl-ml-5" @click.stop>
+    <gl-disclosure-dropdown
       v-gl-tooltip.hover.focus="$options.i18n.optionsDropdownTitle"
-      right
-      category="tertiary"
       icon="ellipsis_v"
+      category="tertiary"
       no-caret
       :data-testid="`group-${group.id}-dropdown-button`"
       :data-qa-group-id="group.id"
     >
-      <gl-dropdown-item
-        v-if="group.canEdit"
-        :data-testid="`edit-group-${group.id}-btn`"
-        :href="group.editPath"
-        @click.stop
-      >
-        {{ $options.i18n.editBtnTitle }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
-        v-if="group.canLeave"
-        :data-testid="`leave-group-${group.id}-btn`"
-        @click.stop="onLeaveGroup"
-      >
-        {{ $options.i18n.leaveBtnTitle }}
-      </gl-dropdown-item>
-      <gl-dropdown-item
-        v-if="group.canRemove"
-        :href="removeButtonHref"
-        :data-testid="`remove-group-${group.id}-btn`"
-        variant="danger"
-        @click.stop
-      >
-        {{ $options.i18n.removeBtnTitle }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <gl-disclosure-dropdown-item v-if="group.canEdit" :item="editItem" />
+      <gl-disclosure-dropdown-group v-if="showDangerousActions" bordered>
+        <gl-disclosure-dropdown-item v-if="group.canLeave" :item="leaveItem" />
+        <gl-disclosure-dropdown-item v-if="group.canRemove" :item="removeItem" />
+      </gl-disclosure-dropdown-group>
+    </gl-disclosure-dropdown>
   </div>
 </template>

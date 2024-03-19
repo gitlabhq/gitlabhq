@@ -14,7 +14,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
   let_it_be(:group2) { create(:group, :private) }
   let_it_be(:project1) { create(:project, namespace: group1) }
-  let_it_be(:project2) { create(:project, namespace: group2) }
+  let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
@@ -78,6 +78,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   end
 
   describe "GET /groups" do
+    shared_examples 'groups list N+1' do
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        # warm-up
+        get api("/groups", user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/groups", user)
+        end
+
+        create(:group, :public)
+
+        expect do
+          get api("/groups", user)
+        end.not_to exceed_all_query_limit(control)
+      end
+    end
+
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -91,16 +108,8 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
-      it 'avoids N+1 queries', :use_sql_query_cache do
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/groups")
-        end
-
-        create(:group)
-
-        expect do
-          get api("/groups")
-        end.not_to exceed_all_query_limit(control)
+      it_behaves_like 'groups list N+1' do
+        let(:user) { nil }
       end
 
       context 'when statistics are requested' do
@@ -116,6 +125,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context "when authenticated as user" do
+      it_behaves_like 'groups list N+1' do
+        let(:user) { user1 }
+      end
+
       it "normal user: returns an array of groups of user1", :aggregate_failures do
         get api("/groups", user1)
 
@@ -153,6 +166,66 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['created_at']).to be_present
+      end
+    end
+
+    context 'when using the visibility filter' do
+      let_it_be(:group_1) { create(:group, :private) }
+      let_it_be(:group_2) { create(:group, :internal) }
+      let_it_be(:group_3) { create(:group, :public) }
+      let_it_be(:group_4) { create(:group, :private) }
+      let_it_be(:group_5) { create(:group, :public) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      before_all do
+        group_1.add_owner(user1)
+        group_2.add_owner(user1)
+        group_3.add_owner(user1)
+        group_4.add_owner(user1)
+        group_5.add_owner(user1)
+      end
+
+      it 'filters based on private visibility param' do
+        get api("/groups", user1), params: { visibility: 'private' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_1.id, group_4.id)
+      end
+
+      it 'filters based on internal visibility param' do
+        get api("/groups", user1), params: { visibility: 'internal' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_2.id)
+      end
+
+      it 'filters based on public visibility param' do
+        get api("/groups", user1), params: { visibility: 'public' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_3.id, group_5.id)
+      end
+
+      it 'filters based on no visibility param passed' do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_1.id, group_2.id, group_3.id, group_4.id, group_5.id)
+      end
+
+      it 'filters based on unknown visibility param' do
+        get api("/groups", user1), params: { visibility: 'something' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('visibility does not have a valid value')
       end
     end
 
@@ -1247,6 +1320,48 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'with star_count ordering' do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project Test', path: 'project-test', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects, star_count: 10) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects, star_count: 5) }
+
+        let(:params) { { order_by: 'star_count', search: 'test' } }
+
+        subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
+
+        before do
+          group_with_projects.add_owner(user1)
+        end
+
+        it 'returns items based ordered by star_count', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 10, "name" => "Test Project" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 0, "name" => "Project Test" }
+          ])
+        end
+
+        it 'returns items based ordered by star_count in ascending order', :aggregate_failures do
+          params[:sort] = 'asc'
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 0, "name" => "Project Test" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 10, "name" => "Test Project" }
+          ])
+        end
+      end
+
       it "returns the group's projects with simple representation", :aggregate_failures do
         get api("/groups/#{group1.id}/projects", user1), params: { simple: true }
 
@@ -1440,7 +1555,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
   describe "GET /groups/:id/projects/shared" do
     let!(:project4) do
-      create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      create(:project, namespace: group2, name: 'test project', path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE, star_count: 5)
     end
 
     let(:path) { "/groups/#{group1.id}/projects/shared" }
@@ -1508,6 +1623,30 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'returns the shared projects in the group ordered by star count', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 5, "name" => "test project" },
+          { "star_count" => 0, "name" => "testing" }
+        ])
+      end
+
+      it 'returns the shared projects in the group ordered by star count in ascending order', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test', sort: 'asc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 0, "name" => "testing" },
+          { "star_count" => 5, "name" => "test project" }
+        ])
       end
 
       it 'does not return the projects owned by the group', :aggregate_failures do
@@ -1994,10 +2133,22 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'when user is not an organization user' do
-        it 'does not create the group' do
-          post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+        context 'when organization is public' do
+          let_it_be(:organization) { create(:organization, :public) }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when organization is private' do
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 
@@ -2251,9 +2402,11 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         maintainer_group.add_maintainer(user)
         owner_group_1.add_owner(user)
         owner_group_2.add_owner(user)
-        create(:group_group_link, :owner,
-               shared_with_group: owner_group_1,
-               shared_group: shared_with_group_where_direct_owner_as_owner
+        create(
+          :group_group_link,
+          :owner,
+          shared_with_group: owner_group_1,
+          shared_group: shared_with_group_where_direct_owner_as_owner
         )
       end
 

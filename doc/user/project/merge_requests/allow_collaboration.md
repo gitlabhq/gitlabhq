@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you open a merge request from your [fork](../repository/forking_workflow.md), you can allow upstream
 members to collaborate with you on your branch.
@@ -23,8 +23,6 @@ This feature is available for merge requests across forked projects that are
 
 ## Allow commits from upstream members
 
-> - Enabled by default in [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/23308).
-
 As the author of a merge request, you can allow commit edits from
 upstream members of the project you're contributing to:
 
@@ -34,9 +32,10 @@ upstream members of the project you're contributing to:
 1. Finish creating your merge request.
 
 After you create the merge request, the merge request widget displays the message
-**Members who can merge are allowed to add commits**. Upstream members can then
-commit directly to your branch, as well as retry the pipelines and jobs of the
-merge request.
+**Members who can merge are allowed to add commits**. Upstream members can then:
+
+- Commit directly to your branch.
+- Retry the pipelines and jobs of the merge request.
 
 ## Prevent commits from upstream members
 
@@ -64,9 +63,10 @@ In the following example:
 
 To change or add a commit to the contributor's merge request:
 
-1. Go to the merge request.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find the merge request.
 1. In the upper-right corner, select **Code**, then select **Check out branch**.
-1. In the modal window, select **Copy** (**{copy-to-clipboard}**).
+1. On the dialog, select **Copy** (**{copy-to-clipboard}**).
 1. In your terminal, go to your cloned version of the repository, and
    paste the commands. For example:
 
@@ -112,6 +112,7 @@ in the merge request.
 To see the pipeline status from the merge request page of a forked project
 going back to the original project:
 
-1. Create a group containing all the upstream members.
+1. [Create a group](../../group/index.md#create-a-group) containing all the upstream members.
+1. On the left sidebar, select **Search or go to** and find the forked project.
 1. Go to the **Manage > Members** page in the forked project and invite the newly-created
    group to the forked project.

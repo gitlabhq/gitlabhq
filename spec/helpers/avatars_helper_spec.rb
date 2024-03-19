@@ -490,4 +490,78 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
       end
     end
   end
+
+  describe "#author_avatar", :clean_gitlab_redis_cache do
+    let_it_be(:user) { create(:user) }
+
+    let(:commit_or_event) do
+      # This argument is an unverified type, so we need to match
+      # against a generic double to validate it.
+      #
+      # rubocop: disable RSpec/VerifiedDoubles -- Argument itself is unverified
+      double(
+        :commit_or_event,
+        author: user,
+        author_name: "Foo Bar",
+        author_email: "foo@bar.com"
+      )
+      # rubocop: enable RSpec/VerifiedDoubles
+    end
+
+    let(:options) { {} }
+
+    subject { helper.author_avatar(commit_or_event, options) }
+
+    it "is cached" do
+      expect(helper).to receive(:user_avatar).once
+
+      2.times do
+        helper.author_avatar(commit_or_event, options)
+      end
+    end
+
+    it "is HTML-safe" do
+      expect(subject.html_safe?).to be_truthy
+    end
+
+    context "when css_class option is not passed" do
+      it "uses the default class" do
+        expect(helper).to receive(:user_avatar).with(
+          hash_including(css_class: "gl-display-none gl-sm-display-inline-block")
+        )
+
+        subject
+      end
+    end
+
+    context "when css_class option is passed" do
+      let(:options) do
+        { css_class: "foo" }
+      end
+
+      it "uses the supplied class" do
+        expect(helper).to receive(:user_avatar).with(hash_including(css_class: "foo"))
+
+        subject
+      end
+    end
+
+    context "when feature flag is disabled" do
+      before do
+        stub_feature_flags(cached_author_avatar_helper: false)
+      end
+
+      it "isn't cached" do
+        expect(helper).to receive(:user_avatar).twice
+
+        2.times do
+          helper.author_avatar(commit_or_event, options)
+        end
+      end
+
+      it "is HTML-safe" do
+        expect(subject.html_safe?).to be_truthy
+      end
+    end
+  end
 end

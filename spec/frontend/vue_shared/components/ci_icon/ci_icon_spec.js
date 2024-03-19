@@ -30,14 +30,14 @@ describe('CI Icon component', () => {
   });
 
   describe.each`
-    showStatusText | showTooltip | expectedText | expectedTooltip | expectedAriaLabel
-    ${true}        | ${true}     | ${'Success'} | ${undefined}    | ${undefined}
-    ${true}        | ${false}    | ${'Success'} | ${undefined}    | ${undefined}
-    ${false}       | ${true}     | ${''}        | ${'Success'}    | ${'Success'}
-    ${false}       | ${false}    | ${''}        | ${undefined}    | ${'Success'}
+    showStatusText | showTooltip | expectedText | expectedTooltip
+    ${true}        | ${true}     | ${'Success'} | ${undefined}
+    ${true}        | ${false}    | ${'Success'} | ${undefined}
+    ${false}       | ${true}     | ${''}        | ${'Success'}
+    ${false}       | ${false}    | ${''}        | ${undefined}
   `(
     'when showStatusText is %{showStatusText} and showTooltip is %{showTooltip}',
-    ({ showStatusText, showTooltip, expectedText, expectedTooltip, expectedAriaLabel }) => {
+    ({ showStatusText, showTooltip, expectedText, expectedTooltip }) => {
       beforeEach(() => {
         createComponent({
           props: {
@@ -47,15 +47,15 @@ describe('CI Icon component', () => {
         });
       });
 
-      it(`aria-label is ${expectedAriaLabel}`, () => {
-        expect(wrapper.attributes('aria-label')).toBe(expectedAriaLabel);
+      it(`aria-label is set`, () => {
+        expect(wrapper.attributes('aria-label')).toBe('Status: Success');
       });
 
-      it(`text shown is ${expectedAriaLabel}`, () => {
+      it(`text shown is ${expectedText}`, () => {
         expect(wrapper.text()).toBe(expectedText);
       });
 
-      it(`tooltip shown is ${expectedAriaLabel}`, () => {
+      it(`tooltip shown is ${expectedTooltip}`, () => {
         expect(wrapper.attributes('title')).toBe(expectedTooltip);
       });
     },

@@ -11,7 +11,8 @@ class MemberEntity < Grape::Entity
   end
   expose :requested_at
 
-  expose :created_by, if: -> (member) { member.created_by.present? } do |member|
+  expose :created_by,
+    if: -> (member) { member.created_by.present? && member.is_source_accessible_to_current_user } do |member|
     UserEntity.represent(member.created_by, only: [:name, :web_url])
   end
 
@@ -38,8 +39,12 @@ class MemberEntity < Grape::Entity
 
   expose :custom_permissions
 
-  expose :source do |member|
+  expose :source, if: -> (member) { member.is_source_accessible_to_current_user } do |member|
     GroupEntity.represent(member.source, only: [:id, :full_name, :web_url])
+  end
+
+  expose :is_shared_with_group_private do |member|
+    !member.is_source_accessible_to_current_user
   end
 
   expose :type

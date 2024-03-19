@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Members are the users and groups who have access to your project.
 
@@ -92,8 +92,8 @@ To add a user to a project:
 
    - GitLab username, they are added to the members list.
    - Email address, an invitation is sent to their email address, and they are prompted to create an account.
-   If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
-   Unaccepted invites are automatically deleted after 90 days.
+     If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
+     Unaccepted invites are automatically deleted after 90 days.
 
 ### Which roles you can assign
 

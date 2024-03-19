@@ -19,19 +19,13 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
     end
 
     context 'with valid configuration' do
-      where(:number_of_days, :operator, :datasource, :expected_method) do
-        28 | 'AND' | 'redis_hll' | :calculate_metrics_intersections
-        7  | 'AND' | 'redis_hll' | :calculate_metrics_intersections
-        28 | 'AND' | 'database'  | :calculate_metrics_intersections
-        7  | 'AND' | 'database'  | :calculate_metrics_intersections
-        28 | 'OR'  | 'redis_hll' | :calculate_metrics_union
-        7  | 'OR'  | 'redis_hll' | :calculate_metrics_union
-        28 | 'OR'  | 'database'  | :calculate_metrics_union
-        7  | 'OR'  | 'database'  | :calculate_metrics_union
-        28 | 'AND' | 'internal_events'    | :calculate_metrics_intersections
-        7  | 'AND' | 'internal_events'    | :calculate_metrics_intersections
-        28 | 'OR'  | 'internal_events'    | :calculate_metrics_union
-        7  | 'OR'  | 'internal_events'    | :calculate_metrics_union
+      where(:number_of_days, :datasource, :attribute) do
+        28 | 'redis_hll'       | 'user.id'
+        7  | 'redis_hll'       | 'project.id'
+        28 | 'database'        | 'user.id'
+        7  | 'database'        | 'user.id'
+        28 | 'internal_events' | 'user.id'
+        7  | 'internal_events' | 'user.id'
       end
 
       with_them do
@@ -41,8 +35,8 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         let(:aggregate) do
           {
             source: datasource,
-            operator: operator,
-            events: %w[event1 event2]
+            events: %w[event1 event2],
+            attribute: attribute
           }
         end
 
@@ -54,8 +48,8 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
         it 'returns the number of unique events for aggregation', :aggregate_failures do
           expect(namespace::SOURCES[datasource])
-            .to receive(expected_method)
-                  .with(params.merge(metric_names: %w[event1 event2]))
+            .to receive(:calculate_metrics_union)
+                  .with(params.merge(metric_names: %w[event1 event2], property_name: attribute))
                   .and_return(5)
           expect(calculate_count_for_aggregation).to eq(5)
         end
@@ -71,11 +65,9 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:known_event?).with('event3').and_return(false)
       end
 
-      where(:operator, :datasource, :expected_method, :expected_events) do
-        'AND' | 'redis_hll' | :calculate_metrics_intersections | %w[event1 event2]
-        'AND' | 'database'  | :calculate_metrics_intersections | %w[event1 event2 event3]
-        'OR'  | 'redis_hll' | :calculate_metrics_union         | %w[event1 event2]
-        'OR'  | 'database'  | :calculate_metrics_union         | %w[event1 event2 event3]
+      where(:datasource, :expected_events) do
+        'redis_hll' | %w[event1 event2]
+        'database'  | %w[event1 event2 event3]
       end
 
       with_them do
@@ -85,7 +77,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         let(:aggregate) do
           {
             source: datasource,
-            operator: operator,
             events: %w[event1 event2 event3]
           }
         end
@@ -98,8 +89,8 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
 
         it 'returns the number of unique events for aggregation', :aggregate_failures do
           expect(namespace::SOURCES[datasource])
-            .to receive(expected_method)
-                  .with(params.merge(metric_names: expected_events))
+            .to receive(:calculate_metrics_union)
+                  .with(params.merge(metric_names: expected_events, property_name: nil))
                   .and_return(5)
           expect(calculate_count_for_aggregation).to eq(5)
         end
@@ -107,17 +98,15 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
     end
 
     context 'with invalid configuration' do
-      where(:time_frame, :operator, :datasource, :expected_error) do
-        '28d' | 'SUM' | 'redis_hll' | namespace::UnknownAggregationOperator
-        '7d'  | 'AND' | 'mongodb'   | namespace::UnknownAggregationSource
-        'all' | 'AND' | 'redis_hll' | namespace::DisallowedAggregationTimeFrame
+      where(:time_frame, :datasource, :expected_error) do
+        '7d'  | 'mongodb'   | namespace::UnknownAggregationSource
+        'all' | 'redis_hll' | namespace::DisallowedAggregationTimeFrame
       end
 
       with_them do
         let(:aggregate) do
           {
             source: datasource,
-            operator: operator,
             events: %w[event1 event2]
           }
         end
@@ -153,10 +142,10 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
           .calculate_count_for_aggregation(aggregation: aggregate, time_frame: time_frame)
       end
 
-      where(:time_frame, :operator, :datasource) do
-        '28d' | 'OR' | 'redis_hll'
-        '7d'  | 'OR' | 'database'
-        '28d' | 'OR' | 'internal_events'
+      where(:time_frame, :datasource) do
+        '28d' | 'redis_hll'
+        '7d'  | 'database'
+        '28d' | 'internal_events'
       end
 
       with_them do
@@ -167,7 +156,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Aggregate, :clean_gitlab_redi
         let(:aggregate) do
           {
             source: datasource,
-            operator: operator,
             events: %w[event1 event2]
           }
         end

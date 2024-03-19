@@ -6,10 +6,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
   include StubENV
 
   let(:progress) { StringIO.new }
-  let(:definitions) { nil }
+  let(:backup_tasks) { nil }
   let(:options) { build(:backup_options, :skip_none) }
 
-  subject { described_class.new(progress, definitions: definitions) }
+  subject { described_class.new(progress, backup_tasks: backup_tasks) }
 
   before do
     # Rspec fails with `uninitialized constant RSpec::Support::Differ` when it
@@ -22,43 +22,71 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     allow(progress).to receive(:print)
   end
 
+  def backup_path
+    Pathname(Gitlab.config.backup.path)
+  end
+
   describe '#run_create_task' do
-    let(:terraform_state) do
-      Backup::Tasks::TerraformState.new(progress: progress, options: options)
+    describe 'other task' do
+      let(:terraform_state) do
+        Backup::Tasks::TerraformState.new(progress: progress, options: options)
+                                    .tap { |state| allow(state).to receive(:target).and_return(target) }
+      end
+
+      let(:target) { instance_double(Backup::Targets::Target) }
+      let(:backup_tasks) do
+        { 'terraform_state' => terraform_state }
+      end
+
+      it 'runs the provided task' do
+        expect(target).to receive(:dump)
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... done')
+
+        subject.run_create_task(terraform_state)
+      end
+
+      context 'when disabled' do
+        it 'does not run the task and informs the user' do
+          allow(terraform_state).to receive(:enabled).and_return(false)
+
+          expect(target).not_to receive(:dump)
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [DISABLED]')
+
+          subject.run_create_task(terraform_state)
+        end
+      end
+
+      context 'when skipped' do
+        it 'does not run the task and informs the user' do
+          stub_env('SKIP', 'terraform_state')
+
+          expect(target).not_to receive(:dump)
+          expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [SKIPPED]')
+
+          subject.run_create_task(terraform_state)
+        end
+      end
+    end
+  end
+
+  describe 'database task' do
+    let(:backup_state) do
+      Backup::Tasks::Database.new(progress: progress, options: options)
                                    .tap { |state| allow(state).to receive(:target).and_return(target) }
     end
 
     let(:target) { instance_double(Backup::Targets::Target) }
-    let(:definitions) do
-      { 'terraform_state' => terraform_state }
+    let(:backup_tasks) do
+      backup_state
     end
 
-    it 'calls the named task' do
+    it 'runs the provided task' do
       expect(target).to receive(:dump)
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... ')
-      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... done')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... ')
+      expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... done')
 
-      subject.run_create_task('terraform_state')
-    end
-
-    describe 'disabled' do
-      it 'informs the user' do
-        allow(terraform_state).to receive(:enabled).and_return(false)
-
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [DISABLED]')
-
-        subject.run_create_task('terraform_state')
-      end
-    end
-
-    describe 'skipped' do
-      it 'informs the user' do
-        stub_env('SKIP', 'terraform_state')
-
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping terraform states ... [SKIPPED]')
-
-        subject.run_create_task('terraform_state')
-      end
+      subject.run_create_task(backup_tasks)
     end
   end
 
@@ -70,35 +98,39 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
     let(:pre_restore_warning) { '' }
     let(:post_restore_warning) { '' }
-    let(:target) do
-      instance_double(::Backup::Targets::Target,
-        pre_restore_warning: pre_restore_warning,
-        post_restore_warning: post_restore_warning)
+    let(:target) { instance_double(::Backup::Targets::Target) }
+
+    let(:backup_tasks) do
+      { 'terraform_state' => terraform_state }
     end
 
-    let(:definitions) { { 'terraform_state' => terraform_state } }
     let(:backup_information) { { backup_created_at: Time.zone.parse('2019-01-01'), gitlab_version: '12.3' } }
 
     before do
       allow_next_instance_of(Backup::Metadata) do |metadata|
         allow(metadata).to receive(:load_from_file).and_return(backup_information)
       end
+
+      allow(terraform_state).to receive(:pre_restore_warning).and_return(pre_restore_warning)
+      allow(terraform_state).to receive(:post_restore_warning).and_return(post_restore_warning)
     end
 
-    it 'calls the named task' do
+    it 'runs the provided task' do
+      expect(target).to receive(:restore)
       expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring terraform states ... ').ordered
       expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring terraform states ... done').ordered
-      expect(target).to receive(:restore)
 
-      subject.run_restore_task('terraform_state')
+      subject.run_restore_task(terraform_state)
     end
 
-    describe 'disabled' do
-      it 'informs the user' do
+    context 'when disabled' do
+      it 'does not run the task and informs the user' do
         allow(terraform_state).to receive(:enabled).and_return(false)
+
+        expect(target).not_to receive(:restore)
         expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Restoring terraform states ... [DISABLED]').ordered
 
-        subject.run_restore_task('terraform_state')
+        subject.run_restore_task(terraform_state)
       end
     end
 
@@ -112,7 +144,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
         expect(target).to receive(:restore)
 
-        subject.run_restore_task('terraform_state')
+        subject.run_restore_task(terraform_state)
       end
 
       it 'does not continue when the user quits' do
@@ -122,7 +154,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
 
         expect do
-          subject.run_restore_task('terraform_state')
+          subject.run_restore_task(terraform_state)
         end.to raise_error(SystemExit)
       end
     end
@@ -137,7 +169,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue)
         expect(target).to receive(:restore)
 
-        subject.run_restore_task('terraform_state')
+        subject.run_restore_task(terraform_state)
       end
 
       it 'does not continue when the user quits' do
@@ -149,7 +181,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         expect(Gitlab::TaskHelpers).to receive(:ask_to_continue).and_raise(Gitlab::TaskAbortedByUserError)
 
         expect do
-          subject.run_restore_task('terraform_state')
+          subject.run_restore_task(terraform_state)
         end.to raise_error(SystemExit)
       end
     end
@@ -162,22 +194,11 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
     let(:full_backup_id) { backup_id }
     let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
-    let(:pack_tar_system_options) { { out: [pack_tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
-    let(:pack_tar_cmdline) { ['tar', '-cf', '-', *expected_backup_contents, pack_tar_system_options] }
 
-    let(:lfs) do
-      Backup::Tasks::Lfs.new(progress: progress, options: options)
-                                   .tap { |task| allow(task).to receive(:target).and_return(target1) }
-    end
+    let(:lfs) { Backup::Tasks::Lfs.new(progress: progress, options: options) }
+    let(:pages) { Backup::Tasks::Pages.new(progress: progress, options: options) }
 
-    let(:pages) do
-      Backup::Tasks::Pages.new(progress: progress, options: options)
-                          .tap { |task| allow(task).to receive(:target).and_return(target2) }
-    end
-
-    let(:target1) { instance_double(Backup::Targets::Target) }
-    let(:target2) { instance_double(Backup::Targets::Target) }
-    let(:definitions) do
+    let(:backup_tasks) do
       { 'lfs' => lfs, 'pages' => pages }
     end
 
@@ -185,10 +206,6 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       stub_env('INCREMENTAL', incremental_env)
       allow(ApplicationRecord.connection).to receive(:reconnect!)
       allow(Gitlab::BackupLogger).to receive(:info)
-      allow(Kernel).to receive(:system).and_return(true)
-
-      allow(target1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-      allow(target2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
     end
 
     it 'creates a backup tar' do
@@ -196,9 +213,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         subject.create # rubocop:disable Rails/SaveBang
       end
 
-      expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+      expect(File).to exist(backup_path.join(pack_tar_file))
+
+      expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+      expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
     end
 
     context 'when BACKUP is set' do
@@ -211,36 +229,35 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       it 'uses the given value as tar file name' do
         subject.create # rubocop:disable Rails/SaveBang
 
-        expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+        expect(File).to exist(backup_path.join('custom_gitlab_backup.tar'))
       end
 
       context 'tar fails' do
-        before do
-          expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
-        end
-
         it 'logs a failure' do
+          allow(Open3).to receive(:pipeline).and_return(
+            [instance_double(Process::Status, success?: false, exitstatus: 1)]
+          )
+
           expect do
             subject.create # rubocop:disable Rails/SaveBang
           end.to raise_error(Backup::Error, 'Backup failed')
 
           expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
       end
 
       context 'when SKIP env is set' do
         let(:expected_backup_contents) { %w[backup_information.yml lfs.tar.gz] }
 
-        before do
-          stub_env('SKIP', 'pages')
-        end
-
         it 'executes tar' do
-          subject.create # rubocop:disable Rails/SaveBang
+          stub_env('SKIP', 'pages')
 
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
+          expect(lfs).to receive(:target).and_call_original
+          expect(pages).not_to receive(:target)
+
+          subject.create # rubocop:disable Rails/SaveBang
         end
       end
 
@@ -249,16 +266,15 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         let(:pages) do
           Backup::Tasks::Pages.new(progress: progress, options: options)
                               .tap do |task|
-            allow(task).to receive_messages(target: target2, destination_optional: true)
+            allow(task).to receive(:destination_optional).and_return(true)
           end
         end
 
         it 'executes tar' do
-          expect(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz')).and_return(false)
+          allow(pages).to receive_message_chain(:target, :dump)
+          expect(File).to receive(:exist?).with(backup_path.join('pages.tar.gz')).and_return(false)
 
           subject.create # rubocop:disable Rails/SaveBang
-
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
         end
       end
 
@@ -280,9 +296,12 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         before do
           allow(Gitlab::BackupLogger).to receive(:info)
-          allow(Dir).to receive(:chdir).and_yield
-          allow(Dir).to receive(:glob).and_return(files)
-          allow(FileUtils).to receive(:rm)
+
+          files.each do |bkp|
+            FileUtils.touch(backup_path.join(bkp))
+          end
+
+          allow(FileUtils).to receive(:rm).and_call_original
           allow(Time).to receive(:now).and_return(Time.zone.parse('2016-1-1'))
         end
 
@@ -294,7 +313,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a skipped message' do
@@ -318,7 +339,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a done message' do
@@ -335,7 +358,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end
 
           it 'removes no files' do
-            expect(FileUtils).not_to have_received(:rm)
+            files.each do |bkp|
+              expect(File).to exist(backup_path.join(bkp))
+            end
           end
 
           it 'prints a done message' do
@@ -607,15 +632,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       after do
-        FileUtils.rm_rf(Dir.glob(File.join(Gitlab.config.backup.path, '*')), secure: true)
+        FileUtils.rm_rf(Dir.glob(backup_path.join('*')), secure: true)
       end
 
       it 'creates a non-tarred backup' do
+        expect(subject).not_to receive(:pack)
+
         travel_to(backup_time) do
           subject.create # rubocop:disable Rails/SaveBang
         end
 
-        expect(Kernel).not_to have_received(:system).with(*pack_tar_cmdline)
         expect(subject.send(:backup_information).to_h).to include(
           backup_id: backup_id,
           backup_created_at: backup_time.localtime,
@@ -625,7 +651,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           skipped: 'tar',
           tar_version: be_a(String)
         )
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
     end
 
@@ -720,14 +746,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
+          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:pack).and_call_original
+
           travel_to(backup_time) do
             subject.create # rubocop:disable Rails/SaveBang
           end
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
 
         context 'untar fails' do
@@ -745,18 +773,18 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         context 'tar fails' do
-          before do
-            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
-          end
-
           it 'logs a failure' do
+            allow(Open3).to receive(:pipeline).and_return(
+              [instance_double(Process::Status, success?: false, exitstatus: 1)]
+            )
+
             expect do
               subject.create # rubocop:disable Rails/SaveBang
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
           end
         end
 
@@ -813,14 +841,16 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks and packs the backup' do
+          expect(subject).to receive(:unpack).and_call_original
+          expect(subject).to receive(:pack).and_call_original
+
           travel_to(backup_time) do
             subject.create # rubocop:disable Rails/SaveBang
           end
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
-          expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
 
         context 'untar fails' do
@@ -841,7 +871,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         context 'tar fails' do
           before do
-            expect(Kernel).to receive(:system).with(*pack_tar_cmdline).and_return(false)
+            allow(Open3).to receive(:pipeline).and_return(
+              [instance_double(Process::Status, success?: false, exitstatus: 1)]
+            )
           end
 
           it 'logs a failure' do
@@ -852,8 +884,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
           end
         end
 
@@ -889,12 +921,12 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
               'backup_information.yml'
             ]
           )
-          allow(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'backup_information.yml')).and_return(true)
+          allow(File).to receive(:exist?).with(backup_path.join('backup_information.yml')).and_return(true)
           stub_env('SKIP', 'pages')
         end
 
         after do
-          FileUtils.rm(File.join(Gitlab.config.backup.path, 'backup_information.yml'), force: true)
+          FileUtils.rm(backup_path.join('backup_information.yml'), force: true)
         end
 
         it 'updates the non-tarred backup' do
@@ -942,9 +974,9 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
                           .tap { |task| allow(task).to receive(:target).and_return(target2) }
     end
 
-    let(:target1) { instance_double(Backup::Targets::Target, pre_restore_warning: nil, post_restore_warning: nil) }
-    let(:target2) { instance_double(Backup::Targets::Target, pre_restore_warning: nil, post_restore_warning: nil) }
-    let(:definitions) do
+    let(:target1) { instance_double(Backup::Targets::Target) }
+    let(:target2) { instance_double(Backup::Targets::Target) }
+    let(:backup_tasks) do
       { 'lfs' => lfs, 'pages' => pages }
     end
 
@@ -963,8 +995,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       Rake.application.rake_require 'tasks/cache'
 
       allow(Gitlab::BackupLogger).to receive(:info)
-      allow(target1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-      allow(target2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+      allow(target1).to receive(:restore).with(backup_path.join('lfs.tar.gz'), backup_id)
+      allow(target2).to receive(:restore).with(backup_path.join('pages.tar.gz'), backup_id)
       allow_next_instance_of(Backup::Metadata) do |metadata|
         allow(metadata).to receive(:load_from_file).and_return(backup_information)
       end
@@ -1048,8 +1080,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         subject.restore
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
 
       context 'backup information mismatches' do
@@ -1063,14 +1095,14 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks the BACKUP specified file but uses the backup information backup ID' do
-          expect(target1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-          expect(target2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+          expect(target1).to receive(:restore).with(backup_path.join('lfs.tar.gz'), backup_id)
+          expect(target2).to receive(:restore).with(backup_path.join('pages.tar.gz'), backup_id)
 
           subject.restore
 
           expect(Kernel).to have_received(:system).with(*tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
       end
 
@@ -1121,7 +1153,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         expect(progress).to have_received(:puts)
           .with(a_string_matching('Non tarred backup found '))
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
 
       context 'on version mismatch' do
@@ -1138,6 +1170,15 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             .with(a_string_matching('GitLab version mismatch'))
         end
       end
+    end
+  end
+
+  describe '#tar_version' do
+    it 'returns a version matching expected format' do
+      tar_version = subject.send(:tar_version)
+
+      expect(tar_version).to be_a(String)
+      expect(tar_version).to match(/tar \(GNU tar\) [0-9]\.[0-9]+/)
     end
   end
 end

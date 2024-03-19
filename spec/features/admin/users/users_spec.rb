@@ -665,7 +665,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
   end
 
   def sort_by(option)
-    page.within('.filtered-search-block') do
+    within_testid('filtered-search-block') do
       find('.gl-new-dropdown').click
       select_listbox_item(option)
     end

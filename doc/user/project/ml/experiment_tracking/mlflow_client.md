@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
@@ -128,13 +128,13 @@ client.delete_registered_model(model_name)
 
 ### Logging candidates to a model
 
-Every model has an associated experiment with the same name. To log a candidate/run to the model,
-use the experiment with the name of the model:
+Every model has an associated experiment with the same name prefixed by `[model]`.
+To log a candidate/run to the model, use the experiment passing the correct name:
 
 ```python
 client = MlflowClient()
 model_name = '<your_model_name>'
-exp = client.get_experiment_by_name(model_name)
+exp = client.get_experiment_by_name(f"[model]{model_name}")
 run = client.create_run(exp.experiment_id)
 ```
 

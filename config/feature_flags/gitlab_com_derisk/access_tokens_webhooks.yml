@@ -1,0 +1,9 @@
+---
+name: access_tokens_webhooks
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426147
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439379
+milestone: '16.10'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

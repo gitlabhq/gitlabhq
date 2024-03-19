@@ -216,8 +216,10 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
 
   context "global id's" do
     it 'uses GlobalID to expose ids' do
-      post_graphql(graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id]),
-                   current_user: project.first_owner)
+      post_graphql(
+        graphql_query_for('project', { 'fullPath' => project.full_path }, %w[id]),
+        current_user: project.first_owner
+      )
 
       parsed_id = GlobalID.parse(graphql_data['project']['id'])
 
@@ -233,8 +235,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
         query(Class.new(::Types::BaseObject) do
           graphql_name 'Query'
 
-          field :foo, GraphQL::Types::Boolean,
-                    deprecated: { milestone: '0.1', reason: :renamed }
+          field :foo, GraphQL::Types::Boolean, deprecated: { milestone: '0.1', reason: :renamed }
 
           field :bar, (Class.new(::Types::BaseEnum) do
             graphql_name 'BarEnum'

@@ -11,6 +11,9 @@
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
   ],
+  "CiRunnerCloudProvisioning": [
+    "CiRunnerGoogleCloudProvisioning"
+  ],
   "CiVariable": [
     "CiGroupVariable",
     "CiInstanceVariable",
@@ -51,6 +54,12 @@
   "ExternalAuditEventDestinationInterface": [
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
+  ],
+  "GoogleCloudArtifactRegistryArtifact": [
+    "GoogleCloudArtifactRegistryDockerImage"
+  ],
+  "GoogleCloudArtifactRegistryArtifactDetails": [
+    "GoogleCloudArtifactRegistryDockerImageDetails"
   ],
   "GoogleCloudLoggingConfigurationInterface": [
     "GoogleCloudLoggingConfigurationType",

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This tutorial shows you how to create a Pages site from scratch using
 the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG). You start with
@@ -38,10 +38,10 @@ You must have a [blank project](../../index.md#create-a-blank-project) in GitLab
 Create three files in the root (top-level) directory:
 
 - `.gitlab-ci.yml`: A YAML file that contains the commands you want to run.
-   For now, leave the file's contents blank.
+  For now, leave the file's contents blank.
 
 - `index.html`: An HTML file you can populate with whatever HTML content
-   you'd like, for example:
+  you'd like, for example:
 
    ```html
    <html>

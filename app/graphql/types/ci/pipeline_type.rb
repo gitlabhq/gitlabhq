@@ -202,6 +202,8 @@ module Types
 
       field :yaml_errors, GraphQL::Types::Boolean, method: :yaml_errors?, null: false, description: "If the pipeline has YAML errors."
 
+      field :yaml_error_messages, GraphQL::Types::String, method: :yaml_errors, null: true, description: "The pipeline YAML errors."
+
       field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
 
       def commit

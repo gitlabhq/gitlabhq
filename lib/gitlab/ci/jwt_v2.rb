@@ -9,27 +9,27 @@ module Gitlab
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
 
-      def self.for_build(build, aud: DEFAULT_AUD, wlif: nil)
-        new(build, ttl: build.metadata_timeout, aud: aud, wlif: wlif).encoded
+      def self.for_build(build, aud: DEFAULT_AUD, target_audience: nil)
+        new(build, ttl: build.metadata_timeout, aud: aud, target_audience: target_audience).encoded
       end
 
-      def initialize(build, ttl:, aud:, wlif:)
+      def initialize(build, ttl:, aud:, target_audience:)
         super(build, ttl: ttl)
 
         @aud = aud
-        @wlif = wlif
+        @target_audience = target_audience
       end
 
       private
 
-      attr_reader :aud, :wlif
+      attr_reader :aud, :target_audience
 
       def reserved_claims
         super.merge({
           iss: Gitlab.config.gitlab.url,
           sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
           aud: aud,
-          wlif: wlif
+          target_audience: target_audience
         }.compact)
       end
 

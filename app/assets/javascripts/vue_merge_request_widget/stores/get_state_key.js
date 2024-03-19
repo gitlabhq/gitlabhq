@@ -15,7 +15,7 @@ export default function deviseState() {
     return stateKey.missingBranch;
   }
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
-    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.checking;
+    return stateKey.checking;
   }
   if (this.hasConflicts) {
     return window.gon?.features?.mergeBlockedComponent ? null : stateKey.conflicts;

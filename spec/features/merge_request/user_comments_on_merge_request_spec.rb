@@ -33,9 +33,7 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
   end
 
-  context 'with content editor' do
-    it_behaves_like 'edits content using the content editor'
-  end
+  it_behaves_like 'rich text editor - common'
 
   it 'replys to a new comment' do
     page.within('.js-main-target-form') do

@@ -135,29 +135,22 @@ Also MultiStore comes with corresponding [specs](https://gitlab.com/gitlab-org/g
 
 The MultiStore looks like a `redis-rb ::Redis` instance.
 
-In the new Redis instance class you added in [Step 1](#step-1-support-configuring-the-new-instance),
-override the [Redis](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/sessions.rb#L20-28) method from the `::Gitlab::Redis::Wrapper`
+In the new Redis instance class you added in [Step 1](#step-1-support-configuring-the-new-instance), inherit from `::Gitlab::Redis::MultiStoreWrapper` instead and override the `multistore` class method to define the MultiStore.
 
 ```ruby
 module Gitlab
   module Redis
-    class Foo < ::Gitlab::Redis::Wrapper
+    class Foo < ::Gitlab::Redis::MultiStoreWrapper
       ...
-      def self.redis
-        # Don't use multistore if redis.foo configuration is not provided
-        return super if config_fallback?
-
-        primary_store = ::Redis.new(params)
-        secondary_store = ::Redis.new(config_fallback.params)
-
-        MultiStore.new(primary_store, secondary_store, store_name)
+      def self.multistore
+        MultiStore.new(self.pool, config_fallback.pool, store_name)
       end
     end
   end
 end
 ```
 
-MultiStore is initialized by providing the new Redis instance as a primary store, and [old (fallback-instance)](#fallback-instance) as a secondary store.
+MultiStore is initialized by providing the new Redis connection pools as a primary pool, and [old (fallback-instance) connection pool](#fallback-instance) as a secondary pool.
 The third argument is `store_name` which is used for logs, metrics and feature flag names, in case we use MultiStore implementation for different Redis stores at the same time.
 
 By default, the MultiStore reads and writes only from the default Redis store.
@@ -197,49 +190,11 @@ MultiStore implements read and write Redis commands separately.
 
 ##### Read commands
 
-- `get`
-- `mget`
-- `smembers`
-- `scard`
-
-- `exists`
-- `exists?`
-- `get`
-- `hexists`
-- `hget`
-- `hgetall`
-- `hlen`
-- `hmget`
-- `hscan_each`
-- `mapped_hmget`
-- `mget`
-- `scan_each`
-- `scard`
-- `sismember`
-- `smembers`
-- `sscan`
-- `sscan_each`
-- `ttl`
-- `zscan_each`
+Read commands are defined in the [`Gitlab::Redis::MultiStore::READ_COMMANDS` constant](https://gitlab.com/gitlab-org/gitlab/-/blob/c991bac5b1d67355ad4ac1d975ace6c2a052e1b4/lib/gitlab/redis/multi_store.rb#L56).
 
 ##### Write commands
 
-- `del`
-- `eval`
-- `expire`
-- `flushdb`
-- `hdel`
-- `hset`
-- `incr`
-- `incrby`
-- `mapped_hmset`
-- `rpush`
-- `sadd`
-- `set`
-- `setex`
-- `setnx`
-- `srem`
-- `unlink`
+Write commands are defined in the [`Gitlab::Redis::MultiStore::WRITE_COMMANDS` constant](https://gitlab.com/gitlab-org/gitlab/-/blob/c991bac5b1d67355ad4ac1d975ace6c2a052e1b4/lib/gitlab/redis/multi_store.rb#L91).
 
 ##### `pipelined` commands
 
@@ -256,6 +211,9 @@ detection.
 NOTE:
 By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
 a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
+
+NOTE:
+Variable assignments within `pipelined` and `multi` blocks are not advised as the block should be idempotent. Refer to the [corrective fix MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137734) removing non-idempotent blocks which previously led to incorrect application behavior during a migration.
 
 ##### Errors
 

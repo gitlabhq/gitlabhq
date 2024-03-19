@@ -878,8 +878,6 @@ describe('GfmAutoComplete', () => {
         .spyOn(AjaxCache, 'retrieve')
         .mockReturnValue(Promise.resolve([{ name: 'submit_review' }]));
 
-      window.gon = { features: { mrRequestChanges: true } };
-
       setHTMLFixture('<textarea data-supports-quick-actions="true"></textarea>');
       autocomplete = new GfmAutoComplete({
         commands: `${TEST_HOST}/autocomplete_sources/commands`,

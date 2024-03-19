@@ -41,14 +41,13 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
-    push_frontend_feature_flag(:encoding_logs_tree)
     push_frontend_feature_flag(:add_branch_rule, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc, @project&.work_items_mvc_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_force_frontend_feature_flag(:linked_work_items, @project&.linked_work_items_feature_flag_enabled?)
   end
@@ -125,14 +124,7 @@ class ProjectsController < Projects::ApplicationController
     # Refresh the repo in case anything changed
     @repository = @project.repository
 
-    if result[:status] == :success
-      flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
-      redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
-    else
-      flash[:alert] = result[:message]
-      @project.reset
-      render 'edit'
-    end
+    handle_update_result(result)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -196,7 +188,6 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        @notification_setting = current_user.notification_settings_for(@project) if current_user
         @project = @project.present(current_user: current_user)
         render_landing_page
       end

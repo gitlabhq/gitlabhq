@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
 Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/) for a complete Asciidoctor reference.
@@ -252,8 +252,14 @@ include::basics.adoc[]
 
 To guarantee good system performance and prevent malicious documents from causing
 problems, GitLab enforces a maximum limit on the number of include directives
-processed in any one document. You can include up to 32 documents, which is
-inclusive of transitive dependencies.
+processed in any one document. By default, a document can have up to 32 include directives, which is
+inclusive of transitive dependencies. To customize the number of processed includes directives, change
+the application setting `asciidoc_max_includes` with the
+[application settings API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
+NOTE:
+The current maximum allowed value for`asciidoc_max_includes` is 64. If the value is
+too high might cause performance issues in some situations.
 
 To use includes from separate pages or external URLs, enable the `allow-uri-read`
 in [application settings](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).

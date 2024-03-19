@@ -16,8 +16,8 @@ import { DEFAULT_SORT_VALUE, SCOPE } from '../../constants';
 
 export default {
   i18n: {
-    fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog resources.'),
-    countFetchError: s__('CiCatalog|There was an error fetching the CI/CD Catalog resource count.'),
+    fetchError: s__('CiCatalog|There was an error fetching CI/CD Catalog projects.'),
+    countFetchError: s__('CiCatalog|There was an error fetching the CI/CD Catalog project count.'),
   },
   components: {
     CatalogHeader,

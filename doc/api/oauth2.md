@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
 with the [OAuth 2.0](https://oauth.net/2/) protocol.

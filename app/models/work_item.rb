@@ -24,7 +24,7 @@ class WorkItem < Issue
     through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
 
-  scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
+  scope :inc_relations_for_permission_check, -> { includes(:author, :work_item_type, project: :project_feature) }
 
   class << self
     def find_by_namespace_and_iid!(namespace, iid)

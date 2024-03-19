@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'move quick action' do
+  before do
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+  end
+
   context 'move the issue to another project' do
     let(:target_project) { create(:project, :public) }
 

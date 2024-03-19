@@ -6,16 +6,22 @@
       %a.gutter-toggle.gl-float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
 
-      .gl-display-flex.gl-flex-wrap
+      .gl-display-flex.gl-flex-direction-column.gl-gap-3
         - git_access_url = wiki_path(@wiki, action: :git_access)
-        = link_to git_access_url, class: 'gl-mr-5' + (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { testid: 'clone-repository-link' } do
+        = link_to git_access_url, class: (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { testid: 'clone-repository-link' } do
           = sprite_icon('download', css_class: 'gl-mr-2')
           %span= _("Clone repository")
 
+        - templates_url = wiki_page_path(@wiki, Wiki::TEMPLATES_DIR)
+        - templates_link_class = (@page&.slug == Wiki::TEMPLATES_DIR) ? 'active' : ''
+        = link_to templates_url, class: templates_link_class do
+          = sprite_icon('template', css_class: 'gl-mr-2')
+          %span= _("Templates")
+
         - if can?(current_user, :create_wiki, @wiki)
           - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
-          - link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = link_to edit_sidebar_url, class: link_class do
+          - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
+          = link_to edit_sidebar_url, class: sidebar_link_class do
             = sprite_icon('pencil', css_class: 'gl-mr-2')
             %span= _("Edit sidebar")
 

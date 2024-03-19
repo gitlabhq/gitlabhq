@@ -22,7 +22,7 @@ These resources can help you to get the best from using Git with GitLab.
 New to Git? These resources can help you understand basic Git concepts before
 you dive in:
 
-- [Git concepts](terminology.md)
+- [Git concepts](get_started.md)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   Video tutorial: [Git-ing started with Git](https://www.youtube.com/watch?v=Ce5nz5n41z4)
 - PDF download: [GitLab Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
@@ -43,10 +43,10 @@ appropriate for when you're ready to start learning Git by doing:
 
 A typical Git user encounters these concepts soon after starting to use Git:
 
-- [`git add`](git_add.md) to start tracking files with Git.
+- [`git add`](../../gitlab-basics/add-file.md) to start tracking files with Git.
 - [Tags](../../user/project/repository/tags/index.md) and
   [branches](../../user/project/repository/branches/index.md).
-- [How to undo mistakes](numerous_undo_possibilities_in_git/index.md),
+- [How to undo mistakes](undo.md),
   including [`git reset`](rollback_commits.md).
 - View a chronological list of changes to a file with
   [Git history](../../user/project/repository/git_history.md).
@@ -81,6 +81,8 @@ you're ready to learn about Git workflows and branching strategies:
 
 - [Feature branch workflow](../../gitlab-basics/feature_branch_workflow.md)
 - [Introduction to Git rebase, force-push, and merge conflicts](git_rebase.md)
+- [GitLab Flow](https://about.gitlab.com/topics/version-control/what-is-gitlab-flow/)
+  - [GitLab Flow best practices](https://about.gitlab.com/topics/version-control/what-are-gitlab-flow-best-practices/)
 - From the official Git documentation:
   - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
   - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)

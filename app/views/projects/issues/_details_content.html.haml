@@ -1,7 +1,7 @@
 - related_branches_path = related_branches_project_issue_path(@project, issuable)
 - api_awards_path = local_assigns.fetch(:api_awards_path, nil)
 
-= render "projects/issues/service_desk/alert_moved_from_service_desk", issue: issuable
+= render "projects/issues/alert_moved_from_service_desk", issue: issuable
 
 .issue-details.issuable-details.js-issue-details
   .detail-page-description.content-block.js-detail-page-description.gl-pt-3.gl-pb-0.gl-border-none

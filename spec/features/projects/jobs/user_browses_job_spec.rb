@@ -28,7 +28,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"
     accept_gl_confirm(button_text: 'Erase job log') do
-      find('[data-testid="job-log-erase-link"]').click
+      find_by_testid('job-log-erase-link').click
     end
 
     wait_for_requests
@@ -96,7 +96,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
     it 'searches for supplied substring' do
       find('[data-testid="job-log-search-box"] input').set('GroupsHelper')
 
-      find('[data-testid="search-button"]').click
+      find_by_testid('search-button').click
 
       expect(page).to have_content('26 results found for GroupsHelper')
     end
@@ -104,7 +104,7 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
     it 'shows no results for supplied substring' do
       find('[data-testid="job-log-search-box"] input').set('YouWontFindMe')
 
-      find('[data-testid="search-button"]').click
+      find_by_testid('search-button').click
 
       expect(page).to have_content('No search results found')
     end

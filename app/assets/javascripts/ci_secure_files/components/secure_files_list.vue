@@ -238,7 +238,6 @@ export default {
           stacked="md"
           table-class="text-secondary"
           show-empty
-          sort-icon-left
           no-sort-reset
           :empty-text="$options.i18n.noFilesMessage"
         >

@@ -204,23 +204,6 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
     end
-
-    context 'when `mr_request_changes` feature flag is disabled' do
-      before do
-        stub_feature_flags(mr_request_changes: false)
-      end
-
-      it 'calls UpdateReviewerStateService' do
-        expect_next_instance_of(
-          MergeRequests::UpdateReviewerStateService,
-          project: project, current_user: user
-        ) do |service|
-          expect(service).to receive(:execute).with(merge_request, "reviewed")
-        end
-
-        publish
-      end
-    end
   end
 
   context 'draft notes with suggestions' do

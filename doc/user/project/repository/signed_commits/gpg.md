@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key.
@@ -43,6 +43,7 @@ To view a user's public GPG key, you can either:
   if the user has configured one, or a blank page for users without a configured GPG key.
 - Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper-right corner
   of the user's profile, select **View public GPG keys** (**{key}**).
+  This button is shown only if the user has configured the key.
 
 ## Configure commit signing
 
@@ -198,17 +199,17 @@ Prerequisites:
    # The contents of this file are included only for GitLab.com URLs
    [includeIf "hasconfig:remote.*.url:https://gitlab.com/**"]
 
-   # Edit this line to point to your alternate configuration file
+   # Edit this line to point to your alternative configuration file
    path = ~/.gitconfig-gitlab
    ```
 
-1. In your alternate `.gitconfig-gitlab` file, add the configuration overrides to
+1. In your alternative `.gitconfig-gitlab` file, add the configuration overrides to
    use when you're committing to a GitLab repository. All settings from your
    main `~/.gitconfig` file are retained unless you explicitly override them.
    In this example,
 
    ```ini
-   # Alternate ~/.gitconfig-gitlab file
+   # Alternative ~/.gitconfig-gitlab file
    # These values are used for repositories matching the string 'gitlab.com',
    # and override their corresponding values in ~/.gitconfig
 
@@ -254,6 +255,7 @@ If you must unverify both future and past commits,
 
 ## Related topics
 
+- [Configure commit signing for commits made in the web UI](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
 - GPG resources:
   - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
   - [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)

@@ -9,7 +9,9 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
   let(:docs_path) { Rails.root.join(docs_dir, 'audit_event_types.md') }
   let(:template_erb_path) { Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb") }
 
-  subject(:check_docs_task) { described_class.new(docs_dir, docs_path, template_erb_path) }
+  let(:stub_definitions) do
+    expect(Gitlab::Audit::Type::Definition).to receive(:definitions).and_return(updated_definitions)
+  end
 
   describe '#run' do
     before do
@@ -17,51 +19,35 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
       Tasks::Gitlab::AuditEventTypes::CompileDocsTask.new(docs_dir, docs_path, template_erb_path).run
     end
 
-    context 'when audit_event_types.md is up to date' do
-      it 'outputs success message after checking the documentation' do
-        expect { subject.run }.to output("Audit event types documentation is up to date.\n").to_stdout
-      end
+    let(:new_audit_event) do
+      { new_audit_event: instance_double(Gitlab::Audit::Type::Definition,
+        name: 'new_audit_event',
+        description: 'some description',
+        feature_category: 'audit_events',
+        introduced_by_mr: 'https://mr',
+        introduced_by_issue: 'https://issue',
+        milestone: '16.0',
+        saved_to_database: true,
+        streamed: false,
+        scope: ['Project']
+      ) }
     end
 
-    context 'when audit_event_types.md is updated manually' do
-      before do
-        File.write(docs_path, "Manually adding this line at the end of the audit_event_types.md", mode: 'a+')
-      end
+    let(:added_definition) { Gitlab::Audit::Type::Definition.definitions.merge(new_audit_event) }
+    let(:removed_definition) { Gitlab::Audit::Type::Definition.definitions.except(:feature_flag_created) }
+    let(:updated_definition) do
+      definitions = Gitlab::Audit::Type::Definition.definitions
+      definitions[:feature_flag_created].attributes[:streamed] = false
 
-      it 'raises an error' do
-        expected_output = "Audit event types documentation is outdated! Please update it " \
-                          "by running `bundle exec rake gitlab:audit_event_types:compile_docs`"
-
-        expect { subject.run }.to raise_error(SystemExit).and output(/#{expected_output}/).to_stdout
-      end
+      definitions
     end
 
-    context 'when an existing audit event type is removed' do
-      let(:updated_definition) { Gitlab::Audit::Type::Definition.definitions.except(:feature_flag_created) }
-
-      it 'raises an error' do
-        expect(Gitlab::Audit::Type::Definition).to receive(:definitions).and_return(updated_definition)
-
-        expected_output = "Audit event types documentation is outdated! Please update it " \
-                          "by running `bundle exec rake gitlab:audit_event_types:compile_docs`"
-
-        expect { subject.run }.to raise_error(SystemExit).and output(/#{expected_output}/).to_stdout
-      end
+    let(:success_message) { "Audit event types documentation is up to date.\n" }
+    let(:error_message) do
+      "Audit event types documentation is outdated! Please update it " \
+        "by running `bundle exec rake gitlab:audit_event_types:compile_docs`"
     end
 
-    context 'when an existing audit event type is updated' do
-      let(:updated_definition) { Gitlab::Audit::Type::Definition.definitions }
-
-      it 'raises an error' do
-        updated_definition[:feature_flag_created].attributes[:streamed] = false
-
-        expect(Gitlab::Audit::Type::Definition).to receive(:definitions).and_return(updated_definition)
-
-        expected_output = "Audit event types documentation is outdated! Please update it " \
-                          "by running `bundle exec rake gitlab:audit_event_types:compile_docs`"
-
-        expect { subject.run }.to raise_error(SystemExit).and output(/#{expected_output}/).to_stdout
-      end
-    end
+    it_behaves_like 'checks if the doc is up-to-date'
   end
 end

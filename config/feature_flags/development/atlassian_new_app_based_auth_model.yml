@@ -1,0 +1,8 @@
+---
+name: atlassian_new_app_based_auth_model
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142316
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442334
+milestone: '16.10'
+group: group::import and integrate
+type: development
+default_enabled: false

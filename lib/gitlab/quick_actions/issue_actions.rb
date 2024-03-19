@@ -266,7 +266,6 @@ module Gitlab
         types Issue
         condition do
           quick_action_target.persisted? &&
-            Feature.enabled?(:convert_to_ticket_quick_action, parent, type: :beta) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.respond_to?(:from_service_desk?) &&
             !quick_action_target.from_service_desk?

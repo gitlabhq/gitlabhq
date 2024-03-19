@@ -5,7 +5,6 @@ query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
     path
     status
     location
-    canDelete
     createdAt
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
@@ -17,6 +16,9 @@ query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
         enabled
         nextRunAt
       }
+    }
+    userPermissions {
+      destroyContainerRepository
     }
   }
 }

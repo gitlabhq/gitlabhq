@@ -96,6 +96,30 @@ export const mockPipelineSchedulesResponsePlanLimitReached = {
   },
 };
 
+export const mockPipelineSchedulesResponseUnlimited = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      projectPlanLimits: {
+        ciPipelineSchedules: 0,
+        __typename: 'ProjectPlanLimits',
+      },
+      pipelineSchedules: {
+        count: 3,
+        nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjQ0In0',
+          endCursor: 'eyJpZCI6IjI4In0',
+          __typename: 'PageInfo',
+        },
+      },
+    },
+  },
+};
+
 export const emptyPipelineSchedulesResponse = {
   data: {
     currentUser: {
@@ -116,6 +140,30 @@ export const emptyPipelineSchedulesResponse = {
           hasPreviousPage: false,
           startCursor: '',
           endCursor: '',
+          __typename: 'PageInfo',
+        },
+      },
+    },
+  },
+};
+
+export const noPlanLimitResponse = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      projectPlanLimits: {
+        ciPipelineSchedules: null,
+        __typename: 'ProjectPlanLimits',
+      },
+      pipelineSchedules: {
+        count: 3,
+        nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjQ0In0',
+          endCursor: 'eyJpZCI6IjI4In0',
           __typename: 'PageInfo',
         },
       },

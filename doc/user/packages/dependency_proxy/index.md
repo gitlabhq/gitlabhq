@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) support for private groups in GitLab 13.7.
@@ -97,7 +97,7 @@ You can authenticate using:
 Users accessing the Dependency Proxy with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
 
-The Dependency Proxy follows the [Docker v2 token authentication flow](https://docs.docker.com/registry/spec/auth/token/),
+The Dependency Proxy follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
 issuing the client a JWT to use for the pull requests. The JWT issued as a result of authenticating
 expires after some time. When the token expires, most Docker clients store your credentials and
 automatically request a new token without further action.

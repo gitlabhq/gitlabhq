@@ -366,6 +366,7 @@ class Admin::UsersController < Admin::ApplicationController
       :bio,
       :can_create_group,
       :color_scheme_id,
+      :color_mode_id,
       :discord,
       :email,
       :extern_uid,

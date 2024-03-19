@@ -303,16 +303,12 @@ describe('common_utils', () => {
   describe('insertText', () => {
     let textArea;
 
-    beforeAll(() => {
+    beforeEach(() => {
       textArea = document.createElement('textarea');
       document.querySelector('body').appendChild(textArea);
       textArea.value = 'two';
       textArea.setSelectionRange(0, 0);
       textArea.focus();
-    });
-
-    afterAll(() => {
-      textArea.parentNode.removeChild(textArea);
     });
 
     describe('using execCommand', () => {
@@ -332,6 +328,14 @@ describe('common_utils', () => {
         commonUtils.insertText(textArea, '');
 
         expect(document.execCommand).toHaveBeenCalledWith('delete');
+      });
+
+      // It's not clear when this actually happens but it has been observed
+      // in the wild. Probably related to the very large `insertMarkdownText` function.
+      it('does nothing if no selection', () => {
+        commonUtils.insertText(textArea, '');
+
+        expect(document.execCommand).not.toHaveBeenCalled();
       });
     });
 

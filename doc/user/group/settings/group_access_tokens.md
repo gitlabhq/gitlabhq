@@ -7,8 +7,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 # Group access tokens
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 With group access tokens, you can use a single token to:
 
@@ -24,6 +23,13 @@ You can use a group access token to authenticate:
   - Any non-blank value as a username.
   - The group access token as the password.
 
+> On GitLab.com, you can use group access tokens if you have the Premium or Ultimate license tier. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
+>
+> On GitLab Dedicated and self-managed instances, you can use group access tokens with any license tier. If you have the Free tier:
+>
+> - Review your security and compliance policies around [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
+> - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to lower potential abuse.
+
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a group rather than a project or user.
@@ -32,15 +38,6 @@ In self-managed instances, group access tokens are subject to the same [maximum 
 
 WARNING:
 The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. In GitLab 16.0 and later, existing group access tokens without an expiry date are automatically given an expiry date 365 days later than the current date. The automatic adding of an expiry date occurs on GitLab.com during the 16.0 milestone. The automatic adding of an expiry date occurs on self-managed instances when they are upgraded to GitLab 16.0. This change is a breaking change.
-
-You can use group access tokens:
-
-- On GitLab SaaS: If you have the Premium or Ultimate license tier. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
-- On self-managed instances: With any license tier. If you have the Free tier:
-  - Review your security and compliance policies around
-    [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
-  - Consider [disabling group access tokens](#enable-or-disable-group-access-token-creation) to
-    lower potential abuse.
 
 You cannot use group access tokens to create other group, project, or personal access tokens.
 

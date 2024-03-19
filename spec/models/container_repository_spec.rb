@@ -589,8 +589,77 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tags' do
-    it 'returns non-empty tags list' do
-      expect(repository.tags).not_to be_empty
+    shared_examples 'returning the non-empty tags list' do
+      it 'returns non-empty tags list' do
+        expect(repository.tags).not_to be_empty
+      end
+    end
+
+    context 'when the repository is migrated', :saas do
+      context 'when Gitlab API is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        end
+
+        context 'when the Gitlab API returns tags' do
+          include_context 'with the container registry GitLab API returning tags'
+
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return(response_body)
+            allow(repository).to receive(:each_tags_page).and_call_original
+          end
+
+          it 'returns an instantiated tag from the response' do
+            tags = repository.tags
+
+            expect(repository).to have_received(:each_tags_page)
+            expect(tags).to match_array([
+              have_attributes(
+                repository: repository,
+                name: tags_response[0][:name],
+                digest: tags_response[0][:digest],
+                total_size: tags_response[0][:size_bytes]
+              ),
+              have_attributes(
+                repository: repository,
+                name: tags_response[1][:name],
+                digest: tags_response[1][:digest],
+                total_size: tags_response[1][:size_bytes]
+              )
+            ])
+          end
+        end
+
+        context 'when the Gitlab API does not return any tags' do
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+          end
+
+          it 'returns an empty array' do
+            expect(repository.tags).to be_empty
+          end
+        end
+
+        context 'when the feature fetch_tags_from_registry_api is disabled' do
+          before do
+            stub_feature_flags(fetch_tags_from_registry_api: false)
+          end
+
+          it_behaves_like 'returning the non-empty tags list'
+        end
+      end
+
+      context 'when the Gitlab API is not supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it_behaves_like 'returning the non-empty tags list'
+      end
+    end
+
+    context 'when the repository is not migrated' do
+      it_behaves_like 'returning the non-empty tags list'
     end
   end
 
@@ -999,17 +1068,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#size' do
-    let(:on_com) { true }
-    let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT + 3.months }
-
     subject { repository.size }
 
-    before do
-      allow(::Gitlab).to receive(:com_except_jh?).and_return(on_com)
-      allow(repository).to receive(:created_at).and_return(created_at)
-    end
-
-    context 'supports gitlab api on .com with a recent repository' do
+    context 'supports gitlab api' do
       before do
         expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
         expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
@@ -1035,37 +1096,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
 
       it { is_expected.to eq(nil) }
-    end
-
-    context 'not on .com' do
-      let(:on_com) { false }
-
-      it { is_expected.to eq(nil) }
-    end
-
-    context 'supports gitlab api on .com with an old repository' do
-      let(:on_com) { true }
-      let(:created_at) { described_class::MIGRATION_PHASE_1_STARTED_AT - 3.months }
-
-      before do
-        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
-        allow(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
-        expect(repository).to receive(:migration_state).and_return(migration_state)
-      end
-
-      context 'with migration_state import_done' do
-        let(:response) { { 'size_bytes' => 12345 } }
-        let(:migration_state) { 'import_done' }
-
-        it { is_expected.to eq(12345) }
-      end
-
-      context 'with migration_state not import_done' do
-        let(:response) { { 'size_bytes' => 12345 } }
-        let(:migration_state) { 'default' }
-
-        it { is_expected.to eq(nil) }
-      end
     end
   end
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In GitLab, a release enables you to create a snapshot of your project for your users, including
 installation packages and release notes. You can create a GitLab release on any branch. Creating a
@@ -58,6 +58,28 @@ To sort releases by **Released date** or **Created date**, select from the sort 
 switch between ascending or descending order, select **Sort order**.
 
 ![Sort releases dropdown list options](img/releases_sort_v13_6.png)
+
+### Permanent link to latest release
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+
+Latest release page is accessible through a permanent URL.
+GitLab redirects to the latest release page URL when it is visited.
+
+The format of the URL is:
+
+```plaintext
+https://host/namespace/project/-/releases/permalink/latest
+```
+
+We also support, suffix path carry forward on the redirect to the latest release.
+Example if release `v14.8.0-ee` is the latest release and has a readable link `https://host/namespace/project/-/releases/v14.8.0-ee#release` then it can be addressed as `https://host/namespace/project/-/releases/permalink/latest#release`.
+
+Refer [permanent links to latest release assets](release_fields.md#permanent-links-to-latest-release-assets) section to understand more about the suffix path carry forward usage.
+
+#### Sorting preferences
+
+By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
 ## Create a release
 
@@ -385,7 +407,7 @@ and set **Maintainer** in the **Allowed to create** column.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 

@@ -1,0 +1,13 @@
+- base_path = local_assigns.fetch(:base_path, '')
+- namespace_id = local_assigns.fetch(:namespace_id, nil)
+- page_title _('Comment templates')
+
+#js-comment-templates-root.settings-section.gl-mt-3{ data: { base_path: base_path, namespace_id: namespace_id, } }
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h4.gl-my-0
+        = page_title
+  %p.gl-text-secondary
+    = _('Comment templates can be used when creating comments inside issues, merge requests, and epics.')
+
+  = gl_loading_icon(size: 'lg')

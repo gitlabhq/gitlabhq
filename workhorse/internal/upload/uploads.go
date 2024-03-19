@@ -55,7 +55,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 		switch err {
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
-		case ErrInjectedClientParam, http.ErrMissingBoundary:
+		case ErrInjectedClientParam, ErrUnexpectedMultipartEOF, http.ErrMissingBoundary:
 			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
 		case ErrTooManyFilesUploaded:
 			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest), fail.WithBody(err.Error()))

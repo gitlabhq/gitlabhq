@@ -56,8 +56,7 @@ module Gitlab
         # start_date  - The start date of the time range.
         # end_date  - The end date of the time range.
         def unique_events(event_names:, start_date:, end_date:, property_name: nil)
-          # :skip_file_list_validation can be removed when we add property_name passing to RedisHLLMetric
-          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date, skip_file_list_validation: true)
+          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date)
         end
 
         def known_event?(event_name)
@@ -68,10 +67,10 @@ module Gitlab
           @known_events ||= load_events
         end
 
-        def calculate_events_union(event_names:, start_date:, end_date:)
-          # :skip_file_list_validation is needed because this method is
+        def calculate_events_union(event_names:, property_name:, start_date:, end_date:)
+          # :used_in_aggregate_metric is needed because this method is
           # used by AggregatedMetrics, which sends :property_name even for legacy events
-          count_unique_events(event_names: event_names, property_name: nil, start_date: start_date, end_date: end_date, skip_file_list_validation: true)
+          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date, used_in_aggregate_metric: true)
         end
 
         private
@@ -91,10 +90,10 @@ module Gitlab
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
         end
 
-        def count_unique_events(event_names:, start_date:, end_date:, property_name:, skip_file_list_validation: false)
+        def count_unique_events(event_names:, start_date:, end_date:, property_name:, used_in_aggregate_metric: false)
           events = events_with_property_names(event_names, property_name)
 
-          keys = keys_for_aggregation(events: events, start_date: start_date, end_date: end_date, skip_file_list_validation: skip_file_list_validation)
+          keys = keys_for_aggregation(events: events, start_date: start_date, end_date: end_date, used_in_aggregate_metric: used_in_aggregate_metric)
 
           return FALLBACK unless keys.any?
 
@@ -118,7 +117,7 @@ module Gitlab
           events = Gitlab::Usage::MetricDefinition.all.map do |d|
             next unless d.available?
 
-            d.attributes[:options] && d.attributes[:options][:events]
+            d.events.keys
           end.flatten.compact.uniq
 
           events.map do |e|
@@ -134,31 +133,32 @@ module Gitlab
           known_events.find { |event| event[:name] == event_name.to_s }
         end
 
-        def redis_key(event, time, skip_file_list_validation)
-          key = redis_key_base(event, skip_file_list_validation)
+        def redis_key(event, time, used_in_aggregate_metric)
+          key = redis_key_base(event, used_in_aggregate_metric)
 
           year_week = time.strftime('%G-%V')
           "{#{REDIS_SLOT}}_#{key}-#{year_week}"
         end
 
-        def redis_key_base(event, skip_file_list_validation)
+        def redis_key_base(event, used_in_aggregate_metric)
           event_name = event[:name]
           property_name = event[:property_name]
 
-          validate!(event_name, property_name, skip_file_list_validation)
+          validate!(event_name, property_name, used_in_aggregate_metric)
 
           key = event_name
-          if Feature.enabled?(:redis_hll_property_name_tracking, type: :wip) && property_name
+          legacy_event_with_property_name = used_in_aggregate_metric && legacy_events.include?(event_name)
+          if property_name && !legacy_event_with_property_name
             key = "#{key}-#{formatted_property_name(property_name)}"
           end
 
           key_overrides.fetch(key, key)
         end
 
-        def validate!(event_name, property_name, skip_file_list_validation)
+        def validate!(event_name, property_name, used_in_aggregate_metric)
           raise UnknownEvent, "Unknown event #{event_name}" unless known_events_names.include?(event_name.to_s)
 
-          return if skip_file_list_validation
+          return if used_in_aggregate_metric
 
           if property_name && legacy_events.include?(event_name)
             link = Rails.application.routes.url_helpers.help_page_url("ee/development/internal_analytics/internal_event_instrumentation/migration.html#backend-1")
