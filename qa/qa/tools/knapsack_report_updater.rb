@@ -38,15 +38,30 @@ module QA
         @gitlab_api_url ||= ENV["CI_API_V4_URL"] || raise("Missing CI_API_V4_URL env variable")
       end
 
+      # Api request headers
+      #
+      # @return [Hash]
+      def api_headers
+        @api_headers ||= {
+          headers: { "PRIVATE-TOKEN" => gitlab_access_token }
+        }
+      end
+
       # Create branch for knapsack report update
       #
       # @return [void]
       def create_branch
         logger.info("Creating branch '#{UPDATE_BRANCH_NAME}' branch")
-        api_post("repository/branches", {
+        api_request(:post, "repository/branches", {
           branch: UPDATE_BRANCH_NAME,
           ref: "master"
         })
+      rescue StandardError => e
+        raise e unless e.message.include?("Branch already exists")
+
+        logger.warn("Branch '#{UPDATE_BRANCH_NAME}' already exists, recreating it.")
+        api_request(:delete, "repository/branches/#{UPDATE_BRANCH_NAME}")
+        retry
       end
 
       # Create update commit for knapsack report
@@ -54,7 +69,7 @@ module QA
       # @return [void]
       def create_commit
         logger.info("Creating master_report.json update commit")
-        api_post("repository/commits", {
+        api_request(:post, "repository/commits", {
           branch: UPDATE_BRANCH_NAME,
           commit_message: "Update master_report.json for E2E tests",
           actions: [
@@ -72,7 +87,7 @@ module QA
       # @return [void]
       def create_mr
         logger.info("Creating merge request")
-        resp = api_post("merge_requests", {
+        resp = api_request(:post, "merge_requests", {
           source_branch: UPDATE_BRANCH_NAME,
           target_branch: "master",
           title: "Update master_report.json for E2E tests",
@@ -91,14 +106,15 @@ module QA
 
       # Api update request
       #
+      # @param [String] verb
       # @param [String] path
       # @param [Hash] payload
       # @return [Hash, Array]
-      def api_post(path, payload)
-        response = post("#{gitlab_api_url}/projects/#{GITLAB_PROJECT_ID}/#{path}", payload, {
-          headers: { "PRIVATE-TOKEN" => gitlab_access_token }
-        })
+      def api_request(verb, path, payload = nil)
+        args = [verb, "#{gitlab_api_url}/projects/#{GITLAB_PROJECT_ID}/#{path}", payload, api_headers].compact
+        response = public_send(*args)
         raise "Api request to #{path} failed! Body: #{response.body}" unless success?(response.code)
+        return {} if response.body.empty?
 
         parse_body(response)
       end

@@ -77,6 +77,25 @@ This page shows groups that you are a member of through:
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
 
+## View a group
+
+The group overview page displays information about the group and its members, subgroups, and projects, such as:
+
+- Group description
+- Recent activity
+- Number of merge requests and issues created
+- Number of members added
+- Subgroups and projects
+- Shared projects
+- Archived projects
+
+To view a group:
+
+- On the left sidebar, select **Search or go to** and find your group.
+
+You can search for the subgroups and projects of the group
+and sort them in ascending or descending order.
+
 ## View group activity
 
 To view the activity of a group:

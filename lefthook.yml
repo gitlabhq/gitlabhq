@@ -69,7 +69,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running bin/rake gettext:regenerate" && exit 1 )
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
+    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'

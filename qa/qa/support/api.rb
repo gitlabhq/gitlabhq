@@ -15,81 +15,87 @@ module QA
       HTTP_STATUS_SERVER_ERROR = 500
 
       def post(url, payload, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :post,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :post,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def get(url, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :get,
-            url: url,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :get,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def patch(url, payload = nil, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :patch,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :patch,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def put(url, payload = nil, args = {})
-        with_retry_on_too_many_requests do
-          default_args = {
-            method: :put,
-            url: url,
-            payload: payload,
-            verify_ssl: false
-          }
+        request_args = {
+          method: :put,
+          url: url,
+          payload: payload,
+          verify_ssl: false
+        }.merge(with_canary(args))
 
-          RestClient::Request.execute(default_args.merge(with_canary(args)))
+        with_retry_on_too_many_requests do
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
-      def delete(url)
+      def delete(url, args = {})
+        request_args = {
+          method: :delete,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
+
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
-            method: :delete,
-            url: url,
-            verify_ssl: false)
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
       end
 
       def head(url)
+        request_args = {
+          method: :head,
+          url: url,
+          verify_ssl: false
+        }.merge(with_canary(args))
+
         with_retry_on_too_many_requests do
-          RestClient::Request.execute(
-            method: :head,
-            url: url,
-            verify_ssl: false)
+          RestClient::Request.execute(request_args)
         rescue StandardError => e
           return_response_or_raise(e)
         end
