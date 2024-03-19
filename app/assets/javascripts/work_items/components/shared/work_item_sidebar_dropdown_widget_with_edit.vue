@@ -198,12 +198,11 @@ export default {
       <gl-collapsible-listbox
         :id="inputId"
         ref="listbox"
+        class="gl-w-full!"
         :multiple="multiSelect"
-        block
         searchable
         start-opened
         is-check-centered
-        fluid-width
         :infinite-scroll="infiniteScroll"
         :searching="loading"
         :header-text="headerText"
@@ -213,6 +212,7 @@ export default {
         :selected="localSelectedItem"
         :reset-button-label="resetButton"
         :infinite-scroll-loading="infiniteScrollLoading"
+        toggle-class="gl-w-full! work-item-sidebar-dropdown-toggle"
         @reset="unassignValue"
         @search="debouncedSearchKeyUpdate"
         @select="handleItemClick"
