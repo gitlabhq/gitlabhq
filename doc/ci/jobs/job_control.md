@@ -148,7 +148,7 @@ docker build:
     - if: $VAR == "string value"
       changes:  # Include the job and set to when:manual if any of the follow paths match a modified file.
         - Dockerfile
-        - docker/scripts/*
+        - docker/scripts/**/*
       when: manual
       allow_failure: true
 ```
@@ -334,7 +334,7 @@ docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - changes:
-        - $DOCKERFILES_DIR/*
+      - $DOCKERFILES_DIR/**/*
 ```
 
 You can use the `$` character for both variables and paths. For example, if the

@@ -924,6 +924,7 @@ self_managed_prometheus_alert_events:
 epic_issues:
 - issue
 - epic
+- work_item
 feature_flag_issues:
 - issue
 - feature_flag
@@ -1026,6 +1027,7 @@ epic:
 epic_issue:
 - epic
 - issue
+- work_item
 system_note_metadata:
 - note
 - description_version

@@ -8429,6 +8429,30 @@ Input type: `UserAchievementsDeleteInput`
 | <a id="mutationuserachievementsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuserachievementsdeleteuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Deleted user achievement. |
 
+### `Mutation.userAddOnAssignmentBulkCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `UserAddOnAssignmentBulkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkcreateaddonpurchaseid"></a>`addOnPurchaseId` | [`GitlabSubscriptionsAddOnPurchaseID!`](#gitlabsubscriptionsaddonpurchaseid) | Global ID of AddOnPurchase to be assigned to. |
+| <a id="mutationuseraddonassignmentbulkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of user to be assigned. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkcreateaddonpurchase"></a>`addOnPurchase` | [`AddOnPurchase`](#addonpurchase) | AddOnPurchase state after mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.userAddOnAssignmentCreate`
 
 DETAILS:
@@ -33128,7 +33152,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
-| <a id="usercalloutfeaturenameenumcode_suggestions_ga_owner_alert"></a>`CODE_SUGGESTIONS_GA_OWNER_ALERT` | Callout feature name for code_suggestions_ga_owner_alert. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |

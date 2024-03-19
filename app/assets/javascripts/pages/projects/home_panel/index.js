@@ -22,6 +22,7 @@ const initHomePanel = () => {
 
   const {
     // HomePanel component
+    adminPath,
     canReadProject,
     isProjectEmpty,
     projectId,
@@ -65,6 +66,7 @@ const initHomePanel = () => {
     name: 'HomePanelRoot',
     provide: {
       // HomePanel component
+      adminPath,
       canReadProject: parseBoolean(canReadProject),
       isProjectEmpty: parseBoolean(isProjectEmpty),
       projectId,

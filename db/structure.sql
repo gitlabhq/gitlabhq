@@ -5620,6 +5620,7 @@ CREATE TABLE catalog_resource_components (
     inputs jsonb DEFAULT '{}'::jsonb NOT NULL,
     name text NOT NULL,
     path text,
+    spec jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_a76bfd47fe CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_ddca729980 CHECK ((char_length(name) <= 255))
 );

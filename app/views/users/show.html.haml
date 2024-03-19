@@ -34,7 +34,7 @@
       %div
         %h1.gl-heading-1.gl-line-height-1.gl-mr-2{ class: 'gl-my-0!', itemprop: 'name' }
           = user_display_name(@user)
-        .gl-font-size-h2.gl-text-gray-600.gl-font-weight-normal.gl-my-0
+        .gl-font-size-h2.gl-text-gray-500.gl-font-weight-normal.gl-my-0
           = @user.to_reference
         - if !@user.blocked? && @user.confirmed? && @user.status&.customized?
           .gl-my-2.cover-status.gl-font-sm.gl-pt-2.gl-display-flex.gl-flex-direction-column

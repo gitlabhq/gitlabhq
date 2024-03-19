@@ -32,7 +32,7 @@ export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
-export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
+export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENT';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
@@ -218,18 +218,6 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
     title: s__('WorkItem|Child items'),
     empty: s__('WorkItem|No epics or issues are currently assigned.'),
   },
-};
-
-export const WORK_ITEM_NAME_TO_ICON_MAP = {
-  Epic: 'epic',
-  Issue: 'issue-type-issue',
-  Task: 'issue-type-task',
-  Objective: 'issue-type-objective',
-  Incident: 'issue-type-incident',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Key Result': 'issue-type-keyresult',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Test Case': 'issue-type-test-case',
 };
 
 export const FORM_TYPES = {

@@ -1,5 +1,6 @@
 <script>
-import { s__, sprintf } from '~/locale';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import ForksButton from '~/forks/components/forks_button.vue';
 import MoreActionsDropdown from '~/groups_projects/components/more_actions_dropdown.vue';
@@ -9,11 +10,18 @@ import StarCount from '~/stars/components/star_count.vue';
 export default {
   components: {
     ForksButton,
+    GlButton,
     MoreActionsDropdown,
     NotificationsDropdown,
     StarCount,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   inject: {
+    adminPath: {
+      default: '',
+    },
     canReadProject: {
       default: false,
     },
@@ -36,12 +44,30 @@ export default {
     copyProjectId() {
       return sprintf(s__('ProjectPage|Project ID: %{id}'), { id: this.projectId });
     },
+    isUserAdmin() {
+      return this.adminPath !== null && this.adminPath !== '';
+    },
+  },
+  i18n: {
+    adminButtonTooltip: __('View project in admin area'),
   },
 };
 </script>
 
 <template>
-  <div class="gl-display-contents">
+  <div
+    class="gl-align-items-center gl-display-flex gl-flex-wrap gl-gap-3 gl-justify-content-md-end project-repo-buttons"
+  >
+    <gl-button
+      v-if="isUserAdmin"
+      v-gl-tooltip
+      :aria-label="$options.i18n.adminButtonTooltip"
+      :href="adminPath"
+      :title="$options.i18n.adminButtonTooltip"
+      data-testid="admin-button"
+      icon="admin"
+    />
+
     <template v-if="isLoggedIn && canReadProject">
       <notifications-dropdown />
     </template>

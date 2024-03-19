@@ -23,6 +23,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
+- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+  - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
+  - The second database connection can be disabled:
+    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
+    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
   In all cases, you should review the notes for those intermediate versions.
 
@@ -947,12 +953,6 @@ by this issue.
   all queues. This behavior does not apply if you have configured the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
-- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-  - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-  - The second database connection can be disabled:
-    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
-    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.

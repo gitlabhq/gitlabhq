@@ -37,3 +37,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::ParentLinks::ReorderService.prepend_mod

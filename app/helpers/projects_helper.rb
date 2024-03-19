@@ -478,8 +478,10 @@ module ProjectsHelper
     fork_button_attributes = fork_button_data_attributes(project) || {}
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
+    admin_path = admin_project_path(project) if current_user&.can_admin_all_resources?
 
     {
+      admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
       is_project_empty: project.empty_repo?.to_s,
       project_id: project.id

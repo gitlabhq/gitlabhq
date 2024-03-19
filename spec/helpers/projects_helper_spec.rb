@@ -1169,9 +1169,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       allow(helper).to receive(:star_count_data_attributes).and_return({})
     end
 
-    where(:can_read_project, :is_empty_repo) do
-      true  | true
-      false | false
+    where(:can_read_project, :is_empty_repo, :is_admin, :has_admin_path) do
+      true  | true  | true  | true
+      false | false | true  | true
+      true  | true  | false | false
+      false | false | false | false
     end
 
     with_them do
@@ -1179,10 +1181,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         before do
           allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
           allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+          allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
         end
 
         let(:expected) do
           {
+            admin_path: (admin_project_path(project) if has_admin_path),
             can_read_project: can_read_project.to_s,
             is_project_empty: is_empty_repo.to_s,
             project_id: project.id

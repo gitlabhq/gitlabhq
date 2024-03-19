@@ -20,36 +20,48 @@ describe('HomePanel', () => {
     });
   };
 
+  const findAdminButton = () => wrapper.find('[data-testid="admin-button"]');
   const findForksButton = () => wrapper.findComponent(ForksButton);
   const findMoreActionsDropdown = () => wrapper.findComponent(MoreActionsDropdown);
   const findNotificationsDropdown = () => wrapper.findComponent(NotificationsDropdown);
   const findStarCount = () => wrapper.findComponent(StarCount);
 
   describe.each`
-    isLoggedIn | canReadProject | isProjectEmpty | isForkButtonVisible | isMoreActionsDropdownVisible | isNotificationDropdownVisible | isStarCountVisible
-    ${true}    | ${true}        | ${true}        | ${false}            | ${true}                      | ${true}                       | ${true}
-    ${true}    | ${true}        | ${false}       | ${true}             | ${true}                      | ${true}                       | ${true}
-    ${true}    | ${false}       | ${true}        | ${false}            | ${true}                      | ${false}                      | ${true}
-    ${true}    | ${false}       | ${false}       | ${false}            | ${true}                      | ${false}                      | ${true}
-    ${false}   | ${true}        | ${true}        | ${false}            | ${true}                      | ${false}                      | ${true}
-    ${false}   | ${true}        | ${false}       | ${false}            | ${true}                      | ${false}                      | ${true}
-    ${false}   | ${false}       | ${true}        | ${false}            | ${true}                      | ${false}                      | ${true}
-    ${false}   | ${false}       | ${false}       | ${false}            | ${true}                      | ${false}                      | ${true}
+    isLoggedIn | canReadProject | isProjectEmpty | adminPath               | isForkButtonVisible | isMoreActionsDropdownVisible | isNotificationDropdownVisible | isStarCountVisible | isAdminButtonVisible
+    ${true}    | ${true}        | ${true}        | ${''}                   | ${false}            | ${true}                      | ${true}                       | ${true}            | ${false}
+    ${true}    | ${true}        | ${false}       | ${''}                   | ${true}             | ${true}                      | ${true}                       | ${true}            | ${false}
+    ${true}    | ${false}       | ${true}        | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${true}    | ${false}       | ${false}       | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${true}    | ${true}        | ${true}        | ${'project/admin/path'} | ${false}            | ${true}                      | ${true}                       | ${true}            | ${true}
+    ${true}    | ${true}        | ${false}       | ${'project/admin/path'} | ${true}             | ${true}                      | ${true}                       | ${true}            | ${true}
+    ${true}    | ${false}       | ${true}        | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
+    ${true}    | ${false}       | ${false}       | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
+    ${false}   | ${true}        | ${true}        | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${false}   | ${true}        | ${false}       | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${false}   | ${false}       | ${true}        | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${false}   | ${false}       | ${false}       | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}
+    ${false}   | ${true}        | ${true}        | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
+    ${false}   | ${true}        | ${false}       | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
+    ${false}   | ${false}       | ${true}        | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
+    ${false}   | ${false}       | ${false}       | ${'project/admin/path'} | ${false}            | ${true}                      | ${false}                      | ${true}            | ${true}
   `(
     'renders components',
     ({
       isLoggedIn,
       canReadProject,
       isProjectEmpty,
+      adminPath,
       isForkButtonVisible,
       isMoreActionsDropdownVisible,
       isNotificationDropdownVisible,
       isStarCountVisible,
+      isAdminButtonVisible,
     }) => {
       it('as expected', () => {
         createComponent({
           isLoggedIn,
           provide: {
+            adminPath,
             canReadProject,
             isProjectEmpty,
           },
@@ -59,6 +71,7 @@ describe('HomePanel', () => {
         expect(findMoreActionsDropdown().exists()).toBe(isMoreActionsDropdownVisible);
         expect(findNotificationsDropdown().exists()).toBe(isNotificationDropdownVisible);
         expect(findStarCount().exists()).toBe(isStarCountVisible);
+        expect(findAdminButton().exists()).toBe(isAdminButtonVisible);
       });
     },
   );

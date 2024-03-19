@@ -15,12 +15,7 @@
           = render_if_exists 'shared/tier_badge', source: @project
         = render 'shared/projects/badges', project: @project
 
-    .project-repo-buttons.gl-display-flex.gl-align-items-flex-start.gl-flex-wrap.gl-gap-3
-      - if current_user
-        - if current_user.admin?
-          = link_button_to nil, [:admin, @project], icon: 'admin', title: _('View project in admin area'), data: {toggle: 'tooltip', placement: 'top', container: 'body'}
-
-      #js-home-panel{ data: home_panel_data_attributes }
+    #js-home-panel{ data: home_panel_data_attributes }
 
   - if ff_reorg_disabled
     - if can?(current_user, :read_code, @project)
