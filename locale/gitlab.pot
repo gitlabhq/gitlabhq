@@ -16707,6 +16707,9 @@ msgstr ""
 msgid "Delete %{name}"
 msgstr ""
 
+msgid "Delete %{ruleName}"
+msgstr ""
+
 msgid "Delete Comment"
 msgstr ""
 
@@ -41725,9 +41728,6 @@ msgstr ""
 msgid "Remove %{parent_ref} as this work item's parent."
 msgstr ""
 
-msgid "Remove %{ruleName}"
-msgstr ""
-
 msgid "Remove Zoom meeting"
 msgstr ""
 
@@ -48891,6 +48891,12 @@ msgstr ""
 msgid "StatusCheck|Check for a status response in merge requests. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "StatusCheck|Delete status check"
+msgstr ""
+
+msgid "StatusCheck|Delete status check?"
+msgstr ""
+
 msgid "StatusCheck|Examples: QA, Security."
 msgstr ""
 
@@ -48904,12 +48910,6 @@ msgid "StatusCheck|Invoke an external API as part of the pipeline process."
 msgstr ""
 
 msgid "StatusCheck|No status checks are defined yet."
-msgstr ""
-
-msgid "StatusCheck|Remove status check"
-msgstr ""
-
-msgid "StatusCheck|Remove status check?"
 msgstr ""
 
 msgid "StatusCheck|Service name"
@@ -48945,7 +48945,7 @@ msgstr ""
 msgid "StatusCheck|What is status check?"
 msgstr ""
 
-msgid "StatusCheck|You are about to remove the %{name} status check."
+msgid "StatusCheck|You are about to delete the %{name} status check."
 msgstr ""
 
 msgid "StatusCheck|status checks"

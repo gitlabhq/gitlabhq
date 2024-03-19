@@ -32,7 +32,7 @@ counted as web traffic.
 
 ## Enable unauthenticated API request rate limit
 
-To enable the unauthenticated request rate limit:
+To enable the unauthenticated API request rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
@@ -74,7 +74,7 @@ To enable the authenticated API request rate limit:
 
 ## Enable authenticated web request rate limit
 
-To enable the unauthenticated request rate limit:
+To enable the authenticated request rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.

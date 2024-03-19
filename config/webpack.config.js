@@ -322,6 +322,136 @@ if (USE_VUE3) {
   vueLoaderOptions.compiler = require.resolve('./vue3migration/compiler');
 }
 
+Object.assign(alias, {
+  // Generated using the following
+  // cat node_modules/@swagger-api/apidom-reference/package.json | \
+  // jq -r '.exports | to_entries[] | "\"@swagger-api/apidom-reference" + .key + "$\": path.join(ROOT_PATH, \"node_modules/@swagger-api/apidom-reference/" + .value.require + "\"),"'
+  '@swagger-api/apidom-reference$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/configuration/saturated.cjs',
+  ),
+  '@swagger-api/apidom-reference/configuration/saturated$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/configuration/saturated.cjs',
+  ),
+  '@swagger-api/apidom-reference/configuration/empty$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/configuration/empty.cjs',
+  ),
+  '@swagger-api/apidom-reference/resolve/resolvers/file$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/',
+  ),
+  '@swagger-api/apidom-reference/resolve/resolvers/http-axios$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/resolve/resolvers/http-axios/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/resolve/strategies/asyncapi-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/resolve/strategies/asyncapi-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/resolve/strategies/openapi-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/resolve/strategies/openapi-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/resolve/strategies/openapi-3-0$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/resolve/strategies/openapi-3-0/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/resolve/strategies/openapi-3-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/resolve/strategies/openapi-3-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/api-design-systems-json$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/api-design-systems-json/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/api-design-systems-yaml$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/api-design-systems-yaml/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/asyncapi-json-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/asyncapi-json-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/asyncapi-yaml-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/asyncapi-yaml-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/workflows-json-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/workflows-json-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/workflows-yaml-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/workflows-yaml-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/binary$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/json$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/json/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-json-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-json-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-yaml-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-yaml-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-json-3-0$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-json-3-0/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-json-3-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-json-3-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-yaml-3-0$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-yaml-3-0/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/openapi-yaml-3-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/openapi-yaml-3-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/parse/parsers/yaml-1-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/parse/parsers/yaml-1-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/asyncapi-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/asyncapi-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/openapi-2$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/openapi-2/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/openapi-3-0$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/openapi-3-0/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/openapi-3-1/index.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/$anchor$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/openapi-3-1/selectors/$anchor.cjs',
+  ),
+  '@swagger-api/apidom-reference/dereference/strategies/openapi-3-1/selectors/uri$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/dereference/strategies/openapi-3-1/selectors/uri.cjs',
+  ),
+  '@swagger-api/apidom-reference/bundle/strategies/openapi-3-1$': path.join(
+    ROOT_PATH,
+    'node_modules/@swagger-api/apidom-reference/cjs/bundle/strategies/openapi-3-1/index.cjs',
+  ),
+});
+
 module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
@@ -392,6 +522,18 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           plugins: ['@babel/plugin-transform-logical-assignment-operators'],
+          ...defaultJsOptions,
+        },
+      },
+      {
+        test: /@swagger-api\/apidom-.*\.(js|cjs)$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            '@babel/plugin-transform-class-properties',
+            '@babel/plugin-transform-logical-assignment-operators',
+          ],
           ...defaultJsOptions,
         },
       },
