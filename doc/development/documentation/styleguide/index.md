@@ -721,7 +721,7 @@ For example, use footnotes when you must:
 #### Footnote format
 
 In the table, use the HTML superscript tag `<sup>` for each footnote.
-Put the tag at the end after any punctuation mark.
+Put the tag at the end of the sentence. Leave one space between the sentence and the tag.
 
 For example:
 
@@ -757,7 +757,7 @@ The table and footnotes would render as follows:
 1. This is the first footnote.
 1. This is the second footnote.
 
-##### More than five footnotes
+##### Five or more footnotes
 
 If you have five or more footnotes that you cannot include in the table itself,
 you can use consecutive numbers for the list items.

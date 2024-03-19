@@ -196,6 +196,15 @@ module TreeHelper
     }
   end
 
+  def download_links(project, ref, archive_prefix)
+    Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
+      {
+        text: fmt,
+        path: external_storage_url_or_path(project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt))
+      }
+    end
+  end
+
   def directory_download_links(project, ref, archive_prefix)
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
@@ -203,6 +212,15 @@ module TreeHelper
         path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
       }
     end
+  end
+end
+
+def previous_artifacts(project, ref, builds_with_artifacts)
+  builds_with_artifacts.map do |job|
+    {
+      text: job.name,
+      path: latest_succeeded_project_artifacts_path(project, "#{ref}/download", job: job.name)
+    }
   end
 end
 

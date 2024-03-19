@@ -10,7 +10,7 @@ RSpec.shared_examples 'archive download buttons' do
       visit path_to_visit
     end
 
-    context 'private project' do
+    context 'private project', :js do
       it 'shows archive download buttons with external storage URL prepended and user token appended to their href' do
         Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
           path = archive_path(project, ref, format)
@@ -18,36 +18,45 @@ RSpec.shared_examples 'archive download buttons' do
           uri.path = path
           uri.query = "token=#{user.static_object_token}"
 
-          expect(page).to have_link format, href: uri.to_s
+          all('[data-testid="download-source-code-button"]').first do
+            find_by_testid('base-dropdown-toggle').click
+            expect(page).to have_link format, href: uri.to_s
+          end
         end
       end
     end
 
-    context 'public project' do
+    context 'public project', :js do
       let(:project) { create(:project, :repository, :public) }
 
-      it 'shows archive download buttons with external storage URL prepended to their href' do
+      it 'shows archive download buttons with external storage URL prepended to their href', :js do
         Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
           path = archive_path(project, ref, format)
           uri = URI('https://cdn.gitlab.com')
           uri.path = path
 
-          expect(page).to have_link format, href: uri.to_s
+          all('[data-testid="download-source-code-button"]').first do
+            find_by_testid('base-dropdown-toggle').click
+            expect(page).to have_link format, href: uri.to_s
+          end
         end
       end
     end
   end
 
-  context 'when static objects external storage is disabled' do
+  context 'when static objects external storage is disabled', :js do
     before do
       visit path_to_visit
     end
 
-    it 'shows default archive download buttons' do
+    it 'shows default archive download buttons', :js do
       Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
         path = archive_path(project, ref, format)
 
-        expect(page).to have_link format, href: path
+        all('[data-testid="download-source-code-button"]').first do
+          find_by_testid('base-dropdown-toggle').click
+          expect(page).to have_link format, href: path
+        end
       end
     end
   end

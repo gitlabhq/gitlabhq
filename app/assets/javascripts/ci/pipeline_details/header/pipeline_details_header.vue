@@ -98,7 +98,6 @@ export default {
     cancelPipelineText: __('Cancel pipeline'),
     deletePipelineText: __('Delete'),
     clipboardTooltip: __('Copy commit SHA'),
-    createdText: s__('Pipelines|created'),
     finishedText: s__('Pipelines|finished'),
   },
   errorTexts: {
@@ -471,14 +470,21 @@ export default {
               data-testid="commit-copy-sha"
               size="small"
             />
-            <span v-if="inProgress" data-testid="pipeline-created-time-ago">
-              {{ $options.i18n.createdText }}
-              <time-ago-tooltip :time="pipeline.createdAt" />
-            </span>
-            <span v-if="isFinished" data-testid="pipeline-finished-time-ago">
-              {{ $options.i18n.finishedText }}
-              <time-ago-tooltip :time="pipeline.finishedAt" />
-            </span>
+            <time-ago-tooltip
+              v-if="inProgress"
+              :time="pipeline.createdAt"
+              data-testid="pipeline-created-time-ago"
+            />
+            <template v-if="isFinished">
+              <time-ago-tooltip
+                :time="pipeline.createdAt"
+                data-testid="pipeline-finished-created-time-ago"
+              />, {{ $options.i18n.finishedText }}
+              <time-ago-tooltip
+                :time="pipeline.finishedAt"
+                data-testid="pipeline-finished-time-ago"
+              />
+            </template>
           </div>
         </div>
         <div v-safe-html="refText" class="gl-mb-3" data-testid="pipeline-ref-text"></div>

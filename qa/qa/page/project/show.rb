@@ -60,10 +60,6 @@ module QA
           element 'spinner-placeholder'
         end
 
-        view 'app/views/projects/buttons/_download.html.haml' do
-          element 'download-source-code-button'
-        end
-
         view 'app/views/projects/tree/_tree_header.html.haml' do
           element 'ref-dropdown-container'
         end

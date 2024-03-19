@@ -77,6 +77,20 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
+## add
+
+Use **add** when an object already exists. If the object does not exist yet, use [**create](#create) instead.
+**Add** is the opposite of [remove](#remove).
+
+For example:
+
+- Add a user to the list.
+- Add an issue to the epic.
+
+Do not confuse **add** with [**create**](#create).
+
+Do not use **Add new**.
+
 ## Admin Area
 
 Use title case for **Admin Area**. The UI uses title case.
@@ -430,6 +444,18 @@ Use:
 - The GitLab container registry supports A, B, and C.
 - You can push a Docker image to your project's container registry.
 
+## create
+
+Use **create** when an object does not exist and you are creating it for the first time.  **Create** is the opposite of [delete](#delete).
+
+For example:
+
+- Create an issue.
+
+Do not confuse **create** with [**add**](#add).
+
+Do not use **create new**. The word **create** implies that the object is new, and the extra word is not necessary.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
@@ -471,7 +497,7 @@ Do not use **static role**, **built-in role**, or **predefined role**.
 
 ## delete
 
-Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
+Use **delete** when an object is completely deleted. **Delete** is the opposite of [create](#create).
 
 When the object continues to exist, use [**remove**](#remove) instead.
 For example, you can remove an issue from an epic, but the issue still exists.
@@ -1240,6 +1266,13 @@ When the variable is **recommended**:
 When the variable is **optional**:
 
 - You can set the variable.
+
+## new
+
+Often, you can avoid the word **new**. When you create an object, it is new,
+so you don't need this additional word.
+
+See also [**create**](#create) and [**add**](#add).
 
 ## newer
 

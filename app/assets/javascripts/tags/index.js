@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 import SortDropdown from './components/sort_dropdown.vue';
 
 const mountDropdownApp = (el) => {
@@ -17,6 +18,8 @@ const mountDropdownApp = (el) => {
     render: (createElement) => createElement(SortDropdown),
   });
 };
+
+initSourceCodeDropdowns();
 
 export default () => {
   const el = document.getElementById('js-tags-sort-dropdown');

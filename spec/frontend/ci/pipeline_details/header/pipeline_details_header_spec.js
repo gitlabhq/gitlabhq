@@ -68,6 +68,8 @@ describe('Pipeline details header', () => {
   const findDeleteModal = () => wrapper.findComponent(GlModal);
   const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
   const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
+  const findFinishedCreatedTimeAgo = () =>
+    wrapper.findByTestId('pipeline-finished-created-time-ago');
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findCommitTitle = () => wrapper.findByTestId('pipeline-commit-title');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
@@ -221,20 +223,13 @@ describe('Pipeline details header', () => {
   });
 
   describe('finished pipeline', () => {
-    it('does not display created time ago', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findCreatedTimeAgo().exists()).toBe(false);
-    });
-
-    it('displays finished time ago', async () => {
+    it('displays finished time and created time', async () => {
       createComponent();
 
       await waitForPromises();
 
       expect(findFinishedTimeAgo().exists()).toBe(true);
+      expect(findFinishedCreatedTimeAgo().exists()).toBe(true);
     });
 
     it('displays pipeline duartion text', async () => {
@@ -257,6 +252,7 @@ describe('Pipeline details header', () => {
 
     it('does not display finished time ago', () => {
       expect(findFinishedTimeAgo().exists()).toBe(false);
+      expect(findFinishedCreatedTimeAgo().exists()).toBe(false);
     });
 
     it('does not display pipeline duration text', () => {

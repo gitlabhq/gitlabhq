@@ -7,6 +7,7 @@ RSpec.describe 'Download buttons in branches page', feature_category: :groups_an
   let(:role) { :developer }
   let(:status) { 'success' }
   let(:project) { create(:project, :repository) }
+  let(:download_button_selector) { '[data-testid="download-source-code-button"]' }
 
   let(:pipeline) do
     create(
@@ -47,7 +48,7 @@ RSpec.describe 'Download buttons in branches page', feature_category: :groups_an
 
       it 'passes axe automated accessibility testing', :js do
         find_by_testid('download-source-code-button').click
-        expect(page).to be_axe_clean.within('.project-action-button')
+        expect(page).to be_axe_clean.within(download_button_selector)
       end
     end
   end
