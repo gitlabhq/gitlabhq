@@ -223,10 +223,7 @@ export default {
 
 <template>
   <li class="tree-item gl-p-0! gl-border-bottom-0!">
-    <div
-      class="gl-display-flex gl-align-items-flex-start"
-      :class="{ 'gl-ml-5 gl-pl-2': canHaveChildren && !hasChildren && hasIndirectChildren }"
-    >
+    <div class="gl-display-flex gl-align-items-flex-start">
       <gl-button
         v-if="hasChildren"
         v-gl-tooltip.hover

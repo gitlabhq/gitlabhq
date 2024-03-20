@@ -3,14 +3,12 @@
 .bundle/
 .gitlab/
 .lefthook/
-.rubocop_todo/
 .vscode/
 builds/
 changelogs/
 danger/
 data/
 doc/
-rubocop/
 storybook/
 node_modules/
 log/*.log
@@ -19,7 +17,6 @@ log/*.log
 .gitlab-ci.yml
 .haml-lint*
 .prettier*
-.rubocop*
 .stylelintrc
 .yamllint
 docker-compose.yml

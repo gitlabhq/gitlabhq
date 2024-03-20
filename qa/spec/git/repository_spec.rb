@@ -9,9 +9,9 @@ RSpec.describe QA::Git::Repository do
     let(:repo_uri_with_credentials) { 'http://root@foo/bar.git' }
     let(:env_vars) { [%q(HOME="temp")] }
     let(:extra_env_vars) { [] }
-    let(:run_params) { { env: env_vars + extra_env_vars, sleep_internal: 10, log_prefix: "Git: " } }
+    let(:run_params) { { env: env_vars + extra_env_vars, sleep_internal: 0, log_prefix: "Git: " } }
     let(:repository) do
-      described_class.new.tap do |r|
+      described_class.new(command_retry_sleep_interval: 0).tap do |r|
         r.uri = repo_uri
         r.env_vars = env_vars
       end
@@ -65,7 +65,10 @@ RSpec.describe QA::Git::Repository do
         it 'raises a CommandError exception' do
           expect(Open3).to receive(:capture2e).and_return([+'FAILURE', double(exitstatus: 42)]).exactly(3).times
 
-          expect { call_method }.to raise_error(QA::Support::Run::CommandError, /The command .* failed \(42\) with the following output:\nFAILURE/)
+          expect do
+            call_method
+          end.to raise_error(QA::Support::Run::CommandError,
+            /The command .* failed \(42\) with the following output:\nFAILURE/)
         end
       end
     end
@@ -192,14 +195,18 @@ RSpec.describe QA::Git::Repository do
     describe '#git_protocol=' do
       [0, 1, 2].each do |version|
         it "configures git to use protocol version #{version}" do
-          expect(repository).to receive(:run).with("git config protocol.version #{version}", run_params.merge(max_attempts: 1))
+          expect(repository).to receive(:run).with("git config protocol.version #{version}",
+            run_params.merge(max_attempts: 1))
 
           repository.git_protocol = version
         end
       end
 
       it 'raises an error if the version is unsupported' do
-        expect { repository.git_protocol = 'foo' }.to raise_error(ArgumentError, "Please specify the protocol you would like to use: 0, 1, or 2")
+        expect do
+          repository.git_protocol = 'foo'
+        end.to raise_error(ArgumentError,
+          "Please specify the protocol you would like to use: 0, 1, or 2")
       end
     end
 
@@ -214,13 +221,15 @@ RSpec.describe QA::Git::Repository do
       end
 
       it "reports the detected version" do
-        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: ls-remote< version 2"))
+        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0,
+          "packet: ls-remote< version 2"))
 
         expect(call_method).to eq('2')
       end
 
       it 'reports unknown if version is unknown' do
-        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0, "packet: ls-remote< version -1"))
+        expect(repository).to receive(:run).and_return(described_class::Result.new(any_args, 0,
+          "packet: ls-remote< version -1"))
 
         expect(call_method).to eq('unknown')
       end

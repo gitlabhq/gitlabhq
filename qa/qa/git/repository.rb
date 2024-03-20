@@ -17,7 +17,7 @@ module QA
 
       InvalidCredentialsError = Class.new(RuntimeError)
 
-      def initialize
+      def initialize(command_retry_sleep_interval: 10)
         # We set HOME to the current working directory (which is a
         # temporary directory created in .perform()) so the temporarily dropped
         # .netrc can be utilised
@@ -25,7 +25,10 @@ module QA
         @use_lfs = false
         @gpg_key_id = nil
         @default_branch = Runtime::Env.default_branch
+        @command_retry_sleep_interval = command_retry_sleep_interval
       end
+
+      attr_reader :command_retry_sleep_interval
 
       def self.perform(*args)
         Dir.mktmpdir do |dir|
@@ -331,7 +334,13 @@ module QA
       end
 
       def run_git(command_str, env: env_vars, max_attempts: 1)
-        run(command_str, env: env, max_attempts: max_attempts, sleep_internal: 10, log_prefix: 'Git: ')
+        run(
+          command_str,
+          env: env,
+          max_attempts: max_attempts,
+          sleep_internal: command_retry_sleep_interval,
+          log_prefix: 'Git: '
+        )
       end
     end
   end
