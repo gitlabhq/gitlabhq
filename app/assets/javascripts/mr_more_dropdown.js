@@ -36,7 +36,6 @@ export const initMrMoreDropdown = () => {
     el,
     provide: {
       reportAbusePath: el.dataset.reportAbusePath,
-      showSummaryNotesToggle: Boolean(document.querySelector('#js-summary-notes')),
     },
     beforeCreate() {
       initReportAbuse();

@@ -107,7 +107,9 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           :db_ci_duration_s,
           :db_ci_replica_duration_s,
           :db_main_txn_duration_s,
-          :db_ci_txn_duration_s
+          :db_main_txn_max_duration_s,
+          :db_ci_txn_duration_s,
+          :db_ci_txn_max_duration_s
         )
       end
     end
@@ -123,7 +125,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           :db_primary_duration_s,
           :db_main_duration_s,
           :db_main_replica_duration_s,
-          :db_main_txn_duration_s
+          :db_main_txn_duration_s,
+          :db_main_txn_max_duration_s
         )
       end
 
@@ -131,7 +134,8 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
         expect(described_class.load_balancing_metric_duration_keys).not_to include(
           :db_ci_duration_s,
           :db_ci_replica_duration_s,
-          :db_ci_txn_duration_s
+          :db_ci_txn_duration_s,
+          :db_ci_txn_max_duration_s
         )
       end
     end
@@ -161,6 +165,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           .to change { ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_main_txn_count] }.by(1)
           .and change { ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_txn_count] }.by(1)
         expect(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_main_txn_duration_s]).to be >= 0
+        expect(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_main_txn_max_duration_s]).to be >= 0
       end
     end
 

@@ -128,5 +128,40 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
       expect(File).not_to exist(file_in_another_branch)
     end
   end
+
+  describe '#push' do
+    before do
+      # Needed to check if remote exists
+      allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'config', anything)
+        .and_call_original
+    end
+
+    context 'when there is a housekeeper remote' do
+      before do
+        # Since we stub execute for git push for these tests we need
+        # to allow it to create the remote below
+        allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'remote', 'add', anything, anything)
+          .and_call_original
+
+        ::Gitlab::Housekeeper::Shell.execute('git', 'remote', 'add', 'housekeeper', 'https://git.example.com/fake-project.git')
+      end
+
+      it 'pushes to the housekeeper remote' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'push', '-f', 'housekeeper', 'the-branch-name:the-branch-name')
+
+        git.push('the-branch-name')
+      end
+    end
+
+    it 'pushes to origin' do
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'push', '-f', 'origin', 'the-branch-name:the-branch-name')
+
+      git.push('the-branch-name')
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleMemoizedHelpers

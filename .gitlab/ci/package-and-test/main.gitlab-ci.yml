@@ -577,16 +577,16 @@ importers:
   extends:
     - .qa
     - .failure-videos
-  rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /$QA_SCENARIO/
-    - !reference [.rules:test:manual, rules]
 
 ai-gateway:
   extends:
     - .ai-gateway-base
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - !reference [.rules:test:manual, rules]
 
 ai-gateway-no-license:
   extends:
@@ -596,6 +596,10 @@ ai-gateway-no-license:
   before_script:
     - unset QA_EE_LICENSE
     - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
+    - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------
 # Update jobs

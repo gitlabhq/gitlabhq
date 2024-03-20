@@ -13,7 +13,6 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       icon
       web_path
       versions
-      latest_version
       latest_released_at
       verification_level
       star_count

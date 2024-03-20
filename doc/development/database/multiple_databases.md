@@ -87,6 +87,8 @@ in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable
 
 Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
 the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
+See [`NOT NULL` constraints for multiple columns](not_null_constraints.md#not-null-constraints-for-multiple-columns)
+for instructions on creating these constraints.
 
 The following are examples of valid sharding keys:
 

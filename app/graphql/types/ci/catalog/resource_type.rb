@@ -54,21 +54,6 @@ module Types
           description: 'Relative path to the starrers page for the catalog resource project.',
           alpha: { milestone: '16.10' }
 
-        field :latest_version, Types::Ci::Catalog::Resources::VersionType, null: true,
-          description: 'Latest version of the catalog resource.',
-          alpha: { milestone: '16.1' }
-
-        # To be removed in a subsequent MR
-        def latest_version
-          BatchLoader::GraphQL.for(object).batch do |catalog_resources, loader|
-            versions = ::Ci::Catalog::Resources::Version.versions_for_catalog_resources(catalog_resources)
-
-            versions.group_by(&:catalog_resource).each do |catalog_resource, resource_versions|
-              loader.call(catalog_resource, resource_versions.first)
-            end
-          end
-        end
-
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
         end

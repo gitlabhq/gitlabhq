@@ -63,6 +63,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       allow(git).to receive(:in_branch).with('the-identifier-for-the-second-change')
         .and_yield
       allow(git).to receive(:create_commit).with(change2)
+      allow(git).to receive(:push)
 
       allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new)
         .and_return(gitlab_client)
@@ -93,15 +94,13 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
-      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', 'push', '-f', 'housekeeper',
-          'the-identifier-for-the-first-change:the-identifier-for-the-first-change')
+      expect(git).to receive(:push)
+        .with('the-identifier-for-the-first-change')
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
-      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-        .with('git', 'push', '-f', 'housekeeper',
-          'the-identifier-for-the-second-change:the-identifier-for-the-second-change')
+      expect(git).to receive(:push)
+        .with('the-identifier-for-the-second-change')
 
       # Merge requests get created
       expect(gitlab_client).to receive(:create_or_update_merge_request)
@@ -163,9 +162,8 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
           .with('git', '--no-pager', 'diff', '--color=always', 'master',
             'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'push', '-f', 'housekeeper',
-            'the-identifier-for-the-second-change:the-identifier-for-the-second-change')
+        expect(git).to receive(:push)
+          .with('the-identifier-for-the-second-change')
 
         # Merge requests get created
         expect(gitlab_client).to receive(:create_or_update_merge_request)
@@ -208,12 +206,10 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change1)
         expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
-        expect(::Gitlab::Housekeeper::Shell).not_to receive(:execute)
-          .with('git', 'push', '-f', 'housekeeper',
-            'the-identifier-for-the-first-change:the-identifier-for-the-first-change')
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .with('git', 'push', '-f', 'housekeeper',
-            'the-identifier-for-the-second-change:the-identifier-for-the-second-change')
+        expect(git).not_to receive(:push)
+          .with('the-identifier-for-the-first-change')
+        expect(git).to receive(:push)
+          .with('the-identifier-for-the-second-change')
 
         expect(gitlab_client).to receive(:create_or_update_merge_request)
           .with(
@@ -242,6 +238,27 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
         described_class.new(max_mrs: 2, keeps: [fake_keep]).run
       end
+    end
+  end
+
+  describe '#housekeeper_fork_project_id' do
+    before do
+      stub_env('HOUSEKEEPER_FORK_PROJECT_ID', nil)
+      stub_env('HOUSEKEEPER_TARGET_PROJECT_ID', '456')
+    end
+
+    context 'when HOUSEKEEPER_FORK_PROJECT_ID env var is set' do
+      before do
+        stub_env('HOUSEKEEPER_FORK_PROJECT_ID', '123')
+      end
+
+      it 'gets its value from the env var' do
+        expect(described_class.new.housekeeper_fork_project_id).to eq('123')
+      end
+    end
+
+    it 'defaults to HOUSEKEEPER_TARGET_PROJECT_ID env var' do
+      expect(described_class.new.housekeeper_fork_project_id).to eq('456')
     end
   end
 end

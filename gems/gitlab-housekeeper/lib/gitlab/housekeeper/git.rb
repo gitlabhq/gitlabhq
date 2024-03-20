@@ -6,6 +6,9 @@ require 'gitlab/housekeeper/shell'
 module Gitlab
   module Housekeeper
     class Git
+      HOUSEKEEPER_REMOTE = 'housekeeper'
+      FALLBACK_REMOTE = 'origin'
+
       def initialize(logger:, branch_from: 'master')
         @logger = logger
         @branch_from = branch_from
@@ -43,7 +46,22 @@ module Gitlab
         Shell.execute("git", "commit", "-m", change.commit_message)
       end
 
+      def push(branch_name)
+        Shell.execute('git', 'push', '-f', housekeeper_remote, "#{branch_name}:#{branch_name}")
+      end
+
       private
+
+      def housekeeper_remote
+        housekeeper_remote_exists? ? HOUSEKEEPER_REMOTE : FALLBACK_REMOTE
+      end
+
+      def housekeeper_remote_exists?
+        Shell.execute("git", "config", "remote.#{HOUSEKEEPER_REMOTE}.url")
+        true
+      rescue Shell::Error
+        false
+      end
 
       def create_and_checkout_branch(branch_name)
         begin

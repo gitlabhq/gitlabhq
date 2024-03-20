@@ -49,8 +49,6 @@ export default {
     GlDisclosureDropdownGroup,
     SidebarSubscriptionsWidget,
     AbuseCategorySelector,
-    SummaryNotesToggle: () =>
-      import('ee_component/merge_requests/components/summary_notes_toggle.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,9 +57,6 @@ export default {
   inject: {
     reportAbusePath: {
       default: '',
-    },
-    showSummaryNotesToggle: {
-      default: false,
     },
   },
   props: {
@@ -336,8 +331,6 @@ export default {
             {{ $options.i18n.copyReferenceText }}
           </template>
         </gl-disclosure-dropdown-item>
-
-        <summary-notes-toggle v-if="showSummaryNotesToggle" @action="closeActionsDropdown" />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group

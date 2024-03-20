@@ -90,36 +90,38 @@ Note: By default all `.rb` files in the `./keeps/` directory (not recursively)
 will be loaded by the `gitlab-housekeeper` command. So it is assumed you place
 the keeps in there.
 
-## Running
 
-Technically you can skip steps 1-2 below if you don't want to create a fork but
-it's recommended as using a bot account with no permissions in
-`gitlab-org/gitlab` will ensure we can't cause much damage if the script makes
-a mistake. The alternative of using your own API token with it's permissions to
-`gitlab-org/gitlab` has slightly more risks.
+## Running for real
 
-1. Create a fork of `gitlab-org/gitlab` where your MRs will come from
-1. Create a project access token for that project
-1. Set `housekeeper` remote to the fork you created
+In order to run this without `-d` (ie. not a dry-run) then you need to set a
+few environment variables:
+
+1. `HOUSEKEEPER_TARGET_PROJECT_ID`: The project id of the project you are
+   creating MRs for
+2. `HOUSEKEEPER_GITLAB_API_TOKEN`: An API token with at least Developer access
+   for the project you are creating MRs for
+3. Some keeps may require additional environment variables to be run so you may
+   need to look at the specific keep code to see if anything is mentioned or
+   just try running it and it should give a helpful error
+
+Then you can run a specific keep creating a single merge request like:
+
+```
+bundle exec gitlab-housekeeper -k MyKeep -m 1
+```
+
+## Running with a fork
+
+It may be preferable to run the housekeeper using a bot account that does not
+have Developer access to the main project. In that case you would:
+
+1. Fork the project you want to create an MR for
+2. Set a git remote `housekeeper` with the git url for the project
    ```
    git remote add housekeeper <FORK_GIT_URL>
    ```
-1. Open a Postgres.ai tunnel on localhost port 6305
-1. Set the Postgres AI env vars matching the tunnel details for your tunnel
-   ```
-   export POSTGRES_AI_CONNECTION_STRING='host=localhost port=6305 user=dylan dbname=gitlabhq_dblab'
-    export POSTGRES_AI_PASSWORD='the-password'
-   ```
-1. Set the GitLab client details. Will be used to create MR from housekeeper remote:
-   ```
-   export HOUSEKEEPER_FORK_PROJECT_ID=<FORK_PROJECT_ID> # Same project as housekeeper remote
-   export HOUSEKEEPER_TARGET_PROJECT_ID=<TARGET_PROJECT_ID> # Can be 278964 (gitlab-org/gitlab) when ready to create real MRs
-    export HOUSEKEEPER_GITLAB_API_TOKEN=the-api-token
-   ```
-1. Run it:
-   ```
-   bundle exec gitlab-housekeeper -d -m3 -k Keeps::OverdueFinalizeBackgroundMigration
-   ```
+3. Set the `HOUSEKEEPER_FORK_PROJECT_ID` environment variable with the project
+   id of the fork
 
 ## Once-off keeps
 

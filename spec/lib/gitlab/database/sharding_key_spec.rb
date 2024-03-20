@@ -101,7 +101,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   it 'ensures all sharding_key columns are not nullable or have a not null check constraint',
     :aggregate_failures do
     all_tables_to_sharding_key.each do |table_name, sharding_key|
-      sharding_key.each do |column_name, _|
+      sharding_key_columns = sharding_key.keys
+
+      if sharding_key_columns.one?
+        column_name = sharding_key_columns.first
         not_nullable = not_nullable?(table_name, column_name)
         has_null_check_constraint = has_null_check_constraint?(table_name, column_name)
 
@@ -113,6 +116,26 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
           expect(not_nullable || has_null_check_constraint).to eq(true),
             "Missing a not null constraint for `#{table_name}.#{column_name}` . " \
             "All sharding keys must be not nullable or have a NOT NULL check constraint"
+        end
+      else
+        allowed_columns = allowed_to_be_missing_not_null & sharding_key_columns.map { |c| "#{table_name}.#{c}" }
+        has_null_check_constraint = has_multi_column_null_check_constraint?(table_name, sharding_key_columns)
+
+        if allowed_columns.present?
+          if allowed_columns.length != sharding_key_columns.length
+            expect(allowed_columns.length).to eq(sharding_key_columns.length),
+              "`#{table_name}` has sharding keys #{sharding_key_columns.to_sentence} but " \
+              "allowed_to_be_missing_not_null contains only #{allowed_columns.to_sentence}. " \
+              "allowed_to_be_missing_not_null must contain all sharding key columns, or none"
+          else
+            expect(has_null_check_constraint).to eq(false),
+              "You must remove #{allowed_columns.to_sentence} from allowed_to_be_missing_not_null " \
+              "since there is now a valid constraint"
+          end
+        else
+          expect(has_null_check_constraint).to eq(true),
+            "Missing a not null constraint for #{sharding_key_columns.to_sentence} on `#{table_name}`. " \
+            "All sharding keys must have a NOT NULL check constraint"
         end
       end
     end

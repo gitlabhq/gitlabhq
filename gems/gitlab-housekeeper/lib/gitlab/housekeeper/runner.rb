@@ -137,9 +137,7 @@ module Gitlab
           target_project_id: housekeeper_target_project_id
         )
 
-        unless non_housekeeper_changes.include?(:code)
-          Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
-        end
+        git.push(branch_name) unless non_housekeeper_changes.include?(:code)
 
         gitlab_client.create_or_update_merge_request(
           change: change,
@@ -164,7 +162,7 @@ module Gitlab
       end
 
       def housekeeper_fork_project_id
-        ENV.fetch('HOUSEKEEPER_FORK_PROJECT_ID')
+        ENV.fetch('HOUSEKEEPER_FORK_PROJECT_ID', housekeeper_target_project_id)
       end
 
       def housekeeper_target_project_id

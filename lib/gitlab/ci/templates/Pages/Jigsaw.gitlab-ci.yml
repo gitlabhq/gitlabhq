@@ -8,34 +8,32 @@
 # Full project: https://github.com/tightenco/jigsaw
 
 default:
-  image: php:7.2
+  image: php:7.4
 
   # These folders are cached between builds
   cache:
     paths:
       - vendor/
-      - node_modules/
 
   before_script:
+    # Install Node 16
+    - curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
     # Update packages
     - apt-get update -yqq
     # Install dependencies
-    - apt-get install -yqq gnupg zlib1g-dev libpng-dev
-    # Install Node 8
-    - curl -sL https://deb.nodesource.com/setup_8.x | bash -
-    - apt-get install -yqq nodejs
+    - apt-get install libzip-dev git nodejs unzip -yqq
     # Install php extensions
     - docker-php-ext-install zip
     # Install Composer and project dependencies
     - curl -sS https://getcomposer.org/installer | php
-    - php composer.phar install
-    # Install Node dependencies
-    - npm install
+    - mv composer.phar /usr/local/bin/composer
+    - composer install
 
 pages:
   script:
-    - npm run production
-    - mv build_production public
+    - composer require tightenco/jigsaw
+    - ./vendor/bin/jigsaw build
+    - mv build_local/ public/
   artifacts:
     paths:
       - public
