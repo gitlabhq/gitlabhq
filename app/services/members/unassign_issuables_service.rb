@@ -14,21 +14,14 @@ module Members
     end
 
     def execute
-      if Feature.enabled?(:new_unassignment_service) && !requesting_user
-        raise ArgumentError, 'requesting_user must be given'
-      end
+      raise ArgumentError, 'requesting_user must be given' unless requesting_user
 
       return unless entity && user
 
       project_ids = entity.is_a?(Group) ? entity.all_projects.select(:id) : [entity.id]
 
-      if Feature.enabled?(:new_unassignment_service)
-        unassign_from_issues(project_ids)
-        unassign_from_merge_requests(project_ids)
-      else
-        user.issue_assignees.on_issues(Issue.in_projects(project_ids).select(:id)).delete_all
-        user.merge_request_assignees.in_projects(project_ids).delete_all
-      end
+      unassign_from_issues(project_ids)
+      unassign_from_merge_requests(project_ids)
 
       user.invalidate_cache_counts
     end

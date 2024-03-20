@@ -68,7 +68,7 @@ include:
       # Override default command so we don't tail all of the logs to stdout unnecessarily
       command: [gdk, tail, rails-web]
   tags:
-    - e2e
+    - $TEST_RUNNER_TAG
   variables:
     DOCKER_HOST: tcp://docker:2375
     QA_GENERATE_ALLURE_REPORT: "true"

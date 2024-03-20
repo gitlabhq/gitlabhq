@@ -40,18 +40,11 @@ class RegistrationsController < Devise::RegistrationsController
     set_resource_fields
 
     super do |new_user|
-      record_arkose_data
-      accept_pending_invitations if new_user.persisted?
-
-      persist_accepted_terms_if_required(new_user)
-      send_custom_confirmation_instructions
-      track_weak_password_error(new_user, self.class.name, 'create')
-
-      if pending_approval?
-        NotificationService.new.new_instance_access_request(new_user)
+      if new_user.persisted?
+        after_successful_create_hook(new_user)
+      else
+        track_weak_password_error(new_user, self.class.name, 'create')
       end
-
-      after_request_hook(new_user)
     end
 
     # Devise sets a flash message on both successful & failed signups,
@@ -79,7 +72,6 @@ class RegistrationsController < Devise::RegistrationsController
   protected
 
   def persist_accepted_terms_if_required(new_user)
-    return unless new_user.persisted?
     return unless Gitlab::CurrentSettings.current_application_settings.enforce_terms?
 
     terms = ApplicationSetting::Term.latest
@@ -107,11 +99,17 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   # overridden by EE module
-  def after_request_hook(user)
-    return unless user.persisted?
+  def after_successful_create_hook(user)
+    accept_pending_invitations
+    persist_accepted_terms_if_required(user)
+    notify_new_instance_access_request(user)
+    track_successful_user_creation(user)
+  end
 
-    track_creation user: user
-    Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
+  def notify_new_instance_access_request(user)
+    return unless pending_approval?
+
+    NotificationService.new.new_instance_access_request(user)
   end
 
   def after_sign_up_path_for(user)
@@ -159,9 +157,11 @@ class RegistrationsController < Devise::RegistrationsController
     {}
   end
 
-  def track_creation(user:)
+  def track_successful_user_creation(user)
     label = user_invited? ? 'invited' : 'signup'
     Gitlab::Tracking.event(self.class.name, 'create_user', label: label, user: user)
+
+    Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
   end
 
   def ensure_destroy_prerequisites_met
@@ -216,7 +216,7 @@ class RegistrationsController < Devise::RegistrationsController
   def pending_approval?
     return false unless Gitlab::CurrentSettings.require_admin_approval_after_user_signup
 
-    resource.persisted? && resource.blocked_pending_approval?
+    resource.blocked_pending_approval?
   end
 
   def sign_up_params_attributes
@@ -304,20 +304,12 @@ class RegistrationsController < Devise::RegistrationsController
     current_user
   end
 
-  def record_arkose_data
-    # overridden by EE module
-  end
-
   def identity_verification_enabled?
     # overridden by EE module
     false
   end
 
   def identity_verification_redirect_path
-    # overridden by EE module
-  end
-
-  def send_custom_confirmation_instructions
     # overridden by EE module
   end
 

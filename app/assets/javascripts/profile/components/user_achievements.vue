@@ -87,7 +87,7 @@ export default {
     <div
       v-for="userAchievement in userAchievements"
       :key="userAchievement.id"
-      class="gl-display-inline-block gl-vertical-align-top"
+      class="gl-mr-2 gl-display-inline-block gl-vertical-align-top gl-text-center"
       data-testid="user-achievement"
     >
       <gl-avatar
@@ -96,7 +96,7 @@ export default {
         :size="32"
         tabindex="0"
         shape="rect"
-        class="gl-mr-2 gl-p-1 gl-border-none"
+        class="gl-p-1 gl-border-none"
       />
       <br />
       <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{

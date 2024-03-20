@@ -167,6 +167,9 @@
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/'
 
+.if-renovate-fork: &if-renovate-fork
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-renovate-forks/'
+
 ####################
 # Changes patterns #
 ####################
@@ -631,7 +634,6 @@
   - "scripts/glfm/**/*"
   - "scripts/lib/glfm/**/*"
 
-# Certain components require the base e2e GDK image to be rebuilt if they change
 .gdk-component-patterns: &gdk-component-patterns
   - qa/gdk/**/*
   - Gemfile.lock
@@ -942,21 +944,14 @@
       changes:
         - qa/gdk/Dockerfile.gdk
 
-# We use a multi-stage image to:
-# - (re)build the first stage in master pipelines (including scheduled pipelines), and
-# - build the final stage in code-change pipelines (including MRs), and scheduled pipelines
 # This has to match ".qa:rules:e2e:test-on-gdk" otherwise there won't be an image available to run GDK in the test jobs.
 # Unfortunately, we can't just include ".qa:rules:e2e:test-on-gdk" because some of the conditions are manual
 # Since the smoke test job is not allowed to fail, the `build-gdk-image` job is also not allowed to fail.
 # It's better to fail early and avoid wasting resources running test jobs that would just fail anyway.
 .build-images:rules:build-gdk-image:
   rules:
-    # Allows to force rebuild base image in case something goes wrong and this had to be disabled
-    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
-      when: manual
-      allow_failure: true
-      variables:
-        BUILD_GDK_BASE: "true"
+    - <<: *if-renovate-fork
+      changes: *gdk-component-patterns
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
@@ -1506,6 +1501,8 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-renovate-fork
+      changes: *gdk-component-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
@@ -1720,10 +1717,14 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
+    - if: '$QA_RUN_TESTS_ON_GDK =~ /false|no|0/i'
       when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
+    - <<: *if-renovate-fork
+      changes: *gdk-component-patterns
+      variables:
+        TEST_RUNNER_TAG: saas-linux-xlarge-amd64
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 

@@ -16,6 +16,7 @@ import {
   SCOPE_MILESTONES,
   SCOPE_WIKI_BLOBS,
   SEARCH_TYPE_ADVANCED,
+  SEARCH_TYPE_ZOEKT,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
@@ -54,6 +55,17 @@ export default {
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
+    isBlobScope() {
+      return this.currentScope === SCOPE_BLOB;
+    },
+    isAdvancedSearch() {
+      return this.searchType === SEARCH_TYPE_ADVANCED;
+    },
+    isZoektSearch() {
+      return (
+        this.searchType === SEARCH_TYPE_ZOEKT && this.glFeatures.searchAddArchivedFilterToZoekt
+      );
+    },
     showIssuesFilters() {
       return this.currentScope === SCOPE_ISSUES;
     },
@@ -61,7 +73,7 @@ export default {
       return this.currentScope === SCOPE_MERGE_REQUESTS;
     },
     showBlobFilters() {
-      return this.currentScope === SCOPE_BLOB && this.searchType === SEARCH_TYPE_ADVANCED;
+      return this.isBlobScope && (this.isAdvancedSearch || this.isZoektSearch);
     },
     showProjectsFilters() {
       return this.currentScope === SCOPE_PROJECTS;

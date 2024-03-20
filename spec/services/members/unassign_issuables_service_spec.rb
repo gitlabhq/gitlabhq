@@ -90,16 +90,6 @@ RSpec.describe Members::UnassignIssuablesService, feature_category: :groups_and_
       it_behaves_like 'unassignment events'
       it_behaves_like 'missing request_user raises an error'
       it_behaves_like 'stale objects are ignored and skipped'
-
-      context 'when the FF new_unassignment_service is disabled' do
-        let_it_be(:requesting_user) { nil }
-
-        before do
-          stub_feature_flags(new_unassignment_service: false)
-        end
-
-        it_behaves_like 'un-assigning issuables', 2, 2, 2, 1
-      end
     end
 
     context 'when a user leaves a group' do
@@ -121,16 +111,6 @@ RSpec.describe Members::UnassignIssuablesService, feature_category: :groups_and_
       it_behaves_like 'un-assigning issuables', 4, 4, 4, 2
       it_behaves_like 'unassignment events'
       it_behaves_like 'stale objects are ignored and skipped'
-
-      context 'when the FF new_unassignment_service is disabled' do
-        let_it_be(:requesting_user) { nil }
-
-        before do
-          stub_feature_flags(new_unassignment_service: false)
-        end
-
-        it_behaves_like 'un-assigning issuables', 4, 4, 4, 2
-      end
     end
   end
 end

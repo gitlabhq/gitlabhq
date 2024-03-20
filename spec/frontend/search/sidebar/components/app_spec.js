@@ -33,7 +33,7 @@ describe('GlobalSearchSidebar', () => {
     currentScope: jest.fn(() => 'issues'),
   };
 
-  const createComponent = (initialState = {}) => {
+  const createComponent = (initialState = {}, glFeatures = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -44,6 +44,9 @@ describe('GlobalSearchSidebar', () => {
 
     wrapper = shallowMount(GlobalSearchSidebar, {
       store,
+      provide: {
+        glFeatures,
+      },
     });
   };
 
@@ -105,30 +108,34 @@ describe('GlobalSearchSidebar', () => {
     });
 
     describe.each`
-      scope      | filter              | searchType              | isShown
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_BASIC}    | ${false}
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ADVANCED} | ${true}
-      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ZOEKT}    | ${false}
-    `('sidebar blobs scope:', ({ scope, filter, searchType, isShown }) => {
-      beforeEach(() => {
-        getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ urlQuery: { scope }, searchType });
-      });
+      scope      | filter              | searchType              | searchAddArchivedFilterToZoekt | isShown
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_BASIC}    | ${true}                        | ${false}
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_BASIC}    | ${false}                       | ${false}
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ADVANCED} | ${true}                        | ${true}
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ADVANCED} | ${false}                       | ${true}
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ZOEKT}    | ${true}                        | ${true}
+      ${'blobs'} | ${findBlobsFilters} | ${SEARCH_TYPE_ZOEKT}    | ${false}                       | ${false}
+    `(
+      'sidebar blobs scope:',
+      ({ scope, filter, searchType, searchAddArchivedFilterToZoekt, isShown }) => {
+        beforeEach(() => {
+          getterSpies.currentScope = jest.fn(() => scope);
+          createComponent(
+            {
+              urlQuery: { scope },
+              searchType,
+            },
+            { searchAddArchivedFilterToZoekt },
+          );
+        });
 
-      it(`renders correctly filter BlobsFilters when search_type ${searchType}`, () => {
-        expect(filter().exists()).toBe(isShown);
-      });
-    });
-
-    describe('filters for blobs will not load if zoekt is enabled', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: { scope: 'blobs' }, searchType: SEARCH_TYPE_ZOEKT });
-      });
-
-      it("doesn't render blobs filters", () => {
-        expect(findBlobsFilters().exists()).toBe(false);
-      });
-    });
+        it(`does ${
+          isShown ? '' : 'not '
+        }render filter BlobsFilters when search_type ${searchType} and searchAddArchivedFilterToZoekt ${searchAddArchivedFilterToZoekt}`, () => {
+          expect(filter().exists()).toBe(isShown);
+        });
+      },
+    );
 
     describe('with sidebar scope: projects', () => {
       beforeEach(() => {

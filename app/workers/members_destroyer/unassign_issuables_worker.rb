@@ -30,7 +30,7 @@ module MembersDestroyer
         return
       end
 
-      if Feature.enabled?(:new_unassignment_service) && requesting_user_id.nil?
+      if requesting_user_id.nil?
         logger.error(
           message: "requesting_user_id is nil.",
           entity_type: entity_type,

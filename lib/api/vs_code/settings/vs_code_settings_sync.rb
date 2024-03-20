@@ -4,10 +4,10 @@ module API
   module VsCode
     module Settings
       class VsCodeSettingsSync < ::API::Base
-        urgency :low
         include ::VsCode::Settings
 
         feature_category :web_ide
+        urgency :low
 
         helpers do
           def find_settings

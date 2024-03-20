@@ -62,8 +62,8 @@
       - if issuable_sidebar[:supports_time_tracking]
         .js-sidebar-time-tracking-root.block
           // Fallback while content is loading
-          .title.hide-collapsed
-            = _('Time tracking')
+          .title.hide-collapsed.gl-display-flex.gl-justify-content-space-between.gl-align-items-center{ class: 'gl-mb-0!' }
+            %span.gl-font-weight-bold= _('Time tracking')
             = gl_loading_icon(inline: true)
 
       - if issuable_sidebar.dig(:features_available, :health_status)
