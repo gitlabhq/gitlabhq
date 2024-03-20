@@ -7,6 +7,7 @@ import deploymentQuery from '../graphql/queries/deployment.query.graphql';
 import environmentQuery from '../graphql/queries/environment.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
 import DeploymentAside from './deployment_aside.vue';
+import DeploymentDeployBlock from './deployment_deploy_block.vue';
 
 const DEPLOYMENT_QUERY_POLLING_INTERVAL = 3000;
 
@@ -16,6 +17,7 @@ export default {
     GlSprintf,
     DeploymentHeader,
     DeploymentAside,
+    DeploymentDeployBlock,
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
@@ -63,6 +65,9 @@ export default {
     hasApprovalSummary() {
       return Boolean(this.deployment.approvalSummary);
     },
+    isManual() {
+      return this.deployment.job?.manualJob;
+    },
   },
   mounted() {
     toggleQueryPollingByVisibility(
@@ -98,8 +103,13 @@ export default {
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"
           :deployment="deployment"
-          class="gl-mt-8 gl-w-90p"
+          class="gl-mt-6 gl-w-90p"
           @change="$apollo.queries.deployment.refetch()"
+        />
+        <deployment-deploy-block
+          v-if="isManual"
+          :deployment="deployment"
+          class="gl-w-90p gl-mt-4"
         />
         <deployment-timeline
           v-if="hasApprovalSummary"

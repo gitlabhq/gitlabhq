@@ -381,10 +381,11 @@ export default {
           <gl-dropdown-divider />
           <gl-disclosure-dropdown-item
             v-gl-modal="$options.deleteModalId"
-            variant="danger"
             @action="track('click_dropdown')"
           >
-            <template #list-item>{{ deleteButtonText }}</template>
+            <template #list-item>
+              <span class="gl-text-red-500">{{ deleteButtonText }}</span>
+            </template>
           </gl-disclosure-dropdown-item>
         </template>
         <gl-disclosure-dropdown-item
@@ -488,11 +489,12 @@ export default {
       <template v-if="canDestroyIssue">
         <gl-disclosure-dropdown-item
           v-gl-modal="$options.deleteModalId"
-          variant="danger"
           data-testid="delete-issue-button"
           @action="track('click_dropdown')"
         >
-          <template #list-item>{{ deleteButtonText }}</template>
+          <template #list-item>
+            <span class="gl-text-red-500">{{ deleteButtonText }}</span>
+          </template>
         </gl-disclosure-dropdown-item>
       </template>
     </gl-disclosure-dropdown>

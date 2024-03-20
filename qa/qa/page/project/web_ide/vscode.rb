@@ -295,14 +295,6 @@ module QA
             end
           end
 
-          def editor_content_lines
-            within_vscode_editor do
-              within_file_editor do
-                page.text.lines.count
-              end
-            end
-          end
-
           def has_code_suggestions_disabled?
             within_vscode_editor do
               within_file_editor do

@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['DeploymentTag'], feature_category: :continuou
 
   it 'has the expected fields' do
     expected_fields = %w[
-      name path
+      name path web_path
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
-> - Made generally available in GitLab 16.6.
 
 Use inputs to increase the flexibility of CI/CD configuration files that are designed
 to be reused.

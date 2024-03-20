@@ -18392,6 +18392,7 @@ Tags for a given deployment.
 | ---- | ---- | ----------- |
 | <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
 | <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
+| <a id="deploymenttagwebpath"></a>`webPath` | [`String`](#string) | Web path for this tag. |
 
 ### `DescriptionVersion`
 

@@ -363,42 +363,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:click_house_event_authors_consistency_cron
-  :worker_name: ClickHouse::EventAuthorsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_event_paths_consistency_cron
-  :worker_name: ClickHouse::EventPathsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_events_sync
-  :worker_name: ClickHouse::EventsSyncWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_rebuild_materialized_view_cron
-  :worker_name: ClickHouse::RebuildMaterializedViewCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
   :feature_category: :global_search
