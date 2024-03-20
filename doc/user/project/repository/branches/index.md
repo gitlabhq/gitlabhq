@@ -432,7 +432,7 @@ prevent you from creating a branch with this name.
 To find all branches you've authored in a project, run this command in a Git repository:
 
 ```shell
-git for-each-ref --format='%(refname:short) %(authoremail)'  | grep $(git config --get user.email)
+git for-each-ref --format='%(authoremail) %(refname:short)' | grep $(git config --get user.email)
 ```
 
 To get a total of all branches in a project, sorted by author, run this command

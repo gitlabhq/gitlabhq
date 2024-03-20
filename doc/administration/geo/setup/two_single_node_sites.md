@@ -583,7 +583,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and sign in as root:
 
@@ -591,7 +591,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -639,4 +639,4 @@ site **Geo Sites** dashboard in your browser.
 
 ## Related topics
 
-- [Troubleshooting Geo](../replication/troubleshooting.md)
+- [Troubleshooting Geo](../replication/troubleshooting/index.md)

@@ -964,4 +964,4 @@ Follow [Geo with external PostgreSQL instances](external_database.md#configure-t
 
 ## Troubleshooting
 
-Read the [troubleshooting document](../replication/troubleshooting.md).
+Read the [troubleshooting document](../replication/troubleshooting/index.md).

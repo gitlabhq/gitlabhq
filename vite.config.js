@@ -137,17 +137,7 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
-    hmr:
-      viteGDKConfig.hmr === undefined
-        ? /*
-        This is a legacy behavior for older GDKs. They will fallback to:
-          ws://localhost:3038/vite-dev/
-        TODO: Remove this after 2024-01-18 */
-          {
-            host: 'localhost',
-            protocol: 'ws',
-          }
-        : viteGDKConfig.hmr,
+    hmr: viteGDKConfig.hmr,
     https: false,
     watch:
       viteGDKConfig.hmr === null

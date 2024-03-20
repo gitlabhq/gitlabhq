@@ -12047,7 +12047,6 @@ CREATE TABLE onboarding_progresses (
     secure_cluster_image_scanning_run_at timestamp with time zone,
     secure_api_fuzzing_run_at timestamp with time zone,
     license_scanning_run_at timestamp with time zone,
-    promote_ultimate_features_at timestamp with time zone,
     code_added_at timestamp with time zone
 );
 
@@ -25029,8 +25028,6 @@ CREATE INDEX index_emails_on_user_id ON emails USING btree (user_id);
 CREATE INDEX index_enabled_clusters_on_id ON clusters USING btree (id) WHERE (enabled = true);
 
 CREATE INDEX index_environments_cluster_agent_id ON environments USING btree (cluster_agent_id) WHERE (cluster_agent_id IS NOT NULL);
-
-CREATE INDEX index_environments_for_name_search_within_folder ON environments USING btree (project_id, lower(ltrim((name)::text, ((environment_type)::text || '/'::text))) varchar_pattern_ops, state);
 
 CREATE INDEX index_environments_name_without_type ON environments USING btree (project_id, lower(ltrim(ltrim((name)::text, (environment_type)::text), '/'::text)) varchar_pattern_ops, state);
 

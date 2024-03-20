@@ -215,9 +215,9 @@ For more information, see [Enable or disable service ping](../../administration/
 In GitLab 15.4 and 15.5, Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly
 and Praefect servers so they can use an accessible NTP server.
 
-On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting.md#can-geo-detect-the-current-site-correctly)
+On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting/index.md#can-geo-detect-the-current-site-correctly)
 always fails because it uses `pool.ntp.org`. This error can be ignored but you can
-[read more about how to work around it](../../administration/geo/replication/troubleshooting.md#message-machine-clock-is-synchronized--exception).
+[read more about how to work around it](../../administration/geo/replication/troubleshooting/index.md#message-machine-clock-is-synchronized--exception).
 
 ## Enabling the Package Metadata Database
 

@@ -220,7 +220,7 @@ Note the following when promoting a secondary:
   the **secondary** to the **primary**.
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error during this process, read
-  [the troubleshooting advice](../../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+  [the troubleshooting advice](../../replication/troubleshooting/index.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 
 To promote the secondary site running GitLab 14.5 and later:
 

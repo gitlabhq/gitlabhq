@@ -337,7 +337,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and run:
 
@@ -345,7 +345,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -491,4 +491,4 @@ The reconfigure in the [steps above](#configure-gitlab) handles these steps auto
 
 ## Troubleshooting
 
-See [troubleshooting Geo](../replication/troubleshooting.md).
+See [troubleshooting Geo](../replication/troubleshooting/index.md).

@@ -230,7 +230,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 ## 14.6.0
 
@@ -256,7 +256,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 ## 14.5.0
 
@@ -341,7 +341,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 ## 14.4.4
 
@@ -425,7 +425,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 - There is [an issue in GitLab 14.4.0 through 14.4.2](#1440) that can affect
   Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
@@ -596,7 +596,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 - We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
@@ -701,7 +701,7 @@ DETAILS:
   results in a loop that consistently fails for all objects stored in object storage.
 
   For information on how to fix this, see
-  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting/index.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 - We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture

@@ -66,8 +66,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1 class="gl-font-size-h2">{{ s__('Runners|New group runner') }}</h1>
+  <div class="gl-mt-5">
+    <h1 class="gl-heading-1">{{ s__('Runners|New group runner') }}</h1>
 
     <registration-compatibility-alert :alert-key="groupId" />
 
@@ -81,7 +81,7 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <h2 class="gl-font-size-h2 gl-my-5">
+    <h2 class="gl-heading-2">
       {{ s__('Runners|Platform') }}
     </h2>
 

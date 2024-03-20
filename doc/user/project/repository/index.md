@@ -236,8 +236,7 @@ GitLab can render OpenAPI specification files. The filename must include `openap
 To render an OpenAPI file:
 
 1. Go to the OpenAPI file in your repository.
-1. Between the **Display source** and **Edit** buttons, select **Display OpenAPI**. When an OpenAPI file is found, it replaces the
-   **Display rendered file** button.
+1. Select **Display rendered file**.
 1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
 
 NOTE:

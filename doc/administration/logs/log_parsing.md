@@ -217,7 +217,7 @@ for example.
 
 #### Find most common Geo sync errors
 
-If [the `geo:status` Rake task](../geo/replication/troubleshooting.md#sync-status-rake-task)
+If [the `geo:status` Rake task](../geo/replication/troubleshooting/index.md#sync-status-rake-task)
 repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 
@@ -225,7 +225,7 @@ the following command helps to focus on the most common errors.
 jq --raw-output 'select(.severity == "ERROR") | [.project_path, .class, .message, .error] | @tsv' geo.log | sort | uniq -c | sort | tail
 ```
 
-Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting.md)
+Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting/index.md)
 for advice about specific error messages.
 
 ### Parsing `gitaly/current`

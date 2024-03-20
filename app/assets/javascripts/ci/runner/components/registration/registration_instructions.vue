@@ -151,8 +151,8 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <h1 class="gl-font-size-h1">{{ heading }}</h1>
+  <div class="gl-mt-5">
+    <h1 class="gl-heading-1">{{ heading }}</h1>
 
     <p>
       <gl-sprintf
@@ -168,8 +168,8 @@ export default {
       </gl-sprintf>
     </p>
 
-    <section>
-      <h2 class="gl-font-size-h2">{{ s__('Runners|Step 1') }}</h2>
+    <section class="gl-mt-6">
+      <h2 class="gl-heading-2">{{ s__('Runners|Step 1') }}</h2>
       <p>
         {{
           s__(
@@ -203,8 +203,8 @@ export default {
         </p>
       </template>
     </section>
-    <section>
-      <h2 class="gl-font-size-h2">{{ s__('Runners|Step 2') }}</h2>
+    <section class="gl-mt-6">
+      <h2 class="gl-heading-2">{{ s__('Runners|Step 2') }}</h2>
       <p>
         <gl-sprintf
           :message="
@@ -221,8 +221,8 @@ export default {
         </gl-sprintf>
       </p>
     </section>
-    <section>
-      <h2 class="gl-font-size-h2">{{ s__('Runners|Step 3 (optional)') }}</h2>
+    <section class="gl-mt-6">
+      <h2 class="gl-heading-2">{{ s__('Runners|Step 3 (optional)') }}</h2>
       <p>{{ s__('Runners|Manually verify that the runner is available to pick up jobs.') }}</p>
       <cli-command :prompt="commandPrompt" :command="runCommand" />
       <p>
@@ -241,8 +241,8 @@ export default {
         </gl-sprintf>
       </p>
     </section>
-    <section v-if="isRunnerOnline">
-      <h2 class="gl-font-size-h2">🎉 {{ $options.I18N_REGISTRATION_SUCCESS }}</h2>
+    <section v-if="isRunnerOnline" class="gl-mt-6">
+      <h2 class="gl-heading-2">🎉 {{ $options.I18N_REGISTRATION_SUCCESS }}</h2>
 
       <p class="gl-pl-6">
         <gl-sprintf :message="s__('Runners|To view the runner, go to %{runnerListName}.')">
