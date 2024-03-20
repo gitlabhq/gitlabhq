@@ -1,11 +1,11 @@
 import { GlTableLite } from '@gitlab/ui';
 import { mount, Wrapper } from '@vue/test-utils'; // eslint-disable-line no-unused-vars
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import ProjectStorageDetail from '~/usage_quotas/storage/components/project_storage_detail.vue';
+import ProjectStorageDetail from '~/usage_quotas/storage/project/components/project_storage_detail.vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 
 describe('ProjectStorageDetail', () => {
-  /** @type { Wrapper } */
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const generateStorageType = (props) => {

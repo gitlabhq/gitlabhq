@@ -5,12 +5,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getPreferredLocales } from '~/locale';
-import ProjectStorageApp from '~/usage_quotas/storage/components/project_storage_app.vue';
+import ProjectStorageApp from '~/usage_quotas/storage/project/components/project_storage_app.vue';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 import {
   descendingStorageUsageSort,
   getStorageTypesFromProjectStatistics,
-} from '~/usage_quotas/storage/utils';
+} from '~/usage_quotas/storage/project/utils';
 import {
   storageTypeHelpPaths,
   PROJECT_STORAGE_TYPES,
@@ -24,7 +24,7 @@ import {
   mockGetProjectStorageStatisticsGraphQLResponse,
   mockEmptyResponse,
   defaultProjectProvideValues,
-} from '../mock_data';
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -34,6 +34,7 @@ jest.mock('~/locale', () => ({
 }));
 
 describe('ProjectStorageApp', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const createMockApolloProvider = ({ reject = false, mockedValue } = {}) => {

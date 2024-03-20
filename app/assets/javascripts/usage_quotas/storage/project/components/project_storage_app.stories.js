@@ -4,7 +4,7 @@ import getProjectStorageStatisticsQuery from 'ee_else_ce/usage_quotas/storage/qu
 import ProjectStorageApp from './project_storage_app.vue';
 
 const meta = {
-  title: 'usage_quotas/storage/project_storage_app',
+  title: 'usage_quotas/storage/project/project_storage_app',
   component: ProjectStorageApp,
 };
 

@@ -29,7 +29,8 @@ RSpec.describe Groups::SettingsHelper do
           remove_form_id: form_value_id,
           phrase: group.full_path,
           button_testid: "remove-group-button",
-          disabled: is_button_disabled
+          disabled: is_button_disabled,
+          html_confirmation_message: 'true'
         })
       end
     end

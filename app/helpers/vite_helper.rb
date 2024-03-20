@@ -7,4 +7,12 @@ module ViteHelper
 
     Gitlab::Utils.to_boolean(ViteRuby.env['VITE_ENABLED'], default: false)
   end
+
+  def vite_hmr_websocket_url
+    ViteRuby.env['VITE_HMR_WS_URL']
+  end
+
+  def vite_hmr_http_url
+    ViteRuby.env['VITE_HMR_HTTP_URL']
+  end
 end

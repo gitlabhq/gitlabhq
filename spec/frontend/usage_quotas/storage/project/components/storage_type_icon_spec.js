@@ -1,8 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import StorageTypeIcon from '~/usage_quotas/storage/components/storage_type_icon.vue';
+import StorageTypeIcon from '~/usage_quotas/storage/project/components/storage_type_icon.vue';
 
 describe('StorageTypeIcon', () => {
+  /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
 
   const createComponent = (props = {}) => {

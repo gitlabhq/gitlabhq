@@ -10,7 +10,7 @@ import {
   STORAGE_TAB_METADATA_EL_SELECTOR,
 } from '../constants';
 import NamespaceStorageApp from './components/namespace_storage_app.vue';
-import ProjectStorageApp from './components/project_storage_app.vue';
+import ProjectStorageApp from './project/components/project_storage_app.vue';
 
 const parseProjectProvideData = (el) => {
   const { projectPath } = el.dataset;

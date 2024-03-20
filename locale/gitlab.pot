@@ -33,6 +33,9 @@ msgstr ""
 msgid " Please sign in."
 msgstr ""
 
+msgid " This action will also remove:"
+msgstr ""
+
 msgid " Try to %{action} this file again."
 msgstr ""
 
@@ -4522,6 +4525,9 @@ msgid "After the report is generated, an email will be sent with the report atta
 msgstr ""
 
 msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
+msgstr ""
+
+msgid "After you remove a group, you %{strongOpen}cannot%{strongClose} restore it or its components."
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
@@ -57863,6 +57869,9 @@ msgstr ""
 msgid "You are about to incur additional charges"
 msgstr ""
 
+msgid "You are about to remove the group %{group_name}."
+msgstr ""
+
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
@@ -57888,9 +57897,6 @@ msgid "You are currently offline, or the GitLab instance is not reachable."
 msgstr ""
 
 msgid "You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?"
-msgstr ""
-
-msgid "You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?"
@@ -59053,6 +59059,9 @@ msgstr[1] ""
 msgid "access:"
 msgstr ""
 
+msgid "active project"
+msgstr ""
+
 msgid "add at least one file to the repository"
 msgstr ""
 
@@ -59120,6 +59129,9 @@ msgid "approval"
 msgid_plural "approvals"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "archived project"
+msgstr ""
 
 msgid "archived:"
 msgstr ""
@@ -61044,6 +61056,9 @@ msgid "structure is too large. Maximum size is %{max_size} characters"
 msgstr ""
 
 msgid "stuck"
+msgstr ""
+
+msgid "subgroup"
 msgstr ""
 
 msgid "success"

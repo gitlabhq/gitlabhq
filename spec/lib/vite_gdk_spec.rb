@@ -28,6 +28,7 @@ RSpec.describe ViteGdk, feature_category: :tooling do
           expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
           expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
           expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'gdk.test')
+          expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'http://gdk.test:3038')
           expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'ws://gdk.test:3038')
 
           described_class.load_gdk_vite_config
@@ -52,6 +53,7 @@ RSpec.describe ViteGdk, feature_category: :tooling do
             expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
             expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
             expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'hmr.gdk.test')
+            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'https://hmr.gdk.test:9999')
             expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'wss://hmr.gdk.test:9999')
 
             described_class.load_gdk_vite_config
@@ -76,6 +78,7 @@ RSpec.describe ViteGdk, feature_category: :tooling do
             expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
             expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
             expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'hmr.gdk.test')
+            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'https://hmr.gdk.test:3038')
             expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'wss://hmr.gdk.test:3038')
 
             described_class.load_gdk_vite_config

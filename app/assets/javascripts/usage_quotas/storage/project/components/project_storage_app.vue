@@ -20,7 +20,7 @@ import {
   NAMESPACE_STORAGE_TYPES,
   usageQuotasHelpPaths,
   storageTypeHelpPaths,
-} from '../constants';
+} from '../../constants';
 import { getStorageTypesFromProjectStatistics, descendingStorageUsageSort } from '../utils';
 import ProjectStorageDetail from './project_storage_detail.vue';
 

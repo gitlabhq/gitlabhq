@@ -7,7 +7,7 @@ import {
   HELP_LINK_ARIA_LABEL,
   PROJECT_TABLE_LABEL_STORAGE_TYPE,
   PROJECT_TABLE_LABEL_USAGE,
-} from '../constants';
+} from '../../constants';
 import StorageTypeIcon from './storage_type_icon.vue';
 
 export default {

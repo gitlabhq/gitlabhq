@@ -86,8 +86,42 @@ module GroupsHelper
 
   # Overridden in EE
   def remove_group_message(group)
-    _("You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
-      { group_name: group.name }
+    content_tag :div do
+      content = ''.html_safe
+      content << content_tag(:span, _("You are about to remove the group %{group_name}.") % { group_name: group.name })
+
+      additional_content = additional_removed_items(group)
+      content << additional_content if additional_content.present?
+
+      content << remove_group_warning
+    end
+  end
+
+  def additional_removed_items(group)
+    list_content = ''.html_safe
+
+    list_content << content_tag(:li, pluralize(group.subgroup_count, _('subgroup'))) if group.subgroup_count > 0
+    list_content << content_tag(:li, pluralize(group.all_projects.non_archived.count, _('active project'))) if group.all_projects.non_archived.count > 0
+    list_content << content_tag(:li, pluralize(group.all_projects.archived.count, _('archived project'))) if group.all_projects.archived.count > 0
+
+    if list_content.present?
+      content_tag(:span, _(" This action will also remove:")) +
+        content_tag(:ul) do
+          list_content
+        end
+    else
+      ''.html_safe
+    end
+  end
+
+  def remove_group_warning
+    message = _('After you remove a group, you %{strongOpen}cannot%{strongClose} restore it or its components.')
+    content_tag(:p, class: 'gl-mb-0') do
+      ERB::Util.html_escape(message) % {
+        strongOpen: '<strong>'.html_safe,
+        strongClose: '</strong>'.html_safe
+      }
+    end
   end
 
   def share_with_group_lock_help_text(group)
