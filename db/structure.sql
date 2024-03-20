@@ -4827,6 +4827,24 @@ CREATE SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq
 
 ALTER SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq OWNED BY audit_events_instance_google_cloud_logging_configurations.id;
 
+CREATE TABLE audit_events_instance_streaming_event_type_filters (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    external_streaming_destination_id bigint NOT NULL,
+    audit_event_type text NOT NULL,
+    CONSTRAINT check_4a5e8e01b5 CHECK ((char_length(audit_event_type) <= 255))
+);
+
+CREATE SEQUENCE audit_events_instance_streaming_event_type_filters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_instance_streaming_event_type_filters_id_seq OWNED BY audit_events_instance_streaming_event_type_filters.id;
+
 CREATE TABLE audit_events_streaming_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18614,6 +18632,8 @@ ALTER TABLE ONLY audit_events_instance_external_streaming_destinations ALTER COL
 
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_google_cloud_logging_configuration_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_streaming_event_type_filters_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
@@ -20396,6 +20416,9 @@ ALTER TABLE ONLY audit_events_instance_external_streaming_destinations
 
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
     ADD CONSTRAINT audit_events_instance_google_cloud_logging_configurations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
+    ADD CONSTRAINT audit_events_instance_streaming_event_type_filters_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
@@ -27699,6 +27722,8 @@ CREATE UNIQUE INDEX u_zoekt_repositories_zoekt_index_id_and_project_id ON zoekt_
 
 CREATE UNIQUE INDEX uniq_audit_group_event_filters_destination_id_and_event_type ON audit_events_group_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
 
+CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_type ON audit_events_instance_streaming_event_type_filters USING btree (external_streaming_destination_id, audit_event_type);
+
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE (package_type = 14);
@@ -31578,6 +31603,9 @@ ALTER TABLE ONLY ci_job_artifact_states
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_80e6801803 FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
+    ADD CONSTRAINT fk_rails_80e948655b FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;

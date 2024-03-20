@@ -8,6 +8,8 @@ module Organizations
     validates :user, uniqueness: { scope: :organization_id }
     validates :access_level, presence: true
 
+    before_destroy :ensure_user_has_an_organization
+
     enum access_level: {
       # Until we develop more access_levels, we really don't know if the default access_level will be what we think of
       # as a guest. For now, we'll set to same value as guest, but call it default to denote the current ambivalence.
@@ -65,6 +67,16 @@ module Organizations
           unique_by: [:organization_id, :user_id],
           on_duplicate: :skip # Do not change access_level, could make :owner :default
         )
+    end
+
+    private
+
+    def ensure_user_has_an_organization
+      return unless user
+
+      return unless user.organization_users.where.not(id: id).empty?
+
+      errors.add(:base, _('A user must associate with at least one organization'))
     end
   end
 end

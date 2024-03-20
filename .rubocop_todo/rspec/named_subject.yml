@@ -2925,7 +2925,6 @@ RSpec/NamedSubject:
     - 'spec/requests/api/integrations/slack/events_spec.rb'
     - 'spec/requests/api/integrations/slack/interactions_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
-    - 'spec/requests/api/internal/container_registry/migration_spec.rb'
     - 'spec/requests/api/internal/workhorse_spec.rb'
     - 'spec/requests/api/maven_packages_spec.rb'
     - 'spec/requests/api/notes_spec.rb'

@@ -1,5 +1,12 @@
 <script>
-import { GlDatepicker, GlFormInput, GlFormGroup, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlDatepicker,
+  GlFormInput,
+  GlFormGroup,
+  GlButton,
+  GlCollapsibleListbox,
+  GlFormTextarea,
+} from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, sprintf } from '~/locale';
@@ -28,6 +35,7 @@ export default {
     GlFormGroup,
     GlButton,
     GlCollapsibleListbox,
+    GlFormTextarea,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: timelineFormI18n,
@@ -227,9 +235,9 @@ export default {
           class="bordered-box gl-mt-0"
         >
           <template #textarea>
-            <textarea
+            <gl-form-textarea
               v-model="timelineText"
-              class="note-textarea note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area gl-bordered"
+              class="note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area gl-font-monospace!"
               data-testid="input-note"
               dir="auto"
               data-supports-quick-actions="false"
@@ -238,8 +246,7 @@ export default {
               :placeholder="$options.i18n.areaPlaceholder"
               :maxlength="$options.MAX_TEXT_LENGTH"
               @input="setTimelineTextDirty"
-            >
-            </textarea>
+            />
             <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
             <div
               aria-hidden="true"

@@ -694,9 +694,19 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when creating user' do
+      let(:username) { 'test' }
       let(:user) { build(:user, username: username) }
 
       include_examples 'username validations'
+
+      context 'when created without an organization' do
+        let!(:default_organization) { create(:organization, :default) }
+        let(:user) { create(:user) }
+
+        it 'is assigned to the default organization' do
+          expect(user.organizations).to contain_exactly(Organizations::Organization.default_organization)
+        end
+      end
     end
 
     context 'when updating user' do

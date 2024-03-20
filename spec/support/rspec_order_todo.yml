@@ -7963,7 +7963,6 @@
 - './spec/requests/api/integrations/jira_connect/subscriptions_spec.rb'
 - './spec/requests/api/integrations_spec.rb'
 - './spec/requests/api/internal/base_spec.rb'
-- './spec/requests/api/internal/container_registry/migration_spec.rb'
 - './spec/requests/api/internal/error_tracking_spec.rb'
 - './spec/requests/api/internal/kubernetes_spec.rb'
 - './spec/requests/api/internal/lfs_spec.rb'

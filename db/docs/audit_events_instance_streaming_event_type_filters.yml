@@ -1,0 +1,11 @@
+---
+table_name: audit_events_instance_streaming_event_type_filters
+classes:
+- AuditEvents::Instance::EventTypeFilter
+feature_categories:
+- audit_events
+description: Stores audit event type filters for external audit event destinations
+  configurations of GitLab instance.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145421
+milestone: '16.11'
+gitlab_schema: gitlab_main_clusterwide

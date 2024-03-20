@@ -661,7 +661,6 @@ Style/IfUnlessModifier:
     - 'lib/api/helpers/version.rb'
     - 'lib/api/helpers/web_hooks_helpers.rb'
     - 'lib/api/internal/base.rb'
-    - 'lib/api/internal/container_registry/migration.rb'
     - 'lib/api/internal/error_tracking.rb'
     - 'lib/api/invitations.rb'
     - 'lib/api/maven_packages.rb'

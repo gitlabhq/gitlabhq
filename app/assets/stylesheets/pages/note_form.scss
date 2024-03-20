@@ -96,8 +96,8 @@
     }
 
     .note-textarea-rounded-bottom {
-      border-bottom-left-radius: calc(#{$border-radius-large} - 1px);
-      border-bottom-right-radius: calc(#{$border-radius-large} - 1px);
+      border-bottom-left-radius: calc(#{$border-radius-large} - 3px);
+      border-bottom-right-radius: calc(#{$border-radius-large} - 3px);
     }
   }
 }

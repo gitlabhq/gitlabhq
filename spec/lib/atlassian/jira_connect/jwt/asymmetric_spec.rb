@@ -76,6 +76,11 @@ RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integ
       end
 
       it { is_expected.not_to be_valid }
+
+      it 'tracks the exception with Gitlab::ErrorTracking' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(instance_of(JWT::DecodeError))
+        asymmetric_jwt.valid?
+      end
     end
 
     context 'when iss could not be verified' do

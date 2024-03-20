@@ -18,6 +18,41 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     it 'does not allow invalid enum value' do
       expect { build(:organization_user, access_level: '_invalid_') }.to raise_error(ArgumentError)
     end
+
+    context 'on destroy' do
+      let(:user) { create(:user, :without_default_org) }
+
+      subject(:organization_user) { create(:organization_user, user: user) }
+
+      it 'prevents user leaving all organizations' do
+        organization_user.destroy!
+
+        expect(organization_user.errors[:base]).to include(_('A user must associate with at least one organization'))
+      end
+
+      context 'when user is in multiple organizations' do
+        let!(:other_organization_user) { create(:organization_user, user: user) }
+
+        it 'does not prevent user from leaving organization' do
+          organization_user.destroy!
+
+          expect(organization_user.errors[:base]).to be_empty
+        end
+      end
+
+      context 'when user is not available' do
+        before do
+          user.destroy!
+        end
+
+        it 'does not prevent deletion' do
+          organization_user.reload
+
+          expect { organization_user.destroy! }.not_to raise_error
+          expect(organization_user).to be_destroyed
+        end
+      end
+    end
   end
 
   context 'with loose foreign key on organization_users.organization_id' do

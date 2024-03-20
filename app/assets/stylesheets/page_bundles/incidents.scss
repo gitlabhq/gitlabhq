@@ -16,6 +16,15 @@
   gap: $gl-spacing-scale-5;
 }
 
+.create-timeline-event,
+.edit-timeline-event {
+  .md-area {
+    .gl-form-textarea {
+      @include gl-shadow-none;
+    }
+  }
+}
+
 /**
  * We have a very specific design proposal where we cannot
  * use `vertical-line` mixin as it is and have to use
