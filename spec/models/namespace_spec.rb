@@ -1166,7 +1166,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it 'prioritizes sorting of matches that start with the query' do
-      expect(described_class.gfm_autocomplete_search('pare')).to eq([parent_group, group_1, group_2])
+      expect(described_class.gfm_autocomplete_search('pArE')).to eq([parent_group, group_1, group_2])
     end
 
     it 'falls back to sorting by full path' do

@@ -171,6 +171,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.gitlab/CODEOWNERS',
         '.gitleaksignore',
         '.gitpod.yml',
+        '.graphqlrc',
         '.index.yml.example',
         '.license_encryption_key.pub',
         '.mailmap',

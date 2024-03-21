@@ -903,8 +903,8 @@ class User < MainClusterwide::ApplicationRecord
       ).order(
         Arel.sql(sanitize_sql(
           [
-            "CASE WHEN starts_with(REPLACE(users.name, ' ', ''), :pattern) OR starts_with(users.username, :pattern) THEN 1 ELSE 2 END",
-            { pattern: query }
+            "CASE WHEN REPLACE(users.name, ' ', '') ILIKE :prefix_pattern OR users.username ILIKE :prefix_pattern THEN 1 ELSE 2 END",
+            { prefix_pattern: "#{sanitize_sql_like(query)}%" }
           ]
         )),
         :username,

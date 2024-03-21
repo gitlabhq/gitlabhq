@@ -7,6 +7,12 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
   let(:tracking_database) { worker_class.tracking_database }
   let(:coordinator) { described_class.new(worker_class) }
 
+  let(:redis_pool) do
+    params = Gitlab::Redis::Queues.params
+    params[:db] = params[:db] + 1 if params[:db]
+    Sidekiq::RedisConnection.create(params) # rubocop:disable Rails/SaveBang -- RedisConnection only has .create
+  end
+
   describe '.for_tracking_database' do
     it 'returns an executor with the correct worker class and database' do
       coordinator = described_class.for_tracking_database(tracking_database)
@@ -74,8 +80,24 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
         allow(Sidekiq::DeadSet).to receive(:new).and_return(dead_set)
       end
 
+      context 'when using a different shard instance' do
+        before do
+          if coordinator.instance_variable_defined?(:@sidekiq_redis_pool)
+            coordinator.remove_instance_variable(:@sidekiq_redis_pool)
+          end
+
+          allow(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).and_return(['shard', redis_pool])
+        end
+
+        it 'uses the appropriate shard for the store' do
+          expect(Sidekiq::Client).to receive(:via).with(redis_pool)
+
+          coordinator.pending_jobs.to_a
+        end
+      end
+
       it 'does not include jobs for other workers' do
-        expect(coordinator.pending_jobs).not_to include(queue_incorrect_job_class.first)
+        expect(coordinator.pending_jobs.to_a).not_to include(queue_incorrect_job_class.first)
       end
 
       context 'when not including dead jobs' do
@@ -106,6 +128,22 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
         allow(Sidekiq::Queue).to receive(:new)
           .with(coordinator.queue)
           .and_return(queue)
+      end
+
+      context 'when using a different shard instance' do
+        before do
+          if coordinator.instance_variable_defined?(:@sidekiq_redis_pool)
+            coordinator.remove_instance_variable(:@sidekiq_redis_pool)
+          end
+
+          allow(Gitlab::SidekiqSharding::Router).to receive(:get_shard_instance).and_return(['shard', redis_pool])
+        end
+
+        it 'wraps job processing within Sidekiq::Client.via' do
+          expect(Sidekiq::Client).to receive(:via).with(redis_pool)
+
+          coordinator.steal('Foo')
+        end
       end
 
       context 'when queue contains unprocessed jobs' do

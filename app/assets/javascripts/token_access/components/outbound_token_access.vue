@@ -39,7 +39,7 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     outboundTokenAlertDeprecationMessage: s__(
-      `CICD|The %{boldStart}Limit CI_JOB_TOKEN%{boldEnd} scope is deprecated and will be removed the 17.0 milestone. Configure the %{boldStart}CI_JOB_TOKEN%{boldEnd} allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
+      `CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
     ),
     disableToggleWarning: s__('CICD|Disabling this feature is a permanent change.'),
   },
@@ -222,6 +222,11 @@ export default {
         <gl-sprintf :message="$options.i18n.outboundTokenAlertDeprecationMessage">
           <template #bold="{ content }">
             <strong>{{ content }}</strong>
+          </template>
+          <template #italicAndBold="{ content }">
+            <i
+              ><strong>{{ content }}</strong></i
+            >
           </template>
           <template #link="{ content }">
             <gl-link

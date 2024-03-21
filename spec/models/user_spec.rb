@@ -3570,7 +3570,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'prioritizes sorting of matches that start with the query' do
-      expect(described_class.gfm_autocomplete_search('user')).to eq([user_2, user_1])
+      expect(described_class.gfm_autocomplete_search('uSeR')).to eq([user_2, user_1])
     end
 
     it 'falls back to sorting by username' do

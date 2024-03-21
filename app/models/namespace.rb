@@ -298,8 +298,8 @@ class Namespace < ApplicationRecord
         .order(
           Arel.sql(sanitize_sql(
             [
-              "CASE WHEN starts_with(REPLACE(routes.name, ' ', ''), :pattern) OR starts_with(routes.path, :pattern) THEN 1 ELSE 2 END",
-              { pattern: query }
+              "CASE WHEN REPLACE(routes.name, ' ', '') ILIKE :prefix_pattern OR routes.path ILIKE :prefix_pattern THEN 1 ELSE 2 END",
+              { prefix_pattern: "#{sanitize_sql_like(query)}%" }
             ]
           )),
           'routes.path'

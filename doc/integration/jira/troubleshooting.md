@@ -240,15 +240,19 @@ Check [`production.log`](../../administration/logs/index.md#productionlog) to se
 
 If that's the case, ensure the [**Due date** field is visible for issues](https://confluence.atlassian.com/jirakb/due-date-field-is-missing-189431917.html) in the integrated Jira project.
 
-### `An error occurred while requesting data from Jira`
+### Error when requesting data from Jira
 
-When you try to view the Jira issue list in GitLab, you might get this message:
+When you try to view the Jira issue list or create a Jira issue in GitLab, you might get one of the following errors:
 
 ```plaintext
 An error occurred while requesting data from Jira
 ```
 
-This error occurs when the authentication for the Jira issue integration is not complete or correct.
+```plaintext
+An error occurred while fetching issue list. Connection failed. Check your integration settings.
+```
+
+These errors occur when the authentication for the Jira issue integration is not complete or correct.
 
 To resolve this issue, [configure the Jira issue integration](configure.md#configure-the-integration) again.
 Ensure the authentication details are correct, enter your API token or password again, and save your changes.
