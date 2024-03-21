@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
+  def load_initializer
+    load Rails.root.join('config/initializers/7_gitlab_http.rb')
+  end
+
   it 'handles log_exception_proc' do
     expect(Gitlab::HTTP_V2::Client).to receive(:httparty_perform_request)
       .and_raise(Net::ReadTimeout)
@@ -41,6 +45,28 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
         expect(::Gitlab::AppJsonLogger).not_to receive(:info)
 
         expect(described_class.get('http://example.org', silent_mode_enabled: true).body).to eq('hello')
+      end
+    end
+  end
+
+  context 'when configuring allowed_internal_uris' do
+    subject(:uris) { described_class.configuration.allowed_internal_uris }
+
+    it do
+      is_expected.to contain_exactly(
+        URI::HTTP.build(host: 'localhost', port: 80),
+        URI::Generic.build(scheme: 'ssh', host: 'localhost', port: 22)
+      )
+    end
+
+    context 'when the protocol is https' do
+      before do
+        stub_config_setting(protocol: 'https')
+        load_initializer
+      end
+
+      it 'uses the correct scheme' do
+        expect(uris.first.scheme).to eq('https')
       end
     end
   end

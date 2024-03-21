@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
-  let(:csrf_token) { SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH) }
+  let(:csrf_token) { 'YAYvO6dOQJGvIp/7DnZSa42h8AjB5mp0cXGIBgciby8=' }
+
   let(:env) do
     {
       'rack.input' => '',
@@ -86,6 +87,16 @@ RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
       context 'when the CSRF token is valid' do
         before do
           env['HTTP_X_CSRF_TOKEN'] = csrf_token
+        end
+
+        it 'returns true' do
+          expect(described_class.verified?(env)).to be_truthy
+        end
+      end
+
+      context 'when the CSRF token is valid and in the body' do
+        before do
+          env['rack.input'] = StringIO.new("authenticity_token=#{csrf_token}")
         end
 
         it 'returns true' do

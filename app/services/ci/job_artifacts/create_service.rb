@@ -130,7 +130,7 @@ module Ci
 
         return accessibility if accessibility.present?
 
-        job.artifact_is_public_in_config? ? :public : :private
+        job.artifact_access_setting_in_config
       end
 
       def parse_artifact(artifact)

@@ -89,7 +89,7 @@ module Gitlab
         end
 
         def nullability(order_value, attribute_name)
-          nullable = model_class.columns.find { |column| column.name == attribute_name }.null
+          nullable = model_class.nullable_column?(attribute_name)
 
           if nullable && order_value.is_a?(Arel::Nodes::Ascending)
             :nulls_last

@@ -24,7 +24,7 @@ module Gitlab
 
         override :url
         def url
-          File.join(Settings.build_ci_component_fqdn, project.full_path, '//', ci_config_path)
+          File.join(Settings.build_ci_server_fqdn, project.full_path, '//', ci_config_path)
         end
 
         private

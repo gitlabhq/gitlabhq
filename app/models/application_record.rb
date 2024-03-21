@@ -8,6 +8,7 @@ class ApplicationRecord < ActiveRecord::Base
   include CrossDatabaseModification
   include SensitiveSerializableHash
   include ResetOnColumnErrors
+  include HasCheckConstraints
 
   self.abstract_class = true
 
@@ -128,6 +129,11 @@ class ApplicationRecord < ActiveRecord::Base
   # However, application relies on it in case-when usages with objects wrapped in presenters
   def self.===(object)
     object.is_a?(self)
+  end
+
+  def self.nullable_column?(column_name)
+    columns.find { |column| column.name == column_name }.null &&
+      !not_null_check?(column_name)
   end
 
   def readable_by?(user)

@@ -437,6 +437,8 @@ export const assignDiscussionsToDiff = (
 };
 
 export const removeDiscussionsFromDiff = ({ commit }, removeDiscussion) => {
+  if (!removeDiscussion.diff_file) return;
+
   const {
     diff_file: { file_hash: fileHash },
     line_code: lineCode,

@@ -679,6 +679,18 @@ class Integration < ApplicationRecord
     category == :ci
   end
 
+  def deactivate!
+    update(active: false)
+  end
+
+  def activate!
+    update(active: true)
+  end
+
+  def toggle!
+    active? ? deactivate! : activate!
+  end
+
   private
 
   # Ancestors sorted by hierarchy depth in bottom-top order.

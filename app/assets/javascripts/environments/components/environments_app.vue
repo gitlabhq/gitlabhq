@@ -21,6 +21,7 @@ import ConfirmRollbackModal from './confirm_rollback_modal.vue';
 import DeleteEnvironmentModal from './delete_environment_modal.vue';
 import CanaryUpdateModal from './canary_update_modal.vue';
 import EmptyState from './empty_state.vue';
+import EnviromentsAppSkeletonLoader from './environments_app_skeleton_loader.vue';
 
 export default {
   components: {
@@ -28,6 +29,7 @@ export default {
     CanaryUpdateModal,
     ConfirmRollbackModal,
     EmptyState,
+    EnviromentsAppSkeletonLoader,
     EnvironmentFolder,
     EnableReviewAppModal,
     EnvironmentItem,
@@ -128,6 +130,9 @@ export default {
     hasEnvironments() {
       return this.environments.length > 0 || this.folders.length > 0;
     },
+    loading() {
+      return this.$apollo.queries.environmentApp.loading;
+    },
     showEmptyState() {
       return !this.$apollo.queries.environmentApp.loading && !this.hasEnvironments;
     },
@@ -144,7 +149,7 @@ export default {
       return this.activeCount > 0 || this.stoppedCount > 0;
     },
     showContent() {
-      return this.hasAnyEnvironment || this.hasSearch;
+      return !this.loading && (this.hasAnyEnvironment || this.hasSearch);
     },
     addEnvironment() {
       if (!this.canCreateEnvironment) {
@@ -268,6 +273,7 @@ export default {
     <stop-environment-modal :environment="environmentToStop" graphql />
     <confirm-rollback-modal :environment="environmentToRollback" graphql />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
+    <enviroments-app-skeleton-loader v-if="loading" :i18n="$options.i18n" :search-value="search" />
     <template v-if="showContent">
       <gl-tabs
         :action-secondary="openReviewAppModal"

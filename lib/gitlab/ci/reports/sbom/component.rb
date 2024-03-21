@@ -30,7 +30,7 @@ module Gitlab
           end
 
           def purl_type
-            purl.type
+            purl&.type
           end
 
           def type
@@ -38,13 +38,7 @@ module Gitlab
           end
 
           def name
-            return @name unless purl
-
-            [purl.namespace, purl.name].compact.join('/')
-          end
-
-          def name_without_namespace
-            @name
+            use_namespaced_name? ? [purl.namespace, purl.name].compact.join('/') : @name
           end
 
           def key
@@ -80,6 +74,10 @@ module Gitlab
 
           def purl_type_int(component)
             ::Enums::Sbom::PURL_TYPES.fetch(component.purl&.type&.to_sym, 0)
+          end
+
+          def use_namespaced_name?
+            purl.present? && Enums::Sbom.use_namespaced_name?(purl_type)
           end
         end
       end

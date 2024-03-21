@@ -6,9 +6,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   let_it_be(:user) { create(:user) }
 
   let(:path) { described_class.new(address: address) }
-  let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => component_fqdn }) }
-  let(:component_fqdn) { 'acme.com' }
-  let(:fqdn_prefix) { "#{component_fqdn}/" }
+  let(:settings) { GitlabSettings::Options.build({ 'server_fqdn' => server_fqdn }) }
+  let(:server_fqdn) { 'acme.com' }
+  let(:fqdn_prefix) { "#{server_fqdn}/" }
 
   before do
     allow(::Settings).to receive(:gitlab_ci).and_return(settings)
@@ -175,7 +175,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
       context 'when current GitLab instance is installed on a relative URL' do
         let(:address) { "acme.com/gitlab/#{project_path}/secret-detection@#{version}" }
-        let(:component_fqdn) { 'acme.com/gitlab' }
+        let(:server_fqdn) { 'acme.com/gitlab' }
 
         it 'fetches the component content', :aggregate_failures do
           result = path.fetch_content!(current_user: user)
@@ -272,6 +272,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   describe '.fqdn_prefix' do
     subject(:fqdn_prefix) { described_class.fqdn_prefix }
 
-    it { is_expected.to eq("#{component_fqdn}/") }
+    it { is_expected.to eq("#{server_fqdn}/") }
   end
 end

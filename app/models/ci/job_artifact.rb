@@ -19,7 +19,7 @@ module Ci
     self.primary_key = :id
     self.sequence_name = :ci_job_artifacts_id_seq
 
-    enum accessibility: { public: 0, private: 1 }, _suffix: true
+    enum accessibility: { public: 0, private: 1, none: 2 }, _suffix: true
 
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
@@ -225,6 +225,10 @@ module Ci
 
     def public_access?
       public_accessibility?
+    end
+
+    def none_access?
+      none_accessibility?
     end
 
     private

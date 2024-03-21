@@ -20579,6 +20579,9 @@ ALTER TABLE sprints
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
 
+ALTER TABLE vulnerability_reads
+    ADD CONSTRAINT check_f5ba7c2496 CHECK ((traversal_ids IS NOT NULL)) NOT VALID;
+
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;
 
@@ -23668,9 +23671,9 @@ CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approv
 
 CREATE INDEX idx_approval_merge_request_rules_on_sec_orchestration_config_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id);
 
-CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
+CREATE INDEX idx_approval_project_rules_on_configuration_id_and_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id, id);
 
-CREATE INDEX idx_approval_project_rules_on_sec_orchestration_config_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id);
+CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
 CREATE INDEX idx_audit_events_group_external_destinations_on_group_id ON audit_events_group_external_streaming_destinations USING btree (group_id);
 
@@ -23867,6 +23870,10 @@ CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbo
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
 
 CREATE UNIQUE INDEX idx_sbom_source_packages_on_name_and_purl_type ON sbom_source_packages USING btree (name, purl_type);
+
+CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
+
+CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans USING btree (build_id, scan_type);
 

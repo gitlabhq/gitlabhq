@@ -1055,31 +1055,57 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#artifact_is_public_in_config?' do
-    subject { build.artifact_is_public_in_config? }
+  describe '#artifact_access_setting_in_config' do
+    subject { build.artifact_access_setting_in_config }
 
     context 'artifacts with defaults' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
     end
 
     context 'non public artifacts' do
       let(:build) { create(:ci_build, :with_private_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access' do
+      let(:build) { create(:ci_build, :with_developer_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access as none' do
+      let(:build) { create(:ci_build, :with_none_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:none) }
     end
 
     context 'public artifacts' do
       let(:build) { create(:ci_build, :with_public_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'public artifacts via access' do
+      let(:build) { create(:ci_build, :with_all_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:public) }
     end
 
     context 'no artifacts' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'when public and access are used together' do
+      let(:build) { create(:ci_build, :with_access_and_public_setting, pipeline: pipeline) }
+
+      it 'raises ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive')
+      end
     end
   end
 
@@ -2400,8 +2426,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
-          { key: 'CI_COMPONENT_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
-          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
+          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn, public: true, masked: false },
           { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
           { key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s, public: true, masked: false },

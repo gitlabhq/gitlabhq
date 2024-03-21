@@ -111,6 +111,8 @@
   - 1
 - - bitbucket_import_stage_import_repository
   - 1
+- - bitbucket_import_stage_import_users
+  - 1
 - - bitbucket_server_import_advance_stage
   - 1
 - - bitbucket_server_import_import_lfs_object
@@ -685,6 +687,8 @@
   - 1
 - - search_zoekt_project_transfer
   - 1
+- - security_delete_orchestration_configuration
+  - 1
 - - security_generate_policy_violation_comment
   - 1
 - - security_orchestration_configuration_create_bot
@@ -716,6 +720,8 @@
 - - security_sync_policy_violation_comment
   - 1
 - - security_sync_scan_policies
+  - 1
+- - security_unassign_redundant_policy_configurations
   - 1
 - - security_unenforceable_policy_rules_notification
   - 1

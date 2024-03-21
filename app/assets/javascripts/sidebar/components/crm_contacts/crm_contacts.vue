@@ -106,7 +106,9 @@ export default {
       <span> {{ contactCount }} </span>
     </div>
     <div class="hide-collapsed help-button gl-float-right">
-      <gl-link :href="$options.crmDocsLink" target="_blank"><gl-icon name="question-o" /></gl-link>
+      <gl-link :href="$options.crmDocsLink" target="_blank"
+        ><gl-icon name="question-o" class="gl-text-blue-600"
+      /></gl-link>
     </div>
     <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}

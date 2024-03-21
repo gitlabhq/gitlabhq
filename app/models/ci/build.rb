@@ -726,12 +726,24 @@ module Ci
       job_artifacts_archive.public_access?
     end
 
-    def artifact_is_public_in_config?
+    def artifacts_no_access?
+      return false if job_artifacts_archive.nil? # To backward compatibility return false if no artifacts found
+
+      job_artifacts_archive.none_access?
+    end
+
+    def artifact_access_setting_in_config
       artifacts_public = options.dig(:artifacts, :public)
+      artifacts_access = options.dig(:artifacts, :access)
 
-      return true if artifacts_public.nil? # Default artifacts:public to true
+      raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive' if !artifacts_public.nil? && !artifacts_access.nil?
 
-      artifacts_public
+      return :public if artifacts_public == true || artifacts_access == 'all'
+      return :private if artifacts_public == false || artifacts_access == 'developer'
+      return :none if artifacts_access == 'none'
+
+      # default behaviour
+      :public
     end
 
     def artifacts_metadata_entry(path, **options)

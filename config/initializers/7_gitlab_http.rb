@@ -5,8 +5,7 @@ require 'gitlab-http'
 
 Gitlab::HTTP_V2.configure do |config|
   config.allowed_internal_uris = [
-    URI::HTTP.build(
-      scheme: Gitlab.config.gitlab.protocol,
+    (Gitlab.config.gitlab.protocol == 'https' ? URI::HTTPS : URI::HTTP).build(
       host: Gitlab.config.gitlab.host,
       port: Gitlab.config.gitlab.port
     ),

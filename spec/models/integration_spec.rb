@@ -8,7 +8,7 @@ RSpec.describe Integration, feature_category: :integrations do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  describe "Associations" do
+  describe "associations" do
     it { is_expected.to belong_to(:project).inverse_of(:integrations) }
     it { is_expected.to belong_to(:group).inverse_of(:integrations) }
     it { is_expected.to have_one(:issue_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:integration_id).class_name('Integrations::IssueTrackerData') }
@@ -76,7 +76,7 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
-  describe 'Scopes' do
+  describe 'scopes' do
     describe '.third_party_wikis' do
       let!(:integration1) { create(:jira_integration, project: project) }
       let!(:integration2) { create(:redmine_integration, project: project) }
@@ -268,6 +268,48 @@ RSpec.describe Integration, feature_category: :integrations do
 
     it 'is false when integration is not a ci integration' do
       expect(build(:integration).ci?).to eq(false)
+    end
+  end
+
+  describe '#deactivate!' do
+    it 'sets active to false' do
+      integration = build(:integration, active: true)
+
+      integration.deactivate!
+
+      expect(integration.active).to eq(false)
+    end
+  end
+
+  describe '#activate!' do
+    it 'sets active to true' do
+      integration = build(:integration, active: false)
+
+      integration.activate!
+
+      expect(integration.active).to eq(true)
+    end
+  end
+
+  describe '#toggle!' do
+    context 'when active' do
+      it 'deactivates the integration' do
+        integration = build(:integration, active: true)
+
+        integration.toggle!
+
+        expect(integration).not_to be_active
+      end
+    end
+
+    context 'when not active' do
+      it 'activates the integration' do
+        integration = build(:integration, active: false)
+
+        integration.toggle!
+
+        expect(integration).to be_active
+      end
     end
   end
 

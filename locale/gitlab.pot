@@ -13058,6 +13058,9 @@ msgstr ""
 msgid "ComplianceReport|Compliance framework"
 msgstr ""
 
+msgid "ComplianceReport|Compliance pipelines are now in maintenance mode"
+msgstr ""
+
 msgid "ComplianceReport|Create a new framework"
 msgstr ""
 
@@ -13065,6 +13068,9 @@ msgid "ComplianceReport|Do you want to refresh the filtered results to include y
 msgstr ""
 
 msgid "ComplianceReport|Edit the framework"
+msgstr ""
+
+msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policy actions%{linkEnd}."
 msgstr ""
 
 msgid "ComplianceReport|Framework successfully applied"
@@ -13116,6 +13122,9 @@ msgid "ComplianceReport|Update filtered results?"
 msgstr ""
 
 msgid "ComplianceReport|Update result"
+msgstr ""
+
+msgid "ComplianceReport|You can still edit existing compliance pipelines, but cannot create new compliance pipelines. %{linkStart}Pipeline execution policy%{linkEnd} actions provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance. You should migrate as soon as possible."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence| Standards adherence export"
@@ -21450,9 +21459,6 @@ msgid "File Tree"
 msgstr ""
 
 msgid "File added"
-msgstr ""
-
-msgid "File browser"
 msgstr ""
 
 msgid "File deleted"
@@ -45698,7 +45704,7 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
-msgid "SecurityOrchestration|Security policy project was unlinked successfully"
+msgid "SecurityOrchestration|Security policy project will be unlinked soon"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
@@ -58260,6 +58266,9 @@ msgid "You don't have the %{role} role for any groups in this instance."
 msgstr ""
 
 msgid "You don't have write access to the source branch."
+msgstr ""
+
+msgid "You don't need to link the security policy projects from the group. All policies in the security policy projects are inherited already."
 msgstr ""
 
 msgid "You don’t have access to Productivity Analytics in this group"

@@ -47,12 +47,16 @@ module ExtractsRef
     strong_memoize_attr :commit
 
     def tag
+      return unless repository.tag_exists?(ref)
+
       raw_commit = repository.find_tag(ref)&.dereferenced_target
       ::Commit.new(raw_commit, repository.container) if raw_commit
     end
     strong_memoize_attr :tag
 
     def branch
+      return unless repository.branch_exists?(ref)
+
       raw_commit = repository.find_branch(ref)&.dereferenced_target
       ::Commit.new(raw_commit, repository.container) if raw_commit
     end

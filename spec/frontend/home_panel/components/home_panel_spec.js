@@ -28,6 +28,8 @@ describe('HomePanel', () => {
 
   describe.each`
     isLoggedIn | canReadProject | isProjectEmpty | adminPath               | isForkButtonVisible | isMoreActionsDropdownVisible | isNotificationDropdownVisible | isStarCountVisible | isAdminButtonVisible
+    ${true}    | ${true}        | ${true}        | ${undefined}            | ${false}            | ${true}                      | ${true}                       | ${true}            | ${false}
+    ${true}    | ${true}        | ${true}        | ${null}                 | ${false}            | ${true}                      | ${true}                       | ${true}            | ${false}
     ${true}    | ${true}        | ${true}        | ${''}                   | ${false}            | ${true}                      | ${true}                       | ${true}            | ${false}
     ${true}    | ${true}        | ${false}       | ${''}                   | ${true}             | ${true}                      | ${true}                       | ${true}            | ${false}
     ${true}    | ${false}       | ${true}        | ${''}                   | ${false}            | ${true}                      | ${false}                      | ${true}            | ${false}

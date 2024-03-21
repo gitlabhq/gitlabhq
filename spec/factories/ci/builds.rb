@@ -330,6 +330,14 @@ FactoryBot.define do
       end
     end
 
+    trait :no_access_artifacts do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :none, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :none, job: build, expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
+
     trait :report_results do
       after(:build) do |build|
         build.report_results << build(:ci_build_report_result)
@@ -597,10 +605,46 @@ FactoryBot.define do
       end
     end
 
+    trait :with_developer_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'developer' }
+        }
+      end
+    end
+
+    # invalid case for access setting
+    trait :with_access_and_public_setting do
+      options do
+        {
+          artifacts: {
+            public: true,
+            access: 'all'
+          }
+        }
+      end
+    end
+
+    trait :with_none_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'none' }
+        }
+      end
+    end
+
     trait :with_public_artifacts_config do
       options do
         {
           artifacts: { public: true }
+        }
+      end
+    end
+
+    trait :with_all_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'all' }
         }
       end
     end

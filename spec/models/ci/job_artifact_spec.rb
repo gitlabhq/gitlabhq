@@ -179,6 +179,22 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
     end
   end
 
+  describe 'none_access?' do
+    subject { artifact.none_access? }
+
+    context 'when job artifact created by default' do
+      let!(:artifact) { create(:ci_job_artifact) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when job artifact created as none access' do
+      let!(:artifact) { create(:ci_job_artifact, :none) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '.file_types_for_report' do
     it 'returns the report file types for the report type' do
       expect(described_class.file_types_for_report(:test)).to match_array(%w[junit])

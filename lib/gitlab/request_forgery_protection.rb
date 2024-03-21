@@ -33,6 +33,11 @@ module Gitlab
     def self.verified?(env)
       minimal_env = env.slice('REQUEST_METHOD', 'rack.session', 'HTTP_X_CSRF_TOKEN')
                       .merge('rack.input' => '')
+
+      # The CSRF token for some requests is in the form instead of headers.
+      # This line of code is used to accommodate this situation. See: https://gitlab.com/gitlab-org/gitlab/-/issues/443398
+      minimal_env['HTTP_X_CSRF_TOKEN'] ||= Rack::Request.new(env.dup).params['authenticity_token']
+
       call(minimal_env)
 
       true

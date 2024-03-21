@@ -239,6 +239,16 @@
             "always"
           ]
         },
+        "access": {
+          "markdownDescription": "Configure who can access the artifacts. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsaccess).",
+          "default": "all",
+          "type": "string",
+          "enum": [
+            "none",
+            "developer",
+            "all"
+          ]
+        },
         "expire_in": {
           "type": "string",
           "markdownDescription": "How long artifacts should be kept. They are saved 30 days by default. Artifacts that have expired are removed periodically via cron job. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsexpire_in).",

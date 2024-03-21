@@ -44,9 +44,6 @@ export default {
     copyProjectId() {
       return sprintf(s__('ProjectPage|Project ID: %{id}'), { id: this.projectId });
     },
-    isUserAdmin() {
-      return this.adminPath !== null && this.adminPath !== '';
-    },
   },
   i18n: {
     adminButtonTooltip: __('View project in admin area'),
@@ -59,7 +56,7 @@ export default {
     class="gl-align-items-center gl-display-flex gl-flex-wrap gl-gap-3 gl-justify-content-md-end project-repo-buttons"
   >
     <gl-button
-      v-if="isUserAdmin"
+      v-if="adminPath"
       v-gl-tooltip
       :aria-label="$options.i18n.adminButtonTooltip"
       :href="adminPath"

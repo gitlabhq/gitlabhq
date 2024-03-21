@@ -1424,6 +1424,10 @@ job:
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Feature flag `non_public_artifacts` removed.
 
+NOTE:
+`artifacts:public` is now superceded by [`artifacts:access`](#artifactsaccess) which
+has more options.
+
 Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
 
@@ -1446,6 +1450,31 @@ pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `f
 job:
   artifacts:
     public: false
+```
+
+### `artifacts:access`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.10.
+
+Use `artifacts:access` to determine who can access the job artifacts.
+
+You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in the same job.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `all` (default): Artifacts in public pipelines are available for download by anyone, including anonymous,
+  guest, and reporter users.
+- `developer`: Artifacts are only available for download by users with the Developer role or higher.
+- `none`: Artifacts are not available for download by anyone.
+
+**Example of `artifacts:access`**:
+
+```yaml
+job:
+  artifacts:
+    access: 'developer'
 ```
 
 #### `artifacts:reports`

@@ -19,6 +19,53 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
   end
 
+  describe 'artifacts access config with access keyword' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:user) { create(:user) }
+
+    include_context 'public pipelines disabled'
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'when job artifact access is set to all' do
+      let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      it 'allows read_job_artifacts to project members' do
+        expect(policy).to be_allowed :read_job_artifacts
+      end
+    end
+
+    context 'when job artifact is private to developers' do
+      let(:build) { create(:ci_build, :private_artifacts, pipeline: pipeline) }
+
+      it 'allows read_job_artifacts to project members' do
+        expect(policy).to be_allowed :read_job_artifacts
+      end
+
+      context 'when user is anon' do
+        let(:user2) { create(:user) }
+
+        let(:policy2) do
+          described_class.new(user2, build)
+        end
+
+        it 'disallows read_job_artifacts to anon user' do
+          expect(policy2).to be_disallowed :read_job_artifacts
+        end
+      end
+    end
+
+    context 'when job artifact access is set to none' do
+      let(:build) { create(:ci_build, :no_access_artifacts, pipeline: pipeline) }
+
+      it 'disallows read_job_artifacts to project members' do
+        expect(policy).to be_disallowed :read_job_artifacts
+      end
+    end
+  end
+
   describe '#rules' do
     context 'when user does not have access to the project' do
       let(:project) { create(:project, :private) }

@@ -181,7 +181,8 @@ rspec-all frontend_fixture as-if-foss:
     - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
   variables:
-    # We explicitely disable Crystalball here so as even in scheduled pipelines we don't need it since it's already enabled for `rspec-all frontend_fixture` there.
+    # We explicitly disable Crystalball here so as even in scheduled pipelines we don't need it
+    # since it's already enabled for `rspec-all frontend_fixture` there.
     CRYSTALBALL: "false"
     WEBPACK_VENDOR_DLL: "true"
     KNAPSACK_GENERATE_REPORT: ""

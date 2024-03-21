@@ -3,7 +3,6 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';
-import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import DiffFileRow from '~/diffs/components//diff_file_row.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -14,6 +13,7 @@ import { sortTree } from '~/ide/stores/utils';
 describe('Diffs tree list component', () => {
   let wrapper;
   let store;
+  let setRenderTreeListMock;
   const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
   const getFileRow = () => wrapper.findComponent(DiffFileRow);
   const findDiffTreeSearch = () => wrapper.findByTestId('diff-tree-search');
@@ -42,21 +42,36 @@ describe('Diffs tree list component', () => {
   };
 
   beforeEach(() => {
+    const { getters, mutations, actions, state } = createStore();
+
+    setRenderTreeListMock = jest.fn();
+
     store = new Vuex.Store({
       modules: {
-        diffs: createStore(),
-        batchComments: batchComments(),
+        diffs: {
+          namespaced: true,
+          state: {
+            isTreeLoaded: true,
+            diffFiles: ['test'],
+            addedLines: 10,
+            removedLines: 20,
+            mergeRequestDiff: {},
+            ...state,
+          },
+          getters: {
+            allBlobs: getters.allBlobs,
+            flatBlobsList: getters.flatBlobsList,
+            pinnedFile: getters.pinnedFile,
+          },
+          mutations: { ...mutations },
+          actions: {
+            toggleTreeOpen: actions.toggleTreeOpen,
+            goToFile: actions.goToFile,
+            setRenderTreeList: setRenderTreeListMock,
+          },
+        },
       },
     });
-
-    // Setup initial state
-    store.state.diffs.isTreeLoaded = true;
-    store.state.diffs.diffFiles.push('test');
-    store.state.diffs = {
-      addedLines: 10,
-      removedLines: 20,
-      ...store.state.diffs,
-    };
   });
 
   const setupFilesInState = () => {
@@ -274,5 +289,40 @@ describe('Diffs tree list component', () => {
         ).toMatchSnapshot();
       });
     });
+  });
+
+  describe('tree view buttons', () => {
+    it.each`
+      toggle                | renderTreeList
+      ${'list-view-toggle'} | ${false}
+      ${'tree-view-toggle'} | ${true}
+    `(
+      'calls setRenderTreeListMock with `$renderTreeList` when clicking $toggle clicked',
+      ({ toggle, renderTreeList }) => {
+        createComponent();
+
+        wrapper.findByTestId(toggle).vm.$emit('click');
+
+        expect(setRenderTreeListMock).toHaveBeenCalledWith(expect.anything(), {
+          renderTreeList,
+        });
+      },
+    );
+
+    it.each`
+      selectedToggle        | deselectedToggle      | renderTreeList
+      ${'list-view-toggle'} | ${'tree-view-toggle'} | ${false}
+      ${'tree-view-toggle'} | ${'list-view-toggle'} | ${true}
+    `(
+      'sets $selectedToggle as selected when renderTreeList is $renderTreeList',
+      ({ selectedToggle, deselectedToggle, renderTreeList }) => {
+        store.state.diffs.renderTreeList = renderTreeList;
+
+        createComponent();
+
+        expect(wrapper.findByTestId(deselectedToggle).props('selected')).toBe(false);
+        expect(wrapper.findByTestId(selectedToggle).props('selected')).toBe(true);
+      },
+    );
   });
 });
