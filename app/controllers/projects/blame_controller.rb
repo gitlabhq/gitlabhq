@@ -43,7 +43,9 @@ class Projects::BlameController < Projects::ApplicationController
   end
 
   def require_non_binary_blob
-    redirect_to project_blob_path(@project, File.join(@ref, @path)), notice: _('Blame for binary files is not supported.') if @blob.binary?
+    return unless @blob.binary?
+
+    redirect_to project_blob_path(@project, File.join(@ref, @path)), notice: _('Blame for binary files is not supported.')
   end
 
   def load_environment

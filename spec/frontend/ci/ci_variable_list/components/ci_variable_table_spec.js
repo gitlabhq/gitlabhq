@@ -46,7 +46,7 @@ describe('Ci variable table', () => {
     wrapper.findAllByTestId('ci-variable-table-row-attributes').at(rowIndex);
   const findAttributeByIndex = (rowIndex, attributeIndex) =>
     findAttributesRow(rowIndex).findAllComponents(GlBadge).at(attributeIndex).text();
-  const findTableColumnText = (index) => wrapper.findAll('th > div').at(index).text();
+  const findTableColumnText = (index) => wrapper.findAll('th > div > span').at(index).text();
   const findVariableRow = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-variable').at(rowIndex);
   const findGroupCiCdSettingsLink = (rowIndex) =>

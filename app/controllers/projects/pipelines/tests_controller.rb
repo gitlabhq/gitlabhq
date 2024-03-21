@@ -34,9 +34,7 @@ module Projects
       private
 
       def validate_test_reports!
-        unless pipeline.has_test_reports?
-          render json: { errors: 'Test report artifacts not found' }, status: :not_found
-        end
+        render json: { errors: 'Test report artifacts not found' }, status: :not_found unless pipeline.has_test_reports?
       end
 
       def builds

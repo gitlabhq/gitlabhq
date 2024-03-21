@@ -86,9 +86,7 @@ class Import::ManifestController < Import::BaseController
   private
 
   def ensure_import_vars
-    unless group && importable_repos.present?
-      redirect_to(new_import_manifest_path)
-    end
+    redirect_to(new_import_manifest_path) unless group && importable_repos.present?
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

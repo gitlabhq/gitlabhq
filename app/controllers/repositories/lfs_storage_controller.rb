@@ -124,9 +124,7 @@ module Repositories
     def validate_uploaded_file!
       return unless uploaded_file
 
-      if size != uploaded_file.size || oid != uploaded_file.sha256
-        raise InvalidUploadedFile
-      end
+      raise InvalidUploadedFile if size != uploaded_file.size || oid != uploaded_file.sha256
     end
   end
 end

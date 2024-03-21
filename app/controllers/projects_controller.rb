@@ -45,7 +45,11 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
-    push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
+
+    if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
+      push_licensed_feature(:security_orchestration_policies)
+    end
+
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
@@ -87,14 +91,9 @@ class ProjectsController < Projects::ApplicationController
 
     manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 
-    if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
-      return access_denied!
-    end
+    return access_denied! if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
 
-    @current_user_group =
-      if manageable_groups.one?
-        manageable_groups.first
-      end
+    @current_user_group = manageable_groups.first if manageable_groups.one?
 
     @project = Project.new(namespace_id: @namespace&.id)
   end

@@ -18,9 +18,7 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   def create
     protected_ref = create_service_class.new(@project, current_user, protected_ref_params).execute
 
-    unless protected_ref.persisted?
-      flash[:alert] = protected_ref.errors.full_messages.join(', ').html_safe
-    end
+    flash[:alert] = protected_ref.errors.full_messages.join(', ').html_safe unless protected_ref.persisted?
 
     respond_to do |format|
       format.html { redirect_to_repository_settings(@project, anchor: params[:update_section]) }

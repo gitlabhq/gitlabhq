@@ -67,9 +67,17 @@
 .timeline-entry:not(:last-child) {
   .timeline-event-border {
     padding-bottom: $gl-spacing-scale-3;
-    border-color: $gray-50;
-    border-width: $gl-border-size-1;
-    border-bottom-style: solid;
+
+    &::after {
+      content: '';
+      position: absolute;
+      @include gl-border-gray-50;
+      @include gl-border-1;
+      @include gl-border-b-solid;
+      // Border spans the whole container minus icon width and grid gap
+      width: calc(100% - $gl-spacing-scale-8 - $gl-spacing-scale-5);
+      bottom: $gl-spacing-scale-3;
+    }
   }
 }
 

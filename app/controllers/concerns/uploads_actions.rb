@@ -140,9 +140,7 @@ module UploadsActions
   end
 
   def bypass_auth_checks_on_uploads?
-    if target_project && !target_project.public? && target_project.enforce_auth_checks_on_uploads?
-      return false
-    end
+    return false if target_project && !target_project.public? && target_project.enforce_auth_checks_on_uploads?
 
     action_name == 'show' && embeddable?
   end

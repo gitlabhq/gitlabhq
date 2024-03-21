@@ -20,9 +20,7 @@ module WithPerformanceBar
   end
 
   def cookie_or_default_value
-    if cookies[:perf_bar_enabled].blank? && Rails.env.development?
-      cookies[:perf_bar_enabled] = 'true'
-    end
+    cookies[:perf_bar_enabled] = 'true' if cookies[:perf_bar_enabled].blank? && Rails.env.development?
 
     cookie_enabled = cookies[:perf_bar_enabled] == 'true'
     cookie_enabled && Gitlab::PerformanceBar.allowed_for_user?(current_user)

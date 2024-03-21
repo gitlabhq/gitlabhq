@@ -32,9 +32,7 @@ class Projects::ReleasesController < Projects::ApplicationController
   end
 
   def latest_permalink
-    unless @latest_tag.present?
-      return render_404
-    end
+    return render_404 unless @latest_tag.present?
 
     query_parameters_except_order_by = request.query_parameters.except(:order_by)
 

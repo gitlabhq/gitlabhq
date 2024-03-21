@@ -270,9 +270,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_invite_params
-    if resource.email.blank? && params[:invite_email].present?
-      resource.email = invite_email
-    end
+    resource.email = invite_email if resource.email.blank? && params[:invite_email].present?
   end
 
   def invite_email

@@ -57,9 +57,7 @@ module Users
     end
 
     def terms
-      unless @term = Gitlab::CurrentSettings.current_application_settings.latest_terms
-        redirect_to redirect_path
-      end
+      redirect_to redirect_path unless @term = Gitlab::CurrentSettings.current_application_settings.latest_terms
     end
 
     def redirect_path

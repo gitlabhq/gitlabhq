@@ -48,9 +48,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def status
-    unless client.valid?
-      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id])
-    end
+    return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]) unless client.valid?
 
     super
   end

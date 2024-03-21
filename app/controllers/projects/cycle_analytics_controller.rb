@@ -21,8 +21,13 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
   urgency :low
 
   before_action do
-    push_licensed_feature(:cycle_analytics_for_groups) if project.licensed_feature_available?(:cycle_analytics_for_groups)
-    push_licensed_feature(:group_level_analytics_dashboard) if project.licensed_feature_available?(:group_level_analytics_dashboard)
+    if project.licensed_feature_available?(:cycle_analytics_for_groups)
+      push_licensed_feature(:cycle_analytics_for_groups)
+    end
+
+    if project.licensed_feature_available?(:group_level_analytics_dashboard)
+      push_licensed_feature(:group_level_analytics_dashboard)
+    end
 
     if project.licensed_feature_available?(:cycle_analytics_for_projects)
       push_licensed_feature(:cycle_analytics_for_projects)

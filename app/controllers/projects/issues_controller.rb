@@ -158,9 +158,7 @@ class Projects::IssuesController < Projects::ApplicationController
     result = service.execute
 
     # Only irrecoverable errors such as unauthorized user won't contain an issue in the response
-    if result.error? && result[:issue].blank?
-      render_by_create_result_error(result) && return
-    end
+    render_by_create_result_error(result) && return if result.error? && result[:issue].blank?
 
     @issue = result[:issue]
 
@@ -364,9 +362,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def store_uri
-    if request.get? && request.format.html?
-      store_location_for :user, request.fullpath
-    end
+    store_location_for :user, request.fullpath if request.get? && request.format.html?
   end
 
   def serializer
