@@ -918,6 +918,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
   end
 
+  def work_items_rolledup_dates_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
+  end
+
   def supports_lock_on_merge?
     feature_flag_enabled_for_self_or_ancestor?(:enforce_locked_labels_on_merge, type: :ops)
   end

@@ -42,9 +42,8 @@ const {
   WEBPACK_OUTPUT_PATH,
   WEBPACK_PUBLIC_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
-  SOURCEGRAPH_OUTPUT_PATH,
-  GITLAB_WEB_IDE_OUTPUT_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
+  copyFilesPatterns,
 } = require('./webpack.constants');
 
 const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_compiler');
@@ -88,9 +87,6 @@ if (WEBPACK_REPORT) {
   NO_COMPRESSION = true;
   NO_HASHED_CHUNKS = true;
 }
-
-const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
-const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
 
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
@@ -711,34 +707,7 @@ module.exports = {
       }),
 
     new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/cmaps/'),
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js'),
-          to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/'),
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
-          to: SOURCEGRAPH_OUTPUT_PATH,
-          globOptions: {
-            ignore: ['package.json'],
-          },
-        },
-        {
-          from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
-          to: GITLAB_WEB_IDE_OUTPUT_PATH,
-        },
-        {
-          from: path.join(
-            ROOT_PATH,
-            'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
-          ),
-          to: WEBPACK_OUTPUT_PATH,
-        },
-      ],
+      patterns: copyFilesPatterns,
     }),
 
     // compression can require a lot of compute time and is disabled in CI

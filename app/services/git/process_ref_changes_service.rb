@@ -9,6 +9,7 @@ module Git
 
       process_changes_by_action(:branch, changes.branch_changes)
       process_changes_by_action(:tag, changes.tag_changes)
+      warn_if_over_process_limit(changes.branch_changes + changes.tag_changes)
 
       perform_housekeeping
     end
@@ -63,7 +64,46 @@ module Git
     end
 
     def under_process_limit?(change)
-      change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project)
+      change[:index] < process_limit || Feature.enabled?(:git_push_create_all_pipelines, project)
+    end
+
+    def process_limit
+      PIPELINE_PROCESS_LIMIT
+    end
+
+    def warn_if_over_process_limit(changes)
+      return unless process_limit > 0
+      return if changes.length <= process_limit
+
+      # We don't know for sure whether the project has CI enabled or CI rules
+      # that might excluded pipelines from being created.
+      omitted_refs = possible_omitted_pipeline_refs(changes)
+
+      return unless omitted_refs.present?
+
+      # This notification only lets the admin know that we might have skipped some refs.
+      Gitlab::AppJsonLogger.info(
+        message: "Some pipelines may not have been created because ref count exceeded limit",
+        ref_limit: process_limit,
+        total_ref_count: changes.length,
+        possible_omitted_refs: omitted_refs,
+        possible_omitted_ref_count: omitted_refs.length,
+        **Gitlab::ApplicationContext.current
+      )
+    end
+
+    def possible_omitted_pipeline_refs(changes)
+      # Pipelines can only be created on pushed for branch creation or updates
+      omitted_changes = changes.select do |change|
+        change[:index] >= process_limit &&
+          change_action(change) != :removed
+      end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- not an ActiveRecord model
+      # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- not an ActiveRecord model
+      omitted_changes.pluck(:ref).sort
+      # rubocop:enable CodeReuse/ActiveRecord
+      # rubocop:enable Database/AvoidUsingPluckWithoutLimit
     end
 
     def create_bulk_push_event(ref_type, action, changes)

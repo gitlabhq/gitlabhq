@@ -104,8 +104,8 @@ To add a new feature bound to a scope:
       services:
         new_feature_scope:
           service_start_time: 2024-02-15 00:00:00 UTC
-            min_gitlab_version: '16.8'
-            bundled_with: 'duo_pro'
+          min_gitlab_version: '16.8'
+          bundled_with: 'duo_pro'
     ```
 
 1. **Optional:** If the backend service the token is used for requires additional claims to be embedded in the

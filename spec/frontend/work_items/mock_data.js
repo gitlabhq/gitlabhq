@@ -635,6 +635,7 @@ export const workItemResponseFactory = ({
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
+  rolledupDatesWidgetPresent = false,
   weightWidgetPresent = true,
   timeTrackingWidgetPresent = true,
   participantsWidgetPresent = true,
@@ -736,6 +737,18 @@ export const workItemResponseFactory = ({
               type: 'START_AND_DUE_DATE',
               dueDate: '2022-12-31',
               startDate: '2022-01-01',
+            }
+          : { type: 'MOCK TYPE' },
+        rolledupDatesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetRolledupDates',
+              type: 'ROLLEDUP_DATES',
+              dueDate: null,
+              dueDateFixed: null,
+              dueDateIsFixed: false,
+              startDate: null,
+              startDateFixed: null,
+              startDateIsFixed: false,
             }
           : { type: 'MOCK TYPE' },
         weightWidgetPresent

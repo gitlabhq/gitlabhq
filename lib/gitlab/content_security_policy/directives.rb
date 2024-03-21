@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def self.script_src
-        "'strict-dynamic' 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net"
+        "'strict-dynamic' 'self' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net"
       end
 
       def self.style_src

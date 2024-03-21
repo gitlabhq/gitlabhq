@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_access do
   subject { described_class.new(user, resource, params).execute }
 
+  let_it_be(:organization) { create(:organization) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:group) { create(:group, :private) }
+  let_it_be(:project) { create(:project, :private, organization: organization) }
+  let_it_be(:group) { create(:group, :private, organization: organization) }
   let_it_be(:params) { {} }
   let_it_be(:max_pat_access_token_lifetime) do
     PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date.freeze
@@ -19,7 +20,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
   describe '#execute' do
     shared_examples 'token creation fails' do
-      let(:resource) { create(:project) }
+      let_it_be(:resource) { create(:project, organization: organization) }
 
       it 'does not add the project bot as a member' do
         expect { subject }.not_to change { resource.members.count }
@@ -47,6 +48,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
 
         expect(access_token.user.reload.user_type).to eq("project_bot")
         expect(access_token.user.created_by_id).to eq(user.id)
+        expect(access_token.user.namespace.organization.id).to eq(resource.organization.id)
       end
 
       context 'email confirmation status' do
@@ -361,6 +363,21 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
             expect(resource.members.owners.map(&:user_id)).to include(bot_user.id)
           end
         end
+      end
+    end
+
+    context 'when resource organization is not set', :enable_admin_mode do
+      let_it_be(:resource) { create(:project, :private, organization: nil) }
+      let_it_be(:default_organization) { Organizations::Organization.default_organization }
+      let(:user) { create(:admin) }
+
+      it 'uses database default' do
+        response = subject
+
+        access_token = response.payload[:access_token]
+        expect(access_token.user.namespace.organization).to eq(
+          default_organization
+        )
       end
     end
   end

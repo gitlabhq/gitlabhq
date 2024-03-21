@@ -12,8 +12,10 @@ import {
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_TIME_TRACKING,
+  WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 import WorkItemAssigneesInline from './work_item_assignees_inline.vue';
 import WorkItemAssigneesWithEdit from './work_item_assignees_with_edit.vue';
@@ -61,6 +63,8 @@ export default {
       import('ee_component/work_items/components/work_item_color_inline.vue'),
     WorkItemColorWithEdit: () =>
       import('ee_component/work_items/components/work_item_color_with_edit.vue'),
+    WorkItemRolledupDates: () =>
+      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -92,6 +96,9 @@ export default {
     workItemDueDate() {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
+    workItemRolledupDates() {
+      return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
+    },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
@@ -112,6 +119,11 @@ export default {
     },
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
+    },
+    showRolledupDates() {
+      return (
+        this.glFeatures.workItemsRolledupDates && this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      );
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
@@ -211,6 +223,20 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <template v-if="workItemRolledupDates && showRolledupDates">
+      <work-item-rolledup-dates
+        :can-update="canUpdate"
+        :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
+        :due-date-fixed="workItemRolledupDates.dueDateFixed"
+        :due-date-inherited="workItemRolledupDates.dueDate"
+        :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
+        :start-date-fixed="workItemRolledupDates.startDateFixed"
+        :start-date-inherited="workItemRolledupDates.startDate"
+        :work-item-type="workItemType"
+        :work-item="workItem"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemMilestone">
       <work-item-milestone-with-edit
         v-if="workItemsBetaFeaturesEnabled"
@@ -257,7 +283,7 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <template v-if="workItemDueDate">
+    <template v-if="workItemDueDate && !showRolledupDates">
       <work-item-due-date-with-edit
         v-if="workItemsBetaFeaturesEnabled"
         :can-update="canUpdate"

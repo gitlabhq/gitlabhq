@@ -4,4 +4,5 @@ schema:
 documents:
   - ./app/assets/javascripts/**/*.graphql
   - ./ee/app/assets/javascripts/**/*.graphql
+  - ./jh/app/assets/javascripts/**/*.graphql
   - ./app/graphql/queries/**/*.graphql

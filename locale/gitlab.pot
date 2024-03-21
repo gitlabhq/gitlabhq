@@ -57339,10 +57339,16 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
+msgid "WorkItem|Fixed"
+msgstr ""
+
 msgid "WorkItem|History only"
 msgstr ""
 
 msgid "WorkItem|Incident"
+msgstr ""
+
+msgid "WorkItem|Inherited"
 msgstr ""
 
 msgid "WorkItem|Issue"
