@@ -505,6 +505,9 @@ RSpec.shared_examples 'work items description' do
 
           expect(page).to have_text(expected_warning)
 
+          page.find('summary', text: 'View current version').click
+          expect(find_by_testid('conflicted-description').value).to eq('oh no!')
+
           click_button s_('WorkItem|Save and overwrite')
 
           expect(page.find('[data-testid="work-item-description"]')).to have_text("oh yeah!")

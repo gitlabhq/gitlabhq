@@ -138,8 +138,8 @@ export default {
 <template>
   <div
     :class="{
-      'block todo': sidebarCollapsed,
-      'gl-ml-auto': !sidebarCollapsed,
+      block: sidebarCollapsed,
+      'gl-display-inline-flex gl-flex-basis-full': !sidebarCollapsed,
     }"
   >
     <todo

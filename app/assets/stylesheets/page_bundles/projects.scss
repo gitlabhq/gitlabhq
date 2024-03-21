@@ -392,10 +392,6 @@
       margin-left: $gl-spacing-scale-3;
       margin-right: 0;
     }
-
-    .user-access-role {
-      line-height: $gl-line-height-14;
-    }
   }
 
   @include media-breakpoint-down(md) {
@@ -476,7 +472,7 @@
   .form-control {
     min-width: 100px;
   }
-  
+
   &.form-group {
     @include media-breakpoint-up(sm) {
       margin-bottom: 0;

@@ -165,10 +165,26 @@ pull-image:
     - docker pull $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/app:v0.1.0
 ```
 
-### Copy an image from the GitLab Container Registry with Docker
+#### Copy an image by using a CI/CD component
 
-The following example shows how to replicate an image from the GitLab Container Registry to the Google Artifact Registry.
-To do this, pull the image from GitLab, re-tag it, and then push to the Google Artifact Registry.
+Google provides the [`upload-artifact-registry`](https://gitlab.com/explore/catalog/google-gitlab-components/artifact-registry) CI/CD component, which you can use to copy an image from the GitLab container registry to Artifact Registry.
+
+To use the `upload-artifact-registry` component, add the following to your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - component: gitlab.com/google-gitlab-components/artifact-registry/upload-artifact-registry@<VERSION>
+    inputs:
+      stage: deploy
+      source: $CI_REGISTRY_IMAGE:v0.1.0
+      target: $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/app:v0.1.0
+```
+
+For details, see [the component documentation](https://gitlab.com/explore/catalog/google-gitlab-components/artifact-registry).
+
+Using the `upload-artifact-registry` component simplifies copying images to Artifact Registry and is the intended method for this integration. If you want to use Docker or Crane, see the following examples.
+
+#### Copy an image by using Docker
 
 In the following example, the `gcloud` CLI is used to set up the Docker authentication, as an alternative to the [standalone Docker credential helper](https://cloud.google.com/artifact-registry/docs/docker/authentication#standalone-helper).
 
@@ -191,7 +207,7 @@ copy-image:
     - docker push $TARGET_IMAGE
 ```
 
-### Copy an image from the GitLab Container Registry with crane
+#### Copy an image by using Crane
 
 ```yaml
 copy-image:

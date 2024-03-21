@@ -1241,6 +1241,33 @@ set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:20`.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Hosted Runners on Linux operating system upgrade
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.10</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/60).
+</div>
+
+With GitLab 17.0 we're upgrading the container-optimized operating system ([COS](https://cloud.google.com/container-optimized-os/docs))
+of the ephemeral VMs used to execute jobs for [Hosted Runners on Linux](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html).
+The COS upgrade includes a Docker Engine upgrade from Version 19.03.15 to Version 23.0.5, which introduced
+a known compatibility issue.
+
+GitLab CI/CD jobs [using Docker-in-Docker-based jobs](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker)
+with a Docker-in-Docker service version prior to 20.10 and GitLab CI/CD jobs [using Kaniko to build container images](https://docs.gitlab.com/ee/ci/docker/using_kaniko.html)
+with a Kaniko service version older than `v1.9.0` will start failing.
+
+To fix these issues, an update of service version in `.gitlab-ci.yml` is required.
+
+Both issues, including a detailed explanation of how they affect jobs and how to fix
+the issue, are described
+[in the announcement blog post](https://about.gitlab.com/blog/2023/10/04/updating-the-os-version-of-saas-runners-on-linux/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Internal container registry API tag deletion endpoint
 
 <div class="deprecation-notes">

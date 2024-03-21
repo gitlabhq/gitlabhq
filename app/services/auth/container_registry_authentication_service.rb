@@ -120,8 +120,11 @@ module Auth
         end
       end
 
-      # Return the project path (lowercase) as metadata
-      { project_path: project&.full_path&.downcase }
+      {
+        project_path: project&.full_path&.downcase,
+        project_id: project&.id,
+        root_namespace_id: project&.root_ancestor&.id
+      }
     end
 
     private

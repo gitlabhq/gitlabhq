@@ -1,4 +1,4 @@
-import { GlAlert, GlSkeletonLoader, GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';
+import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
@@ -72,7 +73,7 @@ describe('WorkItemDetail component', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
-  const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
+  const findWorkItemLoading = () => wrapper.findComponent(WorkItemLoading);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
@@ -181,7 +182,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('renders skeleton loader', () => {
-      expect(findSkeleton().exists()).toBe(true);
+      expect(findWorkItemLoading().exists()).toBe(true);
       expect(findWorkItemTitle().exists()).toBe(false);
     });
   });
@@ -193,7 +194,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('does not render skeleton', () => {
-      expect(findSkeleton().exists()).toBe(false);
+      expect(findWorkItemLoading().exists()).toBe(false);
       expect(findWorkItemTitle().exists()).toBe(true);
     });
 

@@ -181,6 +181,7 @@ class GfmAutoComplete {
       skipSpecialCharacterTest: true,
       skipMarkdownCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       displayTpl(value) {
         const cssClasses = [];
 
@@ -297,6 +298,7 @@ class GfmAutoComplete {
       at: '/submit_review ',
       alias: 'submit_review',
       data: Object.keys(REVIEW_STATES),
+      maxLen: 100,
       displayTpl({ name }) {
         const reviewState = REVIEW_STATES[name];
 
@@ -315,6 +317,7 @@ class GfmAutoComplete {
       insertTpl: GfmAutoComplete.Emoji.insertTemplateFunction,
       skipSpecialCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
@@ -373,6 +376,7 @@ class GfmAutoComplete {
     $input.atwho({
       at: '@',
       alias: USERS_ALIAS,
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         const { avatarTag, username, title, icon, availability } = value;
@@ -478,6 +482,7 @@ class GfmAutoComplete {
       at: '#',
       alias: ISSUES_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -515,6 +520,7 @@ class GfmAutoComplete {
       searchKey: 'search',
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -570,6 +576,7 @@ class GfmAutoComplete {
       at: '!',
       alias: MERGEREQUESTS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -616,6 +623,7 @@ class GfmAutoComplete {
       alias: LABELS_ALIAS,
       searchKey: 'search',
       data: GfmAutoComplete.defaultLoadingData,
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Labels.templateFunction(value.color, value.title);
         if (GfmAutoComplete.isLoading(value)) {
@@ -703,6 +711,7 @@ class GfmAutoComplete {
       at: '$',
       alias: SNIPPETS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.title != null) {
@@ -741,6 +750,7 @@ class GfmAutoComplete {
       suffix: ']',
       alias: CONTACTS_ALIAS,
       searchKey: 'search',
+      maxLen: 100,
       displayTpl(value) {
         let tmpl = GfmAutoComplete.Loading.template;
         if (value.email != null) {

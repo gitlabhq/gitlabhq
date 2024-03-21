@@ -9,6 +9,7 @@ RSpec.shared_examples 'autocompletes items' do
       create(:milestone, project: project, title: 'My Cool Milestone')
 
       project.add_maintainer(create(:user, name: 'JohnDoe123'))
+      project.add_maintainer(create(:user, name: 'ReallyLongUsername1234567890'))
     else # group wikis
       project = create(:project, group: group)
 
@@ -18,6 +19,7 @@ RSpec.shared_examples 'autocompletes items' do
       create(:milestone, group: group, title: 'My Cool Milestone')
 
       project.add_maintainer(create(:user, name: 'JohnDoe123'))
+      project.add_maintainer(create(:user, name: 'ReallyLongUsername1234567890'))
     end
   end
 
@@ -39,5 +41,11 @@ RSpec.shared_examples 'autocompletes items' do
 
     fill_in :wiki_content, with: ':smil'
     expect(page).to have_text 'smile_cat'
+  end
+
+  it 'autocompletes items with long names' do
+    fill_in :wiki_content, with: "@ReallyLongUsername1234567"
+
+    expect(page).to have_text 'ReallyLongUsername1234567890'
   end
 end

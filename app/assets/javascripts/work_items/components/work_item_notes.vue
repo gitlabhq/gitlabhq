@@ -349,14 +349,14 @@ export default {
     />
     <div v-if="initialLoading" class="gl-mt-5">
       <gl-skeleton-loader
-        v-for="index in $options.loader.repeat"
-        :key="index"
-        :width="$options.loader.width"
+        v-for="i in $options.loader.repeat"
+        :key="i"
+        :width="1000"
         :height="$options.loader.height"
         preserve-aspect-ratio="xMinYMax meet"
       >
         <circle cx="20" cy="20" r="16" />
-        <rect width="500" x="45" y="15" height="10" rx="4" />
+        <rect width="950" x="45" y="15" height="10" rx="4" />
       </gl-skeleton-loader>
     </div>
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
