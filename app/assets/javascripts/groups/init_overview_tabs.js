@@ -7,14 +7,14 @@ import GroupFolder from './components/group_folder.vue';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
-  ACTIVE_TAB_ARCHIVED,
+  ACTIVE_TAB_INACTIVE,
 } from './constants';
 import OverviewTabs from './components/overview_tabs.vue';
 
 export const createRouter = () => {
   const routes = [
     { name: ACTIVE_TAB_SHARED, path: '/groups/:group*/-/shared' },
-    { name: ACTIVE_TAB_ARCHIVED, path: '/groups/:group*/-/archived' },
+    { name: ACTIVE_TAB_INACTIVE, path: '/groups/:group*/-/inactive' },
     { name: ACTIVE_TAB_SUBGROUPS_AND_PROJECTS, path: '/:group*' },
   ];
 
@@ -53,7 +53,7 @@ export const initGroupOverviewTabs = () => {
     currentGroupVisibility,
     subgroupsAndProjectsEndpoint,
     sharedProjectsEndpoint,
-    archivedProjectsEndpoint,
+    inactiveProjectsEndpoint,
     initialSort,
   } = el.dataset;
 
@@ -75,7 +75,7 @@ export const initGroupOverviewTabs = () => {
       endpoints: {
         [ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]: subgroupsAndProjectsEndpoint,
         [ACTIVE_TAB_SHARED]: sharedProjectsEndpoint,
-        [ACTIVE_TAB_ARCHIVED]: archivedProjectsEndpoint,
+        [ACTIVE_TAB_INACTIVE]: inactiveProjectsEndpoint,
       },
       initialSort,
     },

@@ -135,7 +135,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         else
           expect(has_null_check_constraint).to eq(true),
             "Missing a not null constraint for #{sharding_key_columns.to_sentence} on `#{table_name}`. " \
-            "All sharding keys must have a NOT NULL check constraint"
+            "All sharding keys must have a NOT NULL check constraint. For more information on constraints for " \
+            "multiple columns, see https://docs.gitlab.com/ee/development/database/not_null_constraints.html#not-null-constraints-for-multiple-columns"
         end
       end
     end

@@ -47,7 +47,7 @@ export const mockConfig = {
   iid: '1',
   fullPath: 'test',
   allowMultiselect: true,
-  labelsListTitle: 'Assign labels',
+  labelsListTitle: 'Select labels',
   labelsCreateTitle: 'Create label',
   variant: 'sidebar',
   labelsSelectInProgress: false,

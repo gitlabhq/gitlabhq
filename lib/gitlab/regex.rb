@@ -24,7 +24,7 @@ module Gitlab
     end
 
     def oci_repository_path_regex_message
-      'must not start or end with a special character and must not contain consecutive special characters.'
+      "can only include non-accented letters, digits, '_', '-' and '.'. It must not start with '-', end in '.', '.git', or '.atom'."
     end
 
     def group_name_regex

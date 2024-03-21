@@ -480,7 +480,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           group_id: group.id,
           subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
-          archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
+          inactive_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
           current_group_visibility: group.visibility,
           initial_sort: initial_sort,
           show_schema_markup: 'true',
@@ -689,6 +689,20 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           expect(subject).to be_empty
         end
       end
+    end
+  end
+
+  describe '#show_prevent_inviting_groups_outside_hierarchy_setting?' do
+    let_it_be(:group) { create(:group) }
+
+    it 'returns true for a root group' do
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(group)).to eq(true)
+    end
+
+    it 'returns false for a subgroup' do
+      subgroup = create(:group, parent: group)
+
+      expect(helper.show_prevent_inviting_groups_outside_hierarchy_setting?(subgroup)).to eq(false)
     end
   end
 end

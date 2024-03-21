@@ -1914,7 +1914,7 @@ and then run Docker by hand. As root, run:
 
 ```shell
 export HTTP_PROXY="http://localhost:9000"
-export HTTPS_PROXY="https://localhost:9000"
+export HTTPS_PROXY="http://localhost:9000"
 docker daemon --debug
 ```
 

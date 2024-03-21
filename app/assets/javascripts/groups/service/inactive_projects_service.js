@@ -1,6 +1,6 @@
 import Api from '~/api';
 
-export default class ArchivedProjectsService {
+export default class InactiveProjectsService {
   constructor(groupId, initialSort) {
     this.groupId = groupId;
     this.initialSort = initialSort;

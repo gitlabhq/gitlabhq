@@ -163,8 +163,11 @@ and for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-
 not available for Linux, we are unfortunately unable to use those in GitLab CI/CD).
 
 GitLab CI/CD makes it a breeze to link these images to our `confidence-check` jobs using the
-`service` property, which makes the Selenium server available under a hostname based on the image
-name. Our job configuration then looks something like this:
+`services` property, which makes the Selenium server available under a hostname based on the image name.
+
+Hostnames with underscores are not RFC valid and may cause problems in third-party applications. For more information, see [Accessing the services](../../services/index.md#accessing-the-services).
+
+For example, our job configuration for Firefox looks something like this:
 
 ```yaml
 e2e:firefox:

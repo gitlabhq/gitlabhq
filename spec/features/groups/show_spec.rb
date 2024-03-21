@@ -353,7 +353,7 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
     it 'does not include structured markup in archived projects tab', :aggregate_failures, :js do
       project.update!(archived: true)
 
-      visit group_archived_path(group)
+      visit group_inactive_path(group)
       wait_for_all_requests
 
       expect(page).to have_selector('li.group-row')

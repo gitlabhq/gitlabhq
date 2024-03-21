@@ -139,14 +139,13 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
           expect(response).to be_error
           expect(response.http_status).to eq(:bad_request)
           expect(response.message).to eq(
-            'Project namespace path must not start or end with a special character and must not contain consecutive ' \
-            'special characters.'
+            "Project namespace path can only include non-accented letters, digits, '_', '-' and '.'. It must not start with '-', end in '.', '.git', or '.atom'."
           )
           expect(response.payload).to eq(
             other_errors: [
               %(Project namespace path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'),
               %(Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'),
-              %(Path must not start or end with a special character and must not contain consecutive special characters.)
+              %(Path can only include non-accented letters, digits, '_', '-' and '.'. It must not start with '-', end in '.', '.git', or '.atom'.)
             ])
         end
       end

@@ -1,15 +1,15 @@
 import projects from 'test_fixtures/api/groups/projects/get.json';
-import ArchivedProjectsService from '~/groups/service/archived_projects_service';
+import InactiveProjectsService from '~/groups/service/inactive_projects_service';
 import Api from '~/api';
 
 jest.mock('~/api');
 
-describe('ArchivedProjectsService', () => {
+describe('InactiveProjectsService', () => {
   const groupId = 1;
   let service;
 
   beforeEach(() => {
-    service = new ArchivedProjectsService(groupId, 'name_asc');
+    service = new InactiveProjectsService(groupId, 'name_asc');
   });
 
   describe('getGroups', () => {

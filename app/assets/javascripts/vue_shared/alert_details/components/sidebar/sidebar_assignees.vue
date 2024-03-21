@@ -243,7 +243,7 @@ export default {
         @hide="hideDropdown"
       >
         <p class="gl-dropdown-header-top">
-          {{ __('Assign To') }}
+          {{ __('Select assignees') }}
         </p>
         <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />
         <div class="dropdown-content dropdown-body">

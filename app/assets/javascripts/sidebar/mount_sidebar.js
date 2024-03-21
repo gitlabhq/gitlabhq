@@ -778,7 +778,7 @@ export function mountAssigneesDropdown() {
       return h(UserSelect, {
         props: {
           text: component.selectedUserName || __('Select assignee'),
-          headerText: __('Assign to'),
+          headerText: __('Select assignees'),
           fullPath,
           currentUser,
           value: component.value,

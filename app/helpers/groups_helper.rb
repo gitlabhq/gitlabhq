@@ -29,6 +29,10 @@ module GroupsHelper
     false
   end
 
+  def show_prevent_inviting_groups_outside_hierarchy_setting?(group)
+    group.root?
+  end
+
   def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
@@ -179,7 +183,7 @@ module GroupsHelper
       group_id: group.id,
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      inactive_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
       current_group_visibility: group.visibility,
       initial_sort: project_list_sort_by,
       show_schema_markup: 'true',

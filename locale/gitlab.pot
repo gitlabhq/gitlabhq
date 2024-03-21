@@ -6618,9 +6618,6 @@ msgstr ""
 msgid "Archived in this version"
 msgstr ""
 
-msgid "Archived projects"
-msgstr ""
-
 msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -6924,16 +6921,7 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
-msgid "Assign Iteration"
-msgstr ""
-
-msgid "Assign To"
-msgstr ""
-
 msgid "Assign custom color like #FF0000"
-msgstr ""
-
-msgid "Assign labels"
 msgstr ""
 
 msgid "Assign reviewer"
@@ -6946,9 +6934,6 @@ msgid "Assign severity"
 msgstr ""
 
 msgid "Assign some issues to this milestone."
-msgstr ""
-
-msgid "Assign to"
 msgstr ""
 
 msgid "Assign to commenting user"
@@ -7471,21 +7456,6 @@ msgid "AutoRemediation| 1 Merge Request"
 msgstr ""
 
 msgid "AutoRemediation|!%{mergeRequestIid}"
-msgstr ""
-
-msgid "AutoRemediation|!%{mergeRequestIid}: Auto-fix"
-msgstr ""
-
-msgid "AutoRemediation|%{mrsCount} ready for review"
-msgstr ""
-
-msgid "AutoRemediation|Auto-fix solutions"
-msgstr ""
-
-msgid "AutoRemediation|If you're using dependency and/or container scanning, and auto-fix is enabled, auto-fix automatically creates merge requests with fixes to vulnerabilities."
-msgstr ""
-
-msgid "AutoRemediation|Introducing GitLab auto-fix"
 msgstr ""
 
 msgid "AutoRollback|Automatic rollbacks start when a critical alert is triggered. If the last successful deployment fails to roll back automatically, it can still be done manually."
@@ -18643,9 +18613,6 @@ msgstr ""
 msgid "DropdownWidget|An error occurred while fetching the assigned %{issuableAttribute} of the selected %{issuableType}."
 msgstr ""
 
-msgid "DropdownWidget|Assign %{issuableAttribute}"
-msgstr ""
-
 msgid "DropdownWidget|Cancel"
 msgstr ""
 
@@ -18665,6 +18632,9 @@ msgid "DropdownWidget|No %{issuableAttribute} found"
 msgstr ""
 
 msgid "DropdownWidget|No open %{issuableAttribute} found"
+msgstr ""
+
+msgid "DropdownWidget|Select %{issuableAttribute}"
 msgstr ""
 
 msgid "DropdownWidget|You do not have permission to view the currently assigned %{issuableAttribute} and will not be able to choose it again if you reassign it."
@@ -24730,10 +24700,10 @@ msgstr ""
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
 msgstr ""
 
-msgid "GroupsEmptyState|No archived projects."
+msgid "GroupsEmptyState|No groups found"
 msgstr ""
 
-msgid "GroupsEmptyState|No groups found"
+msgid "GroupsEmptyState|No inactive projects."
 msgstr ""
 
 msgid "GroupsEmptyState|No shared projects."
@@ -46259,6 +46229,9 @@ msgstr ""
 msgid "SecurityReports|Issues created from a vulnerability cannot be removed."
 msgstr ""
 
+msgid "SecurityReports|Jira Issue Created"
+msgstr ""
+
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
@@ -46526,6 +46499,9 @@ msgid "Select"
 msgstr ""
 
 msgid "Select Git revision"
+msgstr ""
+
+msgid "Select Iteration"
 msgstr ""
 
 msgid "Select Profile"
@@ -47664,9 +47640,6 @@ msgstr ""
 msgid "Sidebar|%{name}: %{value}"
 msgstr ""
 
-msgid "Sidebar|Assign health status"
-msgstr ""
-
 msgid "Sidebar|Health status"
 msgstr ""
 
@@ -47674,6 +47647,9 @@ msgid "Sidebar|No status"
 msgstr ""
 
 msgid "Sidebar|None"
+msgstr ""
+
+msgid "Sidebar|Select health status"
 msgstr ""
 
 msgid "Sidekiq job compression threshold (bytes)"

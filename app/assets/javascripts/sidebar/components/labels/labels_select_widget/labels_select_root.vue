@@ -83,7 +83,7 @@ export default {
     labelsListTitle: {
       type: String,
       required: false,
-      default: __('Assign labels'),
+      default: __('Select labels'),
     },
     labelsCreateTitle: {
       type: String,

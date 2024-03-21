@@ -87,7 +87,7 @@ module QA
         end
       end
 
-      def head(url)
+      def head(url, args = {})
         request_args = {
           method: :head,
           url: url,

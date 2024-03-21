@@ -54,7 +54,7 @@ export function dropdowni18nText(issuableAttribute, issuableType) {
     noAttribute: sprintf(s__('DropdownWidget|No %{issuableAttribute}'), {
       issuableAttribute,
     }),
-    assignAttribute: sprintf(s__('DropdownWidget|Assign %{issuableAttribute}'), {
+    assignAttribute: sprintf(s__('DropdownWidget|Select %{issuableAttribute}'), {
       issuableAttribute,
     }),
     noAttributesFound: sprintf(s__('DropdownWidget|No %{issuableAttribute} found'), {

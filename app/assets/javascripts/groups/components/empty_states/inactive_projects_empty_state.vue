@@ -6,7 +6,7 @@ import { s__ } from '~/locale';
 export default {
   components: { GlEmptyState },
   i18n: {
-    title: s__('GroupsEmptyState|No archived projects.'),
+    title: s__('GroupsEmptyState|No inactive projects.'),
   },
   inject: ['emptyProjectsIllustration'],
 };

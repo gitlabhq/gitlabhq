@@ -21,9 +21,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :download_export, as: :download_export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :unfoldered_environment_names, as: :unfoldered_environment_names_group # rubocop:disable Cop/PutGroupRoutesUnderScope
 
-      # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-foss/issues/49693
       get 'shared', action: :show, as: :group_shared # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get 'archived', action: :show, as: :group_archived # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'inactive', action: :show, as: :group_inactive # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'archived', to: redirect('groups/%{id}/-/inactive') # rubocop:disable Cop/PutGroupRoutesUnderScope
     end
 
     get '/', action: :show, as: :group_canonical

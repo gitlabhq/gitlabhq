@@ -16,7 +16,7 @@
       = hidden_field_tag "#{issuable_type}[assignee_ids][]", assignee.id, id: nil, data: assignee_sidebar_data(assignee, merge_request: @merge_request)
 
   - options = { toggle_class: 'js-user-search js-author-search',
-    title: _('Assign to'),
+    title: _('Select assignees'),
     filter: true,
     dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author',
     placeholder: _('Search users'),

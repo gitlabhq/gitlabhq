@@ -216,7 +216,7 @@ Active pipeline schedules of archived projects don't become read-only.
 Archived projects are:
 
 - Labeled with an `archived` badge on the project page.
-- Listed on the group page in the **Archived projects** tab.
+- Listed on the group page in the **Inactive** tab.
 - Hidden from project lists in **Your Work** and **Explore**.
 - Read-only.
 

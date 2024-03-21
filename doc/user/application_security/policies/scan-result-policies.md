@@ -409,8 +409,8 @@ You can refine a security policy's scope to:
 
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
-| `compliance_frameworks` | `object` |  `ids` | List of IDs of the compliance frameworks in scope of enforcement, in an `ids` array. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an `ids` array. |
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
 #### Example `policy.yml` with security policy scopes
 
@@ -438,14 +438,12 @@ approval_policy:
     - adalberto.dare
   policy_scope:
     compliance_frameworks:
-      ids:
-      - 2
-      - 11
+      - id: 2
+      - id: 11
     projects:
       including:
-        ids:
-        - 24
-        - 27
+        - id: 24
+        - id: 27
 ```
 
 ## Troubleshooting

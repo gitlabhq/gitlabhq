@@ -317,11 +317,10 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include("entities[0][destination_slug] must not start or " \
-                                                  "end with a special character and must not contain " \
-                                                  "consecutive special characters. It can only contain " \
-                                                  "alphanumeric characters, periods, underscores, and " \
-                                                  "dashes. For example, 'destination_namespace' not 'destination/namespace'")
+        expect(json_response['error']).to include("entities[0][destination_slug] can only include " \
+                                                  "non-accented letters, digits, '_', '-' and '.'. " \
+                                                  "It must not start with '-', end in '.', '.git', or '.atom'. " \
+                                                  "For example, 'destination_namespace' not 'destination/namespace'")
       end
     end
 

@@ -4,7 +4,7 @@
 
   %fieldset
     %h5= _('Permissions')
-    - if @group.root?
+    - if show_prevent_inviting_groups_outside_hierarchy_setting?(@group)
       .form-group.gl-mb-3
         = f.gitlab_ui_checkbox_component :prevent_sharing_groups_outside_hierarchy,
             s_('GroupSettings|Members cannot invite groups outside of %{group} and its subgroups').html_safe % { group: link_to_group(@group) },

@@ -150,7 +150,7 @@ export default {
   i18n: {
     label: __('Labels'),
     noLabels: __('None'),
-    labelsListTitle: __('Assign labels'),
+    labelsListTitle: __('Select labels'),
     searchError: __('An error occurred while searching for labels, please try again.'),
     edit: __('Edit'),
   },
