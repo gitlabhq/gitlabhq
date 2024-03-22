@@ -8713,7 +8713,6 @@
 - './spec/services/merge_requests/link_lfs_objects_service_spec.rb'
 - './spec/services/merge_requests/mark_reviewer_reviewed_service_spec.rb'
 - './spec/services/merge_requests/mergeability/check_base_service_spec.rb'
-- './spec/services/merge_requests/mergeability/check_broken_status_service_spec.rb'
 - './spec/services/merge_requests/mergeability/check_ci_status_service_spec.rb'
 - './spec/services/merge_requests/mergeability/check_discussions_status_service_spec.rb'
 - './spec/services/merge_requests/mergeability/check_draft_status_service_spec.rb'

@@ -6,7 +6,7 @@ RSpec.describe Mutations::Users::SetNamespaceCommitEmail, feature_category: :use
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }
-  let(:group) { create(:group) }
+  let(:group) { create(:group, :private) }
   let(:email) { create(:email, user: current_user) }
   let(:input) { {} }
   let(:namespace_id) { group.to_global_id }
@@ -71,5 +71,5 @@ RSpec.describe Mutations::Users::SetNamespaceCommitEmail, feature_category: :use
     end
   end
 
-  specify { expect(described_class).to require_graphql_authorizations(:read_namespace_via_membership) }
+  specify { expect(described_class).to require_graphql_authorizations(:read_namespace) }
 end

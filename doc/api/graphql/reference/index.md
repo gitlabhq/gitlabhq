@@ -31655,7 +31655,6 @@ Detailed representation of whether a GitLab merge request can be merged.
 | Value | Description |
 | ----- | ----------- |
 | <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request dependencies must be merged. |
-| <a id="detailedmergestatusbroken_status"></a>`BROKEN_STATUS` | Can not merge the source into the target branch, potential conflict. |
 | <a id="detailedmergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
 | <a id="detailedmergestatusci_must_pass"></a>`CI_MUST_PASS` | Pipeline must succeed before merging. |
 | <a id="detailedmergestatusci_still_running"></a>`CI_STILL_RUNNING` | Pipeline is still running. |
@@ -32354,7 +32353,6 @@ Representation of mergeability check identifier.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Checks whether the merge request is broken. |
 | <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Checks whether CI has passed. |
 | <a id="mergeabilitycheckidentifiercommits_status"></a>`COMMITS_STATUS` | Checks source branch exists and contains commits. |
 | <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Checks whether the merge request has a conflict. |

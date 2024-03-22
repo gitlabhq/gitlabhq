@@ -68,6 +68,10 @@
     }
   }
 
+  details[open] summary {
+    margin-bottom: $gl-padding;
+  }
+
   summary > * {
     display: inline-block;
     margin-bottom: 0;

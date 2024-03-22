@@ -60,7 +60,7 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
   end
 
   context 'when the user cannot access the namespace' do
-    let(:namespace_id) { create(:group).to_global_id }
+    let(:namespace_id) { create(:group, :private).to_global_id }
 
     it 'returns the top level error' do
       post_graphql_mutation(mutation, current_user: current_user)
@@ -69,6 +69,12 @@ RSpec.describe 'Setting namespace commit email', feature_category: :user_profile
       expect(graphql_errors.first).to match a_hash_including(
         'message' => resource_or_permission_error)
     end
+  end
+
+  context 'when the namespace is public' do
+    let(:namespace_id) { create(:group).to_global_id }
+
+    it_behaves_like 'success'
   end
 
   context 'when the service returns an error' do

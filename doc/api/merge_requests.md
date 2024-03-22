@@ -828,7 +828,6 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
 
 - The `detailed_merge_status` field can contain one of the following values related to the merge request:
   - `blocked_status`: Blocked by another merge request.
-  - `broken_status`: Can't merge into the target branch due to a potential conflict.
   - `checking`: Git is testing if a valid merge is possible.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `ci_must_pass`: A CI/CD pipeline must succeed before merge.

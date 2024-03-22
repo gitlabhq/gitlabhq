@@ -7,6 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Pipeline secret detection
 
+DETAILS:
 **Tier:** Free
 **Offering:** GitLab.com
 **Status:** Experimental

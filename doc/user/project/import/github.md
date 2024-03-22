@@ -76,6 +76,9 @@ If the above requirements are not met, the importer can't map the particular use
   repositories on GitHub Enterprise Server instances aren't imported.
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/418800), when importing projects that used
   [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled "unverified" if the commit was signed with GitHub's internal GPG key.
+- GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that
+  were uploaded to private repositories before 2023-05-09. If you encounter this problem, would like to help us resolve the problem, and are willing to provide a sample repository
+  for us, please add a comment to [issue 424046](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) and we'll contact you.
 
 ## Import your GitHub repository into GitLab
 

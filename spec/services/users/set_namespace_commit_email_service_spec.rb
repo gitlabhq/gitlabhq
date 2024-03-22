@@ -50,11 +50,17 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
     end
 
     context 'when target_user does not have permission to access the namespace' do
-      let(:namespace) { create(:group) }
+      let(:namespace) { create(:group, :private) }
 
       it 'returns error message' do
         expect(service.execute.message).to eq("Namespace doesn't exist or you don't have permission.")
       end
+    end
+
+    context 'when namespace is public' do
+      let(:namespace) { create(:group, :public) }
+
+      it_behaves_like 'success'
     end
 
     context 'when namespace is not provided' do
