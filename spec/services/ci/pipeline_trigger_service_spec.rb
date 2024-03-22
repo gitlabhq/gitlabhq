@@ -87,6 +87,7 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             expect(var.key).to eq('TRIGGER_PAYLOAD')
             expect(var.value).to eq('{"ref":"master","variables":null}')
             expect(var.variable_type).to eq('file')
+            expect(var.raw).to eq(true)
           end
 
           context 'when commit message has [ci skip]' do

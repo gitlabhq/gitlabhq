@@ -6,7 +6,6 @@ variables:
   ALLURE_JOB_NAME: $CI_PROJECT_NAME
   COLORIZED_LOGS: "true"
   FEATURE_FLAGS: ""
-  TEST_RUNNER_TAG: e2e
   QA_LOG_LEVEL: "info"
   QA_TESTS: ""
   # run all tests by default when package-and-test is included natively in other projects

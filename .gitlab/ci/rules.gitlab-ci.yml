@@ -167,9 +167,6 @@
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/'
 
-.if-renovate-fork: &if-renovate-fork
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-renovate-forks/'
-
 ####################
 # Changes patterns #
 ####################
@@ -950,8 +947,6 @@
 # It's better to fail early and avoid wasting resources running test jobs that would just fail anyway.
 .build-images:rules:build-gdk-image:
   rules:
-    - <<: *if-renovate-fork
-      changes: *gdk-component-patterns
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
@@ -1501,8 +1496,6 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-renovate-fork
-      changes: *gdk-component-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
@@ -1721,10 +1714,6 @@
       when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
-    - <<: *if-renovate-fork
-      changes: *gdk-component-patterns
-      variables:
-        TEST_RUNNER_TAG: saas-linux-xlarge-amd64
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 

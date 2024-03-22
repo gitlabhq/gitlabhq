@@ -27,6 +27,8 @@ export default {
     GlBadge,
     ListActions,
     DangerConfirmModal,
+    GroupListItemInactiveBadge: () =>
+      import('ee_component/vue_shared/components/groups_list/group_list_item_inactive_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -173,6 +175,7 @@ export default {
         class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-flex-shrink-0 gl-mt-3 gl-md-pl-0 gl-md-mt-0 gl-md-ml-3 gl-md-h-9"
         :class="statsPadding"
       >
+        <group-list-item-inactive-badge :group="group" />
         <div
           v-gl-tooltip="$options.i18n.subgroups"
           :aria-label="$options.i18n.subgroups"

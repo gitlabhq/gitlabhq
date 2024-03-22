@@ -15,7 +15,8 @@ Gitlab::Database::Partitioning.register_models(
     Users::ProjectVisit,
     Users::GroupVisit,
     Ci::Catalog::Resources::SyncEvent,
-    Ci::Catalog::Resources::Components::Usage
+    Ci::Catalog::Resources::Components::Usage,
+    Ci::BuildName
   ])
 
 if Gitlab.ee?

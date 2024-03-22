@@ -1,0 +1,10 @@
+---
+table_name: relation_import_trackers
+classes:
+- Projects::ImportExport::RelationImportTracker
+feature_categories:
+- importers
+description: Represents the status of a single relation import for a project
+introduced_by_url:
+milestone: '16.11'
+gitlab_schema: gitlab_main_cell

@@ -78,6 +78,7 @@ module ContainerExpirationPolicies
       # rubocop: disable CodeReuse/ActiveRecord
       # We need a lock to prevent two workers from picking up the same row
       next_one_requiring = ContainerRepository.requiring_cleanup
+                                              .where(id: next_ten_requiring_ids_from_replica)
                                               .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
                                               .limit(1)
                                               .lock('FOR UPDATE SKIP LOCKED')
@@ -89,6 +90,15 @@ module ContainerExpirationPolicies
                          .limit(1)
                          .lock('FOR UPDATE SKIP LOCKED')
                          .first
+    end
+
+    def next_ten_requiring_ids_from_replica
+      use_replica_if_available do
+        ContainerRepository.requiring_cleanup
+                           .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
+                           .limit(10)
+                           .ids
+      end
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
@@ -172,6 +182,10 @@ module ContainerExpirationPolicies
 
     def project
       container_repository.project
+    end
+
+    def use_replica_if_available(&blk)
+      ::Gitlab::Database::LoadBalancing::Session.current.use_replicas_for_read_queries(&blk)
     end
   end
 end

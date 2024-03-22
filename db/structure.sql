@@ -872,6 +872,16 @@ CREATE TABLE batched_background_migration_job_transition_logs (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE p_ci_build_names (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    name text NOT NULL,
+    search_vector tsvector GENERATED ALWAYS AS (to_tsvector('english'::regconfig, COALESCE(name, ''::text))) STORED,
+    CONSTRAINT check_1722c96346 CHECK ((char_length(name) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_builds (
     status character varying,
     finished_at timestamp without time zone,
@@ -14868,6 +14878,24 @@ CREATE SEQUENCE related_epic_links_id_seq
 
 ALTER SEQUENCE related_epic_links_id_seq OWNED BY related_epic_links.id;
 
+CREATE TABLE relation_import_trackers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    relation smallint NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE relation_import_trackers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE relation_import_trackers_id_seq OWNED BY relation_import_trackers.id;
+
 CREATE TABLE release_links (
     id bigint NOT NULL,
     release_id integer NOT NULL,
@@ -16122,6 +16150,7 @@ CREATE TABLE subscription_add_on_purchases (
     expires_on date NOT NULL,
     purchase_xid text NOT NULL,
     last_assigned_users_refreshed_at timestamp with time zone,
+    trial boolean DEFAULT false NOT NULL,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
 );
 
@@ -19452,6 +19481,8 @@ ALTER TABLE ONLY redirect_routes ALTER COLUMN id SET DEFAULT nextval('redirect_r
 
 ALTER TABLE ONLY related_epic_links ALTER COLUMN id SET DEFAULT nextval('related_epic_links_id_seq'::regclass);
 
+ALTER TABLE ONLY relation_import_trackers ALTER COLUMN id SET DEFAULT nextval('relation_import_trackers_id_seq'::regclass);
+
 ALTER TABLE ONLY release_links ALTER COLUMN id SET DEFAULT nextval('release_links_id_seq'::regclass);
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
@@ -21587,6 +21618,9 @@ ALTER TABLE ONLY p_catalog_resource_component_usages
 ALTER TABLE ONLY p_catalog_resource_sync_events
     ADD CONSTRAINT p_catalog_resource_sync_events_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_build_names
+    ADD CONSTRAINT p_ci_build_names_pkey PRIMARY KEY (build_id, partition_id);
+
 ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
     ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
 
@@ -21934,6 +21968,9 @@ ALTER TABLE ONLY redirect_routes
 
 ALTER TABLE ONLY related_epic_links
     ADD CONSTRAINT related_epic_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY relation_import_trackers
+    ADD CONSTRAINT relation_import_trackers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY release_links
     ADD CONSTRAINT release_links_pkey PRIMARY KEY (id);
@@ -26179,6 +26216,10 @@ CREATE INDEX index_p_catalog_resource_component_usages_on_project_id ON ONLY p_c
 
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
 
+CREATE INDEX index_p_ci_build_names_on_project_id_and_build_id ON ONLY p_ci_build_names USING btree (project_id, build_id);
+
+CREATE INDEX index_p_ci_build_names_on_search_vector ON ONLY p_ci_build_names USING gin (search_vector);
+
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
 CREATE UNIQUE INDEX index_p_ci_job_annotations_on_partition_id_job_id_name ON ONLY p_ci_job_annotations USING btree (partition_id, job_id, name);
@@ -26696,6 +26737,8 @@ CREATE INDEX index_related_epic_links_on_source_id ON related_epic_links USING b
 CREATE UNIQUE INDEX index_related_epic_links_on_source_id_and_target_id ON related_epic_links USING btree (source_id, target_id);
 
 CREATE INDEX index_related_epic_links_on_target_id ON related_epic_links USING btree (target_id);
+
+CREATE INDEX index_relation_import_trackers_on_project_id ON relation_import_trackers USING btree (project_id);
 
 CREATE UNIQUE INDEX index_release_links_on_release_id_and_name ON release_links USING btree (release_id, name);
 
@@ -32043,6 +32086,9 @@ ALTER TABLE ONLY packages_debian_project_component_files
 ALTER TABLE ONLY projects_sync_events
     ADD CONSTRAINT fk_rails_bbf0eef59f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ci_build_names
+    ADD CONSTRAINT fk_rails_bc221a297a FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT fk_rails_bc8972fa55 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -32153,6 +32199,9 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY relation_import_trackers
+    ADD CONSTRAINT fk_rails_ca9bd1ef8a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_cb4563dd6e FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;

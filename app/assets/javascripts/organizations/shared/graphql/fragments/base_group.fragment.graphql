@@ -1,0 +1,20 @@
+fragment BaseGroup on Group {
+  id
+  fullName
+  parent {
+    id
+  }
+  webUrl
+  descriptionHtml
+  avatarUrl
+  descendantGroupsCount
+  projectsCount
+  groupMembersCount
+  visibility
+  userPermissions {
+    removeGroup
+  }
+  maxAccessLevel {
+    integerValue
+  }
+}
