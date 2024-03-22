@@ -60,7 +60,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_job_artifacts.project_id',
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
-      'ci_builds_metadata.project_id'
+      'ci_builds_metadata.project_id',
+      'search_namespace_index_assignments.namespace_id_non_nullable'
     ]
   end
 

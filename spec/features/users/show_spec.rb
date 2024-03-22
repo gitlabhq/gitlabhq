@@ -296,8 +296,12 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it 'shows no tab' do
-      expect(page).to have_css("div.profile-header")
+      expect(page).not_to have_css("div.profile-header")
       expect(page).not_to have_css("ul.nav-links")
+    end
+
+    it 'shows no sidebar' do
+      expect(page).not_to have_css(".user-profile-sidebar")
     end
 
     it 'shows blocked message' do

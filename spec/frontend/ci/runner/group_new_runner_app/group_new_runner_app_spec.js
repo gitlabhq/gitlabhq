@@ -1,6 +1,7 @@
 import { GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
+import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
@@ -12,6 +13,7 @@ import {
   PARAM_KEY_PLATFORM,
   GROUP_TYPE,
   DEFAULT_PLATFORM,
+  GOOGLE_CLOUD_PLATFORM,
   WINDOWS_PLATFORM,
 } from '~/ci/runner/constants';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
@@ -31,6 +33,7 @@ const mockCreatedRunner = runnerCreateResult.data.runnerCreate.runner;
 
 describe('GroupRunnerRunnerApp', () => {
   let wrapper;
+  let trackingSpy;
 
   const findRunnerPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
   const findRegistrationCompatibilityAlert = () =>
@@ -38,6 +41,7 @@ describe('GroupRunnerRunnerApp', () => {
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
 
   const createComponent = () => {
+    trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
     wrapper = shallowMountExtended(GroupRunnerRunnerApp, {
       propsData: {
         groupId: mockGroupId,
@@ -84,6 +88,14 @@ describe('GroupRunnerRunnerApp', () => {
           });
         });
 
+        it('tracks that create runner button has been clicked', () => {
+          expect(trackingSpy).toHaveBeenCalledWith(
+            undefined,
+            'click_create_group_runner_button',
+            expect.any(Object),
+          );
+        });
+
         it('redirects to the registration page', () => {
           const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${DEFAULT_PLATFORM}`;
 
@@ -101,6 +113,21 @@ describe('GroupRunnerRunnerApp', () => {
           const url = `${mockCreatedRunner.ephemeralRegisterUrl}?${PARAM_KEY_PLATFORM}=${WINDOWS_PLATFORM}`;
 
           expect(visitUrl).toHaveBeenCalledWith(url);
+        });
+      });
+
+      describe('When Google Cloud platform is selected and a runner is saved', () => {
+        beforeEach(() => {
+          findRunnerPlatformsRadioGroup().vm.$emit('input', GOOGLE_CLOUD_PLATFORM);
+          findRunnerCreateForm().vm.$emit('saved', mockCreatedRunner);
+        });
+
+        it('tracks that runner was provisioned on Google Cloud', () => {
+          expect(trackingSpy).toHaveBeenCalledWith(
+            undefined,
+            'provision_group_runner_on_google_cloud',
+            expect.any(Object),
+          );
         });
       });
 

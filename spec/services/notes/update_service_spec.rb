@@ -115,6 +115,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         edit_note_text
       end
 
+      it 'creates a webhook event' do
+        expect(project).to receive(:execute_hooks)
+        edit_note_text
+      end
+
       context 'when quick action only update' do
         it "delete note and return commands_only error" do
           updated_note = described_class.new(project, user, { note: "/close\n" }).execute(note)
@@ -130,7 +135,7 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
 
     context 'when note text was not changed' do
       let!(:note) { create(:note, project: project, noteable: issue, author: user2, note: "Old note #{user3.to_reference}") }
-      let(:does_not_edit_note_text) { update_note({}) }
+      let(:does_not_edit_note_text) { update_note({ note: note.note }) }
 
       it 'does not update last_edited_at' do
         travel_to(1.day.from_now) do
@@ -146,6 +151,11 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
 
       it 'does not check for spam' do
         expect(note).not_to receive(:check_for_spam)
+        does_not_edit_note_text
+      end
+
+      it 'does not create a webhook event' do
+        expect(project).not_to receive(:execute_hooks)
         does_not_edit_note_text
       end
     end
@@ -305,6 +315,12 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
 
       it 'does not track usage data' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
+
+        update_note(note: 'new text')
+      end
+
+      it 'does not create a webhook event' do
+        expect(project).not_to receive(:execute_hooks)
 
         update_note(note: 'new text')
       end

@@ -33487,6 +33487,9 @@ msgstr ""
 msgid "No prioritized labels yet!"
 msgstr ""
 
+msgid "No project selected"
+msgstr ""
+
 msgid "No project subscribes to the pipelines in this project."
 msgstr ""
 
@@ -44362,6 +44365,9 @@ msgid "ScanExecutionPolicy|Select namespaces"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select or Create a Key"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Select project first, and then insert a file path"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select ref"

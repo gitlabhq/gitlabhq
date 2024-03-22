@@ -237,8 +237,9 @@ export default {
     if (oldEntry.type === 'blob') {
       updateFileCollections(state, oldEntry.key, newPath);
     }
-
-    Vue.delete(state.entries, oldEntry.path);
+    const stateCopy = { ...state.entries };
+    delete stateCopy[oldEntry.path];
+    state.entries = stateCopy;
   },
 
   ...projectMutations,

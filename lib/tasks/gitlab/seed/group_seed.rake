@@ -23,7 +23,8 @@ namespace :gitlab do
 
       GroupSeeder.new(
         subgroups_depth: args.subgroups_depth,
-        username: args.username
+        username: args.username,
+        organization: Organizations::Organization.default_organization
       ).seed
     end
   end
@@ -34,13 +35,14 @@ class GroupSeeder
 
   attr_reader :all_group_ids
 
-  def initialize(subgroups_depth:, username:)
+  def initialize(subgroups_depth:, username:, organization:)
     @subgroups_depth = subgroups_depth.to_i
     @user = User.find_by_username(username)
     @group_names = Set.new
     @resource_count = 2
     @all_groups = {}
     @all_group_ids = []
+    @organization = organization
   end
 
   def seed
@@ -105,7 +107,8 @@ class GroupSeeder
     {
       name: name,
       path: name,
-      parent_id: parent_id
+      parent_id: parent_id,
+      organization_id: @organization.id
     }
   end
 
@@ -128,7 +131,7 @@ class GroupSeeder
       confirmed_at: DateTime.now,
       password: Devise.friendly_token
     ) do |user|
-      user.assign_personal_namespace
+      user.assign_personal_namespace(@organization)
     end
     # rubocop:enable Style/SymbolProc
   end

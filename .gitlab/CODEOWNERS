@@ -96,7 +96,8 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 [Tooling] @gl-quality/eng-prod
 Dangerfile
 /danger/
-/tooling/danger/
+/tooling/
+/spec/tooling/
 /scripts/
 /scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
 /scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/plan-stage/backend-engineers

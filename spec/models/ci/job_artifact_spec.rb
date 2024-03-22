@@ -888,26 +888,4 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
       it_behaves_like 'returning attributes for object deletion'
     end
   end
-
-  describe 'routing table switch' do
-    context 'with ff disabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_job_artifacts_routing_table: false)
-      end
-
-      it 'uses the legacy table' do
-        expect(described_class.table_name).to eq('ci_job_artifacts')
-      end
-    end
-
-    context 'with ff enabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_job_artifacts_routing_table: true)
-      end
-
-      it 'uses the routing table' do
-        expect(described_class.table_name).to eq('p_ci_job_artifacts')
-      end
-    end
-  end
 end

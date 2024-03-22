@@ -109,8 +109,9 @@ linters:
       # haml-lint force enables these: https://github.com/sds/haml-lint/blob/v0.51.0/config/forced_rubocop_config.yml
       - Layout/ArgumentAlignment
       - Layout/ArrayAlignment
-      - Layout/SpaceInsideParens # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147088
+      - Layout/ClosingParenthesisIndentation # See https://github.com/sds/haml-lint/issues/491
       - Layout/EndAlignment
+      - Layout/SpaceInsideParens # See https://github.com/sds/haml-lint/issues/491
 
       - Cop/LineBreakAfterGuardClauses
       - Cop/LineBreakAroundConditionalBlock

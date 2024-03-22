@@ -8,15 +8,11 @@ module Ci
     include Gitlab::OptimisticLocking
     include Presentable
 
-    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_stages_routing_table
-
+    self.table_name = :p_ci_stages
     self.primary_key = :id
     self.sequence_name = :ci_job_stages_id_seq
 
-    partitionable scope: :pipeline, through: {
-      table: :p_ci_stages,
-      flag: ROUTING_FEATURE_FLAG
-    }
+    partitionable scope: :pipeline, partitioned: true
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 

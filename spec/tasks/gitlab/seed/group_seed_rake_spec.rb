@@ -8,6 +8,7 @@ RSpec.describe 'gitlab:seed:group_seed rake task', :silence_stdout, feature_cate
   let(:task_params) { [2, username] }
 
   before do
+    create(:organization, :default)
     Rake.application.rake_require('tasks/gitlab/seed/group_seed')
   end
 

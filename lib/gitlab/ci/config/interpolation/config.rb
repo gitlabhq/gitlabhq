@@ -96,20 +96,9 @@ module Gitlab
 
             case config
             when Hash
-              {}.tap do |new_hash|
-                config.each_pair do |key, value|
-                  new_key = recursive_replace(key, visitor, &block)
-                  new_value = recursive_replace(value, visitor, &block)
-
-                  if new_key != key
-                    new_hash[new_key] = new_value
-                  else
-                    new_hash[key] = new_value
-                  end
-                end
-              end
+              recursive_replace_hash(config, visitor, &block)
             when Array
-              config.map { |value| recursive_replace(value, visitor, &block) }
+              recursive_replace_array(config, visitor, &block)
             when Symbol
               recursive_replace(config.to_s, visitor, &block)
             when String
@@ -119,6 +108,37 @@ module Gitlab
             else
               config
             end
+          end
+
+          def recursive_replace_hash(config, visitor, &block)
+            {}.tap do |new_hash|
+              config.each_pair do |key, value|
+                new_key = recursive_replace(key, visitor, &block)
+                new_value = recursive_replace(value, visitor, &block)
+
+                if new_key != key
+                  new_hash[new_key] = new_value
+                else
+                  new_hash[key] = new_value
+                end
+              end
+            end
+          end
+
+          def recursive_replace_array(config, visitor, &block)
+            config.reduce([]) do |new_array, array_item|
+              new_array_item = recursive_replace(array_item, visitor, &block)
+
+              if insert_array_input_into_existing_array?(array_item, new_array_item)
+                new_array + new_array_item
+              else
+                new_array << new_array_item
+              end
+            end
+          end
+
+          def insert_array_input_into_existing_array?(old_array_item, new_array_item)
+            old_array_item.is_a?(String) && new_array_item.is_a?(Array)
           end
         end
       end

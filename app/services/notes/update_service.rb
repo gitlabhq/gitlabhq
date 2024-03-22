@@ -34,6 +34,8 @@ module Notes
         update_todos(note, old_mentioned_users)
 
         update_suggestions(note)
+
+        execute_note_webhook(note)
       end
 
       if quick_actions_service.commands_executed_count.to_i > 0
@@ -95,6 +97,16 @@ module Notes
         author: note.author,
         project: project
       )
+    end
+
+    def execute_note_webhook(note)
+      return unless note.project && note.previous_changes.include?('note')
+
+      note_data = Gitlab::DataBuilder::Note.build(note, note.author)
+      is_confidential = note.confidential?(include_noteable: true)
+      hooks_scope = is_confidential ? :confidential_note_hooks : :note_hooks
+
+      note.project.execute_hooks(note_data, hooks_scope)
     end
 
     def track_note_edit_usage_for_merge_requests(note)

@@ -64,7 +64,7 @@ Additionally, use:
 - [`spec:inputs:regex`](index.md#specinputsoptions) to specify a regular expression
   that the input must match.
 - [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
-  can be `string` (default when not specified), `number`, or `boolean`.
+  can be `string` (default when not specified), `array`, `number`, or `boolean`.
 
 ### Define inputs with multiple parameters
 
@@ -109,7 +109,76 @@ In this example:
 - `version` is a mandatory string input that must match the specified regular expression.
 - `export_results` is an optional boolean input. When not specified, it defaults to `true`.
 
-### Multi-line input string values
+### Input types
+
+You can specify that an input must use a specific type with the optional `spec:inputs:type` keyword.
+
+The input types are:
+
+- [`array`](#array-type)
+- `boolean`
+- `number`
+- `string` (default when not specified)
+
+When an input replaces an entire YAML value in the CI/CD configuration, it is interpolated
+into the configuration as its specified type. For example:
+
+```yaml
+spec:
+  inputs:
+    array_input:
+      type: array
+    boolean_input:
+      type: boolean
+    number_input:
+      type: number
+    string_input:
+      type: string
+---
+
+test_job:
+  allow_failure: $[[ inputs.boolean_input ]]
+  needs: $[[ inputs.array_input ]]
+  parallel: $[[ inputs.number_input ]]
+  script: $[[ inputs.string_input ]]
+```
+
+When an input is inserted into a YAML value as part of a larger string, the input
+is always interpolated as a string. For example:
+
+```yaml
+spec:
+  inputs:
+    port:
+      type: number
+---
+
+test_job:
+  script: curl "https://gitlab.com:$[[ inputs.port ]]"
+```
+
+#### Array type
+
+The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
+like [`!reference`](yaml_optimization.md#reference-tags) cannot be used.
+
+```yaml
+spec:
+  inputs:
+    rules-config:
+      type: array
+      default:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: manual
+        - if: $CI_PIPELINE_SOURCE == "schedule"
+---
+
+test_job:
+  rules: $[[ inputs.rules-config ]]
+  script: ls
+```
+
+#### Multi-line input string values
 
 [Inputs](../yaml/inputs.md) support different value types. You can pass multi-string values using the following format:
 
@@ -184,11 +253,11 @@ For example, including the same configuration multiple times with different inpu
 include:
   - local: path/to/my-super-linter.yml
     inputs:
-      type: docs
+      linter: docs
       lint-path: "doc/"
   - local: path/to/my-super-linter.yml
     inputs:
-      type: yaml
+      linter: yaml
       lint-path: "data/yaml/"
 ```
 
@@ -198,11 +267,11 @@ each time it is included:
 ```yaml
 spec:
   inputs:
-    type:
+    linter:
     lint-path:
 ---
-"run-$[[ inputs.type ]]-lint":
-  script: ./lint --$[[ inputs.type ]] --path=$[[ inputs.lint-path ]]
+"run-$[[ inputs.linter ]]-lint":
+  script: ./lint --$[[ inputs.linter ]] --path=$[[ inputs.lint-path ]]
 ```
 
 ## Specify functions to manipulate input values

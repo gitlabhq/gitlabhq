@@ -9,6 +9,7 @@ module Gitlab
           UnknownInputTypeError = Class.new(StandardError)
 
           TYPES = [
+            ArrayInput,
             BooleanInput,
             NumberInput,
             StringInput

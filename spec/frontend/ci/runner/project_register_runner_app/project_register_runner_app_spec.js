@@ -4,7 +4,9 @@ import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import { mockTracking } from 'helpers/tracking_helper';
 
+import { InternalEvents } from '~/tracking';
 import { updateHistory } from '~/lib/utils/url_utility';
 import {
   PARAM_KEY_PLATFORM,
@@ -29,6 +31,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 
 describe('ProjectRegisterRunnerApp', () => {
   let wrapper;
+  let trackingSpy;
 
   const findCloudRegistrationInstructions = () =>
     wrapper.findComponent(GoogleCloudRegistrationInstructions);
@@ -37,6 +40,7 @@ describe('ProjectRegisterRunnerApp', () => {
   const findBtn = () => wrapper.findComponent(GlButton);
 
   const createComponent = (googleCloudSupportFeatureFlag = false) => {
+    trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
     wrapper = shallowMountExtended(ProjectRegisterRunnerApp, {
       propsData: {
         runnerId: mockRunnerId,
@@ -73,7 +77,26 @@ describe('ProjectRegisterRunnerApp', () => {
 
       it('shows runner list button', () => {
         expect(findBtn().attributes('href')).toBe(mockRunnersPath);
+        expect(findBtn().attributes('data-event-tracking')).toBe(
+          'click_view_runners_button_in_new_project_runner_form',
+        );
         expect(findBtn().props('variant')).toBe('confirm');
+      });
+    });
+
+    describe('when runners list button is clicked', () => {
+      beforeEach(async () => {
+        InternalEvents.bindInternalEventDocument(findBtn().element);
+        await findBtn().trigger('click');
+        await nextTick();
+      });
+
+      it('tracks that view runners button has been clicked', () => {
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'click_view_runners_button_in_new_project_runner_form',
+          expect.any(Object),
+        );
       });
     });
   });
