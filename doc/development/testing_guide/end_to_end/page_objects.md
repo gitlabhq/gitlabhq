@@ -16,7 +16,7 @@ associated with this area of GitLab.
 For example, when GitLab QA test harness signs in into GitLab, it needs to fill
 in user login and user password. To do that, we have a class, called
 `Page::Main::Login` and `sign_in_using_credentials` methods, that is the only
-piece of the code, that reads the `user_login` and `user_password`
+piece of the code, that reads the `user-login` and `user-password`
 fields.
 
 ## Why do we need that?
@@ -27,24 +27,24 @@ whenever someone changes some selectors in the GitLab source code.
 Imagine that we have a hundred specs in GitLab QA, and we need to sign in to
 GitLab each time, before we make assertions. Without a page object, one would
 need to rely on volatile helpers or invoke Capybara methods directly. Imagine
-invoking `fill_in :user_login` in every `*_spec.rb` file / test example.
+invoking `fill_in 'user-login'` in every `*_spec.rb` file / test example.
 
-When someone later changes `t.text_field :login` in the view associated with
-this page to `t.text_field :username` it generates a different field
+When someone later changes `t.text_field 'login'` in the view associated with
+this page to `t.text_field 'username'` it generates a different field
 identifier, what would effectively break all tests.
 
 Because we are using `Page::Main::Login.perform(&:sign_in_using_credentials)`
 everywhere, when we want to sign in to GitLab, the page object is the single
-source of truth, and we must update `fill_in :user_login`
-to `fill_in :user_username` only in one place.
+source of truth, and we must update `fill_in 'user-login'`
+to `fill_in 'user-username'` only in one place.
 
 ## What problems did we have in the past?
 
 We do not run QA tests for every commit, because of performance reasons, and
 the time it would take to build packages and test everything.
 
-That is why when someone changes `t.text_field :login` to
-`t.text_field :username` in the _new session_ view we don't know about this
+That is why when someone changes `t.text_field 'login'` to
+`t.text_field 'username'` in the _new session_ view we don't know about this
 change until our GitLab QA nightly pipeline fails, or until someone triggers
 `package-and-qa` action in their merge request.
 
@@ -76,15 +76,15 @@ module Page
   module Main
     class Login < Page::Base
       view 'app/views/devise/passwords/edit.html.haml' do
-        element :password_field
-        element :password_confirmation
-        element :change_password_button
+        element 'password-field'
+        element 'password-confirmation'
+        element 'change-password-button'
       end
 
       view 'app/views/devise/sessions/_new_base.html.haml' do
-        element :login_field
-        element :password_field
-        element :sign_in_button
+        element 'login-field'
+        element 'password-field'
+        element 'sign-in-button'
       end
 
       # ...
@@ -98,13 +98,13 @@ end
 The `view` DSL method corresponds to the Rails view, partial, or Vue component that renders the elements.
 
 The `element` DSL method in turn declares an element for which a corresponding
-`testid=element_name` data attribute must be added, if not already, to the view file.
+`testid=element-name` data attribute must be added, if not already, to the view file.
 
 You can also define a value (String or Regexp) to match to the actual view
 code but **this is deprecated** in favor of the above method for two reasons:
 
 - Consistency: there is only one way to define an element
-- Separation of concerns: QA uses dedicated `data-qa-*` attributes instead of reusing code
+- Separation of concerns: Tests use dedicated `data-testid` attributes instead of reusing code
   or classes used by other components (for example, `js-*` classes etc.)
 
 ```ruby
@@ -112,8 +112,8 @@ view 'app/views/my/view.html.haml' do
 
   ### Good ###
 
-  # Implicitly require the CSS selector `[data-testid="logout_button"]` to be present in the view
-  element :logout_button
+  # Implicitly require the CSS selector `[data-testid="logout-button"]` to be present in the view
+  element 'logout-button'
 
   ### Bad ###
 
@@ -134,16 +134,16 @@ Given the following elements...
 
 ```ruby
 view 'app/views/my/view.html.haml' do
-  element :login_field
-  element :password_field
-  element :sign_in_button
+  element 'login-field'
+  element 'password-field'
+  element 'sign-in-button'
 end
 ```
 
 To add these elements to the view, you must change the Rails view, partial, or Vue component by adding a `data-testid` attribute
 for each element defined.
 
-In our case, `data-testid="login_field"`, `data-testid="password_field"` and `data-testid="sign_in_button"`
+In our case, `data-testid="login-field"`, `data-testid="password-field"` and `data-testid="sign-in-button"`
 
 `app/views/my/view.html.haml`
 
@@ -155,7 +155,7 @@ In our case, `data-testid="login_field"`, `data-testid="password_field"` and `da
 
 Things to note:
 
-- The name of the element and the `data-testid` must match and be either snake cased or kebab cased
+- The name of the element and the `data-testid` must match and be kebab cased
 - If the element appears on the page unconditionally, add `required: true` to the element. See
   [Dynamic element validation](dynamic_element_validation.md)
 - You should not see `data-qa-selector` classes in Page Objects.
@@ -274,7 +274,7 @@ module QA
               prepend Page::Component::LicenseManagement
 
               view 'app/assets/javascripts/vue_merge_request_widget/components/states/sha_mismatch.vue' do
-                element :head_mismatch, "The source branch HEAD has recently changed."
+                element 'head-mismatch', "The source branch HEAD has recently changed."
               end
 
               [...]

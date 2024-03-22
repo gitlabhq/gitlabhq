@@ -18,6 +18,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     create(
       :merge_request,
       :simple,
+      :unchanged,
       title: 'Old title',
       description: "FYI #{user2.to_reference}",
       assignee_ids: [user3.id],
@@ -1237,7 +1238,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
     it_behaves_like 'issuable update service' do
       let(:open_issuable) { merge_request }
-      let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
+      let(:closed_issuable) { create(:closed_merge_request, :unchanged, source_project: project) }
     end
 
     context 'setting `allow_collaboration`' do

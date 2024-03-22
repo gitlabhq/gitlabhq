@@ -290,7 +290,7 @@ To update multiple project merge requests at the same time:
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 ## Bulk edit merge requests at the group level
 
@@ -312,7 +312,7 @@ To update multiple group merge requests at the same time:
    editable fields.
 1. Select the checkboxes next to each merge request you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 ## Associated features
 

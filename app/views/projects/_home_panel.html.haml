@@ -1,5 +1,4 @@
 - empty_repo = @project.empty_repo?
-- ff_reorg_disabled = Feature.disabled?(:project_overview_reorg)
 
 %header.project-home-panel.js-show-on-project-root.gl-mt-5{ class: [("empty-project" if empty_repo)] }
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-5
@@ -17,36 +16,4 @@
 
     #js-home-panel{ data: home_panel_data_attributes }
 
-  - if ff_reorg_disabled
-    - if can?(current_user, :read_code, @project)
-      - show_auto_devops_callout = show_auto_devops_callout?(@project)
-
-      %nav.project-stats.gl-mt-3
-        - if @project.empty_repo?
-          = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors
-        - else
-          = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-    .gl-my-3
-      = render "shared/projects/topics", project: @project
-
-    .home-panel-home-desc.mt-1
-      - if @project.description.present?
-        .home-panel-description.text-break
-          .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
-            = markdown_field(@project, :description)
-          = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link, button_options: { class: 'js-read-more-trigger gl-lg-display-none' }) do
-            = _("Read more")
-
   = render_if_exists "projects/home_mirror"
-
-  - if ff_reorg_disabled && @project.badges.present?
-    .project-badges.mb-2{ data: { testid: 'project-badges-content' } }
-      - @project.badges.each do |badge|
-        - badge_link_url = badge.rendered_link_url(@project)
-        %a.gl-mr-3{ href: badge_link_url,
-          target: '_blank',
-          rel: 'noopener noreferrer',
-          data: { testid: 'badge-image-link', qa_link_url: badge_link_url } }>
-          %img.project-badge{ src: badge.rendered_image_url(@project),
-            'aria-hidden': true,
-            alt: 'Project badge' }>

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Issues::ReopenService, feature_category: :team_planning do
   let(:project) { create(:project) }
-  let(:issue) { create(:issue, :closed, project: project) }
+  let(:issue) { create(:issue, :closed, :unchanged, project: project) }
 
   describe '#execute' do
     context 'when user is not authorized to reopen issue' do

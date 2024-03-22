@@ -29,6 +29,7 @@ module Issuable
   include VersionedDescription
   include SortableTitle
   include Exportable
+  include ReportableChanges
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800
@@ -565,7 +566,7 @@ module Issuable
   end
 
   def to_hook_data(user, old_associations: {})
-    changes = previous_changes
+    changes = reportable_changes
 
     if old_associations.present?
       changes.merge!(hook_association_changes(old_associations))

@@ -127,6 +127,14 @@ describe('Workload layout component', () => {
         expect(findDrawer().props('open')).toBe(false);
       });
 
+      it('is closed on remove-selection event', async () => {
+        await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
+        expect(findDrawer().props('open')).toBe(true);
+
+        await findWorkloadTable().vm.$emit('remove-selection');
+        expect(findDrawer().props('open')).toBe(false);
+      });
+
       it('renders a title with the selected item name', async () => {
         await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
         expect(findDrawer().text()).toContain(mockPodsTableItems[0].name);

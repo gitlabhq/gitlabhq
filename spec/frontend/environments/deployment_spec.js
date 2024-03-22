@@ -153,16 +153,22 @@ describe('~/environments/components/deployment.vue', () => {
       });
     });
   });
-
-  describe('created at time', () => {
+  describe('deployedAt', () => {
     describe('is present', () => {
       it('shows the timestamp the deployment was deployed at', () => {
         wrapper = createWrapper();
-        const date = wrapper.findByTitle(
-          localeDateFormat.asDateTimeFull.format(deployment.createdAt),
-        );
+        const date = wrapper.findByTestId('deployment-timestamp');
+        expect(date.text()).toBe('Deployed 1 day ago');
+      });
+    });
+  });
+  describe('created at time', () => {
+    describe('is present and deploymentAt is null', () => {
+      it('shows the timestamp the deployment was created at', () => {
+        wrapper = createWrapper({ propsData: { deployment: { ...deployment, deployedAt: null } } });
 
-        expect(date.text()).toBe('1 day ago');
+        const date = wrapper.findByTestId('deployment-timestamp');
+        expect(date.text()).toBe('Created 1 day ago');
       });
     });
     describe('is not present', () => {

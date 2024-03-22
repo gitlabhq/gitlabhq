@@ -357,37 +357,62 @@ For example, to change to the `main` branch:
 git checkout main
 ```
 
+## Make changes
+
+When you make changes to files in a repository, Git tracks the changes
+against the most recent version of the checked out branch. You can use
+Git commands to review and commit your changes to the branch, and push
+your work to GitLab.
+
+### View repository status
+
+When you add, change, or delete files or folders, Git knows about the
+changes. To check which files have been changed:
+
+- From your repository, run `git status`.
+
+The branch name, most recent commit, and any new or changed files are displayed.
+New files are displayed in green. Changed files are displayed in red.
+
 ### View differences
 
-To view the differences between your local unstaged changes and the latest version
-that you cloned or pulled:
+You can display the difference (or diff) between your local
+changes and the most recent version of a branch. View a diff to
+understand your local changes before you commit them to the branch.
 
-```shell
-git diff
-```
+To view the differences between your local unstaged changes and the
+latest version that you cloned or pulled:
 
-### View the files that have changes
+- From your repository, run `git diff`.
 
-When you add, change, or delete files or folders, Git knows about the changes.
-To check which files have been changed:
+  To compare your changes against a specific branch, run
+  `git diff <branch>`.
 
-```shell
-git status
-```
+The diff is displayed:
+
+- Lines with additions begin with a plus (`+`) and are displayed in green.
+- Lines with removals or changes begin with a minus (`-`) and are displayed in red.
+
+If the diff is large, by default only a portion of the diff is
+displayed. You can advance the diff with <kbd>Enter</kbd>, and quit
+back to your terminal with <kbd>Q</kbd>.
 
 ### Add and commit local changes
 
-When you type `git status`, locally changed files are shown in red. These changes may
-be new, modified, or deleted files or folders.
+When you're ready to write your changes to the branch, you can commit
+them. A commit includes a comment that records information about the
+changes, and usually becomes the new tip of the branch.
 
-1. To stage a file for commit:
+Git doesn't automatically include any files you move, change, or
+delete in a commit. This prevents you from accidentally including a
+change or file, like a temporary directory. To include changes in a
+commit, stage them with `git add`.
 
-   ```shell
-   git add <file-name OR folder-name>
-   ```
+To stage and commit your changes:
 
-1. Repeat step 1 for each file or folder you want to add.
-   Or, to stage all files in the current directory and subdirectory, type `git add .`.
+1. From your repository, for each file or directory you want to add, run `git add <file name or path>`.
+
+   To stage all files in the current working directory, run `git add .`.
 
 1. Confirm that the files have been added to staging:
 
@@ -395,21 +420,27 @@ be new, modified, or deleted files or folders.
    git status
    ```
 
-   The files should be displayed in green text.
+   The files are displayed in green.
 
 1. To commit the staged files:
 
    ```shell
-   git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
+   git commit -m "<comment that describes the changes>"
    ```
 
-#### Stage and commit all changes
+The changes are committed to the branch.
 
-As a shortcut, you can add all local changes to staging and commit them with one command:
+### Commit all changes
+
+You can stage all your changes and commit them with one command:
 
 ```shell
-git commit -a -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
+git commit -a -m "<comment that describes the changes>"
 ```
+
+Be careful your commit doesn't include files you don't want to record
+to the remote repository. As a rule, always check the status of your
+local repository before you commit changes.
 
 ### Send changes to GitLab
 
@@ -428,7 +459,19 @@ git push origin main
 Sometimes Git does not allow you to push to a repository. Instead,
 you must [force an update](../topics/git/git_rebase.md#force-pushing).
 
-### Delete all changes in the branch
+## Delete changes
+
+If you make a mistake and want to undo your changes, you can use Git
+commands to go back to an earlier version of a repository.
+
+Deleting changes is often an irreversible, destructive action. If
+possible, you should add additional commits instead of reverting old
+ones.
+
+### Overwrite uncommitted changes
+
+You can use `git checkout` as a shortcut to discard tracked,
+uncommitted changes.
 
 To discard all changes to tracked files:
 
@@ -436,36 +479,40 @@ To discard all changes to tracked files:
 git checkout .
 ```
 
-This action removes *changes* to files, not the files themselves.
-Untracked (new) files do not change.
+Your changes are overwritten by the most recent commit in the branch.
+Untracked files are not affected.
 
-### Unstage all changes that have been added to the staging area
-
-To unstage (remove) all files that have not been committed:
-
-```shell
-git reset
-```
-
-### Undo most recent commit
-
-To undo the most recent commit:
-
-```shell
-git reset HEAD~1
-```
-
-This action leaves the changed files and folders unstaged in your local repository.
+### Reset changes and commits
 
 WARNING:
-A Git commit should not be reversed if you already pushed it
-to the remote repository. Although you can undo a commit, the best option is to avoid
-the situation altogether by working carefully.
+Do not reset a commit if you already pushed it to the remote
+repository.
 
-You can learn more about the different ways Git can undo changes in the
+If you stage a change with `git add` and then decide not to commit it,
+you might want to unstage the changes. To unstage a change:
+
+- From your repository, run `git reset`.
+
+If your changes have been committed (but not pushed to the remote
+repository), you can reset your commits:
+
+```shell
+git reset HEAD~<number>
+```
+
+Here, `<number>` is the number of commits to undo.
+For example, if you want to undo only the latest commit:
+
+```shell
+git rest HEAD~1
+```
+
+The commit is reset and any changes remain in the local repository.
+
+To learn more about the different ways to undo changes, see the
 [Git Undoing Things documentation](https://git-scm.com/book/en/v2/Git-Basics-Undoing-Things).
 
-### Merge a branch with default branch
+## Merge a branch with default branch
 
 When you are ready to add your changes to
 the default branch, you merge the feature branch into it:

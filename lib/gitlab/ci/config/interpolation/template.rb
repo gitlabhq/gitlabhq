@@ -5,8 +5,6 @@ module Gitlab
     class Config
       module Interpolation
         class Template
-          include Gitlab::Utils::StrongMemoize
-
           attr_reader :blocks, :ctx
 
           MAX_BLOCKS = 10_000
@@ -54,7 +52,6 @@ module Gitlab
               get_interpolated_node_content!(node, blocks)
             end
           end
-          strong_memoize_attr :interpolate!
 
           def node_might_contain_interpolation_block?(node)
             node.is_a?(String) && node.include?(BLOCK_PREFIX)

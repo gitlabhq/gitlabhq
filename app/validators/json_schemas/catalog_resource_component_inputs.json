@@ -10,9 +10,10 @@
       "patternProperties": {
         "default": {
           "type": [
-            "string",
+            "array",
+            "boolean",
             "integer",
-            "boolean"
+            "string"
           ]
         },
         "regex": {

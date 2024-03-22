@@ -18,6 +18,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let(:issue) do
     create(
       :issue,
+      :unchanged,
       title: 'Old title',
       description: "for #{user2.to_reference}",
       assignee_ids: [user3.id],
@@ -1437,7 +1438,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
     it_behaves_like 'issuable update service' do
       let(:open_issuable) { issue }
-      let(:closed_issuable) { create(:closed_issue, project: project) }
+      let(:closed_issuable) { create(:closed_issue, :unchanged, project: project) }
     end
 
     context 'broadcasting issue assignee updates' do

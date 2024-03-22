@@ -1,4 +1,5 @@
 #import "~/graphql_shared/client/page_info.typedefs.graphql"
+#import "~/kubernetes_dashboard/graphql/typedefs.graphql"
 
 type LocalEnvironment {
   id: Int!
@@ -57,43 +58,11 @@ type LocalErrors {
   errors: [String!]!
 }
 
-type k8sPodStatus {
-  phase: String
-}
-
-type k8sPodMetadata {
-  name: String
-  namespace: String
-  creationTimestamp: String
-}
-
-type LocalK8sPods {
-  status: k8sPodStatus
-  metadata: k8sPodMetadata
-}
-
 input LocalConfiguration {
   basePath: String
   baseOptions: JSON
 }
 
-type k8sServiceMetadata {
-  name: String
-  namespace: String
-  creationTimestamp: String
-}
-
-type k8sServiceSpec {
-  type: String
-  clusterIP: String
-  externalIP: String
-  ports: JSON
-}
-
-type LocalK8sServices {
-  metadata: k8sServiceMetadata
-  spec: k8sServiceSpec
-}
 type k8sNamespaceMetadata {
   name: String
 }
@@ -123,8 +92,8 @@ extend type Query {
   environmentToStop: LocalEnvironment
   isEnvironmentStopping(environment: LocalEnvironmentInput): Boolean
   isLastDeployment(environment: LocalEnvironmentInput): Boolean
-  k8sPods(configuration: LocalConfiguration, namespace: String): [LocalK8sPods]
-  k8sServices(configuration: LocalConfiguration): [LocalK8sServices]
+  k8sPods(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
+  k8sServices(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
   k8sConnection(configuration: LocalConfiguration): K8sResources
   fluxKustomizationStatus(
     configuration: LocalConfiguration

@@ -724,7 +724,7 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['job_class'] = 'Analytics::CycleAnalytics::ConsistencyWorker'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
-  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '*/25 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'

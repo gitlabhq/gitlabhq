@@ -138,7 +138,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
   end
 
   def click_update_issues_button
-    click_button 'Update all'
+    click_button 'Update selected'
     wait_for_requests
   end
 end

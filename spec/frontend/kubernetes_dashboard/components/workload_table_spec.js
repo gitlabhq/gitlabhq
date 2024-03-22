@@ -159,10 +159,12 @@ describe('Workload table component', () => {
     });
   });
 
-  describe('on row click', () => {
-    it('emits an event on row click', () => {
+  describe('row selection', () => {
+    beforeEach(() => {
       createWrapper({ items: mockPodsTableItems });
+    });
 
+    it('emits row-selected event on row click', () => {
       mockPodsTableItems.forEach((data, index) => {
         findTable().vm.$emit('row-selected', [data]);
 
@@ -170,68 +172,12 @@ describe('Workload table component', () => {
       });
     });
 
-    describe('be default', () => {
-      it('row has hover styles by default', () => {
-        createWrapper({ items: mockPodsTableItems });
+    it('emits remove-selection event on the second click on the same item', () => {
+      findTable().vm.$emit('row-selected', [mockPodsTableItems[0]]);
+      expect(wrapper.emitted('select-item')).toEqual([[mockPodsTableItems[0]]]);
 
-        expect(findRow(0).attributes('class')).toContain('gl-hover-cursor-pointer');
-      });
-
-      it('table has hover state enabled by default', () => {
-        createWrapper({ items: mockPodsTableItems }, true);
-
-        expect(findTable().props('hover')).toBe(true);
-      });
-
-      it('table is selectable by default', () => {
-        createWrapper({ items: mockPodsTableItems }, true);
-
-        expect(findTable().props('selectable')).toBe(true);
-      });
-
-      it('table row is selectable on click', () => {
-        createWrapper({ items: mockPodsTableItems }, true);
-
-        expect(findTable().props('noSelectOnClick')).toBe(false);
-      });
-    });
-
-    describe('when rowClickable is false', () => {
-      it('row has no hover styles', () => {
-        createWrapper({ items: mockPodsTableItems, rowClickable: false });
-
-        expect(findRow(0).attributes('class')).not.toContain('gl-hover-cursor-pointer');
-      });
-
-      it('table has no hover state enabled', () => {
-        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
-
-        expect(findTable().props('hover')).toBe(false);
-      });
-
-      it('table is not selectable', () => {
-        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
-
-        expect(findTable().props('selectable')).toBe(false);
-      });
-
-      it('table row is not selectable on click', () => {
-        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
-
-        expect(findTable().props('noSelectOnClick')).toBe(true);
-      });
-    });
-
-    it('row has hover styles by default', () => {
-      createWrapper({ items: mockPodsTableItems });
-
-      expect(findRow(0).attributes('class')).toContain('gl-hover-cursor-pointer');
-    });
-
-    it('row has no hover styles if rowClickable is false', () => {
-      createWrapper({ items: mockPodsTableItems, rowClickable: false });
-
-      expect(findRow(0).attributes('class')).not.toContain('gl-hover-cursor-pointer');
+      findTable().vm.$emit('row-selected', mockPodsTableItems[0]);
+      expect(wrapper.emitted('remove-selection')).toHaveLength(1);
     });
   });
 });

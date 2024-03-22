@@ -1550,6 +1550,29 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
+### `Mutation.approvalProjectRuleDelete`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `approvalProjectRuleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruledeleteid"></a>`id` | [`ApprovalProjectRuleID!`](#approvalprojectruleid) | Global ID of the approval project rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruledeleteapprovalrule"></a>`approvalRule` | [`ApprovalProjectRule`](#approvalprojectrule) | Deleted approval rule. |
+| <a id="mutationapprovalprojectruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.approvalProjectRuleUpdate`
 
 DETAILS:

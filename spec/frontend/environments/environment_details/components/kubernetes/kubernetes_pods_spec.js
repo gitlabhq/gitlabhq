@@ -8,8 +8,12 @@ import KubernetesPods from '~/environments/environment_details/components/kubern
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { useFakeDate } from 'helpers/fake_date';
-import { mockKasTunnelUrl } from '../../../mock_data';
-import { k8sPodsMock, k8sPodsStatsData, k8sPodsTableData } from '../../../graphql/mock_data';
+import { mockKasTunnelUrl } from 'jest/environments/mock_data';
+import {
+  k8sPodsMock,
+  mockPodStats,
+  mockPodsTableItems,
+} from 'jest/kubernetes_dashboard/graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -85,14 +89,14 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadStats().props('stats')).toEqual(k8sPodsStatsData);
+      expect(findWorkloadStats().props('stats')).toEqual(mockPodStats);
     });
 
     it('renders workload table with the correct data', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadTable().props('items')).toMatchObject(k8sPodsTableData);
+      expect(findWorkloadTable().props('items')).toMatchObject(mockPodsTableItems);
     });
 
     it('emits a update-failed-state event for each pod', async () => {
@@ -106,6 +110,26 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
         [{ pods: false }],
         [{ pods: true }],
       ]);
+    });
+
+    it('emits show-resource-details event on item select', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-resource-details')).toBeUndefined();
+
+      findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
+      expect(wrapper.emitted('show-resource-details')).toEqual([[mockPodsTableItems[0]]]);
+    });
+
+    it('emits remove-selection event when receives it from the WorkloadTable component', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(wrapper.emitted('remove-selection')).toBeUndefined();
+
+      findWorkloadTable().vm.$emit('remove-selection');
+      expect(wrapper.emitted('remove-selection')).toHaveLength(1);
     });
   });
 

@@ -41,9 +41,11 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
             default: 'test'
           },
           tags: {
-            type: 'array'
+            type: 'array',
+            default: ['tag1']
           }
         }
+
         expect(component).to be_valid
       end
     end

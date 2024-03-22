@@ -1007,6 +1007,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
     end
 
+    it 'line endings are not mutated' do
+      repository.create_file(
+        user, 'hello.txt', "Hello,\r\nWorld",
+        message: 'Add hello world',
+        branch_name: 'master'
+      )
+
+      blob = repository.blob_at('master', 'hello.txt')
+
+      expect(blob.data).to eq("Hello,\r\nWorld")
+    end
+
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do

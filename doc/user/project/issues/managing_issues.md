@@ -63,7 +63,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a project, you can edit the following attributes:
 
@@ -101,7 +101,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a group, you can edit the following attributes:
 
@@ -130,6 +130,21 @@ To move an issue:
 1. On the right sidebar, select **Move issue**.
 1. Search for a project to move the issue to.
 1. Select **Move**.
+
+### Moving tasks when the parent issue is moved
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+The feature is not ready for production use.
+
+When this feature is enabled, when you move an issue to another project, all its child tasks are also
+moved to the target project and remain associated as child tasks on the moved issue.
+Each task is moved the same way as the parent, that is, it's closed in the original project and
+copied to the target project.
 
 ### Bulk move issues
 

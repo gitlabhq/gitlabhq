@@ -15152,6 +15152,9 @@ msgstr ""
 msgid "Created %{time_ago}"
 msgstr ""
 
+msgid "Created %{timeago}"
+msgstr ""
+
 msgid "Created %{timestamp}"
 msgstr ""
 
@@ -17413,6 +17416,9 @@ msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
 msgid "Deployed"
+msgstr ""
+
+msgid "Deployed %{timeago}"
 msgstr ""
 
 msgid "Deployed to"
@@ -21533,7 +21539,7 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
-msgid "Files API Rate Limits"
+msgid "Files API rate limits"
 msgstr ""
 
 msgid "Files breadcrumb"
@@ -22655,13 +22661,13 @@ msgstr ""
 msgid "Git"
 msgstr ""
 
-msgid "Git LFS Rate Limits"
-msgstr ""
-
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
 msgid "Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
+msgstr ""
+
+msgid "Git LFS rate limits"
 msgstr ""
 
 msgid "Git LFS status:"
@@ -27798,9 +27804,6 @@ msgstr ""
 msgid "Issues Completed"
 msgstr ""
 
-msgid "Issues Rate Limits"
-msgstr ""
-
 msgid "Issues and merge requests"
 msgstr ""
 
@@ -27817,6 +27820,9 @@ msgid "Issues exist in projects, so to create an issue, first create a project."
 msgstr ""
 
 msgid "Issues must match this scope to appear in this list."
+msgstr ""
+
+msgid "Issues rate limits"
 msgstr ""
 
 msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
@@ -31009,7 +31015,7 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-msgid "Members API rate limit"
+msgid "Members API rate limits"
 msgstr ""
 
 msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
@@ -33699,7 +33705,7 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-msgid "Notes rate limit"
+msgid "Notes rate limits"
 msgstr ""
 
 msgid "Notes|Are you sure you want to cancel creating this %{commentType}?"
@@ -40151,7 +40157,7 @@ msgstr ""
 msgid "Projects API"
 msgstr ""
 
-msgid "Projects API rate limit"
+msgid "Projects API rate limits"
 msgstr ""
 
 msgid "Projects Successfully Retrieved"
@@ -47458,7 +47464,7 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|When you reset the compute usage for this namespace, the compute usage changes to zero."
 msgstr ""
 
-msgid "ShellOperations|Git SSH operations rate limit"
+msgid "ShellOperations|Git SSH operations rate limits"
 msgstr ""
 
 msgid "ShellOperations|Limit the number of Git operations a user can perform per minute, per repository."
@@ -53281,6 +53287,9 @@ msgstr ""
 msgid "Tracing|Filter traces"
 msgstr ""
 
+msgid "Tracing|In progress"
+msgstr ""
+
 msgid "Tracing|Metadata"
 msgstr ""
 
@@ -54234,9 +54243,6 @@ msgstr ""
 msgid "Update Scheduled…"
 msgstr ""
 
-msgid "Update all"
-msgstr ""
-
 msgid "Update appearance settings"
 msgstr ""
 
@@ -54253,6 +54259,9 @@ msgid "Update it"
 msgstr ""
 
 msgid "Update now"
+msgstr ""
+
+msgid "Update selected"
 msgstr ""
 
 msgid "Update username"
@@ -55313,7 +55322,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-msgid "Users API rate limit"
+msgid "Users API rate limits"
 msgstr ""
 
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."

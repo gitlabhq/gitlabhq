@@ -1,0 +1,95 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'gitlab'
+
+class SetPipelineName
+  DOCS                   = ['docs lint', 'docs-lint links'].freeze
+  RSPEC_PREDICTIVE       = ['rspec:predictive:trigger', 'rspec-ee:predictive:trigger'].freeze
+  CODE                   = ['retrieve-tests-metadata'].freeze
+  QA_GDK                 = ['e2e:test-on-gdk'].freeze
+  REVIEW_APP             = ['start-review-app-pipeline'].freeze
+  QA                     = ['package-and-qa', 'e2e:package-and-test-ee', 'e2e:package-and-test-ce'].freeze
+  # Ordered by expected duration, DESC
+  PIPELINE_TYPES_ORDERED = %w[qa review-app qa-gdk code rspec-predictive docs].freeze
+
+  def initialize
+    @pipeline_types = Set.new
+  end
+
+  def execute
+    if ENV['CI_PIPELINE_NAME'].match?(/\[types: .+\]/)
+      puts "Pipeline name '#{ENV['CI_PIPELINE_NAME']}' already has types in its name."
+      return
+    end
+
+    begin
+      Gitlab.pipeline_bridges(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+        @pipeline_types.merge(pipeline_types_for(job))
+      end
+
+      Gitlab.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+        @pipeline_types.merge(pipeline_types_for(job))
+      end
+    rescue Gitlab::Error::Error => error
+      puts "GitLab error: #{error}"
+      exit_allow_to_fail
+    end
+
+    pipeline_name = "#{ENV['CI_PIPELINE_NAME']} [types: #{sorted_pipeline_types.join(',')}]"
+
+    puts "Found pipeline types: #{pipeline_types.to_a}"
+    puts "New pipeline name: #{pipeline_name}"
+
+    set_pipeline_name(pipeline_name)
+  end
+
+  private
+
+  attr_accessor :pipeline_types
+
+  def pipeline_types_for(job)
+    pipeline_types = Set.new
+    pipeline_types << 'rspec-predictive' if RSPEC_PREDICTIVE.include?(job.name)
+    pipeline_types << 'qa-gdk'           if QA_GDK.include?(job.name)
+    pipeline_types << 'review-app'       if REVIEW_APP.include?(job.name)
+    pipeline_types << 'qa'               if QA.include?(job.name)
+    pipeline_types << 'docs'             if DOCS.include?(job.name)
+    pipeline_types << 'code'             if CODE.include?(job.name)
+    pipeline_types
+  end
+
+  def sorted_pipeline_types
+    pipeline_types.sort_by { |type| PIPELINE_TYPES_ORDERED.index(type) }
+  end
+
+  def set_pipeline_name(pipeline_name)
+    # TODO: Create an issue in the gitlab gem to add this one
+    uri = URI("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_PROJECT_ID']}/pipelines/#{ENV['CI_PIPELINE_ID']}/metadata")
+    Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+      request = Net::HTTP::Put.new uri
+      request['JOB-TOKEN'] = ENV['CI_JOB_TOKEN']
+      request.body = "name=#{pipeline_name}"
+      response = http.request request
+
+      if response.code != '200'
+        puts "Failed to set pipeline name: #{response.body}"
+        exit_allow_to_fail
+      end
+    end
+  end
+
+  # Exit with a different error code, so that we can allow the CI job to fail
+  def exit_allow_to_fail
+    exit 3
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  Gitlab.configure do |config|
+    config.endpoint      = ENV['CI_API_V4_URL']
+    config.private_token = ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE']
+  end
+
+  SetPipelineName.new.execute
+end

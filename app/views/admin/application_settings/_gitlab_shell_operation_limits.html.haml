@@ -1,7 +1,7 @@
 %section.settings.no-animate#js-gitlab-shell-operation-limits-settings{ class: ('expanded' if expanded_by_default?), 'data-testid': 'gitlab-shell-operation-limits' }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('ShellOperations|Git SSH operations rate limit')
+      = s_('ShellOperations|Git SSH operations rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary

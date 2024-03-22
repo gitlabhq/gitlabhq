@@ -5,6 +5,7 @@ import {
   GlIcon,
   GlLink,
   GlLoadingIcon,
+  GlSprintf,
   GlTooltipDirective as GlTooltip,
   GlTruncate,
 } from '@gitlab/ui';
@@ -24,6 +25,7 @@ export default {
     GlBadge,
     GlIcon,
     GlLink,
+    GlSprintf,
     GlTruncate,
     GlLoadingIcon,
     TimeAgoTooltip,
@@ -60,6 +62,12 @@ export default {
     },
     shortSha() {
       return this.commit?.shortId;
+    },
+    timeStamp() {
+      return this.deployment?.deployedAt ? __('Deployed %{timeago}') : __('Created %{timeago}');
+    },
+    displayTimeAgo() {
+      return this.deployment?.deployedAt || this.deployment?.createdAt;
     },
     createdAt() {
       return this.deployment?.createdAt;
@@ -207,10 +215,19 @@ export default {
               size="small"
             />
           </div>
-          <time-ago-tooltip v-if="createdAt" :time="createdAt" class="gl-display-flex">
+          <time-ago-tooltip
+            v-if="displayTimeAgo"
+            :time="displayTimeAgo"
+            class="gl-display-flex"
+            data-testid="deployment-timestamp"
+          >
             <template #default="{ timeAgo }">
               <gl-icon name="calendar" class="gl-mr-2" />
-              <span class="gl-mr-2 gl-white-space-nowrap">{{ timeAgo }}</span>
+              <span class="gl-mr-2 gl-white-space-nowrap">
+                <gl-sprintf :message="timeStamp">
+                  <template #timeago>{{ timeAgo }}</template>
+                </gl-sprintf>
+              </span>
             </template>
           </time-ago-tooltip>
         </div>

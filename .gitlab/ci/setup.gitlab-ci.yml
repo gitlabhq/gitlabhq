@@ -57,6 +57,29 @@ clone-gitlab-repo:
       - '*'
     expire_in: '12 hours'
 
+set-pipeline-name:
+  extends:
+    - .predictive-job
+    - .setup:rules:set-pipeline-name
+    - .fast-no-clone-job
+  variables:
+    # We use > instead of | because we want the files to be space-separated.
+    FILES_TO_DOWNLOAD: >
+      scripts/utils.sh
+      scripts/pipeline/set-pipeline-name
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  stage: prepare
+  before_script:
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - chmod u+x scripts/pipeline/set-pipeline-name && scripts/pipeline/set-pipeline-name
+  allow_failure:
+    exit_codes:
+      - 3
+
 gitlab_git_test:
   extends:
     - .predictive-job

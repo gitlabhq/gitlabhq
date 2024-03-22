@@ -51,7 +51,7 @@ You can request configuration changes for some of the options originally specifi
 
 Configuration changes made with Switchboard can be applied immediately or deferred until your next scheduled weekly [maintenance window](../../administration/dedicated/create_instance.md#maintenance-window).
 
-When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch.
+When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch. After your change is deployed, you will receive an email notification. You might have to check your spam folder if it does not show up in your main email folder.
 
 ### Inbound Private Link
 

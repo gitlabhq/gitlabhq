@@ -1720,7 +1720,7 @@
 .qa:rules:e2e:test-on-cng:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: [*if-default-branch-schedule-nightly, *qa-e2e-test-schedule-variables]
+    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
     - <<: *if-merge-request
       changes: *qa-patterns
 
@@ -2766,6 +2766,14 @@
 .setup:rules:verify-default-ruby:
   rules:
     - <<: *if-merge-request-labels-run-in-ruby
+
+.setup:rules:set-pipeline-name:
+  rules:
+    - <<: *if-not-merge-request # This is only designed to run in a merge request
+      when: never
+    - if: '$PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE == null'
+      when: never
+    - <<: *if-merge-request
 
 .setup:rules:verify-tests-yml:
   rules:

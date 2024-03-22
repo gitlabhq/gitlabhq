@@ -4,7 +4,7 @@
 - statistics_empty_buttons = @project.empty_repo_statistics_buttons
 - statistics_buttons = @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
 
-%aside.project-page-sidebar
+%aside.project-page-sidebar{ data: { testid: 'project-page-sidebar' } }
   .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50{ class: 'gl-pt-2!' }
     %h2.gl-font-base.gl-font-weight-bold.gl-reset-line-height.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
     -# Project description
@@ -53,7 +53,7 @@
         = render 'stat_anchor_list', anchors: anchor_buttons
 
   -# Buttons
-  - if has_project_shortcut_buttons && (@project.empty_repo? ? statistics_empty_buttons.any? : statistics_buttons.any?)
+  - if can?(current_user, :read_code, @project) && has_project_shortcut_buttons && (@project.empty_repo? ? statistics_empty_buttons.any? : statistics_buttons.any?)
     .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
       .project-buttons.gl-mb-2.js-show-on-project-root{ data: { testid: 'project-buttons' } }
         - if @project.empty_repo?

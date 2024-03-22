@@ -1,0 +1,9 @@
+---
+name: remove_jwks_endpoint
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/221031
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147389
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450775
+milestone: '17.0'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

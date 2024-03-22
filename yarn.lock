@@ -5758,10 +5758,10 @@ dommatrix@^1.0.3:
   resolved "https://registry.yarnpkg.com/dommatrix/-/dommatrix-1.0.3.tgz#e7c18e8d6f3abdd1fef3dd4aa74c4d2e620a0525"
   integrity sha512-l32Xp/TLgWb8ReqbVJAFIvXmY7go4nTxxlWiAFyhoQw9RKEOHBZNnyGvJWqDVSPmq3Y9HlM4npqF/T6VMOXhww==
 
-dompurify@^3.0.10, dompurify@^3.0.5:
-  version "3.0.10"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.10.tgz#d48b7c5cef8f368fca380c6fbd9aa8d9f3ca0dcb"
-  integrity sha512-WZDL8ZHTliEVP3Lk4phtvjg8SNQ3YMc5WVstxE8cszKZrFjzI4PF4ZTIk9VGAc9vZADO7uGO2V/ZiStcRSAT4Q==
+dompurify@^3.0.11, dompurify@^3.0.5:
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.11.tgz#c163f5816eaac6aeef35dae2b77fca0504564efe"
+  integrity sha512-Fan4uMuyB26gFV3ovPoEoQbxRRPfTu3CvImyZnhGq5fsIEO+gEFLp45ISFt+kQBWsK5ulDdT0oV28jS1UrwQLg==
 
 dropzone@^4.2.0:
   version "4.2.0"

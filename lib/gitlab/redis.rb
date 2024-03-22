@@ -10,7 +10,6 @@ module Gitlab
     ALL_CLASSES = [
       Gitlab::Redis::BufferedCounter,
       Gitlab::Redis::Cache,
-      Gitlab::Redis::ClusterRepositoryCache,
       Gitlab::Redis::DbLoadBalancing,
       Gitlab::Redis::FeatureFlag,
       *Gitlab::Redis::Queues.instances.values, # dynamically adds QueueShard* classes

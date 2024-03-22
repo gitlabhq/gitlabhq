@@ -33,9 +33,6 @@ module QA
         view 'app/views/projects/_sidebar.html.haml' do
           element 'project-badges-content'
           element 'badge-image-link'
-        end
-
-        view 'app/views/projects/_files.html.haml' do
           element 'project-buttons'
         end
 

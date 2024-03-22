@@ -136,7 +136,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   end
 
   def click_update_merge_requests_button
-    click_button 'Update all'
+    click_button 'Update selected'
     wait_for_requests
   end
 end
