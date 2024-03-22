@@ -85,6 +85,9 @@ import {
   mockMilestone,
 } from 'jest/work_items/mock_data';
 
+import { stubExperiments } from 'helpers/experimentation_helper';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
+
 import('~/issuable');
 import('~/users_select');
 
@@ -559,6 +562,21 @@ describe('CE IssuesListApp component', () => {
         });
       },
     );
+
+    describe('when issues_mrs_empty_state candidate experiment', () => {
+      beforeEach(() => {
+        stubExperiments({ issues_mrs_empty_state: 'candidate' });
+      });
+
+      it('does not render IssuableByEmail', () => {
+        wrapper = mountComponent({
+          provide: { initialEmail: true, canCreateIssue: true },
+          stubs: { GitlabExperiment },
+        });
+
+        expect(findIssuableByEmail().exists()).toBe(false);
+      });
+    });
   });
 
   describe('empty states', () => {
@@ -590,6 +608,7 @@ describe('CE IssuesListApp component', () => {
           currentTabCount: 0,
           exportCsvPathWithQuery: defaultProvide.exportCsvPath,
           showCsvButtons: true,
+          showIssuableByEmail: false,
           showNewIssueDropdown: false,
         });
       });

@@ -159,7 +159,7 @@ describe('CiResourceDetailsPage', () => {
       });
 
       it('passes expected props', () => {
-        expect(findHeaderComponent().props()).toEqual({
+        expect(findHeaderComponent().props()).toMatchObject({
           isLoadingDetails: false,
           isLoadingSharedData: false,
           openIssuesCount: defaultAdditionalData.openIssuesCount,

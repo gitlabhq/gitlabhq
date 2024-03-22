@@ -73,6 +73,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersConcurrency, 
       it 'returns current_workers' do
         expect(workers).to eq('TestConcurrencyLimitWorker' => 10)
       end
+
+      context 'with multiple shard instances' do
+        before do
+          allow(Gitlab::Redis::Queues)
+              .to receive(:instances).and_return({ 'main' => Gitlab::Redis::Queues, 'shard' => Gitlab::Redis::Queues })
+        end
+
+        it 'returns count for all instances' do
+          expect(workers).to eq({
+            'TestConcurrencyLimitWorker' => current_concurrency * Gitlab::Redis::Queues.instances.size
+          })
+        end
+      end
     end
 
     context 'with cache' do

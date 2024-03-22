@@ -42,8 +42,8 @@ export default {
   },
   mixins: [InternalEvents.mixin()],
   props: {
-    newCommentTemplatePath: {
-      type: String,
+    newCommentTemplatePaths: {
+      type: Array,
       required: true,
     },
   },
@@ -147,14 +147,17 @@ export default {
       </template>
       <template #footer>
         <div
-          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-justify-content-center gl-p-2"
+          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-justify-content-center gl-flex-direction-column gl-p-2"
         >
           <gl-button
-            :href="newCommentTemplatePath"
+            v-for="(manage, index) in newCommentTemplatePaths"
+            :key="index"
+            :href="manage.path"
             category="tertiary"
             block
             class="gl-justify-content-start! gl-mt-0! gl-mb-0! gl-px-3!"
-            >{{ __('Add a new comment template') }}</gl-button
+            data-testid="manage-button"
+            >{{ manage.text }}</gl-button
           >
         </div>
       </template>
@@ -167,7 +170,7 @@ export default {
 
 <style>
 .comment-template-dropdown .gl-new-dropdown-panel {
-  width: 350px;
+  width: 350px !important;
 }
 
 .comment-template-dropdown .gl-new-dropdown-item-check-icon {

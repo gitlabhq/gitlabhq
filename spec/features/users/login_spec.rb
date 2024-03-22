@@ -509,15 +509,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
 
-      it 'does not allow LDAP user to sign in with local password' do
-        create(:identity, provider: 'ldapmain', user: user)
-
-        gitlab_sign_in(user)
-
-        expect(page).to have_content(I18n.t('devise.failure.invalid'))
-        expect(user.reload.failed_attempts).to eq(0)
-      end
-
       it 'does not show already signed in message when opening sign in page after login' do
         expect(authentication_metrics)
           .to increment(:user_authenticated_counter)

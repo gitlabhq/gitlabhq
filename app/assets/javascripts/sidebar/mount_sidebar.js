@@ -272,7 +272,7 @@ function mountSidebarMilestoneWidget() {
           iid: issueIid,
           issuableType: isInIssuePage() || isInDesignPage() ? TYPE_ISSUE : TYPE_MERGE_REQUEST,
           issuableAttribute: IssuableAttributeType.Milestone,
-          icon: 'clock',
+          icon: 'milestone',
         },
       }),
   });

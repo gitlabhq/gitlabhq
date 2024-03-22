@@ -7133,6 +7133,30 @@ RSpec.describe User, feature_category: :user_profile do
       it { is_expected.to eq(false) }
     end
 
+    context 'using a correct password' do
+      let(:user) { create(:user) }
+      let(:password) { user.password }
+
+      it { is_expected.to eq(true) }
+
+      context 'when password authentication is disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when user with LDAP identity' do
+        before do
+          create(:identity, provider: 'ldapmain', user: user)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
     context 'using a wrong password' do
       let(:user) { create(:user) }
       let(:password) { 'WRONG PASSWORD' }

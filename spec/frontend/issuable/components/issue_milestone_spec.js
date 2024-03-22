@@ -16,7 +16,7 @@ describe('IssueMilestone component', () => {
   });
 
   it('renders milestone icon', () => {
-    expect(wrapper.findComponent(GlIcon).props('name')).toBe('clock');
+    expect(wrapper.findComponent(GlIcon).props('name')).toBe('milestone');
   });
 
   it('renders milestone title', () => {

@@ -18,9 +18,8 @@
         = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
         = notes_count
     %li
-      %span.sr-only{ data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
-        = visibility_level_label(snippet.visibility_level)
-      = visibility_level_icon(snippet.visibility_level)
+      %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
+        = visibility_level_icon(snippet.visibility_level)
 
   .snippet-info
     .gl-display-inline{ data: { testid: 'snippet-created-at'} }

@@ -21,7 +21,7 @@ module SystemNoteHelper
     'branch' => 'fork',
     'confidential' => 'eye-slash',
     'visible' => 'eye',
-    'milestone' => 'clock',
+    'milestone' => 'milestone',
     'discussion' => 'comment',
     'moved' => 'arrow-right',
     'outdated' => 'pencil',

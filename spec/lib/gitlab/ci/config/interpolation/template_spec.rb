@@ -41,26 +41,6 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
     RESULT
   end
 
-  context 'when ci_fix_input_types is disabled' do
-    before do
-      stub_feature_flags(ci_fix_input_types: false)
-    end
-
-    it 'interpolates all values as strings' do
-      expect(subject.interpolated).to eq YAML.safe_load <<~RESULT
-      test:
-        spec:
-          env: dev
-
-      abc:
-        name: abc
-        parallel: '6'
-        allow_failure: 'true'
-        script: 'echo "This job makes 6 jobs for the dev env"'
-      RESULT
-    end
-  end
-
   context 'when interpolation can not be performed' do
     let(:config) { '$[[ xxx.yyy ]]: abc' }
 

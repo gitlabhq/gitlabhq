@@ -42,7 +42,7 @@ export default () => {
     apolloProvider,
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
-      newCommentTemplatePath: notesDataset.newCommentTemplatePath,
+      newCommentTemplatePaths: JSON.parse(notesDataset.newCommentTemplatePaths),
       mrFilter: true,
       newCustomEmojiPath: notesDataset.newCustomEmojiPath,
     },

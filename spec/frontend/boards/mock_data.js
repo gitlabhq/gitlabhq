@@ -787,7 +787,7 @@ export const mockTokens = (fetchLabels, isSignedIn) => [
   },
   ...(isSignedIn ? [mockEmojiToken, mockConfidentialToken] : []),
   {
-    icon: 'clock',
+    icon: 'milestone',
     title: TOKEN_TITLE_MILESTONE,
     symbol: '%',
     type: TOKEN_TYPE_MILESTONE,

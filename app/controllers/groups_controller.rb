@@ -85,9 +85,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def create
-    @group = Groups::CreateService.new(current_user, group_params).execute
+    response = Groups::CreateService.new(current_user, group_params).execute
+    @group = response[:group]
 
-    if @group.persisted?
+    if response.success?
       successful_creation_hooks
 
       notice = if @group.chat_team.present?

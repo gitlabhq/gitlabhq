@@ -31,6 +31,7 @@ class Commit
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   MAX_SHA_LENGTH = Gitlab::Git::Commit::MAX_SHA_LENGTH
   COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN
+  WHOLE_WORD_COMMIT_SHA_PATTERN = /\b#{COMMIT_SHA_PATTERN}\b/
   EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/
@@ -205,7 +206,7 @@ class Commit
   def self.reference_pattern
     @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>#{COMMIT_SHA_PATTERN})
+      (?<commit>#{WHOLE_WORD_COMMIT_SHA_PATTERN})
     }x
   end
 

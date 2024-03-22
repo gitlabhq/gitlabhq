@@ -79,9 +79,10 @@ module API
           import_export_upload: ImportExportUpload.new(import_file: params[:file])
         }
 
-        group = ::Groups::CreateService.new(current_user, group_params).execute
+        response = ::Groups::CreateService.new(current_user, group_params).execute
+        group = response[:group]
 
-        if group.persisted?
+        if response.success?
           ::Groups::ImportExport::ImportService.new(group: group, user: current_user).async_execute
 
           accepted!

@@ -17,6 +17,7 @@ export default function initDiffsApp(store = notesStore) {
   const { dataset } = el;
 
   Vue.use(VueApollo);
+  const { newCommentTemplatePaths } = dataset;
 
   const vm = new Vue({
     el,
@@ -27,7 +28,7 @@ export default function initDiffsApp(store = notesStore) {
     store,
     apolloProvider,
     provide: {
-      newCommentTemplatePath: dataset.newCommentTemplatePath,
+      newCommentTemplatePaths: newCommentTemplatePaths ? JSON.parse(newCommentTemplatePaths) : [],
     },
     data() {
       return {

@@ -15,7 +15,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
   }
 
   const { dataset } = el;
-  const { ciCatalogPath } = dataset;
+  const { ciCatalogPath, reportAbusePath } = dataset;
 
   Vue.use(VueApollo);
 
@@ -30,6 +30,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
     apolloProvider,
     provide: {
       ciCatalogPath,
+      reportAbusePath,
     },
     render(h) {
       return h(GlobalCatalog);

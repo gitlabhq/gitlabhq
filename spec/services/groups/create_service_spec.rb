@@ -7,7 +7,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   let(:current_user) { user }
   let(:group_params) { { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC }.merge(extra_params) }
   let(:extra_params) { {} }
-  let(:created_group) { response }
+  let(:created_group) { response[:group] }
 
   subject(:response) { described_class.new(current_user, group_params).execute }
 
@@ -20,14 +20,14 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   shared_examples 'creating a group' do
     specify do
       expect { response }.to change { Group.count }
-      expect(created_group).to be_persisted
+      expect(response).to be_success
     end
   end
 
   shared_examples 'does not create a group' do
     specify do
       expect { response }.not_to change { Group.count }
-      expect(created_group).not_to be_persisted
+      expect(response).to be_error
     end
   end
 

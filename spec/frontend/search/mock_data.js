@@ -544,7 +544,7 @@ export const MOCK_NAVIGATION_ITEMS = [
   },
   {
     title: 'Milestones',
-    icon: 'clock',
+    icon: 'milestone',
     link: '/search?scope=milestones&search=et',
     is_active: false,
     pill_count: '0',

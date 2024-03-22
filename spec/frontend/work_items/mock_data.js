@@ -2441,7 +2441,7 @@ export const mockWorkItemNotesResponse = {
                       body: 'changed milestone to %v4.0',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
-                      systemNoteIconName: 'clock',
+                      systemNoteIconName: 'milestone',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
                       url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_201',
@@ -2657,7 +2657,7 @@ export const mockWorkItemNotesByIidResponse = {
                             body: 'changed milestone to %v4.0',
                             bodyHtml:
                               '\u003cp data-sourcepos="1:1-1:23" dir="auto"\u003echanged milestone to \u003ca href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container="body" data-placement="top" title="" class="gfm gfm-milestone has-tooltip"\u003e%v4.0\u003c/a\u003e\u003c/p\u003e',
-                            systemNoteIconName: 'clock',
+                            systemNoteIconName: 'milestone',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
                             url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_191',
@@ -2882,7 +2882,7 @@ export const mockMoreWorkItemNotesResponse = {
                             body: 'changed milestone to %v4.0',
                             bodyHtml:
                               '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
-                            systemNoteIconName: 'clock',
+                            systemNoteIconName: 'milestone',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
                             url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_191',

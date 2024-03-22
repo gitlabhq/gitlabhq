@@ -75,6 +75,7 @@ import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/n
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -153,6 +154,7 @@ export default {
     LocalStorageSync,
     WorkItemDetail,
     GlLink,
+    GitlabExperiment,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -403,7 +405,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           token: MilestoneToken,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
           shouldSkipSort: true,
@@ -1073,8 +1075,13 @@ export default {
       :export-csv-path-with-query="exportCsvPathWithQuery"
       :show-csv-buttons="showCsvButtons"
       :show-new-issue-dropdown="showNewIssueDropdown"
+      :show-issuable-by-email="showIssuableByEmail"
     />
 
-    <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
+    <gitlab-experiment v-if="showIssuableByEmail" name="issues_mrs_empty_state">
+      <template #control>
+        <issuable-by-email class="gl-text-center gl-pt-5 gl-pb-7" />
+      </template>
+    </gitlab-experiment>
   </div>
 </template>

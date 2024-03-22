@@ -2605,7 +2605,7 @@
 - './ee/spec/services/group_saml/saml_group_links/destroy_service_spec.rb'
 - './ee/spec/services/group_saml/saml_provider/create_service_spec.rb'
 - './ee/spec/services/group_saml/saml_provider/update_service_spec.rb'
-- './ee/spec/services/groups/create_service_spec.rb'
+- './ee/spec/services/ee/groups/create_service_spec.rb'
 - './ee/spec/services/groups/destroy_service_spec.rb'
 - './ee/spec/services/groups/epics_count_service_spec.rb'
 - './ee/spec/services/groups/mark_for_deletion_service_spec.rb'

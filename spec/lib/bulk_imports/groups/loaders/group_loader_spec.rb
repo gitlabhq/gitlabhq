@@ -35,13 +35,14 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
         group = ::Group.new
         group.validate
         expected_errors = group.errors.full_messages.to_sentence
+        service_response = ServiceResponse.error(message: '_error_', payload: { group: group })
 
         expect(::Groups::CreateService)
           .to receive(:new)
           .with(context.current_user, data)
           .and_return(service_double)
 
-        expect(service_double).to receive(:execute).and_return(group)
+        expect(service_double).to receive(:execute).and_return(service_response)
         expect(entity).not_to receive(:update!)
 
         expect { subject.load(context, data) }.to raise_error(described_class::GroupCreationError, expected_errors)
@@ -52,14 +53,14 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
       shared_examples 'calls Group Create Service to create a new group' do
         it 'calls Group Create Service to create a new group' do
           group_double = instance_double(::Group)
+          service_response = ServiceResponse.success(payload: { group: group_double })
 
           expect(::Groups::CreateService)
             .to receive(:new)
             .with(context.current_user, data)
             .and_return(service_double)
 
-          expect(service_double).to receive(:execute).and_return(group_double)
-          expect(group_double).to receive(:errors).and_return([])
+          expect(service_double).to receive(:execute).and_return(service_response)
           expect(entity).to receive(:update!).with(group: group_double)
 
           subject.load(context, data)

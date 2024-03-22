@@ -1058,6 +1058,7 @@ class User < MainClusterwide::ApplicationRecord
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
+    return false unless allow_password_authentication?
 
     super
   end

@@ -513,7 +513,7 @@ When using CI/CD variables in a component, evaluate if the `inputs` keyword
 should be used instead. Avoid asking users to define custom variables to configure
 components when `inputs` is a better solution.
 
-Inputs are explicitly defined in the component's specs, and have better validation than variables.
+Inputs are explicitly defined in the component's `spec` section, and have better validation than variables.
 For example, if a required input is not passed to the component, GitLab returns a pipeline error.
 By contrast, if a variable is not defined, its value is empty, and there is no error.
 

@@ -19,14 +19,6 @@ module Gitlab
 
           attr_reader :data, :ctx, :errors
 
-          def self.match(data)
-            return data unless data.is_a?(String) && data.include?(PREFIX)
-
-            data.gsub(PATTERN) do
-              yield ::Regexp.last_match(1), ::Regexp.last_match(2)
-            end
-          end
-
           def initialize(block, data, ctx)
             @block = block
             @data = data

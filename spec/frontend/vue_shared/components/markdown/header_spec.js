@@ -231,7 +231,7 @@ describe('Markdown field header component', () => {
       createWrapper({
         attachTo: '#root',
         provide: {
-          newCommentTemplatePath: 'some/path',
+          newCommentTemplatePaths: ['some/path'],
           glFeatures: {
             savedReplies: true,
           },
@@ -248,7 +248,7 @@ describe('Markdown field header component', () => {
       });
     });
 
-    it('does not show the saved replies button if newCommentTemplatePath is not defined', () => {
+    it('does not show the saved replies button if newCommentTemplatePaths is not defined', () => {
       createWrapper({
         provide: {
           glFeatures: {

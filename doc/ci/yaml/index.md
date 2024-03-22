@@ -824,7 +824,7 @@ Use the interpolation format `$[[ input.input-id ]]` to reference the values out
 Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
 configuration is merged with the contents of the `.gitlab-ci.yml` file.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: A hash of strings representing the expected inputs.
@@ -864,7 +864,7 @@ Inputs are mandatory when included, unless you set a default value with `spec:in
 
 Use `default: ''` to have no default value.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: A string representing the default value, or `''`.
@@ -906,7 +906,7 @@ Use `description` to give a description to a specific input. The description doe
 not affect the behavior of the input and is only used to help users of the file
 understand the input.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: A string representing the description.
@@ -930,7 +930,7 @@ spec:
 Inputs can use `options` to specify a list of allowed values for an input.
 The limit is 50 options per input.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: An array of input options.
@@ -968,7 +968,7 @@ In this example:
 
 Use `spec:inputs:regex` to specify a regular expression that the input must match.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: Must be a regular expression that starts and ends with the `/` character.
@@ -998,7 +998,7 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 By default, inputs expect strings. Use `spec:inputs:type` to set a different required
 type for inputs.
 
-**Keyword type**: Header keyword. `specs` must be declared at the top of the configuration file,
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
 **Possible inputs**: Can be one of:
@@ -4348,20 +4348,20 @@ build-prod:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script: echo "Default branch, so building prod version..."
 
-specs:
+tests:
   stage: test
   needs: ['build-dev']
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       needs: ['build-prod']
     - when: on_success # Run the job in other cases
-  script: echo "Running dev specs by default, or prod specs when default branch..."
+  script: echo "Running tests for dev by default, or prod when default branch..."
 ```
 
 In this example:
 
-- If the pipeline runs on a branch that is not the default branch, the `specs` job needs the `build-dev` job (default behavior).
-- If the pipeline runs on the default branch, and therefore the rule matches the condition, the `specs` job needs the `build-prod` job instead.
+- If the pipeline runs on a branch that is not the default branch, the `tests` job needs the `build-dev` job (default behavior).
+- If the pipeline runs on the default branch, and therefore the rule matches the condition, the `tests` job needs the `build-prod` job instead.
 
 **Additional details**:
 

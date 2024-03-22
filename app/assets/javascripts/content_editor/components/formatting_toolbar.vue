@@ -21,7 +21,7 @@ export default {
     HeaderDivider,
   },
   inject: {
-    newCommentTemplatePath: { default: null },
+    newCommentTemplatePaths: { default: () => [] },
     tiptapEditor: { default: null },
     contentEditor: { default: null },
   },
@@ -199,11 +199,11 @@ export default {
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"
       />
-      <header-divider v-if="newCommentTemplatePath" />
+      <header-divider v-if="newCommentTemplatePaths.length" />
     </div>
     <comment-templates-dropdown
-      v-if="newCommentTemplatePath"
-      :new-comment-template-path="newCommentTemplatePath"
+      v-if="newCommentTemplatePaths.length"
+      :new-comment-template-paths="newCommentTemplatePaths"
       @select="insertSavedReply"
     />
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />

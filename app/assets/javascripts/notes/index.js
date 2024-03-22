@@ -59,7 +59,7 @@ export default ({ editorAiActions = [] } = {}) => {
     provide: {
       showTimelineViewToggle,
       reportAbusePath: notesDataset.reportAbusePath,
-      newCommentTemplatePath: notesDataset.newCommentTemplatePath,
+      newCommentTemplatePaths: JSON.parse(notesDataset.newCommentTemplatePaths),
       resourceGlobalId: convertToGraphQLId(noteableData.noteableType, noteableData.id),
       editorAiActions: editorAiActions.map((factory) => factory(noteableData)),
       newCustomEmojiPath: notesDataset.newCustomEmojiPath,

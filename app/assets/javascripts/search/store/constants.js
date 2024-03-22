@@ -29,7 +29,7 @@ export const ICON_MAP = {
   merge_requests: 'merge-request',
   commits: 'commit',
   notes: 'comments',
-  milestones: 'clock',
+  milestones: 'milestone',
   users: 'users',
   projects: 'project',
   wiki_blobs: 'book',

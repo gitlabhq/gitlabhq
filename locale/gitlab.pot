@@ -2886,9 +2886,6 @@ msgstr ""
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
-msgid "Add a new comment template"
-msgstr ""
-
 msgid "Add a new issue"
 msgstr ""
 
@@ -19000,6 +18997,9 @@ msgstr ""
 msgid "Email a new %{name} to this project"
 msgstr ""
 
+msgid "Email a new issue"
+msgstr ""
+
 msgid "Email address copied"
 msgstr ""
 
@@ -19154,6 +19154,9 @@ msgid "Enable Gitpod?"
 msgstr ""
 
 msgid "Enable Invisible Captcha during sign up"
+msgstr ""
+
+msgid "Enable Jira integration"
 msgstr ""
 
 msgid "Enable Kroki"
@@ -25910,6 +25913,9 @@ msgstr ""
 msgid "Import and export settings"
 msgstr ""
 
+msgid "Import existing issues"
+msgstr ""
+
 msgid "Import from"
 msgstr ""
 
@@ -29490,6 +29496,9 @@ msgstr ""
 msgid "Learn more about groups."
 msgstr ""
 
+msgid "Learn more about issues"
+msgstr ""
+
 msgid "Learn more about issues."
 msgstr ""
 
@@ -30289,6 +30298,9 @@ msgstr ""
 msgid "Manage git repositories with fine-grained access controls that keep your code secure."
 msgstr ""
 
+msgid "Manage group comment templates"
+msgstr ""
+
 msgid "Manage group labels"
 msgstr ""
 
@@ -30314,6 +30326,9 @@ msgid "Manage two-factor authentication"
 msgstr ""
 
 msgid "Manage usage"
+msgstr ""
+
+msgid "Manage your comment templates"
 msgstr ""
 
 msgid "Manage your subscription"
@@ -41297,6 +41312,9 @@ msgstr ""
 msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
+msgid "Read our documentation"
+msgstr ""
+
 msgid "Read the documentation before applying changes."
 msgstr ""
 
@@ -51720,6 +51738,9 @@ msgstr ""
 msgid "This feature is only allowed in groups or projects that enable this feature."
 msgstr ""
 
+msgid "This feature is only available on paid plans."
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 
@@ -57176,6 +57197,9 @@ msgid "Will deploy to"
 msgstr ""
 
 msgid "Wireframe"
+msgstr ""
+
+msgid "With issues you can discuss the implementation of an idea, track tasks and work status, elaborate on code implementations, and accept feature proposals, questions, support requests, or bug reports."
 msgstr ""
 
 msgid "With requirements, you can set criteria to check your products against."

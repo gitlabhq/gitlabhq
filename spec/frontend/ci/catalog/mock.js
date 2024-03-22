@@ -395,10 +395,16 @@ export const catalogSinglePageResponse = {
           description: 'A simple component',
           starCount: 0,
           versions: {
+            __typename: 'CiCatalogResourceVersionConnection',
             nodes: [
               {
                 id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
-                author: { name: 'author', username: 'author-username', webUrl: '/user/1' },
+                author: {
+                  __typename: 'UserCore',
+                  name: 'author',
+                  username: 'author-username',
+                  webUrl: '/user/1',
+                },
                 createdAt: '2024-01-26T19:40:03Z',
                 name: '1.0.0',
                 path: '/root/catalog-component-test/-/tags/1.0.2',
@@ -455,15 +461,22 @@ export const catalogSharedDataMock = {
       starCount: 1,
       starrersPath: '/path/to/project/-/starrers',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
-            __typename: 'Release',
+            __typename: 'CiCatalogResourceVersion',
             id: '3',
             components: componentsListMockData,
             name: '1.0.0',
             path: 'path/to/release',
             createdAt: Date.now(),
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
+            author: {
+              __typename: 'UserCore',
+              id: 1,
+              webUrl: 'profile/1',
+              name: 'username',
+              state: 'active',
+            },
           },
         ],
       },
@@ -482,10 +495,10 @@ export const catalogAdditionalDetailsMock = {
       openMergeRequestsCount: 10,
       readmeHtml: '<h1>Hello world</h1>',
       versions: {
-        __typename: 'ReleaseConnection',
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
-            __typename: 'Release',
+            __typename: 'CiCatalogResourceVersion',
             id: 'gid://gitlab/Release/3',
             commit: {
               __typename: 'Commit',
@@ -510,7 +523,7 @@ export const catalogAdditionalDetailsMock = {
             },
             name: '1.0.2',
             path: '/path/to/release',
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
+            author: { __typename: 'UserCore', id: 1, webUrl: 'profile/1', name: 'username' },
             createdAt: '2022-08-23T17:19:09Z',
           },
         ],
@@ -530,9 +543,10 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       name: `My component #${i}`,
       starCount: 10,
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
-            __typename: 'Release',
+            __typename: 'CiCatalogResourceVersion',
             id: '3',
             components: {
               ...componentsListMockData,
@@ -540,7 +554,12 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
             name: '1.0.0',
             path: 'path/to/release',
             createdAt: Date.now(),
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
+            author: {
+              __typename: 'UserCore',
+              id: 1,
+              webUrl: 'profile/1',
+              name: 'username',
+            },
           },
         ],
       },
@@ -560,6 +579,7 @@ export const mockComponents = {
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
             id: 'gid://gitlab/Version/1',
@@ -580,6 +600,7 @@ export const mockComponentsEmpty = {
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
             id: 'gid://gitlab/Version/1',

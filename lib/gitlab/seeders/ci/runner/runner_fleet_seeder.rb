@@ -162,7 +162,7 @@ module Gitlab
           def create_group(**args)
             logger.info(message: 'Creating group', **args)
 
-            ensure_success(::Groups::CreateService.new(@user, **args).execute)
+            ensure_success(::Groups::CreateService.new(@user, **args).execute[:group])
           end
 
           def ensure_project(name:, namespace_id:, **args)

@@ -77,7 +77,7 @@ describe('CE IssueCardTimeInfo component', () => {
         const milestone = findMilestone();
 
         expect(milestone.text()).toBe('My milestone');
-        expect(milestone.findComponent(GlIcon).props('name')).toBe('clock');
+        expect(milestone.findComponent(GlIcon).props('name')).toBe('milestone');
         expect(milestone.findComponent(GlLink).attributes('href')).toBe('/milestone/webPath');
       });
 

@@ -72,7 +72,7 @@ class GroupSeeder
   end
 
   def create_root_group
-    root_group = ::Groups::CreateService.new(@user, group_params).execute
+    root_group = ::Groups::CreateService.new(@user, group_params).execute[:group]
 
     track_group_id(1, root_group.id)
   end
@@ -85,7 +85,7 @@ class GroupSeeder
 
       parent_groups.each do |parent_id|
         @resource_count.times do |_|
-          sub_group = ::Groups::CreateService.new(@user, group_params(parent_id: parent_id)).execute
+          sub_group = ::Groups::CreateService.new(@user, group_params(parent_id: parent_id)).execute[:group]
 
           track_group_id(current_level, sub_group.id)
         end

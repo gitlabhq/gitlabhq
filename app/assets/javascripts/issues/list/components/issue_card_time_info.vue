@@ -95,7 +95,7 @@ export default {
         :title="milestoneDate"
         class="gl-font-sm gl-text-gray-500!"
       >
-        <gl-icon name="clock" :size="12" />
+        <gl-icon name="milestone" :size="12" />
         {{ milestone.title }}
       </gl-link>
     </span>

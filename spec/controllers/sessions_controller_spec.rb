@@ -87,7 +87,23 @@ RSpec.describe SessionsController, feature_category: :system_access do
         it 'does not authenticate user' do
           post(:create, params: { user: { login: 'invalid', password: 'invalid' } })
 
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(@request.env['warden']).not_to be_authenticated
           expect(controller).to set_flash.now[:alert].to(/Invalid login or password/)
+        end
+      end
+
+      context 'when user with LDAP identity' do
+        before do
+          create(:identity, provider: 'ldapmain', user: user)
+        end
+
+        it 'does not authenticate user' do
+          post_action
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(flash[:alert]).to include(I18n.t('devise.failure.invalid'))
         end
       end
 

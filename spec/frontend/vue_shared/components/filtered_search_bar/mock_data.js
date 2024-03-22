@@ -277,7 +277,7 @@ export const mockLabelToken = {
 
 export const mockMilestoneToken = {
   type: TOKEN_TYPE_MILESTONE,
-  icon: 'clock',
+  icon: 'milestone',
   title: TOKEN_TITLE_MILESTONE,
   unique: true,
   symbol: '%',

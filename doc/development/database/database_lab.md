@@ -133,73 +133,25 @@ For information on testing migrations, review our
 NOTE:
 You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
 
-#### Simplified access through `pgai` Ruby gem
+To access the database lab instances, you must:
 
-[@mbobin](https://gitlab.com/mbobin) created the [`pgai` Ruby Gem](https://gitlab.com/mbobin/pgai/#pgai) that
-greatly simplifies access to a database clone, with support for:
+- File an [access request](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+- Have a user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and the `db-lab` role.
+- Configure `ssh` as follows:
 
-- Access to all database clones listed in the [Postgres.ai instances page](https://console.postgres.ai/gitlab/instances);
-- Multiple `psql` sessions on the same clone.
+```plaintext
+Host lb-bastion.db-lab.gitlab.com
+  User ${USER}
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/ed25519
 
-If you have `AllFeaturesUser` [`psql` access](#access-database-lab-engine), you can follow the steps below to configure
-the `pgai` Gem:
-
-1. To get started, you need to gather some values from the [Postgres.ai instances page](https://console.postgres.ai/gitlab/instances):
-
-   1. Go to the instance that you want to configure and the on right side of the screen.
-   1. Under **Connection**, select **Connect**. The menu might be collapsed.
-
-      A dialog with everything that's needed for configuration appears, using this format:
-
-      ```shell
-      dblab init --url "http://127.0.0.1:1234" --token TOKEN --environment-id <environment-id>
-      ```
-
-      ```shell
-      ssh -NTML 1234:localhost:<environment-port> <postgresai-user>@<postgresai-proxy> -i ~/.ssh/id_rsa
-      ```
-
-1. Add the following snippet to your SSH configuration file at `~/.ssh/config`, replacing the variable values:
-
-   ```plaintext
-   Host pgai-proxy
-     HostName <postgresai-proxy>
-     User <postgresai-user>
-     IdentityFile ~/.ssh/id_ed25519
-   ```
-
-1. Run the following command so you can accept the server key fingerprint:
-
-   ```shell
-   ssh pgai-proxy
-   ```
-
-1. Run the following commands:
-
-   ```shell
-   gem install pgai
-
-   # Grab an access token: https://console.postgres.ai/gitlab/tokens
-   # GITLAB_USER is your GitLab handle
-   pgai config --dbname=gitlabhq_dblab --prefix=$GITLAB_USER --proxy=pgai-proxy
-
-   # Grab the respective port values from https://console.postgres.ai/gitlab/instances
-   # for the instances you'll be using (in this case, for the `main` database instance)
-   pgai env add --alias main --id <environment-id> --port <environment-port>
-   ```
-
-1. Once this one-time configuration is done, you can use `pgai connect` to connect to a particular database. For
-   instance, to connect to the `main` database:
-
-   ```shell
-   pgai connect main
-   ```
-
-1. Once done with the clone, you can destroy it:
-
-   ```shell
-   pgai destroy main
-   ```
+Host *.gitlab-db-lab.internal
+  User ${USER}
+  PreferredAuthentications publickey
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/ed25519
+  ProxyCommand ssh lb-bastion.db-lab.gitlab.com -W %h:%p
+```
 
 #### Manual access through the Postgres.ai instances page
 
@@ -211,7 +163,7 @@ To connect to a clone using `psql`:
 1. Create a clone from the [desired instance](https://console.postgres.ai/gitlab/instances/).
    1. Provide a **Clone ID**: Something that uniquely identifies your clone, such as `yourname-testing-gitlabissue`.
    1. Provide a **Database username** and **Database password**: Connects `psql` to your clone.
-   1. Select **Enable deletion protection** if you want to preserve your clone. Avoid selecting this option.
+   1. Select **Enable deletion protection** if you need to preserve your clone. Avoid selecting this option.
       Clones are removed after 12 hours.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
@@ -220,3 +172,10 @@ To connect to a clone using `psql`:
 
 After you connect, use clone like you would any `psql` console in production, but with
 the added benefit and safety of an isolated writeable environment.
+
+#### Simplified access through `pgai` Ruby gem
+
+WARNING:
+The `pgai` gem has not yet been updated to use the new database lab instances so you will only be able to access the legacy instance using this tool.
+
+For instructions on using the `pgai` Ruby gem, see: [Database Lab access using the pgai Ruby gem](database_lab_pgai.md).

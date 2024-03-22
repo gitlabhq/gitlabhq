@@ -112,7 +112,7 @@ describe('content_editor/components/formatting_toolbar', () => {
         provide: {
           tiptapEditor,
           contentEditor,
-          newCommentTemplatePath: 'some/path',
+          newCommentTemplatePaths: ['some/path'],
         },
       });
 

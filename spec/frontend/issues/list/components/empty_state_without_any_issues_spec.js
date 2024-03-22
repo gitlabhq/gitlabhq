@@ -1,9 +1,12 @@
 import { GlDisclosureDropdown, GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubExperiments } from 'helpers/experimentation_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import EmptyStateWithoutAnyIssuesExperiment from '~/issues/list/components/empty_state_without_any_issues_experiment.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { i18n } from '~/issues/list/constants';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
@@ -49,6 +52,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         ...provide,
       },
       stubs: {
+        GitlabExperiment,
         NewResourceDropdown: true,
       },
     });
@@ -189,6 +193,21 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
       it('renders Jira integration docs link', () => {
         expect(findJiraDocsLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+      });
+    });
+
+    describe('when issues_mrs_empty_state candidate experiment', () => {
+      beforeEach(() => {
+        stubExperiments({ issues_mrs_empty_state: 'candidate' });
+      });
+
+      it('renders EmptyStateWithoutAnyIssuesExperiment', () => {
+        mountComponent();
+
+        expect(wrapper.findComponent(EmptyStateWithoutAnyIssuesExperiment).props()).toEqual({
+          showCsvButtons: false,
+          showIssuableByEmail: false,
+        });
       });
     });
   });

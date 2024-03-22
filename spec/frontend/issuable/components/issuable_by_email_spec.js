@@ -16,7 +16,7 @@ describe('IssuableByEmail', () => {
   let mockAxios;
   let glModalDirective;
 
-  function createComponent(injectedProperties = {}) {
+  function createComponent(injectedProperties = {}, props = {}) {
     glModalDirective = jest.fn();
 
     return extendedWrapper(
@@ -39,6 +39,7 @@ describe('IssuableByEmail', () => {
             show: mockToastShow,
           },
         },
+        propsData: props,
         provide: {
           issuableType: 'issue',
           initialEmail,
@@ -84,6 +85,20 @@ describe('IssuableByEmail', () => {
       findButton().trigger('click');
 
       expect(glModalDirective).toHaveBeenCalled();
+    });
+
+    describe('when passing variant and button text', () => {
+      it('renders correct button', () => {
+        const variant = 'default';
+        const text = 'Email a new issue';
+
+        wrapper = createComponent({}, { variant, text });
+
+        const button = findButton();
+
+        expect(button.attributes('variant')).toBe(variant);
+        expect(button.text()).toBe(text);
+      });
     });
   });
 

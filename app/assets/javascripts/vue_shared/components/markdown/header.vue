@@ -38,8 +38,8 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
-    newCommentTemplatePath: {
-      default: null,
+    newCommentTemplatePaths: {
+      default: () => [],
     },
     editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
@@ -512,8 +512,8 @@ export default {
             tracking-property="quickAction"
           />
           <comment-templates-dropdown
-            v-if="!previewMarkdown && newCommentTemplatePath"
-            :new-comment-template-path="newCommentTemplatePath"
+            v-if="!previewMarkdown && newCommentTemplatePaths.length"
+            :new-comment-template-paths="newCommentTemplatePaths"
             @select="insertSavedReply"
           />
         </div>
