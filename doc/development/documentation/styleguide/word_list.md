@@ -79,7 +79,7 @@ Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
 ## add
 
-Use **add** when an object already exists. If the object does not exist yet, use [**create](#create) instead.
+Use **add** when an object already exists. If the object does not exist yet, use [**create**](#create) instead.
 **Add** is the opposite of [remove](#remove).
 
 For example:

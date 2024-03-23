@@ -461,6 +461,14 @@
     .drag-icon {
       color: $gl-text-color;
     }
+
+    // If an inapplicable task list item contains labels or <kbd>s, strike them
+    // out as well.
+    .gl-label, kbd {
+      text-decoration: line-through;
+      text-decoration-color: $gl-text-color-disabled;
+      vertical-align: text-bottom;
+    }
   }
 
   a.with-attachment-icon,

@@ -10,6 +10,10 @@ export const injectVueAppBreadcrumbs = (router, BreadcrumbsComponent, apolloProv
 
   const breadcrumbEl = breadcrumbEls[breadcrumbEls.length - 1];
 
+  // Allow element to grow. GlBreadcrumb would otherwise not take all available space
+  // but show some of its items unnecessarily in the collapse dropdown.
+  breadcrumbEl.classList.add('gl-flex-grow-1');
+
   const lastCrumb = breadcrumbEl.children[0];
   const nestedBreadcrumbEl = document.createElement('div');
 

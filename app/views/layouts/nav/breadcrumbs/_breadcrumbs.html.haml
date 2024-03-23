@@ -3,7 +3,7 @@
   - push_to_schema_breadcrumb(@breadcrumb_title, breadcrumb_title_link)
 
 %nav.breadcrumbs.gl-breadcrumbs{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links' } }
-  %ul.breadcrumb.gl-breadcrumb-list.js-breadcrumbs-list
+  %ul.breadcrumb.gl-breadcrumb-list.js-breadcrumbs-list.gl-flex-grow-1
     - unless hide_top_links
       = header_title
     - if @breadcrumbs_extra_links

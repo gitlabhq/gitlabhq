@@ -4,7 +4,10 @@ import component from '~/packages_and_registries/shared/components/registry_brea
 
 describe('Registry Breadcrumb', () => {
   let wrapper;
-  const nameGenerator = jest.fn();
+  const nameGenerator = jest.fn().mockImplementation(() => {
+    // return a non-empty name, otherwise item validations could fail.
+    return 'mock name';
+  });
 
   const routes = [
     { name: 'list', path: '/', meta: { nameGenerator, root: true } },

@@ -10496,6 +10496,9 @@ msgstr ""
 msgid "Checkout|Tax ID"
 msgstr ""
 
+msgid "Checkout|The maximum amount of seats available to buy is %{maximumSeatLimit}. %{maxSeatLinkStart}Learn more.%{maxSeatLinkEnd}"
+msgstr ""
+
 msgid "Checkout|Total"
 msgstr ""
 

@@ -1263,7 +1263,7 @@ GEM
       expgen (~> 0.1)
       rainbow (~> 3.1.1)
     parallel (1.22.1)
-    parser (3.3.0.2)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     parslet (1.8.2)
@@ -2040,7 +2040,7 @@ DEPENDENCIES
   os (~> 1.1, >= 1.1.4)
   pact (~> 1.64)
   parallel (~> 1.19)
-  parser (~> 3.3, >= 3.3.0.2)
+  parser (~> 3.3, >= 3.3.0.5)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.6)
