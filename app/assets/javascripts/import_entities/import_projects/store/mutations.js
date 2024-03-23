@@ -129,7 +129,9 @@ export default {
       importTarget.targetNamespace === state.defaultTargetNamespace &&
       importTarget.newName === existingRepo.importSource.sanitizedName
     ) {
-      Vue.delete(state.customImportTargets, repoId);
+      const importsCopy = { ...state.customImportTargets };
+      delete importsCopy[repoId];
+      state.customImportTargets = importsCopy;
     } else {
       Vue.set(state.customImportTargets, repoId, importTarget);
     }
