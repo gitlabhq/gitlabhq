@@ -381,4 +381,3 @@ Style/RedundantSelf:
     - 'spec/helpers/submodule_helper_spec.rb'
     - 'spec/lib/gitlab/background_task_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing_spec.rb'
-    - 'spec/models/integration_spec.rb'

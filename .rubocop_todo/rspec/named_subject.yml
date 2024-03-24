@@ -2677,7 +2677,6 @@ RSpec/NamedSubject:
     - 'spec/models/instance_configuration_spec.rb'
     - 'spec/models/instance_metadata/kas_spec.rb'
     - 'spec/models/instance_metadata_spec.rb'
-    - 'spec/models/integration_spec.rb'
     - 'spec/models/integrations/apple_app_store_spec.rb'
     - 'spec/models/integrations/asana_spec.rb'
     - 'spec/models/integrations/assembla_spec.rb'

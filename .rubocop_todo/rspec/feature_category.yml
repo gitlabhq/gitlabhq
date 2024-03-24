@@ -1002,7 +1002,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/ee/group_group_link_spec.rb'
     - 'ee/spec/models/ee/groups/feature_setting_spec.rb'
     - 'ee/spec/models/ee/incident_management/project_incident_management_setting_spec.rb'
-    - 'ee/spec/models/ee/integration_spec.rb'
     - 'ee/spec/models/ee/integrations/jira_spec.rb'
     - 'ee/spec/models/ee/iterations/cadence_spec.rb'
     - 'ee/spec/models/ee/key_spec.rb'

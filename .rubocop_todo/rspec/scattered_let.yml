@@ -180,7 +180,6 @@ RSpec/ScatteredLet:
     - 'spec/models/deploy_keys_project_spec.rb'
     - 'spec/models/design_management/design_at_version_spec.rb'
     - 'spec/models/diff_note_spec.rb'
-    - 'spec/models/integration_spec.rb'
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/push_event_spec.rb'
     - 'spec/models/ssh_host_key_spec.rb'
