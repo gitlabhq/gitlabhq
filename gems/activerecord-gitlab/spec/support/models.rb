@@ -22,6 +22,12 @@ class Pipeline < PartitionedRecord
     ->(pipeline) { where(partition_id: pipeline.partition_id) },
     partition_foreign_key: :partition_id,
     dependent: :destroy
+
+  has_many :unpartitioned_jobs,
+    ->(pipeline) { where(pipeline: pipeline).order(id: :desc) },
+    partition_foreign_key: :partition_id,
+    dependent: :destroy,
+    class_name: 'Job'
 end
 
 class Job < PartitionedRecord
@@ -37,6 +43,13 @@ class Job < PartitionedRecord
     partition_foreign_key: :partition_id,
     inverse_of: :job,
     autosave: true
+
+  has_one :test_metadata,
+    ->(build) { where(partition_id: build.partition_id, test_flag: true) },
+    foreign_key: :job_id,
+    partition_foreign_key: :partition_id,
+    inverse_of: :job,
+    class_name: 'Metadata'
 
   accepts_nested_attributes_for :metadata
 end

@@ -198,9 +198,10 @@ before_script:
   ##
   ## Alternatively, use ssh-keyscan to scan the keys of your private server.
   ## Replace example.com with your private server's domain name. Repeat that
-  ## command if you have more than one server to connect to.
+  ## command if you have more than one server to connect to. Include the -t
+  ## flag to specify the key type.
   ##
-  # - ssh-keyscan example.com >> ~/.ssh/known_hosts
+  # - ssh-keyscan -t rsa,ed25519 example.com >> ~/.ssh/known_hosts
   # - chmod 644 ~/.ssh/known_hosts
 
   ##

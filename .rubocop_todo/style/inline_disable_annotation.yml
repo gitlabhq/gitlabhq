@@ -2805,7 +2805,6 @@ Style/InlineDisableAnnotation:
     - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'
     - 'spec/lib/gitlab/background_migration/batching_strategies/backfill_project_statistics_with_container_registry_size_batching_strategy_spec.rb'
     - 'spec/lib/gitlab/background_migration/batching_strategies/loose_index_scan_batching_strategy_spec.rb'
-    - 'spec/lib/gitlab/background_migration/batching_strategies/remove_backfilled_job_artifacts_expire_at_batching_strategy_spec.rb'
     - 'spec/lib/gitlab/background_migration/convert_credit_card_validation_data_to_hashes_spec.rb'
     - 'spec/lib/gitlab/background_migration/delete_orphans_approval_merge_request_rules2_spec.rb'
     - 'spec/lib/gitlab/background_migration/delete_orphans_approval_project_rules2_spec.rb'

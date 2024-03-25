@@ -14,6 +14,6 @@ desired_sharding_key:
     backfill_via:
       parent:
         foreign_key: job_artifact_id
-        table: ci_job_artifacts
+        table: p_ci_job_artifacts
         sharding_key: project_id
         belongs_to: job_artifact

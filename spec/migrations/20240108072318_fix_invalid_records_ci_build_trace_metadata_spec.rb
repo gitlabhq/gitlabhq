@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixInvalidRecordsCiBuildTraceMetadata, migration: :gitlab_ci, feature_category: :continuous_integration do
+RSpec.describe FixInvalidRecordsCiBuildTraceMetadata, :suppress_partitioning_routing_analyzer, migration: :gitlab_ci, feature_category: :continuous_integration do
   let(:trace_metadata) { table(:ci_build_trace_metadata) }
   let(:job_artifacts) { table(:ci_job_artifacts) }
   let(:connection) { job_artifacts.connection }
