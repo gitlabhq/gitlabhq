@@ -6,20 +6,17 @@ module Gitlab
       class PullRequestsImporter
         include ParallelScheduling
 
-        # Reduce fetch limit (from 100) to avoid Gitlab::Git::ResourceExhaustedError
-        PULL_REQUESTS_BATCH_SIZE = 50
-
         def execute
           page = 1
 
           loop do
             log_info(
               import_stage: 'import_pull_requests',
-              message: "importing page #{page} using batch-size #{PULL_REQUESTS_BATCH_SIZE}"
+              message: "importing page #{page} using batch-size #{concurrent_import_jobs_limit}"
             )
 
             pull_requests = client.pull_requests(
-              project_key, repository_slug, page_offset: page, limit: PULL_REQUESTS_BATCH_SIZE
+              project_key, repository_slug, page_offset: page, limit: concurrent_import_jobs_limit
             ).to_a
 
             break if pull_requests.empty?
@@ -109,6 +106,13 @@ module Gitlab
 
         def target_branch_commit(target_branch_sha)
           [target_branch_sha, ':refs/keep-around/', target_branch_sha].join
+        end
+
+        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
+        # application settings.
+        def concurrent_import_jobs_limit
+          # Reduce fetch limit (from 100) to avoid Gitlab::Git::ResourceExhaustedError
+          50
         end
       end
     end

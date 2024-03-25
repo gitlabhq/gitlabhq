@@ -144,7 +144,7 @@ export default {
         {
           key: 'checkbox',
           label: __('Select all'),
-          class: 'gl-w-4',
+          thClass: 'gl-w-4',
           hide: !this.canDelete,
         },
         {
@@ -158,14 +158,12 @@ export default {
         {
           key: 'created',
           label: __('Created'),
-          class: 'gl-text-right',
         },
         {
           key: 'actions',
           label: '',
           hide: !this.canDelete,
-          class: 'gl-text-right',
-          tdClass: 'gl-w-4 gl-pt-3!',
+          thClass: 'gl-w-4',
         },
       ].filter((c) => !c.hide);
     },
@@ -397,6 +395,7 @@ export default {
         <template #head(checkbox)="{ selectAllRows, clearSelected }">
           <gl-form-checkbox
             v-if="canDelete"
+            class="gl-min-h-0"
             data-testid="package-files-checkbox-all"
             :checked="areAllFilesSelected"
             :indeterminate="hasSelectedSomeFiles"
@@ -407,7 +406,6 @@ export default {
         <template #cell(checkbox)="{ rowSelected, selectRow, unselectRow }">
           <gl-form-checkbox
             v-if="canDelete"
-            class="gl-mt-1"
             :checked="rowSelected"
             data-testid="package-files-checkbox"
             @change="rowSelected ? unselectRow() : selectRow()"
@@ -421,6 +419,7 @@ export default {
             :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
             data-testid="toggle-details-button"
             category="tertiary"
+            class="gl-mt-n2!"
             size="small"
             @click="
               toggleDetails();

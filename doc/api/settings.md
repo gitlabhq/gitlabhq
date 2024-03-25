@@ -132,7 +132,10 @@ Example response:
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
-  "bulk_import_concurrent_pipeline_batch_limit": 25
+  "bulk_import_concurrent_pipeline_batch_limit": 25,
+  "concurrent_github_import_jobs_limit": 1000,
+  "concurrent_bitbucket_import_jobs_limit": 100,
+  "concurrent_bitbucket_server_import_jobs_limit": 100
 }
 ```
 
@@ -288,7 +291,10 @@ Example response:
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
-  "downstream_pipeline_trigger_limit_per_project_user_sha": 0
+  "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
+  "concurrent_github_import_jobs_limit": 1000,
+  "concurrent_bitbucket_import_jobs_limit": 100,
+  "concurrent_bitbucket_server_import_jobs_limit": 100
 }
 ```
 
@@ -363,6 +369,9 @@ listed in the descriptions of the relevant settings.
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
 | `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#maximum-includes) per pipeline. Default is `150`. |
+| `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
+| `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
+| `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_expiration_policies_enable_historic_entries`   | boolean | no                           | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |
 | `container_registry_cleanup_tags_service_max_list_size`   | integer | no                           | The maximum number of tags that can be deleted in a single execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |

@@ -15,8 +15,6 @@ module Gitlab
       JOB_WAITER_CACHE_KEY =
         'bitbucket-server-importer/job-waiter/%{project}/%{collection}'
 
-      BATCH_SIZE = 100
-
       # project - An instance of `Project`.
       def initialize(project)
         @project = project
@@ -84,13 +82,17 @@ module Gitlab
 
       def calculate_job_delay(job_index)
         runtime = Time.current - job_started_at
-        multiplier = (job_index / BATCH_SIZE.to_f)
+        multiplier = (job_index / concurrent_import_jobs_limit.to_f)
 
         (multiplier * 1.minute) + 1.second - runtime
       end
 
       def job_started_at
         @job_started_at ||= Time.current
+      end
+
+      def concurrent_import_jobs_limit
+        Gitlab::CurrentSettings.concurrent_bitbucket_server_import_jobs_limit
       end
 
       def track_import_failure!(project, exception:, **args)

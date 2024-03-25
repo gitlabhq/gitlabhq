@@ -157,3 +157,27 @@ To modify the maximum decompressed file size for imports in GitLab:
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Timeout for decompressing archived files (seconds)**.
+
+## Maximum number of simultaneous import jobs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.10.
+
+When you import a project using [GitHub Importer](../../user/project/import/github.md),
+[Bitbucket Cloud Importer](../../user/project/import/bitbucket.md) or
+[Bitbucket Server Importer](../../user/project/import/bitbucket_server.md), you
+can specify the maximum number of import jobs that are executed simultaneously.
+
+The job limit is not applied when importing merge requests because there is a hard-coded limit for merge requests to avoid overloading servers.
+
+The default job limit is:
+
+- For the GitHub importer, 1000.
+- For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because we haven't yet determined
+  a good default limit. Administrators of self-managed GitLab instances should experiment with a higher limit.
+
+To modify this setting:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Import and export settings**.
+1. Set another value for **Maximum number of simultaneous import jobs** for the desired importer.

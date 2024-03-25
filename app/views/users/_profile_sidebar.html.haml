@@ -67,7 +67,7 @@
                 - if @user.linkedin.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('linkedin', css_class: 'fgray gl-mt-1 flex-shrink-0')
-                    = link_to @user.linkedin, linkedin_url(@user), class: 'gl-text-gray-900', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow'
+                    = link_to linkedin_name(@user), linkedin_url(@user), class: 'gl-text-gray-900', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow'
                 - if @user.twitter.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('x', css_class: 'fgray gl-mt-1 flex-shrink-0')

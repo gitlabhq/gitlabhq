@@ -74,6 +74,8 @@ module Gitlab
           { state: 'all', sort: 'created', direction: 'asc' }
         end
 
+        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
+        # application settings.
         def parallel_import_batch
           { size: 200, delay: 1.minute }
         end

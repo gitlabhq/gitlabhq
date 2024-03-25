@@ -72,6 +72,8 @@ class User < MainClusterwide::ApplicationRecord
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
 
+  FIRST_GROUP_PATHS_LIMIT = 200
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
@@ -1249,6 +1251,18 @@ class User < MainClusterwide::ApplicationRecord
     Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
       .all_objects
       .where(id: groups)
+  end
+
+  def direct_groups_with_route
+    groups.with_route.order_id_asc
+  end
+
+  def first_group_paths
+    first_groups = direct_groups_with_route.take(FIRST_GROUP_PATHS_LIMIT + 1)
+
+    return if first_groups.count > FIRST_GROUP_PATHS_LIMIT
+
+    first_groups.map(&:full_path).sort!
   end
 
   # rubocop: disable CodeReuse/ServiceClass

@@ -4880,6 +4880,46 @@ RSpec.describe User, feature_category: :user_profile do
     specify { is_expected.to contain_exactly(parent_group, child_group) }
   end
 
+  describe '#first_group_paths' do
+    subject { user.first_group_paths }
+
+    context 'with less than max allowed direct group memberships' do
+      let_it_be(:user) { create(:user) }
+      let(:expected_group_paths) { [] }
+
+      before do
+        3.times do
+          create(:group).tap do |new_group|
+            new_group.add_member(user, Gitlab::Access::GUEST)
+            expected_group_paths.push(new_group.full_path)
+          end
+        end
+      end
+
+      it 'returns sorted list of group paths' do
+        expect(subject).to eq(expected_group_paths.sort!)
+      end
+    end
+
+    context 'with more than max allowed direct group memberships' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_const("#{described_class}::FIRST_GROUP_PATHS_LIMIT", 4)
+
+        5.times do
+          create(:group).tap do |new_group|
+            new_group.add_member(user, Gitlab::Access::GUEST)
+          end
+        end
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+  end
+
   describe '#authorizations_for_projects' do
     let!(:user) { create(:user) }
 

@@ -32,6 +32,16 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '#owner_runner_namespace' do
+    it 'considers the first group' do
+      runner = create(:ci_runner, :group)
+
+      with_cross_joins_prevented do
+        expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
+      end
+    end
+  end
+
   describe 'projects association' do
     let(:runner) { create(:ci_runner, :project) }
 

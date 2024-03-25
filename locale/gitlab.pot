@@ -26166,6 +26166,15 @@ msgstr ""
 msgid "Import|Maximum import remote file size (MiB)"
 msgstr ""
 
+msgid "Import|Maximum number of simultaneous import jobs for Bitbucket Cloud importer"
+msgstr ""
+
+msgid "Import|Maximum number of simultaneous import jobs for Bitbucket Server importer"
+msgstr ""
+
+msgid "Import|Maximum number of simultaneous import jobs for GitHub importer"
+msgstr ""
+
 msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
 msgstr ""
 

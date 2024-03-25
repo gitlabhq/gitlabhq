@@ -352,13 +352,13 @@ module ApplicationHelper
     cookies[name] != 'true'
   end
 
+  def linkedin_name(user)
+    user.linkedin.chomp('/').gsub(%r{.*/}, '')
+  end
+
   def linkedin_url(user)
-    name = user.linkedin
-    if %r{\Ahttps?://(www\.)?linkedin\.com/in/}.match?(name)
-      name
-    else
-      "https://www.linkedin.com/in/#{name}"
-    end
+    name = linkedin_name(user)
+    "https://www.linkedin.com/in/#{name}"
   end
 
   def twitter_url(user)

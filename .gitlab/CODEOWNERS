@@ -1347,6 +1347,25 @@ lib/gitlab/checks/**
 /**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
 /**/javascripts/editor/schema/ci.json @gitlab-org/ci-cd/verify/frontend
 
+# CI/CD templates require approval from specific owners.
+/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
+/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
+/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
+# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
+/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+
 ## Verify:Runner Fleet Backend
 ^[Runner Fleet Backend] @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/controllers/admin/runner*.rb
@@ -1392,25 +1411,6 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/runner*.rb
 /lib/gitlab/seeders/ci/runner/
 /lib/tasks/gitlab/seed/runner_fleet.rake
-
-# CI/CD templates require approval from specific owners.
-/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
-/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
-# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 # Require approvals for Project API entities affecting availability
 [Data Stores::Tenant Scale] @gitlab-org/tenant-scale-group/backend-engineers

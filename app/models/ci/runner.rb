@@ -81,6 +81,9 @@ module Ci
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
 
+    # currently we have only 1 namespace assigned, but order is here for consistency
+    has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
+
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
     has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
 

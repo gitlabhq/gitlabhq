@@ -210,7 +210,29 @@ RSpec.describe ApplicationHelper do
     it { expect(helper.active_when(false)).to eq(nil) }
   end
 
-  describe '#linkedin_url?' do
+  describe '#linkedin_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user, linkedin: linkedin_url) }
+
+    subject { helper.linkedin_name(user) }
+
+    where(:linkedin_url, :linkedin_name) do
+      'https://www.linkedin.com/in/'                    | 'in'
+      'https://www.linkedin.com/in/alice'               | 'alice'
+      'http://www.linkedin.com/in/alice'                | 'alice'
+      'http://linkedin.com/in/alice'                    | 'alice'
+      'https://www.linkedin.com/in/alice'               | 'alice'
+      'https://linkedin.com/in/alice'                   | 'alice'
+      'https://linkedin.com/in/alice/more/path'         | 'path'
+    end
+
+    with_them do
+      it { is_expected.to eq(linkedin_name) }
+    end
+  end
+
+  describe '#linkedin_url' do
     using RSpec::Parameterized::TableSyntax
 
     let(:user) { build_stubbed(:user) }
@@ -218,18 +240,12 @@ RSpec.describe ApplicationHelper do
     subject { helper.linkedin_url(user) }
 
     before do
-      user.linkedin = linkedin_name
+      allow(helper).to receive(:linkedin_name).and_return(linkedin_name)
     end
 
     where(:linkedin_name, :linkedin_url) do
-      nil                                       | 'https://www.linkedin.com/in/'
-      ''                                        | 'https://www.linkedin.com/in/'
-      'alice'                                   | 'https://www.linkedin.com/in/alice'
-      'http://www.linkedin.com/in/alice'        | 'http://www.linkedin.com/in/alice'
-      'http://linkedin.com/in/alice'            | 'http://linkedin.com/in/alice'
-      'https://www.linkedin.com/in/alice'       | 'https://www.linkedin.com/in/alice'
-      'https://linkedin.com/in/alice'           | 'https://linkedin.com/in/alice'
-      'https://linkedin.com/in/alice/more/path' | 'https://linkedin.com/in/alice/more/path'
+      ''                                       | 'https://www.linkedin.com/in/'
+      'alice'                                  | 'https://www.linkedin.com/in/alice'
     end
 
     with_them do

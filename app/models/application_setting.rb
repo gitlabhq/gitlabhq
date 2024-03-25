@@ -521,6 +521,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
     validates :bulk_import_concurrent_pipeline_batch_limit,
+      :concurrent_github_import_jobs_limit,
+      :concurrent_bitbucket_import_jobs_limit,
+      :concurrent_bitbucket_server_import_jobs_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
       :inactive_projects_delete_after_months,
@@ -602,7 +605,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   jsonb_accessor :rate_limits,
     members_delete_limit: [:integer, { default: 60 }],
-    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }]
+    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
+    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
+    concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
+    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 

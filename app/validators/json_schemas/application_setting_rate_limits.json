@@ -4,6 +4,21 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "concurrent_bitbucket_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Cloud importer"
+    },
+    "concurrent_bitbucket_server_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for Bitbucket Server importer"
+    },
+    "concurrent_github_import_jobs_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of simultaneous import jobs for GitHub importer"
+    },
     "members_delete_limit": {
       "type": "integer",
       "minimum": 0,

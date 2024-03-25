@@ -832,8 +832,8 @@ The following variables configure the behavior of specific dependency scanning a
 | CI/CD variable                       | Analyzer           | Default                      | Description |
 |--------------------------------------|--------------------|------------------------------|-------------|
 | `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
-| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Hosting a copy of the Gemnasium advisory database](#hosting-a-copy-of-the-gemnasium_db-advisory-database). |
-| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
+| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
+| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
@@ -1054,113 +1054,117 @@ merge cyclonedx sboms:
 To find a vulnerability, you can search the [`GitLab Advisory Database`](https://advisories.gitlab.com/).
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
 
-## Running dependency scanning in an offline environment
+## Offline environment
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for dependency scanning
 jobs to run successfully. For more information, see [Offline environments](../offline_deployments/index.md).
 
-### Requirements for offline dependency scanning
+### Requirements
 
-Here are the requirements for using dependency scanning in an offline environment:
+To run dependency scanning in an offline environment you must have:
 
-- GitLab Runner with the `docker` or `kubernetes` executor.
-- Docker container registry with locally available copies of dependency scanning [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
-- If you have a limited access environment you need to allow access, such as using a proxy, to the advisory database: `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git`.
-  If you are unable to permit access to `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` you must host an offline copy of this `git` repository and set the `GEMNASIUM_DB_REMOTE_URL` CI/CD variable to the URL of this repository. For more information on configuration variables, see [Customizing analyzer behavior](#customizing-analyzer-behavior).
+- A GitLab Runner with the `docker` or `kubernetes` executor
+- Local copies of the dependency scanning analyzer images
+- Access to the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
 
-  This advisory database is constantly being updated, so you must periodically sync your local copy with GitLab.
+### Local copies of analyzer images
 
-GitLab Runner has a [default `pull policy` of `always`](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy),
-meaning the runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. The GitLab Runner [`pull_policy` can be set to `if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy)
-in an offline environment if you prefer using only locally available Docker images. However, we
-recommend keeping the pull policy setting to `always` if not in an offline environment, as this
-enables the use of updated scanners in your CI/CD pipelines.
+To use dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers):
 
-### Make GitLab dependency scanning analyzer images available inside your Docker registry
+1. Import the following default dependency scanning analyzer images from `registry.gitlab.com` into
+   your [local Docker container registry](../../packages/container_registry/index.md):
 
-For dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers),
-import the following default dependency scanning analyzer images from `registry.gitlab.com` into
-your [local Docker container registry](../../packages/container_registry/index.md):
+   ```plaintext
+   registry.gitlab.com/security-products/gemnasium:4
+   registry.gitlab.com/security-products/gemnasium:4-fips
+   registry.gitlab.com/security-products/gemnasium-maven:4
+   registry.gitlab.com/security-products/gemnasium-maven:4-fips
+   registry.gitlab.com/security-products/gemnasium-python:4
+   registry.gitlab.com/security-products/gemnasium-python:4-fips
+   ```
 
-```plaintext
-registry.gitlab.com/security-products/gemnasium:4
-registry.gitlab.com/security-products/gemnasium-maven:4
-registry.gitlab.com/security-products/gemnasium-python:4
-```
+   The process for importing Docker images into a local offline Docker registry depends on
+   **your network security policy**. Consult your IT staff to find an accepted and approved
+   process by which external resources can be imported or temporarily accessed.
+   These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
+   with new definitions, and you may want to download them regularly.
 
-The process for importing Docker images into a local offline Docker registry depends on
-**your network security policy**. Consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed.
-These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
-with new definitions, and you may be able to make occasional updates on your own.
+1. Configure GitLab CI/CD to use the local analyzers.
 
-For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
-[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
+   Set the value of the CI/CD variable `SECURE_ANALYZERS_PREFIX` to your local Docker registry - in
+   this example, `docker-registry.example.com`.
 
-### Set dependency scanning CI/CD job variables to use local dependency scanning analyzers
+   ```yaml
+   include:
+     - template: Security/Dependency-Scanning.gitlab-ci.yml
 
-Add the following configuration to your `.gitlab-ci.yml` file. You must change the value of
-`SECURE_ANALYZERS_PREFIX` to refer to your local Docker container registry. You must also change the
-value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of the
-[`gemnasium-db` advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db/):
+   variables:
+     SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
+   ```
 
-```yaml
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+### Access to the GitLab Advisory Database
 
-variables:
-  SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
-  GEMNASIUM_DB_REMOTE_URL: "gitlab.example.com/gemnasium-db.git"
-```
+The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
+source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
+analyzers. The Docker images of these analyzers include a clone of the database.
+The clone is synchronized with the database before starting a scan,
+to ensure the analyzers have the latest vulnerability data.
 
-See explanations of the previous variables in the [configuration section](#customizing-analyzer-behavior).
+In an offline environment, the default host of the GitLab Advisory Database can't be accessed.
+Instead, you must host the database somewhere that it is accessible to the GitLab runners. You must
+also update the database manually at your own schedule.
 
-### Hosting a copy of the `gemnasium_db` advisory database
+Available options for hosting the database are:
 
-The [`gemnasium_db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
-used by `gemnasium`, `gemnasium-maven`, and `gemnasium-python` as the source of vulnerability data.
-This repository updates at scan time to fetch the latest advisories. However, due to a restricted
-networking environment, running this update is sometimes not possible. In this case, a user can do
-one of the following:
+- [Use a clone of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
+- [Use a copy of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
 
-- [Host a copy of the advisory database](#host-a-copy-of-the-advisory-database)
-- [Use a local clone](#use-a-local-clone)
+#### Use a clone of the GitLab Advisory Database
 
-#### Host a copy of the advisory database
+Using a clone of the GitLab Advisory Database is recommended because it is the most efficient
+method.
 
-If [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is not reachable
-from within the environment, the user can host their own Git copy. Then the analyzer can be
-instructed to update the database from the user's copy by using `GEMNASIUM_DB_REMOTE_URL`:
+To host a clone of the GitLab Advisory Database:
+
+1. Clone the GitLab Advisory Database to a host that is accessible by HTTP from the GitLab runners.
+1. In your `.gitlab-ci.yml` file, set the value of the CI/CD variable `GEMNASIUM_DB_REMOTE_URL` to
+   the URL of the Git repository.
+
+For example:
 
 ```yaml
 variables:
-  GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db/.git
-
-...
+  GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db.git
 ```
 
-#### Use a local clone
+#### Use a copy of the GitLab Advisory Database
 
-If a hosted copy is not possible, then the user can clone [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
-or create an archive before the scan and point the analyzer to the directory (using:
-`GEMNASIUM_DB_LOCAL_PATH`). Turn off the analyzer's self-update mechanism (using:
-`GEMNASIUM_DB_UPDATE_DISABLED`). In this example, the database directory is created in the
-`before_script`, before the `gemnasium` analyzer's scan job:
+Using a copy of the GitLab Advisory Database requires you to host an archive file which is
+downloaded by the analyzers.
 
-```yaml
-...
+To use a copy of the GitLab Advisory Database:
 
-gemnasium-dependency_scanning:
-  variables:
-    GEMNASIUM_DB_LOCAL_PATH: ./gemnasium-db-local
-    GEMNASIUM_DB_UPDATE_DISABLED: "true"
-  before_script:
-    - mkdir $GEMNASIUM_DB_LOCAL_PATH
-    - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
-```
+1. Download an archive of the GitLab Advisory Database to a host that is accessible by HTTP from the
+   GitLab runners. The archive is located at
+   `https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz`.
+1. Update your `.gitlab-ci.yml` file.
+
+   - Set CI/CD variable `GEMNASIUM_DB_LOCAL_PATH` to use the local copy of the database.
+   - Set CI/CD variable `GEMNASIUM_DB_UPDATE_DISABLED` to disable the database update.
+   - Download and extract the advisory database before the scan begins.
+
+   ```yaml
+   variables:
+     GEMNASIUM_DB_LOCAL_PATH: ./gemnasium-db-local
+     GEMNASIUM_DB_UPDATE_DISABLED: "true"
+
+   dependency_scanning:
+     before_script:
+       - wget https://local.example.com/gemnasium_db.tar.gz
+       - mkdir $GEMNASIUM_DB_LOCAL_PATH
+       - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
+   ```
 
 ## Using a proxy with Gradle projects
 
