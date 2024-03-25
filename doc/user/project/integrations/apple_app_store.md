@@ -1,7 +1,7 @@
 ---
-stage: Manage
-group: Import and Integrate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: none
+group: unassigned
+info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
 # Apple App Store Connect

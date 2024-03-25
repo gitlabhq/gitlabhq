@@ -35,7 +35,7 @@ module QA
       end
 
       it(
-        'creates a merge request with a milestone and label',
+        'creates a merge request with a milestone and label', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347762'
       ) do
         gitlab_account_user_name = Resource::User.default.reload!.name

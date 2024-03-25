@@ -11,7 +11,7 @@ import { trimText } from 'helpers/text_helper';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
@@ -104,7 +104,7 @@ describe('noteable_discussion component', () => {
 
       expect(wrapper.vm.isReplying).toEqual(false);
 
-      const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
+      const replyPlaceholder = wrapper.findComponent(DiscussionReplyPlaceholder);
       replyPlaceholder.vm.$emit('focus');
       await nextTick();
 
@@ -131,7 +131,7 @@ describe('noteable_discussion component', () => {
         wrapper.setProps({ discussion: { ...discussionMock, internal: isNoteInternal } });
         await nextTick();
 
-        const replyPlaceholder = wrapper.findComponent(ReplyPlaceholder);
+        const replyPlaceholder = wrapper.findComponent(DiscussionReplyPlaceholder);
         replyPlaceholder.vm.$emit('focus');
         await nextTick();
 
@@ -244,7 +244,7 @@ describe('noteable_discussion component', () => {
 
         createComponent({ storeMock });
 
-        wrapper.findComponent(ReplyPlaceholder).vm.$emit('focus');
+        wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
         await nextTick();
 
         wrapper

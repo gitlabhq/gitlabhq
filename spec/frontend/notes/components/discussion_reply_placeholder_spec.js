@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 
 const placeholderText = 'Test Button Text';
 
@@ -7,7 +7,7 @@ describe('ReplyPlaceholder', () => {
   let wrapper;
 
   const createComponent = ({ options = {} } = {}) => {
-    wrapper = shallowMount(ReplyPlaceholder, {
+    wrapper = shallowMount(DiscussionReplyPlaceholder, {
       propsData: {
         placeholderText,
       },

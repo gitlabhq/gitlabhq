@@ -1,7 +1,7 @@
 ---
-stage: Create
-group: Incubation
-info: Machine Learning Experiment Tracking is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+stage: none
+group: unassigned
+info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
 # Machine learning model experiments

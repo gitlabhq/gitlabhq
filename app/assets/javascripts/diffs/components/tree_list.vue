@@ -36,7 +36,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
+    ...mapState('diffs', [
+      'tree',
+      'renderTreeList',
+      'currentDiffFileId',
+      'viewedDiffFileIds',
+      'realSize',
+    ]),
     ...mapGetters('diffs', ['allBlobs', 'pinnedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
@@ -144,7 +150,7 @@ export default {
   <div class="tree-list-holder d-flex flex-column" data-testid="file-tree-container">
     <div class="gl-display-flex gl-align-items-center gl-mb-3">
       <h5 class="gl-display-inline-block gl-my-0">{{ __('Files') }}</h5>
-      <gl-badge size="sm" class="gl-ml-2">{{ allBlobs.length }}</gl-badge>
+      <gl-badge size="sm" class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
       <gl-button-group class="gl-ml-auto">
         <gl-button
           v-gl-tooltip.hover

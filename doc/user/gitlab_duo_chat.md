@@ -300,7 +300,7 @@ Only the last 50 messages are retained in the chat history. The chat history exp
 
 To delete all previous conversations:
 
-1. In the text box, type `/clean` and select **Send**.
+- In the text box, type `/clear` and select **Send**.
 
 ## Use GitLab Duo Chat in the Web IDE
 

@@ -6,6 +6,7 @@ module InternalEventsCli
   class EventDefiner
     include Helpers
 
+    SCHEMA = ::JSONSchemer.schema(Pathname('config/events/schema.json'))
     STEPS = [
       'New Event',
       'Description',

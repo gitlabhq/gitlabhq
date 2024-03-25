@@ -61,6 +61,18 @@ RSpec.describe Ml::Candidate, factory_default: :keep, feature_category: :mlops d
       candidate.errors
     end
 
+    describe 'project' do
+      context 'when project is nil' do
+        it { expect(errors).to include(:project) }
+      end
+
+      context 'when project is valid' do
+        let(:params) { { project: candidate.project } }
+
+        it { expect(errors).not_to include(:project) }
+      end
+    end
+
     describe 'model_version' do
       context 'when model_version is nil' do
         it { expect(errors).not_to include(:model_version_id) }

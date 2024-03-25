@@ -9,7 +9,7 @@ import DesignNoteSignedOut from '~/design_management/components/design_notes/des
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
 import ToggleRepliesWidget from '~/design_management/components/design_notes/toggle_replies_widget.vue';
 import toggleResolveDiscussionMutation from '~/design_management/graphql/mutations/toggle_resolve_discussion.mutation.graphql';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import destroyNoteMutation from '~/design_management/graphql/mutations/destroy_note.mutation.graphql';
 import { DELETE_NOTE_ERROR_MSG } from '~/design_management/constants';
 import mockDiscussion from '../../mock_data/discussion';
@@ -31,7 +31,7 @@ describe('Design discussions component', () => {
 
   const findDesignNotesList = () => wrapper.find('[data-testid="design-discussion-content"]');
   const findDesignNotes = () => wrapper.findAllComponents(DesignNote);
-  const findReplyPlaceholder = () => wrapper.findComponent(ReplyPlaceholder);
+  const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');

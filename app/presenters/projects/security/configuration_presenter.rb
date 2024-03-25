@@ -23,7 +23,8 @@ module Projects
           can_toggle_auto_fix_settings: can_toggle_autofix,
           auto_fix_user_path: auto_fix_user_path,
           security_training_enabled: project.security_training_available?,
-          continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled
+          continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled,
+          container_scanning_for_registry_enabled: container_scanning_for_registry_enabled
         }
       end
 
@@ -96,6 +97,7 @@ module Projects
       end
 
       def continuous_vulnerability_scans_enabled; end
+      def container_scanning_for_registry_enabled; end
     end
   end
 end

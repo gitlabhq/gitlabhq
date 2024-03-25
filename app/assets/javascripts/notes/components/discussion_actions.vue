@@ -1,13 +1,13 @@
 <script>
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import ReplyPlaceholder from './discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from './discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from './discussion_resolve_button.vue';
 import ResolveWithIssueButton from './discussion_resolve_with_issue_button.vue';
 
 export default {
   name: 'DiscussionActions',
   components: {
-    ReplyPlaceholder,
+    DiscussionReplyPlaceholder,
     ResolveDiscussionButton,
     ResolveWithIssueButton,
   },
@@ -48,9 +48,8 @@ export default {
 
 <template>
   <div class="discussion-with-resolve-btn clearfix">
-    <reply-placeholder
+    <discussion-reply-placeholder
       data-testid="discussion-reply-tab"
-      :placeholder-text="__('Reply…')"
       @focus="$emit('showReplyForm')"
     />
 

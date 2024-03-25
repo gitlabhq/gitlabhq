@@ -55,7 +55,7 @@ release-environments-qa:
   stage: qa
   extends:
     - .qa-base
-  timeout: 3h
+  timeout: 4h
   variables:
     QA_SCENARIO: "Test::Instance::Any"
     RELEASE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"

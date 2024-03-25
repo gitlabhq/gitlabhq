@@ -30984,6 +30984,9 @@ msgstr ""
 msgid "MemberRole|Manage roles"
 msgstr ""
 
+msgid "MemberRole|Member count"
+msgstr ""
+
 msgid "MemberRole|Name"
 msgstr ""
 
@@ -31012,6 +31015,9 @@ msgid "MemberRole|Standard roles"
 msgstr ""
 
 msgid "MemberRole|To add a new role select 'Add new role'."
+msgstr ""
+
+msgid "MemberRole|To delete custom role, remove role from all group members."
 msgstr ""
 
 msgid "MemberRole|To delete the custom role make sure no group member has this custom role"

@@ -59,7 +59,7 @@ module QA
         snippet.remove_via_api!
       end
 
-      it 'clones, pushes, and pulls a snippet over SSH, deletes via UI', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347792' do
+      it 'clones, pushes, and pulls a snippet over SSH, deletes via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347792' do
         push = Resource::Repository::Push.fabricate! do |push|
           push.repository_ssh_uri = repository_uri_ssh
           push.ssh_key = ssh_key

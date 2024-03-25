@@ -11404,7 +11404,8 @@ CREATE TABLE ml_candidate_metrics (
     is_nan bytea,
     name text NOT NULL,
     tracked_at bigint,
-    CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250))
+    CONSTRAINT check_3bb4a3fbd9 CHECK ((char_length(name) <= 250)),
+    CONSTRAINT check_d7dfd3de26 CHECK ((candidate_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_metrics_id_seq
@@ -11424,7 +11425,8 @@ CREATE TABLE ml_candidate_params (
     name text NOT NULL,
     value text NOT NULL,
     CONSTRAINT check_093034d049 CHECK ((char_length(name) <= 250)),
-    CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250))
+    CONSTRAINT check_28a3c29e43 CHECK ((char_length(value) <= 250)),
+    CONSTRAINT check_7a0505ca91 CHECK ((candidate_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_params_id_seq
@@ -11452,6 +11454,7 @@ CREATE TABLE ml_candidates (
     internal_id bigint,
     ci_build_id bigint,
     model_version_id bigint,
+    CONSTRAINT check_01584ca6db CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_cd160587d4 CHECK ((eid IS NOT NULL))
 );
@@ -14342,7 +14345,8 @@ CREATE TABLE project_security_settings (
     auto_fix_dast boolean DEFAULT true NOT NULL,
     auto_fix_dependency_scanning boolean DEFAULT true NOT NULL,
     auto_fix_sast boolean DEFAULT true NOT NULL,
-    continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL
+    continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL,
+    container_scanning_for_registry_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_security_settings_project_id_seq

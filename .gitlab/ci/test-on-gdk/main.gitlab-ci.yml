@@ -26,6 +26,7 @@ include:
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
+        KNAPSACK_TEST_FILE_PATTERN: ""
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]
@@ -35,6 +36,7 @@ include:
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
+        KNAPSACK_TEST_FILE_PATTERN: ""
     - <<: *qa-run-all-tests
       variables:
         QA_TESTS: ""
@@ -149,6 +151,14 @@ gdk-qa-blocking:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+  parallel: 10
+
+gdk-qa-blocking-ff-inverse:
+  extends: gdk-qa-blocking
+  variables:
+    QA_FEATURE_FLAGS: $FEATURE_FLAGS
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules]
   parallel: 10
 
 gdk-qa-blocking-selective:

@@ -48,6 +48,9 @@ RSpec.describe Cli, feature_category: :service_ping do
       expect_file_creation
 
       wait_for_cli_completion
+
+      # Check that script exited gracefully as a result of user input
+      expect(plain_last_lines(10)).to include('Thanks for using the Internal Events CLI!')
     end
 
     private
@@ -99,7 +102,11 @@ RSpec.describe Cli, feature_category: :service_ping do
         #{errors.map { |e| JSONSchemer::Errors.pretty(e) }.join("\n")}
         TEXT
 
-        expect(errors).to contain_exactly(expected_errors), error_message
+        if attributes['introduced_by_url'] == 'TODO'
+          expect(errors).to contain_exactly(expected_errors), error_message
+        else
+          expect(errors).to be_empty, error_message
+        end
       end
     end
   end

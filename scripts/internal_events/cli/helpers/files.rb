@@ -23,13 +23,26 @@ module InternalEventsCli
       end
 
       def file_saved_message(verb, filepath)
-        "    #{format_selection(verb)} #{filepath}"
+        attributes = YAML.safe_load(File.read(filepath))
+        errors = self.class::SCHEMA.validate(attributes)
+
+        return "    #{format_selection(verb)} #{filepath}" if errors.none?
+
+        format_prefix "    ", <<~TEXT
+          #{format_selection(verb)} #{filepath}
+
+          #{errors.map { |e| [format_warning('!! WARNING: '), JSONSchemer::Errors.pretty(e)].join }.join}
+
+            These errors will cause one of the following specs to fail and should be resolved before merging your changes:
+              - spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb
+              - spec/support/shared_examples/config/metrics/every_metric_definition_shared_examples.rb
+        TEXT
       end
 
       def write_to_file(filepath, content, verb)
         File.write(filepath, content)
 
-        file_saved_message(verb, filepath).tap { |message| cli.say "\n#{message}\n" }
+        file_saved_message(verb, filepath).tap { |message| cli.say message }
       end
     end
   end

@@ -3,7 +3,7 @@ import { GlButton, GlLink, GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -40,7 +40,7 @@ export default {
     DesignReplyForm,
     GlButton,
     GlLink,
-    ReplyPlaceholder,
+    DiscussionReplyPlaceholder,
     TimeAgoTooltip,
     ToggleRepliesWidget,
     GlFormCheckbox,
@@ -356,11 +356,7 @@ export default {
           <design-note-signed-out :register-path="registerPath" :sign-in-path="signInPath" />
         </template>
         <template v-else>
-          <reply-placeholder
-            v-if="!isFormVisible"
-            :placeholder-text="__('Reply…')"
-            @focus="showForm"
-          />
+          <discussion-reply-placeholder v-if="!isFormVisible" @focus="showForm" />
           <design-reply-form
             v-else
             :design-note-mutation="$options.createNoteMutation"

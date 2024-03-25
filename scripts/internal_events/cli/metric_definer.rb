@@ -6,6 +6,7 @@ module InternalEventsCli
   class MetricDefiner
     include Helpers
 
+    SCHEMA = ::JSONSchemer.schema(Pathname('config/metrics/schema/base.json'))
     STEPS = [
       'New Metric',
       'Type',

@@ -23,7 +23,7 @@ class UserDetail < MainClusterwide::ApplicationRecord
     @?\b          # optional leading at
     ([\w\d.%+-]+) # character group to pick up words in user portion of username
     @             # separator between user and host
-    (             # beginning of charagter group for host portion
+    (             # beginning of character group for host portion
       [\w\d.-]+   # character group to pick up words in host portion of username
       \.\w{2,}    # pick up tld of host domain, 2 chars or more
     )\b           # end of character group to pick up words in host portion of username

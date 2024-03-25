@@ -1,6 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import DiscussionActions from '~/notes/components/discussion_actions.vue';
-import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import createStore from '~/notes/stores';
@@ -44,7 +44,7 @@ describe('DiscussionActions', () => {
     it('renders reply placeholder, resolve discussion button, resolve with issue button and jump to next discussion button', () => {
       createComponent();
 
-      expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
+      expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
       expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(true);
       expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(true);
     });
@@ -54,7 +54,7 @@ describe('DiscussionActions', () => {
       discussion.resolvable = false;
       createComponent({ discussion });
 
-      expect(wrapper.findComponent(ReplyPlaceholder).exists()).toBe(true);
+      expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
       expect(wrapper.findComponent(ResolveDiscussionButton).exists()).toBe(false);
       expect(wrapper.findComponent(ResolveWithIssueButton).exists()).toBe(false);
     });
@@ -91,7 +91,7 @@ describe('DiscussionActions', () => {
     it('emits showReplyForm event when clicking on reply placeholder', () => {
       createComponent({}, { attachTo: document.body });
 
-      wrapper.findComponent(ReplyPlaceholder).find('textarea').trigger('focus');
+      wrapper.findComponent(DiscussionReplyPlaceholder).find('textarea').trigger('focus');
       expect(wrapper.emitted().showReplyForm).toHaveLength(1);
     });
 

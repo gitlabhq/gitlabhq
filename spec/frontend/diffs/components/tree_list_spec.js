@@ -56,6 +56,7 @@ describe('Diffs tree list component', () => {
             addedLines: 10,
             removedLines: 20,
             mergeRequestDiff: {},
+            realSize: 20,
             ...state,
           },
           getters: {
@@ -156,6 +157,12 @@ describe('Diffs tree list component', () => {
     it('renders empty text', () => {
       expect(wrapper.text()).toContain('No files found');
     });
+  });
+
+  it('renders file count', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('file-count').text()).toBe('20');
   });
 
   describe('with files', () => {
