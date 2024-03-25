@@ -1,4 +1,4 @@
-- title: "`Gitlab['omnibus_gitconfig']` configuration item is deprecated"
+- title: "`omnibus_gitconfig` configuration item is deprecated"
   # The milestones for the deprecation announcement, and the removal.
   removal_milestone: "17.0"
   announcement_milestone: "16.10"
