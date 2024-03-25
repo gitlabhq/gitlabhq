@@ -217,6 +217,7 @@ This method should return an array of hashes for each field, where the keys can 
 | Key            | Type    | Required | Default                      | Description |
 |:---------------|:--------|:---------|:-----------------------------|:--|
 | `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:textarea`, `:password`, `:checkbox`, or `:select`. |
+| `section:`     | symbol  | false    |                              | Specify which section the field belongs to. |
 | `name:`        | string  | true     |                              | The property name for the form field. |
 | `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional. Note [backend validations](#define-validations) for presence are still needed. |
 | `title:`       | string  | false    | Capitalized value of `name:` | The label for the form field. |
@@ -244,27 +245,105 @@ This method should return an array of hashes for each field, where the keys can 
 | `non_empty_password_title:` | string | false    | Value of `title:` | An alternative label that displays when a value is already stored. |
 | `non_empty_password_help:`  | string | false    | Value of `help:`  | An alternative help text that displays when a value is already stored. |
 
+### Define sections
+
+All integrations should define `Integration#sections` which split the form into smaller sections,
+making it easier for users to setup the integration.
+
+The most commonly used sections are pre-defined and already include some UI:
+
+- `SECTION_TYPE_CONNECTION`: Contains basic fields like `url`, `username`, `password` that are required to connect to and authenticate with the integration.
+- `SECTION_TYPE_CONFIGURATION`: Contains more advanced configuration and optional settings around how the integration works.
+- `SECTION_TYPE_TRIGGER`: Contains a list of events which will trigger an integration.
+
+`SECTION_TYPE_CONNECTION` & `SECTION_TYPE_CONFIGURATION` internally renders the `dynamic-field` component. The `dynamic-field` component renders either a `checkbox`, `input`, `select` or `textarea` based on integration `type`.
+For example:
+
+```ruby
+module Integrations
+  class FooBar < Integration
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: _('Configuration'),
+          description: s_('Advanced configuration for integration')
+        }
+      ]
+    end
+  end
+end
+```
+
+To add fields to a specific section, you can add the `section:` key to the field metadata.
+
+#### New custom sections
+
+If the existing sections do not meet your requirements for UI customization, you can create new custom sections:
+
+1. Add a new section by adding a new constant `SECTION_TYPE_*` and add it to the `#sections` method:
+
+   ```ruby
+   module Integrations
+     class FooBar < Integration
+       SECTION_TYPE_SUPER = :my_custom_section
+ 
+       def sections
+         [
+           {
+             type: SECTION_TYPE_SUPER,
+             title: s_('Integrations|Custom section'),
+             description: s_('Integrations|Help')
+           }
+         ]
+       end
+     end
+   end
+   ```
+
+1. Update the frontend constants `integrationFormSections` and `integrationFormSectionComponents` in `~/integrations/constants.js`.
+1. Add your new section component in `app/assets/javascripts/integrations/edit/components/sections/*`.
+1. Include and render the new section in `app/assets/javascripts/integrations/edit/components/integration_forms/section.vue`.
+
 ### Frontend form examples
 
-This example defines a required `url` field, and optional `username` and `password` fields:
+This example defines a required `url` field, and optional `username` and `password` fields, all under the `Connection details` section:
 
 ```ruby
 module Integrations
   class FooBar < Integration
     field :url,
+      section: SECTION_TYPE_CONNECTION,
       type: :text,
       title: s_('FooBarIntegration|Server URL'),
       placeholder: 'https://example.com/',
       required: true
 
     field :username,
+      section: SECTION_TYPE_CONNECTION,
       type: :text,
       title: s_('FooBarIntegration|Username')
 
     field :password,
+      section: SECTION_TYPE_CONNECTION,
       type: 'password',
-      title: s_('FoobarIntegration|Password'
+      title: s_('FoobarIntegration|Password'),
       non_empty_password_title: s_('FooBarIntegration|Enter new password')
+
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: s_('Integrations|Help')
+        }
+      ]
+    end
   end
 end
 ```

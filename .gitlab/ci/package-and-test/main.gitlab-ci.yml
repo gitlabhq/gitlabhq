@@ -588,6 +588,16 @@ ai-gateway:
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
     - !reference [.rules:test:manual, rules]
 
+ai-gateway-no-seat-assigned:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
+    - !reference [.rules:test:manual, rules]
+
 ai-gateway-no-license:
   extends:
     - .ai-gateway-base

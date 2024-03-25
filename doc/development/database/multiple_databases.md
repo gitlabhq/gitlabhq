@@ -229,8 +229,13 @@ Certain tables can be exempted from having sharding keys by adding
 exempt_from_sharding: true
 ```
 
-to the table's database dictionary file. This is currently the case for JiHu specific tables, because these tables do not contain any data for the
-`.com` database. This was implemented in [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905).
+to the table's database dictionary file. This is currently the case for tables that do not contain any data for the
+`.com` database, like
+
+- JiHu specific tables
+- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`
+
+This was implemented in [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905).
 
 When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
 

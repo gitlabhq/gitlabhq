@@ -12876,6 +12876,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Edit framework"
 msgstr ""
 
+msgid "ComplianceFrameworks| Frameworks export"
+msgstr ""
+
 msgid "ComplianceFrameworks| Project frameworks export"
 msgstr ""
 
@@ -12883,6 +12886,12 @@ msgid "ComplianceFrameworks|%{count} linked policy."
 msgid_plural "ComplianceFrameworks|%{count} linked policies."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group \"%{group_name}\" is attached to this email."
+msgstr ""
+
+msgid "ComplianceFrameworks|A compliance frameworks CSV export for the group %{group_link} is attached to this email."
+msgstr ""
 
 msgid "ComplianceFrameworks|Active compliance frameworks"
 msgstr ""
