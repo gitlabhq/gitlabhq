@@ -37,6 +37,11 @@ module Types
       null: false,
       description: 'Path of the project.'
 
+    field :organization_edit_path, GraphQL::Types::String,
+      null: true,
+      description: 'Path for editing project at the organization level.',
+      alpha: { milestone: '16.11' }
+
     field :incident_management_timeline_event_tags, [Types::IncidentManagement::TimelineEventTagType],
       null: true,
       description: 'Timeline event tags for the project.'
@@ -876,6 +881,16 @@ module Types
           loader.call(project_id, max_access_level)
         end
       end
+    end
+
+    def organization_edit_path
+      return if project.organization.nil?
+
+      ::Gitlab::Routing.url_helpers.edit_namespace_projects_organization_path(
+        project.organization,
+        id: project.to_param,
+        namespace_id: project.namespace.to_param
+      )
     end
 
     private

@@ -241,7 +241,6 @@ Lint/AssignmentInCondition:
     - 'spec/requests/api/go_proxy_spec.rb'
     - 'spec/services/members/invitation_reminder_email_service_spec.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
-    - 'spec/support/helpers/next_found_instance_of.rb'
     - 'spec/support/matchers/request_urgency_matcher.rb'
     - 'spec/support/shared_contexts/glfm/api_markdown_snapshot_shared_context.rb'
     - 'tooling/danger/database.rb'

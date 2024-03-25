@@ -54,7 +54,7 @@ These requirements are documented in the `Required permission` column in the fol
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) |  | Allows to admin CI/CD variables. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |  |  |
+| [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) |  | Create, read, update, and delete CI/CD variables. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |  |  |
 
 ## System access
 

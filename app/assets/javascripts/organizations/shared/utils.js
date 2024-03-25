@@ -3,10 +3,14 @@ import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from './constants';
 
 const availableProjectActions = (userPermissions) => {
-  const baseActions = [ACTION_EDIT];
+  const baseActions = [];
+
+  if (userPermissions.viewEditPage) {
+    baseActions.push(ACTION_EDIT);
+  }
 
   if (userPermissions.removeProject) {
-    return [...baseActions, ACTION_DELETE];
+    baseActions.push(ACTION_DELETE);
   }
 
   return baseActions;
@@ -33,6 +37,7 @@ export const formatProjects = (projects) =>
       webUrl,
       userPermissions,
       maxAccessLevel: accessLevel,
+      organizationEditPath: editPath,
       ...project
     }) => ({
       ...project,
@@ -44,7 +49,7 @@ export const formatProjects = (projects) =>
       webUrl,
       isForked: false,
       accessLevel,
-      editPath: `${webUrl}/edit`,
+      editPath,
       availableActions: availableProjectActions(userPermissions),
       actionLoadingStates: {
         [ACTION_DELETE]: false,

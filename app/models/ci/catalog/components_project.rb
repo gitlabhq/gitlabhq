@@ -2,11 +2,9 @@
 
 module Ci
   module Catalog
+    # This class represents a project that contains one or more CI/CD components.
+    # It is responsible for retrieving the data of a component file.
     class ComponentsProject
-      # ComponentsProject is a type of Catalog Resource which contains one or more
-      # CI/CD components.
-      # It is responsible for retrieving the data of a component file, including the content, name, and file path.
-
       TEMPLATE_FILE = 'template.yml'
       TEMPLATES_DIR = 'templates'
       TEMPLATE_PATH_REGEX = '^templates\/[\w-]+(?:\/template)?\.yml$'
@@ -14,13 +12,13 @@ module Ci
 
       ComponentData = Struct.new(:content, :path, keyword_init: true)
 
-      def initialize(project, sha = project&.default_branch)
+      def initialize(project, sha = project&.commit&.sha)
         @project = project
         @sha = sha
       end
 
-      def fetch_component_paths(sha, limit: COMPONENTS_LIMIT)
-        project.repository.search_files_by_regexp(TEMPLATE_PATH_REGEX, sha, limit: limit)
+      def fetch_component_paths(ref, limit: COMPONENTS_LIMIT)
+        project.repository.search_files_by_regexp(TEMPLATE_PATH_REGEX, ref, limit: limit)
       end
 
       def extract_component_name(path)
@@ -56,6 +54,17 @@ module Ci
         end
 
         ComponentData.new(content: content, path: path)
+      end
+
+      # TODO: This may retrieve the wrong component object if a simple and a complex component
+      # have the same name for the given catalog resource version. We should complete
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/450737 to ensure unique component names.
+      def find_catalog_component(component_name)
+        # Multiple versions of a project can have the same sha, so we return the latest one.
+        version = project.catalog_resource_versions.by_sha(sha).latest
+        return unless version
+
+        version.components.template.find_by_name(component_name)
       end
 
       private

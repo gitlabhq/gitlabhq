@@ -36,6 +36,7 @@ You can also configure the integration at the
 [instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration)
 on self-managed GitLab.
 
+With this integration, your GitLab project can interact with all Jira projects on your instance.
 To configure your project settings in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -91,8 +92,6 @@ To configure your project settings in GitLab:
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
-
-Your GitLab project can now interact with all Jira projects on your instance.
 
 ## View Jira issues
 

@@ -1274,4 +1274,40 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
   end
+
+  describe 'organization_edit_path' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            organizationEditPath
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    subject(:organization_edit_path) { response.dig('data', 'project', 'organizationEditPath') }
+
+    context 'when project has an organization associated with it' do
+      let_it_be(:project) { create(:project, :public, organization: organization) }
+
+      it 'returns edit path scoped to organization' do
+        expect(organization_edit_path).to eq(
+          "/-/organizations/#{organization.path}/projects/#{project.path_with_namespace}/edit"
+        )
+      end
+    end
+
+    context 'when project does not have an organization associated with it' do
+      let_it_be(:project) { create(:project, :public, organization: nil) }
+
+      it 'returns nil' do
+        expect(organization_edit_path).to be_nil
+      end
+    end
+  end
 end

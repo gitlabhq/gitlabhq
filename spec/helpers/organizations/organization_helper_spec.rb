@@ -313,4 +313,21 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       )
     end
   end
+
+  describe '#organization_projects_edit_app_data' do
+    let_it_be(:project) { build_stubbed(:project, organization: organization) }
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(project))).to eq(
+        {
+          'project' => {
+            'id' => project.id,
+            'name' => project.name,
+            'full_name' => project.full_name,
+            'description' => project.description
+          }
+        }
+      )
+    end
+  end
 end

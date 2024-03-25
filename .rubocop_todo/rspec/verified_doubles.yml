@@ -38,7 +38,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
-    - 'ee/spec/lib/ee/backup/repositories_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/matching/runner_matcher_spec.rb'

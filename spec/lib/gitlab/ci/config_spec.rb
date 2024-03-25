@@ -161,6 +161,60 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     end
   end
 
+  describe '#included_components' do
+    let_it_be(:project1) { create(:project, :catalog_resource_with_components, create_tag: '1.0.0') }
+    let_it_be(:project2) { create(:project, :catalog_resource_with_components, create_tag: '1.0.0') }
+
+    let(:config) { described_class.new(yml, project: project1, user: user) }
+    let(:server_fqdn) { 'acme.com' }
+
+    let(:yml) do
+      <<-EOS
+        include:
+          - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
+          - component: #{server_fqdn}/#{project2.full_path}/template@1.0.0
+          - local: templates/secret-detection.yml
+            inputs:
+              website: test.com
+      EOS
+    end
+
+    subject(:included_components) { config.included_components }
+
+    before do
+      project1.add_developer(user)
+      project2.add_developer(user)
+
+      settings = GitlabSettings::Options.build({ 'server_fqdn' => server_fqdn })
+      allow(::Settings).to receive(:gitlab_ci).and_return(settings)
+    end
+
+    it 'returns only components included with `include:component`' do
+      expect(config.metadata[:includes].size).to eq(3)
+      expect(included_components).to contain_exactly(
+        { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' },
+        { component_project: project2, component_sha: project2.commit.sha, component_name: 'template' }
+      )
+    end
+
+    context 'when duplicate components are included' do
+      let(:yml) do
+        <<-EOS
+          include:
+            - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
+            - component: #{server_fqdn}/#{project1.full_path}/dast@1.0.0
+        EOS
+      end
+
+      it 'returns only unique components' do
+        expect(config.metadata[:includes].size).to eq(2)
+        expect(included_components).to contain_exactly(
+          { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' }
+        )
+      end
+    end
+  end
+
   context 'when using extendable hash' do
     let(:yml) do
       <<-EOS

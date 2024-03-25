@@ -10,7 +10,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
   let_it_be(:minor_release) { create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day) }
   let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
-  let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today) }
+  let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today, sha: 'patch_sha') }
   let!(:v1_1_0) do
     create(:ci_catalog_resource_version, version: '1.1.0', catalog_resource: resource, release:
                          minor_release)
@@ -105,6 +105,15 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
       expect(versions.count).to eq(1)
       expect(versions.first.name).to eq('1.1.0')
+    end
+  end
+
+  describe '.by_sha' do
+    it 'returns the version that matches the sha' do
+      versions = described_class.by_sha('patch_sha')
+
+      expect(versions.count).to eq(1)
+      expect(versions.first.sha).to eq('patch_sha')
     end
   end
 

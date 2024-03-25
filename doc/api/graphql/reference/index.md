@@ -25468,6 +25468,7 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="projectopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
+| <a id="projectorganizationeditpath"></a>`organizationEditPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
@@ -27225,6 +27226,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pages` on this resource. |
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | If `true`, the user can perform `upload_file` on this resource. |
+| <a id="projectpermissionsvieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
 
 ### `ProjectPlanLimits`
 
@@ -32273,7 +32275,7 @@ Member role permission.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Allows to admin CI/CD variables. |
+| <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Create, read, update, and delete CI/CD variables. |
 | <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. |
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |

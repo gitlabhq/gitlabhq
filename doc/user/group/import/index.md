@@ -313,10 +313,11 @@ To cancel a running import:
    bulk_import.fail_op!
    ```
 
-Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but:
+Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
+destination instance from:
 
-- Prevents the destination from asking for more projects to be exported.
-- Prevents the target from making more API calls to the source.
+- Asking the source instance for more projects to be exported.
+- Making other API calls to the source instance for various checks and information.
 
 ## Migrated group items
 

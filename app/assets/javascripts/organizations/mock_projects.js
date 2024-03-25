@@ -8,6 +8,7 @@ export const organizationProjects = [
   {
     id: 'gid://gitlab/Project/8',
     nameWithNamespace: 'Twitter / Typeahead.Js',
+    organizationEditPath: '/-/organizations/default/projects/twitter/Typeahead.Js/edit',
     webUrl: 'http://127.0.0.1:3000/twitter/Typeahead.Js',
     topics: ['JavaScript', 'Vue.js', 'GraphQL', 'Jest', 'CSS', 'HTML'],
     forksCount: 4,
@@ -30,6 +31,7 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+      viewEditPage: true,
     },
     maxAccessLevel: {
       integerValue: 30,
@@ -39,6 +41,7 @@ export const organizationProjects = [
   {
     id: 'gid://gitlab/Project/7',
     nameWithNamespace: 'Flightjs / Flight',
+    organizationEditPath: '/-/organizations/default/projects/flightjs/Flight/edit',
     webUrl: 'http://127.0.0.1:3000/flightjs/Flight',
     topics: [],
     forksCount: 0,
@@ -61,6 +64,7 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+      viewEditPage: true,
     },
     maxAccessLevel: {
       integerValue: 30,
@@ -70,6 +74,7 @@ export const organizationProjects = [
   {
     id: 'gid://gitlab/Project/6',
     nameWithNamespace: 'Jashkenas / Underscore',
+    organizationEditPath: '/-/organizations/default/projects/jashkenas/Underscore/edit',
     webUrl: 'http://127.0.0.1:3000/jashkenas/Underscore',
     topics: [],
     forksCount: 0,
@@ -92,6 +97,7 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+      viewEditPage: true,
     },
     maxAccessLevel: {
       integerValue: 30,
@@ -101,6 +107,7 @@ export const organizationProjects = [
   {
     id: 'gid://gitlab/Project/5',
     nameWithNamespace: 'Commit451 / Lab Coat',
+    organizationEditPath: '/-/organizations/default/projects/Commit451/lab-coat/edit',
     webUrl: 'http://127.0.0.1:3000/Commit451/lab-coat',
     topics: [],
     forksCount: 0,
@@ -123,6 +130,7 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+      viewEditPage: true,
     },
     maxAccessLevel: {
       integerValue: 30,
@@ -132,6 +140,7 @@ export const organizationProjects = [
   {
     id: 'gid://gitlab/Project/1',
     nameWithNamespace: 'Toolbox / Gitlab Smoke Tests',
+    organizationEditPath: '/-/organizations/default/projects/toolbox/gitlab-smoke-tests/edit',
     webUrl: 'http://127.0.0.1:3000/toolbox/gitlab-smoke-tests',
     topics: [],
     forksCount: 0,
@@ -154,6 +163,7 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: false,
+      viewEditPage: true,
     },
     maxAccessLevel: {
       integerValue: 30,

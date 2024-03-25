@@ -7,6 +7,8 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
+        attr_reader :component_name
+
         LATEST_VERSION_KEYWORD = '~latest'
 
         def self.match?(address)
@@ -50,7 +52,7 @@ module Gitlab
 
         private
 
-        attr_reader :version, :component_name
+        attr_reader :version
 
         def find_project_by_component_path(path)
           project_full_path = extract_project_path(path)

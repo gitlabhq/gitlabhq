@@ -550,7 +550,6 @@ Style/GuardClause:
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/page/mattermost/login.rb'
     - 'qa/qa/page/page_concern.rb'
-    - 'qa/qa/page/project/settings/deploy_tokens.rb'
     - 'qa/qa/resource/package.rb'
     - 'qa/qa/resource/registry_repository.rb'
     - 'qa/qa/resource/user_gpg.rb'

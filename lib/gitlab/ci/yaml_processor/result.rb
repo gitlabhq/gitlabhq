@@ -6,6 +6,8 @@ module Gitlab
   module Ci
     class YamlProcessor
       class Result
+        include Gitlab::Utils::StrongMemoize
+
         attr_reader :errors, :warnings,
                     :root_variables, :root_variables_with_prefill_data,
                     :stages, :jobs,
@@ -40,6 +42,11 @@ module Gitlab
         def included_templates
           @included_templates ||= @ci_config.included_templates
         end
+
+        def included_components
+          @ci_config.included_components
+        end
+        strong_memoize_attr :included_components
 
         def yaml_variables_for(job_name)
           job = jobs[job_name]

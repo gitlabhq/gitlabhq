@@ -15,5 +15,19 @@ resources(:organizations, only: [:show, :index, :new], param: :organization_path
     end
 
     resource :groups, only: [:new], as: :groups_organization
+
+    scope(
+      path: 'projects/*namespace_id',
+      as: :namespace,
+      constraints: { namespace_id: Gitlab::PathRegex.full_namespace_route_regex }
+    ) do
+      resources(
+        :projects,
+        path: '/',
+        constraints: { id: Gitlab::PathRegex.project_route_regex },
+        only: [:edit],
+        as: :projects_organization
+      )
+    end
   end
 end

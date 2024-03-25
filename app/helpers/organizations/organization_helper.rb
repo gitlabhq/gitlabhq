@@ -67,6 +67,12 @@ module Organizations
       shared_organization_index_app_data.to_json
     end
 
+    def organization_projects_edit_app_data(project)
+      {
+        project: project.slice(:id, :name, :full_name, :description)
+      }.to_json
+    end
+
     private
 
     def shared_groups_and_projects_app_data(organization)

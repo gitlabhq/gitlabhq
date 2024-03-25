@@ -218,6 +218,7 @@ RSpec.describe ApplicationHelper do
     subject { helper.linkedin_name(user) }
 
     where(:linkedin_url, :linkedin_name) do
+      'alice'                                           | 'alice'
       'https://www.linkedin.com/in/'                    | 'in'
       'https://www.linkedin.com/in/alice'               | 'alice'
       'http://www.linkedin.com/in/alice'                | 'alice'

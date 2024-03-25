@@ -55,7 +55,6 @@ Rails/Pluck:
     - 'ee/spec/requests/api/graphql/boards/epic_boards_query_spec.rb'
     - 'ee/spec/requests/api/graphql/boards/epic_lists_query_spec.rb'
     - 'ee/spec/requests/api/graphql/ci/runners_spec.rb'
-    - 'ee/spec/requests/api/graphql/epics/epic_resolver_spec.rb'
     - 'ee/spec/requests/api/graphql/iterations/cadences_spec.rb'
     - 'ee/spec/requests/api/graphql/iterations/iterations_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/analytics/devops_adoption/enabled_namespaces/bulk_enable_spec.rb'
