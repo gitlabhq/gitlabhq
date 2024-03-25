@@ -2,8 +2,7 @@
 import { GlAccordion, GlAccordionItem, GlSkeletonLoader } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
-import { s__ } from '~/locale';
-import Participants from '~/sidebar/components/participants/participants.vue';
+import { s__, n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
@@ -17,7 +16,6 @@ export default {
   components: {
     DesignDiscussion,
     DesignNoteSignedOut,
-    Participants,
     GlAccordion,
     GlAccordionItem,
     GlSkeletonLoader,
@@ -96,6 +94,9 @@ export default {
     unresolvedDiscussions() {
       return this.discussions.filter((discussion) => !discussion.resolved);
     },
+    unresolvedDiscussionsCount() {
+      return n__('%d Thread', '%d Threads', this.unresolvedDiscussions.length);
+    },
     isResolvedDiscussionsExpanded: {
       get() {
         return this.resolvedDiscussionsExpanded;
@@ -148,13 +149,11 @@ export default {
           :markdown-preview-path="markdownPreviewPath"
           class="gl-mt-4"
         />
-        <participants
-          :participants="discussionParticipants"
-          :show-participant-label="false"
-          class="gl-mb-4"
-        />
         <gl-skeleton-loader v-if="isLoading" />
         <template v-else>
+          <h3 data-testid="unresolved-discussion-count" class="gl-line-height-20! gl-font-lg">
+            {{ unresolvedDiscussionsCount }}
+          </h3>
           <h2
             v-if="isLoggedIn && unresolvedDiscussions.length === 0"
             class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"

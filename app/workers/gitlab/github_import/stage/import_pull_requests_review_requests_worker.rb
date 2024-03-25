@@ -10,21 +10,7 @@ module Gitlab
 
         include StageMethods
 
-        resumes_work_when_interrupted!
-
-        # client - An instance of Gitlab::GithubImport::Client.
-        # project - An instance of Project.
-        def import(client, project)
-          waiter = Importer::PullRequests::ReviewRequestsImporter
-           .new(project, client)
-           .execute
-
-          AdvanceStageWorker.perform_async(
-            project.id,
-            { waiter.key => waiter.jobs_remaining },
-            'pull_request_reviews'
-          )
-        end
+        def perform(project_id); end
       end
     end
   end

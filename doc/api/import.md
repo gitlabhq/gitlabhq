@@ -19,6 +19,7 @@ Use the Import API to import repositories from GitHub or Bitbucket Server.
 > - `collaborators_import` key in `optional_stages` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 > - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but disables the `single_endpoint_issue_events_import` optional stage.
 > - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+> - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 Import your projects from GitHub to GitLab using the API.
 
@@ -54,7 +55,6 @@ curl --request POST \
     "new_name": "NEW-NAME",
     "github_hostname": "https://github.example.com",
     "optional_stages": {
-      "single_endpoint_issue_events_import": true,
       "single_endpoint_notes_import": true,
       "attachments_import": true,
       "collaborators_import": true
@@ -64,8 +64,7 @@ curl --request POST \
 
 The following keys are available for `optional_stages`:
 
-- `single_endpoint_issue_events_import`, for issue and pull request events import. If the `github_import_extended_events` feature flag is enabled, this optional stage
-  is unavailable.
+- `single_endpoint_issue_events_import`, for issue and pull request events import. This optional stage was removed in GitLab 16.9.
 - `single_endpoint_notes_import`, for an alternative and more thorough comments import.
 - `attachments_import`, for Markdown attachments import.
 - `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.

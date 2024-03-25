@@ -11,7 +11,6 @@ RSpec.describe Gitlab::GithubImport::ImportIssueEventWorker, feature_category: :
     end
 
     let(:client) { instance_double(Gitlab::GithubImport::Client) }
-    let(:extended_events) { true }
     let(:event_hash) do
       {
         'id' => 6501124486,
@@ -24,12 +23,6 @@ RSpec.describe Gitlab::GithubImport::ImportIssueEventWorker, feature_category: :
         'created_at' => '2022-04-26 18:30:53 UTC',
         'performed_via_github_app' => nil
       }
-    end
-
-    before do
-      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-        allow(setting).to receive(:extended_events?).and_return(extended_events)
-      end
     end
 
     it 'imports an issue event and increase importer counter' do
@@ -64,16 +57,6 @@ RSpec.describe Gitlab::GithubImport::ImportIssueEventWorker, feature_category: :
         expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, 'custom_type', :imported)
 
         worker.import(project, client, event_hash)
-      end
-
-      context 'when extended_events is disabled' do
-        let(:extended_events) { false }
-
-        it 'increments the issue_event importer counter' do
-          expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, :issue_event, :imported)
-
-          worker.import(project, client, event_hash)
-        end
       end
     end
   end

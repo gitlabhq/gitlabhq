@@ -10,7 +10,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let(:extended_events) { true }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
@@ -32,9 +31,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
     end
     allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
       allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-    end
-    allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-      allow(setting).to receive(:extended_events?).and_return(extended_events)
     end
   end
 
@@ -70,16 +66,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
       expect(system_note.author).to eq(user)
       expect(system_note.created_at).to eq(issue_event.submitted_at)
       expect(system_note.system_note_metadata.action).to eq('approved')
-    end
-  end
-
-  context 'when extended events is false' do
-    let(:extended_events) { false }
-
-    it 'does nothing' do
-      expect { importer.execute(issue_event) }
-        .to not_change { Note.count }
-        .and not_change { Approval.count }
     end
   end
 end

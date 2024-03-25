@@ -120,8 +120,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/github_import/importer/protected_branches_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/pull_requests_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/single_endpoint_diff_notes_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/single_endpoint_issue_notes_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/single_endpoint_merge_request_notes_importer_spec.rb'
     - 'spec/lib/gitlab/gpg_spec.rb'
     - 'spec/lib/gitlab/graphql/negatable_arguments_spec.rb'
     - 'spec/lib/gitlab/http_io_spec.rb'

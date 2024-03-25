@@ -3406,8 +3406,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/github_import/importer/repository_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/single_endpoint_diff_notes_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/single_endpoint_issue_events_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/single_endpoint_issue_notes_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/single_endpoint_merge_request_notes_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/label_finder_spec.rb'
     - 'spec/lib/gitlab/github_import/logger_spec.rb'
     - 'spec/lib/gitlab/github_import/markdown_text_spec.rb'

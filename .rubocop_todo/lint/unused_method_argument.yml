@@ -442,7 +442,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/gitaly_client/commit_service.rb'
     - 'lib/gitlab/gitaly_client/operation_service.rb'
     - 'lib/gitlab/github_gists_import/representation/gist.rb'
-    - 'lib/gitlab/github_import/importer/pull_requests/review_requests_importer.rb'
     - 'lib/gitlab/github_import/representation/diff_note.rb'
     - 'lib/gitlab/github_import/representation/issue_event.rb'
     - 'lib/gitlab/github_import/representation/lfs_object.rb'

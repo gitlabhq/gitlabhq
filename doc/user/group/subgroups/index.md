@@ -120,6 +120,12 @@ For more information, view the [permissions table](../../permissions.md#group-me
 
 ## Subgroup membership
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
 When you add a member to a group, that member is also added to all subgroups of that group.
 The member's permissions are inherited from the group into all subgroups.
 
@@ -128,6 +134,7 @@ Subgroup members can be:
 1. [Direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
 1. [Inherited members](../../project/members/index.md#inherited-membership) of the subgroup from the subgroup's parent group.
 1. Members of a group that was [shared with the subgroup's top-level group](../manage.md#share-a-group-with-another-group).
+1. [Indirect members](../../project/members/index.md#indirect-membership) include [inherited members](../../project/members/index.md#inherited-membership) and members of a group that was [invited to the subgroup or its ancestors](../manage.md#share-a-group-with-another-group).
 
 ```mermaid
 flowchart RL

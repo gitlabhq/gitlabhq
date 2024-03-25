@@ -173,8 +173,7 @@ module Import
         .new(project)
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
-          optional_stages: params[:optional_stages],
-          extended_events: Feature.enabled?(:github_import_extended_events, current_user)
+          optional_stages: params[:optional_stages]
         )
     end
   end

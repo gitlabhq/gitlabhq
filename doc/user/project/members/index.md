@@ -16,6 +16,12 @@ Each member gets a role, which determines what they can do in the project.
 
 ## Membership types
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 behind `webui_members_inherited_users` feature flag. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
 Users can become members of a group or project in different ways, which define their membership type.
 
 | Membership type                               | Membership process |
@@ -24,6 +30,7 @@ Users can become members of a group or project in different ways, which define t
 | [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
 | [Direct shared](share_project_with_groups.md) | The user is a member of a group or project that is shared into the current group or project. |
 | [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project that is shared into the current group or project. |
+| [Indirect](#indirect-membership)  | The user is not directly added to the current group or project. Instead, they gain membership to the group or project through either inheritance from a parent group, or through sharing the current group or project with another group. |
 
 ```mermaid
 flowchart RL
@@ -127,6 +134,29 @@ If a user is:
 
 - A direct member of a project, the **Expiration** and **Max role** fields can be updated directly on the project.
 - An inherited member from a parent group, the **Expiration** and **Max role** fields must be updated on the parent group that the member originates from.
+
+## Indirect membership
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/444476) in GitLab 16.10 [with a flag](../../feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+If your project belongs to a group, the users gain membership to the project through either inheritance from a parent group or through sharing the project or the project's parent group with another group.
+
+![Project members page](img/project_members_v16_10.png)
+
+In this example:
+
+- Three members have access to the project.
+- **User 0** and **User 1** have the Guest role in the project. They have indirect membership through **Twitter** group, which contains the project.
+- **Administrator** is the [Owner](../../permissions.md) of the group.
+
+If a user is:
+
+- A direct member of a project, the **Expiration** and **Max role** fields can be updated directly in the project.
+- An indirect member from a parent group or shared group, the **Expiration** and **Max role** fields must be updated in the group that the member originates from.
 
 ## Add groups to a project
 

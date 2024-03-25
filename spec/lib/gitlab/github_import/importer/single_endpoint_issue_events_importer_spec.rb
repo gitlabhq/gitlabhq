@@ -104,15 +104,10 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
 
     let(:page_counter) { instance_double(Gitlab::Import::PageCounter) }
 
-    let(:extended_events) { true }
-
     before do
       allow(client).to receive(:each_page).once.with(:issue_timeline,
         project.import_source, issuable.iid, { state: 'all', sort: 'created', direction: 'asc', page: 1 }
       ).and_yield(page)
-      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-        allow(setting).to receive(:extended_events?).and_return(extended_events)
-      end
     end
 
     context 'with issues' do
@@ -226,16 +221,6 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
 
           subject.each_object_to_import { |event| event }
         end
-
-        context 'when extended_events is disabled' do
-          let(:extended_events) { false }
-
-          it 'increments the issue_event fetched counter' do
-            expect(Gitlab::GithubImport::ObjectCounter).to receive(:increment).with(project, :issue_event, :fetched)
-
-            subject.each_object_to_import { |event| event }
-          end
-        end
       end
     end
 
@@ -279,17 +264,6 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
           subject.each_object_to_import { |event| event }
         end
       end
-
-      context 'when extended_events is disabled' do
-        let(:event_name) { 'review_requested' }
-        let(:extended_events) { false }
-
-        it 'does not save event' do
-          expect(Gitlab::GithubImport::EventsCache).not_to receive(:new)
-
-          subject.each_object_to_import { |event| event }
-        end
-      end
     end
 
     describe 'after batch processed' do
@@ -319,27 +293,11 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
           subject.each_object_to_import { |event| event }
         end
       end
-
-      context 'when extended_events is disabled' do
-        let(:extended_events) { false }
-
-        it 'does not replay events' do
-          expect(Gitlab::GithubImport::ReplayEventsWorker).not_to receive(:perform_async)
-
-          subject.each_object_to_import { |event| event }
-        end
-      end
     end
   end
 
-  describe '#execute', :clean_gitlab_redis_cache do
-    let(:extended_events) { false }
-
+  describe '#execute', :clean_gitlab_redis_shared_state do
     before do
-      allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-        allow(setting).to receive(:extended_events?).and_return(extended_events)
-      end
-
       stub_request(:get, 'https://api.github.com/rate_limit')
         .to_return(status: 200, headers: { 'X-RateLimit-Limit' => 5000, 'X-RateLimit-Remaining' => 5000 })
 
@@ -362,32 +320,15 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
         .to_return(status: 200, body: events.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
-    context 'when extended_events is disabled' do
-      it 'enqueues importer worker' do
-        expect { subject.execute }.to change { Gitlab::GithubImport::ReplayEventsWorker.jobs.size }.by(0)
-        .and change { Gitlab::GithubImport::ImportIssueEventWorker.jobs.size }.by(1)
-      end
-
-      it 'returns job waiter with the correct remaining jobs count' do
-        job_waiter = subject.execute
-
-        expect(job_waiter.jobs_remaining).to eq(1)
-      end
+    it 'enqueues importer worker and replay worker' do
+      expect { subject.execute }.to change { Gitlab::GithubImport::ReplayEventsWorker.jobs.size }.by(1)
+      .and change { Gitlab::GithubImport::ImportIssueEventWorker.jobs.size }.by(1)
     end
 
-    context 'when extended_events is enabled' do
-      let(:extended_events) { true }
+    it 'returns job waiter with the correct remaining jobs count' do
+      job_waiter = subject.execute
 
-      it 'enqueues importer worker and replay worker' do
-        expect { subject.execute }.to change { Gitlab::GithubImport::ReplayEventsWorker.jobs.size }.by(1)
-        .and change { Gitlab::GithubImport::ImportIssueEventWorker.jobs.size }.by(1)
-      end
-
-      it 'returns job waiter with the correct remaining jobs count' do
-        job_waiter = subject.execute
-
-        expect(job_waiter.jobs_remaining).to eq(2)
-      end
+      expect(job_waiter.jobs_remaining).to eq(2)
     end
   end
 end

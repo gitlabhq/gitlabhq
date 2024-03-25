@@ -2,8 +2,6 @@
 
 # This module is used in:
 #  - SingleEndpointDiffNotesImporter
-#  - SingleEndpointIssueNotesImporter
-#  - SingleEndpointMergeRequestNotesImporter
 # if enabled by Gitlab::GithubImport::Settings
 #
 # - SingleEndpointIssueEventsImporter

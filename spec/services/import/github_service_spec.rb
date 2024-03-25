@@ -35,7 +35,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     allow(settings)
       .to receive(:write)
       .with(
-        extended_events: true,
         optional_stages: optional_stages,
         timeout_strategy: timeout_strategy
       )
@@ -98,7 +97,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         expect(settings)
           .to have_received(:write)
           .with(optional_stages: nil,
-            extended_events: true,
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -124,7 +122,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: nil,
-            extended_events: true,
             timeout_strategy: timeout_strategy
           )
         expect_snowplow_event(
@@ -160,7 +157,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
             .to have_received(:write)
             .with(
               optional_stages: nil,
-              extended_events: true,
               timeout_strategy: timeout_strategy
             )
           expect_snowplow_event(
@@ -185,7 +181,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     context 'when optional stages params present' do
       let(:optional_stages) do
         {
-          single_endpoint_issue_events_import: true,
           single_endpoint_notes_import: 'false',
           attachments_import: false,
           collaborators_import: true
@@ -199,7 +194,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            extended_events: true,
             timeout_strategy: timeout_strategy
           )
       end
@@ -215,7 +209,6 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            extended_events: true,
             timeout_strategy: timeout_strategy
           )
       end
@@ -229,23 +222,8 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           .to have_received(:write)
           .with(
             optional_stages: optional_stages,
-            extended_events: true,
             timeout_strategy: timeout_strategy
           )
-      end
-    end
-
-    context 'when `github_import_extended_events` feature flag is disabled' do
-      before do
-        stub_feature_flags(github_import_extended_events: false)
-      end
-
-      it 'saves extend_events to import_data' do
-        expect(settings)
-          .to receive(:write)
-          .with(a_hash_including(extended_events: false))
-
-        subject.execute(access_params, :github)
       end
     end
   end

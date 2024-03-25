@@ -161,7 +161,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.byebug_history',
         '.editorconfig',
         '.eslintcache',
-        '.foreman',
         '.git-blame-ignore-revs',
         '.gitlab_kas_secret',
         '.gitlab_shell_secret',

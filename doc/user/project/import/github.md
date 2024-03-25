@@ -176,17 +176,16 @@ When the **Organization** tab is selected, you can further narrow down your sear
 > - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 > - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
 > - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+> - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
-- Issue and pull request events. For example, _opened_ or _closed_, _renamed_, and _labeled_ or _unlabeled_.
 - More than approximately 30,000 comments because of a [limitation of the GitHub API](#missing-comments).
 - Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
   images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Import issue and pull request events**. If the `github_import_extended_events` feature flag is enabled, this option is unavailable.
 - **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
   [limitation of the GitHub API](#missing-comments).
 - **Import Markdown attachments**.
