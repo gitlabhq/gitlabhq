@@ -115,7 +115,9 @@ RSpec.describe Ci::UnlockPipelineService, :unlock_pipelines, :clean_gitlab_redis
           before do
             mock_relation = instance_double('Ci::JobArtifact::ActiveRecord_Relation')
             allow(Ci::JobArtifact).to receive(:where).and_call_original
-            allow(Ci::JobArtifact).to receive(:where).with(id: [last_artifact.id]).and_return(mock_relation)
+            allow(Ci::JobArtifact).to receive(:where)
+                                        .with(id: [last_artifact.id], partition_id: last_artifact.partition_id)
+                                        .and_return(mock_relation)
             allow(mock_relation).to receive(:update_all).and_raise('An error')
           end
 

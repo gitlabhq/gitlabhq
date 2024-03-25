@@ -14,6 +14,10 @@ module Integrations
       Gitlab::DataBuilder::Push.build_sample(project, current_user)
     end
 
+    def tag_push_events_data
+      Gitlab::DataBuilder::Push.build_sample(project, current_user, is_tag: true)
+    end
+
     def note_events_data
       note = NotesFinder.new(current_user, project: project, target: project, sort: 'id_desc').execute.first
 

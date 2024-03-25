@@ -94,7 +94,7 @@ following principles when upgrading those servers:
 
 ## Upgrade the Gitaly nodes (Praefect / Gitaly Cluster)
 
-If you're running Gitaly cluster, follow the [zero downtime process](zero_downtime.md#gitaly-or-gitaly-cluster)
+If you're running Gitaly cluster, follow the [zero downtime process](zero_downtime.md)
 for Gitaly cluster.
 
 If you are using Amazon Machine Images (AMIs) on AWS, you can either upgrade the Gitaly nodes
@@ -199,7 +199,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Follow [the zero downtime instructions](zero_downtime.md#redis-ha-using-sentinel)
+Follow [the zero downtime instructions](zero_downtime.md)
 for upgrading your Redis HA cluster.
 
 ## Upgrade the Rails components

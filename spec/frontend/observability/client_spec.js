@@ -688,8 +688,18 @@ describe('buildClient', () => {
     it('fetches metrics from the metrics URL', async () => {
       const mockResponse = {
         metrics: [
-          { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
-          { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+          {
+            name: 'metric A',
+            description: 'a counter metric called A',
+            type: 'COUNTER',
+            attributes: [],
+          },
+          {
+            name: 'metric B',
+            description: 'a gauge metric called B',
+            type: 'GAUGE',
+            attributes: [],
+          },
         ],
       };
 
@@ -844,23 +854,11 @@ describe('buildClient', () => {
           });
           expect(getQueryParam()).toBe(
             'mname=name&mtype=type' +
-              '&attr_1=foo&not[attr_1]=bar' +
-              '&like[attr_2]=foo&not_like[attr_2]=bar',
+              '&attrs=attr_1,eq,foo' +
+              '&attrs=attr_1,neq,bar' +
+              '&attrs=attr_2,re,foo' +
+              '&attrs=attr_2,nre,bar',
           );
-        });
-
-        it('handles repeated params', async () => {
-          await client.fetchMetric('name', 'type', {
-            filters: {
-              attributes: {
-                attr_1: [
-                  { operator: '=', value: 'v1' },
-                  { operator: '=', value: 'v2' },
-                ],
-              },
-            },
-          });
-          expect(getQueryParam()).toContain('attr_1=v1&attr_1=v2');
         });
 
         it('ignores empty filters', async () => {

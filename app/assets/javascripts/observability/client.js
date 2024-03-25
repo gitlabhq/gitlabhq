@@ -340,21 +340,23 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   }
 }
 
-const SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS = ['=', '!=', '=~', '!~'];
-
+const SUPPORTED_METRICS_DIMENSIONS_OPERATORS = {
+  '!=': 'neq',
+  '=': 'eq',
+  '=~': 're',
+  '!~': 'nre',
+};
 function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   if (!dimensionFilter || !params) return;
 
   Object.entries(dimensionFilter).forEach(([filterName, values]) => {
     const filterValues = Array.isArray(values) ? values : [];
     const validFilters = filterValues.filter((f) =>
-      SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS.includes(f.operator),
+      Object.keys(SUPPORTED_METRICS_DIMENSIONS_OPERATORS).includes(f.operator),
     );
     validFilters.forEach(({ operator, value }) => {
-      const paramName = getFilterParamName(filterName, operator);
-      if (paramName && value) {
-        params.append(paramName, value);
-      }
+      const operatorName = SUPPORTED_METRICS_DIMENSIONS_OPERATORS[operator];
+      params.append('attrs', `${filterName},${operatorName},${value}`);
     });
   });
 }

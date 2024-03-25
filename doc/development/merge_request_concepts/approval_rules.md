@@ -181,7 +181,7 @@ submitted. It's like `Projects::MergeRequests::CreationsController` but it execu
 
 This API is defined in `ee/lib/api/merge_request_approvals.rb`.
 
-The [Approvals API endpoint](../../api/merge_request_approvals.md#get-configuration-1)
+The [Approvals API endpoint](../../api/merge_request_approvals.md#merge-request-level-mr-approvals)
 is requested when a merge request page loads.
 
 The `/projects/:id/merge_requests/:merge_request_iid/approval_settings` is a

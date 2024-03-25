@@ -40,21 +40,35 @@ RSpec.describe Gitlab::DataBuilder::Push do
     end
   end
 
-  describe '.build_sample' do
+  describe '.build_sample push event' do
     let(:data) { described_class.build_sample(project, user) }
 
-    it { expect(data).to be_a(Hash) }
-    it { expect(data[:before]).to eq('1b12f15a11fc6e62177bef08f47bc7b5ce50b141') }
-    it { expect(data[:after]).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
+    it { expect(data[:object_kind]).to eq('push') }
+    it { expect(data[:event_name]).to eq('push') }
     it { expect(data[:ref]).to eq('refs/heads/master') }
-    it { expect(data[:commits].size).to eq(3) }
-    it { expect(data[:total_commits_count]).to eq(3) }
-    it { expect(data[:commits].first[:added]).to eq(['bar/branch-test.txt']) }
-    it { expect(data[:commits].first[:modified]).to eq([]) }
-    it { expect(data[:commits].first[:removed]).to eq([]) }
 
     include_examples 'project hook data with deprecateds'
     include_examples 'deprecated repository hook data'
+    include_examples 'push hook data'
+  end
+
+  describe '.build_sample with tag push event' do
+    let(:data) { described_class.build_sample(project, user, is_tag: true) }
+
+    it { expect(data[:object_kind]).to eq('tag_push') }
+    it { expect(data[:event_name]).to eq('tag_push') }
+    it { expect(data[:ref]).to eq('refs/tags/v1.1.1') }
+
+    describe "empty repository" do
+      let_it_be(:project) { create(:project_empty_repo) }
+      let(:data) { described_class.build_sample(project, user, is_tag: true) }
+
+      it { expect(data[:ref]).to eq('refs/tags/v1.0.0') }
+    end
+
+    include_examples 'project hook data with deprecateds'
+    include_examples 'deprecated repository hook data'
+    include_examples 'push hook data'
   end
 
   describe '.sample_data' do

@@ -605,7 +605,7 @@ The table below is a comparison between the existing GitLab.com features, and no
 
 1. How would we synchronize `users` across Cells?
 
-   We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define
+   We build out-of-band replication of tables marked as `main_clusterwide`. We have yet to define
    if this would be better to do with an `API` that is part of Rails, or using the Dedicated service.
    However, using Rails would likely be the simplest and most reliable solution, because the
    application knows the expected data structure.

@@ -65,7 +65,7 @@ GitLab CLI. The changelog output is formatted in Markdown, and
 
 ### From the API
 
-To generate changelogs via the API with a `curl` command, see
+To use the API to generate changelogs with a `curl` command, see
 [Add changelog data to a changelog file](../../api/repositories.md#add-changelog-data-to-a-changelog-file)
 in the API documentation.
 
@@ -303,8 +303,6 @@ corresponding merge request, no merge request is displayed.
 
 ### Customize the tag format when extracting versions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
-
 GitLab uses a regular expression (using the
 [re2](https://github.com/google/re2/) engine and syntax) to extract a semantic
 version from tag names. The default regular expression is:
@@ -351,8 +349,6 @@ an error is produced when generating a changelog.
 
 ## Reverted commit handling
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
-
 To be treated as a revert commit, the commit message must contain the string
 `This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.
 
@@ -380,3 +376,4 @@ Commit B is skipped.
 ## Related topics
 
 - [Changelog-related endpoints](../../api/repositories.md) in the Repositories API.
+- [`glab changelog`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/changelog) in the GitLab CLI documentation.

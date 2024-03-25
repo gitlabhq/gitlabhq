@@ -120,7 +120,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
       {
         'AdjournedProjectDeletionWorker' => 3,
         'AdminEmailsWorker' => 3,
-        'Ai::SyncServiceTokenWorker' => 3, # TODO: remove starting 16.11, see https://gitlab.com/groups/gitlab-org/-/epics/12544
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,

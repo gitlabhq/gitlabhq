@@ -12,12 +12,14 @@ module Ci
     self.primary_key = :id
     self.sequence_name = :ci_job_stages_id_seq
 
+    query_constraints :id, :partition_id
     partitionable scope: :pipeline, partitioned: true
 
     enum status: Ci::HasStatus::STATUSES_ENUM
 
     belongs_to :project
-    belongs_to :pipeline
+    belongs_to :pipeline, ->(stage) { in_partition(stage) },
+      foreign_key: :pipeline_id, partition_foreign_key: :partition_id, inverse_of: :stages
 
     has_many :statuses,
       ->(stage) { in_partition(stage) },

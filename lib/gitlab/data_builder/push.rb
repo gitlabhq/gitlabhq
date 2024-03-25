@@ -50,6 +50,14 @@ module Gitlab
           push_options: { ci: { skip: true } }
         }.freeze
 
+      DEFAULT_TAG_NAME = 'v1.0.0'
+      SAMPLE_TAG_DATA =
+        {
+          object_kind: "tag_push",
+          event_name: "tag_push",
+          ref: "refs/tags/#{DEFAULT_TAG_NAME}"
+        }.freeze
+
       # Produce a hash of post-receive data
       #
       # data = {
@@ -147,12 +155,17 @@ module Gitlab
 
       # This method provides a sample data generated with
       # existing project and commits to test webhooks
-      def build_sample(project, user)
+      def build_sample(project, user, is_tag = false)
         # Use sample data if repo has no commit
         # (expect the case of test service configuration settings)
-        return sample_data if project.empty_repo?
+        return sample_data(is_tag) if project.empty_repo?
 
-        ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
+        ref = if is_tag
+                "#{Gitlab::Git::TAG_REF_PREFIX}#{sample_tag_name(project) || DEFAULT_TAG_NAME}"
+              else
+                "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
+              end
+
         commits = project.repository.commits(project.default_branch.to_s, limit: 3)
 
         build(project: project,
@@ -163,8 +176,12 @@ module Gitlab
               commits: commits)
       end
 
-      def sample_data
-        SAMPLE_DATA
+      def sample_data(is_tag = false)
+        if is_tag
+          SAMPLE_DATA.merge(SAMPLE_TAG_DATA)
+        else
+          SAMPLE_DATA
+        end
       end
 
       def checkout_sha(repository, newrev, ref)
@@ -183,6 +200,10 @@ module Gitlab
         else
           newrev
         end
+      end
+
+      def sample_tag_name(project)
+        project.repository.tags_sorted_by(:name_desc, limit: 1).first&.name
       end
     end
   end

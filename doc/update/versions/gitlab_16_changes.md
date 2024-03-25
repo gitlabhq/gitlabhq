@@ -826,8 +826,7 @@ Specific information applies to Linux package installations:
   mentioning that the installed Redis version is different than the one running is
   displayed at the end of reconfigure run until the restart is performed.
 
-  If your instance has Redis HA with Sentinel, follow the upgrade steps mentioned in
-  [Zero Downtime documentation](../zero_downtime.md#redis-ha-using-sentinel).
+  Follow [the zero downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
 
 ### Self-compiled installations
 

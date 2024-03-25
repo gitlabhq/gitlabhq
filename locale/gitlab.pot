@@ -16940,6 +16940,12 @@ msgstr ""
 msgid "DeletionSettings|Deletion protection"
 msgstr ""
 
+msgid "DeletionSettings|Maximum deletion protection duration is 90 days."
+msgstr ""
+
+msgid "DeletionSettings|Minimum deletion protection duration is 1 day."
+msgstr ""
+
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for. Personal projects are always deleted immediately."
 msgstr ""
 
