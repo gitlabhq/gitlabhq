@@ -182,6 +182,6 @@ To work around this problem, add `customers.gitlab.com:443` to the
 When you [filter requests](#filter-requests), you might get an error that states `Help page documentation base url is blocked: Requests to hosts and IP addresses not on the Allow List are denied`.
 To work around this error:
 
-1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore. 
+1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore.
 1. Add `docs.gitlab.com` , or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.

@@ -1,5 +1,6 @@
-import { GlAccordionItem } from '@gitlab/ui';
+import { GlAccordionItem, GlEmptyState } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import emptyDiscussionUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
@@ -43,7 +44,7 @@ describe('Design management design sidebar component', () => {
   const findUnresolvedDiscussions = () => wrapper.findAllByTestId('unresolved-discussion');
   const findResolvedDiscussions = () => wrapper.findAllByTestId('resolved-discussion');
   const findResolvedCommentsToggle = () => wrapper.findComponent(GlAccordionItem);
-  const findNewDiscussionDisclaimer = () => wrapper.findByTestId('new-discussion-disclaimer');
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findUnresolvedDiscussionsCount = () => wrapper.findByTestId('unresolved-discussion-count');
 
   function createComponent(props = {}) {
@@ -96,7 +97,10 @@ describe('Design management design sidebar component', () => {
     });
 
     it('renders a message about possibility to create a new discussion', () => {
-      expect(findNewDiscussionDisclaimer().exists()).toBe(true);
+      const emptyState = findEmptyState();
+      expect(emptyState.exists()).toBe(true);
+      expect(emptyState.props('svgPath')).toBe(emptyDiscussionUrl);
+      expect(emptyState.text()).toBe(`Click on the image where you'd like to add a new comment.`);
     });
 
     it('renders 0 Threads for unresolved discussions', () => {
@@ -256,7 +260,7 @@ describe('Design management design sidebar component', () => {
     });
 
     it('renders a message about possibility to create a new discussion', () => {
-      expect(findNewDiscussionDisclaimer().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(true);
     });
 
     it('does not render unresolved discussions', () => {
@@ -284,7 +288,7 @@ describe('Design management design sidebar component', () => {
       });
 
       it('does not render a message about possibility to create a new discussion', () => {
-        expect(findNewDiscussionDisclaimer().exists()).toBe(false);
+        expect(findEmptyState().exists()).toBe(false);
       });
 
       it('renders design-note-signed-out component', () => {

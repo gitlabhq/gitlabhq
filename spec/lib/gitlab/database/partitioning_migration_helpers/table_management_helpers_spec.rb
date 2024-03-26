@@ -361,13 +361,18 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       it 'creates a composite primary key' do
-        migration.partition_table_by_int_range(table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key)
+        migration.partition_table_by_int_range(
+          table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key
+        )
 
-        expect(connection.primary_key(:_test_migration_partitioned_table)).to eql(%w[merge_request_diff_id relative_order])
+        expect(connection.primary_key(:_test_migration_partitioned_table))
+          .to eql(%w[merge_request_diff_id relative_order])
       end
 
       it 'applies the correct column schema for the new table' do
-        migration.partition_table_by_int_range(table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key)
+        migration.partition_table_by_int_range(
+          table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key
+        )
 
         columns = connection.columns(:_test_migration_partitioned_table)
 
@@ -381,7 +386,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       it 'creates multiple partitions' do
-        migration.partition_table_by_int_range(table_name, partition_column_name, partition_size: 500, primary_key: primary_key)
+        migration.partition_table_by_int_range(
+          table_name, partition_column_name, partition_size: 500, primary_key: primary_key
+        )
 
         expect_range_partitions_for(partitioned_table, {
           '1' => %w[1 501],
@@ -426,7 +433,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         end
 
         it 'defaults the min_id to 1 and the max_id to 7' do
-          migration.partition_table_by_int_range(table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key)
+          migration.partition_table_by_int_range(
+            table_name, partition_column_name, partition_size: partition_size, primary_key: primary_key
+          )
 
           expect_range_partitions_for(partitioned_table, partitions.merge(buffer_partitions))
         end
@@ -438,7 +447,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       it 'raises an error' do
         expect do
-          migration.partition_table_by_int_range(source_table, invalid_column, partition_size: partition_size, primary_key: ['id'])
+          migration.partition_table_by_int_range(
+            source_table, invalid_column, partition_size: partition_size, primary_key: ['id']
+          )
         end.to raise_error(/partition column #{invalid_column} does not exist/)
       end
     end
@@ -455,10 +466,13 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
     context 'when the partitioned table already exists' do
       before do
-        migration.send(:create_range_id_partitioned_copy, source_table,
+        migration.send(
+          :create_range_id_partitioned_copy,
+          source_table,
           migration.send(:make_partitioned_table_name, source_table),
           connection.columns(source_table).find { |c| c.name == partition_column2 },
-          connection.columns(source_table).select { |c| new_primary_key.include?(c.name) })
+          connection.columns(source_table).select { |c| new_primary_key.include?(c.name) }
+        )
       end
 
       it 'raises an error' do
@@ -485,7 +499,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       it 'raises an error' do
         expect do
-          migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+          migration.partition_table_by_date(
+            source_table, partition_column, min_date: min_date, max_date: max_date
+          )
         end.to raise_error(/max_date #{max_date} must be greater than min_date #{min_date}/)
       end
     end
@@ -495,7 +511,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       it 'raises an error' do
         expect do
-          migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+          migration.partition_table_by_date(
+            source_table, partition_column, min_date: min_date, max_date: max_date
+          )
         end.to raise_error(/max_date #{max_date} must be greater than min_date #{min_date}/)
       end
     end
@@ -505,7 +523,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       it 'raises an error' do
         expect do
-          migration.partition_table_by_date source_table, invalid_column, min_date: min_date, max_date: max_date
+          migration.partition_table_by_date(
+            source_table, invalid_column, min_date: min_date, max_date: max_date
+          )
         end.to raise_error(/partition column #{invalid_column} does not exist/)
       end
     end
@@ -523,7 +543,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         let(:old_primary_key) { 'identifier' }
 
         it 'does not change the primary key datatype' do
-          migration.partition_table_by_date non_int_table, partition_column, min_date: min_date, max_date: max_date
+          migration.partition_table_by_date(
+            non_int_table, partition_column, min_date: min_date, max_date: max_date
+          )
 
           original_pk_column = connection.columns(non_int_table).find { |c| c.name == old_primary_key }
           pk_column = connection.columns(partitioned_table).find { |c| c.name == old_primary_key }
@@ -534,7 +556,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       it 'creates a partition spanning over each month in the range given' do
-        migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+        migration.partition_table_by_date(
+          source_table, partition_column, min_date: min_date, max_date: max_date
+        )
 
         expect_range_partitions_for(partitioned_table, {
           '000000' => ['MINVALUE', "'2019-12-01 00:00:00'"],
@@ -554,7 +578,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           it 'creates a partition spanning over each month from the first record' do
             expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
 
-            migration.partition_table_by_date source_table, partition_column, max_date: max_date
+            migration.partition_table_by_date(
+              source_table, partition_column, max_date: max_date
+            )
 
             expect_range_partitions_for(partitioned_table, {
               '000000' => ['MINVALUE', "'2019-11-01 00:00:00'"],
@@ -571,7 +597,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           it 'creates the catchall partition plus two actual partition' do
             expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:with_suppressed).and_yield
 
-            migration.partition_table_by_date source_table, partition_column, max_date: max_date
+            migration.partition_table_by_date(source_table, partition_column, max_date: max_date)
 
             expect_range_partitions_for(partitioned_table, {
               '000000' => ['MINVALUE', "'2020-02-01 00:00:00'"],
@@ -587,7 +613,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           today = Date.new(2020, 5, 8)
 
           travel_to(today) do
-            migration.partition_table_by_date source_table, partition_column, min_date: min_date
+            migration.partition_table_by_date(source_table, partition_column, min_date: min_date)
 
             expect_range_partitions_for(partitioned_table, {
               '000000' => ['MINVALUE', "'2019-12-01 00:00:00'"],
@@ -607,7 +633,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         it 'creates partitions for the current and next month' do
           current_date = Date.new(2020, 05, 22)
           travel_to(current_date.to_time) do
-            migration.partition_table_by_date source_table, partition_column
+            migration.partition_table_by_date(source_table, partition_column)
 
             expect_range_partitions_for(partitioned_table, {
               '000000' => ['MINVALUE', "'2020-05-01 00:00:00'"],
@@ -634,31 +660,35 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
 
         expect do
-          migration.drop_partitioned_table_for source_table
+          migration.drop_partitioned_table_for(source_table)
         end.to raise_error(/#{source_table} is not allowed for use/)
       end
     end
 
     it 'drops the trigger syncing to the partitioned table' do
-      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.partition_table_by_date(
+        source_table, partition_column, min_date: min_date, max_date: max_date
+      )
 
       expect_function_to_exist(function_name)
       expect_valid_function_trigger(source_table, trigger_name, function_name, after: %w[delete insert update])
 
-      migration.drop_partitioned_table_for source_table
+      migration.drop_partitioned_table_for(source_table)
 
       expect_function_not_to_exist(function_name)
       expect_trigger_not_to_exist(source_table, trigger_name)
     end
 
     it 'drops the partitioned copy and all partitions' do
-      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.partition_table_by_date(
+        source_table, partition_column, min_date: min_date, max_date: max_date
+      )
 
       expected_tables.each do |table|
         expect(connection.table_exists?(table)).to be(true)
       end
 
-      migration.drop_partitioned_table_for source_table
+      migration.drop_partitioned_table_for(source_table)
 
       expected_tables.each do |table|
         expect(connection.table_exists?(table)).to be(false)
@@ -674,7 +704,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
 
         expect do
-          migration.enqueue_partitioning_data_migration source_table
+          migration.enqueue_partitioning_data_migration(source_table)
         end.to raise_error(/#{source_table} is not allowed for use/)
       end
     end
@@ -684,7 +714,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:transaction_open?).and_return(true)
 
         expect do
-          migration.enqueue_partitioning_data_migration source_table
+          migration.enqueue_partitioning_data_migration(source_table)
         end.to raise_error(/can not be run inside a transaction/)
       end
     end
@@ -702,10 +732,12 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
 
       it 'enqueues jobs to copy each batch of data' do
-        migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+        migration.partition_table_by_date(
+          source_table, partition_column, min_date: min_date, max_date: max_date
+        )
 
         Sidekiq::Testing.fake! do
-          migration.enqueue_partitioning_data_migration source_table
+          migration.enqueue_partitioning_data_migration(source_table)
 
           expect(migration_class).to have_scheduled_batched_migration(
             table_name: source_table,
@@ -727,7 +759,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
 
         expect do
-          migration.cleanup_partitioning_data_migration source_table
+          migration.cleanup_partitioning_data_migration(source_table)
         end.to raise_error(/#{source_table} is not allowed for use/)
       end
     end
@@ -808,7 +840,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:assert_table_is_allowed).with(source_table).and_call_original
 
         expect do
-          migration.finalize_backfilling_partitioned_table source_table
+          migration.finalize_backfilling_partitioned_table(source_table)
         end.to raise_error(/#{source_table} is not allowed for use/)
       end
     end
@@ -818,7 +850,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:table_exists?).with(partitioned_table).and_return(false)
 
         expect do
-          migration.finalize_backfilling_partitioned_table source_table
+          migration.finalize_backfilling_partitioned_table(source_table)
         end.to raise_error(/could not find partitioned table for #{source_table}/)
       end
     end
@@ -850,7 +882,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         expect(migration).to receive(:disable_statement_timeout).and_call_original
         expect(migration).to receive(:execute).with("VACUUM FREEZE ANALYZE #{partitioned_table}")
 
-        migration.finalize_backfilling_partitioned_table source_table
+        migration.finalize_backfilling_partitioned_table(source_table)
       end
     end
   end
@@ -859,7 +891,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:archived_table) { "#{source_table}_archived" }
 
     before do
-      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.partition_table_by_date(
+        source_table, partition_column, min_date: min_date, max_date: max_date
+      )
     end
 
     it 'replaces the original table with the partitioned table' do
@@ -893,9 +927,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     let(:archived_table) { "#{source_table}_archived" }
 
     before do
-      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.partition_table_by_date(
+        source_table, partition_column, min_date: min_date, max_date: max_date
+      )
 
-      migration.replace_with_partitioned_table source_table
+      migration.replace_with_partitioned_table(source_table)
     end
 
     it 'replaces the partitioned table with the non-partitioned table' do
@@ -926,12 +962,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
   end
 
   describe '#drop_nonpartitioned_archive_table' do
-    subject { migration.drop_nonpartitioned_archive_table source_table }
+    subject { migration.drop_nonpartitioned_archive_table(source_table) }
 
     let(:archived_table) { "#{source_table}_archived" }
 
     before do
-      migration.partition_table_by_date source_table, partition_column, min_date: min_date, max_date: max_date
+      migration.partition_table_by_date(
+        source_table, partition_column, min_date: min_date, max_date: max_date
+      )
+
       migration.replace_with_partitioned_table source_table
     end
 

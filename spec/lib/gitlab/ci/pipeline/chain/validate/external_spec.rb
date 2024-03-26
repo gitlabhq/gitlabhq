@@ -16,6 +16,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       - second_stage
 
     first_stage_job_name:
+      tags:
+        - TAG_1
+        - TAG_2
       stage: first_stage
       image: hello_world
       script:
@@ -152,15 +155,40 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
 
           builds = payload['builds']
           expect(builds.count).to eq(2)
+
+          expect(builds[0]['name']).to eq('first_stage_job_name')
           expect(builds[0]['services']).to be_nil
           expect(builds[0]['stage']).to eq('first_stage')
+          expect(builds[0]['tag_list']).to match_array(%w[TAG_1 TAG_2])
+          expect(builds[0]['script']).to match_array(["echo 'hello'"])
           expect(builds[0]['image']).to eq('hello_world')
+          expect(builds[1]['name']).to eq('second_stage_job_name')
           expect(builds[1]['services']).to eq(['postgres'])
           expect(builds[1]['stage']).to eq('second_stage')
           expect(builds[1]['image']).to be_nil
+          expect(builds[1]['tag_list']).to be_nil
+          expect(builds[1]['script']).to match_array(["echo 'first hello'", "echo 'second hello'"])
         end
 
         perform!
+      end
+
+      context 'when feature flag ci_send_tag_list_for_external_validation is disabled' do
+        before do
+          stub_feature_flags(ci_send_tag_list_for_external_validation: false)
+        end
+
+        it 'tag_list inot present' do
+          expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
+            payload = Gitlab::Json.parse(params[:body])
+            builds = payload['builds']
+
+            expect(builds[0]).not_to have_key("tag_list")
+            expect(builds[1]).not_to have_key("tag_list")
+          end
+
+          perform!
+        end
       end
 
       context "with existing jobs from other project's alive pipelines" do

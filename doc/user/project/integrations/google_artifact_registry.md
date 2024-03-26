@@ -32,7 +32,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the GitLab project.
 - You must have the [permissions needed](https://cloud.google.com/iam/docs/granting-changing-revoking-access#required-permissions) to manage access to the Google Cloud project with the Artifact Registry repository.
 - A [workload identity federation](../../../integration/google_cloud_iam.md) (WLIF) pool and provider must be configured to authenticate to Google Cloud.
-- A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration: 
+- A [Google Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories) with the following configuration:
   - [Docker](https://cloud.google.com/artifact-registry/docs/supported-formats) format.
   - [Standard](https://cloud.google.com/artifact-registry/docs/repositories/create-repos) mode. Other repository formats and modes are not supported.
 
@@ -72,7 +72,7 @@ You can use these environment variables to interact with the Artifact Registry, 
 
 | Variable | GitLab | Runner | Description |
 |-|-|-|-|
-| `GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID` | 16.10 | 16.10 | The Google Cloud project ID where the Artifact Registry repository is located. |   
+| `GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID` | 16.10 | 16.10 | The Google Cloud project ID where the Artifact Registry repository is located. |
 | `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME` | 16.10  | 16.10 | The name of the connected Artifact Registry repository. |
 | `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION` | 16.10  | 16.10 | The Google Cloud location of the connected Artifact Registry repository. |
 

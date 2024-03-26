@@ -133,9 +133,9 @@ Our goal is to minimize code that we can't update on a customer's behalf, which 
 
 - We want to minimize the time required for customers to adopt our latest features, and
 - We want to retain the flexibility to make changes in our product without breaking support for a long-tail of older instances.
-- We want to be able to serve all GitLab distributions (.com SaaS, Self-managed, and Dedicated) with minimal complexity. 
-- We want to isolate AI capabilities to reduce risk and have a unified control plane. 
-- We want to provide a unified implementation that can support our "best-in-class" multi-model ensemble approach allowing us to easily support many AI models and AI vendors. 
+- We want to be able to serve all GitLab distributions (.com SaaS, Self-managed, and Dedicated) with minimal complexity.
+- We want to isolate AI capabilities to reduce risk and have a unified control plane.
+- We want to provide a unified implementation that can support our "best-in-class" multi-model ensemble approach allowing us to easily support many AI models and AI vendors.
 - We want a single point for controlling and measuring cost.
 - As much as possible, we want to track metrics (usage statistics, failures to respond, usage pattern, question categories, etc.) in the gateway rather than distributed across many points. (Of course some metrics can only be captured on the client side.)
 

@@ -42,7 +42,7 @@ The container registry has two main clients: the GitLab Rails application and th
 
 #### Docker
 
-The Docker client (`docker` CLI) interacts with the GitLab container registry mainly using the [login](https://docs.docker.com/reference/cli/docker/login/), 
+The Docker client (`docker` CLI) interacts with the GitLab container registry mainly using the [login](https://docs.docker.com/reference/cli/docker/login/),
 [push](https://docs.docker.com/reference/cli/docker/image/push/), and [pull](https://docs.docker.com/reference/cli/docker/image/pull/) commands.
 
 ##### Login and Authentication

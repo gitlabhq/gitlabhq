@@ -365,8 +365,11 @@ Cluster-wide features are strongly discouraged because:
 - They might require implementation of non-trivial [data aggregation](goals.md#aggregation-of-cluster-wide-data) that reduces resilience to [single node failure](goals.md#high-resilience-to-a-single-cell-failure).
 - They are harder to build due to the need of being able to run [mixed deployments](goals.md#cells-running-in-mixed-deployments). Cluster-wide features need to take this into account.
 - They might affect our ability to provide an [on-premise like experience on GitLab.com](goals.md#on-premise-like-experience).
-- Some features that are expected to be cluster-wide might in fact be better implemented using federation techniques that use trusted intra-cluster communication using the same user identity. User Profile is shared across the cluster.
-- The Cells architecture limits what services can be considered cluster-wide. Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation. No feature should be built to depend on such a service (like Elasticsearch).
+- Some features that are expected to be cluster-wide might in fact be better implemented using aggregation techniques that use trusted intra-cluster communication using the same user identity.
+  For example, user Profile is shared across the cluster.
+- The Cells architecture limits what services can be considered cluster-wide.
+  Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation.
+  No feature should be built to depend on such a service (like Elasticsearch).
 
 ### Will Cells use the [reference architecture for 50,000 users](../../../administration/reference_architectures/50k_users.md)?
 

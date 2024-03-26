@@ -138,7 +138,7 @@ This error might be because:
 - A custom firewall is blocking the requests.
 - There's latency of more than 5 seconds in API requests from the IdP to reach the AWS STS endpoint.
 - STS is making too many requests to your `.well_known` URL or the `jwks_uri` of the IdP.
- 
+
 As documented in the [AWS Knowledge Center article for this error](https://repost.aws/knowledge-center/iam-sts-invalididentitytoken),
 your GitLab instance needs to be publicly accessible so that the `.well_known` URL and `jwks_uri` can be resolved.
 If this is not possible, for example if your GitLab instance is in an offline environment,

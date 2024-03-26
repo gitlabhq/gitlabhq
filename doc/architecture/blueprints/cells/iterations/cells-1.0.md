@@ -702,3 +702,27 @@ The table below is a comparison between the existing GitLab.com features, and no
    - Geo is per-Cell.
    - Routing Service can direct to Geo replica of the Cell (if it knows it).
    - We might have many routing services in many regions.
+
+1. Are cluster-wide tables available to all cells?
+
+   No, cluster-wide tables are stored in a Cell-local database. However, we will
+   determine synchronization of cluster-wide tables on a case by case basis.
+
+1. How can I adapt a feature to be compatible with Cells?
+
+   Many groups have questions about how to adapt a feature for Cell.
+   This especially applies if a feature is available at the instance level, or
+   can be used across groups.
+
+   Here are some strategies for evolving a thing for Cells 1.0:
+
+   - Leave the feature unchanged.
+     For example, admins / users will have to create an account per cell.
+   - Disable the feature for Cells 1.0.
+   - For critical cases, move the feature to cluster-wide level.
+     For example, users can sign in at a single location, `https://gitlab.com/users/sign_in`.
+
+   In many cases, it is not yet necessary to re-implement an instance-wide feature
+   to work on a cluster-wide level. This is because for Cells 1.0, the net
+   effect of only allowing private visibility and new users mean that we can
+   defer this until Cells 1.5.

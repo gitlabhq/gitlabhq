@@ -98,6 +98,12 @@ There is a order of precedence in which the DAST API engine tries to get the tar
 
 The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
+## DAST API job excludes some paths from operations
+
+If you find that some paths are being excluded from operations, ensure that the `consumes` array is defined and has a valid type in the target definition JSON file. This is required.
+
+See the [example project target definition file](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example/-/blob/12e2b039d08208f1dd38a1e7c52b0bda848bb449/rest_target_openapi.json?plain=1#L13) where the `consumes` array is defined.
+
 ### Static environment solution
 
 This solution is for pipelines in which the target API URL doesn't change (is static).

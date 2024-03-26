@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { sprintf } from '~/locale';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import LeaveGroupDropdownItem from '~/members/components/action_dropdowns/leave_group_dropdown_item.vue';
+import LeaveDropdownItem from '~/members/components/action_dropdowns/leave_dropdown_item.vue';
 import RemoveMemberDropdownItem from '~/members/components/action_dropdowns/remove_member_dropdown_item.vue';
 import UserActionDropdown from '~/members/components/action_dropdowns/user_action_dropdown.vue';
 import { I18N } from '~/members/components/action_dropdowns/constants';
@@ -90,17 +90,42 @@ describe('UserActionDropdown', () => {
     });
 
     describe('when member is the current user', () => {
-      it('renders leave dropdown with correct text', () => {
-        createComponent({
-          isCurrentUser: true,
-          permissions: {
-            canRemove: true,
-          },
+      describe('when member is a group member', () => {
+        beforeEach(() => {
+          createComponent({
+            isCurrentUser: true,
+            permissions: {
+              canRemove: true,
+            },
+          });
         });
 
-        const leaveGroupDropdownItem = wrapper.findComponent(LeaveGroupDropdownItem);
-        expect(leaveGroupDropdownItem.exists()).toBe(true);
-        expect(leaveGroupDropdownItem.html()).toContain(I18N.leaveGroup);
+        it('renders leave dropdown with correct text', () => {
+          const leaveDropdownItem = wrapper.findComponent(LeaveDropdownItem);
+          expect(leaveDropdownItem.exists()).toBe(true);
+          expect(leaveDropdownItem.html()).toContain(I18N.leaveGroup);
+        });
+      });
+
+      describe('when member is a project member', () => {
+        beforeEach(() => {
+          createComponent({
+            member: {
+              ...member,
+              type: MEMBER_MODEL_TYPE_PROJECT_MEMBER,
+            },
+            isCurrentUser: true,
+            permissions: {
+              canRemove: true,
+            },
+          });
+        });
+
+        it('renders leave dropdown with correct text', () => {
+          const leaveDropdownItem = wrapper.findComponent(LeaveDropdownItem);
+          expect(leaveDropdownItem.exists()).toBe(true);
+          expect(leaveDropdownItem.html()).toContain(I18N.leaveProject);
+        });
       });
     });
   });
@@ -166,7 +191,7 @@ describe('UserActionDropdown', () => {
           permissions,
         });
 
-        expect(wrapper.findComponent(LeaveGroupDropdownItem).props()).toEqual({
+        expect(wrapper.findComponent(LeaveDropdownItem).props()).toEqual({
           member,
           permissions,
         });

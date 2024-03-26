@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-A security audit is a in-depth analysis and review of your infrastructure, which is used to display
+A security audit is an in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
 audit events which allow you to track a variety of different actions within GitLab.
 GitLab can help owners and administrators respond to auditors by generating

@@ -2,7 +2,8 @@ user_args = {
   email:    ENV['GITLAB_ROOT_EMAIL'].presence || 'admin@example.com',
   name:     'Administrator',
   username: 'root',
-  admin:    true
+  admin:    true,
+  organization_id: Organizations::Organization.default_organization.id
 }
 
 if ENV['GITLAB_ROOT_PASSWORD'].blank?

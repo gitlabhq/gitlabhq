@@ -42,6 +42,7 @@ describe('Test reports app', () => {
     fetchSummary: jest.fn(),
     setSelectedSuiteIndex: jest.fn(),
     removeSelectedSuiteIndex: jest.fn(),
+    setPage: jest.fn(),
   };
 
   const createComponent = ({ state = {}, getterStubs = {} } = {}) => {
@@ -158,11 +159,19 @@ describe('Test reports app', () => {
   describe('when clicking back to summary', () => {
     beforeEach(() => {
       document.title = 'Test reports';
-      createComponent({ state: { selectedSuiteIndex: 0 } });
+      createComponent({
+        state: {
+          selectedSuiteIndex: 0,
+          pageInfo: {
+            page: 3,
+            perPage: 20,
+          },
+        },
+      });
       testSummary().vm.$emit('on-back-click');
     });
 
-    it('should call removeSelectedSuiteIndex and updateHistory', () => {
+    it('should call removeSelectedSuiteIndex, updateHistory and setPage', () => {
       expect(actionSpies.removeSelectedSuiteIndex).toHaveBeenCalled();
       expect(removeParams).toHaveBeenCalledWith(['job_name']);
       expect(updateHistory).toHaveBeenCalledWith({
@@ -170,6 +179,7 @@ describe('Test reports app', () => {
         title: 'Test reports',
         url: undefined,
       });
+      expect(actionSpies.setPage).toHaveBeenCalledWith(expect.anything(Object), 1);
     });
   });
 });

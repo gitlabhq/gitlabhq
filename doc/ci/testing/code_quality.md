@@ -217,13 +217,13 @@ Code Quality now runs in standard Docker mode.
 
 ### Run Code Quality rootless with private runners
 
-If you are using private runners and would like to run the Code Quality scans [in rootless Docker mode](https://docs.docker.com/engine/security/rootless/) code quality requires some special changes to allow it to run properly. This may require having a runner dedicated to running only code quality jobs because changes in socket binding may cause problems in other jobs. 
+If you are using private runners and would like to run the Code Quality scans [in rootless Docker mode](https://docs.docker.com/engine/security/rootless/) code quality requires some special changes to allow it to run properly. This may require having a runner dedicated to running only code quality jobs because changes in socket binding may cause problems in other jobs.
 
 To use a rootless private runner:
 
 1. Register a new runner:
 
-   Replace `/run/user/<gitlab-runner-user>/docker.sock` with the path to the local `docker.sock` for the `gitlab-runner` user. 
+   Replace `/run/user/<gitlab-runner-user>/docker.sock` with the path to the local `docker.sock` for the `gitlab-runner` user.
 
    ```shell
    $ gitlab-runner register --executor "docker" \

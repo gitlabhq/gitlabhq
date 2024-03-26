@@ -80,7 +80,7 @@ as they drive the upgrades of data on those stateful backends via migrations.
 
 ## Multi-node / HA deployment
 
-In this section we'll go through the core process of upgrading a multi-node GitLab environment by 
+In this section we'll go through the core process of upgrading a multi-node GitLab environment by
 sequentially going through each as per the [upgrade order](#upgrade-order) and load balancers / HA mechanisms handle each node going down accordingly.
 
 For the purposes of this guide we'll upgrade a [10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
@@ -280,7 +280,7 @@ In addition to the above, Rails is where the main database migrations need to be
        ```shell
        sudo touch /etc/gitlab/skip-auto-reconfigure
        ```
-   
+
     1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
     1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
@@ -453,7 +453,7 @@ below:
        ```shell
        sudo touch /etc/gitlab/skip-auto-reconfigure
        ```
-   
+
     1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
     1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and  `geo_secondary['auto_migrate'] = false` in the

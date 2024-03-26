@@ -17792,7 +17792,7 @@ msgstr ""
 msgid "DesignManagement|Cancel"
 msgstr ""
 
-msgid "DesignManagement|Click the image where you'd like to start a new discussion"
+msgid "DesignManagement|Click on the image where you'd like to add a new comment."
 msgstr ""
 
 msgid "DesignManagement|Comment"
@@ -45342,7 +45342,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
-msgid "SecurityOrchestration|%{allLabel} %{projectCount} %{projectLabel} in this group"
+msgid "SecurityOrchestration|%{allLabel}%{projectCount} %{projectLabel} in this group"
 msgstr ""
 
 msgid "SecurityOrchestration|%{branchName}"
@@ -45419,7 +45419,16 @@ msgstr ""
 msgid "SecurityOrchestration|After enabling a group-level policy, this policy automatically applies to all projects and sub-groups in this group."
 msgstr ""
 
+msgid "SecurityOrchestration|All projects in the group."
+msgstr ""
+
 msgid "SecurityOrchestration|All projects in this group except:"
+msgstr ""
+
+msgid "SecurityOrchestration|All projects linked to security policy project."
+msgstr ""
+
+msgid "SecurityOrchestration|All projects linked to this project except:"
 msgstr ""
 
 msgid "SecurityOrchestration|All sources"
@@ -45500,6 +45509,9 @@ msgstr ""
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Default mode"
+msgstr ""
+
 msgid "SecurityOrchestration|Define this policy's location, conditions and actions."
 msgstr ""
 
@@ -45576,9 +45588,6 @@ msgid "SecurityOrchestration|Fill in branch name with project name in the format
 msgstr ""
 
 msgid "SecurityOrchestration|Filter and search projects"
-msgstr ""
-
-msgid "SecurityOrchestration|Following projects:"
 msgstr ""
 
 msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply. No additional approvals are required."
@@ -45905,6 +45914,9 @@ msgid "SecurityOrchestration|This is a project-level policy"
 msgstr ""
 
 msgid "SecurityOrchestration|This policy doesn't contain any actions or override project approval settings. You cannot create an empty policy."
+msgstr ""
+
+msgid "SecurityOrchestration|This policy is applied to current project."
 msgstr ""
 
 msgid "SecurityOrchestration|This policy is inherited"

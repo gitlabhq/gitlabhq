@@ -53,7 +53,7 @@ scan for vulnerabilities in the API under test.
 - [Cleartext authentication check](cleartext_authentication_check.md)
 - [JSON hijacking](json_hijacking_check.md)
 - [Sensitive information](sensitive_information_disclosure_check.md)
-- [Session cookie](session_cookie_check.md)        
+- [Session cookie](session_cookie_check.md)
 
 ### Active-Quick
 

@@ -117,7 +117,7 @@ module Gitlab
             end
 
             def build_validation_payload(build)
-              {
+              payload = {
                 name: build[:name],
                 stage: build[:stage],
                 image: build.dig(:options, :image, :name),
@@ -128,6 +128,12 @@ module Gitlab
                   build.dig(:options, :after_script)
                 ].flatten.compact
               }
+
+              if Feature.enabled?(:ci_send_tag_list_for_external_validation, project)
+                payload[:tag_list] = build[:tag_list]
+              end
+
+              payload
             end
 
             def service_names(build)

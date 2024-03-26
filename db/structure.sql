@@ -29794,7 +29794,7 @@ ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
 
 ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
@@ -32612,9 +32612,6 @@ ALTER TABLE issue_search_data
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT tmp_fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;
