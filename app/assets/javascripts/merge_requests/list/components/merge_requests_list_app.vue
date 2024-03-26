@@ -6,8 +6,15 @@ import { fetchPolicies } from '~/lib/graphql';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
   convertToSearchQuery,
@@ -32,6 +39,8 @@ import { i18n } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
+
+const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
 export default {
   i18n,
@@ -68,7 +77,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data.project.mergeRequests.nodes ?? [];
+        return data.project.mergeRequests?.nodes ?? [];
       },
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       nextFetchPolicy: fetchPolicies.CACHE_FIRST,
@@ -77,7 +86,7 @@ export default {
         if (!data) {
           return;
         }
-        this.pageInfo = data.project.mergeRequests.pageInfo ?? {};
+        this.pageInfo = data.project.mergeRequests?.pageInfo ?? {};
       },
       error(error) {
         this.mergeRequestsError = this.$options.i18n.errorFetchingMergeRequests;
@@ -135,7 +144,33 @@ export default {
       return convertToSearchQuery(this.filterTokens);
     },
     searchTokens() {
-      return [];
+      const preloadedUsers = [];
+
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
+      return [
+        {
+          type: TOKEN_TYPE_AUTHOR,
+          title: TOKEN_TITLE_AUTHOR,
+          icon: 'pencil',
+          token: UserToken,
+          dataType: 'user',
+          defaultUsers: [],
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-author`,
+          preloadedUsers,
+          multiselect: false,
+        },
+      ];
     },
     showPaginationControls() {
       return (
@@ -222,6 +257,12 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handleFilter(tokens) {
+      this.filterTokens = tokens;
+      this.pageParams = getInitialPageParams(this.pageSize);
+
+      this.$router.push({ query: this.urlParams });
+    },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
         return;
@@ -250,14 +291,6 @@ export default {
         .catch((error) => {
           Sentry.captureException(error);
         });
-    },
-    handlePageSizeChange(newPageSize) {
-      const pageParam = getParameterByName(PARAM_LAST_PAGE_SIZE) ? 'lastPageSize' : 'firstPageSize';
-      this.pageParams[pageParam] = newPageSize;
-      this.pageSize = newPageSize;
-      scrollUp();
-
-      this.$router.push({ query: this.urlParams });
     },
     updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
@@ -304,7 +337,7 @@ export default {
     @next-page="handleNextPage"
     @previous-page="handlePreviousPage"
     @sort="handleSort"
-    @page-size-change="handlePageSizeChange"
+    @filter="handleFilter"
   >
     <template #status="{ issuable = {} }">
       {{ getStatus(issuable) }}

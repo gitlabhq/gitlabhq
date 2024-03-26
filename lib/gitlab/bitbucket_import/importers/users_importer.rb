@@ -45,7 +45,12 @@ module Gitlab
         private
 
         def cache_users(users)
-          # No-op for now
+          users_hash = users.each_with_object({}) do |user, hash|
+            cache_key = source_user_cache_key('bitbucket', project_id, "{#{user.account_id}}")
+            hash[cache_key] = source_user_cache_value(user.nickname || user.name, type: :name)
+          end
+
+          cache_multiple(users_hash)
         end
 
         def client

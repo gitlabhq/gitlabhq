@@ -66,21 +66,23 @@ Supported configuration formats:
 
 - Ansible
 - AWS CloudFormation
-- Azure Resource Manager <sup>1</sup>
+- Azure Resource Manager
+
+  NOTE:
+  IaC scanning can analyze Azure Resource Manager templates in JSON format.
+  If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
+  you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
+  convert your Bicep files into JSON before IaC scanning can analyze them.
+
 - Dockerfile
 - Google Deployment Manager
 - Kubernetes
 - OpenAPI
-- Terraform <sup>2</sup>
+- Terraform
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>IaC Scanning can analyze Azure Resource Manager templates in JSON format. If you write templates in the <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview">Bicep</a> language, you must use the <a href="https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli">bicep CLI</a> to convert your Bicep files into JSON before IaC scanning can analyze them.</li>
-    <li>Terraform modules in a custom registry are not scanned for vulnerabilities. You can follow <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/357004">issue 357004</a> for the proposed feature.</li>
-  </ol>
-</small>
-</html>
+  NOTE:
+  Terraform modules in a custom registry are not scanned for vulnerabilities.
+  For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
 
 ## Customize rules
 

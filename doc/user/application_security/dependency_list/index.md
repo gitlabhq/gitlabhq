@@ -51,17 +51,8 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 | Component | The dependency's name and version. |
 | Packager  | The packager used to install the dependency. |
 | Location  | For system dependencies, this lists the image that was scanned. For application dependencies, this shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the [dependency path](#dependency-paths) to a top-level dependency, if any, and if supported. |
-| License<sup>1</sup> | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
-| Projects<sup>2</sup> | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. The project search feature is supported only on groups that have up to 600 occurrences in their group hierarchy. |
-
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Project-level only.</li>
-    <li>Group-level only.</li>
-  </ol>
-</small>
-</html>
+| License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
+| Projects (for groups only) | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. The project search feature is supported only on groups that have up to 600 occurrences in their group hierarchy. |
 
 ![Dependency list](img/dependency_list_v16_3.png)
 

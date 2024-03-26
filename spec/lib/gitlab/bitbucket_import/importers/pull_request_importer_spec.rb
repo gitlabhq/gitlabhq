@@ -11,6 +11,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   let_it_be(:user_3) { create(:user) }
   let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
   let_it_be(:identity_2) { create(:identity, user: user_2, extern_uid: 'user_2', provider: :bitbucket) }
+  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
   let(:source_branch_sha) { project.repository.commit.sha }
   let(:target_branch_sha) { project.repository.commit('refs/heads/master').sha }
 
@@ -32,6 +33,10 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   end
 
   subject(:importer) { described_class.new(project, hash) }
+
+  before do
+    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
+  end
 
   describe '#execute' do
     it 'calls MergeRequestCreator' do
@@ -59,6 +64,12 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
       expect(merge_request.reviewer_ids).to eq([user_2.id])
       expect(merge_request.merge_request_diffs.first.base_commit_sha).to eq(source_branch_sha)
       expect(merge_request.merge_request_diffs.first.head_commit_sha).to eq(target_branch_sha)
+    end
+
+    it 'converts mentions in the description' do
+      expect(mentions_converter).to receive(:convert).once.and_call_original
+
+      importer.execute
     end
 
     context 'when the state is closed' do

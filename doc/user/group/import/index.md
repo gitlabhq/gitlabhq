@@ -441,13 +441,10 @@ Project items that are migrated to the destination GitLab instance include:
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Imported branches respect the <a href="https://docs.gitlab.com/ee/user/project/protected_branches.html">default branch protection settings</a> of the destination group, which can cause an unprotected branch to be imported as protected.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. Imported branches respect the [default branch protection settings](../../project/protected_branches.md)
+   of the destination group, which could cause an unprotected branch to be imported as protected.
 
 ### Issue-related items
 

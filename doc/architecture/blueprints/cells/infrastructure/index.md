@@ -38,6 +38,7 @@ status: proposed
   - [Blueprint](deployments.md)
 - `Configuration change`: When we change any configuration on the application or infrastructure. Example: We did a _configuration change_ on labels added to VMs.
 - `Cell`: A single unit, and instance of GitLab. Not used to refer to Dedicated, where an instance of GitLab is called a Tenant.
+- `Ring`: A collection of Cells grouped as single deployment stage target. Example: Cells in Ring 2 will deploy changes after Cells in Ring 1.
 - `Cluster`: A collection of Cells, and the existing GitLab.com infrastructure. Example: We need to change the version of Registry in the Cluster.
 - `Fleet`: The collection of all SaaS environments, both single-tenant and multi-tenant, that collectively form our production environments.
   This includes existing GitLab.com infrastructure, Cells, and Dedicated.

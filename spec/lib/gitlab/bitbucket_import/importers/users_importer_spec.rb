@@ -49,5 +49,21 @@ RSpec.describe Gitlab::BitbucketImport::Importers::UsersImporter, feature_catego
 
       importer.execute
     end
+
+    it 'writes the nickname or name mapped to account_id to cache' do
+      cache_key_prefix = "bitbucket/project/#{project.id}/source"
+
+      importer.execute
+
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/{1111:11-11}")).to eq(
+        { value: 'First User', type: :name }.to_json
+      )
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/{2222:22-22}")).to eq(
+        { value: 'User Two', type: :name }.to_json
+      )
+      expect(Gitlab::Cache::Import::Caching.read("#{cache_key_prefix}/{3333:33-33}")).to eq(
+        { value: 'User Three', type: :name }.to_json
+      )
+    end
   end
 end

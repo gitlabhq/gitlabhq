@@ -30,24 +30,22 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
-- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman) <sup>1</sup>
-- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder) <sup>1</sup>
+- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
+- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
 - [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF) (**Status:** Beta)
-- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan) <sup>1</sup>
-- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit) <sup>1</sup>
+- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
+- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>These analyzers were <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431123">deprecated</a> in GitLab 16.9 and are planned for removal in 17.0. The <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep analyzer</a> is proposed as their replacement.</li>
-  </ol>
-</small>
-</html>
+NOTE:
+`brakeman`, `flawfinder`, `nodejs-scan`, and `phpcs-security-audit` were
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/431123) in GitLab 16.9
+and are planned for removal in 17.0.
+The [Semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) is proposed as their replacement.
 
 SAST has used other analyzers in previous versions. These analyzers reached End of Support status and do not receive updates:
 

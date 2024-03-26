@@ -309,7 +309,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it 'shows user name as blocked' do
-      expect(page).to have_css(".user-profile-header", text: 'Blocked user')
+      expect(page).to have_css('[data-testid="user-profile-header"]', text: 'Blocked user')
     end
 
     it 'shows no additional fields' do
@@ -347,11 +347,11 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       it 'shows user name as unconfirmed' do
-        expect(page).to have_css(".user-profile-header", text: 'Unconfirmed user')
+        expect(page).to have_css('[data-testid="user-profile-header"]', text: 'Unconfirmed user')
       end
 
       it 'shows no tab' do
-        expect(page).to have_css("div.profile-header")
+        expect(page).to have_css('[data-testid="user-profile-header"]')
         expect(page).not_to have_css("ul.nav-links")
       end
 

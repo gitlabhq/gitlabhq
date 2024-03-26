@@ -67,6 +67,10 @@ The search index updates after you:
 - Add data to the database or repository.
 - [Enable Elasticsearch](#enable-advanced-search) in the Admin Area.
 
+NOTE:
+Before you use a new Elasticsearch cluster in production, see the
+[Elasticsearch documentation on important settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+
 ## Upgrade to a new Elasticsearch major version
 
 > - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.

@@ -331,13 +331,11 @@ Parameters:
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `with_security_reports`                | boolean    | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Order by similarity: Orders the results by a similarity score calculated from the provided <code>search</code> URL parameter. When using <code>order_by=similarity</code>, the <code>sort</code> parameter is ignored. When the <code>search</code> parameter is not provided, the API returns the projects ordered by <code>name</code>.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. Orders the results by a similarity score calculated from the `search` URL parameter.
+   When you use `order_by=similarity`, the `sort` parameter is ignored.
+   When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 

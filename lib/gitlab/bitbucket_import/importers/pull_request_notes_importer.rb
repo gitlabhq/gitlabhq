@@ -11,6 +11,7 @@ module Gitlab
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
           @ref_converter = Gitlab::BitbucketImport::RefConverter.new(project)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket', project)
           @object = hash.with_indifferent_access
           @position_map = {}
           @discussion_map = {}
@@ -28,7 +29,8 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder, :ref_converter, :discussion_map, :position_map
+        attr_reader :object, :project, :formatter, :user_finder, :ref_converter, :mentions_converter,
+          :discussion_map, :position_map
 
         def import_pull_request_comments
           inline_comments, pr_comments = comments.partition(&:inline?)
@@ -128,7 +130,8 @@ module Gitlab
 
         def comment_note(comment)
           author = formatter.author_line(comment.author) unless user_finder.find_user_id(comment.author)
-          author.to_s + ref_converter.convert_note(comment.note.to_s)
+          note = author.to_s + ref_converter.convert_note(comment.note.to_s)
+          mentions_converter.convert(note)
         end
 
         def merge_request

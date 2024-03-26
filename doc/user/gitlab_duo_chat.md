@@ -31,13 +31,9 @@ Here are the examples of use cases:
 | [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
 | [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>GitLab Duo Chat is not available in Web IDE on self-managed</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. GitLab Duo Chat is not available in the Web IDE on self-managed.
 
 NOTE:
 This is a Beta feature. We're continuously extending the capabilities and reliability of the responses.

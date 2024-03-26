@@ -1326,10 +1326,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.91.0.tgz#e99bc5467318cc8c156e02c574f5e65941b767f0"
   integrity sha512-ozINZKyUlu5UQlP++9SntWQDqsgDSYawTPw+qhKQTdyn4Ut2NMsvSFyR5J2pax5IWu+SpLrn3WuPgNybK+4LqQ==
 
-"@gitlab/ui@78.3.0":
-  version "78.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-78.3.0.tgz#4567addd698c91f4755e085f51c31c426d1f182c"
-  integrity sha512-U1ojY0xPhioxPkFXcBRF66GOkX/troVpXXjk+dtFRNmOyxsSaqzkK0t55Dma0L4v7SATHjgEDtJ7ncRbXJ1THg==
+"@gitlab/ui@78.4.0":
+  version "78.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-78.4.0.tgz#aecda750248e8ff7f632690cd727f970488306fc"
+  integrity sha512-PlcnvPn8YHpwx4zwvG3otM/sQOTS1Yu0jOVOe4Pof+xawtHUf5TK0xwoiOTXPvLXNRYUvJsMr+D+JIpYfJrjKQ==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     bootstrap-vue "2.23.1"

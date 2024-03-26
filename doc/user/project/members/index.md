@@ -378,6 +378,10 @@ The following table lists the membership and visibility rights of project member
 | Be imported into other projects | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
 | Share the project with other members | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 
+**Footnotes:**
+
+1. Users can view only issues of projects they have access to.
+
 The following table lists the membership and visibility rights of group members.
 
 | Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
@@ -386,14 +390,6 @@ The following table lists the membership and visibility rights of group members.
 | View issues of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | View labels of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | View milestones of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Users can view only issues of projects they have access to.</li>
-  </ol>
-</small>
-</html>
 
 In the following example, `User` is a:
 
