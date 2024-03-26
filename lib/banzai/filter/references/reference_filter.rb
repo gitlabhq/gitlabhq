@@ -54,7 +54,7 @@ module Banzai
               yield_valid_link(node) do |link, inner_html|
                 if link =~ ref_pattern_start
                   replace_link_node_with_href(node, index, link) do
-                    object_link_filter(link, object_reference_pattern, link_content: inner_html)
+                    object_link_filter(link, ref_pattern_start, link_content: inner_html)
                   end
                 end
               end
