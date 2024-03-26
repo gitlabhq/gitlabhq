@@ -57,3 +57,5 @@ module Types
     end
   end
 end
+
+Types::MergeRequests::DetailedMergeStatusEnum.prepend_mod_with('Types::MergeRequests::DetailedMergeStatusEnum')

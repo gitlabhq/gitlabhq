@@ -86,10 +86,6 @@ module API
 
           not_found! unless success
 
-          ::MergeRequests::UpdateReviewerStateService
-            .new(project: user_project, current_user: current_user)
-            .execute(merge_request, "unreviewed")
-
           present_approval(merge_request)
         end
 

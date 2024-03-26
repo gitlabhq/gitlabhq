@@ -46,6 +46,11 @@ export default {
       required: false,
       default: null,
     },
+    initialProjectKeys: {
+      type: String,
+      required: false,
+      default: null,
+    },
     isValidated: {
       type: Boolean,
       required: false,
@@ -56,7 +61,7 @@ export default {
     return {
       enableJiraIssues: this.initialEnableJiraIssues,
       projectKey: this.initialProjectKey,
-      projectKeys: null,
+      projectKeys: this.initialProjectKeys,
     };
   },
   computed: {

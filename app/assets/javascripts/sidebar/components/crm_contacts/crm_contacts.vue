@@ -110,10 +110,13 @@ export default {
         ><gl-icon name="question-o" class="gl-text-blue-600"
       /></gl-link>
     </div>
-    <div class="title hide-collapsed gl-mb-2 gl-line-height-20 gl-font-weight-bold">
+    <div class="hide-collapsed gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}
     </div>
-    <div class="hide-collapsed gl-display-flex gl-flex-wrap">
+    <div
+      class="hide-collapsed gl-display-flex gl-flex-wrap"
+      :class="contacts.length > 0 ? 'gl-mt-2' : ''"
+    >
       <div
         v-for="(contact, index) in contacts"
         :id="`contact_container_${index}`"

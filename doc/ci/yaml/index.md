@@ -2497,7 +2497,7 @@ before cloning the Git repository and any submodules.
 You can use it for example to:
 
 - Adjust the [Git configuration](../jobs/index.md#get_sources-job-section-fails-because-of-an-http2-problem).
-- Export [tracing variables](../../topics/git/useful_git_commands.md).
+- Export [tracing variables](../../topics/git/troubleshooting_git.md#debug-git-with-traces).
 
 **Possible inputs**: An array including:
 
@@ -5513,9 +5513,6 @@ You can use `only` and `except` to control when to add jobs to pipelines.
 - Use `only` to define when a job runs.
 - Use `except` to define when a job **does not** run.
 
-See [specify when jobs run with `only` and `except`](../jobs/job_control.md#specify-when-jobs-run-with-only-and-except)
-for more details and examples.
-
 #### `only:refs` / `except:refs`
 
 NOTE:
@@ -5532,8 +5529,7 @@ pipeline based on branch names or pipeline types.
 **Possible inputs**: An array including any number of:
 
 - Branch names, for example `main` or `my-feature-branch`.
-- [Regular expressions](../jobs/job_control.md#only--except-regex-syntax)
-  that match against branch names, for example `/^feature-.*/`.
+- Regular expressions that match against branch names, for example `/^feature-.*/`.
 - The following keywords:
 
   | **Value**                | **Description** |
@@ -5635,10 +5631,6 @@ deploy:
       - $STAGING
 ```
 
-**Related topics**:
-
-- [`only:variables` and `except:variables` examples](../jobs/job_control.md#only-variables--except-variables-examples).
-
 #### `only:changes` / `except:changes`
 
 `only:variables` and `except:variables`
@@ -5656,7 +5648,7 @@ Use `changes` in pipelines with the following refs:
 
 - `branches`
 - `external_pull_requests`
-- `merge_requests` (see additional details about [using `only:changes` with merge request pipelines](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines))
+- `merge_requests`
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5700,9 +5692,6 @@ docker build:
 
 **Related topics**:
 
-- [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
-- If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
-  you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
 - [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`

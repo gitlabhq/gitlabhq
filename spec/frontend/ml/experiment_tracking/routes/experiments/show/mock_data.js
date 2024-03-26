@@ -7,7 +7,30 @@ export const MOCK_PAGE_INFO = {
   hasPreviousPage: true,
 };
 
-export const MOCK_EXPERIMENT = { name: 'experiment', path: '/path/to/experiment' };
+export const MOCK_EXPERIMENT = {
+  name: 'experiment',
+  metadata: [],
+  path: '/path/to/experiment',
+};
+
+export const MOCK_EXPERIMENT_METADATA = [
+  {
+    id: 1,
+    created_at: '2024-03-20T16:19:23.843Z',
+    updated_at: '2024-03-20T16:19:23.843Z',
+    experiment_id: 1,
+    name: 'metadata_1',
+    value: 'a',
+  },
+  {
+    id: 2,
+    created_at: '2024-03-20T16:19:23.848Z',
+    updated_at: '2024-03-20T16:19:23.848Z',
+    experiment_id: 1,
+    name: 'metadata_2',
+    value: 'b',
+  },
+];
 
 export const MOCK_CANDIDATES = [
   {

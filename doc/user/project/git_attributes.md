@@ -71,8 +71,11 @@ DETAILS:
 GitLab self-managed instance administrators can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
 in a GitLab configuration file, then use the custom merge drivers in a Git `.gitattributes` file. Custom merge drivers are not supported on GitLab.com.
 
-You might configure a custom merge driver, for example, if there are certain
-files that should be ignored during a merge such as build files and configuration files.
+Custom merge drivers are a Git feature that gives you advanced control over conflict
+resolution.
+A custom merge driver is invoked only in the case of a non-trivial
+[merge conflict](merge_requests/conflicts.md), so it is not a reliable way
+of preventing some files from being merged.
 
 ### Configure a custom merge driver
 

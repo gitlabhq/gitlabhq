@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Snippets > User deletes a snippet', :js, feature_category: :source_code_management do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:project) { create(:project) }
-  let!(:snippet) { create(:project_snippet, :repository, project: project, author: user) }
+  let!(:snippet) { create(:project_snippet, project: project, author: user) }
   let(:user) { create(:user) }
 
   before do
@@ -17,12 +19,22 @@ RSpec.describe 'Projects > Snippets > User deletes a snippet', :js, feature_cate
   it 'deletes a snippet' do
     expect(page).to have_content(snippet.title)
 
-    click_button('Delete')
-    click_button('Delete snippet')
+    click_on 'Snippet actions'
+
+    page.within(find_by_testid('snippets-more-actions-dropdown')) do
+      click_on 'Delete'
+    end
+
+    within_modal do
+      click_button 'Delete snippet'
+    end
+
     wait_for_requests
 
     # This assertion also confirms we did not end up on an error page
-    expect(page).to have_selector('#new_snippet_link')
+    expect(current_url).to end_with(project_snippets_path(project))
+    expect(page).to have_link('New snippet')
+    expect(page).not_to have_content(snippet.title)
     expect(project.snippets.length).to eq(0)
   end
 end

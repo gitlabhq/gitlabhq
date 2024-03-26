@@ -410,4 +410,4 @@ To delete a scanner profile:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
-and DAST site profiles are included in the [audit log](../../../administration/audit_events.md).
+and DAST site profiles are included in the [audit log](../../../administration/audit_event_reports.md).

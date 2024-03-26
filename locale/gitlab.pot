@@ -32212,6 +32212,9 @@ msgstr ""
 msgid "MlExperimentTracking|Experiment"
 msgstr ""
 
+msgid "MlExperimentTracking|Experiment metadata"
+msgstr ""
+
 msgid "MlExperimentTracking|Experiment removed"
 msgstr ""
 
@@ -32249,6 +32252,9 @@ msgid "MlExperimentTracking|No candidates"
 msgstr ""
 
 msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
+msgstr ""
+
+msgid "MlExperimentTracking|No logged experiment metadata"
 msgstr ""
 
 msgid "MlExperimentTracking|No name"
@@ -41214,6 +41220,9 @@ msgstr ""
 msgid "Purchase more storage"
 msgstr ""
 
+msgid "Purchase seats"
+msgstr ""
+
 msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support at https://support.gitlab.com."
 msgstr ""
 
@@ -48323,6 +48332,9 @@ msgid "Snippets|File name (e.g. test.rb)"
 msgstr ""
 
 msgid "Snippets|Files"
+msgstr ""
+
+msgid "Snippets|Snippet actions"
 msgstr ""
 
 msgid "Snippets|Snippets are limited to %{total} files."

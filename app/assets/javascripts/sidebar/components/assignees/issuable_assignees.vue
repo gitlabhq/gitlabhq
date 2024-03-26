@@ -65,7 +65,7 @@ export default {
       v-else
       :users="users"
       :issuable-type="issuableType"
-      class="gl-text-gray-800 hide-collapsed"
+      class="gl-text-gray-800 hide-collapsed gl-pt-2"
     />
   </div>
 </template>

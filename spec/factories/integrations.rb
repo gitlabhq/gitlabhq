@@ -126,6 +126,7 @@ FactoryBot.define do
       jira_issue_prefix { '' }
       jira_issue_regex { '' }
       project_key { nil }
+      project_keys { [] }
       vulnerabilities_enabled { false }
       vulnerabilities_issuetype { nil }
       deployment_type { 'cloud' }
@@ -143,8 +144,10 @@ FactoryBot.define do
           jira_issue_prefix: evaluator.jira_issue_prefix,
           jira_issue_regex: evaluator.jira_issue_regex,
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
-          project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
-          vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type
+          project_key: evaluator.project_key, project_keys: evaluator.project_keys,
+          vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
+          vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype,
+          deployment_type: evaluator.deployment_type
         )
       end
     end

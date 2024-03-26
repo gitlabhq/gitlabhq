@@ -54,13 +54,17 @@ end
 RSpec.shared_examples 'does not show New Snippet button' do
   specify do
     expect(page).to have_link(text: "$#{snippet.id}")
+    expect(page).not_to have_selector('[data-testid="snippets-more-actions-dropdown"]')
     expect(page).not_to have_link('New snippet')
   end
 end
 
 RSpec.shared_examples 'does show New Snippet button' do
   specify do
+    find_by_testid('snippets-more-actions-dropdown-toggle').click
+
     expect(page).to have_link(text: "$#{snippet.id}")
+    expect(page).to have_selector('[data-testid="snippets-more-actions-dropdown"]')
     expect(page).to have_link('New snippet')
   end
 end

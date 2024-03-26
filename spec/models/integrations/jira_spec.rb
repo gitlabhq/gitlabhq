@@ -1411,4 +1411,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       end
     end
   end
+
+  describe '#project_keys_as_string' do
+    it 'returns comma separated project_keys' do
+      expect(jira_integration.project_keys_as_string).to eq 'TEST1,TEST2'
+    end
+  end
 end

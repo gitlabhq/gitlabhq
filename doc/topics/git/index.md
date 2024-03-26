@@ -120,6 +120,5 @@ your repository small:
 - Official [Git documentation](https://git-scm.com), including
   [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 - [Git troubleshooting](troubleshooting_git.md) techniques
-- [Git commands](useful_git_commands.md) collected by the GitLab support team
 - Blog post: [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
 - Blog post: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/2015/02/19/8-tips-to-help-you-work-better-with-git/)

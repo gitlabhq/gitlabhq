@@ -2139,6 +2139,14 @@ class MergeRequest < ApplicationRecord
     merge_request_reviewers.where(user_id: user_ids)
   end
 
+  def has_changes_requested?
+    merge_request_reviewers.exists?(state: :requested_changes)
+  end
+
+  def batch_update_reviewer_state(user_ids, state)
+    merge_request_reviewers.where(user_id: user_ids).update_all(state: state)
+  end
+
   def enabled_reports
     {
       sast: report_type_enabled?(:sast),

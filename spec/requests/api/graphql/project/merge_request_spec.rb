@@ -413,19 +413,19 @@ RSpec.describe 'getting merge request information nested in a project', feature_
         project.add_maintainer(user)
         assign_user(user)
         r = merge_request.merge_request_reviewers.find_or_create_by!(reviewer: user)
-        r.update!(state: 'reviewed')
+        r.update!(state: :approved)
         merge_request.approved_by_users << user
       end
 
       it 'returns appropriate data' do
         post_graphql(query)
-        enum = ::Types::MergeRequestReviewStateEnum.values['REVIEWED']
+        enum = ::Types::MergeRequestReviewStateEnum.values['APPROVED']
 
         expect(interaction_data).to contain_exactly a_hash_including(
           'canMerge' => true,
           'canUpdate' => true,
           'reviewState' => enum.graphql_name,
-          'reviewed' => true,
+          'reviewed' => false,
           'approved' => true
         )
       end

@@ -6,8 +6,9 @@ import {
   GlModal,
   GlAlert,
   GlLoadingIcon,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -29,6 +30,7 @@ export const i18n = {
     { spammable_titlecase: __('Snippet') },
   ),
   snippetSpamFailure: s__('Snippets|Error with Akismet. Please check the logs for more info.'),
+  snippetAction: s__('Snippets|Snippet actions'),
 };
 
 export default {
@@ -39,8 +41,9 @@ export default {
     GlModal,
     GlAlert,
     GlLoadingIcon,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
     TimeAgoTooltip,
     GlButton,
   },
@@ -79,6 +82,7 @@ export default {
       errorMessage: '',
       canCreateSnippet: false,
       isDeleteModalVisible: false,
+      isDropdownShown: false,
     };
   },
   computed: {
@@ -90,44 +94,52 @@ export default {
         ? __('Authored %{timeago} by %{author}')
         : __('Authored %{timeago}');
     },
-    personalSnippetActions() {
-      return [
-        {
-          condition: this.snippet.userPermissions.updateSnippet,
-          text: __('Edit'),
-          href: this.editLink,
-          disabled: this.snippetHasBinary,
-          title: this.snippetHasBinary
-            ? __('Snippets with non-text files can only be edited via Git.')
-            : undefined,
+    editItem() {
+      return {
+        text: __('Edit'),
+        href: this.editLink,
+        disabled: this.snippetHasBinary,
+        title: this.snippetHasBinary
+          ? __('Snippets with non-text files can only be edited via Git.')
+          : undefined,
+        extraAttrs: {
+          class: 'gl-sm-display-none!',
         },
-        {
-          condition: this.snippet.userPermissions.adminSnippet,
-          text: __('Delete'),
-          click: this.showDeleteModal,
-          variant: 'danger',
-          category: 'secondary',
+      };
+    },
+    canReportSpaCheck() {
+      return this.canReportSpam && !isEmpty(this.reportAbusePath);
+    },
+    spamItem() {
+      return {
+        text: __('Submit as spam'),
+        action: () => this.submitAsSpam(),
+      };
+    },
+    deleteItem() {
+      return {
+        text: __('Delete'),
+        action: () => this.showDeleteModal(),
+        extraAttrs: {
+          class: 'gl-text-red-500!',
         },
-        {
-          condition: this.canCreateSnippet,
-          text: __('New snippet'),
-          href: this.snippet.project
-            ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
-            : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
-          variant: 'confirm',
-          category: 'secondary',
-        },
-        {
-          condition: this.canReportSpam && !isEmpty(this.reportAbusePath),
-          text: __('Submit as spam'),
-          click: this.submitAsSpam,
-          title: __('Submit as spam'),
-          loading: this.isSubmittingSpam,
-        },
-      ];
+      };
+    },
+    newSnippetItem() {
+      return {
+        text: __('New snippet'),
+        href: this.snippet.project
+          ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
+          : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
+      };
     },
     hasPersonalSnippetActions() {
-      return Boolean(this.personalSnippetActions.filter(({ condition }) => condition).length);
+      return (
+        this.snippet.userPermissions.updateSnippet ||
+        this.canCreateSnippet ||
+        this.snippet.userPermissions.adminSnippet ||
+        this.canReportSpaCheck
+      );
     },
     editLink() {
       return `${this.snippet.webUrl}/edit`;
@@ -157,6 +169,9 @@ export default {
           return 'earth';
       }
     },
+    showDropdownTooltip() {
+      return !this.isDropdownShown ? this.$options.i18n.snippetAction : '';
+    },
   },
   methods: {
     redirectToSnippets() {
@@ -169,6 +184,12 @@ export default {
     },
     showDeleteModal() {
       this.isDeleteModalVisible = true;
+    },
+    onShowDropdown() {
+      this.isDropdownShown = true;
+    },
+    onHideDropdown() {
+      this.isDropdownShown = false;
     },
     deleteSnippet() {
       this.isLoading = true;
@@ -257,47 +278,62 @@ export default {
       </div>
     </div>
 
-    <div v-if="hasPersonalSnippetActions" class="detail-page-header-actions gl-align-self-start">
-      <div class="d-none d-sm-flex">
-        <template v-for="(action, index) in personalSnippetActions">
-          <div
-            v-if="action.condition"
-            :key="index"
-            v-gl-tooltip
-            :title="action.title"
-            class="d-inline-block"
-            :class="{ 'gl-ml-3': index > 0 }"
-          >
+    <div
+      v-if="hasPersonalSnippetActions"
+      class="detail-page-header-actions gl-display-flex gl-align-self-center gl-gap-3 gl-relative"
+    >
+      <gl-button
+        v-if="snippet.userPermissions.updateSnippet"
+        :href="editItem.href"
+        :title="editItem.title"
+        :disabled="editItem.disabled"
+        class="gl-display-none gl-sm-display-inline-block"
+        data-testid="snippet-action-button"
+        :data-qa-action="editItem.text"
+      >
+        {{ editItem.text }}
+      </gl-button>
+
+      <gl-disclosure-dropdown
+        data-testid="snippets-more-actions-dropdown"
+        @shown="onShowDropdown"
+        @hidden="onHideDropdown"
+      >
+        <template #toggle>
+          <div class="gl-w-full gl-min-h-7">
             <gl-button
-              :disabled="action.disabled"
-              :loading="action.loading"
-              :variant="action.variant"
-              :category="action.category"
-              :class="action.cssClass"
-              :href="action.href"
-              data-testid="snippet-action-button"
-              :data-qa-action="action.text"
-              @click="action.click ? action.click() : undefined"
-              >{{ action.text }}</gl-button
+              class="gl-sm-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
+              button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
+              category="secondary"
+              tabindex="0"
             >
+              <span>{{ $options.i18n.snippetAction }}</span>
+              <gl-icon class="dropdown-chevron" name="chevron-down" />
+            </gl-button>
+            <gl-button
+              v-gl-tooltip="showDropdownTooltip"
+              class="gl-display-none gl-sm-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+              category="tertiary"
+              icon="ellipsis_v"
+              :aria-label="$options.i18n.snippetAction"
+              tabindex="0"
+              data-testid="snippets-more-actions-dropdown-toggle"
+            />
           </div>
         </template>
-      </div>
-      <div class="d-block d-sm-none dropdown">
-        <gl-dropdown :text="__('Options')" block>
-          <template v-for="(action, index) in personalSnippetActions">
-            <gl-dropdown-item
-              v-if="action.condition"
-              :key="index"
-              :disabled="action.disabled"
-              :title="action.title"
-              :href="action.href"
-              @click="action.click ? action.click() : undefined"
-              >{{ action.text }}</gl-dropdown-item
-            >
-          </template>
-        </gl-dropdown>
-      </div>
+        <gl-disclosure-dropdown-item
+          v-if="snippet.userPermissions.updateSnippet"
+          :item="editItem"
+        />
+        <gl-disclosure-dropdown-item v-if="canCreateSnippet" :item="newSnippetItem" />
+        <gl-disclosure-dropdown-group bordered>
+          <gl-disclosure-dropdown-item v-if="canReportSpaCheck" :item="spamItem" />
+          <gl-disclosure-dropdown-item
+            v-if="snippet.userPermissions.adminSnippet"
+            :item="deleteItem"
+          />
+        </gl-disclosure-dropdown-group>
+      </gl-disclosure-dropdown>
     </div>
 
     <gl-modal

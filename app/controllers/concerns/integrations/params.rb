@@ -75,7 +75,6 @@ module Integrations
       :password,
       :priority,
       :project_key,
-      :project_keys,
       :project_name,
       :project_url,
       :recipients,

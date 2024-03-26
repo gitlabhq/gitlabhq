@@ -8,6 +8,7 @@ module Projects
       def experiment_as_data(experiment)
         data = {
           name: experiment.name,
+          metadata: experiment.metadata,
           path: link_to_experiment(experiment.project, experiment)
         }
 

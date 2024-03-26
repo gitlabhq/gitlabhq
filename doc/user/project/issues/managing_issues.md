@@ -322,7 +322,7 @@ The default issue closing pattern regex:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
-in the [project's settings](../settings/index.md).
+in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 

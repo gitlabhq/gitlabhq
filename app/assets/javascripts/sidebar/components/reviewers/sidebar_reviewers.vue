@@ -183,6 +183,7 @@ export default {
       :users="reviewers"
       :editable="canUpdate"
       :issuable-type="issuableType"
+      class="gl-pt-2"
       @request-review="requestReview"
       @assign-self="reviewBySelf"
     />

@@ -1,8 +1,14 @@
-import { GlModal, GlButton, GlDropdown } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import {
+  GlModal,
+  GlButton,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -60,7 +66,7 @@ describe('Snippet header component', () => {
       [DeleteSnippetMutation, deleteSnippetMock],
     ]);
 
-    wrapper = mount(SnippetHeader, {
+    wrapper = mountExtended(SnippetHeader, {
       provide: {
         reportAbusePath,
         canReportSpam,
@@ -73,33 +79,24 @@ describe('Snippet header component', () => {
       },
       stubs: {
         GlEmoji,
+        GlButton,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownGroup,
+        GlDisclosureDropdownItem,
       },
       apolloProvider: mockApollo,
     });
   }
 
   const findAuthorEmoji = () => wrapper.findComponent(GlEmoji);
-  const findAuthoredMessage = () => wrapper.find('[data-testid="authored-message"]').text();
-  const findAuthorUsername = () => wrapper.find('[data-testid="authored-username"]');
-  const findButtons = () => wrapper.findAllComponents(GlButton);
-  const findButtonsAsModel = () =>
-    findButtons().wrappers.map((x) => ({
-      text: x.text(),
-      href: x.attributes('href'),
-      category: x.props('category'),
-      variant: x.props('variant'),
-      disabled: x.props('disabled'),
-    }));
-  const findResponsiveDropdown = () => wrapper.findComponent(GlDropdown);
-  // We can't search by component here since we are full mounting and the attributes are applied to a child of the GlDropdownItem
-  const findResponsiveDropdownItems = () => findResponsiveDropdown().findAll('[role="menuitem"]');
-  const findResponsiveDropdownItemsAsModel = () =>
-    findResponsiveDropdownItems().wrappers.map((x) => ({
-      disabled: x.attributes('disabled'),
-      href: x.attributes('href'),
-      title: x.attributes('title'),
-      text: x.text(),
-    }));
+  const findAuthoredMessage = () => wrapper.findByTestId('authored-message').text();
+  const findAuthorUsername = () => wrapper.findByTestId('authored-username');
+  const findEditButton = () => wrapper.findByTestId('snippet-action-button');
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findDropdownItemAt = (i) => findDropdownItems().at(i).props('item');
+  const findSpamAction = () => wrapper.findByText('Submit as spam');
+  const findDeleteAction = () => wrapper.findByText('Delete');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
 
   beforeEach(() => {
@@ -185,54 +182,27 @@ describe('Snippet header component', () => {
     expect(text).toBe('Authored 1 month ago');
   });
 
-  it('renders a action buttons', () => {
+  it('renders an edit button on sm and up screens', () => {
     createComponent();
 
-    expect(findButtonsAsModel()).toEqual([
-      {
-        category: 'primary',
-        disabled: false,
-        href: `${snippet.webUrl}/edit`,
-        text: 'Edit',
-        variant: 'default',
-      },
-      {
-        category: 'secondary',
-        disabled: false,
-        text: 'Delete',
-        variant: 'danger',
-      },
-      {
-        category: 'primary',
-        disabled: false,
-        text: 'Submit as spam',
-        variant: 'default',
-      },
-    ]);
+    expect(findEditButton().attributes('href')).toEqual(`${snippet.webUrl}/edit`);
+    expect(findEditButton().attributes('class')).toContain('gl-display-none');
+    expect(findEditButton().attributes('class')).toContain('gl-sm-display-inline-block');
   });
 
-  it('renders responsive dropdown for action buttons', () => {
+  it('renders dropdown for action buttons', () => {
     createComponent();
 
-    expect(findResponsiveDropdownItemsAsModel()).toEqual([
-      {
-        href: `${snippet.webUrl}/edit`,
-        text: 'Edit',
-      },
-      {
-        text: 'Delete',
-      },
-      {
-        text: 'Submit as spam',
-        title: 'Submit as spam',
-      },
-    ]);
+    expect(findDropdownItemAt(0).text).toBe('Edit');
+    expect(findDropdownItemAt(0).href).toBe(`${snippet.webUrl}/edit`);
+    expect(findDropdownItemAt(1).text).toBe('Submit as spam');
+    expect(findDropdownItemAt(2).text).toBe('Delete');
   });
 
   it.each`
     permissions                                      | buttons
     ${{ adminSnippet: false, updateSnippet: false }} | ${['Submit as spam']}
-    ${{ adminSnippet: true, updateSnippet: false }}  | ${['Delete', 'Submit as spam']}
+    ${{ adminSnippet: true, updateSnippet: false }}  | ${['Submit as spam', 'Delete']}
     ${{ adminSnippet: false, updateSnippet: true }}  | ${['Edit', 'Submit as spam']}
   `('with permissions ($permissions), renders buttons ($buttons)', ({ permissions, buttons }) => {
     createComponent({
@@ -241,10 +211,10 @@ describe('Snippet header component', () => {
       },
     });
 
-    expect(findButtonsAsModel().map((x) => x.text)).toEqual(buttons);
+    expect(findDropdownItems().wrappers.map((x) => x.props('item').text)).toEqual(buttons);
   });
 
-  it('with canCreateSnippet permission, renders create button', async () => {
+  it('with canCreateSnippet permission, renders new snippet button', async () => {
     createComponent({
       canCreateProjectSnippetMock: jest
         .fn()
@@ -256,17 +226,8 @@ describe('Snippet header component', () => {
 
     await waitForPromises();
 
-    expect(findButtonsAsModel()).toEqual(
-      expect.arrayContaining([
-        {
-          category: 'secondary',
-          disabled: false,
-          href: `/foo/-/snippets/new`,
-          text: 'New snippet',
-          variant: 'confirm',
-        },
-      ]),
-    );
+    expect(findDropdownItemAt(1).text).toBe('New snippet');
+    expect(findDropdownItemAt(1).href).toBe('/foo/-/snippets/new');
   });
 
   describe('submit snippet as spam', () => {
@@ -281,9 +242,9 @@ describe('Snippet header component', () => {
     `(
       'renders a "$variant" alert message with "$text" message for a request with a "$request" response',
       async ({ request, variant, text }) => {
-        const submitAsSpamBtn = findButtons().at(2);
         mock.onPost(reportAbusePath).reply(request);
-        submitAsSpamBtn.trigger('click');
+        findDropdown().trigger('click');
+        findSpamAction().trigger('click');
         await waitForPromises();
 
         expect(createAlert).toHaveBeenLastCalledWith({
@@ -309,11 +270,11 @@ describe('Snippet header component', () => {
     });
 
     it('does not show any action buttons', () => {
-      expect(findButtons()).toHaveLength(0);
+      expect(findEditButton().exists()).toBe(false);
     });
 
-    it('does not show responsive action dropdown', () => {
-      expect(findResponsiveDropdown().exists()).toBe(false);
+    it('does not show action dropdown', () => {
+      expect(findDropdown().exists()).toBe(false);
     });
   });
 
@@ -339,13 +300,16 @@ describe('Snippet header component', () => {
   describe('Delete mutation', () => {
     const deleteSnippet = async () => {
       // Click delete action
-      findButtons().at(1).trigger('click');
+      findDropdown().trigger('click');
+      findDeleteAction().trigger('click');
+
       await nextTick();
 
       expect(findDeleteModal().props().visible).toBe(true);
 
       // Click delete button in delete modal
       document.querySelector('[data-testid="delete-snippet-button"').click();
+
       await waitForPromises();
     };
 

@@ -78,8 +78,6 @@ To modify the maximum file size for exports in GitLab:
 
 ## Max import size
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MiB to unlimited in GitLab 13.8.
-
 To modify the maximum file size for imports in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
@@ -160,20 +158,23 @@ To modify the maximum decompressed file size for imports in GitLab:
 
 ## Maximum number of simultaneous import jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11.
 
-When you import a project using [GitHub Importer](../../user/project/import/github.md),
-[Bitbucket Cloud Importer](../../user/project/import/bitbucket.md) or
-[Bitbucket Server Importer](../../user/project/import/bitbucket_server.md), you
-can specify the maximum number of import jobs that are executed simultaneously.
+You can specify the maximum number of import jobs that are executed simultaneously for:
 
-The job limit is not applied when importing merge requests because there is a hard-coded limit for merge requests to avoid overloading servers.
+- [GitHub importer](../../user/project/import/github.md)
+- [Bitbucket Cloud importer](../../user/project/import/bitbucket.md)
+- [Bitbucket Server importer](../../user/project/import/bitbucket_server.md)
+
+The job limit is not applied when importing merge requests because there is a hard-coded limit for merge requests to
+avoid overloading servers.
 
 The default job limit is:
 
 - For the GitHub importer, 1000.
-- For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because we haven't yet determined
-  a good default limit. Administrators of self-managed GitLab instances should experiment with a higher limit.
+- For the Bitbucket Cloud and Bitbucket Server importer, 100. The Bitbucket importers have a low default limit because
+  we haven't yet determined a good default limit. Administrators of self-managed GitLab instances should experiment with
+  a higher limit.
 
 To modify this setting:
 

@@ -270,10 +270,6 @@ module Gitlab
 
           next unless success
 
-          ::MergeRequests::UpdateReviewerStateService
-            .new(project: quick_action_target.project, current_user: current_user)
-            .execute(quick_action_target, "unreviewed")
-
           @execution_message[:unapprove] = _('Unapproved the current merge request.')
         end
 

@@ -16,6 +16,14 @@ RSpec.describe GitlabSchema.types['MergeRequestReviewState'] do
       'REQUESTED_CHANGES' => have_attributes(
         description: 'Merge request reviewer has requested changes.',
         value: 'requested_changes'
+      ),
+      'APPROVED' => have_attributes(
+        description: 'Merge request reviewer has approved the changes.',
+        value: 'approved'
+      ),
+      'UNAPPROVED' => have_attributes(
+        description: 'Merge request reviewer removed their approval of the changes.',
+        value: 'unapproved'
       )
     )
   end

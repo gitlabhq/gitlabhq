@@ -2779,7 +2779,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           MergeRequests::UpdateReviewerStateService,
           project: project, current_user: current_user
         ) do |service|
-          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+          expect(service).to receive(:execute).with(merge_request, :unapproved)
         end
 
         service.execute(content, merge_request)

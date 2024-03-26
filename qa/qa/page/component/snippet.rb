@@ -172,7 +172,8 @@ module QA
         end
 
         def click_delete_button
-          click_element('snippet-action-button', action: 'Delete')
+          click_element('snippets-more-actions-dropdown-toggle')
+          click_button('Delete')
           click_element('delete-snippet-button')
           # wait for the page to reload after deletion
           wait_until(reload: false) do

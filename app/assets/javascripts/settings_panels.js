@@ -25,6 +25,10 @@ export function expandSection(sectionArg) {
       .addClass('animating')
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
+
+  InternalEvents.trackEvent('click_expand_panel_on_settings', undefined, {
+    label: $section.find('.settings-title').text(),
+  });
 }
 
 export function closeSection(sectionArg) {

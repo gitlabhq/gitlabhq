@@ -61,7 +61,7 @@ module Integrations
 
     before_save :copy_project_key_to_project_keys,
       if: -> {
-        Feature.disabled?(:jira_multiple_project_keys, project&.group)
+        Feature.disabled?(:jira_multiple_project_keys, group || project&.group)
       }
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
@@ -415,6 +415,10 @@ module Integrations
 
     def testable?
       group_level? || project_level?
+    end
+
+    def project_keys_as_string
+      project_keys.join(',')
     end
 
     private

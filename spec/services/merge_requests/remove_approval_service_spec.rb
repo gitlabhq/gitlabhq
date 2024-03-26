@@ -6,7 +6,7 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
   describe '#execute' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, reviewers: [user]) }
     let!(:existing_approval) { create(:approval, merge_request: merge_request) }
 
     subject(:service) { described_class.new(project: project, current_user: user) }
@@ -63,6 +63,12 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
 
       it 'removes the approval' do
         expect { execute! }.to change { merge_request.approvals.size }.from(2).to(1)
+      end
+
+      it 'changes reviewers state to unapproved' do
+        expect { execute! }.to change {
+          merge_request.merge_request_reviewers.reload.all?(&:unapproved?)
+        }.from(false).to(true)
       end
 
       it 'creates an unapproval note, triggers a web hook, and sends a notification' do

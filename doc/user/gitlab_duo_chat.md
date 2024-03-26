@@ -282,12 +282,12 @@ Without the manual synchronization, it might take up to 24 hours to activate Git
 
 ## Use GitLab Duo Chat in the GitLab UI
 
-1. In the lower-left corner, select the **Help** icon.
-   The [new left sidebar must be enabled](../tutorials/left_sidebar/index.md).
-1. Select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
-1. You can ask a follow-up question.
-1. If you want to ask a new question unrelated to the previous conversation, you may receive better answers if you clear the context by typing `/reset` into the input box and selecting **Send**.
+1. Optional. Ask a follow-up question.
+
+To ask a new question unrelated to the previous conversation, you might receive better answers
+if you clear the context by typing `/reset` and selecting **Send**.
 
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.

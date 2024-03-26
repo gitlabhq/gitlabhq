@@ -406,6 +406,7 @@ export default {
             :supports-lock-on-merge="isLockOnMergeSupported"
             :labels-filter-base-path="labelsFilterBasePath"
             :labels-filter-param="labelsFilterParam"
+            class="gl-pt-2"
             @onLabelRemove="handleLabelRemove"
             @onCollapsedValueClick="handleCollapsedValueClick"
           >

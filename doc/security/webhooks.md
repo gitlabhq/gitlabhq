@@ -185,3 +185,15 @@ To work around this error:
 1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore.
 1. Add `docs.gitlab.com` , or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
+
+### GitLab Duo functionality is blocked
+
+When you [filter requests](#filter-requests), you might see `401` errors when trying to use [GitLab Duo features](../user/ai_features.md).
+
+This error can occur when outbound requests to the GitLab cloud server are not allowed. To work around this error:
+
+1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Select **Save Changes**.
+1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually sychronize your license](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details)
+
+For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

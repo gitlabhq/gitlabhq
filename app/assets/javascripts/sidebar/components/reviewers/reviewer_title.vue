@@ -33,7 +33,9 @@ export default {
 };
 </script>
 <template>
-  <div class="hide-collapsed gl-line-height-20 gl-mb-2 gl-text-gray-900 gl-font-weight-bold">
+  <div
+    class="hide-collapsed gl-display-flex gl-align-items-center gl-line-height-20 gl-text-gray-900 gl-font-weight-bold"
+  >
     {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <a

@@ -31719,6 +31719,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
 | <a id="detailedmergestatuspreparing"></a>`PREPARING` | Merge request diff is being created. |
+| <a id="detailedmergestatusrequested_changes"></a>`REQUESTED_CHANGES` | Indicates a reviewer has requested changes. |
 | <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`
@@ -32333,8 +32334,10 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="mergerequestreviewstateapproved"></a>`APPROVED` | Merge request reviewer has approved the changes. |
 | <a id="mergerequestreviewstaterequested_changes"></a>`REQUESTED_CHANGES` | Merge request reviewer has requested changes. |
 | <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | Merge request reviewer has reviewed. |
+| <a id="mergerequestreviewstateunapproved"></a>`UNAPPROVED` | Merge request reviewer removed their approval of the changes. |
 | <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
 
 ### `MergeRequestSort`
@@ -32413,6 +32416,7 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Checks whether the merge request needs to be rebased. |
 | <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Checks whether the merge request is approved. |
 | <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Checks whether the merge request is open. |
+| <a id="mergeabilitycheckidentifierrequested_changes"></a>`REQUESTED_CHANGES` | Checks whether the merge request has changes requested. |
 | <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
 
 ### `MergeabilityCheckStatus`
