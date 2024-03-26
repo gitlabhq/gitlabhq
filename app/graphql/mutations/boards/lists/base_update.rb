@@ -13,9 +13,7 @@ module Mutations
                   description: 'Indicates if the list is collapsed for the user.'
 
         def resolve(list: nil, **args)
-          if list.nil? || !can_read_list?(list)
-            raise_resource_not_available_error!
-          end
+          raise_resource_not_available_error! if list.nil? || !can_read_list?(list)
 
           update_result = update_list(list, args)
 

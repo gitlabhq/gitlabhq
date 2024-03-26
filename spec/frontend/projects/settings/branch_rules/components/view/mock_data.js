@@ -104,7 +104,7 @@ export const matchingBranchesCount = 3;
 export const branchProtectionsMockResponse = {
   data: {
     project: {
-      id: 'gid://gitlab/Project/6',
+      id: 'gid://gitlab/Project/1',
       __typename: 'Project',
       branchRules: {
         __typename: 'BranchRuleConnection',
@@ -112,6 +112,7 @@ export const branchProtectionsMockResponse = {
           {
             __typename: 'BranchRule',
             name: 'main',
+            isDefault: true,
             id: 'gid://gitlab/Projects/BranchRule/1',
             matchingBranchesCount,
             branchProtection: {
@@ -130,6 +131,7 @@ export const branchProtectionsMockResponse = {
           {
             __typename: 'BranchRule',
             name: '*',
+            isDefault: false,
             id: 'gid://gitlab/Projects/BranchRule/2',
             matchingBranchesCount,
             branchProtection: {
@@ -156,6 +158,27 @@ export const deleteBranchRuleMockResponse = {
     branchRuleDelete: {
       errors: [],
       __typename: 'BranchRuleDeletePayload',
+    },
+  },
+};
+
+export const editBranchRuleMockResponse = {
+  data: {
+    branchRule: {
+      errors: [],
+      __typename: 'BranchRuleEditPayload',
+    },
+  },
+};
+
+export const protectableBranches = ['make-release-umd-bundle', 'main', 'v2.x'];
+
+export const protectableBranchesMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      protectableBranches,
+      __typename: 'Project',
     },
   },
 };

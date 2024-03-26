@@ -32,9 +32,7 @@ module Mutations
           return { link: nil, errors: [message] }
         end
 
-        unless Ability.allowed?(current_user, :update_release, release)
-          raise_resource_not_available_error!
-        end
+        raise_resource_not_available_error! unless Ability.allowed?(current_user, :update_release, release)
 
         result = ::Releases::Links::CreateService
           .new(release, current_user, link_attrs)

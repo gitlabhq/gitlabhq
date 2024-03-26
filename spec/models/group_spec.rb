@@ -1141,16 +1141,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       context 'when restricted_visibility_level is not configured' do
         context 'when user is an admin', :enable_admin_mode do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
 
         context 'when user is not an admin' do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
@@ -1163,16 +1163,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         context 'and user is an admin', :enable_admin_mode do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
 
         context 'and user is not an admin' do
           it 'excludes private groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
-              [internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
+              internal_group, group
             )
           end
         end

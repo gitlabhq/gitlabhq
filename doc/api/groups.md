@@ -2087,7 +2087,7 @@ POST /groups/:id/push_rule
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -2140,7 +2140,7 @@ PUT /groups/:id/push_rule
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
 
 <!-- markdownlint-enable MD056 -->
 

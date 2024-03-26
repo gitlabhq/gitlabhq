@@ -1,0 +1,9 @@
+mutation editBrachRule($id: ProjectsBranchRuleID!, $name: String!) {
+  branchRuleUpdate(input: { id: $id, name: $name }) {
+    errors
+    branchRule {
+      id
+      name
+    }
+  }
+}

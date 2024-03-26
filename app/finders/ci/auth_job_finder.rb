@@ -16,9 +16,7 @@ module Ci
 
         validate_job!(job)
 
-        if job.user
-          job.user.set_ci_job_token_scope!(job)
-        end
+        job.user.set_ci_job_token_scope!(job) if job.user
       end
     end
 
@@ -52,9 +50,7 @@ module Ci
     end
 
     def validate_project_presence!(job)
-      if job.project.nil? || job.project.pending_delete?
-        raise DeletedProjectError, 'Project has been deleted!'
-      end
+      raise DeletedProjectError, 'Project has been deleted!' if job.project.nil? || job.project.pending_delete?
     end
   end
 end

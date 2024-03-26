@@ -1,0 +1,6 @@
+query protectableBranches($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    protectableBranches
+  }
+}

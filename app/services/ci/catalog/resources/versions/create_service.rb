@@ -70,8 +70,7 @@ module Ci
 
             {
               name: component_name,
-              inputs: components_project.extract_inputs(blob.data),
-              path: "#{Settings.gitlab.host}/#{project.full_path}/#{component_name}@#{release.tag}"
+              inputs: components_project.extract_inputs(blob.data)
             }
           end
 
@@ -83,7 +82,6 @@ module Ci
               project: @version.project,
               inputs: metadata[:inputs],
               catalog_resource: @version.catalog_resource,
-              path: metadata[:path],
               created_at: Time.current
             )
 

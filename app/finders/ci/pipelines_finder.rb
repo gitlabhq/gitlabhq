@@ -23,9 +23,7 @@ module Ci
     end
 
     def execute
-      unless Ability.allowed?(current_user, :read_pipeline, project)
-        return Ci::Pipeline.none
-      end
+      return Ci::Pipeline.none unless Ability.allowed?(current_user, :read_pipeline, project)
 
       items = pipelines
       items = items.no_child unless params[:iids].present?

@@ -8,6 +8,9 @@ module Ci
       class Component < ::ApplicationRecord
         self.table_name = 'catalog_resource_components'
 
+        include IgnorableColumns
+        ignore_column :path, remove_with: '17.1', remove_after: '2024-05-20'
+
         belongs_to :project, inverse_of: :ci_components
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :components
         belongs_to :version, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :components
@@ -21,6 +24,10 @@ module Ci
 
         validates :inputs, json_schema: { filename: 'catalog_resource_component_inputs' }
         validates :version, :catalog_resource, :project, :name, presence: true
+
+        def include_path
+          "#{Settings.gitlab_ci['component_fqdn']}/#{project.full_path}/#{name}@#{version.version}"
+        end
       end
     end
   end

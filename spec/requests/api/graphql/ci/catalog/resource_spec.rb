@@ -112,7 +112,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       end
 
       let_it_be(:components) do
-        create_list(:ci_catalog_resource_component, 2, version: version, inputs: inputs, path: 'templates/comp.yml')
+        create_list(:ci_catalog_resource_component, 2, version: version, inputs: inputs)
       end
 
       it 'returns the resource with the component data' do
@@ -124,7 +124,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           a_graphql_entity_for(
             components.first,
             name: components.first.name,
-            include_path: components.first.path,
+            include_path: components.first.include_path,
             inputs: [
               a_graphql_entity_for(
                 name: 'tags',
@@ -146,7 +146,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           a_graphql_entity_for(
             components.last,
             name: components.last.name,
-            include_path: components.last.path
+            include_path: components.last.include_path
           )
         )
       end

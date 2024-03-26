@@ -15,9 +15,7 @@ module Mutations
       def resolve(id:)
         package_file = authorized_find!(id: id)
 
-        if package_file.update(status: :pending_destruction)
-          return { errors: [] }
-        end
+        return { errors: [] } if package_file.update(status: :pending_destruction)
 
         { errors: package_file.errors.full_messages }
       end

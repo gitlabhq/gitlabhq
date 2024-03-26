@@ -161,9 +161,7 @@ module Types
       end
 
       def artifacts
-        if object.is_a?(::Ci::Build)
-          object.job_artifacts
-        end
+        object.job_artifacts if object.is_a?(::Ci::Build)
       end
 
       def trace

@@ -15,6 +15,7 @@ DETAILS:
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 > - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 > - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
+> - Ability to create and remove an instance-wide custom role on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 
 Custom roles allow an organization to create user roles with the precise privileges and permissions required for that organization's needs.
 
@@ -66,15 +67,16 @@ In **Settings > Roles and Permissions**, the list of all custom roles displays t
 - Base role that the custom role uses as a template.
 - Permissions.
 
-### Self Managed GitLab Instances
+### GitLab self-managed
 
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- You must be an administrator for the self-managed instance.
+
+After you create a custom role for your self-managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Roles and Permissions**.
-1. From the top dropdown list, select the group you want to create a custom role in.
 1. Select **Add new role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
@@ -89,7 +91,7 @@ In **Settings > Roles and Permissions**, the list of all custom roles displays t
 - Base role that the custom role uses as a template.
 - Permissions.
 
-To create a custom role, you can also [use the API](../api/member_roles.md#add-a-member-role-to-a-group).
+To create a custom role, you can also [use the API](../api/graphql/reference/index.md#mutationmemberrolecreate).
 
 ## Delete the custom role
 
@@ -106,7 +108,7 @@ You can remove a custom role from a group only if no members have that role. See
 1. Select **Custom Roles**.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
 
-You can also [use the API](../api/member_roles.md#remove-member-role-of-a-group) to delete a custom role. To use the API, you must know the `id` of the custom role. If you do not know this `id`, find it by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+You can also [use the API](../api/graphql/reference/index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must know the `id` of the custom role. If you do not know this `id`, find it by making an [API request on the group](../api/graphql/reference/index.md#groupmemberroles) or an [API request on the instance](../api/graphql/reference/index.md#querymemberroles).
 
 ## Add a user with a custom role to your group or project
 

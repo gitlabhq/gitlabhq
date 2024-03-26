@@ -80,7 +80,10 @@ class GroupProjectsFinder < ProjectsFinder
 
   def by_feature_availability(projects)
     projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled].present?
-    projects = projects.with_merge_requests_available_for_user(current_user) if params[:with_merge_requests_enabled].present?
+    if params[:with_merge_requests_enabled].present?
+      projects = projects.with_merge_requests_available_for_user(current_user)
+    end
+
     projects
   end
 

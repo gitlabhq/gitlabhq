@@ -3018,7 +3018,7 @@ POST /projects/:id/push_rule
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits`       | boolean           | No       | Reject commit when it's not signed through GPG. |
+| `reject_unsigned_commits`       | boolean           | No       | Reject commit when it's not signed. |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -3046,7 +3046,7 @@ PUT /projects/:id/push_rule
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
-| `reject_unsigned_commits`       | boolean           | No       | Reject commits when they are not GPG signed. |
+| `reject_unsigned_commits`       | boolean           | No       | Reject commits when they are not signed. |
 
 <!-- markdownlint-enable MD056 -->
 

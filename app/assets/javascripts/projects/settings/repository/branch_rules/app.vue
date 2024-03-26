@@ -6,14 +6,13 @@ import {
   GlCard,
   GlIcon,
   GlDisclosureDropdown,
-  GlCollapsibleListbox,
-  GlFormGroup,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRule from './components/branch_rule.vue';
 import { I18N, PROTECTED_BRANCHES_ANCHOR, BRANCH_PROTECTION_MODAL_ID } from './constants';
@@ -23,12 +22,11 @@ export default {
   i18n: I18N,
   components: {
     BranchRule,
+    BranchRuleModal,
     GlButton,
     GlModal,
-    GlFormGroup,
     GlCard,
     GlIcon,
-    GlCollapsibleListbox,
     GlDisclosureDropdown,
   },
   directives: {
@@ -58,8 +56,6 @@ export default {
   data() {
     return {
       branchRules: [],
-      branchRuleName: '',
-      searchQuery: '',
     };
   },
   computed: {
@@ -85,9 +81,6 @@ export default {
     createRuleText() {
       return this.branchRuleName || this.$options.i18n.branchNamePlaceholder;
     },
-    branchRuleEditPath() {
-      return `${this.branchRulesPath}?branch=${encodeURIComponent(this.branchRuleName)}`;
-    },
     primaryProps() {
       return {
         text: this.$options.i18n.createProtectedBranch,
@@ -112,27 +105,24 @@ export default {
     openCreateRuleModal() {
       this.$refs[this.$options.modalId].show();
     },
-    handleBranchRuleSearch(query) {
-      this.searchQuery = query;
-    },
-    addBranchRule() {
+    addBranchRule({ name }) {
       this.$apollo
         .mutate({
           mutation: createBranchRuleMutation,
           variables: {
             projectPath: this.projectPath,
-            name: this.branchRuleName,
+            name,
           },
         })
         .then(() => {
-          window.location.assign(this.branchRuleEditPath);
+          window.location.assign(this.getBranchRuleEditPath(name));
         })
         .catch(() => {
           createAlert({ message: this.$options.i18n.createBranchRuleError });
         });
     },
-    selectBranchRuleName(branchName) {
-      this.branchRuleName = branchName;
+    getBranchRuleEditPath(name) {
+      return `${this.branchRulesPath}?branch=${encodeURIComponent(name)}`;
     },
   },
   modalId: BRANCH_PROTECTION_MODAL_ID,
@@ -190,36 +180,14 @@ export default {
         {{ $options.i18n.emptyState }}
       </div>
     </ul>
-    <gl-modal
+    <branch-rule-modal
       v-if="glFeatures.addBranchRule"
+      :id="$options.modalId"
       :ref="$options.modalId"
-      :modal-id="$options.modalId"
       :title="$options.i18n.createBranchRule"
-      :action-primary="primaryProps"
-      :action-cancel="cancelProps"
-      @primary="addBranchRule"
-      @change="searchQuery = ''"
-    >
-      <gl-form-group
-        :label="$options.i18n.branchName"
-        :description="$options.i18n.branchNameDescription"
-      >
-        <gl-collapsible-listbox
-          v-model="branchRuleName"
-          searchable
-          :items="createRuleItems"
-          :toggle-text="createRuleText"
-          block
-          @search="handleBranchRuleSearch"
-          @select="selectBranchRuleName"
-        >
-          <template v-if="isWildcardAvailable" #list-item="{ item }">
-            {{ item.text }}
-            <code>{{ searchQuery }}</code>
-          </template>
-        </gl-collapsible-listbox>
-      </gl-form-group>
-    </gl-modal>
+      :action-primary-text="$options.i18n.createProtectedBranch"
+      @primary="addBranchRule({ name: $event })"
+    />
     <gl-modal
       v-else
       :ref="$options.modalId"

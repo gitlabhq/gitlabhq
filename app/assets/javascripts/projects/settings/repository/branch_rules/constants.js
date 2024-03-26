@@ -17,14 +17,8 @@ export const I18N = {
   createProtectedBranch: s__('BranchRules|Create protected branch'),
   createBranchRule: s__('BranchRules|Create branch rule'),
   branchName: s__('BranchRules|Branch name or pattern'),
-  branchNamePlaceholder: s__('BranchRules|Select Branch or create wildcard'),
-  branchNameDescription: s__(
-    'BranchRules|Wildcards such as *-stable or production/* are supported',
-  ),
   createBranchRuleError: s__('BranchRules|Something went wrong while creating branch rule.'),
   createBranchRuleSuccess: s__('BranchRules|Branch rule created.'),
-  createWildcard: s__('BranchRules|Create wildcard'),
-  cancel: s__('BranchRules|Cancel'),
 };
 
 export const PROTECTED_BRANCHES_ANCHOR = '#js-protected-branches-settings';
