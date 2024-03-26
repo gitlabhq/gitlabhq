@@ -62,9 +62,12 @@ exports[`packages_list_row renders 1`] = `
           class="gl-align-items-center gl-display-flex gl-min-h-6"
         >
           <span>
-            <gl-sprintf-stub
-              message="Created %{timestamp}"
-            />
+            Created
+            <span
+              title="December 10, 2015 at 12:00:00 AM GMT"
+            >
+              4 years ago
+            </span>
           </span>
         </div>
       </div>

@@ -14671,9 +14671,6 @@ msgstr ""
 msgid "Could not remove %{user} from %{group}. Cannot remove last group owner."
 msgstr ""
 
-msgid "Could not remove the trigger."
-msgstr ""
-
 msgid "Could not restore the group"
 msgstr ""
 
@@ -53815,10 +53812,10 @@ msgstr ""
 msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load. %{strong_start}CI will run using the credentials assigned above.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "Trigger removed."
+msgid "Trigger repository check"
 msgstr ""
 
-msgid "Trigger repository check"
+msgid "Trigger token removed."
 msgstr ""
 
 msgid "Trigger token was created successfully."
@@ -57408,6 +57405,9 @@ msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Templates"
+msgstr ""
+
+msgid "Wiki|Wiki actions"
 msgstr ""
 
 msgid "Will be created"

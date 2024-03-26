@@ -4,6 +4,7 @@ import {
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import moreActionsDropdown from '~/groups_projects/components/more_actions_dropdown.vue';
 
 describe('moreActionsDropdown', () => {
@@ -11,6 +12,9 @@ describe('moreActionsDropdown', () => {
 
   const createComponent = ({ provideData = {}, propsData = {} } = {}) => {
     wrapper = shallowMountExtended(moreActionsDropdown, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       provide: {
         isGroup: false,
         groupOrProjectId: 1,
@@ -34,6 +38,7 @@ describe('moreActionsDropdown', () => {
   const showDropdown = () => {
     findDropdown().vm.$emit('show');
   };
+  const findDropdownTooltip = () => getBinding(findDropdown().element, 'gl-tooltip');
   const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findGroupSettings = () => wrapper.findByTestId('settings-group-link');
   const findProjectSettings = () => wrapper.findByTestId('settings-project-link');
@@ -101,6 +106,12 @@ describe('moreActionsDropdown', () => {
         },
       });
       expect(findDropdownGroup().exists()).toBe(true);
+    });
+
+    it('renders tooltip', () => {
+      createComponent();
+
+      expect(findDropdownTooltip().value).toBe('More actions');
     });
   });
 

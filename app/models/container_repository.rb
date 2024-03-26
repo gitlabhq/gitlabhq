@@ -223,12 +223,6 @@ class ContainerRepository < ApplicationRecord
     before_transition any => :import_skipped do |container_repository|
       container_repository.migration_skipped_at = Time.zone.now
     end
-
-    before_transition any => %i[import_done import_aborted import_skipped] do |container_repository|
-      container_repository.run_after_commit do
-        ::ContainerRegistry::Migration::EnqueuerWorker.enqueue_a_job
-      end
-    end
   end
 
   # Container Repository model and the code that makes API calls

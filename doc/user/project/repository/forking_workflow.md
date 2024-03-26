@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly."
 ---
 
 # Forks
@@ -73,7 +74,7 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
 
-Prerequisite:
+Prerequisites:
 
 - The fork must be created from an [unprotected branch](../protected_branches.md) in upstream repository.
 

@@ -118,8 +118,31 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         end
 
         aggregate_failures 'trigger is removed' do
-          expect(find_by_testid('alert-info')).to have_content 'Trigger removed'
+          expect(find_by_testid('alert-info')).to have_content 'Trigger token removed'
           expect(page).to have_css('[data-testid="no_triggers_content"]')
+        end
+      end
+
+      context 'when an error occurs' do
+        before do
+          allow_next_instance_of(Ci::PipelineTriggers::DestroyService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.error(
+                message: 'An error occurred',
+                reason: :validation_error
+              )
+            )
+          end
+
+          accept_gl_confirm(button_text: 'Revoke') do
+            find_by_testid('trigger_revoke_button').send_keys(:return)
+          end
+        end
+
+        it 'flashes an error' do
+          expect(page.find('.flash-container')).to(
+            have_content("An error occurred")
+          )
         end
       end
     end

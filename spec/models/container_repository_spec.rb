@@ -205,9 +205,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'queueing the next import' do
-      it 'starts the worker' do
-        expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
+    shared_examples 'not queueing the next import' do
+      it 'does not start the worker' do
+        expect(::ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_async)
 
         subject
       end
@@ -287,7 +287,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.finish_import }
 
       it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_import_done_at and queues the next import' do
         expect { subject }.to change { repository.reload.migration_import_done_at }
@@ -316,7 +316,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.abort_import }
 
       it_behaves_like 'transitioning from allowed states', ContainerRepository::ABORTABLE_MIGRATION_STATES
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_aborted_at and migration_aborted_at, increments the retry count, and queues the next import' do
         expect { subject }.to change { repository.migration_aborted_at }
@@ -346,7 +346,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.skip_import(reason: :too_many_retries) }
 
       it_behaves_like 'transitioning from allowed states', ContainerRepository::SKIPPABLE_MIGRATION_STATES
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_skipped_at and migration_skipped_reason' do
         expect { subject }.to change { repository.reload.migration_skipped_at }

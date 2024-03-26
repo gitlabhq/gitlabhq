@@ -55,8 +55,8 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `container_registry_import_max_step_duration` | `application_settings` | The maximum amount of seconds before an ongoing migration is considered as stale. |
 | `container_registry_import_target_plan` | `application_settings` | The target subscription plan on which we're intend to pick container repositories. |
 | `container_registry_import_created_before` | `application_settings` | Only image repositories created before this timestamp are eligible for the migration. |
-| `container_registry_pre_import_timeout` | `application_settings` | The timeout for long running `pre_imports` before they are canceled by the `GuardWorker`. |
-| `container_registry_import_timeout` | `application_settings` | The timeout for long running imports before they are canceled by the `GuardWorker`. |
+| `container_registry_pre_import_timeout` | `application_settings` | The timeout for long running `pre_imports`. |
+| `container_registry_import_timeout` | `application_settings` | The timeout for long running imports. |
 | `dependency_proxy_ttl_group_policy_worker_capacity` | `application_settings` | Number of concurrent dependency proxy cleanup policy workers allowed. |
 
 ## Namespace/Group Settings

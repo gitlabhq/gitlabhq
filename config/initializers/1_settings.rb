@@ -580,15 +580,6 @@ Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class']
 Settings.cron_jobs['container_expiration_policy_worker'] ||= {}
 Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
-Settings.cron_jobs['container_registry_migration_guard_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_guard_worker']['cron'] ||= '*/10 * * * *'
-Settings.cron_jobs['container_registry_migration_guard_worker']['job_class'] = 'ContainerRegistry::Migration::GuardWorker'
-Settings.cron_jobs['container_registry_migration_observer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_observer_worker']['cron'] ||= '*/30 * * * *'
-Settings.cron_jobs['container_registry_migration_observer_worker']['job_class'] = 'ContainerRegistry::Migration::ObserverWorker'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '15,45 */1 * * *'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['job_class'] = 'ContainerRegistry::Migration::EnqueuerWorker'
 Settings.cron_jobs['cleanup_container_registry_worker'] ||= {}
 Settings.cron_jobs['cleanup_container_registry_worker']['cron'] ||= '*/5 * * * *'
 Settings.cron_jobs['cleanup_container_registry_worker']['job_class'] = 'ContainerRegistry::CleanupWorker'

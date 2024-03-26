@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     hasPipeline() {
-      return Boolean(this.packageEntity.pipeline);
+      return Boolean(this.packageEntity.pipeline?.user?.name);
     },
     hasProjectLink() {
       return Boolean(this.packageEntity.project_path);

@@ -130,6 +130,7 @@ export default {
       isLoadingDraft: false,
       isLoadingClipboard: false,
       isReportAbuseDrawerOpen: false,
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -147,6 +148,9 @@ export default {
         text: this.$options.i18n.edit,
         href: this.editUrl,
       };
+    },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.mergeRequestActions : '';
     },
   },
   methods: {
@@ -207,6 +211,12 @@ export default {
     showReopenMergeRequestOption() {
       return !this.sourceProjectMissing && !this.isOpen;
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
@@ -219,9 +229,13 @@ export default {
     <gl-disclosure-dropdown
       id="new-actions-header-dropdown"
       ref="mrMoreActionsDropdown"
+      v-gl-tooltip="showDropdownTooltip"
+      :title="$options.i18n.mergeRequestActions"
       data-testid="dropdown-toggle"
       placement="right"
       :auto-close="false"
+      @shown="showDropdown"
+      @hidden="hideDropdown"
     >
       <template #toggle>
         <div class="gl-min-h-7 gl-mb-2 gl-md-mb-0!">
@@ -229,7 +243,6 @@ export default {
             class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full"
             category="secondary"
             :aria-label="$options.i18n.mergeRequestActions"
-            :title="$options.i18n.mergeRequestActions"
           >
             <span class="">{{ $options.i18n.mergeRequestActions }}</span>
             <gl-icon class="dropdown-chevron" name="chevron-down" />

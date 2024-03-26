@@ -10,9 +10,10 @@ import VueApollo from 'vue-apollo';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
+
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -62,6 +63,8 @@ describe('WorkItemActions component', () => {
   const findWorkItemToggleOption = () => wrapper.findComponent(WorkItemStateToggle);
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
+  const findMoreDropdown = () => wrapper.findByTestId('work-item-actions-dropdown');
+  const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
   const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
@@ -125,6 +128,9 @@ describe('WorkItemActions component', () => {
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
         [updateWorkItemMutation, lockDiscussionMutationHandler],
       ]),
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         workItemState: STATE_OPEN,
         fullPath: 'gitlab-org/gitlab-test',
@@ -462,5 +468,21 @@ describe('WorkItemActions component', () => {
     createComponent();
 
     expect(findWorkItemToggleOption().exists()).toBe(true);
+  });
+
+  describe('More actions menu', () => {
+    createComponent();
+
+    it('renders the dropdown button', () => {
+      createComponent();
+
+      expect(findMoreDropdown().exists()).toBe(true);
+    });
+
+    it('renders tooltip', () => {
+      createComponent();
+
+      expect(findMoreDropdownTooltip().value).toBe('More actions');
+    });
   });
 });

@@ -13,6 +13,7 @@ import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import {
   STATUS_CLOSED,
@@ -131,6 +132,7 @@ describe('HeaderActions component', () => {
     findMobileDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findDesktopDropdownItems = () =>
     findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
+  const findDesktopDropdownTooltip = () => getBinding(findDesktopDropdown().element, 'gl-tooltip');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
   const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
@@ -176,6 +178,9 @@ describe('HeaderActions component', () => {
     return shallowMountExtended(HeaderActions, {
       apolloProvider: createMockApollo(handlers),
       store,
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       provide: {
         ...defaultProps,
         ...props,
@@ -304,6 +309,12 @@ describe('HeaderActions component', () => {
           });
         },
       );
+    });
+
+    it('renders tooltip on desktop dropdown', () => {
+      wrapper = mountComponent();
+
+      expect(findDesktopDropdownTooltip().value).toBe('Issue actions');
     });
 
     describe(`show edit button ${issueType}`, () => {

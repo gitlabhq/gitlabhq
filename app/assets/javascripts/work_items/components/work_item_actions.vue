@@ -6,6 +6,7 @@ import {
   GlLoadingIcon,
   GlModal,
   GlModalDirective,
+  GlTooltipDirective,
   GlToggle,
 } from '@gitlab/ui';
 
@@ -52,6 +53,7 @@ export default {
     copyReference: __('Copy reference'),
     referenceCopied: __('Reference copied'),
     emailAddressCopied: __('Email address copied'),
+    moreActions: __('More actions'),
   },
   components: {
     GlDisclosureDropdown,
@@ -64,6 +66,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
@@ -154,6 +157,7 @@ export default {
   data() {
     return {
       isLockDiscussionUpdating: false,
+      isDropdownVisible: false,
     };
   },
   apollo: {
@@ -205,6 +209,9 @@ export default {
     },
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
+    },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
     },
   },
   methods: {
@@ -325,6 +332,12 @@ export default {
         this.closeDropdown();
       }
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
@@ -333,14 +346,17 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="workItemsMoreActions"
+      v-gl-tooltip="showDropdownTooltip"
       icon="ellipsis_v"
       data-testid="work-item-actions-dropdown"
       text-sr-only
-      :toggle-text="__('More actions')"
+      :toggle-text="$options.i18n.moreActions"
       category="tertiary"
       :auto-close="false"
       no-caret
       right
+      @shown="showDropdown"
+      @hidden="hideDropdown"
     >
       <template v-if="$options.isLoggedIn && !hideSubscribe">
         <gl-disclosure-dropdown-item

@@ -14,10 +14,9 @@ module Mutations
 
         def resolve(id:)
           trigger = authorized_find!(id: id)
+          response = ::Ci::PipelineTriggers::DestroyService.new(user: current_user, trigger: trigger).execute
 
-          errors = trigger.destroy ? [] : ['Could not remove the trigger']
-
-          { errors: errors }
+          { errors: response.errors }
         end
       end
     end

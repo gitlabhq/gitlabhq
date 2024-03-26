@@ -99,6 +99,7 @@ export default {
     return {
       isReportAbuseDrawerOpen: false,
       isUserSignedIn: isLoggedIn(),
+      isDesktopDropdownVisible: false,
     };
   },
   apollo: {
@@ -202,6 +203,9 @@ export default {
       return shouldDisableShortcuts()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    showDropdownTooltip() {
+      return !this.isDesktopDropdownVisible ? this.dropdownText : '';
     },
   },
   created() {
@@ -307,6 +311,12 @@ export default {
     closeActionsDropdown() {
       this.$refs.issuableActionsDropdownMobile?.close();
       this.$refs.issuableActionsDropdownDesktop?.close();
+    },
+    showDesktopDropdown() {
+      this.isDesktopDropdownVisible = true;
+    },
+    hideDesktopDropdown() {
+      this.isDesktopDropdownVisible = false;
     },
   },
   TYPE_ISSUE,
@@ -415,7 +425,7 @@ export default {
       v-if="hasDesktopDropdown"
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
-      v-gl-tooltip.hover
+      v-gl-tooltip="showDropdownTooltip"
       class="gl-display-none gl-md-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
@@ -427,6 +437,8 @@ export default {
       :auto-close="false"
       data-testid="desktop-dropdown"
       no-caret
+      @shown="showDesktopDropdown"
+      @hidden="hideDesktopDropdown"
     >
       <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
         <sidebar-subscriptions-widget

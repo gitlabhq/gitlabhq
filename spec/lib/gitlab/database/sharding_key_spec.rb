@@ -27,7 +27,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
       'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'path_locks.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
-      'subscription_add_on_purchases.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
+      'subscription_add_on_purchases.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
+      'internal_ids.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
+      'internal_ids.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
     ]
   end
 

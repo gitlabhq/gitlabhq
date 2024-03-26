@@ -48,10 +48,12 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def destroy
-    if trigger.destroy
-      flash[:notice] = _("Trigger removed.")
+    response = ::Ci::PipelineTriggers::DestroyService.new(user: current_user, trigger: trigger).execute
+
+    if response.success?
+      flash[:notice] = _("Trigger token removed.")
     else
-      flash[:alert] = _("Could not remove the trigger.")
+      flash[:alert] = response.message
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), status: :found

@@ -1,3 +1,9 @@
+development:
+  main:
+    database: gitlab_clickhouse_development
+    url: 'http://localhost:8123'
+    username: default
+    password:
 test:
   main:
     database: gitlab_clickhouse_test
