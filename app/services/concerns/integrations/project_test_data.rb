@@ -109,5 +109,11 @@ module Integrations
 
       Gitlab::DataBuilder::ResourceAccessToken.build(resource_access_token, :expiring, project)
     end
+
+    def current_user_events_data
+      {
+        current_user: current_user
+      }
+    end
   end
 end

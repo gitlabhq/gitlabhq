@@ -105,7 +105,7 @@ To try to resolve this issue you can:
 
 - Choose a lower [level of effort](index.md#security-scanner-configuration).
 - Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
-- [Tag a larger runner](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64) in your `spotbugs-sast` job.
+- [Tag a larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64) in your `spotbugs-sast` job.
 
 ### Links
 

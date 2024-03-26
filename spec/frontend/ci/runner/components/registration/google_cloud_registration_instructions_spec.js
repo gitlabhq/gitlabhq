@@ -81,11 +81,9 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
 
   const getModal = () => extendedWrapper(createWrapper(document.querySelector('.gl-modal')));
-  const findModalBashInstructions = () => getModal().findByTestId('bash-instructions');
-  const findModalTerraformApplyInstructions = () =>
-    getModal().findByTestId('terraform-apply-instructions');
-  const findModalTerraformInstructions = () =>
-    getModal().findByTestId('terraform-script-instructions');
+  const findModalSetupBashScript = () => getModal().findByTestId('setup-bash-script');
+  const findModalSetupTerraformFile = () => getModal().findByTestId('setup-terraform-file');
+  const findModalApplyTerraformScript = () => getModal().findByTestId('apply-terraform-script');
 
   const fillInTextField = (formGroup, value) => {
     const input = formGroup.find('input');
@@ -214,9 +212,9 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(projectInstructionsResolver).toHaveBeenCalled();
     expect(groupInstructionsResolver).not.toHaveBeenCalled();
 
-    expect(findModalBashInstructions().text()).not.toBeNull();
-    expect(findModalTerraformInstructions().text()).not.toBeNull();
-    expect(findModalTerraformApplyInstructions().text()).not.toBeNull();
+    expect(findModalSetupBashScript().text()).toBe('mock project setup bash script');
+    expect(findModalSetupTerraformFile().text()).toBe('mock project setup terraform file');
+    expect(findModalApplyTerraformScript().text()).toBe('mock project apply terraform script');
   });
 
   it('Shows a modal with the correspondent scripts for a group', async () => {
@@ -230,9 +228,9 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(groupInstructionsResolver).toHaveBeenCalled();
     expect(projectInstructionsResolver).not.toHaveBeenCalled();
 
-    expect(findModalBashInstructions().text()).not.toBeNull();
-    expect(findModalTerraformInstructions().text()).not.toBeNull();
-    expect(findModalTerraformApplyInstructions().text()).not.toBeNull();
+    expect(findModalSetupBashScript().text()).toBe('mock group setup bash script');
+    expect(findModalSetupTerraformFile().text()).toBe('mock group setup terraform file');
+    expect(findModalApplyTerraformScript().text()).toBe('mock group apply terraform script');
   });
 
   it('Shows feedback when runner is online', async () => {
@@ -352,9 +350,9 @@ describe('GoogleCloudRegistrationInstructions', () => {
         'To view the setup instructions, make sure all form fields are completed and correct.',
       );
 
-      expect(findModalBashInstructions().text()).toBe('');
-      expect(findModalTerraformInstructions().text()).toBe('');
-      expect(findModalTerraformApplyInstructions().text()).toBe('');
+      expect(findModalSetupBashScript().text()).toBe('');
+      expect(findModalSetupTerraformFile().text()).toBe('');
+      expect(findModalApplyTerraformScript().text()).toBe('');
     });
   });
 });

@@ -470,6 +470,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.ordered_by_name' do
+      let!(:namespace) { create(:group, name: 'Beta') }
+
+      it 'includes namespaces in order' do
+        expect(described_class.ordered_by_name).to eq [namespace, namespace1, namespace2, namespace1sub, namespace2sub]
+      end
+    end
+
     describe '.sorted_by_similarity_and_parent_id_desc' do
       it 'returns exact matches and top level groups first' do
         expect(described_class.sorted_by_similarity_and_parent_id_desc(namespace1.path)).to eq([namespace1, namespace2, namespace2sub, namespace1sub, namespace])

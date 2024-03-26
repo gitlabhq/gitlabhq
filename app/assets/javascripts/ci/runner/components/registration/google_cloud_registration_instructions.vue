@@ -4,6 +4,7 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
+import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
@@ -119,6 +120,7 @@ export default {
     ClipboardButton,
     GoogleCloudFieldGroup,
     GoogleCloudLearnMoreLink,
+    CliCommand,
     GlAlert,
     GlButton,
     GlIcon,
@@ -155,8 +157,10 @@ export default {
       zone: null,
       machineType: { state: true, value: 'n2d-standard-2' },
 
-      provisioningSteps: [],
-      setupBashScript: '',
+      setupBashScript: null,
+      setupTerraformFile: null,
+      applyTerraformScript: null,
+
       showAlert: false,
       group: null,
       project: null,
@@ -207,8 +211,11 @@ export default {
       result({ data, error }) {
         if (!error) {
           this.showAlert = false;
-          this.provisioningSteps = data.project.runnerCloudProvisioning?.provisioningSteps;
-          this.setupBashScript = data.project.runnerCloudProvisioning?.projectSetupShellScript;
+          const { runnerCloudProvisioning } = data.project;
+
+          this.setupBashScript = runnerCloudProvisioning?.projectSetupShellScript;
+          this.setupTerraformFile = runnerCloudProvisioning?.provisioningSteps?.[0].instructions;
+          this.applyTerraformScript = runnerCloudProvisioning?.provisioningSteps?.[1].instructions;
         }
       },
       error(error) {
@@ -229,8 +236,12 @@ export default {
       result({ data, error }) {
         if (!error) {
           this.showAlert = false;
-          this.provisioningSteps = data.group.runnerCloudProvisioning?.provisioningSteps;
-          this.setupBashScript = data.group.runnerCloudProvisioning?.projectSetupShellScript;
+
+          const { runnerCloudProvisioning } = data.group;
+
+          this.setupBashScript = runnerCloudProvisioning?.projectSetupShellScript;
+          this.setupTerraformFile = runnerCloudProvisioning?.provisioningSteps?.[0].instructions;
+          this.applyTerraformScript = runnerCloudProvisioning?.provisioningSteps?.[1].instructions;
         }
       },
       error(error) {
@@ -265,20 +276,6 @@ export default {
       return ['cloudProjectId', 'region', 'zone', 'machineType'].filter((field) => {
         return !this[field]?.state;
       });
-    },
-    bashInstructions() {
-      return this.setupBashScript.length > 0 ? this.setupBashScript : '';
-    },
-    terraformScriptInstructions() {
-      return this.provisioningSteps.length > 0 ? this.provisioningSteps[0].instructions : '';
-    },
-    terraformApplyInstructions() {
-      return this.provisioningSteps.length > 0 ? this.provisioningSteps[1].instructions : '';
-    },
-    codeStyles() {
-      return {
-        maxHeight: '300px',
-      };
     },
   },
   watch: {
@@ -577,11 +574,12 @@ export default {
       <h3 class="gl-heading-4">{{ $options.i18n.modal.step2_1Header }}</h3>
       <p>{{ $options.i18n.modal.step2_1Body }}</p>
       <p>{{ $options.i18n.modal.step2_1Substep1 }}</p>
-      <div class="gl-display-flex gl-align-items-flex-start">
-        <pre class="gl-w-full gl-mb-5" data-testid="bash-instructions" :style="codeStyles">{{
-          bashInstructions
-        }}</pre>
-      </div>
+      <cli-command
+        :command="setupBashScript"
+        :button-title="s__('Runners|Copy commands')"
+        modal-id="setup-instructions"
+        data-testid="setup-bash-script"
+      />
 
       <h3 class="gl-heading-4">{{ $options.i18n.modal.step2_2Header }}</h3>
       <p>{{ $options.i18n.modal.step2_2Body }}</p>
@@ -592,23 +590,21 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-      <div class="gl-display-flex gl-align-items-flex-start">
-        <pre
-          class="gl-w-full gl-mb-5"
-          data-testid="terraform-script-instructions"
-          :style="codeStyles"
-          >{{ terraformScriptInstructions }}</pre
-        >
-      </div>
+      <cli-command
+        :command="setupTerraformFile"
+        :button-title="s__('Runners|Copy Terraform configuration')"
+        modal-id="setup-instructions"
+        data-testid="setup-terraform-file"
+      />
+
       <p>{{ $options.i18n.modal.step2_2Substep2 }}</p>
-      <div class="gl-display-flex gl-align-items-flex-start">
-        <pre
-          class="gl-w-full gl-mb-5"
-          data-testid="terraform-apply-instructions"
-          :style="codeStyles"
-          >{{ terraformApplyInstructions }}</pre
-        >
-      </div>
+      <cli-command
+        :command="applyTerraformScript"
+        :button-title="s__('Runners|Copy commands')"
+        modal-id="setup-instructions"
+        data-testid="apply-terraform-script"
+      />
+
       <p>{{ $options.i18n.modal.step2_2Substep3 }}</p>
     </gl-modal>
     <hr />

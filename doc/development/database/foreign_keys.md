@@ -94,7 +94,9 @@ To replace a foreign key:
      # new foreign key added in <link to MR or path to migration adding new FK>
      # and validated in <link to MR or path to migration validating new FK>
      def up
-       remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+       with_lock_retries do
+         remove_foreign_key_if_exists(:packages_packages, column: :project_id, on_delete: :cascade, name: OLD_CONSTRAINT_NAME)
+       end
      end
 
      def down

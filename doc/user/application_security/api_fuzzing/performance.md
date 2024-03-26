@@ -69,10 +69,10 @@ The following sections document various options for addressing performance issue
 
 ### Using a larger runner
 
-One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64)
+One of the easiest performance boosts can be achieved using a [larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux-x86-64)
 with API Fuzzing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API Fuzzing share a single runner instance.
 
-| SaaS runner on Linux tag           | Requests per Second |
+| Hosted runner on Linux tag           | Requests per Second |
 |------------------------------------|-----------|
 | `saas-linux-small-amd64` (default) | 255 |
 | `saas-linux-medium-amd64`          | 400 |

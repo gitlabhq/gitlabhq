@@ -107,9 +107,21 @@ module ProjectsHelper
       { project_full_name: project.full_name }
   end
 
+  def link_to_namespace_change_doc
+    link_to _('project\'s path'), help_page_path('user/group/manage.html', anchor: 'change-a-groups-path'), target: '_blank', rel: 'noopener'
+  end
+
+  def link_to_data_loss_doc
+    link_to _('data loss'), help_page_path('user/project/repository/index.html', anchor: 'what-happens-when-a-repository-path-changes'), target: '_blank', rel: 'noopener'
+  end
+
   def transfer_project_message(project)
-    _("You are going to transfer %{project_full_name} to another namespace. Are you ABSOLUTELY sure?") %
-      { project_full_name: project.full_name }
+    _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") %
+      { project_full_name: project.full_name, code_start: '<code>', code_end: '</code>', link_to_namespace_change_doc: link_to_namespace_change_doc, link_to_data_loss_doc: link_to_data_loss_doc }
+  end
+
+  def transfer_project_confirm_button
+    _("Transfer project")
   end
 
   def remove_fork_project_description_message(project)

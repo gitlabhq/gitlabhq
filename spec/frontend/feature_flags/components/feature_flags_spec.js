@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 // eslint-disable-next-line no-restricted-imports
@@ -62,6 +62,8 @@ describe('Feature flags', () => {
   const findTablePagination = () => wrapper.findComponent(TablePagination);
   const findFeatureFlagsTable = () => wrapper.findComponent(FeatureFlagsTable);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findTableTitle = () => wrapper.findByText('Feature flags');
+  const findFeatureFlagsCountBadge = () => wrapper.findComponent(GlBadge);
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -69,6 +71,54 @@ describe('Feature flags', () => {
 
   afterEach(() => {
     mock.restore();
+  });
+
+  describe('table title', () => {
+    beforeEach(() => {
+      mock
+        .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
+        .reply(HTTP_STATUS_OK, getRequestData, {});
+      factory(mockData);
+      return waitForPromises();
+    });
+
+    it('does exist', () => {
+      expect(findTableTitle().exists()).toBe(true);
+    });
+
+    it('has a count badge', () => {
+      expect(findFeatureFlagsCountBadge().exists()).toBe(true);
+    });
+
+    describe('with feature flags limit', () => {
+      it('renders a count badge with feature flags count and limit values', () => {
+        expect(findFeatureFlagsCountBadge().text()).toBe('1/200');
+      });
+
+      it('renders a count badge tooltip', () => {
+        expect(findFeatureFlagsCountBadge().attributes('title')).toBe(
+          'Current plan allows for 200 feature flags.',
+        );
+      });
+    });
+
+    describe('without feature flags limit', () => {
+      beforeEach(() => {
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`, { params: { page: '1' } })
+          .reply(HTTP_STATUS_OK, getRequestData, {});
+        factory({ ...mockData, featureFlagsLimit: '0' });
+        return waitForPromises();
+      });
+
+      it('renders a count badge with feature flags count value only', () => {
+        expect(findFeatureFlagsCountBadge().text()).toBe('1');
+      });
+
+      it("doesn't render a count badge tooltip", () => {
+        expect(findFeatureFlagsCountBadge().attributes('title')).toBe('');
+      });
+    });
   });
 
   describe('when limit exceeded', () => {
@@ -82,31 +132,16 @@ describe('Feature flags', () => {
       return waitForPromises();
     });
 
-    it('makes the new feature flag button do nothing if clicked', () => {
+    it('the new feature flag button is disabled', () => {
       expect(newButton().exists()).toBe(true);
-      expect(newButton().props('disabled')).toBe(false);
-      expect(newButton().props('href')).toBeUndefined();
+      expect(newButton().props('disabled')).toBe(true);
     });
 
     it('shows a feature flags limit reached alert', () => {
       expect(limitAlert().exists()).toBe(true);
-      expect(limitAlert().text()).toContain('Feature flags limit reached');
-    });
-
-    describe('when the alert is dismissed', () => {
-      beforeEach(async () => {
-        await limitAlert().vm.$emit('dismiss');
-      });
-
-      it('hides the alert', () => {
-        expect(limitAlert().exists()).toBe(false);
-      });
-
-      it('re-shows the alert if the new feature flag button is clicked', async () => {
-        await newButton().vm.$emit('click');
-
-        expect(limitAlert().exists()).toBe(true);
-      });
+      expect(limitAlert().text()).toContain(
+        "You've reached your feature flag limit (200). To add more, delete at least one feature flag, or upgrade to a higher tier.",
+      );
     });
   });
 

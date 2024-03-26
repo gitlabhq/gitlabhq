@@ -13,6 +13,18 @@ class ReplaceUnpartitionedFkBetweenCiBuildsAndCiStages < Gitlab::Database::Migra
   TMP_FK_NAME = :tmp_fk_3a9eaa254d_p
 
   def up
+    if foreign_key_exists?(TABLE_NAME, PARTITIONED_REFERENCED_TABLE_NAME, name: FK_NAME)
+      with_lock_retries do
+        remove_foreign_key_if_exists(
+          TABLE_NAME,
+          PARTITIONED_REFERENCED_TABLE_NAME,
+          name: TMP_FK_NAME,
+          reverse_lock_order: true)
+      end
+
+      return
+    end
+
     with_lock_retries do
       execute("LOCK TABLE #{PARTITIONED_REFERENCED_TABLE_NAME}, #{TABLE_NAME} IN ACCESS EXCLUSIVE MODE")
 

@@ -155,6 +155,19 @@
         margin: 0;
       }
     }
+
+    // ensure quoted lists are styled the same as normal lists
+    > ul {
+      list-style-type: disc;
+
+      ul {
+        list-style-type: circle;
+
+        ul {
+          list-style-type: square;
+        }
+      }
+    }
   }
 
   hr {

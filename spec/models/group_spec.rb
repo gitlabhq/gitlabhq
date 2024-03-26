@@ -13,6 +13,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
     it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:non_invite_group_members).class_name('GroupMember') }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:all_owner_members) }
@@ -56,6 +57,23 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
     it { is_expected.to have_one(:harbor_integration) }
+
+    describe '#non_invite_group_members' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:non_requested_member) { create(:group_member, group: group) }
+      let_it_be(:non_invited_member) { create(:group_member, group: group) }
+      let_it_be(:non_minimal_access_member) { create(:group_member, group: group) }
+
+      before do
+        create(:group_member, :access_request, group: group)
+        create(:group_member, :invited, group: group)
+        create(:group_member, :minimal_access, group: group)
+      end
+
+      it 'includes the correct members' do
+        expect(group.non_invite_group_members).to contain_exactly(non_invited_member, non_requested_member, non_minimal_access_member)
+      end
+    end
 
     describe '#namespace_members' do
       let(:requester) { create(:user) }
@@ -1094,6 +1112,28 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         create(:onboarding_progress, namespace: group)
 
         expect(subject).to eq([group])
+      end
+    end
+
+    describe 'with_non_archived_projects' do
+      let_it_be(:project) { create(:project, group: private_group, archived: false) }
+
+      subject { described_class.with_non_archived_projects }
+
+      it 'loads the records of non archived projects' do
+        associations = subject.map { |group| group.association(:non_archived_projects) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
+    describe 'with_non_invite_group_members' do
+      let_it_be(:group_member) { create(:group_member, member_namespace: private_group, requested_at: nil, invite_token: nil, access_level: Gitlab::Access::DEVELOPER) }
+
+      subject { described_class.with_non_invite_group_members }
+
+      it 'loads the records of non invite group members' do
+        associations = subject.map { |group| group.association(:non_invite_group_members) }
+        expect(associations).to all(be_loaded)
       end
     end
 

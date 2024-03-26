@@ -30306,9 +30306,6 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_b01280dae4 FOREIGN KEY (forked_from_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY work_item_colors
-    ADD CONSTRAINT fk_b15b0912d0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
-
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;
 
@@ -32603,6 +32600,9 @@ ALTER TABLE ONLY timelogs
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_note_id FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY work_item_colors
+    ADD CONSTRAINT fk_work_item_colors_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_work_item_dates_sources_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

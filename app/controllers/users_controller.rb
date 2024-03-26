@@ -263,7 +263,7 @@ class UsersController < ApplicationController
 
   def load_groups
     groups = JoinedGroupsFinder.new(user).execute(current_user)
-    @groups = groups.with_route.page(params[:page]).without_count
+    @groups = groups.page(params[:page]).without_count
 
     prepare_groups_for_rendering(@groups)
   end

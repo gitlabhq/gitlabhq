@@ -985,27 +985,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    - <<: *if-ruby-branch
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-auto-deploy-branches
-    - <<: *if-default-refs
-      changes: *ci-build-images-patterns
-    - <<: *if-default-refs
-      changes: *code-qa-patterns
-    # Rules to support .qa:rules:package-and-test
-    - <<: *if-default-branch-schedule-nightly
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-    - <<: *if-force-ci
+    - !reference [".frontend:rules:assets-shared", rules]
 
 .build-images:rules:build-assets-image-as-if-foss:
   rules:
@@ -1212,6 +1192,29 @@
     - <<: *if-merge-request-labels-run-all-jest
       when: never
 
+.frontend:rules:assets-shared:
+  rules:
+    - <<: *if-auto-deploy-branches
+    - <<: *if-ruby-branch
+    - <<: *if-force-ci
+    # Rules to support .qa:rules:package-and-test
+    - <<: *if-default-branch-schedule-nightly
+    - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+    - <<: *if-default-refs
+      changes: *ci-build-images-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
+    # TODO: Below are broad so we only want to run if it's approved if it's MR
+    # - <<: *if-merge-request-not-approved
+    #   when: never
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+
 .frontend:rules:compile-production-assets:
   rules:
     - <<: *if-not-canonical-namespace
@@ -1219,23 +1222,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    - <<: *if-merge-request-labels-run-review-app
-    - <<: *if-auto-deploy-branches
-    - <<: *if-ruby-branch
-    - <<: *if-default-refs
-      changes: *ci-build-images-patterns
-    - <<: *if-default-refs
-      changes: *code-qa-patterns
-    - <<: *if-default-refs
-      changes: *workhorse-patterns
-    # Rules to support .qa:rules:package-and-test
-    - <<: *if-default-branch-schedule-nightly
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-    - <<: *if-force-ci
+    - !reference [".frontend:rules:assets-shared", rules]
 
 .frontend:rules:compile-production-assets-as-if-foss:
   rules:

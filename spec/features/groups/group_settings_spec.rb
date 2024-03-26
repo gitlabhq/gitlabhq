@@ -164,10 +164,10 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
         click_button s_('GroupSettings|Transfer group')
 
         page.within(confirm_modal) do
-          expect(page).to have_text "You are going to transfer #{selected_group.name} to another namespace. Are you ABSOLUTELY sure?"
+          expect(page).to have_text "You are about to transfer #{selected_group.full_path} to another namespace. This action changes the project's path and can lead to data loss."
 
           fill_in 'confirm_name_input', with: selected_group.full_path
-          click_button 'Confirm'
+          click_button 'Transfer group'
         end
 
         within_testid('breadcrumb-links') do

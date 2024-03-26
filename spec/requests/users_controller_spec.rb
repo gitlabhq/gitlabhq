@@ -840,11 +840,30 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
 
     context 'format json' do
+      before do
+        setup_data
+      end
+
       it 'response with groups data' do
-        get user_groups_url user.username, format: :json
+        send_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to have_key('html')
+      end
+
+      it 'avoids N+1 DB queries', :request_store do
+        # warm up cache so these initial queries would not leak in our QueryRecorder
+        send_request
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          send_request
+        end
+
+        setup_data
+
+        expect do
+          send_request
+        end.to issue_same_number_of_queries_as(control)
       end
 
       context 'pagination' do
@@ -861,6 +880,18 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(assigns(:groups).size).to eq(per_page_limit)
           expect(assigns(:groups)).to be_a(Kaminari::PaginatableWithoutCount)
         end
+      end
+
+      def setup_data
+        create_list(:group, 2).each do |group|
+          group.add_owner(user)
+          create(:project, group: group)
+          create(:group_member, group: group)
+        end
+      end
+
+      def send_request
+        get user_groups_url user.username, format: :json
       end
     end
   end

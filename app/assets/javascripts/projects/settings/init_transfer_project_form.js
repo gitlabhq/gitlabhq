@@ -18,6 +18,7 @@ export default () => {
     buttonText: confirmButtonText = '',
     phrase: confirmationPhrase = '',
     confirmDangerMessage = '',
+    additionalInformation = '',
   } = el.dataset;
 
   return new Vue({
@@ -27,7 +28,9 @@ export default () => {
     }),
     provide: {
       confirmDangerMessage,
+      additionalInformation,
       resourceId,
+      htmlConfirmationMessage: true,
     },
     render(createElement) {
       return createElement(TransferProjectForm, {

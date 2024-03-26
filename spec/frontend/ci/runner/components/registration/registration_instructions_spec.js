@@ -144,7 +144,7 @@ describe('RegistrationInstructions', () => {
 
       const step1 = findStepAt(0);
 
-      expect(step1.findComponent(CliCommand).props()).toEqual({
+      expect(step1.findComponent(CliCommand).props()).toMatchObject({
         command: [
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
@@ -253,7 +253,7 @@ describe('RegistrationInstructions', () => {
     createComponent();
     const step3 = findStepAt(2);
 
-    expect(step3.findComponent(CliCommand).props()).toEqual({
+    expect(step3.findComponent(CliCommand).props()).toMatchObject({
       command: 'gitlab-runner run',
       prompt: '$',
     });

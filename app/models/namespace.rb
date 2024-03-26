@@ -192,6 +192,7 @@ class Namespace < ApplicationRecord
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
   scope :in_organization, -> (organization) { where(organization: organization) }
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
+  scope :ordered_by_name, -> { order(:name) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
