@@ -94,5 +94,19 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
 
       expect(doc.at_css('code').text).to eq '[[link-in-backticks]]'
     end
+
+    it "sanitizes the href attribute (case 1)" do
+      tag = '[[a|http:\'"injected=attribute&gt;&lt;img/src="0"onerror="alert(0)"&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1]]'
+      doc = filter("See #{tag}", wiki: wiki)
+
+      expect(doc.at_css('a').to_html).to eq '<a href="http:\'%22injected=attribute&gt;&lt;img/src=%220%22onerror=%22alert(0)%22&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1" class="gfm">a</a>'
+    end
+
+    it "sanitizes the href attribute (case 2)" do
+      tag = '<i>[[a|\'"&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title="&lt;script&gt;alert(0)&lt;/script&gt;"/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1]]'
+      doc = filter("See #{tag}", wiki: wiki)
+
+      expect(doc.at_css('i a').to_html).to eq "<a href=\"#{wiki.wiki_base_path}/\'%22&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title=%22&lt;script&gt;alert(0)&lt;/script&gt;%22/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1\" class=\"gfm\">a</a>"
+    end
   end
 end
