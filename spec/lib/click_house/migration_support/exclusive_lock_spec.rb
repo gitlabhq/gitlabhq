@@ -96,17 +96,6 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
         expect(Time.current - started_at).to eq(described_class::DEFAULT_CLICKHOUSE_WORKER_TTL)
       end
 
-      context 'when wait_for_clickhouse_workers_during_migration FF is disabled' do
-        before do
-          stub_feature_flags(wait_for_clickhouse_workers_during_migration: false)
-        end
-
-        it 'runs migration without waiting for workers' do
-          expect { migration }.not_to raise_error
-          expect(Time.current - started_at).to eq(0.0)
-        end
-      end
-
       it 'ignores expired workers' do
         travel(described_class::DEFAULT_CLICKHOUSE_WORKER_TTL + 1.second)
 

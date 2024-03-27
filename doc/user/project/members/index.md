@@ -163,6 +163,11 @@ If a user is:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 When you add a group to a project, every group member (direct or inherited) gets access to the project.
 Each member's access is based on the:
@@ -192,7 +197,7 @@ To add a group to a project:
 The invited group is displayed on the **Groups** tab.
 Private groups are masked from unauthorized users.
 Private groups are displayed in project settings for protected branches, protected tags, and protected environments.
-The members of the invited group are not displayed on the **Members** tab.
+The members of the invited group are not displayed on the **Members** tab, but are displayed if the `webui_members_inherited_users` feature flag is enabled.
 The **Members** tab shows:
 
 - Members who were directly added to the project.

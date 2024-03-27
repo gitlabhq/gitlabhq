@@ -67,6 +67,7 @@ GET /groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -106,6 +107,7 @@ GET /groups?statistics=true
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -194,6 +196,7 @@ GET /groups/:id/subgroups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
@@ -257,6 +260,7 @@ GET /groups/:id/descendant_groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar",
@@ -283,6 +287,7 @@ GET /groups/:id/descendant_groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/baz.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar/baz",
@@ -845,6 +850,7 @@ Parameters:
 | `path`                                                  | string  | yes      | The path of the group.                                                                                                                                                                          |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group.                                                                                                                             |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681)                                                                            |
+| `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
@@ -1018,6 +1024,7 @@ PUT /groups/:id
 | `path`                                                  | string  | no       | The path of the group. |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |

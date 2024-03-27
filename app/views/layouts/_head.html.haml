@@ -55,14 +55,9 @@
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
   - if vite_enabled?
-    %meta{ name: 'controller-path', content: controller_full_path }
     - if Rails.env.development?
       = vite_client_tag
-    = vite_javascript_tag "main"
-    - if Gitlab.ee?
-      = vite_javascript_tag "main_ee"
-    - if Gitlab.jh?
-      = vite_javascript_tag "main_jh"
+    = vite_javascript_tag "main", *vite_page_entrypoint_paths
 
   = yield :page_specific_javascripts
 

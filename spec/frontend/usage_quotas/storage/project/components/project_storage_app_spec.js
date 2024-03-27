@@ -17,8 +17,8 @@ import {
   NAMESPACE_STORAGE_TYPES,
   TOTAL_USAGE_DEFAULT_TEXT,
 } from '~/usage_quotas/storage/constants';
-import getCostFactoredProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/cost_factored_project_storage.query.graphql';
-import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/queries/project_storage.query.graphql';
+import getCostFactoredProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/project/queries/cost_factored_project_storage.query.graphql';
+import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/project/queries/project_storage.query.graphql';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
   mockGetProjectStorageStatisticsGraphQLResponse,

@@ -63,6 +63,7 @@ If you want to upgrade multiple releases or do not meet these requirements [upgr
 
 We recommend a "back to front" approach for the order of what components to upgrade with Zero Downtime.
 Generally this would be stateful backends first, their dependents next and then the frontends accordingly.
+While the order of deployment can be changed, it is best to deploy the components running GitLab application code (Rails, Sidekiq) together. If possible, upgrade the supporting infrastructure (PostgreSQL, PgBouncer, Consul, Gitaly, Praefect, Redis) separately since these components do not have dependencies on changes made in version updates within a major release.
 As such, we generally recommend the following order:
 
 1. Consul
@@ -73,10 +74,6 @@ As such, we generally recommend the following order:
 1. Praefect
 1. Rails
 1. Sidekiq
-
-NOTE:
-While this order can be changed if desired, a hard requirement is that the Rails nodes are done after PostgreSQL
-as they drive the upgrades of data on those stateful backends via migrations.
 
 ## Multi-node / HA deployment
 

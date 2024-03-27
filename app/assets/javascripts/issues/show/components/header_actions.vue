@@ -324,7 +324,9 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3">
+  <div
+    class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3 gl-w-full gl-md-w-auto"
+  >
     <div class="gl-md-display-none! gl-w-full">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
@@ -335,7 +337,7 @@ export default {
         :auto-close="false"
         data-testid="mobile-dropdown"
         :loading="isToggleStateButtonLoading"
-        placement="left"
+        placement="right"
       >
         <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget

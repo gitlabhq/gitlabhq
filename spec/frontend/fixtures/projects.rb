@@ -109,8 +109,8 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller, feature_cate
           )
         end
 
-        base_input_path = 'usage_quotas/storage/queries/'
-        base_output_path = 'graphql/usage_quotas/storage/'
+        base_input_path = 'usage_quotas/storage/project/queries/'
+        base_output_path = 'graphql/usage_quotas/storage/project/'
         query_name = 'project_storage.query.graphql'
 
         it "#{base_output_path}#{query_name}.json" do

@@ -18,10 +18,10 @@ your application on different environments.
 These runners fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
 Your jobs can run on:
 
-- [Hosted runners on Linux](saas/linux_saas_runner.md)
-- [GPU-enabled hosted runners](saas/gpu_saas_runner.md)
-- [Hosted runners on Windows](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
-- [Hosted runners on macOS](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Linux](hosted_runners/linux.md)
+- [GPU-enabled hosted runners](hosted_runners/gpu_enabled.md)
+- [Hosted runners on Windows](hosted_runners/windows.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on macOS](hosted_runners/macos.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
 For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/cicd_minutes.md#gitlab-hosted-runner-costs).
 The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
@@ -37,7 +37,7 @@ The objective is to make 90% of CI/CD jobs start executing in 120 seconds or les
 These runners are created on-demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
 Your jobs can run on:
 
-- [Hosted runners on Linux](saas/linux_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Linux](hosted_runners/linux.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
 ## How hosted runners for GitLab.com work
 
@@ -52,7 +52,7 @@ When you use hosted runners:
 NOTE:
 Jobs handled by hosted runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
 
-## Release cycle for SaaS runner
+## Release cycle for GitLab-hosted runners
 
 We aim to update to the latest version of [GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) within a week of its release.
 
@@ -65,13 +65,13 @@ The [Google Infrastructure Security Design Overview whitepaper](https://cloud.go
 provides an overview of how Google designs security into its technical infrastructure.
 The GitLab [Trust Center](https://about.gitlab.com/security/) and
 [GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/)
-pages provide an overview of the security and compliance controls that govern the GitLab SaaS runners.
+pages provide an overview of the security and compliance controls that govern the GitLab-hosted runners.
 
-The following section provides an overview of the additional built-in layers that harden the security of the GitLab Runner SaaS CI build environment.
+The following section provides an overview of the additional built-in layers that harden the security of the GitLab Runner build environment.
 
 ### Security of CI job execution
 
-A dedicated temporary runner VM hosts and runs each CI job. On GitLab SaaS, two CI jobs never run on the same VM.
+A dedicated temporary runner VM hosts and runs each CI job. On hosted runners for GitLab.com, two CI jobs never run on the same VM.
 
 In this example, there are three jobs in the project's pipeline. Therefore, there are three temporary VMs used to run that pipeline, or one VM per job.
 
@@ -91,7 +91,7 @@ takes over the task of securely deleting the virtual machine and associated data
 
 ## Supported image lifecycle
 
-SaaS runners on macOS and Windows can only run jobs on supported images. You cannot bring your own image. Supported images have the following lifecycle:
+Hosted runners on macOS and Windows can only run jobs on supported images. You cannot bring your own image. Supported images have the following lifecycle:
 
 - Beta
 - Generally Available

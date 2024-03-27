@@ -36,6 +36,7 @@ workflow:
     GITLAB_ADMIN_USERNAME: root
     GITLAB_ADMIN_PASSWORD: 5iveL!fe
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    KNAPSACK_TEST_FILE_PATTERN: ""
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
@@ -50,7 +51,7 @@ workflow:
     - deploy "${GITLAB_DOMAIN}"
     - cd qa && bundle install
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- $QA_TESTS --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
   after_script:

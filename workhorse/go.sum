@@ -448,8 +448,8 @@ github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/yusufpapurcu/wmi v1.2.2 h1:KBNDSne4vP5mbSWnJbO+51IMOXJB67QiYCSBrubbPRg=
 github.com/yusufpapurcu/wmi v1.2.2/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
-gitlab.com/gitlab-org/gitaly/v16 v16.9.1 h1:XFoZyeV3HCGIB6pnQj6r5ZYsUYa34HoVOyod7XegIdI=
-gitlab.com/gitlab-org/gitaly/v16 v16.9.1/go.mod h1:K2zAXwDEEwnm9NLxboCllREyS4Rx1yRBRxLBC0EcakA=
+gitlab.com/gitlab-org/gitaly/v16 v16.9.2 h1:FkNYzuezmL9K+3ZzU26BL1m3/0VoWi7Mq0ahuWovTfs=
+gitlab.com/gitlab-org/gitaly/v16 v16.9.2/go.mod h1:K2zAXwDEEwnm9NLxboCllREyS4Rx1yRBRxLBC0EcakA=
 gitlab.com/gitlab-org/labkit v1.21.0 h1:hLmdBDtXjD1yOmZ+uJOac3a5Tlo83QaezwhES4IYik4=
 gitlab.com/gitlab-org/labkit v1.21.0/go.mod h1:zeATDAaSBelPcPLbTTq8J3ZJEHyPTLVBM1q3nva+/W4=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=

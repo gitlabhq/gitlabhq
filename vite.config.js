@@ -10,6 +10,7 @@ import chokidar from 'chokidar';
 import globby from 'globby';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
+import { generateEntries } from './config/webpack.helpers';
 import {
   IS_EE,
   IS_JH,
@@ -42,6 +43,15 @@ const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
 
 const [rubyPlugin, ...rest] = RubyPlugin();
+
+const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
+
+const virtualEntrypoints = Object.entries(generateEntries()).reduce((acc, [entryName, imports]) => {
+  const modulePath = imports[imports.length - 1];
+  const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+  acc[`${entryName}.js`] = `${comment}/* ${modulePath} */ import '${importPath}';\n`;
+  return acc;
+}, {});
 
 // We can't use regular 'resolve' which points to sourceCodeDir in vite.json
 // Because we need for '~' alias to resolve to app/assets/javascripts
@@ -163,6 +173,22 @@ function viteCopyPlugin({ patterns }) {
   };
 }
 
+const entrypointsDir = '/javascripts/entrypoints/';
+const pageEntrypointsPlugin = {
+  name: 'page-entrypoints',
+  load(id) {
+    if (!id.startsWith('pages.')) {
+      return undefined;
+    }
+    return virtualEntrypoints[id] ?? `/* doesn't exist */`;
+  },
+  resolveId(source) {
+    const fixedSource = source.replace(entrypointsDir, '');
+    if (fixedSource.startsWith('pages.')) return { id: fixedSource };
+    return undefined;
+  },
+};
+
 export default defineConfig({
   cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
   resolve: {
@@ -181,6 +207,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    pageEntrypointsPlugin,
     viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteCopyPlugin({
@@ -237,5 +264,13 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+  },
+  build: {
+    rollupOptions: {
+      input: Object.keys(virtualEntrypoints).reduce((acc, value) => {
+        acc[value] = value;
+        return acc;
+      }, {}),
+    },
   },
 });

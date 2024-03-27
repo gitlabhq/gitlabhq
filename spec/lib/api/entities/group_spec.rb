@@ -17,7 +17,7 @@ RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
         :two_factor_grace_period, :project_creation_level, :auto_devops_enabled,
         :subgroup_creation_level, :emails_disabled, :emails_enabled, :lfs_enabled, :default_branch_protection,
         :default_branch_protection_defaults, :avatar_url, :request_access_enabled, :full_name, :full_path, :created_at,
-        :parent_id, :organization_id, :shared_runners_setting, :custom_attributes, :statistics
+        :parent_id, :organization_id, :shared_runners_setting, :custom_attributes, :statistics, :default_branch
       )
     )
   end

@@ -17,8 +17,12 @@ You can share by invitation:
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 behind `webui_members_inherited_users` feature flag. Disabled by default.
 
-[In GitLab 16.6 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
-the invited group's name and membership source are masked unless one of the following applies:
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+[In GitLab 16.11 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144638),
+the invited group's name and membership source are masked on the **Members** and the **Groups** tabs, unless one of the following applies:
 
 - The invited group is public.
 - The current user is a member of the invited group.

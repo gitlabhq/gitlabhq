@@ -979,38 +979,4 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
-
-  describe '#controller_full_path' do
-    let(:path) { 'some_path' }
-    let(:action) { 'show' }
-
-    before do
-      allow(helper.controller).to receive(:controller_path).and_return(path)
-      allow(helper.controller).to receive(:action_name).and_return(action)
-    end
-
-    context 'when is create action' do
-      let(:action) { 'create' }
-
-      it 'transforms to "new" path' do
-        expect(helper.controller_full_path).to eq("#{path}/new")
-      end
-    end
-
-    context 'when is update action' do
-      let(:action) { 'update' }
-
-      it 'transforms to "edit" path' do
-        expect(helper.controller_full_path).to eq("#{path}/edit")
-      end
-    end
-
-    context 'when is show action' do
-      let(:action) { 'show' }
-
-      it 'passes through' do
-        expect(helper.controller_full_path).to eq("#{path}/#{action}")
-      end
-    end
-  end
 end
