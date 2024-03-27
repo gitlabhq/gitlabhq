@@ -369,7 +369,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
 
       context 'when using work item reference' do
-        let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)},#{second_child.to_reference(full: true)}" }
+        let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)}, #{second_child.to_reference(full: true)}" }
 
         it_behaves_like 'adds child work items'
       end
@@ -380,7 +380,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
       context 'when using work item URL' do
         let_it_be(:project_path) { "#{Gitlab.config.gitlab.url}/#{project.full_path}" }
-        let_it_be(:url) { "#{project_path}/work_items/#{child.iid},#{project_path}/work_items/#{second_child.iid}" }
+        let_it_be(:url) { "#{project_path}/work_items/#{child.iid}, #{project_path}/work_items/#{second_child.iid}" }
         let_it_be(:note_text) { "/add_child #{url}" }
 
         it_behaves_like 'adds child work items'

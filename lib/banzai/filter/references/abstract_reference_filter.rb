@@ -138,7 +138,7 @@ module Banzai
               yield_valid_link(node) do |link, inner_html|
                 if ref_pattern && link =~ ref_pattern_anchor
                   replace_link_node_with_href(node, index, link) do
-                    object_link_filter(link, ref_pattern, link_content: inner_html)
+                    object_link_filter(link, ref_pattern_anchor, link_content: inner_html)
                   end
 
                   next
@@ -148,7 +148,7 @@ module Banzai
 
                 if link == inner_html && inner_html =~ link_pattern_start
                   replace_link_node_with_text(node, index) do
-                    object_link_filter(inner_html, link_pattern, link_reference: true)
+                    object_link_filter(inner_html, link_pattern_start, link_reference: true)
                   end
 
                   next
@@ -156,7 +156,7 @@ module Banzai
 
                 if link =~ link_pattern_anchor
                   replace_link_node_with_href(node, index, link) do
-                    object_link_filter(link, link_pattern, link_content: inner_html, link_reference: true)
+                    object_link_filter(link, link_pattern_anchor, link_content: inner_html, link_reference: true)
                   end
 
                   next

@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.1 (2024-03-27)
+
+### Fixed (2 changes)
+
+- [Update redis-client to v0.21.1](gitlab-org/security/gitlab@c9d6f434dbc8d5ca244d0c00d8c5cf0d9092df39)
+- [Fix new project group templates pagination](gitlab-org/security/gitlab@956b01c404e55bc92276ab7d21c63a09bc3edfb5) **GitLab Enterprise Edition**
+
+### Security (3 changes)
+
+- [Merge branch 'dchevalier2-master-patch-88770' into 'master'](gitlab-org/security/gitlab@9e621975bf405f2e66541faebf11b06a31360b5d) ([merge request](gitlab-org/security/gitlab!3936))
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@e935e1cc26a06990832781b30827d5afa53d0194) ([merge request](gitlab-org/security/gitlab!3927))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@d1bad1a4847917d5f10c883d0d2f627088a00ca5) ([merge request](gitlab-org/security/gitlab!3929))
+
 ## 16.10.0 (2024-03-20)
 
 ### Added (115 changes)

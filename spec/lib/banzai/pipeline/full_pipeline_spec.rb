@@ -27,6 +27,24 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
       expect(result).not_to include(link_label)
     end
 
+    it 'prevents xss by not replacing the same reference in one anchor multiple times' do
+      reference_link = ::Gitlab::Routing.url_helpers.project_issue_url(project, issue)
+      markdown = <<~TEXT
+        <div>
+        <a href="#{reference_link}<i>
+        <a alt='&quot;#{reference_link}'></a>
+        </i>">#{reference_link}<i>
+        <a alt='"#{reference_link}'></a></i></a>
+        </div>
+      TEXT
+
+      markdown.delete!("\n")
+
+      result = described_class.to_html(markdown, project: project)
+
+      expect(result).to include "<a alt='\"#{reference_link}'></a>"
+    end
+
     it 'escapes the data-original attribute on a reference' do
       markdown = %{[">bad things](#{issue.to_reference})}
       result = described_class.to_html(markdown, project: project)
