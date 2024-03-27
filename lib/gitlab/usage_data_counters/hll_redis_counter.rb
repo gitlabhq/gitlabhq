@@ -14,8 +14,6 @@ module Gitlab
       HALF_MIGRATED_EVENTS = %w[
         i_analytics_dev_ops_adoption
         i_analytics_dev_ops_score
-        i_quickactions_remove_email_single
-        i_quickactions_remove_email_multiple
         g_project_management_issue_cross_referenced
         k8s_api_proxy_requests_unique_users_via_ci_access
         k8s_api_proxy_requests_unique_users_via_pat_access

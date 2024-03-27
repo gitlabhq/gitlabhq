@@ -5,6 +5,7 @@ fragment PackageData on Package {
   packageType
   createdAt
   status
+  statusMessage
   tags {
     nodes {
       id

@@ -5,7 +5,7 @@ module SystemCheck
     class GitUserDefaultSSHConfigCheck < SystemCheck::BaseCheck
       # These files are allowed in the .ssh directory. The `config` file is not
       # whitelisted as it may change the SSH client's behaviour dramatically.
-      WHITELIST = %w[
+      ALLOWLIST = %w[
         authorized_keys
         authorized_keys.lock
         authorized_keys2
@@ -62,7 +62,7 @@ module SystemCheck
         @forbidden_files ||=
           begin
             present = Dir[File.join(ssh_dir, '*')]
-            whitelisted = WHITELIST.map { |basename| File.join(ssh_dir, basename) }
+            whitelisted = ALLOWLIST.map { |basename| File.join(ssh_dir, basename) }
 
             present - whitelisted
           end

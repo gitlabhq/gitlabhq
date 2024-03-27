@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillDefaultOrganizationUsers, feature_category: :cell do
+RSpec.describe Gitlab::BackgroundMigration::BackfillDefaultOrganizationUsers,
+  schema: 20240213210124,
+  feature_category: :cell do
   let(:organization_users) { table(:organization_users) }
   let(:users) { table(:users) }
 

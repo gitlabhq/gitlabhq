@@ -10,6 +10,11 @@
   grid-template-columns: auto minmax(0, 1fr) #{$gl-spacing-scale-7};
 }
 
+.gl-dark .timeline-event-icon {
+  background-color: $gray-950;
+  color: $gl-text-secondary;
+}
+
 .create-timeline-event,
 .edit-timeline-event,
 .timeline-event {
@@ -39,6 +44,10 @@
     left: 20px;
     height: calc(100% + #{$gl-spacing-scale-5});
     top: -#{$gl-spacing-scale-5};
+
+    .gl-dark & {
+      border-color: var(--gray-50);
+    }
   }
 
   &:first-child::before {
@@ -77,6 +86,10 @@
       // Border spans the whole container minus icon width and grid gap
       width: calc(100% - $gl-spacing-scale-8 - $gl-spacing-scale-5);
       bottom: $gl-spacing-scale-3;
+
+      .gl-dark & {
+        border-color: var(--gray-50);
+      }
     }
   }
 }
@@ -92,7 +105,7 @@
 }
 
 .timeline-event-note .md p {
-  color: $gray-700;
+  color: var(--gray-700);
 }
 
 .timeline-event-note-date {

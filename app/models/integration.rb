@@ -330,7 +330,7 @@ class Integration < ApplicationRecord
   def self.integration_names
     names = INTEGRATION_NAMES.dup
 
-    unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+    unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) &&
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names.delete('gitlab_slack_application')
     end
@@ -351,7 +351,7 @@ class Integration < ApplicationRecord
   def self.project_specific_integration_names
     names = PROJECT_SPECIFIC_INTEGRATION_NAMES.dup
 
-    if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+    if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) &&
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names << 'gitlab_slack_application'
     end

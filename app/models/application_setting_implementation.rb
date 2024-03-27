@@ -519,7 +519,7 @@ module ApplicationSettingImplementation
   def usage_ping_features_enabled
     return false unless usage_ping_enabled? && super
 
-    return include_optional_metrics_in_service_ping if Gitlab.ee?
+    return include_optional_metrics_in_service_ping if Gitlab.ee? && respond_to?(:include_optional_metrics_in_service_ping)
 
     true
   end

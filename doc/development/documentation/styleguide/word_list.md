@@ -351,6 +351,15 @@ Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#co
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
 
+## cloud licensing
+
+Do not use the phrase **cloud licensing**. Instead, focus on the fact
+that this subscription is synchronized with GitLab.
+
+For example:
+
+- Your instance must be able to synchronize your subscription data with GitLab.
+
 ## cloud native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
@@ -1084,7 +1093,7 @@ Use the full phrase **dropdown list** instead.
 
 When writing about licenses:
 
-- Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
+- Do not use variations such as [**cloud license**](#cloud-licensing), **offline license**, or **legacy license**.
 - Do not use interchangeably with **subscription**:
   - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
   - A subscription is the subscription tier that the user purchases.

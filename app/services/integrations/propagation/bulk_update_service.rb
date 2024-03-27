@@ -23,7 +23,7 @@ module Integrations
           end
 
           if integration.is_a?(GitlabSlackApplication) &&
-              Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip)
+              Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta)
             if integration.active? # rubocop: disable Cop/LineBreakAroundConditionalBlock -- Misidentified
               bulk_update_slack_integrations
             else

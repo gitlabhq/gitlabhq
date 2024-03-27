@@ -22,6 +22,11 @@ import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';
 
+/* We force a mininum avatar size to prevent blurryness of certain avatars
+   especially on retina displays. If we adjust this make sure to adjust
+   it in app/helpers/avatars_helper.rb as well. */
+const MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY = 48;
+
 export default {
   name: 'UserAvatarImage',
   components: {
@@ -77,10 +82,9 @@ export default {
     },
     maximumSize() {
       if (isObject(this.size)) {
-        return Math.max(...Object.values(this.size));
+        return Math.max(MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY, ...Object.values(this.size));
       }
-
-      return this.size;
+      return Math.max(MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY, this.size);
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;

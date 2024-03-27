@@ -12,9 +12,9 @@ describe('LegacySentryConfig', () => {
     });
   });
 
-  describe('BLACKLIST_URLS', () => {
+  describe('DENYLIST_URLS', () => {
     it('should be an array of regexps', () => {
-      const areRegExps = LegacySentryConfig.BLACKLIST_URLS.every((url) => url instanceof RegExp);
+      const areRegExps = LegacySentryConfig.DENYLIST_URLS.every((url) => url instanceof RegExp);
 
       expect(areRegExps).toBe(true);
     });
@@ -84,7 +84,7 @@ describe('LegacySentryConfig', () => {
 
       sentryConfig.options = options;
       sentryConfig.IGNORE_ERRORS = 'ignore_errors';
-      sentryConfig.BLACKLIST_URLS = 'blacklist_urls';
+      sentryConfig.DENYLIST_URLS = 'blacklist_urls';
 
       LegacySentryConfig.configure.call(sentryConfig);
     });
@@ -97,7 +97,7 @@ describe('LegacySentryConfig', () => {
         whitelistUrls: options.whitelistUrls,
         environment: 'test',
         ignoreErrors: sentryConfig.IGNORE_ERRORS,
-        blacklistUrls: sentryConfig.BLACKLIST_URLS,
+        blacklistUrls: sentryConfig.DENYLIST_URLS,
       });
     });
 
@@ -117,7 +117,7 @@ describe('LegacySentryConfig', () => {
         whitelistUrls: options.whitelistUrls,
         environment: 'development',
         ignoreErrors: sentryConfig.IGNORE_ERRORS,
-        blacklistUrls: sentryConfig.BLACKLIST_URLS,
+        blacklistUrls: sentryConfig.DENYLIST_URLS,
       });
     });
   });

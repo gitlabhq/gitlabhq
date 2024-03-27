@@ -265,7 +265,7 @@ describe('Board card component', () => {
         await nextTick();
 
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
-          'test_image_from_avatar_url?width=24',
+          'test_image_from_avatar_url?width=48',
         );
       });
     });
@@ -293,7 +293,7 @@ describe('Board card component', () => {
       it('displays defaults avatar if users avatar is null', () => {
         expect(wrapper.find('.board-card-assignee img').exists()).toBe(true);
         expect(wrapper.find('.board-card-assignee img').attributes('src')).toBe(
-          'default_avatar?width=24',
+          'default_avatar?width=48',
         );
       });
     });

@@ -72,7 +72,7 @@ export default {
 <template>
   <div class="timeline-event gl-display-grid">
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-bg-white gl-text-gray-200 gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
+      class="timeline-event-icon gl--flex-center gl-bg-white gl-text-gray-200 gl-border gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-index-1"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>

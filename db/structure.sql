@@ -4139,7 +4139,6 @@ CREATE TABLE application_settings (
     encrypted_vertex_ai_credentials bytea,
     encrypted_vertex_ai_credentials_iv bytea,
     vertex_ai_project text,
-    instance_level_code_suggestions_enabled boolean DEFAULT false NOT NULL,
     delete_unconfirmed_users boolean DEFAULT false NOT NULL,
     unconfirmed_users_delete_after_days integer DEFAULT 7 NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -6041,6 +6040,7 @@ CREATE TABLE ci_group_variables (
     environment_scope text DEFAULT '*'::text NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     description text,
+    hidden boolean DEFAULT false NOT NULL,
     CONSTRAINT check_dfe009485a CHECK ((char_length(environment_scope) <= 255)),
     CONSTRAINT check_e2e50ff879 CHECK ((char_length(description) <= 255))
 );
@@ -6967,6 +6967,7 @@ CREATE TABLE ci_variables (
     variable_type smallint DEFAULT 1 NOT NULL,
     raw boolean DEFAULT false NOT NULL,
     description text,
+    hidden boolean DEFAULT false NOT NULL,
     CONSTRAINT check_7e46c006aa CHECK ((char_length(description) <= 255))
 );
 

@@ -43,7 +43,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
     - 'ee/spec/controllers/projects/repositories_controller_spec.rb'
     - 'ee/spec/controllers/projects/requirements_management/requirements_controller_spec.rb'
-    - 'ee/spec/controllers/projects/security/configuration_controller_spec.rb'
     - 'ee/spec/controllers/projects/security/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/projects/security/scanned_resources_controller_spec.rb'
     - 'ee/spec/controllers/projects/security/vulnerabilities/notes_controller_spec.rb'

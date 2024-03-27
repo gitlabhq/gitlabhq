@@ -16,6 +16,7 @@ query getPackageVersions(
         packageType
         version
         status
+        statusMessage
         _links {
           webPath
         }

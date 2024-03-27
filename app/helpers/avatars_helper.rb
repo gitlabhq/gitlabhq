@@ -3,6 +3,11 @@
 module AvatarsHelper
   DEFAULT_AVATAR_PATH = 'no_avatar.png'
 
+  # We force a mininum avatar size to prevent blurryness of certain avatars
+  # especially on retina displays. If we adjust this make sure to adjust
+  # it in app/assets/javascripts/vue_shared/components/user_avatar/user_avatar_image.vue as well.
+  MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY = 48
+
   def group_icon(group, options = {})
     source_icon(group, options)
   end
@@ -41,7 +46,9 @@ module AvatarsHelper
     return gravatar_icon(nil, size, scale) unless user
     return default_avatar if blocked_or_unconfirmed?(user) && !can_admin?(current_user)
 
-    user_avatar = user.avatar_url(size: size, only_path: only_path)
+    image_size = !size.nil? && size < MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY ? MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY : size
+
+    user_avatar = user.avatar_url(size: image_size, only_path: only_path)
     user_avatar || default_avatar
   end
 

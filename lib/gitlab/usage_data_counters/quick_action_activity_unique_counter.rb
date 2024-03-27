@@ -6,7 +6,7 @@ module Gitlab
       class << self
         # List of events that use the current internal events implementation.
         # Only add internal events for new quick actions.
-        INTERNAL_EVENTS = %w[convert_to_ticket].freeze
+        INTERNAL_EVENTS = %w[convert_to_ticket remove_email_single remove_email_multiple].freeze
 
         # Tracks the quick action with name `name`.
         # `args` is expected to be a single string, will be split internally when necessary.

@@ -221,6 +221,19 @@ A follow-up to the question `How to start a C# project?` could be:
 
 For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
+## Supported editor extensions
+
+To use Chat, use one of these editor extensions:
+
+| IDE              | Extension              |
+|------------------|------------------------|
+| VSCode           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
+| [GitLab WebIDE (VS Code in the Cloud)](project/web_ide/index.md) | No configuration required. |
+| Microsoft Visual Studio | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
+| JetBrains IDEs (Experiment) | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
+
+Visual Studio support is [under active development](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/22). You can express interest in other IDE extension support [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
+
 ## Enable GitLab Duo Chat
 
 ### For SaaS users

@@ -5,7 +5,7 @@ import { IGNORE_ERRORS, DENY_URLS, SAMPLE_RATE } from './legacy_constants';
 
 const SentryConfig = {
   IGNORE_ERRORS,
-  BLACKLIST_URLS: DENY_URLS,
+  DENYLIST_URLS: DENY_URLS,
   SAMPLE_RATE,
   init(options = {}) {
     this.options = options;
@@ -24,7 +24,7 @@ const SentryConfig = {
       whitelistUrls,
       environment,
       ignoreErrors: this.IGNORE_ERRORS, // TODO: Remove in favor of https://gitlab.com/gitlab-org/gitlab/issues/35144
-      blacklistUrls: this.BLACKLIST_URLS,
+      blacklistUrls: this.DENYLIST_URLS,
       sampleRate: SAMPLE_RATE,
     });
 

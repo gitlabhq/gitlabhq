@@ -527,24 +527,6 @@ In GitLab, you typically use a [merge request](../user/project/merge_requests/in
 To create a merge request from a fork to an upstream repository, see the
 [forking workflow](../user/project/repository/forking_workflow.md).
 
-## Reuse recorded resolutions
-
-To _reuse_ recorded resolutions:
-
-```shell
-git rerere
-```
-
-To enable `rerere` functionality:
-
-```shell
-git config --global rerere.enabled true
-```
-
-## Advanced use of Git through the command line
-
-For an introduction of more advanced Git techniques, see [Git rebase, force-push, and merge conflicts](../topics/git/git_rebase.md).
-
 ## Synchronize changes in a forked repository with the upstream
 
 To create a copy of a repository in your namespace, you [fork it](../user/project/repository/forking_workflow.md).
@@ -557,3 +539,7 @@ changes from the original repository. It is common to call this remote repositor
 You can now use the `upstream` as a [`<remote>` to `pull` new updates](#download-the-latest-changes-in-the-project)
 from the original repository, and use the `origin`
 to [push local changes](#send-changes-to-gitlab) and create merge requests.
+
+## Related topics
+
+- [Git rebase and force push](../topics/git/git_rebase.md)

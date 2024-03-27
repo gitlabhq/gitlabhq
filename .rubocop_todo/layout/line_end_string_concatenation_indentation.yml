@@ -75,7 +75,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/controllers/admin/licenses_controller_spec.rb'
     - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
-    - 'ee/spec/controllers/projects/security/configuration_controller_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/licenses/admin_adds_license_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_sidebar_spec.rb'

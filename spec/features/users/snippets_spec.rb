@@ -35,7 +35,7 @@ RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :source_
         within_testid('super-sidebar') { click_link 'Snippets' }
         wait_for_requests
 
-        expect(page).to have_selector('.snippet-row', count: 2)
+        expect(page).to have_css('[data-testid="snippet-link"]', count: 2)
 
         expect(page).to have_content(public_snippet.title)
         expect(page).to have_content(internal_snippet.title)
@@ -46,7 +46,7 @@ RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :source_
         within_testid('super-sidebar') { click_link 'Snippets' }
         wait_for_requests
 
-        expect(page).to have_selector('.snippet-row', count: 1)
+        expect(page).to have_css('[data-testid="snippet-link"]', count: 1)
         expect(page).to have_content(public_snippet.title)
       end
     end

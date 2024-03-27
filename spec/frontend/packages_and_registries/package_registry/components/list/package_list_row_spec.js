@@ -3,8 +3,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { RouterLinkStub } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
@@ -37,6 +35,7 @@ describe('packages_list_row', () => {
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findDeleteDropdown = () => wrapper.findByTestId('delete-dropdown');
   const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findPackageType = () => wrapper.findByTestId('package-type');
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
@@ -64,9 +63,6 @@ describe('packages_list_row', () => {
       propsData: {
         packageEntity,
         selected,
-      },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -178,10 +174,29 @@ describe('packages_list_row', () => {
 
     it('has a warning icon', () => {
       const icon = findWarningIcon();
-      const tooltip = getBinding(icon.element, 'gl-tooltip');
       expect(icon.props('name')).toBe('warning');
-      expect(tooltip.value).toMatchObject({
-        title: 'Invalid Package: failed metadata extraction',
+    });
+
+    it('renders error message text', () => {
+      expect(findErrorMessage().text()).toEqual(
+        'Error publishing · Invalid Package: failed metadata extraction',
+      );
+    });
+
+    describe('with custom error message', () => {
+      it('renders error message text', () => {
+        mountComponent({
+          packageEntity: {
+            ...packageWithoutTags,
+            status: PACKAGE_ERROR_STATUS,
+            statusMessage: 'custom error message',
+            _links: {
+              webPath: null,
+            },
+          },
+        });
+
+        expect(findErrorMessage().text()).toEqual('Error publishing · custom error message');
       });
     });
 

@@ -80,7 +80,7 @@ RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_managem
     end
 
     it 'contains all snippets of logged user' do
-      expect(page).to have_selector('.snippet-row', count: 3)
+      expect(page).to have_css('[data-testid="snippet-link"]', count: 3)
 
       expect(page).to have_content(snippets[0].title)
       expect(page).to have_content(snippets[1].title)
@@ -90,21 +90,21 @@ RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_managem
     it 'contains all private snippets of logged user when clicking on private' do
       click_link('Private')
 
-      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_css('[data-testid="snippet-link"]', count: 1)
       expect(page).to have_content(snippets[2].title)
     end
 
     it 'contains all internal snippets of logged user when clicking on internal' do
       click_link('Internal')
 
-      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_css('[data-testid="snippet-link"]', count: 1)
       expect(page).to have_content(snippets[1].title)
     end
 
     it 'contains all public snippets of logged user when clicking on public' do
       click_link('Public')
 
-      expect(page).to have_selector('.snippet-row', count: 1)
+      expect(page).to have_css('[data-testid="snippet-link"]', count: 1)
       expect(page).to have_content(snippets[0].title)
     end
   end

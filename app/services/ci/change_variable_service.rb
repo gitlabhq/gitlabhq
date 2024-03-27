@@ -5,10 +5,10 @@ module Ci
     def execute
       case params[:action]
       when :create
-        container.variables.create(params[:variable_params])
+        container.variables.create(create_variable_params)
       when :update
         variable.tap do |target_variable|
-          target_variable.update(params[:variable_params].except(:key))
+          target_variable.update(update_variable_params.except(:key))
         end
       when :destroy
         variable.tap do |target_variable|
@@ -21,6 +21,21 @@ module Ci
 
     def variable
       params[:variable] || find_variable
+    end
+
+    def create_variable_params
+      params[:variable_params].tap do |variables|
+        if variables[:masked_and_hidden]
+          variables[:hidden] = true
+          variables[:masked] = true
+        end
+
+        variables.delete(:masked_and_hidden)
+      end
+    end
+
+    def update_variable_params
+      params[:variable_params]
     end
 
     def find_variable

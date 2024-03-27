@@ -60,6 +60,7 @@ module API
           requires :value, type: String, desc: 'The value of a variable'
           optional :protected, type: Boolean, desc: 'Whether the variable is protected'
           optional :masked, type: Boolean, desc: 'Whether the variable is masked'
+          optional :masked_and_hidden, type: Boolean, desc: 'Whether the variable is masked and hidden'
           optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
           optional :variable_type, type: String, values: ::Ci::Variable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
           optional :environment_scope, type: String, desc: 'The environment_scope of the variable'

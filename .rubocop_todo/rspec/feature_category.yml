@@ -8,7 +8,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/controllers/ee/projects/autocomplete_sources_controller_spec.rb'
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
-    - 'ee/spec/controllers/projects/security/configuration_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'

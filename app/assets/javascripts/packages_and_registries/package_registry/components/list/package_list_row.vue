@@ -5,7 +5,6 @@ import {
   GlFormCheckbox,
   GlIcon,
   GlSprintf,
-  GlTooltipDirective,
   GlTruncate,
   GlLink,
 } from '@gitlab/ui';
@@ -39,9 +38,6 @@ export default {
     PublishMethod,
     ListItem,
     TimeagoTooltip,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   inject: ['isGroupPage', 'canDeletePackages'],
   props: {
@@ -94,6 +90,11 @@ export default {
     errorStatusRow() {
       return this.packageEntity.status === PACKAGE_ERROR_STATUS;
     },
+    errorStatusMessage() {
+      return this.packageEntity.statusMessage
+        ? this.packageEntity.statusMessage
+        : ERRORED_PACKAGE_TEXT;
+    },
     showTags() {
       return Boolean(this.packageEntity.tags?.nodes?.length);
     },
@@ -108,7 +109,6 @@ export default {
     },
   },
   i18n: {
-    erroredPackageText: ERRORED_PACKAGE_TEXT,
     createdAt: __('Created %{timestamp}'),
     deletePackage: DELETE_PACKAGE_TEXT,
     errorPublishing: ERROR_PUBLISHING,
@@ -139,7 +139,7 @@ export default {
         >
           <gl-truncate :text="packageEntity.name" />
         </router-link>
-        <gl-truncate v-else :text="packageEntity.name" />
+        <gl-truncate v-else :class="errorPackageStyle" :text="packageEntity.name" />
 
         <package-tags
           v-if="showTags"
@@ -163,15 +163,11 @@ export default {
         />
         <span class="gl-ml-2" data-testid="package-type">&middot; {{ packageType }}</span>
       </div>
-      <div v-else>
-        <gl-icon
-          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
-          name="warning"
-          class="gl-text-red-500"
-          :aria-label="$options.i18n.warning"
-          data-testid="warning-icon"
-        />
-        <span class="gl-text-red-500">{{ $options.i18n.errorPublishing }}</span>
+      <div v-else class="gl-text-red-500">
+        <gl-icon name="warning" :aria-label="$options.i18n.warning" data-testid="warning-icon" />
+        <span data-testid="error-message"
+          >{{ $options.i18n.errorPublishing }} &middot; {{ errorStatusMessage }}</span
+        >
       </div>
     </template>
 

@@ -206,7 +206,6 @@ export async function compileAllStyles({ shouldWatch = false }) {
       from: source,
       map: content.sourceMap
         ? {
-            from: source,
             prev: content.sourceMap,
             inline: true,
             sourcesContent: true,

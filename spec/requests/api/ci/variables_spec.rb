@@ -8,7 +8,9 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:variable) { create(:ci_variable, project: project) }
+  let(:is_hidden_variable) { true }
+  let(:is_masked_variable) { true }
+  let!(:variable) { create(:ci_variable, project: project, hidden: is_hidden_variable, masked: is_masked_variable) }
 
   describe 'GET /projects/:id/variables' do
     context 'authorized user with proper permissions' do
@@ -39,16 +41,77 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
 
   describe 'GET /projects/:id/variables/:key' do
     context 'authorized user with proper permissions' do
-      it 'returns project variable details' do
-        get api("/projects/#{project.id}/variables/#{variable.key}", user)
+      context 'when variable is hidden' do
+        let(:is_hidden_variable) { true }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['value']).to eq(variable.value)
-        expect(json_response['protected']).to eq(variable.protected?)
-        expect(json_response['masked']).to eq(variable.masked?)
-        expect(json_response['raw']).to eq(variable.raw?)
-        expect(json_response['variable_type']).to eq('env_var')
-        expect(json_response['description']).to be_nil
+        it 'returns project variable details and cut the value' do
+          get api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['value']).to be_nil
+          expect(json_response['protected']).to eq(variable.protected?)
+          expect(json_response['masked']).to eq(variable.masked?)
+          expect(json_response['raw']).to eq(variable.raw?)
+          expect(json_response['variable_type']).to eq('env_var')
+          expect(json_response['description']).to be_nil
+          expect(json_response['hidden']).to eq(true)
+        end
+
+        context 'and feature flag `ci_hidden_variables is disabled`' do
+          before do
+            stub_feature_flags(ci_hidden_variables: false)
+          end
+
+          it 'returns project variable details without changes' do
+            get api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['value']).to eq(variable.value)
+            expect(json_response['protected']).to eq(variable.protected?)
+            expect(json_response['masked']).to eq(variable.masked?)
+            expect(json_response['raw']).to eq(variable.raw?)
+            expect(json_response['variable_type']).to eq('env_var')
+            expect(json_response['description']).to be_nil
+            expect(json_response['hidden']).to eq(true)
+          end
+        end
+      end
+
+      context 'when variable is not hidden' do
+        let(:is_hidden_variable) { false }
+        let(:is_masked_variable) { false }
+
+        it 'returns project variable details' do
+          get api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['value']).to eq(variable.value)
+          expect(json_response['protected']).to eq(variable.protected?)
+          expect(json_response['masked']).to eq(variable.masked?)
+          expect(json_response['raw']).to eq(variable.raw?)
+          expect(json_response['variable_type']).to eq('env_var')
+          expect(json_response['description']).to be_nil
+          expect(json_response['hidden']).to eq(false)
+        end
+
+        context 'and feature flag `ci_hidden_variables is disabled`' do
+          before do
+            stub_feature_flags(ci_hidden_variables: false)
+          end
+
+          it 'returns project variable details' do
+            get api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['value']).to eq(variable.value)
+            expect(json_response['protected']).to eq(variable.protected?)
+            expect(json_response['masked']).to eq(variable.masked?)
+            expect(json_response['raw']).to eq(variable.raw?)
+            expect(json_response['variable_type']).to eq('env_var')
+            expect(json_response['description']).to be_nil
+            expect(json_response['hidden']).to eq(false)
+          end
+        end
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -125,6 +188,22 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
           expect(json_response['key']).to eq('TEST_VARIABLE_2')
           expect(json_response['value']).to eq('PROTECTED_VALUE_2')
           expect(json_response['protected']).to be_truthy
+          expect(json_response['hidden']).to eq(false)
+          expect(json_response['masked']).to be_truthy
+          expect(json_response['raw']).to be_truthy
+          expect(json_response['variable_type']).to eq('env_var')
+        end
+
+        it 'creates variable with masked and hidden' do
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked_and_hidden: true, raw: true }
+          end.to change { project.variables.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['key']).to eq('TEST_VARIABLE_2')
+          expect(json_response['value']).to be_nil
+          expect(json_response['protected']).to be_truthy
+          expect(json_response['hidden']).to eq(true)
           expect(json_response['masked']).to be_truthy
           expect(json_response['raw']).to be_truthy
           expect(json_response['variable_type']).to eq('env_var')
@@ -152,6 +231,7 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
           expect(json_response['raw']).to be_falsey
           expect(json_response['variable_type']).to eq('file')
           expect(json_response['description']).to eq('description')
+          expect(json_response['hidden']).to eq(false)
         end
 
         it 'does not allow to duplicate variable key' do
@@ -238,6 +318,35 @@ RSpec.describe API::Ci::Variables, feature_category: :secrets_management do
         expect(updated_variable).to be_protected
         expect(updated_variable.variable_type).to eq('file')
         expect(updated_variable.description).to eq('updated')
+      end
+
+      context 'when variable is hidden' do
+        it 'unable to update masked attribute' do
+          put api("/projects/#{project.id}/variables/#{variable.key}", user), params: { masked: false }
+
+          updated_variable = project.variables.reload.first
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+
+          expected_error_message = 'Updating masked attribute is not allowed on updates for hidden variables.'
+
+          expect(json_response['message']['base']).to contain_exactly(expected_error_message)
+          expect(updated_variable).to be_masked
+        end
+      end
+
+      context 'when variable is not hidden' do
+        let(:is_hidden_variable) { false }
+        let(:is_masked_variable) { false }
+
+        it 'updates masked attribute' do
+          put api("/projects/#{project.id}/variables/#{variable.key}", user), params: { masked: true }
+
+          updated_variable = project.variables.reload.first
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(updated_variable).to be_masked
+        end
       end
 
       it 'masks the new value when logging' do

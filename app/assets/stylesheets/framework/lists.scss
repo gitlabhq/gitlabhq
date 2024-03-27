@@ -152,10 +152,6 @@ ul.content-list {
           }
         }
       }
-
-      .no-comments {
-        opacity: 0.5;
-      }
     }
 
     // When dragging a list item
@@ -170,6 +166,10 @@ ul.content-list {
       min-height: 52px;
     }
   }
+}
+
+.no-comments {
+  opacity: 0.5;
 }
 
 // Content list using flexbox

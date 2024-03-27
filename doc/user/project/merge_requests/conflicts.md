@@ -187,3 +187,4 @@ Prerequisites:
 
 - [Introduction to Git rebase and force-push](../../../topics/git/git_rebase.md)
 - [Git applications for visualizing the Git workflow](https://git-scm.com/downloads/guis)
+- [Automatic conflict resolution with `git rerere`](https://git-scm.com/book/en/v2/Git-Tools-Rerere)

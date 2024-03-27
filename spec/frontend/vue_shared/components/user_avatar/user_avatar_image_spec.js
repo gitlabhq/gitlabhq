@@ -7,7 +7,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 jest.mock('images/no_avatar.png', () => 'default-avatar-url');
 
 const PROVIDED_PROPS = {
-  size: 32,
+  size: 48,
   imgSrc: 'myavatarurl.com',
   imgAlt: 'mydisplayname',
   cssClasses: 'myextraavatarclass',
@@ -91,6 +91,29 @@ describe('User Avatar Image Component', () => {
     it('should have default avatar image', () => {
       expect(findAvatar().props('src')).toBe(`${defaultAvatarUrl}?width=${PROVIDED_PROPS.size}`);
     });
+
+    it.each`
+      size                               | expected
+      ${96}                              | ${96}
+      ${64}                              | ${64}
+      ${48}                              | ${48}
+      ${32}                              | ${48}
+      ${24}                              | ${48}
+      ${16}                              | ${48}
+      ${{ default: 16, md: 32, lg: 24 }} | ${48}
+      ${{ default: 16, md: 32, lg: 96 }} | ${96}
+    `(
+      'should use the $expected x $expected source image if the size provided is $size',
+      ({ size, expected }) => {
+        wrapper = shallowMount(UserAvatarImage, {
+          propsData: {
+            ...PROVIDED_PROPS,
+            size,
+          },
+        });
+        expect(findAvatar().props('src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${expected}`);
+      },
+    );
   });
 
   describe('Dynamic tooltip content', () => {

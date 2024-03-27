@@ -16433,6 +16433,7 @@ CI/CD variables for a group.
 | ---- | ---- | ----------- |
 | <a id="cigroupvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="cigroupvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="cigroupvariablehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates whether the variable is hidden. |
 | <a id="cigroupvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="cigroupvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="cigroupvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
@@ -16634,6 +16635,7 @@ CI/CD variables for a project.
 | ---- | ---- | ----------- |
 | <a id="ciprojectvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="ciprojectvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="ciprojectvariablehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates whether the variable is hidden. |
 | <a id="ciprojectvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="ciprojectvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciprojectvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
@@ -22576,7 +22578,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestrebasecommitsha"></a>`rebaseCommitSha` | [`String`](#string) | Rebase commit SHA of the merge request. |
 | <a id="mergerequestrebaseinprogress"></a>`rebaseInProgress` | [`Boolean!`](#boolean) | Indicates if there is a rebase currently in progress for the merge request. |
 | <a id="mergerequestreviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
-| <a id="mergerequestsecurityautofix"></a>`securityAutoFix` | [`Boolean`](#boolean) | Indicates if the merge request is created by @GitLab-Security-Bot. |
+| <a id="mergerequestsecurityautofix"></a>`securityAutoFix` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.11. Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag. |
 | <a id="mergerequestsecurityreportsuptodateontargetbranch"></a>`securityReportsUpToDateOnTargetBranch` | [`Boolean!`](#boolean) | Indicates if the target branch security reports are out of date. |
 | <a id="mergerequestshouldberebased"></a>`shouldBeRebased` | [`Boolean!`](#boolean) | Indicates if the merge request will be rebased. |
 | <a id="mergerequestshouldremovesourcebranch"></a>`shouldRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
