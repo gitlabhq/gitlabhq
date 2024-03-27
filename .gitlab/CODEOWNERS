@@ -24,7 +24,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 ## Technical writing files that do not need `*` rule approval,
 ## but still require an approval from a TW team DRI for each file.
 /data/deprecations/templates/ @marcel.amirault @sarahgerman @gitlab-org/tw-leadership
-.markdownlint.yml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+.markdownlint-cli2.yaml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership

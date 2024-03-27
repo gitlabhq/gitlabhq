@@ -13,15 +13,12 @@ module QA
             include QA::Page::Component::ConfirmModal
           end
 
-          base.view 'app/assets/javascripts/snippets/components/snippet_title.vue' do
-            element 'snippet-title-content'
-          end
-
           base.view 'app/assets/javascripts/snippets/components/snippet_description_view.vue' do
             element 'snippet-description-content'
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_header.vue' do
+            element 'snippet-title-content'
             element 'snippet-container'
             element 'snippet-action-button'
             element 'delete-snippet-button'

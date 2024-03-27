@@ -293,9 +293,11 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           end
 
           context 'when merge request exists for given branch' do
-            let!(:merge_request) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'develop') }
+            let!(:merge_request) do
+              create(:merge_request, source_project: project, head_pipeline_id: nil)
+            end
 
-            it 'sets head pipeline' do
+            it 'sets head pipeline', :sidekiq_inline do
               subject
 
               expect(response).to have_gitlab_http_status(:created)

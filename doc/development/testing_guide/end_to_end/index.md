@@ -160,21 +160,6 @@ so if you want to run the same tests multiple times,
 specify the same variables in each `custom-parallel` job (up to as
 many of the 10 available jobs that you want to run).
 
-#### Using the `review-qa-all` jobs
-
-On every pipeline during the `test` stage, the `review-qa-smoke` job is
-automatically started: it runs the QA smoke suite against the
-[Review App](../review_apps.md).
-
-You can also manually start the `review-qa-all`: it runs the full QA suite
-against the [Review App](../review_apps.md).
-
-**This runs end-to-end tests against a Review App based on
-[the official GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab/), itself deployed with custom
-[Cloud Native components](https://gitlab.com/gitlab-org/build/CNG) built from your merge request's changes.**
-
-See [Review Apps](../review_apps.md) for more details about Review Apps.
-
 #### Selective test execution
 
 In order to limit amount of tests executed in a merge request, dynamic selection of which tests to execute is present. Algorithm of which tests to run is based

@@ -53,12 +53,12 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Roles and Permissions**.
-1. Select **Add new role**.
+1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
 1. Optional. In **Description**, enter a description for the custom role.
 1. Select the **Permissions** for the new custom role.
-1. Select **Create new role**.
+1. Select **Create role**.
 
 In **Settings > Roles and Permissions**, the list of all custom roles displays the:
 
@@ -77,12 +77,12 @@ After you create a custom role for your self-managed instance, you can assign th
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Roles and Permissions**.
-1. Select **Add new role**.
+1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
 1. Optional. In **Description**, enter a description for the custom role.
 1. Select the **Permissions** for the new custom role.
-1. Select **Create new role**.
+1. Select **Create role**.
 
 In **Settings > Roles and Permissions**, the list of all custom roles displays the:
 

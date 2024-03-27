@@ -1,7 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
-import { thWidthPercent } from '~/lib/utils/table_utility';
 import { sprintf } from '~/locale';
 import {
   HELP_LINK_ARIA_LABEL,
@@ -38,12 +37,12 @@ export default {
     {
       key: 'storageType',
       label: PROJECT_TABLE_LABEL_STORAGE_TYPE,
-      thClass: thWidthPercent(90),
+      thClass: 'gl-w-90p',
     },
     {
       key: 'value',
       label: PROJECT_TABLE_LABEL_USAGE,
-      thClass: thWidthPercent(10),
+      thClass: 'gl-w-10p',
     },
   ],
 };

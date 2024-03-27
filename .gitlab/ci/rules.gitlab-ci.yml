@@ -233,7 +233,7 @@
 .docs-patterns: &docs-patterns
   - ".gitlab/ci/docs.gitlab-ci.yml"
   - ".gitlab/route-map.yml"
-  - ".markdownlint.yml"
+  - ".markdownlint-cli2.yaml"
   - "doc/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"

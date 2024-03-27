@@ -148,7 +148,7 @@ then
     ).execute"
   if grep -E "\.vale|\.markdownlint|lint-doc\.sh|docs\.gitlab-ci\.yml" < $DOC_CHANGES_FILE
   then
-    MD_DOC_PATH=${MD_DOC_PATH:-doc}
+    MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
     # shellcheck disable=2059
     printf "${COLOR_GREEN}INFO: Vale, Markdownlint, lint-doc.sh, or pipeline configuration changed. Testing all files.${COLOR_RESET}\n"
   else
@@ -161,7 +161,7 @@ then
   fi
   rm $DOC_CHANGES_FILE
 else
-  MD_DOC_PATH=${MD_DOC_PATH:-doc}
+  MD_DOC_PATH=${MD_DOC_PATH:-'doc/{*,**/*}.md'}
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: No merge request pipeline detected. Running Markdownlint and Vale on all files...${COLOR_RESET}\n"
 fi
@@ -170,7 +170,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.18-vale-2.29.6-markdownlint-0.37.0-markdownlint2-0.10.0"
+  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.19-vale-3.0.7-markdownlint-0.39.0-markdownlint2-0.12.1"
 
   if hash "${cmd}" 2>/dev/null
   then
@@ -210,7 +210,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: Merge request pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
 else
-  if ! yarn markdownlint --rules doc/.markdownlint/rules ${MD_DOC_PATH};
+  if ! yarn markdownlint ${MD_DOC_PATH};
   then
     # shellcheck disable=2059
     printf "${COLOR_RED}ERROR: Markdownlint failed with errors!${COLOR_RESET}\n" >&2
@@ -220,7 +220,7 @@ fi
 
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Looking for Vale to lint prose, either installed locally or available in documentation linting image...${COLOR_RESET}\n"
-run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl" "${MD_DOC_PATH}"
+run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl --glob=${MD_DOC_PATH}" 'doc'
 
 if [ "$ERRORCODE" -ne 0 ]
 then

@@ -255,4 +255,4 @@ and assign it to the Cloud Connector group.
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#setup).
+An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#local-setup).

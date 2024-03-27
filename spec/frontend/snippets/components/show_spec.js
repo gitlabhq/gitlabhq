@@ -5,7 +5,7 @@ import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 import SnippetApp from '~/snippets/components/show.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
-import SnippetTitle from '~/snippets/components/snippet_title.vue';
+import SnippetDescription from '~/snippets/components/snippet_description.vue';
 import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PRIVATE_STRING,
@@ -58,7 +58,7 @@ describe('Snippet view app', () => {
   it('renders all simple components required after the query is finished', () => {
     createComponent();
     expect(wrapper.findComponent(SnippetHeader).exists()).toBe(true);
-    expect(wrapper.findComponent(SnippetTitle).exists()).toBe(true);
+    expect(wrapper.findComponent(SnippetDescription).exists()).toBe(true);
   });
 
   it('renders embed dropdown component if visibility allows', () => {

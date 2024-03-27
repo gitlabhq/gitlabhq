@@ -4,6 +4,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
+  GlIcon,
 } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
@@ -20,6 +21,7 @@ import axios from '~/lib/utils/axios_utils';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getCanCreateProjectSnippetMock, getCanCreatePersonalSnippetMock } from '../mock_data';
 
 const ERROR_MSG = 'Foo bar';
@@ -42,8 +44,6 @@ describe('Snippet header component', () => {
 
   const reportAbusePath = '/-/snippets/42/mark_as_spam';
   const canReportSpam = true;
-
-  const GlEmoji = { template: '<img/>' };
 
   function createComponent({
     permissions = {},
@@ -78,19 +78,20 @@ describe('Snippet header component', () => {
         },
       },
       stubs: {
-        GlEmoji,
         GlButton,
         GlDisclosureDropdown,
         GlDisclosureDropdownGroup,
         GlDisclosureDropdownItem,
+        GlIcon,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       apolloProvider: mockApollo,
     });
   }
 
-  const findAuthorEmoji = () => wrapper.findComponent(GlEmoji);
   const findAuthoredMessage = () => wrapper.findByTestId('authored-message').text();
-  const findAuthorUsername = () => wrapper.findByTestId('authored-username');
   const findEditButton = () => wrapper.findByTestId('snippet-action-button');
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
@@ -98,12 +99,17 @@ describe('Snippet header component', () => {
   const findSpamAction = () => wrapper.findByText('Submit as spam');
   const findDeleteAction = () => wrapper.findByText('Delete');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
+  const findSpamIcon = () => wrapper.findComponent('[data-testid="snippets-spam-icon"]');
+
+  const title = 'The property of Thor';
 
   beforeEach(() => {
     gon.relative_url_root = '/foo/';
     snippet = {
       id: 'gid://gitlab/PersonalSnippet/50',
-      title: 'The property of Thor',
+      title,
       visibilityLevel: 'private',
       webUrl: 'http://personal.dev.null/42',
       userPermissions: {
@@ -134,43 +140,33 @@ describe('Snippet header component', () => {
     expect(wrapper.find('.detail-page-header').exists()).toBe(true);
   });
 
+  it('renders snippets title', () => {
+    createComponent();
+
+    expect(wrapper.text().trim()).toContain(title);
+  });
+
+  it('does not render spam icon when author is not banned', () => {
+    createComponent();
+
+    expect(findSpamIcon().exists()).toBe(false);
+  });
+
   it('renders a message showing snippet creation date and author full name, without username when not available', () => {
     createComponent();
 
     const text = findAuthoredMessage();
     expect(text).toContain('Authored 1 month ago by');
     expect(text).toContain('Thor Odinson');
-    expect(findAuthorUsername().exists()).toBe(false);
   });
 
-  it('renders a message showing snippet creation date, author full name and username', () => {
+  it('renders a message showing snippet creation date and author full name', () => {
     snippet.author.username = 'todinson';
     createComponent();
 
     const text = findAuthoredMessage();
     expect(text).toContain('Authored 1 month ago by');
     expect(text).toContain('Thor Odinson');
-    expect(text).toContain('@todinson');
-    expect(findAuthorUsername().exists()).toBe(true);
-  });
-
-  describe('author status', () => {
-    it('is rendered when it is set', () => {
-      snippet.author.status = {
-        message: 'At work',
-        emoji: 'hammer',
-      };
-      createComponent();
-
-      expect(findAuthorEmoji().attributes('title')).toBe(snippet.author.status.message);
-      expect(findAuthorEmoji().attributes('data-name')).toBe(snippet.author.status.emoji);
-    });
-
-    it('is not rendered when the user has no status', () => {
-      createComponent();
-
-      expect(findAuthorEmoji().exists()).toBe(false);
-    });
   });
 
   it('renders a message showing only snippet creation date if author is null', () => {
@@ -367,6 +363,28 @@ describe('Snippet header component', () => {
 
         expect(window.location.pathname).toBe(`${fullPath}/-/snippets`);
       });
+    });
+  });
+
+  describe('when author of snippet is banned', () => {
+    it('renders spam icon and tooltip', () => {
+      createComponent({
+        snippetProps: {
+          hidden: true,
+        },
+      });
+
+      expect(findIcon().props()).toMatchObject({
+        ariaLabel: 'Hidden',
+        name: 'spam',
+        size: 16,
+      });
+
+      expect(findIcon().attributes('title')).toBe(
+        'This snippet is hidden because its author has been banned',
+      );
+
+      expect(findTooltip()).toBeDefined();
     });
   });
 });

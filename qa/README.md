@@ -10,16 +10,15 @@ Tests use [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa) for envir
 
 ## What is it?
 
-GitLab QA is an end-to-end tests suite for GitLab.
+GitLab QA is an end-to-end test framework designed for test GitLab.
 
-These are black-box and entirely click-driven end-to-end tests you can run
-against any existing instance.
+These are black-box and entirely click-driven end-to-end tests you can run against any existing instance of GitLab.
 
 ## How does it work?
 
 1. When we release a new version of GitLab, we build a Docker images for it.
 1. Along with GitLab Docker Images we also build and publish GitLab QA images.
-1. GitLab QA project uses these images to execute end-to-end tests.
+1. QA image can be used to execute e2e tests against running instance of GitLab.
 
 ## Validating GitLab views / partials / selectors in merge requests
 
@@ -45,8 +44,8 @@ Note that tests are using `Chrome` web browser by default so it should be instal
 
 Tests are executed in merge request pipelines as part of the development lifecycle.
 
-- [Review app environment](../doc/development/testing_guide/review_apps.md)
-- [e2e:package-and-test](../doc/development/testing_guide/end_to_end/index.md#testing-code-in-merge-requests)
+- [e2e:package-and-test](../doc/development/testing_guide/end_to_end/index.md#using-the-package-and-test-job)
+- [e2e:test-on-gdk](../doc/development/testing_guide/end_to_end/index.md#using-the-test-on-gdk-job)
 
 ### Including tests in other projects
 

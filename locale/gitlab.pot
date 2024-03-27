@@ -16841,6 +16841,9 @@ msgstr ""
 msgid "Delete snippet"
 msgstr ""
 
+msgid "Delete snippet modal"
+msgstr ""
+
 msgid "Delete snippet?"
 msgstr ""
 
@@ -18732,7 +18735,7 @@ msgstr ""
 msgid "DuoProTrial|Activate my trial"
 msgstr ""
 
-msgid "DuoProTrial|Apply your GitLab Duo Pro trial to a new or existing group"
+msgid "DuoProTrial|Apply your GitLab Duo Pro trial to an existing group"
 msgstr ""
 
 msgid "DuoProTrial|Chat"
@@ -18745,9 +18748,6 @@ msgid "DuoProTrial|Code explanation"
 msgstr ""
 
 msgid "DuoProTrial|Code refactorization"
-msgstr ""
-
-msgid "DuoProTrial|Create a group to start your GitLab Duo Pro trial"
 msgstr ""
 
 msgid "DuoProTrial|GitLab Duo Pro is designed to make teams more efficient throughout the software development lifecycle with:"
@@ -30944,9 +30944,6 @@ msgstr ""
 msgid "MemberRole|Actions"
 msgstr ""
 
-msgid "MemberRole|Add new role"
-msgstr ""
-
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
@@ -30968,7 +30965,7 @@ msgstr ""
 msgid "MemberRole|Create custom roles"
 msgstr ""
 
-msgid "MemberRole|Create new role"
+msgid "MemberRole|Create role"
 msgstr ""
 
 msgid "MemberRole|Custom permissions"
@@ -31022,6 +31019,9 @@ msgstr ""
 msgid "MemberRole|Name"
 msgstr ""
 
+msgid "MemberRole|New role"
+msgstr ""
+
 msgid "MemberRole|No custom roles found"
 msgstr ""
 
@@ -31046,7 +31046,7 @@ msgstr ""
 msgid "MemberRole|Standard roles"
 msgstr ""
 
-msgid "MemberRole|To add a new role select 'Add new role'."
+msgid "MemberRole|To create a role select 'New role'."
 msgstr ""
 
 msgid "MemberRole|To delete custom role, remove role from all group members."

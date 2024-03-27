@@ -55,24 +55,62 @@ module Ci
       end
 
       def update_stage!(stage)
-        # Update jobs for a given stage in bulk/slices
-        @collection
-          .created_job_ids_in_stage(stage.position)
-          .in_groups_of(BATCH_SIZE, false) { |ids| update_jobs!(ids) }
+        if Feature.enabled?(:ci_atomic_processing_ordered_update_stage, project)
+          sorted_update_stage!(stage)
+        else
+          legacy_update_stage!(stage)
+        end
 
         status = @collection.status_of_stage(stage.position)
         stage.set_status(status)
       end
 
-      def update_jobs!(ids)
-        created_jobs = pipeline
+      def sorted_update_stage!(stage)
+        ordered_jobs(stage).each { |job| update_job!(job) }
+      end
+
+      def ordered_jobs(stage)
+        jobs = load_jobs_in_batches(stage)
+        sorted_job_names = sort_jobs(jobs).each_with_index.to_h
+        jobs.sort_by { |job| sorted_job_names.fetch(job.name) }
+      end
+
+      def load_jobs_in_batches(stage)
+        @collection
+          .created_job_ids_in_stage(stage.position)
+          .in_groups_of(BATCH_SIZE, false)
+          .each_with_object([]) do |ids, jobs|
+            jobs.concat(load_jobs(ids))
+          end
+      end
+
+      def load_jobs(ids)
+        pipeline
           .current_processable_jobs
           .id_in(ids)
           .with_project_preload
           .created
           .ordered_by_stage
           .select_with_aggregated_needs(project)
+      end
 
+      def sort_jobs(jobs)
+        Gitlab::Ci::YamlProcessor::Dag.order( # rubocop: disable CodeReuse/ActiveRecord -- this is not ActiveRecord
+          jobs.to_h do |job|
+            [job.name, job.aggregated_needs_names.to_a]
+          end
+        )
+      end
+
+      def legacy_update_stage!(stage)
+        # Update jobs for a given stage in bulk/slices
+        @collection
+          .created_job_ids_in_stage(stage.position)
+          .in_groups_of(BATCH_SIZE, false) { |ids| update_jobs!(ids) }
+      end
+
+      def update_jobs!(ids)
+        created_jobs = load_jobs(ids)
         created_jobs.each { |job| update_job!(job) }
       end
 

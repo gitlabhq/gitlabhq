@@ -28,6 +28,6 @@ export default {
     :background-color="categoryObject.backgroundColor"
     :title="categoryObject.title"
     :target="null"
-    :class="`gl-text-${categoryObject.color}`"
+    :class="categoryObject.textColor"
   />
 </template>

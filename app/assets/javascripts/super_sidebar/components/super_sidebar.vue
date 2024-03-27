@@ -10,6 +10,7 @@ import Tracking from '~/tracking';
 import eventHub from '../event_hub';
 import {
   sidebarState,
+  JS_TOGGLE_EXPAND_CLASS,
   SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
   SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
   SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
@@ -79,8 +80,14 @@ export default {
   },
   watch: {
     'sidebarState.isCollapsed': {
-      handler() {
+      handler(collapsed) {
         this.setupFocusTrapListener();
+
+        if (this.isOverlappingAndNotPeeking() && !collapsed) {
+          this.$nextTick(() => {
+            this.firstFocusableElement().focus();
+          });
+        }
       },
     },
   },
@@ -112,12 +119,18 @@ export default {
       });
       toggleSuperSidebarCollapsed(!isCollapsed(), true);
     },
+    isOverlapping() {
+      return GlBreakpointInstance.windowWidth() < breakpoints.xl;
+    },
+    isOverlappingAndNotPeeking() {
+      return this.isOverlapping() && !(sidebarState.isHoverPeek || sidebarState.isPeek);
+    },
     setupFocusTrapListener() {
       /**
        * Only trap focus when sidebar displays over page content to avoid
        * focus moving to page content and being obscured by the sidebar
        */
-      if (GlBreakpointInstance.windowWidth() < breakpoints.xl && !this.sidebarState.isCollapsed) {
+      if (this.isOverlapping() && !this.sidebarState.isCollapsed) {
         document.addEventListener('keydown', this.focusTrap);
       } else {
         document.removeEventListener('keydown', this.focusTrap);
@@ -125,6 +138,12 @@ export default {
     },
     collapseSidebar() {
       toggleSuperSidebarCollapsed(true, false);
+    },
+    handleEscKey() {
+      if (this.isOverlappingAndNotPeeking()) {
+        this.collapseSidebar();
+        document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`)?.focus();
+      }
     },
     onPeekChange(state) {
       if (state === STATE_CLOSED) {
@@ -152,10 +171,19 @@ export default {
         this.sidebarState.isCollapsed = true;
       }
     },
+    firstFocusableElement() {
+      return this.$refs.userBar.$el.querySelector('a');
+    },
+    lastFocusableElement() {
+      if (this.sidebarData.is_admin) {
+        return this.$refs.adminAreaLink.$el;
+      }
+      return this.$refs.helpCenter.$el.querySelector('button');
+    },
     focusTrap(event) {
       const { keyCode, shiftKey } = event;
-      const firstFocusableElement = this.$refs.userBar.$el.querySelector('a');
-      const lastFocusableElement = this.$refs.helpCenter.$el.querySelector('button');
+      const firstFocusableElement = this.firstFocusableElement();
+      const lastFocusableElement = this.lastFocusableElement();
 
       if (keyCode !== TAB_KEY_CODE) return;
 
@@ -178,7 +206,7 @@ export default {
 
 <template>
   <div>
-    <div class="super-sidebar-overlay" @click="collapseSidebar"></div>
+    <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
       v-if="sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only-focusable gl-fixed gl-left-0 gl-m-3"
@@ -197,6 +225,7 @@ export default {
       :inert="sidebarState.isCollapsed"
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
+      @keydown.esc="handleEscKey"
     >
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
@@ -233,6 +262,7 @@ export default {
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
           <gl-button
             v-if="sidebarData.is_admin"
+            ref="adminAreaLink"
             class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
             data-testid="sidebar-admin-link"
             :href="sidebarData.admin_url"

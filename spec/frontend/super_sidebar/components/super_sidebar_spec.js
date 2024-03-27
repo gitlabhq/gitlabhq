@@ -24,6 +24,7 @@ import {
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { trackContextAccess } from '~/super_sidebar/utils';
+import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 
 const { lg, xl } = breakpoints;
@@ -40,6 +41,9 @@ const TrialStatusWidgetStub = { template: `<div data-testid="${trialStatusWidget
 const trialStatusPopoverStubTestId = 'trial-status-popover';
 const TrialStatusPopoverStub = {
   template: `<div data-testid="${trialStatusPopoverStubTestId}" />`,
+};
+const UserBarStub = {
+  template: `<div><a href="#">link</a></div>`,
 };
 
 const peekClass = 'super-sidebar-peek';
@@ -82,7 +86,9 @@ describe('SuperSidebar component', () => {
       stubs: {
         TrialStatusWidget: TrialStatusWidgetStub,
         TrialStatusPopover: TrialStatusPopoverStub,
+        UserBar: stubComponent(UserBar, UserBarStub),
       },
+      attachTo: document.body,
     });
   };
 
@@ -218,7 +224,7 @@ describe('SuperSidebar component', () => {
       expect(wrapper.text()).toContain('Your work');
     });
 
-    it('handles event toggle-menu-header  correctly', async () => {
+    it('handles event toggle-menu-header correctly', async () => {
       createWrapper();
 
       sidebarEventHub.$emit('toggle-menu-header', false);
@@ -374,6 +380,84 @@ describe('SuperSidebar component', () => {
         createWrapper();
         expect(findAdminLink().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('focusing first focusable element', () => {
+    const findFirstFocusableElement = () => findUserBar().find('a');
+    let focusSpy;
+
+    beforeEach(() => {
+      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
+      focusSpy = jest.spyOn(findFirstFocusableElement().element, 'focus');
+    });
+
+    it('focuses the first focusable element when sidebar is overlapping and not peeking', async () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+
+      wrapper.vm.sidebarState.isCollapsed = false;
+      await nextTick();
+
+      expect(focusSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("doesn't focus the first focusable element when sidebar is not overlapping", async () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+
+      wrapper.vm.sidebarState.isCollapsed = false;
+      await nextTick();
+
+      expect(focusSpy).not.toHaveBeenCalled();
+    });
+
+    it("doesn't focus the first focusable element when sidebar is peeking", async () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+
+      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
+      await nextTick();
+
+      expect(focusSpy).not.toHaveBeenCalled();
+    });
+
+    it("doesn't focus the first focusable element when sidebar is collapsed", async () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+
+      wrapper.vm.sidebarState.isCollapsed = false;
+      await nextTick();
+
+      expect(focusSpy).toHaveBeenCalledTimes(1);
+
+      wrapper.vm.sidebarState.isCollapsed = true;
+      await nextTick();
+
+      expect(focusSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('pressing ESC key', () => {
+    beforeEach(() => {
+      createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });
+    });
+
+    const ESC_KEY = 27;
+    it('collapses sidebar when sidebar is in overlay mode', () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      findSidebar().trigger('keydown', { keyCode: ESC_KEY });
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalled();
+    });
+
+    it('does nothing when sidebar is in peek mode', () => {
+      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
+
+      findSidebar().trigger('keydown', { keyCode: ESC_KEY });
+      expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when sidebar is not overlapping', () => {
+      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+
+      findSidebar().trigger('keydown', { keyCode: ESC_KEY });
+      expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();
     });
   });
 });

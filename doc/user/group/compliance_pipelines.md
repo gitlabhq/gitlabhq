@@ -81,7 +81,7 @@ include:  # Execute individual project's configuration (if project contains .git
     file: '$CI_CONFIG_PATH'
     ref: '$CI_COMMIT_SHA' # Must be defined or MR pipelines always use the use default branch
     rules:
-      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must be the hardcoded path to the project that hosts this configuration.
+      - if: $CI_PROJECT_PATH != "my-group/project-1" # Must run on projects other than the one hosting this configuration.
 
 # Allows compliance team to control the ordering and interweaving of stages/jobs.
 # Stages without jobs defined will remain hidden.

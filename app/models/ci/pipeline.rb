@@ -1364,17 +1364,6 @@ module Ci
       false
     end
 
-    def security_reports(report_types: [])
-      reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
-      types_to_collect = report_types.empty? ? ::EE::Enums::Ci::JobArtifact.security_report_file_types : report_types
-
-      ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
-        latest_report_builds_in_self_and_project_descendants(reports_scope).includes(pipeline: { project: :route }).each do |build| # rubocop:disable Rails/FindEach
-          build.collect_security_reports!(security_reports, report_types: types_to_collect)
-        end
-      end
-    end
-
     def build_matchers
       self.builds.latest.build_matchers(project)
     end

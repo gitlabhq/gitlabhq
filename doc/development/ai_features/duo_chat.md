@@ -21,8 +21,8 @@ Rails backend sends then instructions to the Large Language Model (LLM) via the 
 There is a difference in the setup for Saas and self-managed instances.
 We recommend to start with a process described for SaaS-only AI features.
 
-1. [Setup SaaS-only AI features](index.md#test-saas-only-ai-features-locally).
-1. [Setup self-managed AI features](index.md#test-ai-features-with-ai-gateway-locally).
+1. [Setup SaaS-only AI features](index.md#saas-only-features).
+1. [Setup self-managed AI features](index.md#local-setup).
 
 ## Working with GitLab Duo Chat
 
@@ -40,12 +40,12 @@ If you find an undocumented issue, you should document it in this section after 
 | Problem                                               | Solution |
 | ----------------------------------------------------- | -------- |
 | There is no Chat button in the GitLab UI.             | Make sure your user is a part of a group with enabled Experimental and Beta features. |
-| Chat replies with "Forbidden by auth provider" error. | Backend can't access LLMs. Make sure your [AI Gateway](index.md#test-ai-features-with-ai-gateway-locally) is setup correctly. |
+| Chat replies with "Forbidden by auth provider" error. | Backend can't access LLMs. Make sure your [AI Gateway](index.md#local-setup) is setup correctly. |
 | Requests takes too long to appear in UI  | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 
 ## Contributing to GitLab Duo Chat
 
-From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#abstraction-layer).
+From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
 
 The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
 answer. The system prompt defines available tools that can be used to gather
@@ -181,7 +181,7 @@ REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real
 ```
 
 When you update the test questions that require documentation embeddings,
-make sure you [generate a new fixture](index.md#use-embeddings-in-specs) and
+make sure you [generate a new fixture](index.md#using-in-specs) and
 commit it together with the change.
 
 ## Testing with CI

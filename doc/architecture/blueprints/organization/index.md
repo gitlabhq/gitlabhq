@@ -104,30 +104,38 @@ The Organization functionality available in each phase is described below.
 
 ### Organization MVC
 
-#### Organizations on Cells 1.0
+#### Organizations on Cells 1.0 (FY24Q2-FY25Q2)
 
 The Organization MVC for Cells 1.0 will contain the following functionality:
 
 - Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
-- Every instance will have a default Organization named `Default Organization`. Initially, all Users will be managed by this default Organization.
+- Admin overview of Organizations. All created Organizations are listed in the Admin Area section `Organizations`.
+- All existing top-level Groups on GitLab.com are part of the `default Organization`.
 - Organization Owner. The creation of an Organization appoints that User as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
-- Organization Users. A User can only be part of one Organization for Cells 1.0. A new account needs to be created for each Organization a User wants to be part of.
-- Setup settings. Containing the Organization name, ID, description, and avatar. Organization settings are editable by the Organization Owner.
+- Organization Users. A User can only be part of one Organization for Cells 1.0. A new account needs to be created for each Organization a User wants to be part of. Users can only be deleted from an Organization, but not removed.
+- Organization creation form. Containing the Organization name, ID, description, and avatar. Organization settings are editable by the Organization Owner.
 - Setup flow. New Users are able to create new Organizations. They can also create new top-level Groups in an Organization.
-- Visibility. Initially, Organizations can only be `private`. Private Organizations can only be seen by the Users that are part of the private Organization. They can only contain private Groups and Projects.
+- Private visibility. Initially, Organizations can only be `private`. Private Organizations can only be seen by the Users that are part of the private Organization. They can only contain private Groups and Projects. The only exception to this is the default Organization on the Primary Cell, which is `public`, and contains all currently existing Groups and Projects on GitLab.com.
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner and Users.
 - Projects. This includes the ability to create, edit, and delete Projects, as well as a Projects overview that can be accessed by the Organization Owner and Users.
 - Personal Namespaces. Users get [a personal Namespace in each Organization](../cells/impacted_features/personal-namespaces.md) they are associated with.
 - User Profile. Each [User Profile will be scoped to the Organization](../cells/impacted_features/user-profile.md).
+- Isolation. Organizations themselves are not fully isolated, isolation is a result of being on a Secondary Cell. We aim to complete [phase 1 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11837), with the goal to `define sharding_key` and `desired_sharding_key` rules.
 
-#### Organizations on Cells 1.5
+#### Organizations on Cells 1.5 (FY25Q3-FY25Q3)
 
 Organizations in the context of Cells 1.5 will contain the following functionality:
 
-#### Organizations on Cells 2.0
+- Organization Users can be part of multiple Organizations using one account. Users are able to navigate between their Organizations using an Organization switcher. Non-Enterprise Users can be removed from or leave an Organization.
+- Organizations are fully isolated. We aim to complete [phase 2 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11838), with the goal to implement isolation constraints.
+
+#### Organizations on Cells 2.0 (FY25Q4-FY26Q1)
 
 Organizations in the context of Cells 2.0 will contain the following functionality:
+
+- Public visibility. Organizations can now also be `public`, containing both private and public Groups and Projects.
+- [Users can transfer existing top-level Groups into Organizations](https://gitlab.com/groups/gitlab-org/-/epics/11711).
 
 ### Organization Access
 
@@ -197,62 +205,16 @@ Fulfillment is supportive of an entity above top-level groups. Their perspective
 Several aspects of the current open-source workflow will be impacted by the introduction of Organizations.
 We are conducting deeper research around this specific problem in [issue 420804](https://gitlab.com/gitlab-org/gitlab/-/issues/420804).
 
-## Iteration Plan
-
-The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
-
-### Iteration 1: [Organization Prototype](https://gitlab.com/groups/gitlab-org/-/epics/10018) (FY24Q2-FY25Q1)
-
-In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test basic functionality within an Organization. The prototype contains the following functionality:
-
-- A new Organization can be created.
-- The Organization contains a name, ID, description and avatar.
-- The creator of the Organization is assigned as the Organization Owner.
-- Groups can be created in an Organization. Groups are listed in the Groups overview. Every Organization User can access the Groups overview and see the Groups they have access to.
-- Projects can be created in a Group. Projects are listed in the Projects overview. Every Organization User can access the Projects overview and see the Projects they have access to.
-- Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
-- Both Enterprise and Non-Enterprise Users can be part of an Organization.
-- Enterprise Users are still managed by top-level Groups.
-- A User can be part of one Organization.
-- Users can navigate between the different Organizations they are part of.
-- Any User within or outside of an Organization can be invited to Groups and Projects contained by the Organization.
-- Organizations are not fully isolated. We aim to complete [phase 1 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11837), with the goal to `define sharding_key` and `desired_sharding_key` rules.
-
-### Iteration 2: [Organization MVC Experiment](https://gitlab.com/groups/gitlab-org/-/epics/10650) (FY25Q2)
-
-In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. The MVC Experiment contains the following functionality:
-
-- Organizations can be deleted.
-- Organization Owners can access the Activity page for the Organization.
-- Forking across Organizations will be defined.
-- [Organization Isolation](isolation.md) meets the requirements of the initial set of customers
-
-### Iteration 3: [Organization MVC Beta](https://gitlab.com/groups/gitlab-org/-/epics/10651) (FY25Q3)
-
-In iteration 3, the Organization MVC Beta will be released.
-
-- Multiple Organization Owners can be assigned.
-- Organization avatars can be changed in the Organization settings.
-- Organization Owners can create, edit and delete Groups from the Groups overview.
-- Organization Owners can create, edit and delete Projects from the Projects overview.
-- The Organization URL path can be changed.
-- Organizations are fully isolated. We aim to complete [phase 2 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11838), with the goal to implement isolation constraints.
-
-### Iteration 4: [Organization MVC GA](https://gitlab.com/groups/gitlab-org/-/epics/10652) (FY25Q3)
-
-In iteration 4, the Organization MVC will be rolled out.
-
-### Post-MVC Iterations
+## Post-MVC Iterations
 
 After the initial rollout of Organizations, the following functionality will be added to address customer needs relating to their implementation of GitLab:
 
-1. [Users can transfer existing top-level Groups into Organizations](https://gitlab.com/groups/gitlab-org/-/epics/11711).
 1. [Organizations can invite Users](https://gitlab.com/gitlab-org/gitlab/-/issues/420166).
 1. Complete [phase 3 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11839), with the goal to allow customers to move existing namespaces out of the default Organization into a new Organization.
 1. Internal visibility will be made available on Organizations that are part of GitLab.com.
 1. Restrict inviting Users outside of the Organization.
 1. Enterprise Users will be made available at the Organization level.
-1. Organizations are able to ban and delete Users.
+1. Organizations are able to ban Users.
 1. Projects can be created from the Organization-level Projects overview.
 1. Groups can be created from the Organization-level Groups overview.
 1. Move billing from top-level Group to Organization.
@@ -272,9 +234,9 @@ We propose the following steps to successfully roll out Organizations:
 - Phase 1: Rollout
   - Organizations will be rolled out using the concept of a `default Organization`. All existing top-level groups on GitLab.com are already part of this `default Organization`. The Organization UI is feature flagged and can be enabled for a specific set of users initially, and the global user pool at the end of this phase. This way, users will already become familiar with the concept of an Organization and the Organization UI. No features would be impacted by enabling the `default Organization`. See issue [#418225](https://gitlab.com/gitlab-org/gitlab/-/issues/418225) for more details.
 - Phase 2: Temporary onboarding changes
-  - New customers who were identified to not need personal namespaces and forking can create new Organizations from scratch. Top-level Groups cannot be migrated yet into a new Organization, so all content must be newly created in an Organization.
+  - New customers can create new Organizations from scratch. Top-level Groups cannot be migrated yet into a new Organization, so all content must be newly created in an Organization.
 - Phase 3: Migration of existing customers
-  - GitLab, the organization, will be the first one to bud off into a separate Organization. We move all top-level Groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
+  - GitLab, the organization, will be one of the first entities to migrate into a separate Organization. We move all top-level Groups that belong to GitLab into the new GitLab Organization, including the `gitLab-org` and `gitLab-com` top-level Groups. See issue [#418228](https://gitlab.com/gitlab-org/gitlab/-/issues/418228) for more details.
   - Once top-level Group transfer from the default Organization to another Organization becomes available, existing customers can create their own Organization and migrate their top-level Groups into it. Creation of an Organization remains optional.
 - Phase 4: Permanent onboarding changes
   - All new customers will only have the option to start their journey by creating a new Organization.

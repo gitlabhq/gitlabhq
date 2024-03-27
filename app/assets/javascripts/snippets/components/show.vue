@@ -15,7 +15,7 @@ import { markBlobPerformance } from '../utils/blob';
 import EmbedDropdown from './embed_dropdown.vue';
 import SnippetBlob from './snippet_blob_view.vue';
 import SnippetHeader from './snippet_header.vue';
-import SnippetTitle from './snippet_title.vue';
+import SnippetDescription from './snippet_description.vue';
 
 eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
@@ -23,7 +23,7 @@ export default {
   components: {
     EmbedDropdown,
     SnippetHeader,
-    SnippetTitle,
+    SnippetDescription,
     GlAlert,
     GlLoadingIcon,
     SnippetBlob,
@@ -54,7 +54,7 @@ export default {
 };
 </script>
 <template>
-  <div class="js-snippet-view">
+  <div class="gl-pt-3 js-snippet-view">
     <gl-loading-icon
       v-if="isLoading"
       :label="__('Loading snippet')"
@@ -63,7 +63,7 @@ export default {
     />
     <template v-else>
       <snippet-header :snippet="snippet" />
-      <snippet-title :snippet="snippet" />
+      <snippet-description :snippet="snippet" />
       <div class="gl-display-flex gl-justify-content-end gl-mb-5">
         <embed-dropdown
           v-if="embeddable"

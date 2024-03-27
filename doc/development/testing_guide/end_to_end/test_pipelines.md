@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # End-to-end test pipelines
 
-## e2e:package-and-test
+## e2e:package-and-test child pipeline
 
 The `e2e:package-and-test` child pipeline is the main executor of E2E testing for the GitLab platform. The pipeline definition has several dynamic
 components to reduce the number of tests being executed in merge request pipelines.
@@ -31,7 +31,7 @@ This job consists of two components that implement selective test execution:
 - [`generate-e2e-pipeline`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/generate-e2e-pipeline) is executed, which generates a child
   pipeline YAML definition file with appropriate environment variables.
 
-#### e2e:package-and-test
+#### e2e:package-and-test execution pipeline
 
 E2E test execution pipeline consists of several stages which all support execution of E2E tests.
 
@@ -153,7 +153,7 @@ GDK day-to-day can benefit from automated tests catching bugs that only appear o
 The pipeline setup consists of several jobs in the main GitLab pipeline:
 
 - The [`e2e-test-pipeline-generate` job](https://gitlab.com/gitlab-org/gitlab/-/blob/9456299b995084bfceb8bc6d082229c0198a0f72/.gitlab/ci/setup.gitlab-ci.yml#L158)
-  in the `prepare` stage. This is the same job as in the [`e2e:package-and-test`](#e2epackage-and-test) pipeline.
+  in the `prepare` stage. This is the same job as in the `e2e:package-and-test` pipeline.
 - The [`build-gdk-image` job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32)
   in the `build-images` stage.
 - The `e2e:test-on-gdk` trigger job in the `qa` stage, which triggers the child pipeline that runs E2E tests.
@@ -170,8 +170,8 @@ the job will rebuild the base image before building the image that will be used 
 
 #### `e2e:test-on-gdk` child pipeline
 
-Like the [`e2e:package-and-test`](#e2epackage-and-test) pipeline, the `e2e:test-on-gdk` pipeline consists of several stages
-that support execution of E2E tests.
+Like the `e2e:package-and-test` pipeline, the `e2e:test-on-gdk` pipeline consists of several stages that support
+execution of E2E tests.
 
 ##### .pre
 
