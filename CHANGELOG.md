@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.5 (2024-03-27)
+
+### Security (2 changes)
+
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@8d949c60d508b6cf3d558fc4f906c82b03e06748) ([merge request](gitlab-org/security/gitlab!3925))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@39a9847874a56baabacfba4d832b6d30ca388baf) ([merge request](gitlab-org/security/gitlab!3922))
+
 ## 16.8.4 (2024-03-06)
 
 ### Fixed (3 changes)
