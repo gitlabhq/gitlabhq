@@ -66,7 +66,11 @@ module Banzai
 
           html = process_tag(Regexp.last_match(1))
 
-          node.replace(html) if html && html != node.content
+          next unless html && html != node.content
+
+          new_node = Banzai::Filter::SanitizationFilter.new(html).call
+          new_node = new_node&.children&.first&.add_class('gfm')
+          node.replace(new_node.to_html) if new_node
         end
 
         doc

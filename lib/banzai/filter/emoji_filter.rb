@@ -9,7 +9,14 @@ module Banzai
     class EmojiFilter < HTML::Pipeline::Filter
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
+      # Limit of how many emojis we will process.
+      # Protects against pathological number of emojis.
+      # For more information check: https://gitlab.com/gitlab-org/gitlab/-/issues/434803
+      EMOJI_LIMIT = 1000
+
       def call
+        @emoji_count = 0
+
         doc.xpath('descendant-or-self::text()').each do |node|
           content = node.to_html
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
@@ -23,6 +30,7 @@ module Banzai
 
           node.replace(html)
         end
+
         doc
       end
 
@@ -32,10 +40,8 @@ module Banzai
       #
       # Returns a String with :emoji: replaced with gl-emoji unicode.
       def emoji_name_element_unicode_filter(text)
-        text.gsub(emoji_pattern) do |match|
-          name = Regexp.last_match(1)
-          emoji = TanukiEmoji.find_by_alpha_code(name)
-          Gitlab::Emoji.gl_emoji_tag(emoji)
+        scan_and_replace(text, emoji_pattern) do |matched_text|
+          TanukiEmoji.find_by_alpha_code(matched_text)
         end
       end
 
@@ -45,9 +51,8 @@ module Banzai
       #
       # Returns a String with unicode emoji replaced with gl-emoji unicode.
       def emoji_unicode_element_unicode_filter(text)
-        text.gsub(emoji_unicode_pattern) do |moji|
-          emoji = TanukiEmoji.find_by_codepoints(moji)
-          Gitlab::Emoji.gl_emoji_tag(emoji)
+        scan_and_replace(text, emoji_unicode_pattern) do |matched_text|
+          TanukiEmoji.find_by_codepoints(matched_text)
         end
       end
 
@@ -63,12 +68,49 @@ module Banzai
 
       private
 
+      # This performs the same function as a `gsub`. However this version
+      # allows us to break out of the replacement loop when the limit is
+      # reached. Benchmarking showed performance was roughly equivalent.
+      def scan_and_replace(text, pattern)
+        scanner = StringScanner.new(text)
+        buffer = +''
+
+        return text unless scanner.exist?(pattern)
+
+        until scanner.eos?
+          portion = scanner.scan_until(pattern)
+
+          if portion.nil?
+            buffer << scanner.rest
+            scanner.terminate
+            break
+          end
+
+          if emoji_limit_reached?(@emoji_count)
+            buffer << portion
+            buffer << scanner.rest
+            scanner.terminate
+            break
+          end
+
+          emoji = yield(scanner.matched)
+          @emoji_count += 1 if emoji
+          buffer << portion.sub(scanner.matched, Gitlab::Emoji.gl_emoji_tag(emoji))
+        end
+
+        buffer
+      end
+
       def emoji_pattern
         self.class.emoji_pattern
       end
 
       def emoji_unicode_pattern
         self.class.emoji_unicode_pattern
+      end
+
+      def emoji_limit_reached?(count)
+        count >= EMOJI_LIMIT
       end
     end
   end
