@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.3 (2024-03-27)
+
+### Fixed (1 change)
+
+- [Fix new project group templates pagination](gitlab-org/security/gitlab@93a68da5a3ddc7f2f5f44658a163198a8c5da240) **GitLab Enterprise Edition**
+
+### Security (2 changes)
+
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@41ec64318e92b428edf9796b2777dc1d8b9b3bc2) ([merge request](gitlab-org/security/gitlab!3926))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@a39b0ea96cf309dfc2d8a3a73ea4a047567bd0a1) ([merge request](gitlab-org/security/gitlab!3921))
+
 ## 16.9.2 (2024-03-06)
 
 ### Fixed (2 changes)
