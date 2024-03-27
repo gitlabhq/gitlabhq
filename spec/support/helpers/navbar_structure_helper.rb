@@ -135,6 +135,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_ai_agents_nav(within)
+    insert_after_sub_nav_item(
+      within,
+      within: _('Deploy'),
+      new_sub_nav_item_name: s_('AIAgents|AI Agents')
+    )
+  end
+
   def project_analytics_sub_nav_item
     [
       _('Value stream analytics'),

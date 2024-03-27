@@ -984,6 +984,7 @@ sunsetting
 supercookie
 supercookies
 supergroup
+supergroups
 superset
 supersets
 supertype

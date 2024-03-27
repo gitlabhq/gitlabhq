@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::UsageTrends::Measurement, type: :model do
+RSpec.describe Analytics::UsageTrends::Measurement, type: :model, feature_category: :devops_reports do
   describe 'validation' do
     let!(:measurement) { create(:usage_trends_measurement) }
 
@@ -88,6 +88,7 @@ RSpec.describe Analytics::UsageTrends::Measurement, type: :model do
     subject { described_class.identifier_min_max_queries }
 
     it { is_expected.to be_a Hash }
+    it { is_expected.to include described_class.identifiers[:issues] }
   end
 
   describe '.measurement_identifier_values' do

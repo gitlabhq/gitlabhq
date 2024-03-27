@@ -89,6 +89,7 @@ module Integrations
       :sound,
       :subdomain,
       :teamcity_url,
+      :thread,
       :token,
       :type,
       :url,

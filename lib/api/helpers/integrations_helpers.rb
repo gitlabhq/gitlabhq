@@ -575,6 +575,12 @@ module API
               type: String,
               desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
             },
+            {
+              required: false,
+              name: :thread,
+              type: Integer,
+              desc: 'Unique identifier for the target message thread (topic in a forum supergroup)'
+            },
             chat_notification_flags
           ].flatten,
           'unify-circuit' => [

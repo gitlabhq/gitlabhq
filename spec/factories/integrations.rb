@@ -476,6 +476,7 @@ FactoryBot.define do
 
     token { '123456:ABC-DEF1234' }
     room { '@channel' }
+    thread { nil }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

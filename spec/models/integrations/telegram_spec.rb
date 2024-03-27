@@ -20,6 +20,7 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:room) }
+      it { is_expected.to validate_numericality_of(:thread).only_integer }
     end
 
     context 'when integration is inactive' do
@@ -29,6 +30,7 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
 
       it { is_expected.not_to validate_presence_of(:token) }
       it { is_expected.not_to validate_presence_of(:room) }
+      it { is_expected.not_to validate_numericality_of(:thread).only_integer }
     end
   end
 

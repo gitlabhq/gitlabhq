@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.manage.events
 description: Number of distinct users who have generated a manage event
 product_section: dev
 product_stage: manage
-product_group: manage
+product_group: analytics_instrumentation
 value_type: number
 status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/344100
