@@ -67,12 +67,13 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
       let(:component) { create(:ci_catalog_resource_component) }
 
       it 'generates the correct include path' do
-        expected_path = "#{Settings.gitlab_ci['component_fqdn']}/" \
+        expected_path = "#{Gitlab.config.gitlab_ci.server_fqdn}/" \
                         "#{component.project.full_path}/" \
                         "#{component.name}@" \
                         "#{component.version.version}"
 
         expect(component.include_path).to eq(expected_path)
+        expect(Gitlab.config.gitlab_ci.server_fqdn).not_to be_nil
       end
     end
   end

@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.1 (2024-03-27)
+
+### Fixed (2 changes)
+
+- [Update redis-client to v0.21.1](gitlab-org/security/gitlab@c9d6f434dbc8d5ca244d0c00d8c5cf0d9092df39)
+- [Fix new project group templates pagination](gitlab-org/security/gitlab@956b01c404e55bc92276ab7d21c63a09bc3edfb5) **GitLab Enterprise Edition**
+
+### Security (3 changes)
+
+- [Merge branch 'dchevalier2-master-patch-88770' into 'master'](gitlab-org/security/gitlab@9e621975bf405f2e66541faebf11b06a31360b5d) ([merge request](gitlab-org/security/gitlab!3936))
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@e935e1cc26a06990832781b30827d5afa53d0194) ([merge request](gitlab-org/security/gitlab!3927))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@d1bad1a4847917d5f10c883d0d2f627088a00ca5) ([merge request](gitlab-org/security/gitlab!3929))
+
 ## 16.10.0 (2024-03-20)
 
 ### Added (115 changes)
@@ -686,6 +699,17 @@ entry.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.3 (2024-03-27)
+
+### Fixed (1 change)
+
+- [Fix new project group templates pagination](gitlab-org/security/gitlab@93a68da5a3ddc7f2f5f44658a163198a8c5da240) **GitLab Enterprise Edition**
+
+### Security (2 changes)
+
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@41ec64318e92b428edf9796b2777dc1d8b9b3bc2) ([merge request](gitlab-org/security/gitlab!3926))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@a39b0ea96cf309dfc2d8a3a73ea4a047567bd0a1) ([merge request](gitlab-org/security/gitlab!3921))
 
 ## 16.9.2 (2024-03-06)
 
@@ -1455,6 +1479,13 @@ entry.
 ### EE (1 change)
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
+
+## 16.8.5 (2024-03-27)
+
+### Security (2 changes)
+
+- [Limit the number of emojis we will transform](gitlab-org/security/gitlab@8d949c60d508b6cf3d558fc4f906c82b03e06748) ([merge request](gitlab-org/security/gitlab!3925))
+- [Fix stored xss in wikis using the abstract_reference_filter](gitlab-org/security/gitlab@39a9847874a56baabacfba4d832b6d30ca388baf) ([merge request](gitlab-org/security/gitlab!3922))
 
 ## 16.8.4 (2024-03-06)
 

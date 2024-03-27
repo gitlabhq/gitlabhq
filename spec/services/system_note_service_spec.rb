@@ -82,10 +82,10 @@ RSpec.describe SystemNoteService, feature_category: :shared do
 
     it 'calls IssuableService' do
       expect_next_instance_of(::SystemNotes::IssuablesService) do |service|
-        expect(service).to receive(:request_review).with(reviewer)
+        expect(service).to receive(:request_review).with(reviewer, true)
       end
 
-      described_class.request_review(noteable, project, author, reviewer)
+      described_class.request_review(noteable, project, author, reviewer, true)
     end
   end
 

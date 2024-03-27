@@ -26,7 +26,7 @@ module Ci
         validates :version, :catalog_resource, :project, :name, presence: true
 
         def include_path
-          "#{Settings.gitlab_ci['component_fqdn']}/#{project.full_path}/#{name}@#{version.version}"
+          "#{Gitlab.config.gitlab_ci.server_fqdn}/#{project.full_path}/#{name}@#{version.version}"
         end
       end
     end

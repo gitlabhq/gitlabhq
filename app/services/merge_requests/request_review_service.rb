@@ -8,13 +8,15 @@ module MergeRequests
       reviewer = merge_request.find_reviewer(user)
 
       if reviewer
+        has_unapproved = remove_approval(merge_request, user).present?
+
         return error("Failed to update reviewer") unless reviewer.update(state: :unreviewed)
 
         notify_reviewer(merge_request, user)
+        trigger_merge_request_merge_status_updated(merge_request)
         trigger_merge_request_reviewers_updated(merge_request)
-        create_system_note(merge_request, user)
-
-        remove_approval(merge_request)
+        trigger_merge_request_approval_state_updated(merge_request)
+        create_system_note(merge_request, user, has_unapproved)
 
         success
       else
@@ -29,8 +31,8 @@ module MergeRequests
       todo_service.create_request_review_todo(merge_request, current_user, reviewer)
     end
 
-    def create_system_note(merge_request, user)
-      ::SystemNoteService.request_review(merge_request, merge_request.project, current_user, user)
+    def create_system_note(merge_request, user, has_unapproved)
+      ::SystemNoteService.request_review(merge_request, merge_request.project, current_user, user, has_unapproved)
     end
   end
 end

@@ -519,6 +519,49 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
                 it_behaves_like 'returning the tag'
               end
 
+              context 'when the Gitlab API returns multiple tags matching the name' do
+                let_it_be(:tags_response) do
+                  [
+                    {
+                      name: 'rootA',
+                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                      size_bytes: 2319870,
+                      created_at: 1.minute.ago
+                    },
+                    {
+                      name: 'rootA-1',
+                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                      size_bytes: 2319870,
+                      created_at: 1.minute.ago
+                    },
+                    {
+                      name: '1-rootA',
+                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                      size_bytes: 2319870,
+                      created_at: 1.minute.ago
+                    }
+                  ]
+                end
+
+                let_it_be(:response_body) do
+                  {
+                    pagination: {},
+                    response_body: ::Gitlab::Json.parse(tags_response.to_json)
+                  }
+                end
+
+                before do
+                  allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                    allow(client).to receive(:tags).and_return(response_body)
+                  end
+                end
+
+                it_behaves_like 'returning the tag'
+              end
+
               context 'when the Gitlab API does not return a tag' do
                 before do
                   allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|

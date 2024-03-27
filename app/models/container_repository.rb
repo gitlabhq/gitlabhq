@@ -431,11 +431,15 @@ class ContainerRepository < ApplicationRecord
     File.join(registry.path, path)
   end
 
+  # If the container registry GitLab API is available, the API
+  # does a search of tags containing the name and we filter them
+  # to find the exact match. Otherwise, we instantiate a tag.
   def tag(tag)
     if can_access_the_gitlab_api?
-      page = tags_page(name: tag, page_size: 1)
+      page = tags_page(name: tag)
+      return if page[:tags].blank?
 
-      page[:tags].first
+      page[:tags].find { |result_tag| result_tag.name == tag }
     else
       ContainerRegistry::Tag.new(self, tag)
     end

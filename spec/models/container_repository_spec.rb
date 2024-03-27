@@ -497,17 +497,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
         end
 
-        context 'when the Gitlab API returns a tag' do
-          let_it_be(:tags_response) do
-            [
-              {
-                name: 'test',
-                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
-                size_bytes: 1234567892
-              }
-            ]
-          end
-
+        shared_examples 'returning an instantiated tag from the API response' do
           let_it_be(:response_body) do
             {
               pagination: {},
@@ -528,11 +518,50 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             expect(tag).to be_a ContainerRegistry::Tag
             expect(tag).to have_attributes(
               repository: repository,
-              name: tags_response[0][:name],
+              name: 'test',
               digest: tags_response[0][:digest],
               total_size: tags_response[0][:size_bytes]
             )
           end
+        end
+
+        context 'when the Gitlab API returns a tag' do
+          let_it_be(:tags_response) do
+            [
+              {
+                name: 'test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              }
+            ]
+          end
+
+          it_behaves_like 'returning an instantiated tag from the API response'
+        end
+
+        context 'when the Gitlab API returns multiple tags' do
+          let_it_be(:tags_response) do
+            [
+              {
+                name: 'a-test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              },
+              {
+                name: 'test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              },
+
+              {
+                name: 'test-a',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              }
+            ]
+          end
+
+          it_behaves_like 'returning an instantiated tag from the API response'
         end
 
         context 'when the Gitlab API does not return a tag' do
