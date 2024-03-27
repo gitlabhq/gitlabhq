@@ -40,6 +40,8 @@ To configure the bot in Telegram:
 
 ## Set up the Telegram integration in GitLab
 
+> - **Message thread ID** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11.
+
 After you invite the bot to a Telegram channel, you can configure GitLab to send notifications:
 
 1. To enable the integration:

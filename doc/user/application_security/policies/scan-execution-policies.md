@@ -258,6 +258,74 @@ Note the following:
   - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
     ignored, regardless of where they were defined: policy, group, or project.  
 
+## Security policy scopes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+#### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+
+#### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+scan_execution_policy:
+- name: Enforce DAST in every release pipeline
+  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - release/*
+  actions:
+  - scan: dast
+    scanner_profile: Scanner Profile A
+    site_profile: Site Profile B
+  policy_scope:
+    compliance_frameworks:
+      - id: 2
+      - id: 11
+- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
+  - scan: sast
+    variables:
+      SAST_EXCLUDED_ANALYZERS: brakeman
+  policy_scope:
+    projects:
+      excluding:
+        - id: 24
+        - id: 27
+```
+
 ## Example security policies project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
@@ -438,81 +506,3 @@ scan_execution_policy:
 ```
 
 In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
-
-### Security policy scopes
-
-Prerequisites:
-
-- To enable the pipeline execution policy action feature, a group owner or administrator must enable
-  the experimental feature:
-
-  1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
-  1. Expand **Permissions and group features**.
-  1. Select the **Security Policy Scopes** checkbox.
-  1. Optional. Select **Enforce for all subgroups**.
-
-     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
-
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You can refine a security policy's scope to:
-
-- _Include_ only projects containing a compliance framework label.
-- _Include_ or _exclude_ selected projects from enforcement.
-
-#### Policy scope schema
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
-
-#### `policy_scope` scope type
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
-
-#### Example `policy.yml` with security policy scopes
-
-```yaml
----
-scan_execution_policy:
-- name: Enforce DAST in every release pipeline
-  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - release/*
-  actions:
-  - scan: dast
-    scanner_profile: Scanner Profile A
-    site_profile: Site Profile B
-  policy_scope:
-    compliance_frameworks:
-      - id: 2
-      - id: 11
-- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - main
-  actions:
-  - scan: secret_detection
-  - scan: sast
-    variables:
-      SAST_EXCLUDED_ANALYZERS: brakeman
-  policy_scope:
-    projects:
-      excluding:
-        - id: 24
-        - id: 27
-```

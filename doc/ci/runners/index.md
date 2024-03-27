@@ -23,7 +23,7 @@ Your jobs can run on:
 - [Hosted runners on Windows](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 - [Hosted runners on macOS](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
-For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor).
+For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/cicd_minutes.md#gitlab-hosted-runner-costs).
 The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
 

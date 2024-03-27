@@ -421,8 +421,9 @@ scope.
 | GitLab Rails app | `%16.0`   | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
 | GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#create-an-instance-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
 | GitLab Rails app | `%16.1`   | Add runner group metadata to the runner list. |
-| GitLab Rails app |           | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
-| GitLab Rails app |           | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
+| GitLab Rails app | `%16.11`  | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
+| GitLab Rails app | `%16.11`  | Add UI to allow disabling use of registration tokens in admin panel. |
+| GitLab Rails app | `%16.11`  | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -432,7 +433,6 @@ scope.
 |------------------|----------:|---------|
 | GitLab Rails app |   `%17.0` | Disable registration tokens for all groups by running database migration (only on GitLab.com) |
 | GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level by running database migration (except GitLab.com) |
-| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level for GitLab.com |
 | GitLab Rails app |   `%16.3` | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope. |
 | GitLab Rails app |           | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens) with multiple machines. |
 

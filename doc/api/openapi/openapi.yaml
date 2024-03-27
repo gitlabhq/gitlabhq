@@ -19,7 +19,7 @@ info:
     name: CC BY-SA 4.0
     url: 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE'
 servers:
-- url: https://www.gitlab.com/api/
+- url: https://www.gitlab.com/api/v4
 security:
   - ApiKeyAuth: []
 tags:
@@ -176,7 +176,7 @@ tags:
 - name: unleash_api
   description: Operations related to Unleash API
 paths:
-  /api/v4/groups/{id}/badges/{badge_id}:
+  /groups/{id}/badges/{badge_id}:
     get:
       tags:
       - badges
@@ -271,7 +271,7 @@ paths:
         204:
           description: Removes a badge from the group.
           content: {}
-  /api/v4/groups/{id}/badges:
+  /groups/{id}/badges:
     get:
       tags:
       - badges
@@ -353,7 +353,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_Badge'
-  /api/v4/groups/{id}/badges/render:
+  /groups/{id}/badges/render:
     get:
       tags:
       - badges
@@ -387,7 +387,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_BasicBadgeDetails'
-  /api/v4/groups/{id}/access_requests/{user_id}:
+  /groups/{id}/access_requests/{user_id}:
     delete:
       tags:
       - access_requests
@@ -413,7 +413,7 @@ paths:
         204:
           description: Denies an access request for the given user.
           content: {}
-  /api/v4/groups/{id}/access_requests/{user_id}/approve:
+  /groups/{id}/access_requests/{user_id}/approve:
     put:
       tags:
       - access_requests
@@ -461,7 +461,7 @@ paths:
                 state: active
                 created_at: 2012-10-22T14:13:35Z
                 access_level: 20
-  /api/v4/groups/{id}/access_requests:
+  /groups/{id}/access_requests:
     get:
       tags:
       - access_requests
@@ -526,7 +526,7 @@ paths:
                 state: active
                 created_at: 2012-10-22T14:13:35Z
                 access_level: 20
-  /api/v4/projects/{id}/repository/merged_branches:
+  /projects/{id}/repository/merged_branches:
     delete:
       tags:
       - branches
@@ -546,7 +546,7 @@ paths:
         404:
           description: 404 Project Not Found
           content: {}
-  /api/v4/projects/{id}/repository/branches/{branch}:
+  /projects/{id}/repository/branches/{branch}:
     get:
       tags:
       - branches
@@ -625,7 +625,7 @@ paths:
         404:
           description: Not Found
           content: {}
-  /api/v4/projects/{id}/repository/branches:
+  /projects/{id}/repository/branches:
     get:
       tags:
       - branches
@@ -722,7 +722,7 @@ paths:
         400:
           description: Failed to create branch
           content: {}
-  /api/v4/projects/{id}/repository/branches/{branch}/unprotect:
+  /projects/{id}/repository/branches/{branch}/unprotect:
     put:
       tags:
       - branches
@@ -751,7 +751,7 @@ paths:
         404:
           description: 404 Project Not Found
           content: {}
-  /api/v4/projects/{id}/repository/branches/{branch}/protect:
+  /projects/{id}/repository/branches/{branch}/protect:
     put:
       tags:
       - branches
@@ -791,7 +791,7 @@ paths:
         404:
           description: 404 Branch Not Found
           content: {}
-  /api/v4/projects/{id}/badges/{badge_id}:
+  /projects/{id}/badges/{badge_id}:
     get:
       tags:
       - badges
@@ -886,7 +886,7 @@ paths:
         204:
           description: Removes a badge from the project.
           content: {}
-  /api/v4/projects/{id}/badges:
+  /projects/{id}/badges:
     get:
       tags:
       - badges
@@ -969,7 +969,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_Badge'
-  /api/v4/projects/{id}/badges/render:
+  /projects/{id}/badges/render:
     get:
       tags:
       - badges
@@ -1003,7 +1003,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_BasicBadgeDetails'
-  /api/v4/projects/{id}/access_requests/{user_id}:
+  /projects/{id}/access_requests/{user_id}:
     delete:
       tags:
       - access_requests
@@ -1029,7 +1029,7 @@ paths:
         204:
           description: Denies an access request for the given user.
           content: {}
-  /api/v4/projects/{id}/access_requests/{user_id}/approve:
+  /projects/{id}/access_requests/{user_id}/approve:
     put:
       tags:
       - access_requests
@@ -1077,7 +1077,7 @@ paths:
                 state: active
                 created_at: 2012-10-22T14:13:35Z
                 access_level: 20
-  /api/v4/projects/{id}/access_requests:
+  /projects/{id}/access_requests:
     get:
       tags:
       - access_requests
@@ -1142,7 +1142,7 @@ paths:
                 state: active
                 created_at: 2012-10-22T14:13:35Z
                 access_level: 20
-  /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/{metric_image_id}:
+  /projects/{id}/alert_management_alerts/{alert_iid}/metric_images/{metric_image_id}:
     put:
       tags:
       - alert_management
@@ -1232,7 +1232,7 @@ paths:
         422:
           description: Unprocessable entity
           content: {}
-  /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images:
+  /projects/{id}/alert_management_alerts/{alert_iid}/metric_images:
     get:
       tags:
       - alert_management
@@ -1311,7 +1311,7 @@ paths:
         403:
           description: Forbidden
           content: {}
-  /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/authorize:
+  /projects/{id}/alert_management_alerts/{alert_iid}/metric_images/authorize:
     post:
       tags:
       - alert_management
@@ -1338,7 +1338,7 @@ paths:
         403:
           description: Forbidden
           content: {}
-  /api/v4/admin/batched_background_migrations/{id}:
+  /admin/batched_background_migrations/{id}:
     get:
       tags:
       - batched_background_migrations
@@ -1380,7 +1380,7 @@ paths:
         404:
           description: 404 Not found
           content: {}
-  /api/v4/admin/batched_background_migrations:
+  /admin/batched_background_migrations:
     get:
       tags:
       - batched_background_migrations
@@ -1414,7 +1414,7 @@ paths:
         403:
           description: 403 Forbidden
           content: {}
-  /api/v4/admin/batched_background_migrations/{id}/resume:
+  /admin/batched_background_migrations/{id}/resume:
     put:
       tags:
       - batched_background_migrations
@@ -1462,7 +1462,7 @@ paths:
         422:
           description: You can resume only `paused` batched background migrations.
           content: {}
-  /api/v4/admin/batched_background_migrations/{id}/pause:
+  /admin/batched_background_migrations/{id}/pause:
     put:
       tags:
       - batched_background_migrations
@@ -1510,7 +1510,7 @@ paths:
         422:
           description: You can pause only `active` batched background migrations.
           content: {}
-  /api/v4/admin/ci/variables/{key}:
+  /admin/ci/variables/{key}:
     get:
       tags:
       - ci_variables
@@ -1601,7 +1601,7 @@ paths:
         404:
           description: Instance Variable Not Found
           content: {}
-  /api/v4/admin/ci/variables:
+  /admin/ci/variables:
     get:
       tags:
       - ci_variables
@@ -1675,7 +1675,7 @@ paths:
         400:
           description: 400 Bad Request
           content: {}
-  /api/v4/admin/databases/{database_name}/dictionary/tables/{table_name}:
+  /admin/databases/{database_name}/dictionary/tables/{table_name}:
     get:
       tags:
       - admin
@@ -1713,7 +1713,7 @@ paths:
         404:
           description: 404 Not found
           content: {}
-  /api/v4/admin/clusters/{cluster_id}:
+  /admin/clusters/{cluster_id}:
     get:
       tags:
       - clusters
@@ -1845,7 +1845,7 @@ paths:
         404:
           description: Not found
           content: {}
-  /api/v4/admin/clusters/add:
+  /admin/clusters/add:
     post:
       tags:
       - clusters
@@ -1928,7 +1928,7 @@ paths:
         404:
           description: Not found
           content: {}
-  /api/v4/admin/clusters:
+  /admin/clusters:
     get:
       tags:
       - clusters
@@ -1948,7 +1948,7 @@ paths:
         403:
           description: Forbidden
           content: {}
-  /api/v4/admin/migrations/{timestamp}/mark:
+  /admin/migrations/{timestamp}/mark:
     post:
       tags:
       - migrations
@@ -1993,7 +1993,7 @@ paths:
         422:
           description: You can mark only pending migrations
           content: {}
-  /api/v4/applications/{id}:
+  /applications/{id}:
     delete:
       tags:
       - applications
@@ -2012,7 +2012,7 @@ paths:
         204:
           description: Delete an application
           content: {}
-  /api/v4/applications:
+  /applications:
     get:
       tags:
       - applications
@@ -2068,7 +2068,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_ApplicationWithSecret'
-  /api/v4/avatar:
+  /avatar:
     get:
       tags:
       - avatar
@@ -2094,7 +2094,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_Avatar'
-  /api/v4/broadcast_messages/{id}:
+  /broadcast_messages/{id}:
     get:
       tags:
       - broadcast_messages
@@ -2204,7 +2204,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_BroadcastMessage'
-  /api/v4/broadcast_messages:
+  /broadcast_messages:
     get:
       tags:
       - broadcast_messages
@@ -2295,7 +2295,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_BroadcastMessage'
-  /api/v4/bulk_imports/{import_id}/entities/{entity_id}:
+  /bulk_imports/{import_id}/entities/{entity_id}:
     get:
       tags:
       - bulk_imports
@@ -2333,7 +2333,7 @@ paths:
         503:
           description: Service unavailable
           content: {}
-  /api/v4/bulk_imports/{import_id}/entities:
+  /bulk_imports/{import_id}/entities:
     get:
       tags:
       - bulk_imports
@@ -2391,7 +2391,7 @@ paths:
         503:
           description: Service unavailable
           content: {}
-  /api/v4/bulk_imports/{import_id}:
+  /bulk_imports/{import_id}:
     get:
       tags:
       - bulk_imports
@@ -2422,7 +2422,7 @@ paths:
         503:
           description: Service unavailable
           content: {}
-  /api/v4/bulk_imports/entities:
+  /bulk_imports/entities:
     get:
       tags:
       - bulk_imports
@@ -2483,7 +2483,7 @@ paths:
         503:
           description: Service unavailable
           content: {}
-  /api/v4/bulk_imports:
+  /bulk_imports:
     get:
       tags:
       - bulk_imports
@@ -2624,7 +2624,7 @@ paths:
         503:
           description: Service unavailable
           content: {}
-  /api/v4/application/appearance:
+  /application/appearance:
     get:
       tags:
       - application
@@ -2707,7 +2707,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_Appearance'
-  /api/v4/application/plan_limits:
+  /application/plan_limits:
     get:
       tags:
       - plan_limits
@@ -2869,7 +2869,7 @@ paths:
         403:
           description: Forbidden
           content: {}
-  /api/v4/metadata:
+  /metadata:
     get:
       tags:
       - metadata
@@ -2886,7 +2886,7 @@ paths:
         401:
           description: Unauthorized
           content: {}
-  /api/v4/version:
+  /version:
     get:
       tags:
       - metadata
@@ -2904,7 +2904,7 @@ paths:
         401:
           description: Unauthorized
           content: {}
-  /api/v4/projects/{id}/jobs:
+  /projects/{id}/jobs:
     get:
       tags:
       - jobs
@@ -2934,7 +2934,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/API_Entities_Job'
-  /api/v4/projects/{id}/jobs/{job_id}:
+  /projects/{id}/jobs/{job_id}:
     get:
       tags:
       - jobs
@@ -2960,7 +2960,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/API_Entities_Job'
-  /api/v4/projects/{id}/jobs/{job_id}/play:
+  /projects/{id}/jobs/{job_id}/play:
     post:
       tags:
       - jobs

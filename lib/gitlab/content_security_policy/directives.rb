@@ -22,6 +22,10 @@ module Gitlab
       def self.style_src
         "'self' 'unsafe-inline'"
       end
+
+      def self.worker_src
+        "'self' #{Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'assets/')} blob: data:"
+      end
     end
   end
 end

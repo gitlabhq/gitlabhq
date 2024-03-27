@@ -60,11 +60,11 @@ For other features:
 
 ### Disable GitLab Duo features
 
-> - [Settings to disable AI features were introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Settings to disable AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 
 You can disable GitLab Duo AI features for a group, project, or instance.
 When it's disabled, any attempt to use GitLab Duo features on the group, project, or instance is blocked and an error is displayed.

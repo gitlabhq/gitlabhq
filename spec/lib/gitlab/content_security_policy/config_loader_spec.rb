@@ -108,6 +108,12 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
       end
     end
 
+    describe 'the worker-src directive' do
+      it 'can be loaded from local origins' do
+        expect(worker_src).to eq("'self' http://localhost/assets/ blob: data:")
+      end
+    end
+
     describe 'Webpack dev server websocket connections' do
       let(:webpack_dev_server_host) { 'webpack-dev-server.com' }
       let(:webpack_dev_server_port) { '9999' }
@@ -319,7 +325,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
           expect(script_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src)
           expect(style_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.style_src)
           expect(font_src).to eq("'self'")
-          expect(worker_src).to eq("http://localhost/assets/ blob: data:")
+          expect(worker_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.worker_src)
           expect(frame_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src)
         end
       end

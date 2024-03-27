@@ -193,9 +193,9 @@ security dashboard.
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `available_from_access_level` | no | The access level from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. |
 
-#### Step 2: Create a migration file
+#### Step 2: Create a spec file and update validation schema
 
-- Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will generate a migration file to add the ability as a boolean column to the `member_roles` table.
+- Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will update the permissions validation schema file and create an empty spec file.
 
 #### Step 3: Update policies
 

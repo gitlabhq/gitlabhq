@@ -413,7 +413,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>yarn</td>
-      <td>v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup>, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup></td>
+      <td>versions 1, 2, 3, 4<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2">1.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock">2.x</a>,
@@ -453,10 +453,10 @@ The following package managers use lockfiles that GitLab analyzers are capable o
   <li>
     <a id="notes-regarding-parsing-lockfiles-4"></a>
     <p>
-      Support for Yarn <code>v2</code> and <code>v3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/263358">introduced in GitLab 15.11</a>. However, this feature is also available to versions of GitLab 15.0 and later.
+      Support for Yarn version 4 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431752">introduced</a> in GitLab 16.11.
     </p>
     <p>
-      The following features are not supported for Yarn <code>v2</code> or <code>v3</code>:
+      The following features are not supported for Yarn Berry:
     </p>
     <ul>
       <li>
