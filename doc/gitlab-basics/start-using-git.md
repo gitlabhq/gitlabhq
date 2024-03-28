@@ -7,9 +7,6 @@ description: "Introduction to using Git through the command line."
 
 # Command line Git
 
-[Git](https://git-scm.com/) is an open-source distributed version control system. GitLab is built
-on top of Git.
-
 You can do many Git operations directly in GitLab. However, the command line is required for advanced tasks,
 like fixing complex merge conflicts or rolling back commits.
 
@@ -24,7 +21,7 @@ For more information about the advantages of working with Git and GitLab:
 - Learn how [GitLab became the backbone of the Worldline](https://about.gitlab.com/customers/worldline/) development environment.
 
 To help you visualize what you're doing locally, you can install a
-[Git GUI app](https://git-scm.com/download/gui/).
+[Git GUI app](https://git-scm.com/downloads/guis).
 
 ## Choose a terminal
 
@@ -32,14 +29,15 @@ To execute Git commands on your computer, you must open a terminal (also known a
 prompt, command shell, and command line). Here are some options:
 
 - For macOS users:
-  - Built-in [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line). Press <kbd>⌘ command</kbd> + <kbd>space</kbd> and type `terminal`.
-  - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh) and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
+  - Built-in [Terminal](https://support.apple.com/en-au/guide/terminal/welcome/mac).
+  - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh)
+    and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
 - For Windows users:
   - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
   - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/overview?view=powershell-7.4).
-  - Git Bash. It is built into [Git for Windows](https://gitforwindows.org/).
-- For Linux users:
-  - Built-in [Linux Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
+  - Git Bash, which is included with [Git for Windows](https://gitforwindows.org/).
+- For Linux users, the built-in terminal. For example, the
+  [Ubuntu Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
 
 ## Confirm Git is installed
 
@@ -64,13 +62,13 @@ To start using Git from your computer, you must enter your credentials
 to identify yourself as the author of your work. The full name and email address
 should match the ones you use in GitLab.
 
-1. In your shell, add your full name:
+1. In your terminal, add your full name. For example:
 
    ```shell
-   git config --global user.name "John Doe"
+   git config --global user.name "Sidney Jones"
    ```
 
-1. Add your email address:
+1. Add your email address. For example:
 
    ```shell
    git config --global user.email "your_email_address@example.com"
@@ -137,9 +135,9 @@ You can also
 
 ### Clone with HTTPS
 
-Clone with HTTPS when you want to authenticate each time you perform an operation
-between your computer and GitLab.
-[OAuth credential helpers](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease the number of times you must manually authenticate, making HTTPS a seamless experience.
+Clone with HTTPS when you want to authenticate each time you perform an operation between your computer and GitLab.
+[OAuth credential helpers](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease
+the number of times you must manually authenticate, making HTTPS a seamless experience.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to clone.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
@@ -238,15 +236,16 @@ The `-v` flag stands for verbose.
 
 To work on an up-to-date copy of the project, you `pull` to get all the changes made by users
 since the last time you cloned or pulled the project. Replace `<name-of-branch>`
-with the name of your [default branch](../user/project/repository/branches/default.md)
-to get the main branch code, or replace it with the branch name of the branch
-you are currently working in.
+with either:
+
+- The name of your [default branch](../user/project/repository/branches/default.md) to get the main branch code.
+- The name of the branch you are working in.
 
 ```shell
 git pull <REMOTE> <name-of-branch>
 ```
 
-When you clone a repository, `REMOTE` is typically `origin`. This is where the
+When you clone a repository, `REMOTE` is typically `origin`. The remote is where the
 repository was cloned from, and it indicates the SSH or HTTPS URL of the repository
 on the remote server. `<name-of-branch>` is usually the name of your
 [default branch](../user/project/repository/branches/default.md), but it may be any
@@ -277,7 +276,7 @@ commit ab123c (HEAD -> main, origin/main, origin/HEAD)
 When a reference is changed in the local repository, Git records the change
 in its **reference logs**. You can display the contents of the reference logs
 if you need to find the old values of a reference. For example, you might want
-to display the changes to `HEAD` in order to undo a change.
+to display the changes to `HEAD` to undo a change.
 
 To display the list of changes to `HEAD`:
 
@@ -461,8 +460,7 @@ you must [force an update](../topics/git/git_rebase.md#force-pushing).
 
 ## Delete changes
 
-If you make a mistake and want to undo your changes, you can use Git
-commands to go back to an earlier version of a repository.
+If want to undo your changes, you can use Git commands to go back to an earlier version of a repository.
 
 Deleting changes is often an irreversible, destructive action. If
 possible, you should add additional commits instead of reverting old

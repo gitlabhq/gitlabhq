@@ -52,7 +52,7 @@ your operating system. GitLab requires version 1.0.1 or later of the Git LFS cli
 - Git LFS v1 original API is not supported, because it was deprecated early in LFS
   development.
 - When SSH is set as a remote, Git LFS objects still go through HTTPS.
-- Any Git LFS request asks for HTTPS credentials, so we recommend a good Git
+- Any Git LFS request asks for HTTPS credentials, so you should use a good Git
   credentials store.
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you must
   [add the URL to Git configuration manually](troubleshooting.md#getsockopt-connection-refused).

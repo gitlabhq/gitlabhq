@@ -46,8 +46,7 @@ A typical Git user encounters these concepts soon after starting to use Git:
 - [`git add`](../../gitlab-basics/add-file.md) to start tracking files with Git.
 - [Tags](../../user/project/repository/tags/index.md) and
   [branches](../../user/project/repository/branches/index.md).
-- [How to undo mistakes](undo.md),
-  including [`git reset`](rollback_commits.md).
+- [How to undo changes](undo.md), including [`git reset`](rollback_commits.md).
 - View a chronological list of changes to a file with
   [Git history](../../user/project/repository/git_history.md).
 - View a line-by-line editing history of a file with
@@ -105,13 +104,13 @@ Git and GitLab, combined together, provide advanced features for repository mana
 ### Git Large File Storage (LFS)
 
 Many Git projects must manage large binary assets, such as videos and images.
-Implementing Git Large File Storage can help manage these assets while keeping
+Implementing [Git Large File Storage](https://git-lfs.com) can help manage these assets while keeping
 your repository small:
 
 - [User documentation](lfs/index.md) for Git LFS at GitLab
 - [Administrator documentation](../../administration/lfs/index.md) for Git LFS at GitLab
 - Blog post: [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate an existing Git repository](lfs/migrate_to_git_lfs.md) with Git LFS
+- [Migrate an existing Git repository](lfs/index.md#migrate-an-existing-repository-to-git-lfs) to Git LFS
 - [Remove objects](lfs/index.md#removing-objects-from-lfs) from Git LFS
 - Blog post: [Towards a production-quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
 

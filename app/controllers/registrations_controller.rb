@@ -144,9 +144,15 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def onboarding_status
-    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, resource)
+    Onboarding::Status.new(onboarding_status_params, session, resource)
   end
   strong_memoize_attr :onboarding_status
+
+  def onboarding_status_params
+    # We'll override this in the trial registrations controller so we can add on trial param
+    # and make it so we can figure out the registration_type with the same code.
+    params.to_unsafe_h.deep_symbolize_keys
+  end
 
   def allow_flash_content?(user)
     user.blocked_pending_approval? || onboarding_status.single_invite?

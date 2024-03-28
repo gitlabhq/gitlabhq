@@ -8189,6 +8189,16 @@ msgstr ""
 msgid "Billings|Your account has been validated"
 msgstr ""
 
+msgid "Billing|%d user has been successfully assigned a seat."
+msgid_plural "Billing|%d users have been successfully assigned a seat."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Billing|%d user has been successfully unassigned a seat."
+msgid_plural "Billing|%d users have been successfully unassigned a seat."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Billing|%{plan} Plan"
 msgstr ""
 
@@ -8272,6 +8282,9 @@ msgstr ""
 msgid "Billing|Error un-assigning GitLab Duo Pro add-on"
 msgstr ""
 
+msgid "Billing|Error unassigning GitLab Duo Pro add-on"
+msgstr ""
+
 msgid "Billing|Explore paid plans"
 msgstr ""
 
@@ -8295,6 +8308,9 @@ msgstr ""
 msgid "Billing|No users to display."
 msgstr ""
 
+msgid "Billing|Not enough seats"
+msgstr ""
+
 msgid "Billing|Private"
 msgstr ""
 
@@ -8310,10 +8326,19 @@ msgstr ""
 msgid "Billing|Remove user %{username} from your subscription"
 msgstr ""
 
+msgid "Billing|Something went wrong when assigning the add-on for the selected members. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
 msgid "Billing|Something went wrong when assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "Billing|Something went wrong when unassigning the add-on to the selected members. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "Billing|There are not enough seats to assign the GitLab Duo Pro add-on to all selected members. To purchase more seats for your subscription, please %{salesLinkStart}contact sales%{salesLinkEnd}."
 msgstr ""
 
 msgid "Billing|This action will assign a GitLab Duo Pro seat to 1 user"
@@ -46143,6 +46168,12 @@ msgstr ""
 msgid "SecurityOrchestration|You must select one or more projects to which this policy should apply."
 msgstr ""
 
+msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. Policies are disabled when added."
+msgstr ""
+
+msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. To save this policy, set enabled: false."
+msgstr ""
+
 msgid "SecurityOrchestration|a license scanner found license violations"
 msgstr ""
 
@@ -52365,13 +52396,13 @@ msgstr ""
 msgid "This setting is allowed for forked projects only"
 msgstr ""
 
-msgid "This subscription is for"
-msgstr ""
-
 msgid "This suggestion already matches its content."
 msgstr ""
 
 msgid "This title already exists."
+msgstr ""
+
+msgid "This trial is for"
 msgstr ""
 
 msgid "This user cannot be unlocked manually from GitLab"

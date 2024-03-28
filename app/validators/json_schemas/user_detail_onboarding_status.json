@@ -11,6 +11,14 @@
     "email_opt_in": {
       "description": "Setting to guide marketing email opt-ins outside of the product. See https://gitlab.com/gitlab-org/gitlab/-/issues/435741",
       "type": "boolean"
+    },
+    "initial_registration_type": {
+      "description": "Initial type of registration for an onboarding user",
+      "type": "string"
+    },
+    "registration_type": {
+      "description": "Current type of registration for an onboarding user",
+      "type": "string"
     }
   },
   "additionalProperties": false

@@ -7,8 +7,7 @@ description: "In Git, commits with problems can be undone, reset, or completely 
 
 # Roll back commits
 
-In Git, if you make a mistake, you can undo or roll back your changes.
-For more details, see [Undo options](undo.md).
+In Git, you can undo or roll back your changes. For more details, see [Undo options](undo.md).
 
 ## Undo commits by removing them
 
