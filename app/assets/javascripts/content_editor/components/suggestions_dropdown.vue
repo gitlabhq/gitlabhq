@@ -1,11 +1,12 @@
 <script>
-import { GlAvatar, GlLoadingIcon } from '@gitlab/ui';
+import { GlAvatar, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   components: {
     GlAvatar,
     GlLoadingIcon,
+    GlIcon,
   },
 
   directives: {
@@ -98,6 +99,10 @@ export default {
       return this.isReference && this.nodeProps.referenceType === 'milestone';
     },
 
+    isWiki() {
+      return this.nodeProps.referenceType === 'wiki';
+    },
+
     isEmoji() {
       return this.nodeType === 'emoji';
     },
@@ -146,6 +151,8 @@ export default {
           return item.reference;
         case 'vulnerability':
           return `[vulnerability:${item.id}]`;
+        case 'wiki':
+          return item.title;
         default:
           return '';
       }
@@ -175,6 +182,16 @@ export default {
         Object.assign(props, {
           text: item.title,
           color: item.color,
+        });
+      }
+
+      if (this.isWiki) {
+        Object.assign(props, {
+          text: item.title,
+          href: item.path,
+          isGollumLink: true,
+          isWikiPage: true,
+          canonicalSrc: item.slug,
         });
       }
 
@@ -311,6 +328,15 @@ export default {
                 <span v-if="isMilestone">
                   <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
                   <span v-if="item.expired">{{ __('(expired)') }}</span>
+                </span>
+                <span v-if="isWiki">
+                  <gl-icon class="gl-mr-2" name="document" />
+                  <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
+                  <small
+                    v-if="item.title.toLowerCase() !== item.slug.toLowerCase()"
+                    v-safe-html:[$options.safeHtmlConfig]="highlight(`(${item.slug})`)"
+                    class="gl-text-gray-500"
+                  ></small>
                 </span>
                 <span v-if="isLabel" class="gl-display-flex">
                   <span

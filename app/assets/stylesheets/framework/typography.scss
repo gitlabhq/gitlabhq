@@ -484,20 +484,29 @@
     }
   }
 
+  a.gfm-gollum-wiki-page {
+    &::before {
+      margin-right: 4px;
+      vertical-align: -2px;
+
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/document.svg');
+    }
+  }
+
   a.with-attachment-icon,
   a[href*='/uploads/'],
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
+      vertical-align: -2px;
 
-      font-style: normal;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      content: '📎';
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/paperclip.svg');
     }
   }
 
+  a[href*='/wikis/'],
   a[href*='/uploads/'],
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &.no-attachment-icon {

@@ -17,6 +17,7 @@ import {
   MOCK_MERGE_REQUESTS,
   MOCK_ASSIGNEES,
   MOCK_REVIEWERS,
+  MOCK_WIKIS,
 } from './autocomplete_mock_data';
 
 jest.mock('~/emoji', () => ({
@@ -122,6 +123,7 @@ describe('AutocompleteHelper', () => {
       mergeRequests: '/mergeRequests',
       vulnerabilities: '/vulnerabilities',
       commands: '/commands',
+      wikis: '/wikis',
     };
 
     mock.onGet('/members').reply(200, MOCK_MEMBERS);
@@ -133,6 +135,7 @@ describe('AutocompleteHelper', () => {
     mock.onGet('/mergeRequests').reply(200, MOCK_MERGE_REQUESTS);
     mock.onGet('/vulnerabilities').reply(200, MOCK_VULNERABILITIES);
     mock.onGet('/commands').reply(200, MOCK_COMMANDS);
+    mock.onGet('/wikis').reply(200, MOCK_WIKIS);
 
     const sidebarMediator = {
       store: {
@@ -170,6 +173,7 @@ describe('AutocompleteHelper', () => {
     ${'merge_request'} | ${'n'}
     ${'vulnerability'} | ${'cross'}
     ${'command'}       | ${'re'}
+    ${'wiki'}          | ${'ho'}
   `(
     'for reference type "$referenceType", searches for "$query" correctly',
     async ({ referenceType, query }) => {

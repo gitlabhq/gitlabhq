@@ -630,7 +630,6 @@ Layout/LineLength:
     - 'config/application.rb'
     - 'config/initializers/01_secret_token.rb'
     - 'config/initializers/1_settings.rb'
-    - 'config/initializers/5_backend.rb'
     - 'config/initializers/7_prometheus_metrics.rb'
     - 'config/initializers/8_devise.rb'
     - 'config/initializers/active_record_force_reconnects.rb'

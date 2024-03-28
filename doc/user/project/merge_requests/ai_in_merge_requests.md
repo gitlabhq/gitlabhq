@@ -15,45 +15,17 @@ AI-assisted features in merge requests are designed to provide contextually rele
 
 Additional information on enabling these features and maturity can be found in our [GitLab Duo overview](../../ai_features.md).
 
-## Fill in merge request templates
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
-
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
-
-Merge requests in projects often have [templates](../description_templates.md#create-a-merge-request-template) defined that need to be filled out. This helps reviewers and other users understand the purpose and changes a merge request might propose.
-
-When creating a merge request, GitLab Duo can generate a description for the merge request based on the contents of the template. This fills in the template and replaces the current contents of the description.
-
-To generate the description:
-
-1. [Create a new merge request](creating_merge_requests.md), and go to the **Description** field.
-1. Select **AI Actions** (**{tanuki}**).
-1. Select **Fill in merge request template**.
-
-The updated description is applied to the box. You can edit or revise this description before you finish creating your merge request.
-
-Provide feedback on this experimental feature in [issue 416537](https://gitlab.com/gitlab-org/gitlab/-/issues/416537).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Title of the merge request
-- Contents of the description
-- Diff of changes between the source branch's head and the target branch
-
 ## Summarize merge request changes
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature is in [Beta](../../../policy/experiment-beta-support.md) on GitLab.com.
 
-GitLab Duo Merge request summaries are available on the merge request page in:
+GitLab Duo Merge request summaries can be added to your merge request description when creating or editing a merge request. To add a summary, select **Summarize code changes**. The generated summary is added to the merge request description where your cursor is.
 
-- The **Merge request summaries** dialog.
-- The To-Do list.
-- Email notifications.
+![merge_request_ai_summary_v16_11](img/merge_request_ai_summary_v16_11.png)
 
-Provide feedback on this experimental feature in [issue 408726](https://gitlab.com/gitlab-org/gitlab/-/issues/408726).
+Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org/gitlab/-/issues/443236).
 
 **Data usage**: The diff of changes between the source branch's head and the target branch is sent to the large language model.
 
@@ -79,6 +51,33 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Draft comment's text
+
+## Fill in merge request templates
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to Beta in GitLab 16.10
+
+This feature is in [Beta](../../../policy/experiment-beta-support.md) on GitLab.com.
+
+Merge requests in projects often have [templates](../description_templates.md#create-a-merge-request-template) defined that need to be filled out. This helps reviewers and other users understand the purpose and changes a merge request might propose.
+
+When creating a merge request, GitLab Duo can generate a description for the merge request based on the contents of the template. This fills in the template and replaces the current contents of the description.
+
+To generate the description:
+
+1. [Create a new merge request](creating_merge_requests.md), and go to the **Description** field.
+1. Select **AI Actions** (**{tanuki}**).
+1. Select **Fill in merge request template**.
+
+The updated description is applied to the box. You can edit or revise this description before you finish creating your merge request.
+
+Provide feedback on this experimental feature in [issue 416537](https://gitlab.com/gitlab-org/gitlab/-/issues/416537).
+
+**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+
+- Title of the merge request
+- Contents of the description
+- Diff of changes between the source branch's head and the target branch
 
 ## Generate messages for merge or squash commits
 

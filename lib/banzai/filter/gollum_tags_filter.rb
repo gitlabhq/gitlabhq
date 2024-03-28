@@ -64,13 +64,11 @@ module Banzai
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
           next unless node.content =~ TAGS_PATTERN
 
-          html = process_tag(Regexp.last_match(1))
+          html = node.content.gsub(TAGS_PATTERN) do
+            process_tag(Regexp.last_match(1)) || Regexp.last_match(0)
+          end
 
-          next unless html && html != node.content
-
-          new_node = Banzai::Filter::SanitizationFilter.new(html).call
-          new_node = new_node&.children&.first&.add_class('gfm')
-          node.replace(new_node.to_html) if new_node
+          node.replace(html)
         end
 
         doc
@@ -105,12 +103,12 @@ module Banzai
         path =
           if url?(content)
             content
-          elsif file = wiki.find_file(content, load_content: false)
+          elsif wiki && file = wiki.find_file(content, load_content: false)
             file.path
           end
 
         if path
-          content_tag(:img, nil, src: path, class: 'gfm')
+          sanitized_content_tag(:img, nil, src: path, class: 'gfm')
         end
       end
 
@@ -135,29 +133,48 @@ module Banzai
           name, reference = *parts.compact.map(&:strip)
         end
 
-        href =
-          if url?(reference)
-            reference
-          else
-            ::File.join(wiki_base_path, reference)
-          end
+        class_list = 'gfm'
+        additional_data = {
+          'canonical-src': reference,
+          link: true,
+          gollum: true
+        }
 
-        content_tag(:a, name || reference, href: href, class: 'gfm')
+        if url?(reference)
+          href = reference
+        elsif wiki
+          href = ::File.join(wiki_base_path, reference)
+          class_list += " gfm-gollum-wiki-page"
+
+          additional_data['reference-type'] = 'wiki_page'
+          additional_data[:project] = context[:project].id if context[:project]
+          additional_data[:group] = context[:group]&.id if context[:group]
+        end
+
+        if href
+          sanitized_content_tag(:a, name || reference, href: href, class: class_list, data: additional_data)
+        end
       end
 
       def wiki
-        context[:wiki]
+        context[:wiki] || context[:project]&.wiki || context[:group]&.wiki
       end
 
       def wiki_base_path
         wiki&.wiki_base_path
       end
 
-      # Ensure that a :wiki key exists in context
-      #
-      # Note that while the key might exist, its value could be nil!
-      def validate
-        needs :wiki
+      def sanitized_content_tag(name, content, options = {})
+        html = content_tag(name, content, options)
+        node = Banzai::Filter::SanitizationFilter.new(html).call
+        link_node = node&.children&.first
+
+        link_node.add_class(options[:class])
+        options[:data]&.each do |key, value|
+          link_node.set_attribute("data-#{key}", value)
+        end
+
+        link_node
       end
     end
   end

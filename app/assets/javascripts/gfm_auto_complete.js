@@ -21,6 +21,7 @@ const MERGEREQUESTS_ALIAS = 'mergerequests';
 const LABELS_ALIAS = 'labels';
 const SNIPPETS_ALIAS = 'snippets';
 const CONTACTS_ALIAS = 'contacts';
+const WIKIS_ALIAS = 'wikis';
 
 const CADENCE_REFERENCE_PREFIX = '[cadence:';
 const ITERATION_REFERENCE_PREFIX = '*iteration:';
@@ -130,6 +131,7 @@ export const defaultAutocompleteConfig = {
   snippets: true,
   vulnerabilities: true,
   contacts: true,
+  wikis: true,
 };
 
 class GfmAutoComplete {
@@ -172,6 +174,7 @@ class GfmAutoComplete {
     if (this.enableMap.labels) this.setupLabels($input);
     if (this.enableMap.snippets) this.setupSnippets($input);
     if (this.enableMap.contacts) this.setupContacts($input);
+    if (this.enableMap.wikis) this.setupWikis($input);
 
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
@@ -741,6 +744,47 @@ class GfmAutoComplete {
     showAndHideHelper($input, SNIPPETS_ALIAS);
   }
 
+  setupWikis($input) {
+    $input.atwho({
+      at: '[[',
+      suffix: ']]',
+      alias: WIKIS_ALIAS,
+      searchKey: 'title',
+      data: GfmAutoComplete.defaultLoadingData,
+      displayTpl(value) {
+        let tmpl = GfmAutoComplete.Loading.template;
+        if (value.title != null) {
+          tmpl = GfmAutoComplete.Wikis.templateFunction(value);
+        }
+        return tmpl;
+      },
+      // eslint-disable-next-line no-template-curly-in-string
+      insertTpl: '${atwho-at}${title}|${slug}',
+      callbacks: {
+        ...this.getDefaultCallbacks(),
+        beforeInsert(value) {
+          const [title, slug] = value.substr(2).split('|');
+          if (title.toLowerCase() === slug.toLowerCase()) {
+            return `[[${slug}`;
+          }
+          return `[[${title}|${slug}`;
+        },
+        beforeSave(wikis) {
+          return $.map(wikis, (m) => {
+            if (m.title == null) {
+              return m;
+            }
+            return {
+              title: m.title,
+              slug: m.slug,
+            };
+          });
+        },
+      },
+    });
+    showAndHideHelper($input, WIKIS_ALIAS);
+  }
+
   setupContacts($input) {
     const fetchData = this.fetchData.bind(this);
     let command = '';
@@ -1011,6 +1055,7 @@ GfmAutoComplete.atTypeMap = {
   '[vulnerability:': 'vulnerabilities',
   $: 'snippets',
   '[contact:': 'contacts',
+  '[[': 'wikis',
 };
 
 GfmAutoComplete.typesWithBackendFiltering = ['vulnerabilities'];
@@ -1114,6 +1159,14 @@ GfmAutoComplete.Milestones = {
 GfmAutoComplete.Contacts = {
   templateFunction({ email, firstName, lastName }) {
     return `<li><small>${escape(firstName)} ${escape(lastName)}</small> ${escape(email)}</li>`;
+  },
+};
+GfmAutoComplete.Wikis = {
+  templateFunction({ title, slug }) {
+    const icon = spriteIcon('document', 's16 vertical-align-middle gl-mr-2');
+    const slugSpan =
+      title.toLowerCase() !== slug.toLowerCase() ? ` <small>(${escape(slug)})</small>` : '';
+    return `<li>${icon} ${escape(title)} ${slugSpan}</li>`;
   },
 };
 

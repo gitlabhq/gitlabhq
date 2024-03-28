@@ -44737,7 +44737,7 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting %{branches} %{branchExceptions} and the licenses match all of the following criteria:"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} %{branchExceptions} with %{commitType}"
+msgid "ScanResultPolicy|When %{scanType} that targets %{branches} %{branchExceptions} with %{commitType}"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
@@ -59293,6 +59293,9 @@ msgid "[Redacted]"
 msgstr ""
 
 msgid "[Supports GitLab-flavored markdown, including quick actions]"
+msgstr ""
+
+msgid "[redacted]"
 msgstr ""
 
 msgid "`.campfirenow.com` subdomain when you're signed in."

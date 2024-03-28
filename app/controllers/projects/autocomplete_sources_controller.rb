@@ -6,7 +6,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   before_action :authorize_read_milestone!, only: :milestones
   before_action :authorize_read_crm_contact!, only: :contacts
 
-  feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts]
+  feature_category :team_planning, [:issues, :labels, :milestones, :commands, :contacts, :wikis]
   feature_category :code_review_workflow, [:merge_requests]
   feature_category :groups_and_projects, [:members]
   feature_category :source_code_management, [:snippets]
@@ -44,6 +44,10 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
 
   def contacts
     render json: autocomplete_service.contacts(target)
+  end
+
+  def wikis
+    render json: autocomplete_service.wikis
   end
 
   private

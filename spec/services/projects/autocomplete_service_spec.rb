@@ -153,6 +153,39 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
     end
   end
 
+  describe '#wikis' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:wiki) { create(:project_wiki, project: project) }
+
+    before do
+      create(:wiki_page, wiki: wiki, title: 'page1', content: 'content1')
+      create(:wiki_page, wiki: wiki, title: 'templates/page2', content: 'content2')
+    end
+
+    context 'when user can read wiki' do
+      it 'returns wiki pages (except templates)' do
+        service = described_class.new(project, user)
+        results = service.wikis
+
+        expect(results.size).to eq(1)
+        expect(results.first).to include(path: "/#{project.full_path}/-/wikis/page1", slug: 'page1', title: 'page1')
+      end
+    end
+
+    context 'when user cannot read wiki' do
+      it 'returns empty array' do
+        project.project_feature.update!(wiki_access_level: ProjectFeature::PRIVATE)
+
+        service = described_class.new(project, nil)
+        results = service.wikis
+
+        expect(results).to be_empty
+      end
+    end
+  end
+
   describe '#contacts' do
     let_it_be(:user) { create(:user) }
     let_it_be(:contact_1) { create(:contact, group: group) }

@@ -48,7 +48,7 @@ module QA
       end
 
       it(
-        'publishes a composer package and deletes it',
+        'publishes a composer package and deletes it', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
       ) do
         Page::Project::Menu.perform(&:go_to_package_registry)

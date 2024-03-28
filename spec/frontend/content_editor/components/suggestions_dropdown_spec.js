@@ -78,6 +78,16 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     },
     fieldValue: 'smiley',
   };
+  const exampleWiki = {
+    title: 'Home',
+    slug: 'home',
+    path: '/path/to/project/-/wikis/home',
+  };
+  const exampleWiki2 = {
+    title: 'Changelog',
+    slug: 'docs/changelog',
+    path: '/path/to/project/-/wikis/docs/changelog',
+  };
 
   const insertedEmojiProps = {
     name: 'smiley',
@@ -147,6 +157,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'snippet'}       | ${exampleSnippet}       | ${'project'} | ${'<strong class="gl-text-body!">Project</strong> creation QueryRecorder logs'}
       ${'reference'} | ${'snippet'}       | ${exampleSnippet}       | ${'242'}     | ${'<strong class="gl-text-body!">242</strong>0859'}
       ${'emoji'}     | ${'emoji'}         | ${exampleEmoji}         | ${'sm'}      | ${'<strong class="gl-text-body!">sm</strong>iley'}
+      ${'wiki'}      | ${'wiki'}          | ${exampleWiki}          | ${'home'}    | ${'<strong class="gl-text-body!">Home</strong>'}
     `(
       'highlights query as bolded in $referenceType text',
       ({ nodeType, referenceType, reference, query, expectedHTML }) => {
@@ -185,6 +196,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'vulnerability'} | ${'[vulnerability:'} | ${exampleVulnerability} | ${`[vulnerability:60850147]`} | ${{}}
       ${'reference'} | ${'snippet'}       | ${'$'}               | ${exampleSnippet}       | ${`$2420859`}                 | ${{}}
       ${'emoji'}     | ${'emoji'}         | ${':'}               | ${exampleEmoji}         | ${`😃`}                       | ${insertedEmojiProps}
+      ${'link'}      | ${'wiki'}          | ${'[['}              | ${exampleWiki}          | ${`Home`}                     | ${{ canonicalSrc: 'home', href: '/path/to/project/-/wikis/home', isGollumLink: true, isWikiPage: true }}
     `(
       'runs a command to insert the selected $referenceType',
       async ({ char, nodeType, referenceType, reference, insertedText, insertedProps }) => {
@@ -305,6 +317,40 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         expect(wrapper.findByTestId('label-color-box').attributes().style).toEqual(
           `background-color: ${displayedColor};`,
         );
+      });
+    });
+
+    describe('rendering wiki references', () => {
+      it('displays wiki title', () => {
+        buildWrapper({
+          propsData: {
+            char: '[[',
+            nodeType: 'link',
+            nodeProps: {
+              referenceType: 'wiki',
+            },
+            items: [exampleWiki],
+          },
+        });
+
+        expect(wrapper.text()).toContain(exampleWiki.title);
+        expect(wrapper.text()).not.toContain(exampleWiki.slug);
+      });
+
+      it('displays wiki slug if title is not the same as the slug', () => {
+        buildWrapper({
+          propsData: {
+            char: '[[',
+            nodeType: 'link',
+            nodeProps: {
+              referenceType: 'wiki',
+            },
+            items: [exampleWiki2],
+          },
+        });
+
+        expect(wrapper.text()).toContain(exampleWiki2.title);
+        expect(wrapper.text()).toContain(exampleWiki2.slug);
       });
     });
 

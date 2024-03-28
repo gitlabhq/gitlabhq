@@ -172,6 +172,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get 'commands'
             get 'snippets'
             get 'contacts'
+            get 'wikis'
           end
         end
 

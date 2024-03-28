@@ -139,6 +139,7 @@ export default class AutocompleteHelper {
         merge_request: this.dataSourceUrls.mergeRequests,
         vulnerability: this.dataSourceUrls.vulnerabilities,
         command: this.dataSourceUrls.commands,
+        wiki: this.dataSourceUrls.wikis,
       };
 
       const searchFields = {
@@ -151,6 +152,7 @@ export default class AutocompleteHelper {
         merge_request: ['iid', 'title'],
         milestone: ['title', 'iid'],
         command: ['name'],
+        wiki: ['title'],
         emoji: [],
       };
 

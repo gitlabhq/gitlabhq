@@ -254,6 +254,24 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
 
     it_behaves_like 'autocomplete user mentions'
 
+    context 'autocomplete wiki pages' do
+      let_it_be(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
+      let_it_be(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
+
+      it 'shows wiki pages in the autocomplete menu' do
+        fill_in 'Comment', with: '[[ho'
+
+        wait_for_requests
+
+        expect(find_autocomplete_menu).to have_text('Home')
+        expect(find_autocomplete_menu).to have_text('How to use GitLab (How-to-use-GitLab)')
+
+        send_keys [:arrow_down, :enter]
+
+        expect(find_field('Comment').value).to have_text('[[How to use GitLab|How-to-use-GitLab]]')
+      end
+    end
+
     context 'when mention_autocomplete_backend_filtering is disabled' do
       before do
         stub_feature_flags(mention_autocomplete_backend_filtering: false)

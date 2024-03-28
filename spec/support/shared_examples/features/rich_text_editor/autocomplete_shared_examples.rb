@@ -17,6 +17,7 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
         create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:label, project: project, title: 'My Cool Label')
         create(:milestone, project: project, title: 'My Cool Milestone')
+        create(:wiki_page, wiki: project.wiki, title: 'My Cool Wiki Page', content: 'Example')
 
         project.add_maintainer(create(:user, name: 'abc123', username: 'abc123'))
       else # group wikis
@@ -26,6 +27,7 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
         create(:merge_request, source_project: project, source_branch: 'branch-1', title: 'My Cool Merge Request')
         create(:group_label, group: group, title: 'My Cool Label')
         create(:milestone, group: group, title: 'My Cool Milestone')
+        create(:wiki_page, wiki: group.wiki, title: 'My Cool Wiki Page', content: 'Example')
 
         project.add_maintainer(create(:user, name: 'abc123', username: 'abc123'))
       end
@@ -230,6 +232,23 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).not_to have_css(suggestions_dropdown)
 
       expect(page).to have_text('😄')
+    end
+
+    it 'shows suggestions for wiki pages' do
+      type_in_content_editor '[[My'
+
+      expect(find(suggestions_dropdown)).to have_text('My Cool Wiki Page')
+
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('My Cool Wiki Page')
+
+      click_button 'Switch to plain text editing'
+      wait_for_requests
+
+      # ensure serialized markdown is in correct format (gollum/wikilinks)
+      expect(page.find('textarea').value).to include('[[My Cool Wiki Page|My-Cool-Wiki-Page]]')
     end
 
     it 'doesn\'t show suggestions dropdown if there are no suggestions to show' do
