@@ -34,12 +34,12 @@ module Ci
         end
       end
 
-      def extract_inputs(blob)
+      def extract_spec(blob)
         result = Gitlab::Ci::Config::Yaml::Loader.new(blob).load_uninterpolated_yaml
 
         raise result.error_class, result.error unless result.valid?
 
-        result.inputs
+        result.spec
       end
 
       def fetch_component(component_name)

@@ -33,7 +33,7 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
     it { is_expected.to validate_presence_of(:version) }
     it { is_expected.to validate_presence_of(:name) }
 
-    context 'when attributes are valid' do
+    context 'when `inputs` and `spec` are valid' do
       it 'returns no errors' do
         component.inputs = {
           website: nil,
@@ -45,14 +45,27 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
             default: ['tag1']
           }
         }
+        component.spec = {
+          inputs: {
+            website: nil,
+            environment: {
+              default: 'test'
+            },
+            tags: {
+              type: 'array',
+              default: ['tag1']
+            }
+          }
+        }
 
         expect(component).to be_valid
       end
     end
 
-    context 'when data is invalid' do
+    context 'when `inputs` and `spec` are invalid' do
       it 'returns errors' do
         component.inputs = { boo: [] }
+        component.spec = { not_inputs: { boo: '' } }
 
         aggregate_failures do
           expect(component).to be_invalid

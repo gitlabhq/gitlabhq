@@ -127,22 +127,22 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
           expect(project.ci_components.count).to eq(4)
           expect(project.ci_components.first.name).to eq('blank-yaml')
           expect(project.ci_components.first.project).to eq(version.project)
-          expect(project.ci_components.first.inputs).to eq({})
+          expect(project.ci_components.first.spec).to eq({})
           expect(project.ci_components.first.catalog_resource).to eq(version.catalog_resource)
           expect(project.ci_components.first.version).to eq(version)
           expect(project.ci_components.second.name).to eq('dast')
           expect(project.ci_components.second.project).to eq(version.project)
-          expect(project.ci_components.second.inputs).to eq({})
+          expect(project.ci_components.second.spec).to eq({})
           expect(project.ci_components.second.catalog_resource).to eq(version.catalog_resource)
           expect(project.ci_components.second.version).to eq(version)
           expect(project.ci_components.third.name).to eq('secret-detection')
           expect(project.ci_components.third.project).to eq(version.project)
-          expect(project.ci_components.third.inputs).to eq({ "website" => nil })
+          expect(project.ci_components.third.spec).to eq({ 'inputs' => { 'website' => nil } })
           expect(project.ci_components.third.catalog_resource).to eq(version.catalog_resource)
           expect(project.ci_components.third.version).to eq(version)
           expect(project.ci_components.fourth.name).to eq('template')
           expect(project.ci_components.fourth.project).to eq(version.project)
-          expect(project.ci_components.fourth.inputs).to eq({ "environment" => nil })
+          expect(project.ci_components.fourth.spec).to eq({ 'inputs' => { 'environment' => nil } })
           expect(project.ci_components.fourth.catalog_resource).to eq(version.catalog_resource)
           expect(project.ci_components.fourth.version).to eq(version)
         end
@@ -177,7 +177,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         response = described_class.new(release).execute
 
         expect(response).to be_error
-        expect(response.message).to include('Inputs must be a valid json schema')
+        expect(response.message).to include('Spec must be a valid json schema')
       end
     end
   end

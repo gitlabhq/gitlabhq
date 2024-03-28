@@ -70,7 +70,7 @@ module Ci
 
             {
               name: component_name,
-              inputs: components_project.extract_inputs(blob.data)
+              spec: components_project.extract_spec(blob.data)
             }
           end
 
@@ -80,7 +80,7 @@ module Ci
             component = @version.components.build(
               name: metadata[:name],
               project: @version.project,
-              inputs: metadata[:inputs],
+              spec: metadata[:spec],
               catalog_resource: @version.catalog_resource,
               created_at: Time.current
             )

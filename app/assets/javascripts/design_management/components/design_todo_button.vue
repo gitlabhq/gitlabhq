@@ -150,6 +150,7 @@ export default {
     :issuable-id="design.iid"
     :is-todo="hasPendingTodo"
     :loading="todoLoading"
+    :is-icon-button="true"
     @click.stop.prevent="toggleTodo"
   >
     <gl-icon :class="{ 'gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />

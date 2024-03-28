@@ -66,7 +66,7 @@ To help manage your Free user limit,
 you can view and manage the total number of members across all projects and groups
 in your namespace.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Owner role for the group.
 

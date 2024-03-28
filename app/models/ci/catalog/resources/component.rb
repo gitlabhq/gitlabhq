@@ -23,6 +23,7 @@ module Ci
         enum resource_type: { template: 1 }
 
         validates :inputs, json_schema: { filename: 'catalog_resource_component_inputs' }
+        validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true
 
         def include_path

@@ -70,21 +70,21 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     end
   end
 
-  describe '#extract_inputs' do
-    context 'with valid inputs' do
-      it 'extracts the inputs from a blob' do
+  describe '#extract_spec' do
+    context 'with a valid spec' do
+      it 'extracts the spec from a blob' do
         blob = "spec:\n inputs:\n  website:\n---\nimage: alpine_1"
 
-        expect(components_project.extract_inputs(blob)).to eq({ website: nil })
+        expect(components_project.extract_spec(blob)).to eq({ inputs: { website: nil } })
       end
     end
 
-    context 'with invalid inputs' do
+    context 'with an invalid spec' do
       it 'raises InvalidFormatError' do
         blob = "spec:\n inputs:\n  website:\n---\nsome: invalid: string"
 
         expect do
-          components_project.extract_inputs(blob)
+          components_project.extract_spec(blob)
         end.to raise_error(::Gitlab::Config::Loader::FormatError,
           /mapping values are not allowed in this context/)
       end

@@ -25,7 +25,9 @@ module Types
             alpha: { milestone: '16.7' }
 
           def inputs
-            object.inputs.map do |key, value|
+            spec_inputs = object.spec.fetch('inputs', object.inputs)
+
+            spec_inputs.map do |key, value|
               {
                 name: key,
                 required: !value&.key?('default'),
