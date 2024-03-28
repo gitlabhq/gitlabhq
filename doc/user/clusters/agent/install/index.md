@@ -139,7 +139,7 @@ To install the agent on your cluster using Helm:
    ```
 
 1. Optional. [Customize the Helm installation](#customize-the-helm-installation).
-   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab Agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
+   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
 
 ##### Customize the Helm installation
 

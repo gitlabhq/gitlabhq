@@ -10,4 +10,5 @@
 '{event_counters}_analytics_dashboard_viewed': USAGE_PRODUCT_ANALYTICS_VIEW_DASHBOARD
 '{event_counters}_licenses_list_viewed': USAGE_LICENSES_LIST_VIEWS
 '{event_counters}_usage_data_download_payload_clicked': USAGE_SERVICE_USAGE_DATA_DOWNLOAD_PAYLOAD_CLICK
+'{event_counters}_value_streams_dashboard_viewed': USAGE_VALUE_STREAMS_DASHBOARD_VIEWS
 '{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT

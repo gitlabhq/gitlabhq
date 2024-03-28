@@ -72,7 +72,7 @@ To configure KAS to listen on a UNIX socket:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-For additional configuration options, see the **GitLab Kubernetes Agent Server** section of the
+For additional configuration options, see the **GitLab Kubernetes agent server** section of
 [`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 
 #### Enable on multiple nodes

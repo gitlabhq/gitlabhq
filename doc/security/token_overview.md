@@ -151,7 +151,7 @@ The job token is secured by its short life-time and limited scope. It could poss
 
 ## GitLab cluster agent tokens
 
-When [registering a GitLab Agent for Kubernetes](../user/clusters/agent/install/index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
+When [registering a GitLab agent for Kubernetes](../user/clusters/agent/install/index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
 
 To revoke this cluster agent token, you can use either the:
 
@@ -258,7 +258,7 @@ The following tables show the prefixes for each type of token where applicable.
 | Legacy runner registration token  | GR1348941          |
 | Feed token                        | `glft-`            |
 | Incoming mail token               | `glimt-`           |
-| GitLab Agent for Kubernetes token | `glagent-`         |
+| GitLab agent for Kubernetes token | `glagent-`         |
 | GitLab session cookies            | `_gitlab_session=` |
 | SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
 | Feature Flags Client token        | `glffct-`          |

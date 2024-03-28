@@ -137,7 +137,7 @@ Some advantages of us opting to write our own custom-built solution are:
 
 - We can still use the core DevWorkspace Operator and build on top of it.
 - It is easier to add support for other configurations apart from `devfile` in the future if the need arises.
-- We have the ability to choose which tech stack to use (for example, instead of using `traefik`, which is used in Che, explore NGINX itself or use the GitLab Agent for Kubernetes).
+- We have the ability to choose which tech stack to use (for example, instead of using `traefik`, which is used in Che, explore NGINX itself or use the GitLab agent for Kubernetes).
 
 After writing our own custom-built solution using DevWorkspace Operator,
 we decided to [remove the dependency on DevWorkspace Operator](https://gitlab.com/groups/gitlab-org/-/epics/9895)
@@ -146,7 +146,7 @@ and thus the transitive dependency of Cert Manager.
 ## Architecture details
 
 Remote development is delivered as a module in the
-[GitLab Agent for Kubernetes](../../../user/clusters/agent/index.md) project.
+[GitLab agent for Kubernetes](../../../user/clusters/agent/index.md) project.
 The overall goal of this architecture is to ensure that the **actual state** of all
 remote development workspaces running in the Kubernetes clusters is reconciled with the **desired state** of the
 workspaces as set by the user.
@@ -206,7 +206,7 @@ node "GitLab" {
 @enduml
 ```
 
-### Remote development with the GitLab Agent for Kubernetes topology
+### Remote development with the GitLab agent for Kubernetes topology
 
 - The Kubernetes API is not shown in this diagram, but it is assumed that it is managing the workspaces through the agent.
 - The numbers of components in each Kubernetes cluster are arbitrary.
@@ -215,7 +215,7 @@ node "GitLab" {
 @startuml
 
 title
-  Remote Development with GitLab Agent for Kubernetes topology
+  Remote Development with GitLab agent for Kubernetes topology
 end title
 
 node "GitLab Monolith" as gitlab {
@@ -552,7 +552,7 @@ flowchart TB
 - Disadvantages
   - Single point of failure
   - It will have to scale with traffic
-  - New component (other than the GitLab Agent) that would have to be deployed in the Kubernetes cluster by the customer
+  - New component (other than the GitLab agent) that would have to be deployed in the Kubernetes cluster by the customer
   - Does need Kubernetes privileges to list service resources.
 
 ### Other options considered

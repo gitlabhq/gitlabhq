@@ -86,7 +86,7 @@ Users are able to share, reuse, and collaborate on workflow blocks.
     rolling the deployment back.
   - Keep the incident issue up to date with what's happening with the deployment.
   - Get information about the Deployment object (let's assume we are deploying to Kubernetes), events in
-    the namespace, Pod logs, etc via the GitLab Agent for Kubernetes.
+    the namespace, and Pod logs from the GitLab agent for Kubernetes.
   - Feed that into GitLab Duo to get advice on what the problem might be and how to fix it. Post the reply as a comment.
 - **Compliance in workflows**: any of the automated workflows, e.g. the one above, can have one or more steps where
   a manual interaction from a user is awaited.

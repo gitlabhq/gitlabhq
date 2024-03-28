@@ -382,3 +382,9 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 .work-item-sidebar-dropdown-toggle ~ .gl-new-dropdown-panel {
     width: 95% !important;
 }
+
+.limit-container-width {
+  .work-item-sticky-header-text {
+    max-width: $limited-layout-width;
+  }
+}

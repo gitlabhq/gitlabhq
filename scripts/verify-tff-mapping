@@ -54,11 +54,8 @@ tests = [
   },
   {
     explanation: 'EE usage counters map to usage data spec',
-    changed_file: 'ee/lib/gitlab/usage_data_counters/value_streams_dashboard_counter.rb',
-    expected: %w[
-      ee/spec/lib/gitlab/usage_data_counters/value_streams_dashboard_counter_spec.rb
-      spec/lib/gitlab/usage_data_spec.rb
-    ]
+    changed_file: 'ee/lib/gitlab/usage_data_counters/license_testing_counter.rb',
+    expected: ['spec/lib/gitlab/usage_data_spec.rb']
   },
 
   {

@@ -24,6 +24,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-new-nav-for-everyone-callout',
   '.js-namespace-over-storage-users-combined-alert',
   '.js-joining-a-project-alert',
+  '.js-duo-pro-trial-alert',
 ];
 
 const initCallouts = () => {

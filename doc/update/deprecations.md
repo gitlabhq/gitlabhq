@@ -3663,7 +3663,7 @@ For more information, refer to [security report validation](https://docs.gitlab.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Starboard directive in the config for the GitLab Agent for Kubernetes
+### Starboard directive in the configuration of the GitLab agent for Kubernetes
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">15.4</span>
@@ -3671,7 +3671,7 @@ For more information, refer to [security report validation](https://docs.gitlab.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368828).
 </div>
 
-GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab Agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
+GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
 
 </div>
 

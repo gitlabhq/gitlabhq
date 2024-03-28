@@ -84,7 +84,8 @@ module Users
       product_analytics_dashboard_feedback: 82, # EE-only
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
-      summarize_code_changes: 85 # EE-only
+      summarize_code_changes: 85, # EE-only
+      duo_pro_trial_alert: 86 # EE-only
     }
 
     validates :feature_name,

@@ -163,7 +163,7 @@ Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc
 
 When using the `schedule` rule type in conjunction with the `agents` field, note the following:
 
-- The GitLab Agent for Kubernetes checks every 30 seconds to see if there is an applicable policy. When a policy is found, the scans are executed according to the `cadence` defined.
+- The GitLab agent for Kubernetes checks every 30 seconds to see if there is an applicable policy. When a policy is found, the scans are executed according to the `cadence` defined.
 - The CRON expression is evaluated using the system-time of the Kubernetes-agent pod.
 
 When using the `schedule` rule type in conjunction with the `branches` field, note the following:

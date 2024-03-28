@@ -1,8 +1,0 @@
----
-name: epic_events_on_contributions_calendar
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138688
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434527
-milestone: '16.10'
-type: development
-group: group::tenant scale
-default_enabled: false
