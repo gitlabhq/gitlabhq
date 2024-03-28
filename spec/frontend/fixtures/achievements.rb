@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_profile do
-  include JavaScriptFixturesHelpers
   include ApiHelpers
+  include JavaScriptFixturesHelpers
 
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
@@ -25,7 +25,12 @@ RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_pro
         before_all do
           create(:achievement, namespace: group, name: 'Hero')
           create(:achievement, namespace: group, name: 'Star')
-          create(:achievement, namespace: group, name: 'Legend')
+          legend_avatar = fixture_file_upload('spec/fixtures/dk.png')
+          legend = create(:achievement, namespace: group, name: 'Legend', avatar: legend_avatar)
+          user_avatar = fixture_file_upload('spec/fixtures/rails_sample.png')
+          recipient = create(:user, name: 'Git Lab', username: 'gitlab.user', avatar: user_avatar)
+          create(:user_achievement, achievement: legend, user: recipient)
+          create(:user_achievement, achievement: legend)
         end
 
         it 'graphql/get_group_achievements_response.json' do

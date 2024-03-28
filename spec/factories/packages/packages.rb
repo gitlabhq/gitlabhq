@@ -163,8 +163,14 @@ FactoryBot.define do
       version { '1.0.0' }
       package_type { :terraform_module }
 
-      after :create do |package|
-        create :package_file, :terraform_module, package: package
+      transient do
+        without_package_files { false }
+      end
+
+      after :create do |package, evaluator|
+        unless evaluator.without_package_files
+          create :package_file, :terraform_module, package: package
+        end
       end
 
       trait :with_build do

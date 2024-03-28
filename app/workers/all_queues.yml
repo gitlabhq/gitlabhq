@@ -1884,6 +1884,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: package_repositories:packages_terraform_module_process_package_file
+  :worker_name: Packages::TerraformModule::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
   :feature_category: :continuous_integration

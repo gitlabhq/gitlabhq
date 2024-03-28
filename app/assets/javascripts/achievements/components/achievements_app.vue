@@ -1,7 +1,15 @@
 <script>
-import { GlButton, GlEmptyState, GlKeysetPagination, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import {
+  GlAvatarLabeled,
+  GlButton,
+  GlCard,
+  GlEmptyState,
+  GlKeysetPagination,
+  GlLoadingIcon,
+} from '@gitlab/ui';
+import { groupBy } from 'lodash';
 import { s__ } from '~/locale';
+import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { NEW_ROUTE_NAME } from '../constants';
 import getGroupAchievements from './graphql/get_group_achievements.query.graphql';
 
@@ -9,15 +17,21 @@ const ENTRIES_PER_PAGE = 20;
 
 export default {
   components: {
+    GlAvatarLabeled,
     GlButton,
+    GlCard,
     GlEmptyState,
     GlKeysetPagination,
     GlLoadingIcon,
-    GlTableLite,
+    UserAvatarList,
   },
   inject: {
     canAdminAchievement: {
       type: Boolean,
+      required: true,
+    },
+    gitlabLogoPath: {
+      type: String,
       required: true,
     },
     groupFullPath: {
@@ -55,13 +69,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.achievements.loading;
     },
-    items() {
-      return this.achievements.map((achievement) => ({
-        id: getIdFromGraphQLId(achievement.id),
-        name: achievement.name,
-        description: achievement.description,
-      }));
-    },
     showPagination() {
       return this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage;
     },
@@ -95,10 +102,16 @@ export default {
         before: item,
       };
     },
+    uniqueRecipients(userAchievements) {
+      return Object.entries(groupBy(userAchievements, 'user.id')).map(([, values]) => {
+        return values[0].user;
+      });
+    },
   },
   i18n: {
     emptyStateTitle: s__('Achievements|There are currently no achievements.'),
     newAchievement: s__('Achievements|New achievement'),
+    notYetAwarded: s__('Achievements|Not yet awarded.'),
   },
   NEW_ROUTE_NAME,
 };
@@ -112,9 +125,31 @@ export default {
       </gl-button>
     </router-link>
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
-    <gl-empty-state v-else-if="!items.length" :title="$options.i18n.emptyStateTitle" />
+    <gl-empty-state v-else-if="!achievements.length" :title="$options.i18n.emptyStateTitle" />
     <template v-else>
-      <gl-table-lite :items="items" />
+      <gl-card
+        v-for="achievement in achievements"
+        :key="achievement.id"
+        body-class="gl-p-3"
+        footer-class="gl-p-3 gl-new-card-empty"
+        class="gl-mb-5"
+      >
+        <gl-avatar-labeled
+          shape="rect"
+          :size="64"
+          :src="achievement.avatarUrl || gitlabLogoPath"
+          :label="achievement.name"
+          :sub-label="achievement.description"
+        />
+        <template #footer>
+          <user-avatar-list
+            v-if="achievement.userAchievements.nodes.length"
+            :items="uniqueRecipients(achievement.userAchievements.nodes)"
+            :img-size="24"
+          />
+          <span v-else>{{ $options.i18n.notYetAwarded }}</span>
+        </template>
+      </gl-card>
       <gl-keyset-pagination
         v-if="showPagination"
         v-bind="pageInfo"

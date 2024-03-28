@@ -23,6 +23,8 @@ module API
         ::ProtectedTag.protected?(options[:project], repo_tag.name)
       end
 
+      expose :date, as: :created_at, documentation: { type: 'dateTime', example: '2023-10-12T02:16:52.000Z' }
+
       def can_read_release?
         can?(options[:current_user], :read_release, options[:project])
       end

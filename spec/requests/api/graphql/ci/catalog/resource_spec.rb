@@ -48,6 +48,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         a_graphql_entity_for(
           resource, :name, :description,
           icon: project.avatar_path,
+          fullPath: project.full_path,
           webPath: "/#{project.full_path}",
           verificationLevel: "UNVERIFIED",
           starCount: project.star_count

@@ -2216,6 +2216,33 @@ Input type: `BranchRuleDeleteInput`
 | <a id="mutationbranchruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchruledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.branchRuleExternalStatusCheckCreate`
+
+Create a new external status check from a branch rule.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `BranchRuleExternalStatusCheckCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckcreatebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to update. |
+| <a id="mutationbranchruleexternalstatuscheckcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateexternalurl"></a>`externalUrl` | [`String!`](#string) | URL of external status check resource. |
+| <a id="mutationbranchruleexternalstatuscheckcreatename"></a>`name` | [`String!`](#string) | Name of the external status check. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateexternalstatuscheck"></a>`externalStatusCheck` | [`ExternalStatusCheck`](#externalstatuscheck) | New status check after mutation. |
+
 ### `Mutation.branchRuleUpdate`
 
 DETAILS:
@@ -16221,6 +16248,7 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Description of the catalog resource. |
+| <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
@@ -32281,6 +32309,7 @@ Member role permission.
 | <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Create, read, update, and delete CI/CD variables. |
 | <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. |
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
+| <a id="memberrolepermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. |
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |

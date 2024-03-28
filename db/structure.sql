@@ -4470,6 +4470,25 @@ CREATE SEQUENCE approval_merge_request_rules_users_id_seq
 
 ALTER SEQUENCE approval_merge_request_rules_users_id_seq OWNED BY approval_merge_request_rules_users.id;
 
+CREATE TABLE approval_policy_rules (
+    id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    rule_index smallint NOT NULL,
+    type smallint NOT NULL,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE approval_policy_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE approval_policy_rules_id_seq OWNED BY approval_policy_rules.id;
+
 CREATE TABLE approval_project_rules (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -15630,6 +15649,34 @@ CREATE SEQUENCE security_orchestration_policy_rule_schedules_id_seq
 
 ALTER SEQUENCE security_orchestration_policy_rule_schedules_id_seq OWNED BY security_orchestration_policy_rule_schedules.id;
 
+CREATE TABLE security_policies (
+    id bigint NOT NULL,
+    security_orchestration_policy_configuration_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    policy_index smallint NOT NULL,
+    type smallint NOT NULL,
+    enabled boolean DEFAULT true NOT NULL,
+    name text NOT NULL,
+    description text,
+    checksum text NOT NULL,
+    scope jsonb DEFAULT '{}'::jsonb NOT NULL,
+    actions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_3fa0f29e4b CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_966e08b242 CHECK ((char_length(checksum) <= 255)),
+    CONSTRAINT check_99c8e08928 CHECK ((char_length(description) <= 255))
+);
+
+CREATE SEQUENCE security_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_policies_id_seq OWNED BY security_policies.id;
+
 CREATE TABLE security_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -18640,6 +18687,8 @@ ALTER TABLE ONLY approval_merge_request_rules_groups ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY approval_merge_request_rules_users ALTER COLUMN id SET DEFAULT nextval('approval_merge_request_rules_users_id_seq'::regclass);
 
+ALTER TABLE ONLY approval_policy_rules ALTER COLUMN id SET DEFAULT nextval('approval_policy_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY approval_project_rules ALTER COLUMN id SET DEFAULT nextval('approval_project_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY approval_project_rules_groups ALTER COLUMN id SET DEFAULT nextval('approval_project_rules_groups_id_seq'::regclass);
@@ -19564,6 +19613,8 @@ ALTER TABLE ONLY security_orchestration_policy_configurations ALTER COLUMN id SE
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules ALTER COLUMN id SET DEFAULT nextval('security_orchestration_policy_rule_schedules_id_seq'::regclass);
 
+ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security_policies_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
@@ -20406,6 +20457,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY approval_merge_request_rules_users
     ADD CONSTRAINT approval_merge_request_rules_users_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY approval_policy_rules
+    ADD CONSTRAINT approval_policy_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY approval_project_rules_groups
     ADD CONSTRAINT approval_project_rules_groups_pkey PRIMARY KEY (id);
@@ -22095,6 +22149,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT security_orchestration_policy_rule_schedules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_policies
+    ADD CONSTRAINT security_policies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
@@ -24128,6 +24185,8 @@ CREATE INDEX index_approval_merge_request_rules_groups_2 ON approval_merge_reque
 CREATE UNIQUE INDEX index_approval_merge_request_rules_users_1 ON approval_merge_request_rules_users USING btree (approval_merge_request_rule_id, user_id);
 
 CREATE INDEX index_approval_merge_request_rules_users_2 ON approval_merge_request_rules_users USING btree (user_id);
+
+CREATE UNIQUE INDEX index_approval_policy_rules_on_unique_policy_rule_index ON approval_policy_rules USING btree (security_policy_id, rule_index);
 
 CREATE UNIQUE INDEX index_approval_project_rules_groups_1 ON approval_project_rules_groups USING btree (approval_project_rule_id, group_id);
 
@@ -26948,6 +27007,8 @@ CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USIN
 CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
+
+CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
@@ -30911,6 +30972,9 @@ ALTER TABLE ONLY project_deploy_tokens
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_rails_17ade83f17 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_policy_rules
+    ADD CONSTRAINT fk_rails_17c6dfe138 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_17dbea07a6 FOREIGN KEY (policy_id) REFERENCES incident_management_escalation_policies(id) ON DELETE CASCADE;
 
@@ -31651,6 +31715,9 @@ ALTER TABLE ONLY audit_events_group_external_streaming_destinations
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_policies
+    ADD CONSTRAINT fk_rails_802ceea0c8 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_rails_806cf07a3c FOREIGN KEY (dependency_proxy_manifest_id) REFERENCES dependency_proxy_manifests(id) ON DELETE CASCADE;

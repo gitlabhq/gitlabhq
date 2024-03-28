@@ -33,13 +33,22 @@
     %span.form-text.gl-text-gray-600
       - code_pair = tag_pair(tag.code, :code_start, :code_end)
       - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
-      = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:'), github_link_tag_pair)
+      = safe_format(s_('GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}.'), github_link_tag_pair)
+      %br
+      = safe_format(s_('GithubImport|For classic tokens, you must select the following scopes:'))
       %ul
         - if has_ci_cd_only_params?
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
         - else
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
           %li= safe_format(s_('GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories.'), code_pair)
+      = safe_format(s_('GithubImport|For fine-grained tokens, you must select the following permissions:'))
+      %ul
+        - if has_ci_cd_only_params?
+          %li= safe_format(s_('GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
+        - else
+          %li= safe_format(s_('GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
+          %li= safe_format(s_('GithubImporter|%{code_start}Administration:read-only%{code_end} (optional): Used to import collaborators from GitHub repositories.'), code_pair)
 
   = render_if_exists 'import/github/ci_cd_only'
 

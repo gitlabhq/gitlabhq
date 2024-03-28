@@ -1646,6 +1646,21 @@ Use **runner authentication token** instead of variations like **runner token**,
 Runners are assigned runner authentication tokens when they are created, and use them to authenticate with GitLab when
 they execute jobs.
 
+## Runner SaaS, SaaS runners
+
+Do not use **Runner SaaS** or **SaaS runners**.
+
+Use **GitLab-hosted runners** as the main feature name that describes runners hosted on GitLab.com and GitLab Dedicated.
+
+To specify offerings and operating systems use:
+
+- **hosted runners for GitLab.com**
+- **hosted runners for GitLab Dedicated**
+- **hosted runners on Linux for GitLab.com**
+- **hosted runners on Windows for GitLab.com**
+
+Do not use **hosted runners** without the **GitLab-** prefix or without the offering or operating system.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:

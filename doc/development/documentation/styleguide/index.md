@@ -1314,8 +1314,6 @@ the Markdown rendering engine used for GitLab documentation.
 
 ## GitLab SVG icons
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
-
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
 directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
 

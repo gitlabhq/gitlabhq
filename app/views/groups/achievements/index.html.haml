@@ -10,5 +10,6 @@
   can_award_achievement: can?(current_user, :award_achievement, @group),
   group_full_path: @group.full_path,
   group_id: @group.id,
+  gitlab_logo_path: ActionController::Base.helpers.asset_path('gitlab_logo.png'),
   text_query: params[:search]
   }) } }

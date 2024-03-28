@@ -814,6 +814,110 @@ describe('diffs/components/app', () => {
         },
       );
     });
+
+    describe('non-UI navigation', () => {
+      describe('in single-file review mode', () => {
+        let currentHash;
+        let fetchFbf;
+
+        beforeEach(() => {
+          currentHash = jest.fn();
+          fetchFbf = jest.fn();
+          window.location.hash = '123';
+
+          createComponent({
+            actions: {
+              diffs: {
+                setCurrentFileHash: currentHash,
+                fetchFileByFile: fetchFbf,
+              },
+            },
+            extendStore: ({ state }) => {
+              state.diffs.treeEntries = {
+                123: {
+                  type: 'blob',
+                  fileHash: '123',
+                  filePaths: { old: '1234', new: '123' },
+                  parentPath: '/',
+                },
+                312: {
+                  type: 'blob',
+                  fileHash: '312',
+                  filePaths: { old: '3124', new: '312' },
+                  parentPath: '/',
+                },
+              };
+              state.diffs.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+            },
+            baseConfig: { viewDiffsFileByFile: true },
+          });
+        });
+
+        it.each`
+          hash     | updated  | alias
+          ${'312'} | ${'312'} | ${'312'}
+          ${''}    | ${'123'} | ${'(nothing)'}
+        `(
+          'reacts to the hash changing to "$alias" externally (e.g. browser back/forward)',
+          async ({ hash, updated }) => {
+            window.location.hash = hash;
+            window.dispatchEvent(new Event('hashchange'));
+
+            await nextTick();
+
+            expect(currentHash).toHaveBeenCalledWith(expect.anything(), updated);
+            expect(fetchFbf).toHaveBeenCalled();
+          },
+        );
+      });
+
+      describe('in "normal" (multi-file) mode', () => {
+        let currentHash;
+        let fetchFbf;
+
+        beforeEach(() => {
+          currentHash = jest.fn();
+          fetchFbf = jest.fn();
+          window.location.hash = '123';
+
+          createComponent({
+            actions: {
+              diffs: {
+                setCurrentFileHash: currentHash,
+                fetchFileByFile: fetchFbf,
+              },
+            },
+            extendStore: ({ state }) => {
+              state.diffs.treeEntries = {
+                123: {
+                  type: 'blob',
+                  fileHash: '123',
+                  filePaths: { old: '1234', new: '123' },
+                  parentPath: '/',
+                },
+                312: {
+                  type: 'blob',
+                  fileHash: '312',
+                  filePaths: { old: '3124', new: '312' },
+                  parentPath: '/',
+                },
+              };
+              state.diffs.diffFiles = [{ file_hash: '123' }, { file_hash: '312' }];
+            },
+          });
+        });
+
+        it('does not react to the hash changing when in regular (multi-file) mode', async () => {
+          window.location.hash = '312';
+          window.dispatchEvent(new Event('hashchange'));
+
+          await nextTick();
+
+          expect(currentHash).not.toHaveBeenCalled();
+          expect(fetchFbf).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('autoscroll', () => {

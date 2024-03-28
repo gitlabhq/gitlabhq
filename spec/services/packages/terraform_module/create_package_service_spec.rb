@@ -25,6 +25,8 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
   describe '#execute' do
     shared_examples 'creating a package' do
       it 'creates a package' do
+        expect(::Packages::TerraformModule::ProcessPackageFileWorker).to receive(:perform_async).once
+
         expect { subject }
           .to change { ::Packages::Package.count }.by(1)
           .and change { ::Packages::Package.terraform_module.count }.by(1)
@@ -33,6 +35,18 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
 
     context 'valid package' do
       it_behaves_like 'creating a package'
+
+      context 'when index_terraform_module_archive feature flag is disabled' do
+        before do
+          stub_feature_flags(index_terraform_module_archive: false)
+        end
+
+        it 'does not enqueue the ProcessPackageFileWorker' do
+          expect(::Packages::TerraformModule::ProcessPackageFileWorker).not_to receive(:perform_async)
+
+          subject
+        end
+      end
     end
 
     context 'package already exists elsewhere' do

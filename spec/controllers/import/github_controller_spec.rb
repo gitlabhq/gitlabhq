@@ -125,10 +125,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         end
 
         get :status, params: params, format: :json
-        fine_grained = assigns(:fine_grained)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(fine_grained).to be false
         expect(json_response['imported_projects'].size).to eq 0
         expect(json_response['provider_repos'].size).to eq 0
         expect(json_response['incompatible_repos'].size).to eq 0
@@ -186,11 +184,11 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       end
     end
 
-    context 'with invalid access token' do
+    context 'with invalid auth token' do
       let(:client_auth_success) { false }
       let(:client_scope_error) { false }
 
-      it "handles an invalid token" do
+      it "handles the error" do
         get :status, format: :json
 
         expect(session[:"#{provider}_access_token"]).to be_nil
@@ -199,69 +197,27 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       end
     end
 
-    context 'with invalid access token scope' do
+    context 'with invalid access token' do
       let(:client_auth_success) { false }
       let(:client_scope_error) { true }
+      let(:docs_link) do
+        ActionController::Base.helpers.link_to(
+          'documentation',
+          help_page_url(
+            'user/project/import/github', anchor: 'use-a-github-personal-access-token'
+          ),
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        )
+      end
 
-      it "handles the invalid scopes" do
+      it "handles the error" do
         get :status, format: :json
 
         expect(session[:"#{provider}_access_token"]).to be_nil
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq("Your GitHub access token does not have the correct scope to import. " \
-                                    "Please use a token with the 'repo' scope, and with the 'read:org' " \
-                                    "scope if importing collaborators.")
-      end
-    end
-
-    context 'with fine_grained personal access token' do
-      let(:client_auth_success) { true }
-      let(:provider_token) { 'github_pat_23542334' }
-
-      it "detects the fine grained token" do
-        get :status, format: :json
-
-        expect(session[:"#{provider}_access_token"]).to be(provider_token)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:fine_grained)).to be true
-      end
-    end
-
-    context 'with classic personal access token' do
-      let(:client_auth_success) { true }
-      let(:provider_token) { 'ghp_23542334' }
-
-      it 'sets fine_grained to false' do
-        get :status, format: :json
-
-        expect(session[:"#{provider}_access_token"]).to be(provider_token)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:fine_grained)).to be false
-      end
-    end
-
-    context 'with non-classic personal access token' do
-      let(:client_auth_success) { true }
-      let(:provider_token) { 'ghu_23542334' }
-
-      it 'sets fine grained to false' do
-        get :status, format: :json
-
-        expect(session[:"#{provider}_access_token"]).to be(provider_token)
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:fine_grained)).to be false
-      end
-    end
-
-    context 'when a gitea import' do
-      let(:provider) { :gitea }
-      let(:provider_token) { 'github_pat_23542334' }
-
-      it 'skips fine_grained check' do
-        get :status, format: :json
-
-        expect(assigns(:fine_grained)).to be nil
-        expect(controller).not_to receive(:fine_grained?)
+        expect(flash[:alert]).to eq("Your GitHub personal access token does not have the required scope or permission to import. " \
+                                    "Please see our #{docs_link} for more information about GitHub access tokens.")
       end
     end
 

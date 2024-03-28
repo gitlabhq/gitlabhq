@@ -2753,6 +2753,9 @@ msgstr ""
 msgid "Achievements|New achievement"
 msgstr ""
 
+msgid "Achievements|Not yet awarded."
+msgstr ""
+
 msgid "Achievements|There are currently no achievements."
 msgstr ""
 
@@ -23079,6 +23082,15 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
+msgid "GithubImporter|%{code_start}Administration:read-only%{code_end} (optional): Used to import collaborators from GitHub repositories."
+msgstr ""
+
+msgid "GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to connect to."
+msgstr ""
+
+msgid "GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to import from."
+msgstr ""
+
 msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories."
 msgstr ""
 
@@ -23166,13 +23178,16 @@ msgstr ""
 msgid "GithubImport|\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
-msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:"
+msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}."
 msgstr ""
 
-msgid "GithubImport|Fine-grained personal access tokens are not officially supported. It is recommended to use a classic token instead."
+msgid "GithubImport|For classic tokens, you must select the following scopes:"
 msgstr ""
 
-msgid "GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})"
+msgid "GithubImport|For fine-grained tokens, you must select the following permissions:"
+msgstr ""
+
+msgid "GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
 msgid "GithubImport|Namespace or group to import repository into does not exist."
@@ -23190,13 +23205,13 @@ msgstr ""
 msgid "GithubImport|You are not allowed to import projects in this namespace."
 msgstr ""
 
-msgid "GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."
+msgid "GithubImport|Your GitHub personal access token does not have read access to collaborators. Please use a classic token with the `read:org` scope or a fine-grained token with the `administration:read-only` permission."
 msgstr ""
 
-msgid "GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{repo}' scope, and with the '%{read_org}' scope if importing collaborators."
+msgid "GithubImport|Your GitHub personal access token does not have read access to the repository. Please use a classic token with the `repo` scope or a fine-grained token with `read-only` permissions to Repository, Issues, Metadata, Pull Requests, and Contents."
 msgstr ""
 
-msgid "GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{scope}' scope."
+msgid "GithubImport|Your GitHub personal access token does not have the required scope or permission to import. Please see our %{link_start}documentation%{link_end} for more information about GitHub access tokens."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -26160,10 +26175,10 @@ msgstr ""
 msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
-msgid "ImportProjects|Update of imported projects with realtime changes failed"
+msgid "ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope or a fine-grained personal access token with %{codeStart}administration:read-only%{codeEnd} permission. For more information, see the %{linkStart}documentation%{linkEnd}."
 msgstr ""
 
-msgid "ImportProjects|Your fine-grained personal access token may not support collaborator import. Please use a classic token with %{codeStart}read:org%{codeEnd} scope to import collaborators. See the %{linkStart}documentation%{linkEnd} for further details."
+msgid "ImportProjects|Update of imported projects with realtime changes failed"
 msgstr ""
 
 msgid "Imported requirements"

@@ -12,7 +12,7 @@ DETAILS:
 **Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
+> - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
@@ -20,18 +20,17 @@ DETAILS:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
 > - Enabled in GitLab 16.7 as a [Beta](../../policy/experiment-beta-support.md#beta) feature.
 
-This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
-To leave feedback about Product Analytics bugs or functionality:
+For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
+To leave feedback about product analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.
 
 ## How product analytics works
 
-Product analytics uses several tools:
+Product analytics uses the following tools:
 
-- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data and passing it through to ClickHouse.
 - [**ClickHouse**](../../integration/clickhouse.md) - A database suited to store, query, and retrieve analytical data.
 - [**Cube**](https://cube.dev/docs/product/introduction) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
@@ -68,13 +67,13 @@ flowchart TB
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 To track events in your project's applications on GitLab.com,
-you must enable and configure Product Analytics.
+you must enable and configure product analytics.
+
+### Group-level settings
 
 Prerequisites:
 
-- You must be an Owner of the group you wish to enable Product Analytics for.
-
-### Group-level settings
+- You must have the Owner role for the group.
 
 NOTE:
 These group-level settings are available for top-level groups and cascade to all projects that belong to the group.
@@ -88,8 +87,8 @@ These group-level settings are available for top-level groups and cascade to all
 
 ### Project-level settings
 
-You can override the instance-level settings defined by the administrator on a per-project basis. This allows you to
-have a different configured product analytics instance for your project.
+If you want to have a product analytics instance with a different configuration for your project,
+you can override the instance-level settings defined by the administrator on a per-project basis.
 
 Prerequisites:
 
@@ -103,7 +102,7 @@ Prerequisites:
 
 ### Data retention
 
-If GitLab manages your product analytics instance, then your analytics data will be retained for 1 year.
+If GitLab manages your product analytics instance, then your analytics data is retained for one year.
 
 You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
 
@@ -164,9 +163,7 @@ The autofill approach has both benefits and limitations.
   - Only date ranges defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter are filled.
     - The date selector in the UI already uses this filter.
   - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
-  returns 20 data points, with the missing data filled by `0`.
-
-[Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
+  returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
 
 ## Funnel analysis
 
@@ -174,7 +171,8 @@ Use funnel analysis to understand the flow of users through your application, an
 users drop out of a predefined flow (for example, a checkout process or ticket purchase).
 
 Each product can also define an unlimited number of funnels.
-Like dashboards, funnels are defined using the GitLab YAML schema, and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
+Like dashboards, funnels are defined with the GitLab YAML schema
+and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
 
 Funnel definitions must include the keys `name` and `seconds_to_convert`, and an array of `steps`.
 
@@ -303,7 +301,7 @@ To view product analytics usage quota:
 1. Select **Settings > Usage quota**.
 1. Select the **Product analytics** tab.
 
-The tab displays the monthly totals for the group, and a breakdown of usage per project.
+The tab displays the monthly totals for the group and a breakdown of usage per project.
 The current month displays events counted to date.
 
 The usage quota excludes projects that are not onboarded with product analytics.

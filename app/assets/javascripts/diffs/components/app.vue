@@ -21,7 +21,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
-import { updateHistory } from '~/lib/utils/url_utility';
+import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
 import notesEventHub from '~/notes/event_hub';
@@ -379,6 +379,7 @@ export default {
     queueRedisHllEvents(events, { verifyCap: true });
 
     this.subscribeToVirtualScrollingEvents();
+    window.addEventListener('hashchange', this.handleHashChange);
   },
   beforeCreate() {
     diffsApp.instrument();
@@ -405,6 +406,8 @@ export default {
     this.unsubscribeFromEvents();
     this.removeEventListeners();
 
+    window.removeEventListener('hashchange', this.handleHashChange);
+
     diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
   },
@@ -421,6 +424,7 @@ export default {
       'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
+      'setCurrentFileHash',
       'setHighlightedRow',
       'goToFile',
       'setShowTreeList',
@@ -488,6 +492,18 @@ export default {
         if (file && !file.isLoadingFullFile) {
           requestIdleCallback(() => this.slowHashHandler());
         }
+      }
+    },
+    handleHashChange() {
+      let hash = getLocationHash();
+
+      if (this.viewDiffsFileByFile) {
+        if (!hash) {
+          hash = this.diffFiles[0].file_hash;
+        }
+
+        this.setCurrentFileHash(hash);
+        this.fetchFileByFile();
       }
     },
     navigateToDiffFileNumber(number) {

@@ -56,6 +56,12 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) |  | Create, read, update, and delete CI/CD variables. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |  |  |
 
+## Source code management
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_push_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147872) |  | Configure push rules for repositories at the group or project level. | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/421786) | `custom_ability_admin_push_rules` |  |
+
 ## System access
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

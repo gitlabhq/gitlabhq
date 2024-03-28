@@ -13,6 +13,9 @@
     "admin_merge_request": {
       "type": "boolean"
     },
+    "admin_push_rules": {
+      "type": "boolean"
+    },
     "admin_terraform_state": {
       "type": "boolean"
     },

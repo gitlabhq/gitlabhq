@@ -44,6 +44,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             name
             description
             icon
+            fullPath
             webPath
             verificationLevel
             latestReleasedAt
@@ -90,6 +91,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         starCount: project1.star_count,
         starrersPath: Gitlab::Routing.url_helpers.project_starrers_path(project1),
         verificationLevel: 'UNVERIFIED',
+        fullPath: project1.full_path,
         webPath: "/#{project1.full_path}"
       ),
       a_graphql_entity_for(public_resource)

@@ -277,8 +277,13 @@ FactoryBot.define do
     end
 
     trait(:terraform_module) do
-      file_fixture { 'spec/fixtures/packages/terraform_module/module-system-v1.0.0.tgz' }
-      file_name { 'module-system-v1.0.0.tgz' }
+      transient do
+        zip { false }
+      end
+
+      package { association(:terraform_module_package, without_package_files: true) }
+      file_fixture { "spec/fixtures/packages/terraform_module/module-system-v1.0.0.#{zip ? 'zip' : 'tgz'}" }
+      file_name { "module-system-v1.0.0.#{zip ? 'zip' : 'tgz'}" }
       file_sha1 { 'abf850accb1947c0c0e3ef4b441b771bb5c9ae3c' }
       size { 806.bytes }
     end

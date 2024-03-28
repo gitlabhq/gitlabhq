@@ -21,15 +21,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_not_null) do
     [
       *tables_with_alternative_not_null_constraint,
+      'internal_ids.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
+      'internal_ids.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
-      'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'path_locks.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
+      'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'subscription_add_on_purchases.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
-      'internal_ids.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
-      'internal_ids.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
+      'temp_notes_backup.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/443667'
     ]
   end
 
@@ -50,20 +51,21 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
+      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_job_artifacts.project_id',
+      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_builds_metadata.project_id',
       'geo_repository_deleted_events.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439935
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
       'p_catalog_resource_sync_events.project_id',
       'project_data_transfers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439201
+      'search_namespace_index_assignments.namespace_id_non_nullable',
+      'temp_notes_backup.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/443667'
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
       'zoekt_indices.namespace_id',
       'zoekt_repositories.project_identifier',
-      'zoekt_tasks.project_identifier',
-      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
-      'ci_job_artifacts.project_id',
-      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
-      'ci_builds_metadata.project_id',
-      'search_namespace_index_assignments.namespace_id_non_nullable'
+      'zoekt_tasks.project_identifier'
     ]
   end
 
