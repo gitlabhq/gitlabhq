@@ -93,6 +93,11 @@ export default {
       required: false,
       default: false,
     },
+    searchable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -200,7 +205,7 @@ export default {
         ref="listbox"
         class="gl-w-full!"
         :multiple="multiSelect"
-        searchable
+        :searchable="searchable"
         start-opened
         is-check-centered
         :infinite-scroll="infiniteScroll"

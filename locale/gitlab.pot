@@ -12310,19 +12310,10 @@ msgstr ""
 msgid "CodeSuggestionsSM|Manage user access for Code Suggestions on the %{subscription_details_link_start}subscription details page%{subscription_details_link_end}."
 msgstr ""
 
+msgid "CodeSuggestionsSM|Manage user access for Code Suggestions on the %{usage_quotas_link_start}usage quotas%{usage_quotas_link_end} page."
+msgstr ""
+
 msgid "CodeSuggestionsSM|Purchase the Duo Pro add-on to use Code Suggestions."
-msgstr ""
-
-msgid "CodeSuggestionsSaaS|Code Suggestions free access has ended"
-msgstr ""
-
-msgid "CodeSuggestionsSaaS|Contact Sales"
-msgstr ""
-
-msgid "CodeSuggestionsSaaS|Manage user access for Code Suggestions on the %{usage_quotas_link_start}usage quotas%{usage_quotas_link_end} page."
-msgstr ""
-
-msgid "CodeSuggestionsSaaS|Purchase the Duo Pro add-on to use Code Suggestions."
 msgstr ""
 
 msgid "CodeSuggestions|%{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
@@ -46347,9 +46338,6 @@ msgstr ""
 msgid "SecurityReports|Confirm dismissal"
 msgstr ""
 
-msgid "SecurityReports|Create Issue"
-msgstr ""
-
 msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
@@ -46395,16 +46383,10 @@ msgstr ""
 msgid "SecurityReports|Download %{artifactName}"
 msgstr ""
 
-msgid "SecurityReports|Download patch to resolve"
-msgstr ""
-
 msgid "SecurityReports|Download results"
 msgstr ""
 
 msgid "SecurityReports|Download scanned URLs"
-msgstr ""
-
-msgid "SecurityReports|Download the patch to apply it manually"
 msgstr ""
 
 msgid "SecurityReports|Edit dismissal"

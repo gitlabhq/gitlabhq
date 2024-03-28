@@ -87,6 +87,20 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
 
+## 16.11.0
+
+### Linux package installations
+
+In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for the following cases:
+
+- You are running the database in high availability using Patroni.
+- Your database nodes are part of a GitLab Geo configuration.
+- You have specifically [opted out](https://docs.gitlab.com/omnibus/settings/database.html#opt-out-of-automatic-postgresql-upgrades) from automatically upgrading PostgreSQL.
+- You have `postgresql['version'] = 13` in your `/etc/gitlab/gitlab.rb`.
+
+Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 14,
+see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
+
 ## 16.10.0
 
 ### Linux package installations

@@ -481,6 +481,11 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/EnsureFactoryForTable:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+
 Migration/UnfinishedDependencies:
   Enabled: true
   Include:

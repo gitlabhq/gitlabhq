@@ -986,7 +986,7 @@ a Consul agent on each Praefect node and register the `praefect` service to it.
 This registers each node's IP address to `praefect.service.consul` so it can be found
 by service discovery.
 
-Requirements:
+Prerequisites:
 
 - One or more [Consul](../consul.md) servers to keep track of the Consul agents.
 

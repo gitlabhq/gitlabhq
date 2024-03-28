@@ -168,7 +168,7 @@ because that is needed in all configurations.
 
 ### Wildcard domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 
@@ -236,7 +236,7 @@ The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
 
 ### Wildcard domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
@@ -347,7 +347,7 @@ The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
 
 ### Wildcard domains with TLS-terminating Load Balancer
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - [TLS-terminating load balancer](../../install/aws/index.md#load-balancer)
@@ -470,7 +470,7 @@ you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Secondary IP
@@ -499,7 +499,7 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).

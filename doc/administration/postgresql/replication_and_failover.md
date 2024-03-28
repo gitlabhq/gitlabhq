@@ -1004,14 +1004,7 @@ You can switch an exiting database cluster to use Patroni instead of repmgr with
 
 ### Upgrading PostgreSQL major version in a Patroni cluster
 
-As of GitLab 14.1, PostgreSQL 12.6 and 13.3 are both shipped with the Linux package by default. As of GitLab 15.0,
-PostgreSQL 13 is the default. If you want to upgrade to PostgreSQL 13 in versions prior to GitLab 15.0, you must ask for
-it explicitly.
-
-WARNING:
-The procedure for upgrading PostgreSQL in a Patroni cluster is different than when upgrading using repmgr.
-The following outlines the key differences and important considerations that need to be accounted for when
-upgrading PostgreSQL.
+For a list of the bundled PostgreSQL versions and the default version for each release, see the [PostgreSQL versions of the Linux package](../package_information/postgresql_versions.md).
 
 Here are a few key facts that you must consider before upgrading PostgreSQL:
 
@@ -1056,7 +1049,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 1. Upgrade PostgreSQL on **the leader node** and make sure that the upgrade is completed successfully:
 
    ```shell
-   sudo gitlab-ctl pg-upgrade -V 13
+   sudo gitlab-ctl pg-upgrade
    ```
 
    NOTE:
@@ -1083,7 +1076,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 1. Upgrade PostgreSQL **on replicas** (you can do this in parallel on all of them):
 
    ```shell
-   sudo gitlab-ctl pg-upgrade -V 13
+   sudo gitlab-ctl pg-upgrade
    ```
 
 If issues are encountered upgrading the replicas,

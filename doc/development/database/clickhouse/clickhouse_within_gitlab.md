@@ -231,7 +231,7 @@ It's important to test and verify efficient batching of database records from Po
 
 You can use the `ClickHouse::Iterator` class for batching over large volumes of data in ClickHouse. The iterator works a bit differently than existing tooling for the PostgreSQL database (see [iterating tables in batches docs](../iterating_tables_in_batches.md)), as the tool does not rely on database indexes and uses fixed size numeric ranges.
 
-Requirements:
+Prerequisites:
 
 - Single integer column.
 - No huge gaps between the column values, the ideal columns would be auto-incrementing PostgreSQL primary keys.

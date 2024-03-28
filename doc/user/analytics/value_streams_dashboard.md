@@ -254,6 +254,7 @@ To render a [Value Streams Dashboard as a custom Analytics Dashboard](analytics_
 | `title` | Custom name for the panel |
 |`queryOverrides` (formerly `data`) | Overrides data query parameters specific to each visualization. |
 |`namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
+|`filters` (subfield of `queryOverrides`) | Filters the query for each visualization type. See [supported visualizations](#supported-visualization-filters). |
 | `visualization` | The type of visualization to be rendered. Supported options are `dora_chart`, `dora_performers_score`, and `usage_overview`. |
 | `gridAttributes` | The size and positioning of the panel |
 | `xPos` (subfield of `gridAttributes`) | Horizontal position of the panel |
@@ -271,8 +272,8 @@ description: 'Custom description'
 # panels - List of panels that contain panel settings.
 #   title - Change the title of the panel.
 #   queryOverrides.namespace - The Group or Project path to use for the chart panel
-#   options.exclude_metrics - Hide rows by metric ID from the chart panel.
-#   options.filter_labels -
+#   queryOverrides.filters.excludeMetrics - Hide rows by metric ID from the chart panel.
+#   queryOverrides.filters.labels -
 #     Only show results for data that matches the queried label(s). If multiple labels are provided,
 #     only a single label needs to match for the data to be included in the results.
 #     Compatible metrics (other metrics will be automatically excluded):
@@ -286,38 +287,78 @@ panels:
     visualization: usage_overview
     queryOverrides:
       namespace: group
+      filters:
+        include:
+          - groups
+          - projects
     gridAttributes:
       yPos: 1
       xPos: 1
       height: 1
       width: 12
-  - title: 'Group dora comparison'
+  - title: 'Group dora and issue metrics'
     visualization: dora_chart
     queryOverrides:
       namespace: group
+      filters:
+        excludeMetrics:
+          - deployment_frequency
+          - deploys
+        labels:
+          - in_development
+          - in_review
     gridAttributes:
       yPos: 2
       xPos: 1
       height: 12
       width: 12
-    options:
-      filter_labels:
-        - in_development
-        - in_review
-  - title: 'My project dora comparison'
-    visualization: dora_chart
+  - title: 'My dora performers scores'
+    visualization: dora_performers_score
     queryOverrides:
       namespace: group/my-project
+      filters:
+        projectTopics:
+          - ruby
+          - javasript
     gridAttributes:
       yPos: 26
       xPos: 1
       height: 12
       width: 12
-    options:
-      exclude_metrics:
-        - deployment_frequency
-        - change_failure_rate
 ```
+
+#### Supported visualization filters
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+The `filters` subfield on the `queryOverrides` field can be used to customize the data displayed in a panel.
+
+##### DevSecOps metrics comparison panel filters
+
+Filters for the `dora_chart` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
+| `labels` | Filters data by labels | Any available group label |
+
+##### DORA Performers score panel filters
+
+Filters for the `dora_performers_score` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`projectTopics`|Filters the projects shown based on their assigned [topics](../project/project_topics.md)| Any available group topic|
+
+##### Usage overview panel filters
+
+Filters for the `usage_overview` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`|
 
 ### Filter the DevSecOps metrics comparison panel by labels
 

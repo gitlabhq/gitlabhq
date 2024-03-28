@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ForkTargetsFinder do
+RSpec.describe ForkTargetsFinder, feature_category: :source_code_management do
   subject(:finder) { described_class.new(project, user) }
 
   let_it_be(:project) { create(:project, namespace: create(:group)) }
@@ -74,6 +74,24 @@ RSpec.describe ForkTargetsFinder do
     context 'when search is provided' do
       it 'filters the targets by the param' do
         expect(finder.execute(search: maintained_group.path)).to eq([maintained_group])
+      end
+
+      context 'when searching by a full path' do
+        let_it_be(:subgroup) { create(:group, :nested, parent: maintained_group) }
+
+        it 'returns a group for an exact match' do
+          expect(finder.execute(search: subgroup.full_path)).to eq([subgroup])
+        end
+
+        context 'when feature flag "fork_targets_finder_with_parents" is disabled' do
+          before do
+            stub_feature_flags(fork_targets_finder_with_parents: false)
+          end
+
+          it 'does not return a group' do
+            expect(finder.execute(search: subgroup.full_path)).to eq([])
+          end
+        end
       end
     end
   end

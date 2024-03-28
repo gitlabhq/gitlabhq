@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Enabling the analyzer
 
-Requirements:
+Prerequisites:
 
 - One of the following web API types:
   - REST API

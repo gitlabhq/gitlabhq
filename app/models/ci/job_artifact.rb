@@ -156,7 +156,7 @@ module Ci
     end
 
     def self.use_partition_id_filter?
-      ::Feature.enabled?(:use_partition_id_filter_on_ci_job_artifacts, Feature.current_request)
+      Ci::Pipeline.use_partition_id_filter?
     end
 
     def local_store?
