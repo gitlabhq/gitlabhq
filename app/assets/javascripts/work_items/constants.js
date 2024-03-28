@@ -319,3 +319,22 @@ export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
+
+export const EPIC_COLORS = [
+  { '#1068bf': s__('WorkItem|Blue') },
+  { '#217645': s__('WorkItem|Forest green') },
+  { '#c91c00': s__('WorkItem|Dark red') },
+  { '#9e5400': s__('WorkItem|Coffee') },
+  { '#694cc0': s__('WorkItem|Purple') },
+  { '#de198f': s__('WorkItem|Magenta') },
+  { '#2e90a5': s__('WorkItem|Teal') },
+  { '#55aafe': s__('WorkItem|Light blue') },
+  { '#4dd787': s__('WorkItem|Mint green') },
+  { '#f17763': s__('WorkItem|Rose') },
+  { '#f3ad5d': s__('WorkItem|Apricot') },
+  { '#b7a0fd': s__('WorkItem|Lavender') },
+  { '#fd8cd0': s__('WorkItem|Pink') },
+  { '#6cd3ea': s__('WorkItem|Aqua') },
+];
+
+export const DEFAULT_EPIC_COLORS = '#1068bf';

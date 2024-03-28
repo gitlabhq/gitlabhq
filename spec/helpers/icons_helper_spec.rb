@@ -53,6 +53,11 @@ RSpec.describe IconsHelper do
         .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
+    it 'returns svg icon html with aria label' do
+      expect(sprite_icon(icon_name, size: nil, aria_label: 'label').to_s)
+        .to eq "<svg data-testid=\"#{icon_name}-icon\" aria-label=\"label\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
+    end
+
     it 'returns a file icon' do
       file_icons_path = ActionController::Base.helpers.image_path("file_icons/file_icons.svg")
 

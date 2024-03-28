@@ -451,7 +451,7 @@ class ContainerRepository < ApplicationRecord
 
   def tags
     strong_memoize(:tags) do
-      if can_access_the_gitlab_api? && Feature.enabled?(:fetch_tags_from_registry_api, project)
+      if can_access_the_gitlab_api?
         result = []
         each_tags_page do |array_of_tags|
           result << array_of_tags

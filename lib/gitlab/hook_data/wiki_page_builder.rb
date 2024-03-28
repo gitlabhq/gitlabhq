@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def uploads_prefix
-        ''
+        wiki_page.wiki.wiki_base_path
       end
     end
   end

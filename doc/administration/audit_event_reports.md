@@ -28,6 +28,8 @@ events GitLab provides, see [Audit event types](../administration/audit_event_ty
 - Generate a report of audit events to provide to an external auditor requesting proof of certain logging capabilities.
 - Provide a report of all users showing their group and project memberships for a quarterly access review so the auditor can verify compliance with an organization's access management policy.
 
+Audit events are retained indefinitely. Because there is no retention timeframe, all audit events are available.
+
 ## Prerequisites
 
 To view specific types of audit events, you need a minimum role.

@@ -1,9 +1,0 @@
----
-name: fetch_tags_from_registry_api
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432471
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145397
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442576
-milestone: '16.10'
-group: group::container registry
-type: gitlab_com_derisk
-default_enabled: false

@@ -1066,9 +1066,10 @@ RSpec.describe WikiPage, feature_category: :wiki do
     subject { build_wiki_page(container) }
 
     it 'adds absolute urls for images in the content' do
-      subject.attributes[:content] = 'test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)'
+      subject.attributes[:content] = 'test![WikiPage_Image](uploads/abc/WikiPage_Image.png)'
 
-      expect(subject.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+      expected_path = "#{Settings.gitlab.url}/#{container.full_path}/-/wikis/uploads/abc/WikiPage_Image.png)"
+      expect(subject.hook_attrs['content']).to eq("test![WikiPage_Image](#{expected_path}")
     end
   end
 

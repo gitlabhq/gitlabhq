@@ -1509,18 +1509,18 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'design permissions' do
     include DesignManagementTestHelpers
 
-    let(:current_user) { guest }
+    let(:current_user) { reporter }
 
-    let(:design_permissions) do
-      %i[read_design_activity read_design]
-    end
+    let(:guest_design_abilities) { %i[read_design read_design_activity] }
+    let(:reporter_design_abilities) { %i[create_design destroy_design move_design update_design] }
+    let(:design_abilities) { guest_design_abilities + reporter_design_abilities }
 
     context 'when design management is not available' do
       before do
         enable_design_management(false)
       end
 
-      it { is_expected.not_to be_allowed(*design_permissions) }
+      it { is_expected.not_to be_allowed(*design_abilities) }
     end
 
     context 'when design management is available' do
@@ -1528,7 +1528,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         enable_design_management
       end
 
-      it { is_expected.to be_allowed(*design_permissions) }
+      it { is_expected.to be_allowed(*design_abilities) }
+
+      context 'when user has below reporter access' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_allowed(*guest_design_abilities) }
+        it { is_expected.not_to be_allowed(*reporter_design_abilities) }
+      end
     end
   end
 

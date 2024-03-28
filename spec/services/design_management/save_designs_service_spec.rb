@@ -6,10 +6,9 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
   include ConcurrentHelpers
 
   let_it_be_with_reload(:issue) { create(:issue) }
-  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
 
   let(:project) { issue.project }
-  let(:user) { developer }
+  let(:user) {  create(:user) }
   let(:files) { [rails_sample] }
   let(:design_repository) { project.find_or_create_design_management_repository.repository }
 
@@ -32,6 +31,8 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       issue.design_collection.repository.expire_all_method_caches
       issue.design_collection.repository.raw.delete_all_refs_except([Gitlab::Git::SHA1_BLANK_SHA])
     end
+
+    project.add_reporter(user)
 
     allow(DesignManagement::NewVersionWorker)
       .to receive(:perform_async).with(Integer, false).and_return(nil)

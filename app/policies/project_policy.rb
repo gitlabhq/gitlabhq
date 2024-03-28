@@ -402,6 +402,10 @@ class ProjectPolicy < BasePolicy
     enable :read_external_emails
     enable :read_grafana
     enable :export_work_items
+    enable :create_design
+    enable :update_design
+    enable :move_design
+    enable :destroy_design
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -517,10 +521,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_metrics_dashboard_annotation
     enable :read_alert_management_alert
     enable :update_alert_management_alert
-    enable :create_design
-    enable :update_design
-    enable :move_design
-    enable :destroy_design
     enable :read_terraform_state
     enable :read_pod_logs
     enable :read_feature_flag

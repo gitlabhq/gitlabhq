@@ -5,8 +5,8 @@ RSpec.describe DesignManagement::DesignPolicy, feature_category: :portfolio_mana
   include DesignManagementTestHelpers
 
   let(:guest_design_abilities) { %i[read_design] }
-  let(:developer_design_abilities) { %i[create_design destroy_design move_design update_design] }
-  let(:design_abilities) { guest_design_abilities + developer_design_abilities }
+  let(:reporter_design_abilities) { %i[create_design destroy_design move_design update_design] }
+  let(:design_abilities) { guest_design_abilities + reporter_design_abilities }
 
   let_it_be(:guest) { create(:user) }
   let_it_be(:reporter) { create(:user) }
@@ -74,7 +74,7 @@ RSpec.describe DesignManagement::DesignPolicy, feature_category: :portfolio_mana
 
   shared_examples_for "read-only design abilities" do
     it { is_expected.to be_allowed(*guest_design_abilities) }
-    it { is_expected.to be_disallowed(*developer_design_abilities) }
+    it { is_expected.to be_disallowed(*reporter_design_abilities) }
   end
 
   shared_examples_for "design abilities available for members" do
@@ -111,7 +111,7 @@ RSpec.describe DesignManagement::DesignPolicy, feature_category: :portfolio_mana
     context "for reporters" do
       let(:current_user) { reporter }
 
-      it_behaves_like "read-only design abilities"
+      it { is_expected.to be_allowed(*design_abilities) }
     end
   end
 

@@ -29,7 +29,7 @@ module IconsHelper
     ActionController::Base.helpers.image_path('file_icons/file_icons.svg', host: sprite_base_url)
   end
 
-  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil, file_icon: false)
+  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil, file_icon: false, aria_label: nil)
     memoized_icon("#{icon_name}_#{size}_#{css_class}") do
       unknown_icon = file_icon ? unknown_file_icon_sprite(icon_name) : unknown_icon_sprite(icon_name)
       if unknown_icon
@@ -46,7 +46,8 @@ module IconsHelper
         :svg,
         content_tag(:use, '', { 'href' => "#{sprite_path}##{icon_name}" }),
         class: css_classes.empty? ? nil : css_classes.join(' '),
-        data: { testid: "#{icon_name}-icon" }
+        data: { testid: "#{icon_name}-icon" },
+        'aria-label': aria_label
       )
     end
   end

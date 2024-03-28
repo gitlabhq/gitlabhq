@@ -49,7 +49,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
 
   before do
     enable_design_management(enabled)
-    project.add_developer(user)
+    project.add_reporter(user)
   end
 
   describe "#execute" do
