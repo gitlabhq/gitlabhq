@@ -22,7 +22,7 @@ class RemoveCopyPermissionsOnMemberRoles < Gitlab::Database::Migration[2.2]
       AS $$
         BEGIN
           -- when permissions have not changed
-          IF (current_query() !~ '\ypermissions\y') THEN
+          IF (current_query() !~ '\\ypermissions\\y') THEN
             NEW.permissions = to_jsonb ((
               SELECT
                 perm_cols
@@ -42,7 +42,7 @@ class RemoveCopyPermissionsOnMemberRoles < Gitlab::Database::Migration[2.2]
                   NEW.remove_group,
                   NEW.remove_project) perm_cols));
           -- when permissions have changed
-          ELSE
+          ELSIF NEW.permissions <> '{}'::jsonb THEN
             NEW.admin_cicd_variables = COALESCE((NEW.permissions->'admin_cicd_variables')::BOOLEAN, FALSE);
             NEW.admin_group_member = COALESCE((NEW.permissions->'admin_group_member')::BOOLEAN, FALSE);
             NEW.admin_merge_request = COALESCE((NEW.permissions->'admin_merge_request')::BOOLEAN, FALSE);
@@ -62,8 +62,9 @@ class RemoveCopyPermissionsOnMemberRoles < Gitlab::Database::Migration[2.2]
       $$
     SQL
 
+    drop_trigger(:member_roles, TRIGGER_NAME)
     execute(<<~SQL)
-      CREATE OR REPLACE TRIGGER #{TRIGGER_NAME}
+      CREATE TRIGGER #{TRIGGER_NAME}
       BEFORE INSERT OR UPDATE ON member_roles
       FOR EACH ROW
       EXECUTE FUNCTION #{FUNCTION_NAME}();

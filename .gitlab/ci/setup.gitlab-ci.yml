@@ -30,7 +30,7 @@ cache gems:
 .absolutely-predictive-job:
   extends:
     - .predictive-job
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   variables:
     GIT_STRATEGY: none
 

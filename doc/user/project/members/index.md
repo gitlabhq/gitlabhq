@@ -22,15 +22,16 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
-Users can become members of a group or project in different ways, which define their membership type.
+Users can become members of a group or project directly or indirectly.
+Indirect membership can be inherited, shared, or inherited shared.
 
 | Membership type                               | Membership process |
 | --------------------------------------------- | ------------------ |
 | [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
+| [Indirect](#indirect-membership)  | The user is not added directly to the current group or project. Instead, the user becomes a member through inheritance from a parent group or through sharing the current group or project with another group. |
 | [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
-| [Direct shared](share_project_with_groups.md) | The user is a member of a group or project that is shared into the current group or project. |
-| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project that is shared into the current group or project. |
-| [Indirect](#indirect-membership)  | The user is not directly added to the current group or project. Instead, they gain membership to the group or project through either inheritance from a parent group, or through sharing the current group or project with another group. |
+| [Shared](share_project_with_groups.md) | The user is a member of a group or project shared into the current group or project or one of its ancestors. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project shared into the current group or project. |
 
 ```mermaid
 flowchart RL

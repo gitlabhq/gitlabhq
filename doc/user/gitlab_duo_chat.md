@@ -36,7 +36,7 @@ Here are the examples of use cases:
 1. GitLab Duo Chat is not available in the Web IDE on self-managed.
 
 NOTE:
-This is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
+GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
 
 ## Watch a demo
 
@@ -238,14 +238,14 @@ Visual Studio support is [under active development](https://gitlab.com/groups/gi
 
 ### For SaaS users
 
-To use this feature, at least one group you're a member of must
+To use this feature at least one group that you're a member of must
 have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
 
-You can ask questions about resources that belong only to groups where this setting is enabled.
+You can only ask questions about resources that belong to groups where the experiment and beta features setting is enabled.
 
 #### Troubleshoot Chat access
 
-If you have access to chat responses you did not expect, you might be part of
+If you have access to GitLab Duo Chat responses you did not expect, you might be part of
 a group that has the **Use Experiment and Beta features** setting enabled.
 Review the list of your groups and verify which ones you have access to.
 

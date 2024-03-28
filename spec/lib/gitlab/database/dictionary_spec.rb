@@ -128,6 +128,31 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         end
       end
 
+      describe '#milestone_greater_than_or_equal_to?' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:milestone, :other_milestone, :result) do
+          '16.9'          | '16.10'        | false
+          '16.10'         | '16.11'        | false
+          '16.12'         | '16.10'        | true
+          '16.11'         | '16.10'        | true
+          '16.10'         | '16.10'        | true
+          '16.9'          | '16.6'         | true
+          '<6.0'          | '16.6'         | false
+          'TODO'          | '16.6'         | false
+        end
+
+        with_them do
+          before do
+            allow(database_dictionary).to receive(:milestone).and_return(milestone)
+          end
+
+          it 'returns the right result' do
+            expect(database_dictionary.milestone_greater_than_or_equal_to?(other_milestone)).to eq(result)
+          end
+        end
+      end
+
       describe '#gitlab_schema' do
         it 'returns the gitlab_schema of the table' do
           expect(database_dictionary.table_name).to eq('application_settings')

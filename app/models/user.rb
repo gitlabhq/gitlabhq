@@ -1691,17 +1691,25 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def assign_personal_namespace(organization = nil)
+  # rubocop:disable Style/Semicolon -- This exception will be removed in Feature Flag cleanup https://gitlab.com/gitlab-org/gitlab/-/issues/443494
+  def assign_personal_namespace(organization = (no_arg_passed = true; nil))
     return namespace if namespace
 
     namespace_attributes = { path: username, name: name }
-    namespace_attributes[:organization] = organization if organization
+
+    if Feature.enabled?(:personal_namespace_require_org)
+      # Require organization argument but `nil` is allowed
+      raise(ArgumentError, "Organization is missing") if no_arg_passed
+
+      namespace_attributes[:organization] = organization if organization
+    end
 
     build_namespace(namespace_attributes)
     namespace.build_namespace_settings
 
     namespace
   end
+  # rubocop:enable Style/Semicolon
 
   def set_username_errors
     namespace_path_errors = self.errors.delete(:"namespace.path")

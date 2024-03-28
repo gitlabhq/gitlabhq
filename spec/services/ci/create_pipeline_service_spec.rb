@@ -146,6 +146,14 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         execute_service
       end
 
+      it 'tracks included catalog component usage' do
+        expect_next_instance_of(Gitlab::Ci::Pipeline::Chain::ComponentUsage) do |instance|
+          expect(instance).to receive(:perform!)
+        end
+
+        execute_service
+      end
+
       context 'when merge requests already exist for this source branch' do
         let!(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)

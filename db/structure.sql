@@ -14359,6 +14359,26 @@ CREATE SEQUENCE project_repository_storage_moves_id_seq
 
 ALTER SEQUENCE project_repository_storage_moves_id_seq OWNED BY project_repository_storage_moves.id;
 
+CREATE TABLE project_saved_replies (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_5569cfc14e CHECK ((char_length(content) <= 10000)),
+    CONSTRAINT check_a3993908da CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE project_saved_replies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_saved_replies_id_seq OWNED BY project_saved_replies.id;
+
 CREATE TABLE project_security_settings (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19495,6 +19515,8 @@ ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('proje
 
 ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('project_repository_storage_moves_id_seq'::regclass);
 
+ALTER TABLE ONLY project_saved_replies ALTER COLUMN id SET DEFAULT nextval('project_saved_replies_id_seq'::regclass);
+
 ALTER TABLE ONLY project_security_settings ALTER COLUMN project_id SET DEFAULT nextval('project_security_settings_project_id_seq'::regclass);
 
 ALTER TABLE ONLY project_states ALTER COLUMN id SET DEFAULT nextval('project_states_id_seq'::regclass);
@@ -21954,6 +21976,9 @@ ALTER TABLE ONLY project_repositories
 
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_saved_replies
+    ADD CONSTRAINT project_saved_replies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_security_settings
     ADD CONSTRAINT project_security_settings_pkey PRIMARY KEY (project_id);
@@ -26592,6 +26617,8 @@ CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_re
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
 
+CREATE INDEX index_project_saved_replies_on_project_id ON project_saved_replies USING btree (project_id);
+
 CREATE INDEX index_project_settings_on_legacy_os_license_project_id ON project_settings USING btree (project_id) WHERE (legacy_open_source_license_available = true);
 
 CREATE INDEX index_project_settings_on_project_id_partially ON project_settings USING btree (project_id) WHERE (has_vulnerabilities IS TRUE);
@@ -30869,6 +30896,9 @@ ALTER TABLE ONLY security_orchestration_policy_configurations
 
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT fk_rails_0aca134388 FOREIGN KEY (deploy_token_id) REFERENCES deploy_tokens(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_saved_replies
+    ADD CONSTRAINT fk_rails_0ace76afbb FOREIGN KEY (project_id) REFERENCES projects(id);
 
 ALTER TABLE ONLY packages_debian_group_distributions
     ADD CONSTRAINT fk_rails_0adf75c347 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE RESTRICT;

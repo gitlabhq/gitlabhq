@@ -87,3 +87,33 @@ the seats are added to the total number of GitLab Duo Pro seats in your subscrip
 1. Select the **Privacy Policy** and **Terms of Service** checkbox.
 1. Select **Purchase seats**.
 1. Select the **GitLab SaaS** tab and refresh the page.
+
+## Start GitLab Duo Pro trial
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+Prerequisites:
+
+- You must have an active paid Premium or Ultimate subscription.
+- For GitLab self-managed and GitLab Dedicated customers, you must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
+
+### For GitLab.com
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Billing**.
+1. Select **Start a free GitLab Duo Pro trial**.
+1. Complete the fields.
+1. Select **Continue**.
+1. If prompted, select the group that the trial should be applied to.
+1. Select **Activate my trial**.
+1. [Assign seats](#assign-gitlab-duo-pro-seats) to the users who need access.
+
+### For Self-managed & GitLab Dedicated
+
+1. Go to the [GitLab Duo Pro trial page](http://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial).
+1. Complete the fields.
+1. Select **Submit**.
+
+The trial automatically syncs to your instance within 24 hours. After the trial has synced, [assign seats](#assign-gitlab-duo-pro-seats) to users that you want to access GitLab Duo Pro.

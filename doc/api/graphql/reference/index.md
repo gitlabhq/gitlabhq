@@ -24155,9 +24155,13 @@ Candidate for a model version in the model registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
+| <a id="mlcandidatecijob"></a>`ciJob` | [`CiJob`](#cijob) | CI information about the job that created the candidate. |
 | <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidateeid"></a>`eid` | [`String!`](#string) | MLflow uuid for the candidate. |
 | <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
-| <a id="mlcandidatename"></a>`name` | [`String!`](#string) | Name of the candidate. |
+| <a id="mlcandidateiid"></a>`iid` | [`Int!`](#int) | IID of the candidate scoped to project. |
+| <a id="mlcandidatename"></a>`name` | [`String`](#string) | Name of the candidate. |
+| <a id="mlcandidatestatus"></a>`status` | [`String`](#string) | Candidate status. |
 
 ### `MlModel`
 
@@ -24168,9 +24172,10 @@ Machine learning model in the model registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlmodel_links"></a>`_links` | [`MLModelLinks!`](#mlmodellinks) | Map of links to perform actions on the model. |
+| <a id="mlmodelcandidatecount"></a>`candidateCount` | [`Int`](#int) | Count of candidates in the model. |
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
-| <a id="mlmodeldescription"></a>`description` | [`String!`](#string) | Description of the model. |
+| <a id="mlmodeldescription"></a>`description` | [`String`](#string) | Description of the model. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 | <a id="mlmodellatestversion"></a>`latestVersion` | [`MlModelVersion`](#mlmodelversion) | Latest version of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
@@ -24205,6 +24210,7 @@ Version of a machine learning model.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
+| <a id="mlmodelversioncandidate"></a>`candidate` | [`MlCandidate!`](#mlcandidate) | Metrics, params and metadata for the model version. |
 | <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
 | <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |

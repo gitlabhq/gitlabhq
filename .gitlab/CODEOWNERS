@@ -461,6 +461,7 @@ lib/gitlab/checks/**
 ^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
+/doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_reports.md @eread
@@ -625,6 +626,7 @@ lib/gitlab/checks/**
 /doc/api/freeze_periods.md @phillipwells
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
+/doc/api/google_cloud_integration.md @jglassman1
 /doc/api/graphql/audit_report.md @eread
 /doc/api/graphql/branch_rules.md @msedlakjakubowski
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
@@ -746,6 +748,7 @@ lib/gitlab/checks/**
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
+/doc/architecture/blueprints/autoflow/ @phillipwells
 /doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/ci_builds_runner_fleet_metrics/ @fneill
 /doc/architecture/blueprints/google_artifact_registry_integration/ @marcel.amirault
@@ -759,6 +762,7 @@ lib/gitlab/checks/**
 /doc/ci/examples/authenticating-with-hashicorp-vault/ @marcel.amirault
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
+/doc/ci/gitlab_google_cloud_integration/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @fneill
 /doc/ci/jobs/ci_job_token.md @marcel.amirault
 /doc/ci/jobs/index.md @marcel.amirault @lyspin
@@ -826,7 +830,7 @@ lib/gitlab/checks/**
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
 /doc/integration/index.md @eread @ashrafkhamis
-/doc/integration/jenkins.md @eread @ashrafkhamis
+/doc/integration/jenkins.md @marcel.amirault @lyspin
 /doc/integration/jira/ @eread @ashrafkhamis
 /doc/integration/mattermost/ @axil
 /doc/integration/partner_marketplace.md @fneill
@@ -947,8 +951,12 @@ lib/gitlab/checks/**
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @eread @ashrafkhamis
+/doc/user/project/integrations/bamboo.md @marcel.amirault @lyspin
 /doc/user/project/integrations/beyond_identity.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @msedlakjakubowski
+/doc/user/project/integrations/github.md @marcel.amirault @lyspin
+/doc/user/project/integrations/google_artifact_registry.md @marcel.amirault
+/doc/user/project/integrations/harbor.md @marcel.amirault
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
@@ -962,6 +970,7 @@ lib/gitlab/checks/**
 /doc/user/project/ml/experiment_tracking/ @sselhorn
 /doc/user/project/ml/model_registry/ @sselhorn
 /doc/user/project/organize_work_with_projects.md @lciutacu
+/doc/user/project/project_topics.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
@@ -971,9 +980,9 @@ lib/gitlab/checks/**
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @eread @ashrafkhamis
+/doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/migrate_projects.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
-/doc/user/project/settings/project_features_permissions.md @lciutacu
 /doc/user/project/troubleshooting.md @lciutacu
 /doc/user/project/use_project_as_go_package.md @lciutacu
 /doc/user/project/web_ide/ @ashrafkhamis

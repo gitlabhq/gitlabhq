@@ -128,7 +128,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the repository.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the project.
 
 GitLab can help you get up to speed faster if you:
 
@@ -178,7 +180,9 @@ To use this feature:
 
 - The parent group of the issue must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the issue.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the issue.
 
 You can generate a summary of discussions on an issue:
 
@@ -206,7 +210,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the CI/CD analytics.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the CI/CD analytics.
 
 In CI/CD Analytics, you can view a forecast of deployment frequency:
 
@@ -236,7 +242,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the CI/CD job.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the CI/CD job.
 
 When the feature is available, the "Root cause analysis" button will appears on
 a failed CI/CD job. Selecting this button generates an analysis regarding the
@@ -255,7 +263,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the issue.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the issue.
 
 You can generate the description for an issue from a short summary.
 

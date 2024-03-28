@@ -852,6 +852,7 @@ project:
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces
 - relation_import_trackers
+- saved_replies
 award_emoji:
 - awardable
 - user

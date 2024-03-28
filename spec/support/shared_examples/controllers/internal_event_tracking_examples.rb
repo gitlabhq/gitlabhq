@@ -26,6 +26,12 @@ RSpec.shared_examples 'internal event tracking' do
     namespace = try(:namespace) || project&.namespace
     category = try(:category) || 'InternalEventTracking'
 
+    additional_properties = {
+      label: try(:label),
+      property: try(:property),
+      value: try(:value)
+    }.compact
+
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)
         .with(
@@ -47,7 +53,8 @@ RSpec.shared_examples 'internal event tracking' do
         context: [
           an_instance_of(SnowplowTracker::SelfDescribingJson),
           an_instance_of(SnowplowTracker::SelfDescribingJson)
-        ]
+        ],
+        **additional_properties
       )
   end
 end

@@ -9,10 +9,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'sbom_occurrences_vulnerabilities', # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
-      'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
+      'compliance_framework_security_policies', # has a desired sharding key instead
+      'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
       'ml_model_metadata', # has a desired sharding key instead.
-      'compliance_framework_security_policies' # has a desired sharding key instead
+      'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
+      'p_ci_stages', # https://gitlab.com/gitlab-org/gitlab/-/issues/448630
+      'sbom_occurrences_vulnerabilities' # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
     ]
   end
 
@@ -210,7 +212,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   def tables_missing_sharding_key(starting_from_milestone:)
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        entry.milestone.to_f >= starting_from_milestone &&
+        entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.cell_local?(entry.gitlab_schema)
     end
   end

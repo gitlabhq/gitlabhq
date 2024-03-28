@@ -6127,6 +6127,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when namespace does not exist' do
+      let_it_be(:default_organization) { create(:organization, :default) }
       let(:user) { described_class.new attributes_for(:user) }
 
       it 'builds a new namespace using assigned organization' do
@@ -6142,13 +6143,31 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when organization is nil' do
-        let!(:default_organization) { create(:organization, :default) }
-
-        # This logic will be removed when organization becomes a required argument
         it 'builds a new namespace using default organization' do
-          user.assign_personal_namespace
+          user.assign_personal_namespace(nil)
 
           expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
+        end
+      end
+
+      context 'when organization is not specified' do
+        context 'and FeatureFlag personal_namespace_require_org is disabled' do
+          before do
+            stub_feature_flags(personal_namespace_require_org: false)
+          end
+
+          # This logic will be removed when organization becomes a required argument
+          it 'builds a new namespace using default organization' do
+            user.assign_personal_namespace
+
+            expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
+          end
+        end
+
+        context 'and FeatureFlag personal_namespace_require_org is enabled' do
+          it 'raises an argument error' do
+            expect { user.assign_personal_namespace }.to raise_error(ArgumentError, 'Organization is missing')
+          end
         end
       end
     end

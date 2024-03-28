@@ -13,7 +13,9 @@ module Types
         null: true, description: 'Path to the details page of the candidate.', method: :path
 
       field :artifact_path, GraphQL::Types::String,
-        null: true, description: 'Path to the artifact.', method: :artifact_path
+        null: true,
+        description: 'Path to the artifact.',
+        method: :artifact_show_path
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

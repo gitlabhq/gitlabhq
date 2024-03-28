@@ -582,7 +582,7 @@ Use the coverage reports to ensure your tests cover 100% of your code.
 
 NOTE:
 Before writing a new system test,
-[consider **not** writing one](testing_levels.md#consider-not-writing-a-system-test)!
+[consider this guide around their use](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests)
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.

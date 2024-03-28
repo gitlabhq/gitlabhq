@@ -92,7 +92,7 @@ To view the attributes for a single span, select it from the list.
 Tracing ingests a maximum of 102,400 bytes per minute.
 After the limit is exceeded, a `429 Too Many Requests` response is returned.
 
-To request a limit increase to 104,8576 bytes per minute, contact GitLab support.
+To request a limit increase to 1,048,576 bytes per minute, contact GitLab support.
 
 ## Data retention
 
