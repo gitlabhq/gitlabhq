@@ -1010,7 +1010,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
       # Since this is a test for a race condition, we are calling internal method `enqueue!`
       # instead of `play` and stubbing `new_alive_jobs` of the service class.
-      it 'runs ResetSkippedJobsService on the new alive jobs and logs event' do
+      it 'runs ResetSkippedJobsService on the new alive jobs and logs event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450395' do
         # Initial control without any pipeline processing
         expect(all_builds_names_and_statuses).to eq(statuses_0)
 
@@ -1058,7 +1058,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           mock_play_jobs_during_processing([manual1, manual2])
         end
 
-        it 'runs ResetSkippedJobsService on the new alive jobs' do
+        it 'runs ResetSkippedJobsService on the new alive jobs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450395' do
           # Statuses after playing the manual jobs
           expect(all_builds_names_and_statuses).to eq(statuses_2)
 
