@@ -2,10 +2,6 @@
 
 module JiraConnect
   class WorkspacesController < JiraConnect::ApplicationController
-    before_action do
-      render_404 if Feature.disabled?(:atlassian_new_app_based_auth_model)
-    end
-
     feature_category :integrations
 
     def search

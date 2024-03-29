@@ -315,13 +315,13 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
     const params = new URLSearchParams();
 
     if (Array.isArray(filters.search)) {
-      const searchPrefix = filters.search
+      const search = filters.search
         .map((f) => f.value)
         .join(' ')
         .trim();
 
-      if (searchPrefix) {
-        params.append('starts_with', searchPrefix);
+      if (search) {
+        params.append('search', search);
         if (limit) {
           params.append('limit', limit);
         }

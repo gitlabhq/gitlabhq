@@ -100,23 +100,6 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
           )
         )
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(atlassian_new_app_based_auth_model: false)
-        end
-
-        it 'returns JSON app descriptior with createBranch action' do
-          get :show
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(descriptor[:modules][:jiraDevelopmentTool][:actions]).to include(
-            createBranch: {
-              templateUrl: 'http://test.host/-/jira_connect/branches/new?issue_key={issue.key}&issue_summary={issue.summary}'
-            }
-          )
-        end
-      end
     end
   end
 end

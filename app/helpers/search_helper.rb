@@ -161,7 +161,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, sanitized_search_params)
+    @search_service ||= ::SearchService.new(current_user, params)
   end
 
   def search_sort_options
@@ -586,20 +586,6 @@ module SearchHelper
     return unless issuable.is_a?(::MergeRequest)
 
     issuable.target_branch unless issuable.target_branch == issuable.project.default_branch
-  end
-
-  def sanitized_search_params
-    sanitized_params = params.dup
-
-    if sanitized_params.key?(:confidential)
-      sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential])
-    end
-
-    if sanitized_params.key?(:include_archived)
-      sanitized_params[:include_archived] = Gitlab::Utils.to_boolean(sanitized_params[:include_archived])
-    end
-
-    sanitized_params
   end
 
   def wiki_blob_link(wiki_blob)

@@ -1740,6 +1740,31 @@ For status, choose one:
 
 Generally available features should not have a status.
 
+##### Duplicating tier, offering, or status on subheadings
+
+If a subheading has the same tier, offering, or status as its parent
+topic, you don't need to repeat the information in the subheading's
+badge.
+
+For example, if the heading 1 is:
+
+```markdown
+# My title
+
+DETAILS:
+**Offering:** GitLab.com
+**Tier:** Premium, Ultimate
+```
+
+Any lower-level heading that applies to a different tier but same offering would be:
+
+```markdown
+## My title
+
+DETAILS:
+**Tier:** Ultimate
+```
+
 ##### Inline tier badges
 
 Do not add tier badges inline with other text.

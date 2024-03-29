@@ -1295,7 +1295,7 @@ Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) ar
 they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
-  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   or [instance-wide](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not

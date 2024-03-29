@@ -815,6 +815,10 @@ class Project < ApplicationRecord
 
   scope :in_organization, -> (organization) { where(organization: organization) }
 
+  scope :not_a_fork, -> {
+    left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
+  }
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,

@@ -732,7 +732,7 @@ describe('buildClient', () => {
         await client.fetchMetrics({
           filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
         });
-        expect(getQueryParam()).toBe('starts_with=foo+bar');
+        expect(getQueryParam()).toBe('search=foo+bar');
       });
 
       it('ignores empty search', async () => {
@@ -769,7 +769,7 @@ describe('buildClient', () => {
           filters: { search: [{ value: 'foo' }] },
           limit: 50,
         });
-        expect(getQueryParam()).toBe('starts_with=foo&limit=50');
+        expect(getQueryParam()).toBe('search=foo&limit=50');
       });
 
       it('does not add the search limit param if the search filter is missing', async () => {

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Free user limit
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
+**Tier:** Free
 **Offering:** GitLab.com
 
 A five-user limit applies to newly created top-level namespaces with

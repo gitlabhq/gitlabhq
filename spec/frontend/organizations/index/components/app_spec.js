@@ -90,34 +90,76 @@ describe('OrganizationsIndexApp', () => {
     });
   };
 
-  describe('when API call is loading', () => {
+  describe('`allowOrganizationCreation` is enabled', () => {
     beforeEach(() => {
-      createComponent(jest.fn().mockReturnValue(new Promise(() => {})));
+      gon.features = { allowOrganizationCreation: true };
     });
 
-    itRendersHeaderText();
-    itRendersNewOrganizationButton();
-    itDoesNotRenderErrorMessage();
+    describe('when API call is loading', () => {
+      beforeEach(() => {
+        createComponent(jest.fn().mockResolvedValue({}));
+      });
 
-    it('renders the organizations view with loading prop set to true', () => {
-      expect(findOrganizationsView().props('loading')).toBe(true);
+      itRendersHeaderText();
+      itRendersNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('renders the organizations view with loading prop set to true', () => {
+        expect(findOrganizationsView().props('loading')).toBe(true);
+      });
+    });
+    describe('when API call is successful', () => {
+      beforeEach(async () => {
+        createComponent();
+        await waitForPromises();
+      });
+
+      itRendersHeaderText();
+      itRendersNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('passes organizations to view component', () => {
+        expect(findOrganizationsView().props()).toMatchObject({
+          loading: false,
+          organizations,
+        });
+      });
     });
   });
 
-  describe('when API call is successful', () => {
-    beforeEach(async () => {
-      createComponent();
-      await waitForPromises();
+  describe('`allowOrganizationCreation` is disabled', () => {
+    beforeEach(() => {
+      gon.features = { allowOrganizationCreation: false };
     });
 
-    itRendersHeaderText();
-    itRendersNewOrganizationButton();
-    itDoesNotRenderErrorMessage();
+    describe('when API call is loading', () => {
+      beforeEach(() => {
+        createComponent(jest.fn().mockResolvedValue({}));
+      });
 
-    it('passes organizations to view component', () => {
-      expect(findOrganizationsView().props()).toMatchObject({
-        loading: false,
-        organizations,
+      itRendersHeaderText();
+      itDoesNotRenderNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('renders the organizations view with loading prop set to true', () => {
+        expect(findOrganizationsView().props('loading')).toBe(true);
+      });
+    });
+    describe('when API call is successful', () => {
+      beforeEach(() => {
+        createComponent();
+        return waitForPromises();
+      });
+
+      itRendersHeaderText();
+      itDoesNotRenderNewOrganizationButton();
+      itDoesNotRenderErrorMessage();
+
+      it('passes organizations to view component', () => {
+        expect(findOrganizationsView().props()).toMatchObject({
+          loading: false,
+          organizations,
+        });
       });
     });
   });

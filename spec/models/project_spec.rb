@@ -7038,6 +7038,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.not_a_fork' do
+    let_it_be(:project) { create(:project, :public) }
+
+    subject(:not_a_fork) { described_class.not_a_fork }
+
+    it 'returns projects which are not forks' do
+      fork_project(project)
+
+      expect(not_a_fork).to contain_exactly(project)
+    end
+  end
+
   describe '.deployments' do
     subject { project.deployments }
 

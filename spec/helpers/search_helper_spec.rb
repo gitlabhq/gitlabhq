@@ -789,53 +789,16 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   end
 
   describe '#search_service' do
-    using RSpec::Parameterized::TableSyntax
-
-    subject { search_service }
+    let(:params) { { include_archived: true } }
 
     before do
       allow(self).to receive(:current_user).and_return(:the_current_user)
     end
 
-    shared_context 'with inputs' do
-      where(:input, :expected) do
-        '0'       | false
-        '1'       | true
-        'yes'     | true
-        'no'      | false
-        'true'    | true
-        'false'   | false
-        true      | true
-        false     | false
-      end
-    end
+    it 'instantiates a new SearchService with current_user and params' do
+      expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: true })
 
-    describe 'for confidential' do
-      let(:params) { { confidential: input } }
-
-      include_context 'with inputs'
-
-      with_them do
-        it 'transforms param' do
-          expect(::SearchService).to receive(:new).with(:the_current_user, { confidential: expected })
-
-          subject
-        end
-      end
-    end
-
-    describe 'for include_archived' do
-      let(:params) { { include_archived: input } }
-
-      include_context 'with inputs'
-
-      with_them do
-        it 'transforms param' do
-          expect(::SearchService).to receive(:new).with(:the_current_user, { include_archived: expected })
-
-          subject
-        end
-      end
+      search_service
     end
   end
 

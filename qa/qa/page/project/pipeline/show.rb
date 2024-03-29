@@ -32,6 +32,7 @@ module QA
 
           view 'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue' do
             element 'job-item-container', required: true
+            element 'stage-column-title'
           end
 
           def running?(wait: 0)
@@ -133,6 +134,10 @@ module QA
                 has_no_selector?('.ci-status-icon-skipped')
               end
             end
+          end
+
+          def has_stage?(name)
+            has_element?('stage-column-title', text: name)
           end
         end
       end

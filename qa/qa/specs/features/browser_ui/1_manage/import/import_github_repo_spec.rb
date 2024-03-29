@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Manage', :github, :requires_admin, product_group: :import_and_integrate do
-    describe 'GitHub import' do
+    describe 'GitHub import',
+      quarantine: {
+        type: :investigating,
+        issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/452419"
+      } do
       include_context 'with github import'
 
       context 'when imported via UI' do

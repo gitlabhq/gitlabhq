@@ -468,6 +468,32 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it_behaves_like 'handling registry info'
   end
 
+  describe '#connected?' do
+    subject { client.connected? }
+
+    context 'with a valid connection' do
+      before do
+        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+        stub_registry_info
+      end
+
+      it 'returns true' do
+        expect(subject).to be true
+      end
+    end
+
+    context 'with an invalid connection' do
+      before do
+        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+        stub_registry_info(status: 500)
+      end
+
+      it 'returns false' do
+        expect(subject).to be false
+      end
+    end
+  end
+
   def stub_upload(path, content, digest, status = 200)
     stub_request(:post, "#{registry_api_url}/v2/#{path}/blobs/uploads/")
       .with(headers: headers_with_accept_types)

@@ -34635,7 +34635,7 @@ msgstr ""
 msgid "ObservabilityMetrics|Search"
 msgstr ""
 
-msgid "ObservabilityMetrics|Search metrics starting with..."
+msgid "ObservabilityMetrics|Search metrics..."
 msgstr ""
 
 msgid "ObservabilityMetrics|Select attributes"
@@ -45824,6 +45824,9 @@ msgid "SecurityOrchestration|Failed to load group projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|Fetching"
 msgstr ""
 
 msgid "SecurityOrchestration|Fetching the scope information."
