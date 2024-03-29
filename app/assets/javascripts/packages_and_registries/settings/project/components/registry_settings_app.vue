@@ -7,12 +7,14 @@ import {
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
 } from '~/packages_and_registries/settings/project/constants';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
+import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     ContainerExpirationPolicy,
+    ContainerProtectionRules,
     DependencyProxyPackagesSettings: () =>
       import(
         'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue'
@@ -39,6 +41,11 @@ export default {
   computed: {
     showProtectedPackagesSettings() {
       return this.showPackageRegistrySettings && this.glFeatures.packagesProtectedPackages;
+    },
+    showProtectedContainersSettings() {
+      return (
+        this.glFeatures.containerRegistryProtectedContainers && this.showContainerRegistrySettings
+      );
     },
   },
   mounted() {
@@ -71,6 +78,7 @@ export default {
     </gl-alert>
     <packages-protection-rules v-if="showProtectedPackagesSettings" />
     <packages-cleanup-policy v-if="showPackageRegistrySettings" />
+    <container-protection-rules v-if="showProtectedContainersSettings" />
     <container-expiration-policy v-if="showContainerRegistrySettings" />
     <dependency-proxy-packages-settings v-if="showDependencyProxySettings" />
   </div>
