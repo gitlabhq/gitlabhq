@@ -4,7 +4,7 @@
 .merge-train-sync:
   # We don't need/want any global before/after commands, so we overwrite these
   # settings.
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   stage: sync
   before_script:
     - apk add --no-cache --update curl bash jq
