@@ -86,13 +86,27 @@ describe('~/api/projects_api.js', () => {
       jest.spyOn(axios, 'delete');
     });
 
-    it('deletes to the correct URL', () => {
-      const expectedUrl = `/api/v7/projects/${projectId}`;
+    describe('without params', () => {
+      it('deletes to the correct URL', () => {
+        const expectedUrl = `/api/v7/projects/${projectId}`;
 
-      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
-      return projectsApi.deleteProject(projectId).then(() => {
-        expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+        return projectsApi.deleteProject(projectId).then(() => {
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { params: undefined });
+        });
+      });
+    });
+
+    describe('with params', () => {
+      it('deletes to the correct URL with params', () => {
+        const expectedUrl = `/api/v7/projects/${projectId}`;
+
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+        return projectsApi.deleteProject(projectId, { testParam: true }).then(() => {
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { params: { testParam: true } });
+        });
       });
     });
   });

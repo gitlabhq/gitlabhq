@@ -113,10 +113,7 @@ export default {
     <div class="hide-collapsed gl-line-height-20 gl-font-weight-bold">
       {{ contactsLabel }}
     </div>
-    <div
-      class="hide-collapsed gl-display-flex gl-flex-wrap"
-      :class="contacts.length > 0 ? 'gl-mt-2' : ''"
-    >
+    <div v-if="shouldShowContacts" class="hide-collapsed gl-display-flex gl-flex-wrap gl-mt-2">
       <div
         v-for="(contact, index) in contacts"
         :id="`contact_container_${index}`"
@@ -136,6 +133,13 @@ export default {
           <div v-for="row in popOverData(contact)" :key="row">{{ row }}</div>
         </gl-popover>
       </div>
+    </div>
+    <div
+      v-else
+      data-testid="crm-empty-message"
+      class="gl-display-flex gl-align-items-center hide-collapsed gl-text-gray-500"
+    >
+      {{ __('To add active contacts, use /add_contacts.') }}
     </div>
   </div>
 </template>

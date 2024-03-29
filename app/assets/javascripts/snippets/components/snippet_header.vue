@@ -4,7 +4,6 @@ import {
   GlSprintf,
   GlModal,
   GlAlert,
-  GlLoadingIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -40,7 +39,6 @@ export default {
     GlSprintf,
     GlModal,
     GlAlert,
-    GlLoadingIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -347,7 +345,6 @@ export default {
       </div>
 
       <gl-modal
-        ref="deleteModal"
         v-model="isDeleteModalVisible"
         modal-id="delete-modal"
         :title="__('Delete snippet modal')"
@@ -374,11 +371,10 @@ export default {
           <gl-button
             variant="danger"
             category="primary"
-            :disabled="isLoading"
+            :loading="isLoading"
             data-testid="delete-snippet-button"
             @click="deleteSnippet"
           >
-            <gl-loading-icon v-if="isLoading" size="sm" inline />
             {{ __('Delete snippet') }}
           </gl-button>
         </template>

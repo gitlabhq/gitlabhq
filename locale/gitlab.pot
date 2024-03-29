@@ -52758,7 +52758,7 @@ msgstr ""
 msgid "TimeTracking|Time remaining: %{timeRemainingHumanReadable}"
 msgstr ""
 
-msgid "TimeTracking|Use /spend or /estimate to manage time."
+msgid "TimeTracking|To manage time, use /spend or /estimate."
 msgstr ""
 
 msgid "Timeago|%s days ago"
@@ -52997,6 +52997,9 @@ msgid "To access this domain create a new DNS record"
 msgstr ""
 
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "To add active contacts, use /add_contacts."
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."

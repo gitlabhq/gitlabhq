@@ -1,5 +1,6 @@
 fragment BaseProject on Project {
   id
+  fullPath
   archived
   nameWithNamespace
   organizationEditPath

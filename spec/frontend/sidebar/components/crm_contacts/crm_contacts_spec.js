@@ -9,6 +9,7 @@ import getIssueCrmContactsQuery from '~/sidebar/queries/get_issue_crm_contacts.q
 import issueCrmContactsSubscription from '~/sidebar/queries/issue_crm_contacts.subscription.graphql';
 import {
   getIssueCrmContactsQueryResponse,
+  getIssueCrmContactsQueryResponseEmpty,
   issueCrmContactsUpdateResponse,
   issueCrmContactsUpdateNullResponse,
 } from '../mock_data';
@@ -21,6 +22,9 @@ describe('Issue crm contacts component', () => {
   let fakeApollo;
 
   const successQueryHandler = jest.fn().mockResolvedValue(getIssueCrmContactsQueryResponse);
+  const emptySuccessQueryHandler = jest
+    .fn()
+    .mockResolvedValue(getIssueCrmContactsQueryResponseEmpty);
   const successSubscriptionHandler = jest.fn().mockResolvedValue(issueCrmContactsUpdateResponse);
   const nullSubscriptionHandler = jest.fn().mockResolvedValue(issueCrmContactsUpdateNullResponse);
 
@@ -78,6 +82,16 @@ describe('Issue crm contacts component', () => {
     expect(wrapper.find('#contact_1').attributes('href')).toBe(
       '/groups/flightjs/-/issues?crm_contact_id=5',
     );
+  });
+
+  it('has an empty state', async () => {
+    mountComponent({
+      queryHandler: emptySuccessQueryHandler,
+      subscriptionHandler: nullSubscriptionHandler,
+    });
+    await waitForPromises();
+
+    expect(wrapper.findByTestId('crm-empty-message').exists()).toBe(true);
   });
 
   it('renders correct results after subscription update', async () => {

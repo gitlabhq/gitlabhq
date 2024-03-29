@@ -13,6 +13,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
@@ -83,6 +84,7 @@ describe('Snippet header component', () => {
         GlDisclosureDropdownGroup,
         GlDisclosureDropdownItem,
         GlIcon,
+        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -99,9 +101,10 @@ describe('Snippet header component', () => {
   const findSpamAction = () => wrapper.findByText('Submit as spam');
   const findDeleteAction = () => wrapper.findByText('Delete');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findDeleteModalDeleteAction = () => wrapper.findByTestId('delete-snippet-button');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
-  const findSpamIcon = () => wrapper.findComponent('[data-testid="snippets-spam-icon"]');
+  const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
 
   const title = 'The property of Thor';
 
@@ -294,17 +297,21 @@ describe('Snippet header component', () => {
   });
 
   describe('Delete mutation', () => {
-    const deleteSnippet = async () => {
+    const openDeleteSnippetModal = async () => {
       // Click delete action
       findDropdown().trigger('click');
       findDeleteAction().trigger('click');
 
       await nextTick();
+    };
+
+    const deleteSnippet = async () => {
+      await openDeleteSnippetModal();
 
       expect(findDeleteModal().props().visible).toBe(true);
 
       // Click delete button in delete modal
-      document.querySelector('[data-testid="delete-snippet-button"').click();
+      findDeleteModalDeleteAction().trigger('click');
 
       await waitForPromises();
     };
@@ -325,9 +332,19 @@ describe('Snippet header component', () => {
 
       await deleteSnippet();
 
-      expect(document.querySelector('[data-testid="delete-alert"').textContent.trim()).toBe(
-        ERROR_MSG,
-      );
+      expect(wrapper.findByTestId('delete-alert').text()).toBe(ERROR_MSG);
+    });
+
+    it('puts the `Delete snippet` modal button in the loading state on click', async () => {
+      createComponent();
+
+      expect(findDeleteModalDeleteAction().props('loading')).toBe(false);
+
+      await openDeleteSnippetModal();
+      findDeleteModalDeleteAction().trigger('click');
+      await nextTick();
+
+      expect(findDeleteModalDeleteAction().props('loading')).toBe(true);
     });
 
     describe('in case of successful mutation, closes modal and redirects to correct listing', () => {

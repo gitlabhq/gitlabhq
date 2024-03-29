@@ -31,6 +31,18 @@ export const getIssueCrmContactsQueryResponse = {
   },
 };
 
+export const getIssueCrmContactsQueryResponseEmpty = {
+  data: {
+    issue: {
+      __typename: 'Issue',
+      id: 'gid://gitlab/Issue/123',
+      customerRelationsContacts: {
+        nodes: [],
+      },
+    },
+  },
+};
+
 export const issueCrmContactsUpdateNullResponse = {
   data: {
     issueCrmContactsUpdated: null,

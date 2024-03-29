@@ -33,7 +33,7 @@ describe('WorkItemTimeTracking component', () => {
       createComponent({ timeEstimate: 0, totalTimeSpent: 0 });
 
       expect(findTimeTrackingBody().text()).toMatchInterpolatedText(
-        'Use /spend or /estimate to manage time.',
+        'To manage time, use /spend or /estimate.',
       );
       expect(findProgressBar().exists()).toBe(false);
     });

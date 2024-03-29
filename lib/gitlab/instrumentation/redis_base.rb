@@ -122,7 +122,7 @@ module Gitlab
 
         def instance_count_request(amount = 1)
           @request_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_requests_total, 'Client side Redis request count, per Redis server')
-          @request_counter.increment({ storage: storage_key }, amount)
+          @request_counter.increment(storage_labels, amount)
         end
 
         def instance_count_pipelined_request(size)
@@ -132,7 +132,7 @@ module Gitlab
             {},
             [10, 100, 1000, 10_000]
           )
-          @pipeline_size_histogram.observe({ storage: storage_key, storage_shard: shard_key }, size)
+          @pipeline_size_histogram.observe(storage_labels, size)
         end
 
         def instance_count_exception(ex)
@@ -140,12 +140,12 @@ module Gitlab
           # server is doing. Redis itself does not expose error counts. This
           # metric can be used for Redis alerting and service health monitoring.
           @exception_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_exceptions_total, 'Client side Redis exception count, per Redis server, per exception class')
-          @exception_counter.increment({ storage: storage_key, storage_shard: shard_key, exception: ex.class.to_s })
+          @exception_counter.increment(storage_labels.merge(exception: ex.class.to_s))
         end
 
         def instance_count_connection_exception(ex)
           @connection_exception_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_connection_exceptions_total, 'Client side Redis connection exception count, per Redis server, per exception class')
-          @connection_exception_counter.increment({ storage: storage_key, storage_shard: shard_key, exception: ex.class.to_s })
+          @connection_exception_counter.increment(storage_labels.merge(exception: ex.class.to_s))
         end
 
         def instance_count_cluster_redirection(ex)
@@ -153,7 +153,7 @@ module Gitlab
           # redirected to the right node, especially during resharding..
           # This metric can be used for Redis alerting and service health monitoring.
           @redirection_counter ||= Gitlab::Metrics.counter(:gitlab_redis_client_redirections_total, 'Client side Redis Cluster redirection count, per Redis node, per slot')
-          @redirection_counter.increment(decompose_redirection_message(ex.message).merge({ storage: storage_key, storage_shard: shard_key }))
+          @redirection_counter.increment(decompose_redirection_message(ex.message).merge(storage_labels))
         end
 
         def instance_observe_duration(duration)
@@ -164,14 +164,18 @@ module Gitlab
             [0.1, 0.5, 0.75, 1]
           )
 
-          @request_latency_histogram.observe({ storage: storage_key, storage_shard: shard_key }, duration)
+          @request_latency_histogram.observe(storage_labels, duration)
         end
 
         def log_exception(ex)
-          ::Gitlab::ErrorTracking.log_exception(ex, storage: storage_key, storage_shard: shard_key)
+          ::Gitlab::ErrorTracking.log_exception(ex, **storage_labels)
         end
 
         private
+
+        def storage_labels
+          { storage: storage_key, storage_shard: shard_key }
+        end
 
         def request_count_key
           strong_memoize(:request_count_key) { build_key(:redis_request_count) }
