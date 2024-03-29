@@ -558,12 +558,10 @@ class Issue < ApplicationRecord
   # or an anonymous user.
   def visible_to_user?(user = nil)
     return publicly_visible? unless user
-
     return false unless readable_by?(user)
+    return true if user.can_read_all_resources?
 
-    user.can_read_all_resources? ||
-      ::Gitlab::ExternalAuthorization.access_allowed?(
-        user, project.external_authorization_classification_label)
+    access_allowed_for_project_with_external_authorization?(user, project)
   end
 
   # Always enforce spam check for support bot but allow for other users when issue is not publicly visible
@@ -780,6 +778,15 @@ class Issue < ApplicationRecord
     else
       namespace.member?(user)
     end
+  end
+
+  def access_allowed_for_project_with_external_authorization?(user, project)
+    return false if project.blank?
+
+    ::Gitlab::ExternalAuthorization.access_allowed?(
+      user,
+      project.external_authorization_classification_label
+    )
   end
 
   def due_date_after_start_date

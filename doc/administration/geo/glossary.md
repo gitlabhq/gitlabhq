@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Geo Glossary
+# Geo glossary
 
 DETAILS:
 **Tier:** Premium, Ultimate

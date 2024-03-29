@@ -265,7 +265,7 @@ The following languages and dependency managers are supported:
       For support of <code>Python 3.10</code>, add the following stanza to the GitLab CI/CD configuration file. This specifies that the <code>Python 3.10</code> image is to be used, instead of the default <code>Python 3.9</code>.
       <div class="language-yaml highlighter-rouge">
         <div class="highlight">
-<pre class="highlight"><code><span class="na">gemnasium-dependency_scanning</span><span class="pi">:</span>
+<pre class="highlight"><code><span class="na">gemnasium-python-dependency_scanning</span><span class="pi">:</span>
   <span class="na">image</span><span class="pi">:</span>
     <span class="na">name</span><span class="pi">:</span> <span class="s">$CI_TEMPLATE_REGISTRY_HOST/security-products/gemnasium-python:4-python-3.10</span></code></pre></div></div>
     </p>

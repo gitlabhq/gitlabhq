@@ -1,4 +1,6 @@
-.branch-commit.gl-font-sm.gl-text-gray-500.gl-text-truncate
+- class_name = local_assigns.fetch(:class_name, '')
+
+.branch-commit.gl-font-sm.gl-text-gray-500.gl-text-truncate{ class: class_name }
   = link_to commit.short_id, project_commit_path(project, commit.id), class: "commit-sha"
   &middot;
   %span

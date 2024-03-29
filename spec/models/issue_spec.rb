@@ -1188,6 +1188,36 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
     end
 
+    context 'with a group level issue' do
+      let(:group) { create(:group) }
+      let(:issue) { build(:work_item, namespace: group) }
+
+      context 'when readable_by? is false' do
+        it 'returns false' do
+          allow(issue).to receive(:readable_by?).and_return false
+          is_expected.to eq(false)
+        end
+      end
+
+      context 'when readable_by? is true' do
+        context 'when user.can_read_all_resources? is true' do
+          it 'returns true' do
+            allow(user).to receive(:can_read_all_resources?).and_return true
+
+            is_expected.to eq(true)
+          end
+        end
+
+        context 'when user.can_read_all_resources? is false' do
+          it 'returns false' do
+            allow(user).to receive(:can_read_all_resources?).and_return false
+
+            is_expected.to eq(false)
+          end
+        end
+      end
+    end
+
     context 'without a user' do
       let(:user) { nil }
 

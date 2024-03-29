@@ -2974,9 +2974,6 @@ msgstr ""
 msgid "Add an impersonation token"
 msgstr ""
 
-msgid "Add another branch"
-msgstr ""
-
 msgid "Add another link"
 msgstr ""
 
@@ -2987,6 +2984,9 @@ msgid "Add approvers"
 msgstr ""
 
 msgid "Add branch target"
+msgstr ""
+
+msgid "Add branches"
 msgstr ""
 
 msgid "Add child epic to an epic"
@@ -3113,6 +3113,9 @@ msgid "Add projects"
 msgstr ""
 
 msgid "Add protected branch"
+msgstr ""
+
+msgid "Add protected branches"
 msgstr ""
 
 msgid "Add reaction"
@@ -31058,6 +31061,9 @@ msgstr ""
 msgid "MemberRole|Actions"
 msgstr ""
 
+msgid "MemberRole|Are you sure you want to delete this custom role? Before you delete this custom role, make sure no group member has this role."
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
@@ -31089,6 +31095,9 @@ msgid "MemberRole|Custom role"
 msgstr ""
 
 msgid "MemberRole|Custom roles"
+msgstr ""
+
+msgid "MemberRole|Delete custom role?"
 msgstr ""
 
 msgid "MemberRole|Delete role"
@@ -45577,6 +45586,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{allLabel}%{projectCount} %{projectLabel} in this group"
 msgstr ""
 
+msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before selection."
+msgstr ""
+
 msgid "SecurityOrchestration|%{branchName}"
 msgstr ""
 
@@ -45700,6 +45712,12 @@ msgstr ""
 msgid "SecurityOrchestration|Branch types don't match any existing branches."
 msgstr ""
 
+msgid "SecurityOrchestration|Branch: %{boldStart}%{branchName}%{boldEnd} was not found in project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."
+msgstr ""
+
+msgid "SecurityOrchestration|Can't find project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."
+msgstr ""
+
 msgid "SecurityOrchestration|Cannot create an empty policy"
 msgstr ""
 
@@ -45811,9 +45829,6 @@ msgstr ""
 msgid "SecurityOrchestration|Fetching the scope information."
 msgstr ""
 
-msgid "SecurityOrchestration|Fill in branch name with project name in the format of %{boldStart}branch-name@project-path,%{boldEnd} separate with `,`"
-msgstr ""
-
 msgid "SecurityOrchestration|Filter and search projects"
 msgstr ""
 
@@ -45871,6 +45886,9 @@ msgstr ""
 msgid "SecurityOrchestration|License Scan"
 msgstr ""
 
+msgid "SecurityOrchestration|List branches in the format %{boldStart}branch-name@group-name/project-name,%{boldEnd} separated by a comma (,)."
+msgstr ""
+
 msgid "SecurityOrchestration|Load CI/CD code from file"
 msgstr ""
 
@@ -45899,9 +45917,6 @@ msgid "SecurityOrchestration|New scan execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|No actions defined - policy will not run."
-msgstr ""
-
-msgid "SecurityOrchestration|No branches yet"
 msgstr ""
 
 msgid "SecurityOrchestration|No compliance frameworks"
@@ -46047,9 +46062,6 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
-msgid "SecurityOrchestration|Select exception branches"
-msgstr ""
-
 msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
@@ -46117,6 +46129,9 @@ msgid "SecurityOrchestration|The Scan result policy is now called the Merge requ
 msgstr ""
 
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
+msgstr ""
+
+msgid "SecurityOrchestration|There are no exception branches yet."
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
@@ -46189,6 +46204,9 @@ msgid "SecurityOrchestration|Use a scan execution policy to create rules which e
 msgstr ""
 
 msgid "SecurityOrchestration|Use default mode for scoping"
+msgstr ""
+
+msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr ""
 
 msgid "SecurityOrchestration|View policy project"
