@@ -30,7 +30,7 @@ module Auth
       end
 
       if repository_path_push_protected?
-        return error('PROTECTED', status: 403, message: 'Pushing to protected repository path forbidden')
+        return error('DENIED', status: 403, message: 'Pushing to protected repository path forbidden')
       end
 
       { token: authorized_token(*scopes).encoded }

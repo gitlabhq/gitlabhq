@@ -46,10 +46,6 @@ To include the text of a comment template in your comment:
 
 You can create comment templates for your own use, or to share with all members of a group.
 
-::Tabs
-
-:::TabTitle For myself
-
 To create a comment template for your own use:
 
 1. On the left sidebar, select your avatar.
@@ -61,7 +57,10 @@ To create a comment template for your own use:
    other GitLab text areas.
 1. Select **Save**, and the page reloads with your comment template shown.
 
-:::TabTitle For a group
+### For a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
 
 To create a comment template shared with all members of a group:
 
@@ -73,36 +72,27 @@ To create a comment template shared with all members of a group:
    other GitLab text areas.
 1. Select **Save**, and the page reloads with your comment template shown.
 
-::EndTabs
-
 ## View comment templates
 
 To see existing comment templates:
-
-::Tabs
-
-:::TabTitle For myself
 
 1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
 1. On the left sidebar, select **Comment templates** (**{comment-lines}**).
 1. Scroll to **Comment templates**.
 
-:::TabTitle For a group
+### For a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
 
 1. In the editor toolbar for a comment, select **Comment templates**
    (**{comment-lines}**).
 1. Select **Manage group comment templates**.
 
-::EndTabs
-
 ## Edit or delete comment templates
 
 To edit or delete an existing comment template:
-
-::Tabs
-
-:::TabTitle For myself
 
 1. On the left sidebar, select your avatar.
 1. From the dropdown list, select **Preferences**.
@@ -111,11 +101,12 @@ To edit or delete an existing comment template:
 1. To edit, select **Edit** (**{pencil}**).
 1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.
 
-:::TabTitle For a group
+### For a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
 
 1. In the editor toolbar for a comment, select **Comment templates**
 (**{comment-lines}**), then select **Manage group comment templates**.
 1. To edit, select **Edit** (**{pencil}**).
 1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.
-
-::EndTabs

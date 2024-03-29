@@ -100,9 +100,9 @@ module QA
           has_no_element?('snippet-description-content')
         end
 
-        def has_visibility_type?(visibility_type)
+        def has_visibility_description?(visibility_description)
           within_element('snippet-container') do
-            has_text?(visibility_type)
+            has_text?(visibility_description)
           end
         end
 

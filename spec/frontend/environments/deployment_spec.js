@@ -238,7 +238,7 @@ describe('~/environments/components/deployment.vue', () => {
       await waitForPromises();
 
       for (let i = 1; i < 6; i += 1) {
-        const tagName = __(`testTag${i}`);
+        const tagName = `testTag${i}`;
         const testTag = wrapper.findByText(tagName);
         expect(testTag.exists()).toBe(true);
         expect(testTag.attributes('href')).toBe(`tags/${tagName}`);

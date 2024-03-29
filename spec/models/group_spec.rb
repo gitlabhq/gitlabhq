@@ -1961,7 +1961,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'evaluating admin access level' do
-      let_it_be(:admin) { create(:admin) }
+      let_it_be(:admin) { create(:admin, :without_default_org) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'returns OWNER by default' do
@@ -1978,6 +1978,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it 'returns NO_ACCESS when only concrete membership should be considered' do
         expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
           .to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when organization owner' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'returns OWNER by default' do
+        expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when only concrete members' do
+        it 'returns NO_ACCESS' do
+          expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
+            .to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
     end
 

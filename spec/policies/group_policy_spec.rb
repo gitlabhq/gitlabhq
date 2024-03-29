@@ -241,6 +241,20 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  context 'organization owner' do
+    let(:current_user) { organization_owner }
+
+    specify do
+      expect_allowed(*public_permissions)
+      expect_allowed(*guest_permissions)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
+      expect_allowed(*maintainer_permissions)
+      expect_allowed(*owner_permissions)
+      expect_allowed(*admin_permissions)
+    end
+  end
+
   context 'migration bot' do
     let_it_be(:migration_bot) { Users::Internal.migration_bot }
     let_it_be(:current_user) { migration_bot }

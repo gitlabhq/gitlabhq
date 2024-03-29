@@ -1,10 +1,10 @@
 <script>
-import { GlAlert, GlButton, GlLink, GlIcon, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
+import GoogleCloudRegistrationInstructionsModal from '~/ci/runner/components/registration/google_cloud_registration_instructions_modal.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
-import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
@@ -67,31 +67,6 @@ export default {
       'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}.',
     ),
     runnerSetupBtnText: s__('Runners|Setup instructions'),
-    modal: {
-      subtitle: s__(
-        'Runners|These setup instructions use your specifications and follow the best practices for performance and security.',
-      ),
-      step2_1Header: s__('Runners|Step 1: Configure your Google Cloud project'),
-      step2_1Body: s__(
-        `Runners|If you haven't already configured your Google Cloud project, this step enables the required services and creates a service account with the required permissions. `,
-      ),
-      step2_1Substep1: s__(
-        'Runners|Run the following on your command line. You might be prompted to sign in to Google.',
-      ),
-      step2_2Header: s__('Runners|Step 2: Install and register GitLab Runner'),
-      step2_2Body: s__(
-        'Runners|This step creates the required infrastructure in Google Cloud, installs GitLab Runner, and registers it to this GitLab project. ',
-      ),
-      step2_2Substep1: s__(
-        'Runners|Use a text editor to create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration.',
-      ),
-      step2_2Substep2: s__(
-        'Runners|In the directory with that Terraform configuration file, run the following on your command line.',
-      ),
-      step2_2Substep3: s__(
-        'Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud.',
-      ),
-    },
     copyCommands: __('Copy commands'),
     emptyFieldsAlertMessage: s__(
       'Runners|To view the setup instructions, complete the previous form.',
@@ -120,12 +95,11 @@ export default {
     ClipboardButton,
     GoogleCloudFieldGroup,
     GoogleCloudLearnMoreLink,
-    CliCommand,
+    GoogleCloudRegistrationInstructionsModal,
     GlAlert,
     GlButton,
     GlIcon,
     GlLink,
-    GlModal,
     GlSprintf,
     HelpPopover,
   },
@@ -316,9 +290,6 @@ export default {
         captureException({ error, component: this.$options.name });
       }
     },
-  },
-  cancelModalOptions: {
-    text: __('Close'),
   },
 };
 </script>
@@ -561,52 +532,14 @@ export default {
       @click="showInstructions"
       >{{ $options.i18n.runnerSetupBtnText }}</gl-button
     >
-    <gl-modal
+
+    <google-cloud-registration-instructions-modal
       v-model="showInstructionsModal"
-      cancel-variant="light"
-      size="md"
-      :scrollable="true"
-      modal-id="setup-instructions"
-      :action-cancel="$options.cancelModalOptions"
-      :title="s__('Runners|Setup instructions')"
-    >
-      <p>{{ $options.i18n.modal.subtitle }}</p>
-      <h3 class="gl-heading-4">{{ $options.i18n.modal.step2_1Header }}</h3>
-      <p>{{ $options.i18n.modal.step2_1Body }}</p>
-      <p>{{ $options.i18n.modal.step2_1Substep1 }}</p>
-      <cli-command
-        :command="setupBashScript"
-        :button-title="s__('Runners|Copy commands')"
-        modal-id="setup-instructions"
-        data-testid="setup-bash-script"
-      />
+      :setup-bash-script="setupBashScript"
+      :setup-terraform-file="setupTerraformFile"
+      :apply-terraform-script="applyTerraformScript"
+    />
 
-      <h3 class="gl-heading-4">{{ $options.i18n.modal.step2_2Header }}</h3>
-      <p>{{ $options.i18n.modal.step2_2Body }}</p>
-      <p>
-        <gl-sprintf :message="$options.i18n.modal.step2_2Substep1">
-          <template #code="{ content }">
-            <code>{{ content }}</code>
-          </template>
-        </gl-sprintf>
-      </p>
-      <cli-command
-        :command="setupTerraformFile"
-        :button-title="s__('Runners|Copy Terraform configuration')"
-        modal-id="setup-instructions"
-        data-testid="setup-terraform-file"
-      />
-
-      <p>{{ $options.i18n.modal.step2_2Substep2 }}</p>
-      <cli-command
-        :command="applyTerraformScript"
-        :button-title="s__('Runners|Copy commands')"
-        modal-id="setup-instructions"
-        data-testid="apply-terraform-script"
-      />
-
-      <p>{{ $options.i18n.modal.step2_2Substep3 }}</p>
-    </gl-modal>
     <hr />
     <!-- end: step two -->
     <section v-if="isRunnerOnline">

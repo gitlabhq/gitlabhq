@@ -717,6 +717,26 @@ msgstr ""
 msgid "%{description}- Sentry event: %{errorUrl}- First seen: %{firstSeen}- Last seen: %{lastSeen} %{countLabel}: %{count}%{userCountLabel}: %{userCount}"
 msgstr ""
 
+msgid "%{digit} error"
+msgid_plural "%{digit} errors"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{digit} failed"
+msgid_plural "%{digit} failed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{digit} fixed test result"
+msgid_plural "%{digit} fixed test results"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{digit} total test"
+msgid_plural "%{digit} total tests"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
 msgstr ""
 
@@ -748,6 +768,9 @@ msgid "%{edit_in_new_fork_notice} Try to upload a file again."
 msgstr ""
 
 msgid "%{emailPrefix}@company.com"
+msgstr ""
+
+msgid "%{errorMessage}, defaulting to 365 days."
 msgstr ""
 
 msgid "%{extra} more downstream pipelines"
@@ -837,6 +860,12 @@ msgid "%{key} is not a valid URL."
 msgstr ""
 
 msgid "%{key} is not a valid action."
+msgstr ""
+
+msgid "%{labelName} will be permanently deleted from %{subjectName}. This cannot be undone."
+msgstr ""
+
+msgid "%{labelName} will be permanently deleted. This cannot be undone."
 msgstr ""
 
 msgid "%{labelStart}Actual response:%{labelEnd} %{headers}"
@@ -1163,6 +1192,9 @@ msgstr ""
 msgid "%{spanStart}in%{spanEnd} %{errorFn}"
 msgstr ""
 
+msgid "%{stageName} Job - %{jobName}"
+msgstr ""
+
 msgid "%{startDate} – %{dueDate}"
 msgstr ""
 
@@ -1449,6 +1481,9 @@ msgid "(Limited to %{quota} pipeline minutes per month)"
 msgstr ""
 
 msgid "(No changes)"
+msgstr ""
+
+msgid "(UTC %{offset})"
 msgstr ""
 
 msgid "(Unlimited pipeline minutes)"
@@ -5753,6 +5788,9 @@ msgid "Analytics|Event Name"
 msgstr ""
 
 msgid "Analytics|Event Props"
+msgstr ""
+
+msgid "Analytics|Events received since %{date}"
 msgstr ""
 
 msgid "Analytics|Example: Number of users over time, grouped weekly"
@@ -12672,6 +12710,9 @@ msgstr ""
 msgid "Commits feed"
 msgstr ""
 
+msgid "Commits in %{branchName}"
+msgstr ""
+
 msgid "Commits per day hour (UTC)"
 msgstr ""
 
@@ -17439,6 +17480,9 @@ msgstr ""
 msgid "DeployTokens|Revoke %{name}"
 msgstr ""
 
+msgid "DeployTokens|Revoke %{tokenName}?"
+msgstr ""
+
 msgid "DeployTokens|Scopes"
 msgstr ""
 
@@ -17461,6 +17505,9 @@ msgid "DeployTokens|Username"
 msgstr ""
 
 msgid "DeployTokens|Username (optional)"
+msgstr ""
+
+msgid "DeployTokens|You are about to revoke %{tokenName}."
 msgstr ""
 
 msgid "DeployTokens|Your new deploy token"
@@ -20119,6 +20166,9 @@ msgstr ""
 msgid "Error fetching labels."
 msgstr ""
 
+msgid "Error fetching merge requests for %{branchId}"
+msgstr ""
+
 msgid "Error fetching network graph."
 msgstr ""
 
@@ -21274,6 +21324,9 @@ msgid "Failed to signing using smartcard authentication"
 msgstr ""
 
 msgid "Failed to toggle the to-do status for the design."
+msgstr ""
+
+msgid "Failed to unfollow user"
 msgstr ""
 
 msgid "Failed to update branch!"
@@ -36517,6 +36570,12 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
+msgid "PerformanceBar|%{originalDisplayName} [%{queryCount} queries batched]"
+msgstr ""
+
+msgid "PerformanceBar|%{queryCount} queries batched"
+msgstr ""
+
 msgid "PerformanceBar|Backend"
 msgstr ""
 
@@ -42398,6 +42457,9 @@ msgstr ""
 msgid "Reports|%{combinedString} and %{resolvedString}"
 msgstr ""
 
+msgid "Reports|%{no} changed test results"
+msgstr ""
+
 msgid "Reports|%{recentlyFailed} out of %{failed} failed test has failed more than once in the last 14 days"
 msgstr ""
 
@@ -45489,6 +45551,11 @@ msgstr ""
 msgid "SecurityOrchestration| that is %{licenseState} and is"
 msgstr ""
 
+msgid "SecurityOrchestration|%d project which has compliance framework:"
+msgid_plural "SecurityOrchestration|%d projects which have compliance framework:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
@@ -45515,11 +45582,6 @@ msgstr ""
 
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
 msgstr ""
-
-msgid "SecurityOrchestration|%{projects} which has compliance framework:"
-msgid_plural "SecurityOrchestration|%{projects} which have compliance framework:"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""

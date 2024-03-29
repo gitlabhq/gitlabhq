@@ -1,6 +1,6 @@
 <script>
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 
 export default {
   props: {
@@ -15,7 +15,10 @@ export default {
   },
   computed: {
     formatParameter() {
-      return __(`${capitalizeFirstCharacter(this.stage)} Job - ${this.jobName}`);
+      return sprintf(__(`%{stageName} Job - %{jobName}`), {
+        stageName: capitalizeFirstCharacter(this.stage),
+        jobName: this.jobName,
+      });
     },
   },
 };

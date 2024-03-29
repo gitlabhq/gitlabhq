@@ -1816,14 +1816,6 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def unfollow(user)
-    if Users::UserFollowUser.where(follower_id: self.id, followee_id: user.id).delete_all > 0
-      self.followees.reset
-    else
-      false
-    end
-  end
-
   def following_users_allowed?(user)
     return false if self.id == user.id
 
@@ -2079,6 +2071,20 @@ class User < MainClusterwide::ApplicationRecord
 
   def can_admin_all_resources?
     can?(:admin_all_resources)
+  end
+
+  def owns_organization?(organization)
+    return false unless organization
+
+    organization_id = organization.is_a?(Integer) ? organization : organization.id
+
+    organization_users.where(organization_id: organization_id).owner.exists?
+  end
+
+  def can_admin_organization?(organization)
+    strong_memoize_with(:can_admin_organization, organization) do
+      owns_organization?(organization)
+    end
   end
 
   def update_two_factor_requirement

@@ -7,7 +7,6 @@ import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import eventHub from '../event_hub';
 import {
   sidebarState,
   JS_TOGGLE_EXPAND_CLASS,
@@ -60,7 +59,6 @@ export default {
       showPeekHint: false,
       isMouseover: false,
       breakpoint: null,
-      showSuperSidebarContextHeader: true,
     };
   },
   computed: {
@@ -105,7 +103,6 @@ export default {
   mounted() {
     this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
-    eventHub.$on('toggle-menu-header', this.onToggleMenuHeader);
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.focusTrap);
@@ -197,9 +194,6 @@ export default {
         event.preventDefault();
       }
     },
-    onToggleMenuHeader(forceState) {
-      this.showSuperSidebarContextHeader = forceState;
-    },
   },
 };
 </script>
@@ -242,7 +236,7 @@ export default {
       >
         <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
           <div
-            v-if="showSuperSidebarContextHeader"
+            v-if="sidebarData.current_context_header"
             id="super-sidebar-context-header"
             class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
           >

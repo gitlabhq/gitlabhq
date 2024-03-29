@@ -58,25 +58,20 @@ export default {
     <gl-sprintf
       v-if="subjectName"
       :message="
-        __(
-          `%{strongStart}${labelName}%{strongEnd} will be permanently deleted from ${subjectName}. This cannot be undone.`,
-        )
+        __('%{labelName} will be permanently deleted from %{subjectName}. This cannot be undone.')
       "
     >
-      <template #strong="{ content }">
-        <strong>{{ content }}</strong>
+      <template #labelName>
+        <strong>{{ labelName }}</strong>
       </template>
+      <template #subjectName>{{ subjectName }}</template>
     </gl-sprintf>
     <gl-sprintf
       v-else
-      :message="
-        __(
-          `%{strongStart}${labelName}%{strongEnd} will be permanently deleted. This cannot be undone.`,
-        )
-      "
+      :message="__('%{labelName} will be permanently deleted. This cannot be undone.')"
     >
-      <template #strong="{ content }">
-        <strong>{{ content }}</strong>
+      <template #labelName>
+        <strong>{{ labelName }}</strong>
       </template>
     </gl-sprintf>
     <template #modal-footer>

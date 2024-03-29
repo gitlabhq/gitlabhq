@@ -1057,6 +1057,32 @@ RSpec.describe UsersController, feature_category: :user_management do
     end
   end
 
+  describe 'POST #unfollow' do
+    before do
+      sign_in(user)
+    end
+
+    context 'when unfollow is successful' do
+      before do
+        user.follow(public_user)
+      end
+
+      it 'removes the follow relationship and sets a success message' do
+        post user_unfollow_url(username: public_user.username)
+        expect(response).to be_redirect
+        expect(user).not_to be_following(public_user)
+      end
+    end
+
+    context 'when there is an error during unfollow' do
+      it 'sets an error message and redirects' do
+        post user_unfollow_url(username: public_user.username)
+        expect(response).to be_redirect
+        expect(flash[:alert]).to eq(_('Failed to unfollow user'))
+      end
+    end
+  end
+
   context 'token authentication' do
     it_behaves_like 'authenticates sessionless user for the request spec', 'show atom', public_resource: true do
       let(:url) { user_url(user, format: :atom) }

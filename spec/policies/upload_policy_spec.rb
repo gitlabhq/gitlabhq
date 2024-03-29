@@ -9,7 +9,7 @@ RSpec.describe UploadPolicy do
   let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
   let_it_be(:maintainer) { create(:user).tap { |user| group.add_maintainer(user) } }
   let_it_be(:owner) { create(:user).tap { |user| group.add_owner(user) } }
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :without_default_org) }
   let_it_be(:non_member_user) { create(:user) }
 
   let(:upload_permissions) { [:read_upload, :destroy_upload] }

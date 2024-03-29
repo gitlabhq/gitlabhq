@@ -1,13 +1,13 @@
 import { GlAlert } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { createWrapper } from '@vue/test-utils';
-import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
+import GoogleCloudRegistrationInstructionsModal from '~/ci/runner/components/registration/google_cloud_registration_instructions_modal.vue';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import provisionGoogleCloudRunnerQueryProject from '~/ci/runner/graphql/register/provision_google_cloud_runner_project.query.graphql';
 import provisionGoogleCloudRunnerQueryGroup from '~/ci/runner/graphql/register/provision_google_cloud_runner_group.query.graphql';
@@ -80,10 +80,8 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
 
-  const getModal = () => extendedWrapper(createWrapper(document.querySelector('.gl-modal')));
-  const findModalSetupBashScript = () => getModal().findByTestId('setup-bash-script');
-  const findModalSetupTerraformFile = () => getModal().findByTestId('setup-terraform-file');
-  const findModalApplyTerraformScript = () => getModal().findByTestId('apply-terraform-script');
+  const findGoogleCloudInstructionsModal = () =>
+    wrapper.findComponent(GoogleCloudRegistrationInstructionsModal);
 
   const fillInTextField = (formGroup, value) => {
     const input = formGroup.find('input');
@@ -212,9 +210,12 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(projectInstructionsResolver).toHaveBeenCalled();
     expect(groupInstructionsResolver).not.toHaveBeenCalled();
 
-    expect(findModalSetupBashScript().text()).toBe('mock project setup bash script');
-    expect(findModalSetupTerraformFile().text()).toBe('mock project setup terraform file');
-    expect(findModalApplyTerraformScript().text()).toBe('mock project apply terraform script');
+    expect(findGoogleCloudInstructionsModal().props()).toEqual({
+      visible: true,
+      applyTerraformScript: 'mock project apply terraform script',
+      setupBashScript: 'mock project setup bash script',
+      setupTerraformFile: 'mock project setup terraform file',
+    });
   });
 
   it('Shows a modal with the correspondent scripts for a group', async () => {
@@ -228,9 +229,12 @@ describe('GoogleCloudRegistrationInstructions', () => {
     expect(groupInstructionsResolver).toHaveBeenCalled();
     expect(projectInstructionsResolver).not.toHaveBeenCalled();
 
-    expect(findModalSetupBashScript().text()).toBe('mock group setup bash script');
-    expect(findModalSetupTerraformFile().text()).toBe('mock group setup terraform file');
-    expect(findModalApplyTerraformScript().text()).toBe('mock group apply terraform script');
+    expect(findGoogleCloudInstructionsModal().props()).toEqual({
+      visible: true,
+      applyTerraformScript: 'mock group apply terraform script',
+      setupBashScript: 'mock group setup bash script',
+      setupTerraformFile: 'mock group setup terraform file',
+    });
   });
 
   it('Shows feedback when runner is online', async () => {
@@ -350,9 +354,12 @@ describe('GoogleCloudRegistrationInstructions', () => {
         'To view the setup instructions, make sure all form fields are completed and correct.',
       );
 
-      expect(findModalSetupBashScript().text()).toBe('');
-      expect(findModalSetupTerraformFile().text()).toBe('');
-      expect(findModalApplyTerraformScript().text()).toBe('');
+      expect(findGoogleCloudInstructionsModal().props()).toEqual({
+        visible: true,
+        applyTerraformScript: null,
+        setupBashScript: null,
+        setupTerraformFile: null,
+      });
     });
   });
 });

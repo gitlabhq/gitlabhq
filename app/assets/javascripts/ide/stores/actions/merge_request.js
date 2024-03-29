@@ -1,6 +1,6 @@
 import { createAlert } from '~/alert';
 import { STATUS_OPEN } from '~/issues/constants';
-import { __ } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import { leftSidebarViews, PERMISSION_READ_MR, MAX_MR_FILES_AUTO_OPEN } from '../../constants';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -36,7 +36,7 @@ export const getMergeRequestsForBranch = (
     })
     .catch((e) => {
       createAlert({
-        message: __(`Error fetching merge requests for ${branchId}`),
+        message: sprintf(__('Error fetching merge requests for %{branchId}'), { branchId }),
         fadeTransition: false,
         addBodyClass: true,
       });

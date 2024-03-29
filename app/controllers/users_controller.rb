@@ -206,8 +206,12 @@ class UsersController < ApplicationController
   end
 
   def unfollow
-    current_user.unfollow(user)
+    response = ::Users::UnfollowService.new(
+      follower: current_user,
+      followee: user
+    ).execute
 
+    flash[:alert] = response.message if response.error?
     redirect_path = referer_path(request) || @user
 
     redirect_to redirect_path

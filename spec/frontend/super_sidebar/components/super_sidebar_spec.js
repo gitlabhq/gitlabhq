@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
-import sidebarEventHub from '~/super_sidebar/event_hub';
 import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -224,12 +223,9 @@ describe('SuperSidebar component', () => {
       expect(wrapper.text()).toContain('Your work');
     });
 
-    it('handles event toggle-menu-header correctly', async () => {
-      createWrapper();
+    it('does not render a context header if it does not exist', () => {
+      createWrapper({ sidebarData: { ...mockSidebarData, current_context_header: null } });
 
-      sidebarEventHub.$emit('toggle-menu-header', false);
-
-      await nextTick();
       expect(findContextHeader().exists()).toBe(false);
     });
 

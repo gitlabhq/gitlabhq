@@ -10,7 +10,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin_with_admin_mode) { create(:admin) }
-  let_it_be(:admin_without_admin_mode) { create(:admin) }
+  let_it_be(:admin_without_admin_mode) { create(:admin, :without_default_org) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:owner) { group.add_owner(create(:user)).user }
   let_it_be(:maintainer) { group.add_maintainer(create(:user)).user }

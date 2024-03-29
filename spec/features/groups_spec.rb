@@ -248,7 +248,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:admin, :without_default_org) }
 
       before do
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')

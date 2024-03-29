@@ -720,7 +720,11 @@ class Group < Namespace
   # @param only_concrete_membership [Bool] whether require admin concrete membership status
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
-    return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
+
+    unless only_concrete_membership
+      return GroupMember::OWNER if user.can_admin_all_resources?
+      return GroupMember::OWNER if user.can_admin_organization?(organization_id)
+    end
 
     max_member_access(user)
   end

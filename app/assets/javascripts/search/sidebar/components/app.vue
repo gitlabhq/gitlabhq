@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
+import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
@@ -29,6 +30,9 @@ import WikiBlobsFilters from './wiki_blobs_filters.vue';
 import AllScopesStartFilters from './all_scopes_start_filters.vue';
 
 export default {
+  i18n: {
+    headerText: __('Search results'),
+  },
   name: 'GlobalSearchSidebar',
   components: {
     IssuesFilters,
@@ -45,13 +49,6 @@ export default {
     AllScopesStartFilters,
   },
   mixins: [glFeatureFlagsMixin()],
-  props: {
-    headerText: {
-      required: false,
-      type: String,
-      default: '',
-    },
-  },
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
@@ -105,10 +102,9 @@ export default {
     <sidebar-portal>
       <all-scopes-start-filters />
       <div
-        v-if="headerText"
         class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
       >
-        {{ headerText }}
+        {{ $options.i18n.headerText }}
       </div>
       <scope-sidebar-navigation />
       <issues-filters v-if="showIssuesFilters" />

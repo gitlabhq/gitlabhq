@@ -32,6 +32,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     group_projects_for(user: @user, group: @subject).any?
   end
 
+  desc "User owns the group's organization"
+  condition(:organization_owner) do
+    if @user.is_a?(User)
+      @user.owns_organization?(@subject.organization_id)
+    else
+      false
+    end
+  end
+
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
@@ -124,8 +133,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_emoji
   end
 
-  rule { admin }.policy do
+  rule { admin | organization_owner }.policy do
     enable :read_group
+  end
+
+  rule { admin }.policy do
     enable :update_max_artifacts_size
   end
 
@@ -289,7 +301,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :import_projects
   end
 
-  rule { owner | admin }.policy do
+  rule { owner | admin | organization_owner }.policy do
     enable :owner_access
     enable :read_statistics
   end

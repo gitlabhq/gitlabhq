@@ -325,7 +325,7 @@ export default {
           :title="snippetVisibilityLevelDescription"
           data-container="body"
         >
-          <span class="gl-sr-only">{{ s__(`VisibilityLevel|${visibility}`) }}</span>
+          <span class="gl-sr-only">{{ snippetVisibilityLevelDescription }}</span>
           <gl-icon :name="visibilityLevelIcon" :size="14" class="gl-relative gl-top-1" />
         </div>
         <div data-testid="authored-message" class="gl-line-height-20">

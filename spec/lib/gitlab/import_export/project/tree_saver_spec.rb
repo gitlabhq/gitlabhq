@@ -393,7 +393,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeSaver, :with_license, feature_
         end
 
         context 'as admin' do
-          let(:user) { create(:admin) }
+          let(:user) { create(:admin, :without_default_org) }
 
           before do
             project_tree_saver.save # rubocop:disable Rails/SaveBang

@@ -73,11 +73,6 @@ describe('ScopeSidebarNavigation', () => {
 
       expect(findNavItems().at(linkAtPosition).findComponent('a').attributes('href')).toBe(link);
     });
-
-    it('always emits toggle-menu-header event', () => {
-      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('toggle-menu-header', false);
-      expect(sidebarEventHub.$emit).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('scope navigation sets proper state with url scope set', () => {

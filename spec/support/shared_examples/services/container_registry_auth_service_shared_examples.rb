@@ -1446,7 +1446,10 @@ RSpec.shared_examples 'a container registry auth service' do
     shared_examples 'a protected container repository' do
       it_behaves_like 'a forbidden'
 
-      it { is_expected.to include errors: [include(message: 'Pushing to protected repository path forbidden')] }
+      it do
+        is_expected.to include errors: [include(code: "DENIED",
+          message: 'Pushing to protected repository path forbidden')]
+      end
     end
 
     context 'for different repository_path_patterns and current user roles' do

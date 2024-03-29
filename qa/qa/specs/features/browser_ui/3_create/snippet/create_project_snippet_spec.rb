@@ -23,7 +23,7 @@ module QA
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Project snippet')
           expect(snippet).not_to have_snippet_description
-          expect(snippet).to have_visibility_type(/private/i)
+          expect(snippet).to have_visibility_description('The snippet is visible only to project members.')
           expect(snippet).to have_file_name('markdown_file.md')
           expect(snippet).to have_file_content('Snippet heading')
           expect(snippet).to have_file_content('Example link')

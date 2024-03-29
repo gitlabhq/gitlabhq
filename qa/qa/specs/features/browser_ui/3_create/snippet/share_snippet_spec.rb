@@ -31,7 +31,7 @@ module QA
 
           Page::Dashboard::Snippet::Show.perform do |snippet|
             expect(snippet).to have_snippet_title('Shared snippet')
-            expect(snippet).to have_visibility_type(/public/i)
+            expect(snippet).to have_visibility_description('The snippet can be accessed without any authentication.')
             expect(snippet).to have_file_content('code to be shared')
             expect(snippet).to have_embed_dropdown
           end

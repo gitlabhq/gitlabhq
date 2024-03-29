@@ -22,7 +22,7 @@ RSpec.describe Sidebars::Search::Panel, feature_category: :navigation do
 
   describe '#super_sidebar_context_header' do
     it 'returns a hash with the correct title and icon' do
-      expect(panel.super_sidebar_context_header).to eq(_('Search results'))
+      expect(panel.super_sidebar_context_header).to eq(nil)
     end
   end
 end

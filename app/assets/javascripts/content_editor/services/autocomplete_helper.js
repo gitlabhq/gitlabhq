@@ -1,4 +1,4 @@
-import { identity, memoize, throttle, isEmpty } from 'lodash';
+import { identity, memoize, isEmpty } from 'lodash';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -91,13 +91,12 @@ export function createDataSource({
     }
   };
 
-  const init = memoize(sync);
-  const throttledSync = throttle(sync, 5000);
+  const cacheTimeoutFn = () => (cache ? 0 : Math.floor(Date.now() / 1e4));
+  const init = memoize(sync, cacheTimeoutFn);
 
   return {
     search: async (query) => {
       await init();
-      if (!cache) throttledSync();
 
       let results = items.map(mapper);
       if (filter) results = filter(items, query);
@@ -208,6 +207,6 @@ export default class AutocompleteHelper {
         limit: config.limit,
       });
     },
-    (referenceType, config) => JSON.stringify({ referenceType, config }),
+    (referenceType) => referenceType,
   );
 }
