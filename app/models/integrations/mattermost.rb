@@ -4,6 +4,7 @@ module Integrations
   class Mattermost < BaseChatNotification
     include SlackMattermostNotifier
     include SlackMattermostFields
+    include HasAvatar
 
     def self.title
       _('Mattermost notifications')
