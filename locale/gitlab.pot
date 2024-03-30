@@ -3091,6 +3091,9 @@ msgstr ""
 msgid "Add new webhook"
 msgstr ""
 
+msgid "Add or edit reviewers"
+msgstr ""
+
 msgid "Add or remove a user."
 msgstr ""
 
@@ -41545,6 +41548,9 @@ msgid "Queued"
 msgstr ""
 
 msgid "Quick actions can be used in description and comment boxes."
+msgstr ""
+
+msgid "Quick assign"
 msgstr ""
 
 msgid "Quick help"

@@ -106,6 +106,9 @@
 
 #js-review-bar{ data: review_bar_data(@merge_request, current_user) }
 
+- if Feature.enabled?(:reviewer_assign_drawer, current_user, type: :wip)
+  #js-reviewer-drawer-portal
+
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }
 

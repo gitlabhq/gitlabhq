@@ -47,6 +47,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:pinned_file, project)
+    push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]

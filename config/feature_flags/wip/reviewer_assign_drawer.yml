@@ -1,0 +1,9 @@
+---
+name: reviewer_assign_drawer
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/448423
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147825
+rollout_issue_url:
+milestone: '16.11'
+group: group::code review
+type: wip
+default_enabled: false

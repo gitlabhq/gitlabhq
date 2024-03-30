@@ -1,17 +1,24 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 
 describe('ReviewerTitle component', () => {
   let wrapper;
 
-  const createComponent = (props) => {
-    return shallowMount(Component, {
+  const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
+    return mount(Component, {
       propsData: {
         numberOfReviewers: 0,
         editable: false,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          reviewerAssignDrawer,
+        },
       },
     });
   };
@@ -85,6 +92,33 @@ describe('ReviewerTitle component', () => {
     expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
       label: 'right_sidebar',
       property: 'reviewer',
+    });
+  });
+
+  describe('when reviewerAssignDrawer is enabled', () => {
+    beforeEach(() => {
+      setHTMLFixture('<div id="js-reviewer-drawer-portal"></div>');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('clicking toggle opens reviewer drawer', async () => {
+      wrapper = createComponent(
+        {
+          editable: true,
+        },
+        { reviewerAssignDrawer: true },
+      );
+
+      expect(document.querySelector('.gl-drawer')).toBe(null);
+
+      wrapper.find('[data-testid="drawer-toggle"]').vm.$emit('click');
+
+      await waitForPromises();
+
+      expect(document.querySelector('.gl-drawer')).not.toBe(null);
     });
   });
 });
