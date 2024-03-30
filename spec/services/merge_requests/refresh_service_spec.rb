@@ -329,7 +329,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
           it 'sets the latest detached merge request pipeline as a head pipeline' do
             @merge_request.reload
-            expect(@merge_request.actual_head_pipeline).to be_merge_request_event
+            expect(@merge_request.diff_head_pipeline).to be_merge_request_event
           end
 
           it 'returns pipelines in correct order' do

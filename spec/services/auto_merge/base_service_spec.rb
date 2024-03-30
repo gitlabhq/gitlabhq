@@ -61,7 +61,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
 
       before do
         pipeline = build(:ci_pipeline)
-        allow(merge_request).to receive(:actual_head_pipeline) { pipeline }
+        allow(merge_request).to receive(:diff_head_pipeline) { pipeline }
       end
 
       it 'sets the auto merge strategy' do

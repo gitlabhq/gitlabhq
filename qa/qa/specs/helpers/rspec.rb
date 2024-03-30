@@ -19,10 +19,11 @@ module QA
         # expanding into the global state
         # See: https://github.com/rspec/rspec-core/issues/2603
         def describe_successfully(*args, &describe_body)
-          example_group = ::RSpec.describe(*args, &describe_body)
-          ran_successfully = example_group.run reporter
-          expect(ran_successfully).to eq true
-          example_group
+          describe_run(*args, passed: true, &describe_body)
+        end
+
+        def describe_unsuccessfully(*args, &describe_body)
+          describe_run(*args, passed: false, &describe_body)
         end
 
         def send_stop_notification
@@ -34,6 +35,15 @@ module QA
 
         def reporter
           ::RSpec.configuration.reporter
+        end
+
+        private
+
+        def describe_run(*args, passed: true, &describe_body)
+          example_group = ::RSpec.describe(*args, &describe_body)
+          ran_successfully = example_group.run reporter
+          expect(ran_successfully).to eq passed
+          example_group
         end
       end
     end

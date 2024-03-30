@@ -45984,6 +45984,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy changes may take some time to be applied."
 msgstr ""
 
+msgid "SecurityOrchestration|Policy contains deprecated syntax"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
@@ -46173,6 +46176,9 @@ msgstr ""
 msgid "SecurityOrchestration|This policy is inherited from the %{linkStart}namespace%{linkEnd} and must be edited there"
 msgstr ""
 
+msgid "SecurityOrchestration|This policy won't work after GitLab 17.0 (May 16, 2024). You must edit the policy and replace the deprecated syntax%{deprecatedProperties}. For details on which syntax has been deprecated, see %{linkStart}Documentation%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
@@ -46344,7 +46350,7 @@ msgstr ""
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
-msgid "SecurityOrchestration|newly_deprecated is replaced by %{firstLinkStart}New::Needs Triage%{firstLinkEnd} and %{secondLinkStart}New::Dismissed%{secondLinkEnd}"
+msgid "SecurityOrchestration|newly_detected is replaced by %{firstLinkStart}New::Needs Triage%{firstLinkEnd} and %{secondLinkStart}New::Dismissed%{secondLinkEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|or from:"

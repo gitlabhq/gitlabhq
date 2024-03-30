@@ -19,7 +19,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :apply_diff_view_cookie!, only: [:show, :diffs]
   before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_read_actual_head_pipeline!, only: [
+  before_action :authorize_read_diff_head_pipeline!, only: [
     :test_reports,
     :exposed_artifacts,
     :coverage_reports,
@@ -607,8 +607,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     ::Gitlab::Search::RecentMergeRequests.new(user: current_user).log_view(@merge_request)
   end
 
-  def authorize_read_actual_head_pipeline!
-    render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
+  def authorize_read_diff_head_pipeline!
+    render_404 unless can?(current_user, :read_build, merge_request.diff_head_pipeline)
   end
 
   def show_whitespace

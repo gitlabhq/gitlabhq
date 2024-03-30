@@ -10,7 +10,7 @@ module AutoMerge
 
     def process(merge_request)
       logger.info("Processing Automerge")
-      return unless merge_request.actual_head_pipeline_success?
+      return unless merge_request.diff_head_pipeline_success?
 
       logger.info("Pipeline Success")
       return unless merge_request.mergeable?
@@ -41,11 +41,11 @@ module AutoMerge
     private
 
     def add_system_note(merge_request)
-      SystemNoteService.merge_when_pipeline_succeeds(merge_request, project, current_user, merge_request.actual_head_pipeline.sha) if merge_request.saved_change_to_auto_merge_enabled?
+      SystemNoteService.merge_when_pipeline_succeeds(merge_request, project, current_user, merge_request.diff_head_pipeline.sha) if merge_request.saved_change_to_auto_merge_enabled?
     end
 
     def check_availability(merge_request)
-      merge_request.actual_head_pipeline&.active?
+      merge_request.diff_head_pipeline&.active?
     end
 
     def notify(merge_request)

@@ -53,6 +53,8 @@ module RoutableActions
     end
 
     redirect_to build_canonical_path(routable), status: :moved_permanently
+  rescue ActionController::UrlGenerationError
+    route_not_found
   end
 end
 

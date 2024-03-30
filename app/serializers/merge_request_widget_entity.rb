@@ -171,10 +171,6 @@ class MergeRequestWidgetEntity < Grape::Entity
       can?(current_user, :create_pipeline, merge_request.source_project)
   end
 
-  def use_merge_base_with_merged_results?
-    object.actual_head_pipeline&.merged_result_pipeline?
-  end
-
   def head_pipeline_downloadable_path_for_report_type(file_type)
     object.head_pipeline&.present(current_user: current_user)
       &.downloadable_path_for_report_type(file_type)

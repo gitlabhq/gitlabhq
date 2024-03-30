@@ -50,7 +50,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   end
 
   expose :actual_head_pipeline, as: :pipeline, if: -> (mr, _) { presenter(mr).can_read_pipeline? } do |merge_request, options|
-    MergeRequests::PipelineEntity.represent(merge_request.actual_head_pipeline, options)
+    MergeRequests::PipelineEntity.represent(merge_request.diff_head_pipeline, options)
   end
 
   expose :merge_pipeline, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project) } do |merge_request, options|
@@ -160,7 +160,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
       status_name = "favicon_status_#{merge_request.state}"
       Gitlab::Favicon.mr_status_overlay(status_name)
     else
-      pipeline = merge_request.actual_head_pipeline
+      pipeline = merge_request.diff_head_pipeline
       status = pipeline&.detailed_status(request.current_user)
       Gitlab::Favicon.ci_status_overlay(status.favicon) if status
     end

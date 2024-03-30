@@ -700,7 +700,7 @@ end
 
 ```ruby
 # Mark a relation as allowed to cross-join databases
-def find_actual_head_pipeline
+def find_diff_head_pipeline
   all_pipelines
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
     .for_sha_or_source_sha(diff_head_sha)

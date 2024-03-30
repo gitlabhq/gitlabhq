@@ -143,7 +143,7 @@ module Types
     field :web_url, GraphQL::Types::String, null: true,
                                             description: 'Web URL of the merge request.'
 
-    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
+    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :diff_head_pipeline,
                                                    description: 'Pipeline running on the branch HEAD of the merge request.'
     field :pipelines,
           null: true,

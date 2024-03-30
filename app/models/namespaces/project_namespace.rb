@@ -35,9 +35,11 @@ module Namespaces
     end
 
     def sync_attributes_from_project(project)
+      attribute_list = %w[name path namespace_id namespace visibility_level shared_runners_enabled organization_id]
+
       attributes_to_sync = project
                              .changes
-                             .slice(*%w[name path namespace_id namespace visibility_level shared_runners_enabled])
+                             .slice(*attribute_list)
                              .transform_values { |val| val[1] }
 
       # if visibility_level is not set explicitly for project, it defaults to 0,

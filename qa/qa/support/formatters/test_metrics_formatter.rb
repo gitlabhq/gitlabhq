@@ -81,65 +81,73 @@ module QA
           log(:error, "Failed to save test execution metrics, error: #{e}")
         end
 
-        # rubocop:disable Metrics/AbcSize
-
         # Transform example to influxdb compatible metrics data
         # https://github.com/influxdata/influxdb-client-ruby#data-format
         #
         # @param [RSpec::Core::Example] example
         # @return [Hash]
         def test_stats(example)
-          # use rerun_file_path so shared_examples have the correct file path
-          file_path = example.metadata[:rerun_file_path].gsub('./qa/specs/features', '')
-
-          api_fabrication = ((example.metadata[:api_fabrication] || 0) * 1000).round
-          ui_fabrication = ((example.metadata[:browser_ui_fabrication] || 0) * 1000).round
-
-          # do not export results for tests that are not compatible with environment
-          return if incompatible_env?(example)
-
           {
             name: 'test-stats',
             time: time,
-            tags: {
-              name: example.full_description,
-              file_path: file_path,
-              status: status(example),
-              smoke: example.metadata.key?(:smoke).to_s,
-              reliable: example.metadata.key?(:reliable).to_s,
-              blocking: example.metadata.key?(:blocking).to_s,
-              quarantined: quarantined(example.metadata),
-              retried: (retry_attempts(example.metadata) > 0).to_s,
-              job_name: job_name,
-              merge_request: merge_request,
-              run_type: run_type,
-              stage: devops_stage(file_path),
-              product_group: example.metadata[:product_group],
-              testcase: example.metadata[:testcase],
-              **custom_metrics_tags(example.metadata)
-            },
-            fields: {
-              id: example.id,
-              run_time: (example.execution_result.run_time * 1000).round,
-              api_fabrication: api_fabrication,
-              ui_fabrication: ui_fabrication,
-              total_fabrication: api_fabrication + ui_fabrication,
-              retry_attempts: retry_attempts(example.metadata),
-              job_url: ci_job_url,
-              pipeline_url: env('CI_PIPELINE_URL'),
-              pipeline_id: env('CI_PIPELINE_ID'),
-              job_id: env('CI_JOB_ID'),
-              merge_request_iid: merge_request_iid,
-              failure_exception: example.execution_result.exception.to_s.delete("\n"),
-              **custom_metrics_fields(example.metadata)
-            }
+            tags: tags(example),
+            fields: fields(example)
           }
         rescue StandardError => e
           log(:error, "Failed to transform example '#{example.id}', error: #{e}")
           nil
         end
 
-        # rubocop:enable Metrics/AbcSize
+        # Metrics tags
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [Hash]
+        def tags(example)
+          # use rerun_file_path so shared_examples have the correct file path
+          file_path = example.metadata[:rerun_file_path].gsub('./qa/specs/features', '')
+
+          {
+            name: example.full_description,
+            file_path: file_path,
+            status: status(example),
+            smoke: example.metadata.key?(:smoke).to_s,
+            reliable: example.metadata.key?(:reliable).to_s,
+            blocking: example.metadata.key?(:blocking).to_s,
+            quarantined: quarantined(example),
+            job_name: job_name,
+            merge_request: merge_request,
+            run_type: run_type,
+            stage: devops_stage(file_path),
+            product_group: example.metadata[:product_group],
+            testcase: example.metadata[:testcase],
+            exception_class: example.execution_result.exception&.class&.to_s,
+            **custom_metrics_tags(example.metadata)
+          }.compact
+        end
+
+        # Metrics fields
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [Hash]
+        def fields(example)
+          api_fabrication = ((example.metadata[:api_fabrication] || 0) * 1000).round
+          ui_fabrication = ((example.metadata[:browser_ui_fabrication] || 0) * 1000).round
+
+          {
+            id: example.id,
+            run_time: (example.execution_result.run_time * 1000).round,
+            api_fabrication: api_fabrication,
+            ui_fabrication: ui_fabrication,
+            total_fabrication: api_fabrication + ui_fabrication,
+            job_url: ci_job_url,
+            pipeline_url: env('CI_PIPELINE_URL'),
+            pipeline_id: env('CI_PIPELINE_ID'),
+            job_id: env('CI_JOB_ID'),
+            merge_request_iid: merge_request_iid,
+            failure_exception: example.execution_result.exception.to_s.delete("\n"),
+            **custom_metrics_fields(example.metadata)
+          }.compact
+        end
 
         # Resource fabrication data point
         #
@@ -193,13 +201,13 @@ module QA
 
         # Is spec quarantined
         #
-        # @param [Hash] metadata
+        # @param [RSpec::Core::Example] example
         # @return [String]
-        def quarantined(metadata)
-          return "false" unless metadata.key?(:quarantine)
-          return "true" unless metadata[:quarantine].is_a?(Hash)
+        def quarantined(example)
+          return "false" unless example.metadata.key?(:quarantine)
 
-          (!Specs::Helpers::Quarantine.quarantined_different_context?(metadata[:quarantine])).to_s
+          # if quarantine key is present and status is pending, consider it quarantined
+          (example.execution_result.status == :pending).to_s
         end
 
         # Return a more detailed status
@@ -208,23 +216,12 @@ module QA
         # - if test passed but had more than 1 attempt, consider test flaky
         #
         # @param [RSpec::Core::Example] example
-        # @return [String]
+        # @return [Symbol]
         def status(example)
           rspec_status = example.execution_result.status
           return rspec_status if [:pending, :failed].include?(rspec_status)
 
           retry_attempts(example.metadata) > 0 ? :flaky : :passed
-        end
-
-        # Check if test was skipped due to context condition
-        #
-        # @param [RSpec::Core::Example] example
-        # @return [Boolean]
-        def incompatible_env?(example)
-          return false unless example.execution_result.status == :pending
-          return false unless example.metadata[:skip]
-
-          !example.metadata[:skip].to_s.include?("quarantine") # rubocop:disable Rails/NegateInclude
         end
 
         # Retry attempts

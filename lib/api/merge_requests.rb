@@ -93,13 +93,13 @@ module API
       end
 
       def automatically_mergeable?(merge_when_pipeline_succeeds, merge_request)
-        pipeline_active = merge_request.head_pipeline_active? || merge_request.actual_head_pipeline_active?
+        pipeline_active = merge_request.head_pipeline_active? || merge_request.diff_head_pipeline_active?
         merge_when_pipeline_succeeds && merge_request.mergeable_state?(skip_ci_check: true) && pipeline_active
       end
 
       def immediately_mergeable?(merge_when_pipeline_succeeds, merge_request)
         if merge_when_pipeline_succeeds
-          merge_request.actual_head_pipeline_success?
+          merge_request.diff_head_pipeline_success?
         else
           merge_request.mergeable_state?
         end

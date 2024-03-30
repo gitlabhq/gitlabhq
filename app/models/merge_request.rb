@@ -567,7 +567,7 @@ class MergeRequest < ApplicationRecord
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/40004
-  def actual_head_pipeline
+  def diff_head_pipeline
     head_pipeline&.matches_sha_or_source_sha?(diff_head_sha) ? head_pipeline : nil
   end
 
@@ -581,12 +581,12 @@ class MergeRequest < ApplicationRecord
     !!head_pipeline&.active?
   end
 
-  def actual_head_pipeline_active?
-    !!actual_head_pipeline&.active?
+  def diff_head_pipeline_active?
+    !!diff_head_pipeline&.active?
   end
 
-  def actual_head_pipeline_success?
-    !!actual_head_pipeline&.success?
+  def diff_head_pipeline_success?
+    !!diff_head_pipeline&.success?
   end
 
   # Pattern used to extract `!123` merge request references from text
@@ -1578,15 +1578,15 @@ class MergeRequest < ApplicationRecord
 
   def mergeable_ci_state?
     return true unless only_allow_merge_if_pipeline_succeeds?
-    return false unless actual_head_pipeline
+    return false unless diff_head_pipeline
 
-    return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
+    return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && diff_head_pipeline.skipped?
 
-    actual_head_pipeline.success?
+    diff_head_pipeline.success?
   end
 
   def environments_in_head_pipeline(deployment_status: nil)
-    actual_head_pipeline&.environments_in_self_and_project_descendants(deployment_status: deployment_status) || Environment.none
+    diff_head_pipeline&.environments_in_self_and_project_descendants(deployment_status: deployment_status) || Environment.none
   end
 
   def fetch_ref!
@@ -1697,14 +1697,14 @@ class MergeRequest < ApplicationRecord
   end
 
   def update_head_pipeline
-    find_actual_head_pipeline.try do |pipeline|
+    find_diff_head_pipeline.try do |pipeline|
       self.head_pipeline = pipeline
       update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
     end
   end
 
   def has_test_reports?
-    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
+    diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
   def predefined_variables
@@ -1739,15 +1739,15 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_accessibility_reports?
-    actual_head_pipeline.present? && actual_head_pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:accessibility))
+    diff_head_pipeline.present? && diff_head_pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:accessibility))
   end
 
   def has_coverage_reports?
-    actual_head_pipeline&.has_coverage_reports?
+    diff_head_pipeline&.has_coverage_reports?
   end
 
   def has_terraform_reports?
-    actual_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
+    diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
   end
 
   def compare_accessibility_reports
@@ -1771,7 +1771,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_mr_diff_report?
-    actual_head_pipeline&.has_codequality_mr_diff_report?
+    diff_head_pipeline&.has_codequality_mr_diff_report?
   end
 
   # TODO: this method and compare_test_reports use the same
@@ -1787,7 +1787,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_codequality_reports?
-    actual_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+    diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
   end
 
   def compare_codequality_reports
@@ -1807,7 +1807,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_exposed_artifacts?
-    actual_head_pipeline&.has_exposed_artifacts?
+    diff_head_pipeline&.has_exposed_artifacts?
   end
 
   # TODO: this method and compare_test_reports use the same
@@ -1828,7 +1828,7 @@ class MergeRequest < ApplicationRecord
   def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {})
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
       unless service_class.new(project, current_user, id: id, report_type: report_type, additional_params: additional_params)
-        .latest?(comparison_base_pipeline(service_class), actual_head_pipeline, data)
+        .latest?(comparison_base_pipeline(service_class), diff_head_pipeline, data)
         raise InvalidateReactiveCache
       end
 
@@ -1837,11 +1837,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
   end
 
   def has_secret_detection_reports?
-    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
   end
 
   def compare_sast_reports(current_user)
@@ -1864,7 +1864,7 @@ class MergeRequest < ApplicationRecord
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)
-    service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(service_class), actual_head_pipeline)
+    service_class.new(project, current_user, id: id, report_type: report_type).execute(comparison_base_pipeline(service_class), diff_head_pipeline)
   end
 
   MAX_RECENT_DIFF_HEAD_SHAS = 100
@@ -2087,7 +2087,7 @@ class MergeRequest < ApplicationRecord
       Ability.allowed?(user, :push_code, source_project)
   end
 
-  def find_actual_head_pipeline
+  def find_diff_head_pipeline
     all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end
 
@@ -2219,9 +2219,9 @@ class MergeRequest < ApplicationRecord
   attr_accessor :skip_fetch_ref
 
   def merge_base_pipelines
-    return ::Ci::Pipeline.none unless actual_head_pipeline&.target_sha
+    return ::Ci::Pipeline.none unless diff_head_pipeline&.target_sha
 
-    target_branch_pipelines_for(sha: actual_head_pipeline.target_sha)
+    target_branch_pipelines_for(sha: diff_head_pipeline.target_sha)
   end
 
   def base_pipelines
@@ -2286,9 +2286,9 @@ class MergeRequest < ApplicationRecord
 
   def report_type_enabled?(report_type)
     if report_type == :license_scanning
-      ::Gitlab::LicenseScanning.scanner_for_pipeline(project, actual_head_pipeline).has_data?
+      ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
     else
-      !!actual_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
+      !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
     end
   end
 

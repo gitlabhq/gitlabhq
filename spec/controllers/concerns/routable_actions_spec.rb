@@ -16,10 +16,16 @@ RSpec.describe RoutableActions do
     def show
       head :ok
     end
+
+    private
+
+    def build_canonical_path(routable)
+      routable.full_path
+    end
   end
 
-  def get_routable(routable)
-    get :show, params: { id: routable.full_path, type: routable.class }
+  def get_routable(routable, id: routable.full_path)
+    get :show, params: { id: id, type: routable.class }
   end
 
   describe '#find_routable!' do
@@ -48,6 +54,33 @@ RSpec.describe RoutableActions do
             get_routable(routable)
 
             expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          context 'when old project path is used' do
+            let(:old_path) { 'old-path/of-the-project' }
+
+            before do
+              create(:redirect_route, source: routable, path: old_path)
+            end
+
+            it 'redirects to the new path' do
+              get_routable(routable, id: old_path)
+
+              expect(response).to have_gitlab_http_status(:redirect)
+              expect(response).to redirect_to(routable.full_path)
+            end
+
+            context 'when the canonical url generation fails' do
+              it 'returns 404 page' do
+                allow(controller).to receive(:build_canonical_path).and_raise(
+                  ActionController::UrlGenerationError, 'error'
+                )
+
+                get_routable(routable, id: old_path)
+
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+            end
           end
         end
 

@@ -2365,34 +2365,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    describe '#actual_head_pipeline' do
+    describe '#diff_head_pipeline' do
       it 'returns nil for MR with old pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to be_nil
+        expect(subject.diff_head_pipeline).to be_nil
       end
 
       it 'returns the pipeline for MR with recent pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
-        expect(subject.actual_head_pipeline).to eq(pipeline)
+        expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.diff_head_pipeline).to eq(pipeline)
       end
 
       it 'returns the pipeline for MR with recent merge request pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'merge-sha', source_sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
-        expect(subject.actual_head_pipeline).to eq(pipeline)
+        expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.diff_head_pipeline).to eq(pipeline)
       end
 
       it 'returns nil when source project does not exist' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.actual_head_pipeline).to be_nil
+        expect(subject.diff_head_pipeline).to be_nil
       end
     end
   end
@@ -2523,7 +2523,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         context 'when failed to find an actual head pipeline' do
           before do
-            allow(merge_request).to receive(:find_actual_head_pipeline) {}
+            allow(merge_request).to receive(:find_diff_head_pipeline) {}
           end
 
           it 'does not update the current head pipeline' do
@@ -2681,7 +2681,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns true' do
         merge_request = create(:merge_request, :with_terraform_reports)
-        merge_request.actual_head_pipeline.update!(status: :running)
+        merge_request.diff_head_pipeline.update!(status: :running)
 
         expect(merge_request.has_terraform_reports?).to be_truthy
       end
@@ -2704,7 +2704,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when head pipeline is blocked by manual jobs' do
         before do
-          merge_request.actual_head_pipeline.block!
+          merge_request.diff_head_pipeline.block!
         end
 
         it { is_expected.to be_truthy }
@@ -2734,7 +2734,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when head pipeline is blocked by manual jobs' do
         before do
-          merge_request.actual_head_pipeline.block!
+          merge_request.diff_head_pipeline.block!
         end
 
         it { is_expected.to be_truthy }
@@ -3861,56 +3861,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe "#actual_head_pipeline_success? " do
-    context 'when project lacks an actual_head_pipeline relation' do
+  describe "#diff_head_pipeline_success? " do
+    context 'when project lacks an diff_head_pipeline relation' do
       before do
-        allow(subject).to receive(:actual_head_pipeline) { nil }
+        allow(subject).to receive(:diff_head_pipeline) { nil }
       end
 
       it 'returns false' do
-        expect(subject.actual_head_pipeline_success?).to be false
+        expect(subject.diff_head_pipeline_success?).to be false
       end
     end
 
-    context 'when project has a actual_head_pipeline relation' do
+    context 'when project has a diff_head_pipeline relation' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+        allow(subject).to receive(:diff_head_pipeline) { pipeline }
       end
 
-      it 'accesses the value from the actual_head_pipeline' do
-        expect(subject.actual_head_pipeline)
+      it 'accesses the value from the diff_head_pipeline' do
+        expect(subject.diff_head_pipeline)
           .to receive(:success?)
 
-        subject.actual_head_pipeline_success?
+        subject.diff_head_pipeline_success?
       end
     end
   end
 
-  describe "#actual_head_pipeline_active? " do
-    context 'when project lacks an actual_head_pipeline relation' do
+  describe "#diff_head_pipeline_active? " do
+    context 'when project lacks an diff_head_pipeline relation' do
       before do
-        allow(subject).to receive(:actual_head_pipeline) { nil }
+        allow(subject).to receive(:diff_head_pipeline) { nil }
       end
 
       it 'returns false' do
-        expect(subject.actual_head_pipeline_active?).to be false
+        expect(subject.diff_head_pipeline_active?).to be false
       end
     end
 
-    context 'when project has a actual_head_pipeline relation' do
+    context 'when project has a diff_head_pipeline relation' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+        allow(subject).to receive(:diff_head_pipeline) { pipeline }
       end
 
-      it 'accesses the value from the actual_head_pipeline' do
-        expect(subject.actual_head_pipeline)
+      it 'accesses the value from the diff_head_pipeline' do
+        expect(subject.diff_head_pipeline)
           .to receive(:active?)
 
-        subject.actual_head_pipeline_active?
+        subject.diff_head_pipeline_active?
       end
     end
   end
