@@ -4,7 +4,6 @@ import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
@@ -19,7 +18,6 @@ import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_lo
 export default {
   name: 'GroupNewRunnerApp',
   components: {
-    RegistrationCompatibilityAlert,
     RunnerGoogleCloudOption,
     RunnerPlatformsRadioGroup,
     RunnerCreateForm,
@@ -68,8 +66,6 @@ export default {
 <template>
   <div class="gl-mt-5">
     <h1 class="gl-heading-1">{{ s__('Runners|New group runner') }}</h1>
-
-    <registration-compatibility-alert :alert-key="groupId" />
 
     <p>
       {{
