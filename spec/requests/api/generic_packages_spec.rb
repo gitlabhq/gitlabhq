@@ -170,6 +170,34 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    context 'for use_final_store_path' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'sends use_final_store_path with true' do
+        expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
+          hash_including(use_final_store_path: true, final_store_path_root_id: project.id)
+        ).and_call_original
+
+        authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(skip_copy_operation_in_generic_packages_upload: false)
+        end
+
+        it 'sends use_final_store_path with false' do
+          expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
+            hash_including(use_final_store_path: false)
+          ).and_call_original
+
+          authorize_upload_file(workhorse_headers.merge(personal_access_token_header))
+        end
+      end
+    end
+
     def authorize_upload_file(request_headers, package_name: 'mypackage', file_name: 'myfile.tar.gz')
       url = "/projects/#{project.id}/packages/generic/#{package_name}/0.0.1/#{file_name}/authorize"
 

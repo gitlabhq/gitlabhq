@@ -12887,6 +12887,8 @@ CREATE TABLE packages_package_files (
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_started_at timestamp with time zone,
     status smallint DEFAULT 0 NOT NULL,
+    file_final_path text,
+    CONSTRAINT check_0f29938b18 CHECK ((char_length(file_final_path) <= 1024)),
     CONSTRAINT check_4c5e6bb0b3 CHECK ((file_store IS NOT NULL))
 );
 

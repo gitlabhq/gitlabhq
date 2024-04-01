@@ -47,9 +47,7 @@ module API
           end
 
           put 'authorize' do
-            project = authorized_user_project
-
-            authorize_workhorse!(subject: project, maximum_size: project.actual_limits.generic_packages_max_file_size)
+            authorize_workhorse!(**authorize_workhorse_params)
           end
 
           desc 'Upload package file' do
@@ -145,6 +143,21 @@ module API
 
       def max_file_size_exceeded?
         authorized_user_project.actual_limits.exceeded?(:generic_packages_max_file_size, params[:file].size)
+      end
+
+      def authorize_workhorse_params
+        project = authorized_user_project
+
+        params = {
+          subject: project,
+          maximum_size: project.actual_limits.generic_packages_max_file_size
+        }
+
+        if ::Feature.enabled?(:skip_copy_operation_in_generic_packages_upload, project)
+          params[:use_final_store_path] = true
+        end
+
+        params
       end
     end
   end
