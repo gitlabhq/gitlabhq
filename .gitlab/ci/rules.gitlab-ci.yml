@@ -158,9 +158,6 @@
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
-.if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS'
-
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
@@ -971,7 +968,7 @@
       changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
     - <<: *if-merge-request
       changes: *code-qa-patterns
@@ -1447,6 +1444,12 @@
     - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
 
+.qa:rules:update-gem-cache-e2e:
+  rules:
+    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
+      when: never
+    - !reference [.qa:rules:update-gem-cache, rules]
+
 .qa:rules:code-merge-request:
   rules:
     - <<: *if-merge-request
@@ -1536,7 +1539,7 @@
       changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
     - <<: *if-force-ci
     - <<: *if-merge-request-and-specific-devops-stage
@@ -1587,7 +1590,7 @@
     - <<: *if-merge-request
       changes: *ci-qa-patterns
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       allow_failure: true
     - <<: *if-force-ci
@@ -1782,7 +1785,7 @@
     - <<: *if-merge-request
       changes: *qa-patterns
       when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request
       changes: *code-patterns
       when: never
     - <<: *if-force-ci

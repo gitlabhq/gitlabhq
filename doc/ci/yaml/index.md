@@ -1452,7 +1452,7 @@ job:
     public: false
 ```
 
-### `artifacts:access`
+#### `artifacts:access`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.10.
 

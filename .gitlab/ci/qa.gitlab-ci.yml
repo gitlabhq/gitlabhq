@@ -62,7 +62,9 @@ cache-qa-gems:
 
 # E2E runners have separate infra setup and different cache bucket
 cache-qa-gems-e2e-runners:
-  extends: cache-qa-gems
+  extends:
+    - cache-qa-gems
+    - .qa:rules:update-gem-cache-e2e
   tags:
     - e2e
 

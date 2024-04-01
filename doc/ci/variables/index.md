@@ -144,7 +144,8 @@ To add or update variables in the project settings:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Environment scope**: Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+   - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
+     or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on [protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md).
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -156,7 +157,6 @@ or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 ### For a group
 
-> - Support for environment scopes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) in GitLab Premium 13.11
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can define a maximum of 200 CI/CD variables.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can define a maximum of 30000 CI/CD variables.
 
@@ -173,7 +173,6 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -183,6 +182,18 @@ To add a group variable:
 The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
 are recursively inherited.
+
+#### Environment scope
+
+DETAILS:
+**Tier:** Premium, Ultimate
+
+To set a group CI/CD variable to only be available for certain environments:
+
+1. In the group, go to **Settings > CI/CD**.
+1. To the right of the variable, select **Edit** (**{pencil}**).
+1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
+   or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ### For an instance
 
