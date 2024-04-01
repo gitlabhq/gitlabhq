@@ -2611,7 +2611,7 @@ RSpec/ContextWording:
     - 'spec/services/milestones/destroy_service_spec.rb'
     - 'spec/services/milestones/promote_service_spec.rb'
     - 'spec/services/milestones/update_service_spec.rb'
-    - 'spec/services/namespace_settings/update_service_spec.rb'
+    - 'spec/services/namespace_settings/assign_attributes_service_spec.rb'
     - 'spec/services/note_summary_spec.rb'
     - 'spec/services/notes/build_service_spec.rb'
     - 'spec/services/notes/copy_service_spec.rb'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_projects do
+RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:settings) { {} }
@@ -89,7 +89,8 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
             allow(group).to receive(:root?).and_return(false)
           end
 
-          it "does not update default_branch_protection_defaults and adds an error to the namespace_settings", :aggregate_failures do
+          it "does not update default_branch_protection_defaults and adds an error to the namespace_settings",
+            :aggregate_failures do
             expect { service.execute }.not_to change { namespace_settings.default_branch_protection_defaults }
             expect(group.namespace_settings.errors[:default_branch_protection_defaults]).to include('only available on top-level groups.')
           end
@@ -101,7 +102,8 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
           allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group).and_return(false)
         end
 
-        it "does not update default_branch_protection_defaults and adds an error to the namespace_settings", :aggregate_failures do
+        it "does not update default_branch_protection_defaults and adds an error to the namespace_settings",
+          :aggregate_failures do
           expect { service.execute }.not_to change { namespace_settings.default_branch_protection_defaults }
           expect(group.namespace_settings.errors[:default_branch_protection_defaults]).to include('can only be changed by a group admin.')
         end

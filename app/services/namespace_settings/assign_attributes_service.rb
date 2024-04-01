@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module NamespaceSettings
-  class UpdateService
+  class AssignAttributesService
     include ::Gitlab::Allowable
 
     attr_reader :current_user, :group, :settings_params
@@ -87,4 +87,4 @@ module NamespaceSettings
   end
 end
 
-NamespaceSettings::UpdateService.prepend_mod_with('NamespaceSettings::UpdateService')
+NamespaceSettings::AssignAttributesService.prepend_mod_with('NamespaceSettings::AssignAttributesService')

@@ -562,4 +562,30 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let(:factory_type) { :ci_bridge }
     end
   end
+
+  describe 'state transition: any => [:failed]' do
+    let!(:processable) { create(:ci_build, :running, pipeline: pipeline, user: create(:user)) }
+
+    before do
+      allow(processable).to receive(:can_auto_cancel_pipeline_on_job_failure?).and_return(can_auto_cancel_pipeline_on_job_failure)
+    end
+
+    context 'when the processable can cancel the pipeline' do
+      let(:can_auto_cancel_pipeline_on_job_failure) { true }
+
+      it 'cancels the pipeline' do
+        expect(processable.pipeline).to receive(:cancel_async_on_job_failure)
+        processable.drop!
+      end
+    end
+
+    context 'when the processable cannot cancel the pipeline' do
+      let(:can_auto_cancel_pipeline_on_job_failure) { false }
+
+      it 'does not cancel the pipeline' do
+        expect(processable.pipeline).not_to receive(:cancel_async_on_job_failure)
+        processable.drop!
+      end
+    end
+  end
 end

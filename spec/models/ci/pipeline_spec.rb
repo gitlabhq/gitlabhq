@@ -7,6 +7,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   include StubRequests
   include Ci::SourcePipelineHelpers
 
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be_with_refind(:project) { create_default(:project, :repository).freeze }
@@ -5934,6 +5936,66 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
 
         it { is_expected.to eq('all') }
+      end
+    end
+  end
+
+  describe '#cancel_async_on_job_failure' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project, user: create(:user)) }
+
+    subject(:cancel_async_on_job_failure) { pipeline.cancel_async_on_job_failure }
+
+    before do
+      allow(pipeline).to receive(:auto_cancel_on_job_failure).and_return(auto_cancel_on_job_failure)
+    end
+
+    shared_examples 'expected behaviour' do
+      it 'cancels the pipeline when expected' do
+        unless errors
+          if cancels
+            expect(::Ci::UserCancelPipelineWorker).to receive(:perform_async)
+          else
+            expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
+          end
+
+          subject
+        end
+      end
+
+      it 'raises errors when expected' do
+        if errors
+          expect { subject }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_job_failure value: invalid value')
+        else
+          expect { subject }.not_to raise_error
+        end
+      end
+    end
+
+    context 'when the auto_cancel_pipeline_on_job_failure feature flag is enabled' do
+      where(:auto_cancel_on_job_failure, :cancels, :errors) do
+        'none'          | false | false
+        'all'           | true  | false
+        'invalid value' | false | true
+      end
+
+      with_them do
+        it_behaves_like 'expected behaviour'
+      end
+    end
+
+    context 'when the auto_cancel_pipeline_on_job_failure feature flag is disabled' do
+      before do
+        stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
+      end
+
+      where(:auto_cancel_on_job_failure, :cancels, :errors) do
+        'none'          | false | false
+        'all'           | false | false
+        'invalid value' | false | false
+      end
+
+      with_them do
+        it_behaves_like 'expected behaviour'
       end
     end
   end

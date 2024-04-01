@@ -1412,6 +1412,20 @@ module Ci
       end
     end
 
+    def cancel_async_on_job_failure
+      return unless Feature.enabled?(:auto_cancel_pipeline_on_job_failure, project)
+
+      case auto_cancel_on_job_failure
+      when 'none'
+        # no-op
+      when 'all'
+        ::Ci::UserCancelPipelineWorker.perform_async(id, id, user.id)
+      else
+        raise ArgumentError,
+          "Unknown auto_cancel_on_job_failure value: #{auto_cancel_on_job_failure}"
+      end
+    end
+
     private
 
     def add_message(severity, content)

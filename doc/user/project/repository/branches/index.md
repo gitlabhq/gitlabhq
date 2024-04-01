@@ -113,7 +113,7 @@ ensure your branches receive oversight and quality checks from their creation to
 You can manage your branches:
 
 - With the GitLab user interface.
-- With Git on the [command line](../../../../gitlab-basics/start-using-git.md#create-a-branch).
+- With Git on the command line.
 - With the [Branches API](../../../../api/branches.md).
 
 ### View all branches

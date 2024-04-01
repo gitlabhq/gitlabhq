@@ -383,6 +383,20 @@ If you are using `OUTBOUND` with the `direction` argument to control the directi
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.11</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/453949).
+</div>
+
+The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/ee/administration/environment_variables.html#supported-environment-variables) environment variable is deprecated. GitLab introduced a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy runner registration token. Please refer to the [documentation](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html) for guidance on migrating to the new workflow.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 <div class="deprecation-notes">

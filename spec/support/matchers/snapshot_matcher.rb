@@ -2,7 +2,7 @@
 
 RSpec::Matchers.define :have_snapshot do |date, expected_states|
   match do |actual_snapshots|
-    snapshot = actual_snapshots.find { |snapshot| snapshot[:date] == date }
+    snapshot = actual_snapshots.find { |snapshot| snapshot.date == date }
 
     @snapshot_not_found = snapshot.nil?
     @item_states_not_found = []
@@ -11,7 +11,7 @@ RSpec::Matchers.define :have_snapshot do |date, expected_states|
     break false if @snapshot_not_found
 
     expected_states.each do |expected_state|
-      actual_state = snapshot[:item_states].find { |state| state[:item_id] == expected_state[:item_id] }
+      actual_state = snapshot.item_states.find { |state| state[:item_id] == expected_state[:item_id] }
 
       if actual_state.nil?
         @item_states_not_found << expected_state[:issue_id]
@@ -24,7 +24,7 @@ RSpec::Matchers.define :have_snapshot do |date, expected_states|
           children_ids: Set.new
         }
         begin
-          expect(actual_state).to eq(default_state.merge(expected_state))
+          expect(actual_state.to_h).to eq(default_state.merge(expected_state))
         rescue RSpec::Expectations::ExpectationNotMetError => e
           @error_item_title = WorkItem.find(expected_state[:item_id]).title
           @not_eq_error = e

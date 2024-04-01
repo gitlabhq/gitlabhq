@@ -18873,6 +18873,9 @@ msgstr ""
 msgid "DuoProTrial|We just need some additional information to activate your trial."
 msgstr ""
 
+msgid "DuoProTrial|You have successfully created a trial subscription for GitLab Duo Pro. It will expire on %{exp_date}.%{new_line}To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet."
+msgstr ""
+
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
 msgstr ""
 

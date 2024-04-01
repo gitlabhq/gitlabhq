@@ -40,82 +40,6 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
           subject
         end
 
-        context 'when auto_cancel_on_job_failure is set to an invalid value' do
-          before do
-            allow(build.pipeline)
-              .to receive(:auto_cancel_on_job_failure)
-              .and_return('invalid value')
-          end
-
-          it 'raises an exception' do
-            expect { subject }.to raise_error(
-              ArgumentError, 'Unknown auto_cancel_on_job_failure value: invalid value')
-          end
-
-          context 'when auto_cancel_pipeline_on_job_failure feature flag is disabled' do
-            before do
-              stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-            end
-
-            it 'does not raise an exception' do
-              expect { subject }.not_to raise_error
-            end
-          end
-        end
-
-        context 'when auto_cancel_on_job_failure is set to all' do
-          before do
-            build.pipeline.create_pipeline_metadata!(
-              project: build.pipeline.project, auto_cancel_on_job_failure: 'all'
-            )
-          end
-
-          it 'cancels the pipeline' do
-            expect(::Ci::UserCancelPipelineWorker).to receive(:perform_async)
-              .with(build.pipeline.id, build.pipeline.id, build.user.id)
-
-            subject
-          end
-
-          context 'when auto_cancel_pipeline_on_job_failure feature flag is disabled' do
-            before do
-              stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-            end
-
-            it 'does not cancel the pipeline' do
-              expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
-
-              subject
-            end
-          end
-        end
-
-        context 'when auto_cancel_on_job_failure is set to none' do
-          before do
-            build.pipeline.create_pipeline_metadata!(
-              project: build.pipeline.project, auto_cancel_on_job_failure: 'none'
-            )
-          end
-
-          it 'does not cancel the pipeline' do
-            expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
-
-            subject
-          end
-
-          context 'when auto_cancel_pipeline_on_job_failure feature flag is disabled' do
-            before do
-              stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-            end
-
-            it 'does not cancel the pipeline' do
-              expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
-
-              subject
-            end
-          end
-        end
-
         context 'when a build can be auto-retried' do
           before do
             allow(build)
@@ -128,20 +52,6 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
               .not_to receive(:perform_async)
 
             subject
-          end
-
-          context 'when auto_cancel_on_job_failure is set to all' do
-            before do
-              build.pipeline.create_pipeline_metadata!(
-                project: build.pipeline.project, auto_cancel_on_job_failure: 'all'
-              )
-            end
-
-            it 'does not cancel the pipeline' do
-              expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
-
-              subject
-            end
           end
         end
       end

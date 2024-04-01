@@ -1773,6 +1773,26 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it { is_expected.to be_falsey }
       end
     end
+
+    describe '#can_auto_cancel_pipeline_on_job_failure?' do
+      subject { build.can_auto_cancel_pipeline_on_job_failure? }
+
+      before do
+        allow(build).to receive(:auto_retry_expected?) { auto_retry_expected }
+      end
+
+      context 'when the job can be auto-retried' do
+        let(:auto_retry_expected) { true }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when the job cannot be auto-retried' do
+        let(:auto_retry_expected) { false }
+
+        it { is_expected.to be true }
+      end
+    end
   end
 
   describe '#runner_manager' do

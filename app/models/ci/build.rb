@@ -449,6 +449,11 @@ module Ci
       %w[manual delayed].include?(self.when)
     end
 
+    def can_auto_cancel_pipeline_on_job_failure?
+      # A job that doesn't need to be auto-retried can auto-cancel its own pipeline
+      !auto_retry_expected?
+    end
+
     # rubocop: disable CodeReuse/ServiceClass
     def play(current_user, job_variables_attributes = nil)
       Ci::PlayBuildService

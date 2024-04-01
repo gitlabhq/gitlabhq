@@ -15,77 +15,10 @@ If you're new to Git and want to learn by working in your own project,
 
 For a quick reference of Git commands, download a [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
 
-For more information about the advantages of working with Git and GitLab:
-
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch the [GitLab Source Code Management Walkthrough](https://www.youtube.com/watch?v=wTQ3aXJswtM) video.
-- Learn how [GitLab became the backbone of the Worldline](https://about.gitlab.com/customers/worldline/) development environment.
+Learn how [GitLab became the backbone of the Worldline](https://about.gitlab.com/customers/worldline/) development environment.
 
 To help you visualize what you're doing locally, you can install a
 [Git GUI app](https://git-scm.com/downloads/guis).
-
-## Choose a terminal
-
-To execute Git commands on your computer, you must open a terminal (also known as command
-prompt, command shell, and command line). Here are some options:
-
-- For macOS users:
-  - Built-in [Terminal](https://support.apple.com/en-au/guide/terminal/welcome/mac).
-  - [iTerm2](https://iterm2.com/). You can integrate it with [Zsh](https://git-scm.com/book/id/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Zsh)
-    and [Oh My Zsh](https://ohmyz.sh/) for color highlighting and other advanced features.
-- For Windows users:
-  - Built-in command line. On the Windows taskbar, select the search icon and type `cmd`.
-  - [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/overview?view=powershell-7.4).
-  - Git Bash, which is included with [Git for Windows](https://gitforwindows.org/).
-- For Linux users, the built-in terminal. For example, the
-  [Ubuntu Terminal](https://ubuntu.com/tutorials/command-line-for-beginners#3-opening-a-terminal).
-
-## Confirm Git is installed
-
-You can determine if Git is already installed on your computer by opening a terminal
-and running this command:
-
-```shell
-git --version
-```
-
-If Git is installed, the output is:
-
-```shell
-git version X.Y.Z
-```
-
-If your computer doesn't recognize `git` as a command, you must [install Git](../topics/git/how_to_install_git/index.md).
-
-## Configure Git
-
-To start using Git from your computer, you must enter your credentials
-to identify yourself as the author of your work. The full name and email address
-should match the ones you use in GitLab.
-
-1. In your terminal, add your full name. For example:
-
-   ```shell
-   git config --global user.name "Sidney Jones"
-   ```
-
-1. Add your email address. For example:
-
-   ```shell
-   git config --global user.email "your_email_address@example.com"
-   ```
-
-1. To check the configuration, run:
-
-   ```shell
-   git config --global --list
-   ```
-
-   The `--global` option tells Git to always use this information for anything you do on your system.
-   If you omit `--global` or use `--local`, the configuration applies only to the current
-   repository.
-
-You can read more on how Git manages configurations in the
-[Git configuration documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration).
 
 ## Choose a repository
 
