@@ -1,0 +1,20 @@
+- attribute = local_assigns.fetch(:attribute, nil)
+- group = local_assigns.fetch(:group, nil)
+- settings_path_helper = local_assigns.fetch(:settings_path_helper, nil)
+- form = local_assigns.fetch(:form, nil)
+- setting_locked = local_assigns.fetch(:setting_locked, false)
+- help_text = local_assigns.fetch(:help_text, nil)
+- checked = local_assigns.fetch(:checked, false)
+- klass = local_assigns.fetch(:class, nil)
+
+- return unless attribute && group && form && settings_path_helper
+
+= form.gitlab_ui_checkbox_component attribute, checkbox_options: { checked: checked, disabled: setting_locked, class: klass } do |c|
+  = c.with_label attribute, class: 'custom-control-label', aria: { disabled: setting_locked } do
+    = render 'shared/namespaces/cascading_settings/setting_label_container' do
+      = yield
+      - if setting_locked
+        = render 'shared/namespaces/cascading_settings/lock_icon', local_assigns
+  - if help_text
+    = c.with_help_text do
+      = help_text

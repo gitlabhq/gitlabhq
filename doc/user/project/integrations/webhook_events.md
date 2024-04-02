@@ -1118,7 +1118,8 @@ Payload example:
     "slug": "awesome",
     "url": "http://example.com/root/awesome-project/-/wikis/awesome",
     "action": "create",
-    "diff_url": "http://example.com/root/awesome-project/-/wikis/home/diff?version_id=78ee4a6705abfbff4f4132c6646dbaae9c8fb6ec"
+    "diff_url": "http://example.com/root/awesome-project/-/wikis/home/diff?version_id=78ee4a6705abfbff4f4132c6646dbaae9c8fb6ec",
+    "version_id": "3ad67c972065298d226dd80b2b03e0fc2421e731"
   }
 }
 ```

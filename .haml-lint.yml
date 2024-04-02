@@ -118,6 +118,7 @@ linters:
       - Cop/ProjectPathHelper
       - Gitlab/FeatureAvailableUsage
       - Gitlab/Json
+      - Gitlab/Rails/SafeFormat
       - GitlabSecurity/PublicSend
       - Layout/FirstHashElementIndentation
       - Layout/EmptyLineAfterGuardClause

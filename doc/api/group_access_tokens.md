@@ -150,9 +150,6 @@ POST /groups/:id/access_tokens/:token_id/rotate
 | `token_id` | integer | yes | ID of the access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
-NOTE:
-Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user in the group.
-
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
 ```

@@ -188,7 +188,7 @@ module MergeRequestsHelper
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
-      changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
+      changes_empty_state_illustration: image_path('illustrations/empty-state/empty-commit-md.svg'),
       is_fluid_layout: fluid_layout.to_s,
       dismiss_endpoint: callouts_path,
       show_suggest_popover: show_suggest_popover?.to_s,
