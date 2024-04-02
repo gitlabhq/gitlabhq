@@ -598,6 +598,19 @@ ai-gateway-no-seat-assigned:
     - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
     - !reference [.rules:test:manual, rules]
 
+ai-gateway-no-add-on:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
+  before_script:
+    - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
+    - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
+    - !reference [.rules:test:manual, rules]
+
 ai-gateway-no-license:
   extends:
     - .ai-gateway-base

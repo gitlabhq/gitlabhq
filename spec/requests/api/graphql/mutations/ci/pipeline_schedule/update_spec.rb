@@ -157,8 +157,8 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
             expect(mutation_response['errors'])
               .to match_array(
                 [
-                  "Cron  is invalid syntax",
-                  "Cron timezone  is invalid syntax",
+                  "Cron syntax is invalid",
+                  "Cron timezone syntax is invalid",
                   "Ref can't be blank",
                   "Description can't be blank",
                   "Ref is ambiguous"
@@ -175,8 +175,8 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
           expect(mutation_response['errors'])
             .to match_array(
               [
-                "Cron  is invalid syntax",
-                "Cron timezone  is invalid syntax",
+                "Cron syntax is invalid",
+                "Cron timezone syntax is invalid",
                 "Ref can't be blank",
                 "Description can't be blank"
               ]

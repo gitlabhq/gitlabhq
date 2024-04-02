@@ -283,7 +283,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
           subject
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['freeze_end']).to eq([" is invalid syntax"])
+          expect(json_response['message']['freeze_end']).to eq(['syntax is invalid'])
         end
       end
     end
@@ -385,7 +385,7 @@ RSpec.describe API::FreezePeriods, :aggregate_failures, feature_category: :conti
           subject
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']['freeze_start']).to eq([" is invalid syntax"])
+          expect(json_response['message']['freeze_start']).to eq(['syntax is invalid'])
         end
       end
     end

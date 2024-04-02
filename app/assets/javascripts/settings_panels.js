@@ -26,7 +26,7 @@ export function expandSection(sectionArg) {
       .one('animationend.animateSection', () => $section.removeClass('animating'));
   }
 
-  InternalEvents.trackEvent('click_expand_panel_on_settings', undefined, {
+  InternalEvents.trackEvent('click_expand_panel_on_settings', {
     label: $section.find('.settings-title').text(),
   });
 }

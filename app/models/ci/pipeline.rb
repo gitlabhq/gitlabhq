@@ -626,7 +626,7 @@ module Ci
 
     def valid_commit_sha
       if Gitlab::Git.blank_ref?(self.sha)
-        self.errors.add(:sha, " cant be 00000000 (branch removal)")
+        self.errors.add(:sha, "can't be 00000000 (branch removal)")
       end
     end
 

@@ -108,8 +108,8 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
           expect(mutation_response['errors'])
             .to match_array(
               [
-                "Cron  is invalid syntax",
-                "Cron timezone  is invalid syntax",
+                "Cron syntax is invalid",
+                "Cron timezone syntax is invalid",
                 "Ref is ambiguous"
               ]
             )

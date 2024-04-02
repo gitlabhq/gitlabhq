@@ -31157,6 +31157,9 @@ msgstr ""
 msgid "MemberRole|No custom roles found"
 msgstr ""
 
+msgid "MemberRole|No description"
+msgstr ""
+
 msgid "MemberRole|Permissions"
 msgstr ""
 

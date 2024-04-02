@@ -196,7 +196,7 @@ Additional properties can be passed when tracking events. They can be used to sa
 For Vue Mixin:
 
 ```javascript
-   this.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+   this.trackEvent('i_code_review_user_apply_suggestion', {
     label: 'push_event',
     property: 'golang',
     value: 20
@@ -206,7 +206,7 @@ For Vue Mixin:
 For raw JavaScript:
 
 ```javascript
-   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', {
     label: 'admin',
     property: 'system',
     value: 20

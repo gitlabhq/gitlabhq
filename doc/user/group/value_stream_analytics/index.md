@@ -224,6 +224,51 @@ With cumulative label event duration calculation enabled, the duration is three 
 NOTE:
 When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
 
+##### Reaggregate data after upgrade
+
+DETAILS:
+**Offering:** Self-managed
+
+On large self-managed GitLab instances, when you upgrade the GitLab version and especially if several minor versions are skipped, the background aggregation processes might last longer. This delay can result in outdated data on the Value Stream Analytics page.
+To speed up the aggregation process and avoid outdated data, in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) you can invoke the synchronous aggregation snippet for a given group:
+
+```ruby
+group = Group.find(-1) # put your group id here
+group_to_aggregate = group.root_ancestor
+
+loop do
+  cursor = {}
+  context = Analytics::CycleAnalytics::AggregationContext.new(cursor: cursor)
+  service_response = Analytics::CycleAnalytics::DataLoaderService.new(group: group_to_aggregate, model: Issue, context: context).execute
+
+  if service_response.success? && service_response.payload[:reason] == :limit_reached
+    cursor = service_response.payload[:context].cursor
+  elsif service_response.success?
+    puts "finished"
+    break
+  else
+    puts "failed"
+    break
+  end
+end
+
+loop do
+  cursor = {}
+  context = Analytics::CycleAnalytics::AggregationContext.new(cursor: cursor)
+  service_response = Analytics::CycleAnalytics::DataLoaderService.new(group: group_to_aggregate, model: MergeRequest, context: context).execute
+
+  if service_response.success? && service_response.payload[:reason] == :limit_reached
+    cursor = service_response.payload[:context].cursor
+  elsif service_response.success?
+    puts "finished"
+    break
+  else
+    puts "failed"
+    break
+  end
+end
+```
+
 ### How value stream analytics identifies the production environment
 
 Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
