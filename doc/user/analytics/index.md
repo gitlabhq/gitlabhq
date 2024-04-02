@@ -27,7 +27,7 @@ Use group-level analytics to get insights into your groups':
 - [Insights](../project/insights/index.md)
 - [Issue analytics](../group/issues_analytics/index.md)
 - [Productivity analytics](productivity_analytics.md)
-- [Repositories analytics](../group/repositories_analytics/index.md)
+- [Repository analytics](../group/repositories_analytics/index.md)
 - [Value Stream Management Analytics](../group/value_stream_analytics/index.md) and [Value Stream Management Dashboard](value_streams_dashboard.md)
 
 ## Project-level analytics

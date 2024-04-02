@@ -65,7 +65,7 @@ Our recommendation is to switch to using the native Docker install for your
 platform, instead of using Docker Toolbox.
 
 If you cannot use the native Docker install (Windows 10 Home Edition, or Windows 7/8),
-then an alternative solution is to setup NFS mounts instead of VirtualBox shares for
+then an alternative solution is to set up NFS mounts instead of VirtualBox shares for
 Docker Toolbox's boot2docker.
 
 ## Linux ACL issues

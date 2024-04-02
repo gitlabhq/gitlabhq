@@ -305,6 +305,10 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### GitLab 17
+
+Before upgrading to GitLab 17, see [GitLab 17 changes](versions/gitlab_17_changes.md).
+
 ### GitLab 16
 
 Before upgrading to GitLab 16, see [GitLab 16 changes](versions/gitlab_16_changes.md).

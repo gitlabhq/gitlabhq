@@ -62,7 +62,7 @@ sudo dpkg -i <package_name>.deb
 URL for the `EXTERNAL_URL` installation step. Once installed, we can manually
 configure the SSL ourselves.
 
-It is strongly recommended to setup a domain for IP resolution rather than bind
+It is strongly recommended to set up a domain for IP resolution rather than bind
 to the server's IP address. This better ensures a stable target for our certs' CN
 and makes long-term resolution simpler.
 
@@ -333,7 +333,7 @@ echo "All objects saved to $PKG_METADATA_DIR"
 ### Automatic synchronization
 
 Your GitLab instance is synchronized [regularly](https://gitlab.com/gitlab-org/gitlab/-/blob/63a187d47f6da353ba4514650bbbbeb99c356325/config/initializers/1_settings.rb#L840-842) with the contents of the `package_metadata` directory.
-To automatically update your local copy with the upstream changes, a cron job can be added to periodically download new exports. For example, the following crontabs can be added to setup a cron job that runs every 30 minutes.
+To automatically update your local copy with the upstream changes, a cron job can be added to periodically download new exports. For example, the following crontabs can be added to set up a cron job that runs every 30 minutes.
 
 For License Scanning:
 

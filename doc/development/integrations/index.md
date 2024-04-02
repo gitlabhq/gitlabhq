@@ -248,7 +248,7 @@ This method should return an array of hashes for each field, where the keys can 
 ### Define sections
 
 All integrations should define `Integration#sections` which split the form into smaller sections,
-making it easier for users to setup the integration.
+making it easier for users to set up the integration.
 
 The most commonly used sections are pre-defined and already include some UI:
 

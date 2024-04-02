@@ -806,7 +806,10 @@ GET /projects/:id/integrations/github
 
 Update the GitLab for Slack app integration for a project.
 
-You cannot create a GitLab for Slack app. You must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You cannot create a GitLab for Slack app through the API because the integration
+requires an OAuth 2.0 token that you cannot get from the GitLab API alone.
+Instead, you must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You can then use this API endpoint to update the integration.
 
 ```plaintext
 PUT /projects/:id/integrations/gitlab-slack-application

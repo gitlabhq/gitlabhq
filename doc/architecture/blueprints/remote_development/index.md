@@ -593,7 +593,7 @@ flowchart TB
 
 #### Auth annotations on the Ingress resource
 
-Use auth annotations on the Ingress resource to allow Ingress controllers(for example, `ingress-nginx`) to delegate authentication and authorization to a separate process. The challenge is that these annotations are not standardized (that is, not part of the [Ingress specification](https://kubernetes.io/docs/concepts/services-networking/ingress/)) and may not be supported across different Ingress controllers. We would need to document the process to setup our Auth provider for each of the Ingress controllers. However, if they do become a part of the new [Gateway API](https://gateway-api.sigs.k8s.io/concepts/security-model/), we will reconsider this decision.
+Use auth annotations on the Ingress resource to allow Ingress controllers(for example, `ingress-nginx`) to delegate authentication and authorization to a separate process. The challenge is that these annotations are not standardized (that is, not part of the [Ingress specification](https://kubernetes.io/docs/concepts/services-networking/ingress/)) and may not be supported across different Ingress controllers. We would need to document the process to set up our Auth provider for each of the Ingress controllers. However, if they do become a part of the new [Gateway API](https://gateway-api.sigs.k8s.io/concepts/security-model/), we will reconsider this decision.
 
 For `ingress-nginx`, the auth annotations would be:
 

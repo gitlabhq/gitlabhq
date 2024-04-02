@@ -123,7 +123,7 @@ Updates to example must be made at:
    ########################################
 
    ## Must be the same in every sentinel node.
-   redis['master_name'] = 'gitlab-redis' # Required if you have setup redis cluster
+   redis['master_name'] = 'gitlab-redis' # Required if you have set up redis cluster
    ## The same password for Redis authentication you set up for the master node.
    redis['master_password'] = '<redis_master_password>'
 

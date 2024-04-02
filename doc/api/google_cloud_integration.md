@@ -51,9 +51,9 @@ curl --request GET \
      --url "https://gitlab.com/api/v4/projects/<your_project_id>/google_cloud/setup/wlif.sh"
 ```
 
-### Script to setup a Google Cloud integration
+### Script to set up a Google Cloud integration
 
- > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
 
 Users with at least the Maintainer role for the project can use the following endpoint to
 query a shell script to set up a Google Cloud integration:

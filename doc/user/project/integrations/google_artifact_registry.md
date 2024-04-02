@@ -46,7 +46,7 @@ To connect a Google Artifact Registry repository to a GitLab project:
    - **Google Cloud project ID**: The [Google Cloud project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects) where the Artifact Registry repository is located.
    - **Repository name**: The name of the Artifact Registry repository.
    - **Repository location**: The [Google Cloud location](https://cloud.google.com/about/locations) of the Artifact Registry repository.
-1. Follow the onscreen instructions to setup the Google Cloud Identity and Access Management (IAM) policies. For more information about the types of policies, see [IAM policies](#iam-policies).
+1. Follow the onscreen instructions to set up the Google Cloud Identity and Access Management (IAM) policies. For more information about the types of policies, see [IAM policies](#iam-policies).
 1. Select **Save changes**.
 You should now see a **Google Artifact Registry** entry in the sidebar under **Deploy**.
 

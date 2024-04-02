@@ -186,7 +186,7 @@ The microservice project setup can be improved by [Multi-Project Deployment Pipe
 - Deployment Project can behave as the shared deployment engine for any upstream application projects and environments.
 - Environments can be created within the application projects. It gives more visibility of environments for developers.
 - Deployment Project can be managed under Operator group. More segregation of duties.
-- Users don't need to setup [RBAC to restrict CI/CD jobs](../../../user/clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
+- Users don't need to set up [RBAC to restrict CI/CD jobs](../../../user/clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
 - This is especitially helpful for [dynamic environments](../../../ci/environments/index.md#create-a-dynamic-environment), such as Review Apps.
 
 ```mermaid

@@ -41,7 +41,7 @@ GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities
 ## Watch a demo
 
 <div class="video-fallback">
-  <a href="https://youtu.be/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_">View how to setup and use GitLab Duo Chat</a>.
+  <a href="https://youtu.be/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_">View how to set up and use GitLab Duo Chat</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_" frameborder="0" allowfullscreen> </iframe>

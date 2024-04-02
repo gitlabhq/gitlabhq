@@ -189,7 +189,7 @@ $ docker run \
 
 #### Using the Jaeger process
 
-Without Docker, the all-in-one process is still easy to setup.
+Without Docker, the all-in-one process is still easy to set up.
 
 1. Download the [latest Jaeger release](https://github.com/jaegertracing/jaeger/releases) for your
    platform.

@@ -164,11 +164,11 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
 ### Bypass AI Gateway
 
 NOTE:
-You need to setup AI Gateway since GitLab 16.8.
+You need to set up AI Gateway since GitLab 16.8.
 It's a recommended way to test AI features. Sending requests directly to LLMs could lead to unnoticed bugs.
 Use this workaround with caution. 
 
-To setup direct requests to LLMs you have to:
+To set up direct requests to LLMs you have to:
 
 1. Disable the feature flag.
 

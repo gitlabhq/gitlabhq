@@ -23,7 +23,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In VS Code, go to the Extensions page and find "GitLab Workflow" in the list.
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option.
       1. Check a "GitLab: Debug" checkbox.
-   1. If you'd like to test code suggestions are working from inside the VS Code Extension, then follow the [steps to setup a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
+   1. If you'd like to test code suggestions are working from inside the VS Code Extension, then follow the [steps to set up a personal access token](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup) with your GDK inside the new window of VS Code that pops up when you run the "Run and Debug" command.
       - Once you complete the steps below, to test you are hitting your local `/code_suggestions/completions` endpoint and not production, follow these steps:
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
         1. Open a new file inside of this VS Code window and begin typing to see code suggestions in action.
@@ -75,7 +75,7 @@ with the deployed staging AI Gateway. To do this:
 ### Setup instructions to use GDK with the Code Suggestions Add-on
 
 On February 15, 2023 we will require the code suggestions add-on subscription to be able to use code suggestions.
-To setup your GDK for local development using the add-on, please follow these steps:
+To set up your GDK for local development using the add-on, please follow these steps:
 
 1. Drop a note in the `#s_fulfillment` or `s_fulfillment_engineering` internal Slack channel to request an activation code with the Code Suggestions add-on.
 1. Someone will reach out to you with a code.

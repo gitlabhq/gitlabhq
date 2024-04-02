@@ -30,10 +30,10 @@ grant GitLab workloads access to Google Cloud resources through OpenID Connect
 
 ## Create and configure a workload identity federation
 
-To setup the workload identity federation you can either:
+To set up the workload identity federation you can either:
 
 - Use the GitLab UI for a guided setup.
-- Use the Google Cloud CLI to setup the workload identity federation manually.
+- Use the Google Cloud CLI to set up the workload identity federation manually.
 
 ### With the GitLab UI
 

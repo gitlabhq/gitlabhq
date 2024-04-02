@@ -18,7 +18,7 @@ We evaluated two possible approaches:
 1. Store the library [in the same repository](../../../../development/gems.md#in-the-same-repo) as the monolith.
 1. Store the library [in an external repository](../../../../development/gems.md#in-the-external-repo).
 
-Each approach came with some advantages and disadvantages, mostly around distribution, consistency, maintainability, and the overhead of having to setup review and release workflows and similar processes. See below for more information.
+Each approach came with some advantages and disadvantages, mostly around distribution, consistency, maintainability, and the overhead of having to set up review and release workflows and similar processes. See below for more information.
 
 ### Within the same repository as the monolith
 
