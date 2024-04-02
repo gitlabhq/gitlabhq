@@ -691,6 +691,13 @@ module QA
         ENV["QA_DOCKER_NETWORK"]
       end
 
+      # Test run is in rspec retried process
+      #
+      # @return [Boolean]
+      def rspec_retried?
+        enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
+      end
+
       private
 
       def remote_grid_credentials

@@ -267,9 +267,12 @@ module Gitlab
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "application_utilities.css"
+    config.assets.precompile << "application_utilities_to_be_replaced.css"
     config.assets.precompile << "application_utilities_dark.css"
+    config.assets.precompile << "application_utilities_to_be_replaced_dark.css"
     config.assets.precompile << "application_dark.css"
     config.assets.precompile << "tailwind.css"
+    config.assets.precompile << "tailwind_all_the_way.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"

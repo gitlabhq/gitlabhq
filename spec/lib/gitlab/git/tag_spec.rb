@@ -154,6 +154,26 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
     end
   end
 
+  describe '#date' do
+    subject { tag.date }
+
+    let(:tag) { repository.tags.first }
+
+    it 'returns a date' do
+      is_expected.to be_present
+    end
+
+    context 'when date is missing' do
+      before do
+        allow(tag).to receive(:tagger).and_return(double(date: nil))
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe "#cache_key" do
     subject { repository.tags.first }
 

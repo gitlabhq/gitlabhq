@@ -55,12 +55,7 @@ module Ci
       end
 
       def update_stage!(stage)
-        if Feature.enabled?(:ci_atomic_processing_ordered_update_stage, project)
-          sorted_update_stage!(stage)
-        else
-          legacy_update_stage!(stage)
-        end
-
+        sorted_update_stage!(stage)
         status = @collection.status_of_stage(stage.position)
         stage.set_status(status)
       end
@@ -100,18 +95,6 @@ module Ci
             [job.name, job.aggregated_needs_names.to_a]
           end
         )
-      end
-
-      def legacy_update_stage!(stage)
-        # Update jobs for a given stage in bulk/slices
-        @collection
-          .created_job_ids_in_stage(stage.position)
-          .in_groups_of(BATCH_SIZE, false) { |ids| update_jobs!(ids) }
-      end
-
-      def update_jobs!(ids)
-        created_jobs = load_jobs(ids)
-        created_jobs.each { |job| update_job!(job) }
       end
 
       def update_pipeline!

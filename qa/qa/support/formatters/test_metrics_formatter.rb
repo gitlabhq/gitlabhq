@@ -28,7 +28,13 @@ module QA
 
         private
 
-        delegate :export_metrics?, :save_metrics_json?, :ci_job_url, :ci_job_name, to: "QA::Runtime::Env"
+        delegate :export_metrics?,
+          :save_metrics_json?,
+          :ci_job_url,
+          :ci_job_name,
+          :rspec_retried?,
+          :disable_rspec_retry?,
+          to: "QA::Runtime::Env"
 
         # Save execution data for the run
         #
@@ -74,8 +80,7 @@ module QA
         def save_test_metrics
           return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
 
-          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json"
-
+          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}-retry-#{rspec_retried?}.json"
           File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
@@ -87,6 +92,9 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [Hash]
         def test_stats(example)
+          # do not save failures from initial non retry run, as they will be retried and become flaky or failed
+          return if disable_rspec_retry? && (!rspec_retried? && example.execution_result.status == :failed)
+
           {
             name: 'test-stats',
             time: time,
@@ -220,6 +228,8 @@ module QA
         def status(example)
           rspec_status = example.execution_result.status
           return rspec_status if [:pending, :failed].include?(rspec_status)
+          # if rspec-retry gem is disabled, check for rspec retry process
+          return rspec_retried? && rspec_status == :passed ? :flaky : :passed if disable_rspec_retry?
 
           retry_attempts(example.metadata) > 0 ? :flaky : :passed
         end
@@ -266,6 +276,14 @@ module QA
           end
         end
 
+        # Get spec devops stage
+        #
+        # @param [String] location
+        # @return [String, nil]
+        def devops_stage(file_path)
+          file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
+        end
+
         # Print log message
         #
         # @param [Symbol] level
@@ -273,14 +291,6 @@ module QA
         # @return [void]
         def log(level, message)
           QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
-        end
-
-        # Get spec devops stage
-        #
-        # @param [String] location
-        # @return [String, nil]
-        def devops_stage(file_path)
-          file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
         end
       end
     end

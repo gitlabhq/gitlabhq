@@ -176,9 +176,10 @@ export default {
         this.updateSelectedSortValues();
       }
     },
-  },
-  created() {
-    if (this.recentSearchesStorageKey) this.setupRecentSearch();
+    recentSearchesStorageKey: {
+      handler: 'setupRecentSearch',
+      immediate: true,
+    },
   },
   methods: {
     /**

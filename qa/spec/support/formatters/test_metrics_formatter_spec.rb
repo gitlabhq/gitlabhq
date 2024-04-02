@@ -138,6 +138,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
       stub_env('QA_RUN_TYPE', run_type)
       stub_env('QA_EXPORT_TEST_METRICS', "true")
+      stub_env('QA_RSPEC_RETRIED', "false")
     end
 
     context 'with reliable spec' do
@@ -255,6 +256,38 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         expect(influx_write_api).to have_received(:write).with(
           data: [data.tap { |d| d[:tags][:exception_class] = "RuntimeError" }]
         )
+      end
+    end
+
+    context 'with retry in separate process' do
+      before do
+        stub_env('QA_DISABLE_RSPEC_RETRY', 'true')
+      end
+
+      context 'with initial run' do
+        it 'skips failed spec' do
+          run_spec(passed: false) do
+            it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') { raise }
+          end
+
+          expect(influx_write_api).to have_received(:write).with(data: [])
+        end
+      end
+
+      context 'with retry run' do
+        let(:status) { :flaky }
+
+        before do
+          stub_env('QA_RSPEC_RETRIED', 'true')
+        end
+
+        it 'sets test as flaky' do
+          run_spec do
+            it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+          end
+
+          expect(influx_write_api).to have_received(:write).with(data: [data])
+        end
       end
     end
 
@@ -406,7 +439,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       it 'saves test metrics as json files' do
         run_spec
 
-        expect(File).to have_received(:write).with("tmp/test-metrics-test-job.json", [data].to_json)
+        expect(File).to have_received(:write).with("tmp/test-metrics-test-job-retry-false.json", [data].to_json)
       end
     end
   end

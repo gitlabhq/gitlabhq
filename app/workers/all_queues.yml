@@ -2829,6 +2829,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_update_build_names
+  :worker_name: Ci::UpdateBuildNamesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_user_cancel_pipeline
   :worker_name: Ci::UserCancelPipelineWorker
   :feature_category: :continuous_integration

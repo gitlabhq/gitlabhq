@@ -13,6 +13,7 @@ RSpec.shared_examples 'renders usage overview metrics' do
       [
         ['groups', _('Groups'), '5'],
         ['projects', _('Projects'), '10'],
+        ['users', _('Users'), '100'],
         ['issues', _('Issues'), '1,500'],
         ['merge_requests', _('Merge requests'), '1,000'],
         ['pipelines', _('Pipelines'), '2,000']

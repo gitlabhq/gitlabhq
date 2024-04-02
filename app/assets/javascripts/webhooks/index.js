@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import FormUrlApp from './components/form_url_app.vue';
+import WebhookFormApp from './components/webhook_form_app.vue';
 import TestDropdown from './components/test_dropdown.vue';
 
 export default () => {
@@ -9,16 +9,17 @@ export default () => {
     return null;
   }
 
-  const { url: initialUrl, urlVariables } = el.dataset;
+  const { url: initialUrl, urlVariables, customHeaders } = el.dataset;
 
   return new Vue({
     el,
     name: 'WebhookFormRoot',
     render(createElement) {
-      return createElement(FormUrlApp, {
+      return createElement(WebhookFormApp, {
         props: {
           initialUrl,
           initialUrlVariables: JSON.parse(urlVariables),
+          initialCustomHeaders: JSON.parse(customHeaders),
         },
       });
     },

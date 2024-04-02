@@ -12,7 +12,8 @@ module Ci
     partitionable scope: :build, partitioned: true
 
     # rubocop:disable Rails/InverseOf -- Will be added once association on build is added
-    belongs_to :build, ->(build_name) { in_partition(build_name) }, class_name: 'Ci::Build'
+    belongs_to :build, ->(build_name) { in_partition(build_name) },
+      class_name: 'Ci::Build', partition_foreign_key: :partition_id
     # rubocop:enable Rails/InverseOf
 
     validates :build, presence: true

@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlPopover } from '@gitlab/ui';
+import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 /**
@@ -31,6 +32,11 @@ export default {
       required: false,
       default: '',
     },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: __('Help'),
+    },
   },
   methods: {
     targetFn() {
@@ -46,7 +52,7 @@ export default {
       :class="triggerClass"
       variant="link"
       :icon="icon"
-      :aria-label="__('Help')"
+      :aria-label="ariaLabel"
     />
     <gl-popover :target="targetFn" v-bind="options">
       <template v-if="options.title" #title>

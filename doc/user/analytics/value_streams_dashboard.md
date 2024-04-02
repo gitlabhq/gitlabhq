@@ -358,7 +358,7 @@ Filters for the `usage_overview` visualization.
 
 |Filter|Description|Supported values|
 |---|---|---|
-|`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`|
+|`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users`|
 
 ### Filter the DevSecOps metrics comparison panel by labels
 

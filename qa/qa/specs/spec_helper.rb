@@ -38,6 +38,8 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
   config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
 
+  config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')
+
   config.prepend_before do |example|
     QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example

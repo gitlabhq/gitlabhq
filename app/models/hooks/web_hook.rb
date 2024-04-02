@@ -27,6 +27,15 @@ class WebHook < ApplicationRecord
     encode: false,
     encode_iv: false
 
+  attr_encrypted :custom_headers,
+    mode: :per_attribute_iv,
+    key: Settings.attr_encrypted_db_key_base_32,
+    algorithm: 'aes-256-gcm',
+    marshal: true,
+    marshaler: ::Gitlab::Json,
+    encode: false,
+    encode_iv: false
+
   has_many :web_hook_logs
 
   validates :url, presence: true
@@ -34,9 +43,11 @@ class WebHook < ApplicationRecord
 
   validates :token, format: { without: /\n/ }
   after_initialize :initialize_url_variables
+  after_initialize :initialize_custom_headers
 
   before_validation :reset_token
   before_validation :reset_url_variables, unless: ->(hook) { hook.is_a?(ServiceHook) }, on: :update
+  before_validation :reset_custom_headers, unless: ->(hook) { hook.is_a?(ServiceHook) }, on: :update
   before_validation :set_branch_filter_nil, if: :branch_filter_strategy_all_branches?
   validates :push_events_branch_filter, untrusted_regexp: true, if: :branch_filter_strategy_regex?
   validates :push_events_branch_filter, "web_hooks/wildcard_branch_filter": true, if: :branch_filter_strategy_wildcard?
@@ -44,6 +55,7 @@ class WebHook < ApplicationRecord
   validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
   validate :no_missing_url_variables
   validates :interpolated_url, public_url: true, if: ->(hook) { hook.url_variables? && hook.errors.empty? }
+  validates :custom_headers, json_schema: { filename: 'web_hooks_custom_headers' }
   validates :custom_webhook_template, length: { maximum: 4096 }
 
   enum branch_filter_strategy: {
@@ -132,12 +144,25 @@ class WebHook < ApplicationRecord
   end
 
   def reset_url_variables
-    interpolated_url_was = interpolated_url(decrypt_url_was, url_variables_were)
-
-    return if url_variables_were.blank? || interpolated_url_was == interpolated_url
+    return if url_variables_were.blank? || !interpolated_url_changed?
 
     self.url_variables = {} if url_variables_were.keys.intersection(url_variables.keys).any?
     self.url_variables = {} if url_changed? && url_variables_were.to_a.intersection(url_variables.to_a).any?
+  end
+
+  def reset_custom_headers
+    return if url.nil? # checking interpolated_url with a nil url causes errors
+    return unless interpolated_url_changed?
+
+    self.custom_headers = {}
+  rescue InterpolationError
+    # ignore -- record is invalid and won't be saved. no need to reset custom_headers
+  end
+
+  def interpolated_url_changed?
+    interpolated_url_was = interpolated_url(decrypt_url_was, url_variables_were)
+
+    interpolated_url_was != interpolated_url
   end
 
   def decrypt_url_was
@@ -150,6 +175,10 @@ class WebHook < ApplicationRecord
 
   def initialize_url_variables
     self.url_variables = {} if encrypted_url_variables.nil?
+  end
+
+  def initialize_custom_headers
+    self.custom_headers = {} if encrypted_custom_headers.nil?
   end
 
   def rate_limiter

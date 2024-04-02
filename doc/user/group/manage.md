@@ -432,7 +432,7 @@ DETAILS:
 > - [Feature flag `group_merge_request_approval_settings_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/issues/343872) removed in GitLab 14.9.
 
 Group approval settings manage [project merge request approval settings](../project/merge_requests/approvals/settings.md)
-for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+for all projects in a top-level group. These settings [cascade to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
 To view the merge request approval settings for a group:
@@ -464,7 +464,7 @@ NOTE:
 [GitLab Duo Chat](../../user/gitlab_duo_chat.md) is an only feature available in Premium tier.
 
 You can give all users in a top-level group access to Experiment and Beta features.
-This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
+This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
 To enable Experiment features for a top-level group:

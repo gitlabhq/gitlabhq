@@ -14,6 +14,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
+import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 
 import {
   mockAvailableTokens,
@@ -208,6 +209,22 @@ describe('FilteredSearchBarRoot', () => {
 
         expect(localStorage.setItem).toHaveBeenCalledWith('canUseLocalStorage', 'true');
         expect(wrapper.vm.recentSearchesPromise instanceof Promise).toBe(true);
+      });
+
+      describe('when `recentSearchesStorageKey` is changed', () => {
+        it('gets new items from local storage', async () => {
+          createComponent();
+
+          expect(localStorage.getItem).toHaveBeenCalledWith(
+            'gitlab-org/gitlab-test-issue-recent-searches',
+          );
+
+          await wrapper.setProps({ recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS });
+
+          expect(localStorage.getItem).toHaveBeenCalledWith(
+            'gitlab-org/gitlab-test-groups-recent-searches',
+          );
+        });
       });
     });
 

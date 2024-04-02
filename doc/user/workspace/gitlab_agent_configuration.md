@@ -24,6 +24,11 @@ provided that the agent is properly configured for remote development.
 
 ## Remote development settings
 
+To enable Remote Development and register a new workspace, the following GitLab Agent settings are mandatory: 
+
+- [`enabled`]
+- [`dns_zone`]
+
 | Setting                                                                                   | Description                                                                                                                         |
 |-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
 | [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent.                                                               |

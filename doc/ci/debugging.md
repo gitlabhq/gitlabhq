@@ -465,3 +465,14 @@ These errors might also happen when trying to use a [project access token](../us
 to access images in another project. Project access tokens are scoped to one project,
 and therefore cannot access images in other projects. You must use [a different token type](../security/token_overview.md)
 with wider scope.
+
+### `Something went wrong on our end` message or `500` error when running a pipeline
+
+You might receive the following pipeline errors:
+
+- A `Something went wrong on our end` message when pushing or creating merge requests.
+- A `500` error when using the API to trigger a pipeline.
+
+These errors can happen if records of internal IDs become out of sync after a project is imported.
+
+To resolve this, see the [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround) in issue #352382.

@@ -159,6 +159,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::DeleteObjectsWorker' => 0,
         'Ci::DropPipelineWorker' => 3,
         'Ci::InitialPipelineProcessWorker' => 3,
+        'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,
         'Ci::Minutes::UpdateProjectAndNamespaceUsageWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,

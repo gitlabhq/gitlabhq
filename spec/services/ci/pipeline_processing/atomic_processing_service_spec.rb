@@ -929,7 +929,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
     end
 
     context 'when dependent jobs are listed after job needs in the same stage' do
-      let(:feature_flag_state) { true }
       let(:config) do
         <<-YAML
         test1:
@@ -952,61 +951,28 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
       end
 
+      let(:statuses) do
+        { 'manual1': 'manual', 'test1': 'skipped', 'test2': 'pending' }
+      end
+
       before do
-        stub_feature_flags(ci_atomic_processing_ordered_update_stage: feature_flag_state)
         stub_ci_pipeline_yaml_file(config)
         process_pipeline
       end
 
-      context 'when ci_atomic_processing_ordered_update_stage is enabled' do
-        let(:statuses) do
-          { 'manual1': 'manual', 'test1': 'skipped', 'test2': 'pending' }
+      it 'test1 is in skipped state' do
+        expect(all_builds_names_and_statuses).to eq(statuses)
+        expect(stages).to eq(['pending'])
+      end
+
+      context 'with multiple batches' do
+        before do
+          stub_const("#{described_class}::BATCH_SIZE", 2)
         end
 
         it 'test1 is in skipped state' do
           expect(all_builds_names_and_statuses).to eq(statuses)
           expect(stages).to eq(['pending'])
-        end
-
-        context 'with multiple batches' do
-          before do
-            stub_const("#{described_class}::BATCH_SIZE", 2)
-          end
-
-          it 'test1 is in skipped state' do
-            expect(all_builds_names_and_statuses).to eq(statuses)
-            expect(stages).to eq(['pending'])
-          end
-        end
-      end
-
-      context 'when ci_atomic_processing_ordered_update_stage is disabled' do
-        let(:feature_flag_state) { false }
-        let(:manual1) { all_builds.find_by(name: 'manual1') }
-        let(:test1) { all_builds.find_by(name: 'test1') }
-        let(:test2) { all_builds.find_by(name: 'test2') }
-
-        shared_examples 'stage jobs played in any order' do
-          it 'test1 is in created or skipped state' do
-            expect(manual1.status).to eq('manual')
-            # With this feature flag disabled, whether manual1 or test1 is run first
-            # is not deterministic:
-            # - test1 in created state if it is run first
-            # - test1 in skipped state if manual1 is run first
-            expect(test1.status).to eq('created').or eq('skipped')
-            expect(test2.status).to eq('pending')
-            expect(stages).to eq(['pending'])
-          end
-        end
-
-        it_behaves_like 'stage jobs played in any order'
-
-        context 'with multiple batches' do
-          before do
-            stub_const("#{described_class}::BATCH_SIZE", 2)
-          end
-
-          it_behaves_like 'stage jobs played in any order'
         end
       end
     end

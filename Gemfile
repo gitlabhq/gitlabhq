@@ -459,7 +459,7 @@ group :development, :test do
 
   gem 'knapsack', '~> 1.22.0', feature_category: :tooling
   gem 'crystalball', '~> 0.7.0', require: false, feature_category: :tooling
-  gem 'test_file_finder', '~> 0.3.0', feature_category: :tooling
+  gem 'test_file_finder', '~> 0.3.1', feature_category: :tooling
 
   gem 'simple_po_parser', '~> 1.1.6', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 

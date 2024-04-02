@@ -85,7 +85,7 @@ module Gitlab
       end
 
       def date
-        Time.at(tagger.date.seconds).utc if tagger
+        Time.at(tagger.date.seconds).utc if tagger&.date&.seconds
       end
 
       def has_signature?

@@ -3,20 +3,22 @@
 Gitlab::Database::Partitioning.register_models(
   [
     AuditEvent,
-    WebHookLog,
-    LooseForeignKeys::DeletedRecord,
-    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
-    Ci::RunnerManagerBuild,
-    Ci::JobAnnotation,
-    Ci::BuildMetadata,
-    Ci::PipelineVariable,
-    CommitStatus,
     BatchedGitRefUpdates::Deletion,
-    Users::ProjectVisit,
-    Users::GroupVisit,
-    Ci::Catalog::Resources::SyncEvent,
+    Ci::BuildMetadata,
+    Ci::BuildName,
     Ci::Catalog::Resources::Components::Usage,
-    Ci::BuildName
+    Ci::Catalog::Resources::SyncEvent,
+    Ci::JobAnnotation,
+    Ci::JobArtifact,
+    Ci::PipelineVariable,
+    Ci::RunnerManagerBuild,
+    Ci::Stage,
+    CommitStatus,
+    Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
+    LooseForeignKeys::DeletedRecord,
+    Users::GroupVisit,
+    Users::ProjectVisit,
+    WebHookLog
   ])
 
 if Gitlab.ee?

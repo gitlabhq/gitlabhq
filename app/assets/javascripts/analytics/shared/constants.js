@@ -277,6 +277,7 @@ export const USAGE_OVERVIEW_DEFAULT_DATE_RANGE = {
 
 export const USAGE_OVERVIEW_IDENTIFIER_GROUPS = 'groups';
 export const USAGE_OVERVIEW_IDENTIFIER_PROJECTS = 'projects';
+export const USAGE_OVERVIEW_IDENTIFIER_USERS = 'users';
 export const USAGE_OVERVIEW_IDENTIFIER_ISSUES = 'issues';
 export const USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS = 'merge_requests';
 export const USAGE_OVERVIEW_IDENTIFIER_PIPELINES = 'pipelines';
@@ -286,6 +287,9 @@ export const USAGE_OVERVIEW_METADATA = {
   [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: { options: { title: __('Groups'), titleIcon: 'group' } },
   [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: {
     options: { title: __('Projects'), titleIcon: 'project' },
+  },
+  [USAGE_OVERVIEW_IDENTIFIER_USERS]: {
+    options: { title: __('Users'), titleIcon: 'user' },
   },
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: {
     options: { title: __('Issues'), titleIcon: 'issues' },
@@ -301,6 +305,7 @@ export const USAGE_OVERVIEW_METADATA = {
 export const USAGE_OVERVIEW_QUERY_INCLUDE_KEYS = {
   [USAGE_OVERVIEW_IDENTIFIER_GROUPS]: 'includeGroups',
   [USAGE_OVERVIEW_IDENTIFIER_PROJECTS]: 'includeProjects',
+  [USAGE_OVERVIEW_IDENTIFIER_USERS]: 'includeUsers',
   [USAGE_OVERVIEW_IDENTIFIER_ISSUES]: 'includeIssues',
   [USAGE_OVERVIEW_IDENTIFIER_MERGE_REQUESTS]: 'includeMergeRequests',
   [USAGE_OVERVIEW_IDENTIFIER_PIPELINES]: 'includePipelines',

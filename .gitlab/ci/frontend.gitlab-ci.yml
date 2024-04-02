@@ -242,6 +242,11 @@ graphql-schema-dump:
     - yarn_install_script
   stage: test
 
+.vue3:
+  variables:
+    VUE_VERSION: 3
+  allow_failure: true
+
 .jest-base:
   extends: .frontend-test-base
   script:
@@ -263,6 +268,12 @@ jest:
     reports:
       junit: junit_jest.xml
   parallel: 12
+
+jest vue3:
+  extends:
+    - jest
+    - .frontend:rules:jest-vue3
+    - .vue3
 
 jest predictive:
   extends:

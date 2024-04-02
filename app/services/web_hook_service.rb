@@ -138,7 +138,7 @@ class WebHookService
   def make_request(url, basic_auth = false)
     Gitlab::HTTP.post(url,
       body: Gitlab::Json::LimitedEncoder.encode(request_payload, limit: REQUEST_BODY_SIZE_LIMIT),
-      headers: build_headers,
+      headers: build_custom_headers.merge(build_headers),
       verify: hook.enable_ssl_verification,
       basic_auth: basic_auth,
       **request_options)
@@ -160,7 +160,7 @@ class WebHookService
       url: hook.url,
       interpolated_url: hook.interpolated_url,
       execution_duration: execution_duration,
-      request_headers: build_headers,
+      request_headers: build_custom_headers(values_redacted: true).merge(build_headers),
       request_data: request_data,
       response_headers: safe_response_headers(response),
       response_body: safe_response_body(response),
@@ -214,6 +214,15 @@ class WebHookService
       headers['X-Gitlab-Token'] = Gitlab::Utils.remove_line_breaks(hook.token) if hook.token.present?
       headers.merge!(Gitlab::WebHooks::RecursionDetection.header(hook))
     end
+  end
+
+  def build_custom_headers(values_redacted: false)
+    return {} unless hook.custom_headers.present?
+    return {} unless Feature.enabled?(:custom_webhook_headers, hook.parent, type: :beta)
+
+    return hook.custom_headers.transform_values { '[REDACTED]' } if values_redacted
+
+    hook.custom_headers
   end
 
   # Make response headers more stylish

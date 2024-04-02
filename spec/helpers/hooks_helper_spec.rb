@@ -15,7 +15,8 @@ RSpec.describe HooksHelper do
       it 'returns proper data' do
         expect(subject).to match(
           url: project_hook.url,
-          url_variables: "[]"
+          url_variables: "[]",
+          custom_headers: "[]"
         )
       end
     end
@@ -26,7 +27,20 @@ RSpec.describe HooksHelper do
       it 'returns proper data' do
         expect(subject).to match(
           url: project_hook.url,
-          url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }])
+          url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }]),
+          custom_headers: "[]"
+        )
+      end
+    end
+
+    context 'when there are custom headers' do
+      let(:project_hook) { build_stubbed(:project_hook, project: project, custom_headers: { test: 'blub' }) }
+
+      it 'returns proper data' do
+        expect(subject).to match(
+          url: project_hook.url,
+          url_variables: "[]",
+          custom_headers: Gitlab::Json.dump([{ key: 'test', value: WebHook::SECRET_MASK }])
         )
       end
     end

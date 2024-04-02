@@ -28587,6 +28587,9 @@ msgstr ""
 msgid "JiraService|Create Jira issues of this type from vulnerabilities."
 msgstr ""
 
+msgid "JiraService|Create a Jira issue for a vulnerability to track any action taken to resolve or mitigate a vulnerability."
+msgstr ""
+
 msgid "JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used."
 msgstr ""
 
@@ -28642,6 +28645,9 @@ msgid "JiraService|Jira comments are created when an issue is referenced in a co
 msgstr ""
 
 msgid "JiraService|Jira comments are created when an issue is referenced in a merge request."
+msgstr ""
+
+msgid "JiraService|Jira issue creation from vulnerabilities (optional)"
 msgstr ""
 
 msgid "JiraService|Jira issue prefix"
@@ -28722,6 +28728,9 @@ msgstr ""
 msgid "JiraService|Using Jira for issue tracking?"
 msgstr ""
 
+msgid "JiraService|View Jira issues (optional)"
+msgstr ""
+
 msgid "JiraService|Warning: All GitLab users with access to this GitLab project can view all issues from the Jira project you select."
 msgstr ""
 
@@ -28729,9 +28738,6 @@ msgid "JiraService|Web URL"
 msgstr ""
 
 msgid "JiraService|When a Jira issue is mentioned in a commit or merge request, a remote link and comment (if enabled) will be created."
-msgstr ""
-
-msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues."
 msgstr ""
 
 msgid "JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}"
@@ -35522,9 +35528,6 @@ msgid "Organization|Public - The organization can be accessed without any authen
 msgstr ""
 
 msgid "Organization|Search for an organization"
-msgstr ""
-
-msgid "Organization|Search or filter list"
 msgstr ""
 
 msgid "Organization|Select an organization"
@@ -43715,6 +43718,9 @@ msgstr ""
 msgid "Runners|Machine type"
 msgstr ""
 
+msgid "Runners|Machine type help"
+msgstr ""
+
 msgid "Runners|Machine type is required."
 msgstr ""
 
@@ -43876,6 +43882,9 @@ msgid "Runners|Recommended"
 msgstr ""
 
 msgid "Runners|Region"
+msgstr ""
+
+msgid "Runners|Region help"
 msgstr ""
 
 msgid "Runners|Region is required."
@@ -44333,6 +44342,9 @@ msgid "Runners|Your runner is online and ready to run jobs."
 msgstr ""
 
 msgid "Runners|Zone"
+msgstr ""
+
+msgid "Runners|Zone help"
 msgstr ""
 
 msgid "Runners|Zone is required."
@@ -57005,6 +57017,9 @@ msgstr ""
 msgid "Webhooks|A wiki page is created or updated."
 msgstr ""
 
+msgid "Webhooks|Add custom header"
+msgstr ""
+
 msgid "Webhooks|An access token is going to expire in the next 7 days. %{help_link}?"
 msgstr ""
 
@@ -57027,6 +57042,9 @@ msgid "Webhooks|Confidential comments"
 msgstr ""
 
 msgid "Webhooks|Confidential issues events"
+msgstr ""
+
+msgid "Webhooks|Custom headers"
 msgstr ""
 
 msgid "Webhooks|Custom webhook template (optional)"
@@ -57059,6 +57077,12 @@ msgstr ""
 msgid "Webhooks|Go to webhooks"
 msgstr ""
 
+msgid "Webhooks|Header name"
+msgstr ""
+
+msgid "Webhooks|Header value"
+msgstr ""
+
 msgid "Webhooks|How it looks in the UI"
 msgstr ""
 
@@ -57084,6 +57108,12 @@ msgid "Webhooks|Must match part of URL"
 msgstr ""
 
 msgid "Webhooks|Name (optional)"
+msgstr ""
+
+msgid "Webhooks|No custom headers configured."
+msgstr ""
+
+msgid "Webhooks|Only alphanumeric characters, periods, dashes, and underscores allowed. Must start with a letter and end with a letter or number. Cannot have consecutive periods, dashes, or underscores."
 msgstr ""
 
 msgid "Webhooks|Pipeline events"
@@ -57168,6 +57198,9 @@ msgid "Webhooks|Wildcard pattern"
 msgstr ""
 
 msgid "Webhooks|Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."
+msgstr ""
+
+msgid "Webhooks|You've reached the maximum number of custom headers."
 msgstr ""
 
 msgid "Website"

@@ -44,8 +44,6 @@ When you've completed your review of a merge request and are ready to [submit yo
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
-Merge request review summaries are also automatically generated when you submit your review. These automatically generated summaries are available on the merge request page in the **Merge request summaries** dialog, the To-Do list, and in email notifications.
-
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:

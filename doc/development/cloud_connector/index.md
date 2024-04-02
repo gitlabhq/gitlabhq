@@ -58,10 +58,20 @@ Here we assume your backend service is called `foo` and is already reachable at 
 We also assume that the backend service exposes the feature using a `/new_feature_endpoint` endpoint.
 This allows clients to access the feature at `https://cloud.gitlab.com/foo/new_feature_endpoint`.
 
+Here, the parameters you pass to `access_token` have the following meaning:
+
+- `audience`: The name of the backend service. The token is bound to this backend
+  using the JWT `aud` claim.
+- `scopes`: The list of access scopes carried in this token. They should map to access points
+  in your backend, which could be HTTP endpoints or RPC calls.
+
 ```ruby
 include API::Helpers::CloudConnector
 
-token = ::CloudConnector::AccessService.new.access_token(scopes: [:new_feature_scope])
+token = ::CloudConnector::AccessService.new.access_token(
+  audience: 'foo',
+  scopes: [:new_feature_scope]
+)
 return unauthorized! if token.nil?
 
 Gitlab::HTTP.post(
@@ -71,6 +81,11 @@ Gitlab::HTTP.post(
     }.merge(cloud_connector_headers(current_user))
 )
 ```
+
+NOTE:
+Any arguments you pass to `access_token` that configure the token returned only take hold for
+tokens issued on GitLab.com. For self-managed GitLab instances the token is read as-is from
+the database and never modified.
 
 #### CustomersDot
 

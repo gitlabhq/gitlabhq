@@ -81,7 +81,7 @@ On GitLab.com, this feature is available. On GitLab Dedicated, this feature is n
 In GitLab 16.9 and later, **Merge when checks pass** adds more checks to the auto-merge
 process. When set to auto-merge, all of these checks must pass for a merge request to merge:
 
-- The merge request pipeline must complete successfully.
+- The merge request pipeline must complete successfully, regardless of the project setting.
 - All required approvals must be given.
 - The merge request must not be a **Draft**.
 - All discussions must be resolved.

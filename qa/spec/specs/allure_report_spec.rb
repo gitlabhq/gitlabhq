@@ -74,7 +74,7 @@ describe QA::Runtime::AllureReport do
     it 'configures Allure options' do
       aggregate_failures do
         expect(allure_config.results_directory).to eq('tmp/allure-results')
-        expect(allure_config.clean_results_directory).to eq(true)
+        expect(allure_config.clean_results_directory).to eq(false)
         expect(allure_config.environment_properties.call).to eq(versions)
         expect(allure_config.environment).to eq('ee:relative')
       end

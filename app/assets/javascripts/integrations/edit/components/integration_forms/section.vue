@@ -21,6 +21,10 @@ export default {
       import(
         /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issues.vue'
       ),
+    IntegrationSectionJiraIssueCreation: () =>
+      import(
+        /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issue_creation.vue'
+      ),
     IntegrationSectionJiraTrigger: () =>
       import(
         /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'

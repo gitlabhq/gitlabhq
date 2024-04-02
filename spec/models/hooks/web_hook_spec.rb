@@ -57,6 +57,38 @@ RSpec.describe WebHook, feature_category: :webhooks do
       it { is_expected.not_to allow_value({ 'x..y' => 'foo' }).for(:url_variables) }
     end
 
+    describe 'custom_headers' do
+      it { is_expected.to allow_value({}).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'foo' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'FOO' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'MY_TOKEN' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'foo2' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'x' => 'y' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'x' => ('a' * 2048) }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'foo' => 'bar', 'bar' => 'baz' }).for(:custom_headers) }
+      it { is_expected.to allow_value((1..20).to_h { ["k#{_1}", 'value'] }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'MY-TOKEN' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'my_secr3t-token' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'x-y-z' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'x_y_z' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'f.o.o' => 'bar' }).for(:custom_headers) }
+
+      it { is_expected.not_to allow_value([]).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'bar' => :baz }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'bar' => nil }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'foo' => '' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'foo' => ('a' * 2049) }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'has spaces' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ '' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ '1foo' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value((1..21).to_h { ["k#{_1}", 'value'] }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'MY--TOKEN' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'MY__SECRET' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'x-_y' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'x..y' => 'foo' }).for(:custom_headers) }
+    end
+
     describe 'url' do
       it { is_expected.to allow_value('http://example.com').for(:url) }
       it { is_expected.to allow_value('https://example.com').for(:url) }
@@ -287,6 +319,40 @@ RSpec.describe WebHook, feature_category: :webhooks do
       end
     end
 
+    describe 'before_validation :reset_custom_headers' do
+      subject(:hook) { build_stubbed(:project_hook, :url_variables, project: project, url: 'http://example.com/{abc}', custom_headers: { test: 'blub' }) }
+
+      it 'resets custom headers if url changed' do
+        hook.url = 'http://example.com/new-hook'
+
+        expect(hook).to be_valid
+        expect(hook.custom_headers).to eq({})
+      end
+
+      it 'resets custom headers if url and url variables changed' do
+        hook.url = 'http://example.com/{something}'
+        hook.url_variables = { 'something' => 'testing-around' }
+
+        expect(hook).to be_valid
+        expect(hook.custom_headers).to eq({})
+      end
+
+      it 'does not reset custom headers if url stayed the same' do
+        hook.url = 'http://example.com/{abc}'
+
+        expect(hook).to be_valid
+        expect(hook.custom_headers).to eq({ test: 'blub' })
+      end
+
+      it 'does not reset custom headers if url and url variables changed and evaluate to the same url' do
+        hook.url = 'http://example.com/{def}'
+        hook.url_variables = { 'def' => 'supers3cret' }
+
+        expect(hook).to be_valid
+        expect(hook.custom_headers).to eq({ test: 'blub' })
+      end
+    end
+
     it "only consider these branch filter strategies are valid" do
       expected_valid_types = %w[all_branches regex wildcard]
       expect(described_class.branch_filter_strategies.keys).to contain_exactly(*expected_valid_types)
@@ -296,7 +362,7 @@ RSpec.describe WebHook, feature_category: :webhooks do
   describe 'encrypted attributes' do
     subject { described_class.attr_encrypted_attributes.keys }
 
-    it { is_expected.to contain_exactly(:token, :url, :url_variables) }
+    it { is_expected.to contain_exactly(:token, :url, :url_variables, :custom_headers) }
   end
 
   describe 'execute' do

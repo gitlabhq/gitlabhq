@@ -33325,6 +33325,7 @@ Possible identifier types for a measurement.
 | <a id="valuestreamdashboardmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |
 | <a id="valuestreamdashboardmetricpipelines"></a>`PIPELINES` | Pipeline count. |
 | <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
+| <a id="valuestreamdashboardmetricusers"></a>`USERS` | User count. |
 
 ### `ValueStreamStageEvent`
 

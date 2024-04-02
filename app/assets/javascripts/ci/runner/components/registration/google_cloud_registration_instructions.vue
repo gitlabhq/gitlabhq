@@ -59,10 +59,7 @@ export default {
     projectIdDescription: s__(
       'Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects. %{linkStart}Where’s my project ID in Google Cloud?%{linkEnd}',
     ),
-    regionLabel: s__('Runners|Region'),
-    zoneLabel: s__('Runners|Zone'),
     zonesLinkText: s__('Runners|View available zones'),
-    machineTypeLabel: s__('Runners|Machine type'),
     machineTypeDescription: s__(
       'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type%{linkEnd}.',
     ),
@@ -415,8 +412,8 @@ export default {
     >
       <template #label>
         <div>
-          {{ $options.i18n.regionLabel }}
-          <help-popover>
+          {{ s__('Runners|Region') }}
+          <help-popover :aria-label="s__('Runners|Region help')">
             <p>
               {{ s__('Runners|Specific geographical location where you can run your resources.') }}
             </p>
@@ -439,8 +436,8 @@ export default {
     >
       <template #label>
         <div>
-          {{ $options.i18n.zoneLabel }}
-          <help-popover>
+          {{ s__('Runners|Zone') }}
+          <help-popover :aria-label="s__('Runners|Zone help')">
             <p>
               {{
                 s__(
@@ -475,8 +472,8 @@ export default {
     >
       <template #label>
         <div>
-          {{ $options.i18n.machineTypeLabel }}
-          <help-popover>
+          {{ s__('Runners|Machine type') }}
+          <help-popover :aria-label="s__('Runners|Machine type help')">
             <p>
               {{
                 s__(

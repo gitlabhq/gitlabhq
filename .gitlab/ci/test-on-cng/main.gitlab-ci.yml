@@ -42,18 +42,28 @@ workflow:
     QA_CAN_TEST_PRAEFECT: "false"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
+    QA_DISABLE_RSPEC_RETRY: "true"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - export GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
+    - source scripts/utils.sh
     - source scripts/qa/cng_deploy/cng-kind.sh
-    - setup_cluster "scripts/qa/cng_deploy/config/kind-config.yml"
-    - deploy "${GITLAB_DOMAIN}"
+    - run_timed_command "setup_cluster scripts/qa/cng_deploy/config/kind-config.yml"
+    - run_timed_command "deploy ${GITLAB_DOMAIN}"
     - cd qa && bundle install
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.xml"
     - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
+    - |
+      if eval "$QA_COMMAND"; then
+        echo "Test run finished successfully"
+      else
+        export QA_RSPEC_RETRIED=true
+        export NO_KNAPSACK=true
+        echo "Initial test run failed, triggering retry of failed rspec tests"
+        eval "$QA_COMMAND --only-failures"
+      fi
   after_script:
     - source scripts/qa/cng_deploy/cng-kind.sh
     - echo -e "\e[0Ksection_start:`date +%s`:log_deploy[collapsed=true]\r\e[0KDeployment info"

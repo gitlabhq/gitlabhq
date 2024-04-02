@@ -31,6 +31,17 @@ The examples listed below address their respective log files by
 their relative Linux package installation paths and default filenames.
 Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
 
+### Compressed logs
+
+When [log files are rotated](https://smarden.org/runit/svlogd.8), they are renamed in
+Unix timestamp format and compressed with `gzip`. The resulting file name looks like
+`@40000000624492fa18da6f34.s`. These files must be handled differently before parsing,
+than the more recent log files:
+
+- To uncompress the file, use `gunzip -S .s @40000000624492fa18da6f34.s`, replacing
+  the filename with your compressed log file's name.
+- To read or pipe the file directly, use `zcat` or `zless`.
+
 ### General Commands
 
 #### Pipe colorized `jq` output into `less`
