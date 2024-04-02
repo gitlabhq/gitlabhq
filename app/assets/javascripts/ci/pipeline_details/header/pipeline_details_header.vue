@@ -2,12 +2,9 @@
 import {
   GlAlert,
   GlBadge,
-  GlButton,
   GlIcon,
   GlLink,
   GlLoadingIcon,
-  GlModal,
-  GlModalDirective,
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -25,9 +22,9 @@ import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutatio
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
+import HeaderActions from './components/header_actions.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
 import {
-  DELETE_MODAL_ID,
   POLL_INTERVAL,
   DETACHED_EVENT_TYPE,
   AUTO_DEVOPS_SOURCE,
@@ -48,16 +45,14 @@ export default {
     ClipboardButton,
     GlAlert,
     GlBadge,
-    GlButton,
     GlIcon,
     GlLink,
     GlLoadingIcon,
-    GlModal,
     GlSprintf,
+    HeaderActions,
     TimeAgoTooltip,
   },
   directives: {
-    GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
@@ -94,9 +89,6 @@ export default {
     stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
     computeMinutesTooltip: s__('Pipelines|Total amount of compute minutes used for the pipeline'),
     totalJobsTooltip: s__('Pipelines|Total number of jobs for the pipeline'),
-    retryPipelineText: __('Retry'),
-    cancelPipelineText: __('Cancel pipeline'),
-    deletePipelineText: __('Delete'),
     clipboardTooltip: __('Copy commit SHA'),
     finishedText: s__('Pipelines|finished'),
   },
@@ -105,22 +97,6 @@ export default {
     [POST_FAILURE]: __('An error occurred while making the request.'),
     [DELETE_FAILURE]: __('An error occurred while deleting the pipeline.'),
     [DEFAULT]: __('An unknown error occurred.'),
-  },
-  modal: {
-    id: DELETE_MODAL_ID,
-    title: __('Delete pipeline'),
-    deleteConfirmationText: __(
-      'Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone.',
-    ),
-    actionPrimary: {
-      text: __('Delete pipeline'),
-      attributes: {
-        variant: 'danger',
-      },
-    },
-    actionCancel: {
-      text: __('Cancel'),
-    },
   },
   inject: {
     graphqlResourceEtag: {
@@ -277,16 +253,6 @@ export default {
         queuedDuration: formatNumber(this.queuedDuration),
       });
     },
-    canRetryPipeline() {
-      const { retryable, userPermissions } = this.pipeline;
-
-      return retryable && userPermissions.updatePipeline;
-    },
-    canCancelPipeline() {
-      const { cancelable, userPermissions } = this.pipeline;
-
-      return cancelable && userPermissions.cancelPipeline;
-    },
     computeMinutes() {
       return this.pipeline?.computeMinutes;
     },
@@ -347,7 +313,7 @@ export default {
       this.failureType = errorType;
       this.failureMessages = errorMessages;
     },
-    async postPipelineAction(name, mutation) {
+    async postPipelineAction(name, mutation, id) {
       try {
         const {
           data: {
@@ -355,7 +321,7 @@ export default {
           },
         } = await this.$apollo.mutate({
           mutation,
-          variables: { id: this.pipeline.id },
+          variables: { id },
         });
 
         if (errors.length > 0) {
@@ -374,15 +340,15 @@ export default {
         this.reportFailure(POST_FAILURE);
       }
     },
-    cancelPipeline() {
+    cancelPipeline(id) {
       this.isCanceling = true;
-      this.postPipelineAction(this.$options.pipelineCancel, cancelPipelineMutation);
+      this.postPipelineAction(this.$options.pipelineCancel, cancelPipelineMutation, id);
     },
-    retryPipeline() {
+    retryPipeline(id) {
       this.isRetrying = true;
-      this.postPipelineAction(this.$options.pipelineRetry, retryPipelineMutation);
+      this.postPipelineAction(this.$options.pipelineRetry, retryPipelineMutation, id);
     },
-    async deletePipeline() {
+    async deletePipeline(id) {
       this.isDeleting = true;
       this.$apollo.queries.pipeline.stopPolling();
 
@@ -394,7 +360,7 @@ export default {
         } = await this.$apollo.mutate({
           mutation: deletePipelineMutation,
           variables: {
-            id: this.pipeline.id,
+            id,
           },
         });
 
@@ -627,59 +593,16 @@ export default {
           </div>
         </div>
       </div>
-      <div class="gl-mt-5 gl-lg-mt-0 gl-display-flex gl-align-items-flex-start gl-gap-3">
-        <gl-button
-          v-if="canRetryPipeline"
-          v-gl-tooltip
-          :aria-label="$options.BUTTON_TOOLTIP_RETRY"
-          :title="$options.BUTTON_TOOLTIP_RETRY"
-          :loading="isRetrying"
-          :disabled="isRetrying"
-          variant="confirm"
-          data-testid="retry-pipeline"
-          class="js-retry-button"
-          @click="retryPipeline()"
-        >
-          {{ $options.i18n.retryPipelineText }}
-        </gl-button>
 
-        <gl-button
-          v-if="canCancelPipeline"
-          v-gl-tooltip
-          :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
-          :title="$options.BUTTON_TOOLTIP_CANCEL"
-          :loading="isCanceling"
-          :disabled="isCanceling"
-          variant="danger"
-          data-testid="cancel-pipeline"
-          @click="cancelPipeline()"
-        >
-          {{ $options.i18n.cancelPipelineText }}
-        </gl-button>
-
-        <gl-button
-          v-if="pipeline.userPermissions.destroyPipeline"
-          v-gl-modal="$options.modal.id"
-          :loading="isDeleting"
-          :disabled="isDeleting"
-          variant="danger"
-          category="secondary"
-          data-testid="delete-pipeline"
-        >
-          {{ $options.i18n.deletePipelineText }}
-        </gl-button>
-      </div>
+      <header-actions
+        :pipeline="pipeline"
+        :is-retrying="isRetrying"
+        :is-canceling="isCanceling"
+        :is-deleting="isDeleting"
+        @retryPipeline="retryPipeline($event)"
+        @cancelPipeline="cancelPipeline($event)"
+        @deletePipeline="deletePipeline($event)"
+      />
     </div>
-    <gl-modal
-      :modal-id="$options.modal.id"
-      :title="$options.modal.title"
-      :action-primary="$options.modal.actionPrimary"
-      :action-cancel="$options.modal.actionCancel"
-      @primary="deletePipeline()"
-    >
-      <p>
-        {{ $options.modal.deleteConfirmationText }}
-      </p>
-    </gl-modal>
   </div>
 </template>

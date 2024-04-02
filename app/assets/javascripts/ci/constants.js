@@ -4,6 +4,7 @@ export const forwardDeploymentFailureModalId = 'forward-deployment-failure';
 
 export const BUTTON_TOOLTIP_RETRY = __('Retry all failed or cancelled jobs');
 export const BUTTON_TOOLTIP_CANCEL = __('Cancel the running pipeline');
+export const BUTTON_TOOLTIP_DELETE = __('Delete the pipeline');
 
 export const FILTER_TAG_IDENTIFIER = 'tag';
 

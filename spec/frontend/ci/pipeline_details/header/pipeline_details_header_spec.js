@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,17 +6,16 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineDetailsHeader from '~/ci/pipeline_details/header/pipeline_details_header.vue';
-import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+import HeaderActions from '~/ci/pipeline_details/header/components/header_actions.vue';
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import {
   pipelineHeaderSuccess,
   pipelineHeaderTrigger,
   pipelineHeaderRunning,
-  pipelineHeaderRunningNoPermissions,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
   pipelineRetryMutationResponseSuccess,
@@ -31,14 +30,10 @@ Vue.use(VueApollo);
 
 describe('Pipeline details header', () => {
   let wrapper;
-  let glModalDirective;
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
   const triggerHandler = jest.fn().mockResolvedValue(pipelineHeaderTrigger);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
-  const runningHandlerNoPermissions = jest
-    .fn()
-    .mockResolvedValue(pipelineHeaderRunningNoPermissions);
   const runningHandlerWithDuration = jest.fn().mockResolvedValue(pipelineHeaderRunningWithDuration);
   const failedHandler = jest.fn().mockResolvedValue(pipelineHeaderFailed);
 
@@ -65,7 +60,7 @@ describe('Pipeline details header', () => {
   const findStatus = () => wrapper.findComponent(CiIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
-  const findDeleteModal = () => wrapper.findComponent(GlModal);
+  const findHeaderActions = () => wrapper.findComponent(HeaderActions);
   const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
   const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
   const findFinishedCreatedTimeAgo = () =>
@@ -77,11 +72,12 @@ describe('Pipeline details header', () => {
   const findCommitCopyButton = () => wrapper.findByTestId('commit-copy-sha');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
-  const findRetryButton = () => wrapper.findByTestId('retry-pipeline');
-  const findCancelButton = () => wrapper.findByTestId('cancel-pipeline');
-  const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
   const findPipelineDuration = () => wrapper.findByTestId('pipeline-duration-text');
+
+  const clickActionButton = (action, id) => {
+    findHeaderActions().vm.$emit(action, id);
+  };
 
   const defaultHandlers = [[getPipelineDetailsQuery, successHandler]];
 
@@ -98,18 +94,9 @@ describe('Pipeline details header', () => {
   };
 
   const createComponent = (handlers = defaultHandlers) => {
-    glModalDirective = jest.fn();
-
     wrapper = shallowMountExtended(PipelineDetailsHeader, {
       provide: {
         ...defaultProvideOptions,
-      },
-      directives: {
-        glModal: {
-          bind(_, { value }) {
-            glModalDirective(value);
-          },
-        },
       },
       stubs: { GlSprintf },
       apolloProvider: createMockApolloProvider(handlers),
@@ -281,6 +268,22 @@ describe('Pipeline details header', () => {
   });
 
   describe('actions', () => {
+    it('passes correct props to the header actions component', async () => {
+      createComponent([
+        [getPipelineDetailsQuery, failedHandler],
+        [retryPipelineMutation, retryMutationHandlerSuccess],
+      ]);
+
+      await waitForPromises();
+
+      expect(findHeaderActions().props()).toEqual({
+        isCanceling: false,
+        isDeleting: false,
+        isRetrying: false,
+        pipeline: pipelineHeaderFailed.data.project.pipeline,
+      });
+    });
+
     describe('retry action', () => {
       beforeEach(async () => {
         createComponent([
@@ -292,16 +295,12 @@ describe('Pipeline details header', () => {
       });
 
       it('should call retryPipeline Mutation with pipeline id', () => {
-        findRetryButton().vm.$emit('click');
+        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         expect(retryMutationHandlerSuccess).toHaveBeenCalledWith({
           id: pipelineHeaderFailed.data.project.pipeline.id,
         });
         expect(findAlert().exists()).toBe(false);
-      });
-
-      it('should render retry action tooltip', () => {
-        expect(findRetryButton().attributes('title')).toBe(BUTTON_TOOLTIP_RETRY);
       });
     });
 
@@ -316,7 +315,7 @@ describe('Pipeline details header', () => {
       });
 
       it('should display error message on failure', async () => {
-        findRetryButton().vm.$emit('click');
+        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         await waitForPromises();
 
@@ -324,15 +323,15 @@ describe('Pipeline details header', () => {
       });
 
       it('retry button loading state should reset on error', async () => {
-        findRetryButton().vm.$emit('click');
+        clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
         await nextTick();
 
-        expect(findRetryButton().props('loading')).toBe(true);
+        expect(findHeaderActions().props('isRetrying')).toBe(true);
 
         await waitForPromises();
 
-        expect(findRetryButton().props('loading')).toBe(false);
+        expect(findHeaderActions().props('isRetrying')).toBe(false);
       });
     });
 
@@ -346,23 +345,12 @@ describe('Pipeline details header', () => {
 
           await waitForPromises();
 
-          findCancelButton().vm.$emit('click');
+          clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
           expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
             id: pipelineHeaderRunning.data.project.pipeline.id,
           });
           expect(findAlert().exists()).toBe(false);
-        });
-
-        it('should render cancel action tooltip', async () => {
-          createComponent([
-            [getPipelineDetailsQuery, runningHandler],
-            [cancelPipelineMutation, cancelMutationHandlerSuccess],
-          ]);
-
-          await waitForPromises();
-
-          expect(findCancelButton().attributes('title')).toBe(BUTTON_TOOLTIP_CANCEL);
         });
 
         it('should display error message on failure', async () => {
@@ -373,44 +361,16 @@ describe('Pipeline details header', () => {
 
           await waitForPromises();
 
-          findCancelButton().vm.$emit('click');
+          clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
           await waitForPromises();
 
           expect(findAlert().exists()).toBe(true);
         });
       });
-
-      describe('without permissions', () => {
-        it('should not display cancel pipeline button', async () => {
-          createComponent([[getPipelineDetailsQuery, runningHandlerNoPermissions]]);
-
-          await waitForPromises();
-
-          expect(findCancelButton().exists()).toBe(false);
-        });
-      });
     });
 
     describe('delete action', () => {
-      it('displays delete modal when clicking on delete and does not call the delete action', async () => {
-        createComponent([
-          [getPipelineDetailsQuery, successHandler],
-          [deletePipelineMutation, deleteMutationHandlerSuccess],
-        ]);
-
-        await waitForPromises();
-
-        findDeleteButton().vm.$emit('click');
-
-        const modalId = 'pipeline-delete-modal';
-
-        expect(findDeleteModal().props('modalId')).toBe(modalId);
-        expect(glModalDirective).toHaveBeenCalledWith(modalId);
-        expect(deleteMutationHandlerSuccess).not.toHaveBeenCalled();
-        expect(findAlert().exists()).toBe(false);
-      });
-
       it('should call deletePipeline Mutation with pipeline id when modal is submitted', async () => {
         createComponent([
           [getPipelineDetailsQuery, successHandler],
@@ -419,7 +379,7 @@ describe('Pipeline details header', () => {
 
         await waitForPromises();
 
-        findDeleteModal().vm.$emit('primary');
+        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
         expect(deleteMutationHandlerSuccess).toHaveBeenCalledWith({
           id: pipelineHeaderSuccess.data.project.pipeline.id,
@@ -434,7 +394,7 @@ describe('Pipeline details header', () => {
 
         await waitForPromises();
 
-        findDeleteModal().vm.$emit('primary');
+        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
         await waitForPromises();
 
