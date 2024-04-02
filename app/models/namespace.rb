@@ -25,6 +25,8 @@ class Namespace < ApplicationRecord
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
+  ignore_column :emails_disabled, remove_with: '17.0', remove_after: '2024-04-24'
+
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
   self.store_full_sti_class = false
@@ -166,7 +168,6 @@ class Namespace < ApplicationRecord
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
 
-  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
@@ -709,17 +710,6 @@ class Namespace < ApplicationRecord
       from.project_namespace_id != id
     else
       from && self != from
-    end
-  end
-
-  def update_new_emails_created_column
-    return if namespace_settings.nil?
-    return if namespace_settings.emails_enabled == !emails_disabled
-
-    if namespace_settings.persisted?
-      namespace_settings.update!(emails_enabled: !emails_disabled)
-    elsif namespace_settings
-      namespace_settings.emails_enabled = !emails_disabled
     end
   end
 

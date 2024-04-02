@@ -211,18 +211,18 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
-  context 'disable email notifications' do
+  context 'enable email notifications' do
     it 'is visible' do
       visit edit_group_path(group)
 
-      expect(page).to have_selector('#group_emails_disabled', visible: true)
+      expect(page).to have_selector('#group_emails_enabled', visible: true)
     end
 
     it 'accepts the changed state' do
       visit edit_group_path(group)
-      check 'group_emails_disabled'
+      uncheck 'group_emails_enabled'
 
-      expect { save_permissions_group }.to change { updated_emails_disabled? }.to(true)
+      expect { save_permissions_group }.to change { updated_emails_enabled? }.to(false)
     end
   end
 
@@ -328,8 +328,8 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
     end
   end
 
-  def updated_emails_disabled?
+  def updated_emails_enabled?
     group.reload.clear_memoization(:emails_enabled_memoized)
-    group.emails_disabled?
+    group.emails_enabled?
   end
 end

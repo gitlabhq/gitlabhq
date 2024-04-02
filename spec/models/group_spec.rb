@@ -3091,8 +3091,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#first_owner' do
-    let(:group) { build(:group) }
-
     context 'the group has owners' do
       it 'is the first owner' do
         user_1 = create(:user)
@@ -3217,9 +3215,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     shared_examples 'returns namespaces with disabled email' do
       subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-      it do
+      it "when a group's parent has disabled emails" do
         parent_1.update_attribute(:emails_enabled, false)
         is_expected.to eq(Set.new([child_1.id]))
+      end
+
+      it "when a group itself has disabled emails" do
+        child_2.update_attribute(:emails_enabled, false)
+        is_expected.to eq(Set.new([child_2.id]))
       end
     end
 

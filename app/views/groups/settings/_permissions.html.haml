@@ -18,10 +18,10 @@
           help_text: share_with_group_lock_help_text(@group)
 
     .form-group.gl-mb-3
-      = f.gitlab_ui_checkbox_component :emails_disabled,
-          s_('GroupSettings|Email notifications are disabled'),
-          checkbox_options: { checked: @group.emails_disabled?, disabled: !can_disable_group_emails?(@group) },
-          help_text: s_('GroupSettings|Overrides user notification preferences for all members of the group, subgroups, and projects.')
+      = f.gitlab_ui_checkbox_component :emails_enabled,
+          s_('GroupSettings|Enable email notifications'),
+          checkbox_options: { checked: @group.emails_enabled?, disabled: !can_disable_group_emails?(@group) },
+          help_text: s_('GroupSettings|Enable sending email notifications for this group and all its subgroups and projects')
 
     .form-group.gl-mb-3
       = f.gitlab_ui_checkbox_component :mentions_disabled,

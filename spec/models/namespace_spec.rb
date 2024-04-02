@@ -1957,64 +1957,16 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#emails_disabled?' do
-    context 'when not a subgroup' do
-      let(:group) { create(:group) }
+    let_it_be_with_refind(:group) { create(:group) }
 
-      it 'returns false' do
-        group.update_attribute(:emails_enabled, true)
-
-        expect(group.emails_disabled?).to be_falsey
-      end
-
-      it 'returns true' do
-        group.update_attribute(:emails_enabled, false)
-
-        expect(group.emails_disabled?).to be_truthy
-      end
-
-      it 'does not query the db when there is no parent group' do
-        group.update_attribute(:emails_enabled, false)
-
-        expect { group.emails_disabled? }.not_to exceed_query_limit(0)
-      end
+    it 'returns false when emails are enabled' do
+      expect(group.emails_disabled?).to be_falsey
     end
 
-    context 'when a subgroup' do
-      let(:grandparent) { create(:group) }
-      let(:parent)      { create(:group, parent: grandparent) }
-      let(:group)       { create(:group, parent: parent) }
+    it 'returns true when emails are disabled' do
+      group.emails_enabled = false
 
-      it 'returns false' do
-        expect(group.emails_disabled?).to be_falsey
-      end
-
-      context 'when ancestor emails are disabled' do
-        it 'returns true' do
-          grandparent.update_attribute(:emails_disabled, true)
-
-          expect(group.emails_disabled?).to be_truthy
-        end
-      end
-    end
-  end
-
-  describe '#emails_enabled?' do
-    context 'without a persisted namespace_setting object' do
-      let(:group_settings) { create(:namespace_settings) }
-      let(:group) { build(:group, emails_disabled: false, namespace_settings: group_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(group.emails_enabled?).to be_truthy
-      end
-    end
-
-    context 'with a persisted namespace_setting object' do
-      let(:namespace_settings) { create(:namespace_settings, emails_enabled: true) }
-      let(:group) { build(:group, emails_disabled: false, namespace_settings: namespace_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(group.emails_enabled?).to be_truthy
-      end
+      expect(group.emails_disabled?).to be_truthy
     end
   end
 

@@ -25,10 +25,10 @@ export default {
       required: false,
       default: false,
     },
-    projectEmailsDisabled: {
+    projectEmailsEnabled: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     subscribeDisabledDescription: {
       type: String,
@@ -57,19 +57,19 @@ export default {
       return this.subscribed === null;
     },
     notificationIcon() {
-      if (this.projectEmailsDisabled) {
+      if (!this.projectEmailsEnabled) {
         return ICON_OFF;
       }
       return this.subscribed ? ICON_ON : ICON_OFF;
     },
     notificationTooltip() {
-      if (this.projectEmailsDisabled) {
+      if (!this.projectEmailsEnabled) {
         return this.subscribeDisabledDescription;
       }
       return this.subscribed ? LABEL_ON : LABEL_OFF;
     },
     notificationText() {
-      if (this.projectEmailsDisabled) {
+      if (!this.projectEmailsEnabled) {
         return this.subscribeDisabledDescription;
       }
       return __('Notifications');
@@ -118,7 +118,7 @@ export default {
     </span>
     <span class="hide-collapsed" data-testid="subscription-title"> {{ notificationText }} </span>
     <gl-toggle
-      v-if="!projectEmailsDisabled"
+      v-if="projectEmailsEnabled"
       :is-loading="showLoadingState"
       :value="subscribed"
       class="hide-collapsed"

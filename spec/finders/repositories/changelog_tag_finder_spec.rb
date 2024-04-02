@@ -39,6 +39,9 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
         expect(finder.execute('0.9.0')).to eq(tag6)
         expect(finder.execute('0.6.0')).to eq(tag7)
 
+        # with a pre-release version
+        expect(finder.execute('0.6.0-rc1')).to eq(tag7)
+
         # with v at the beginning
         expect(finder.execute('v2.1.0')).to eq(tag3)
         expect { finder.execute('wrong_version') }.to raise_error(Gitlab::Changelog::Error)
@@ -69,6 +72,9 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
           expect(finder.execute('1.0.0')).to eq(tag4)
           expect(finder.execute('0.9.0')).to eq(tag6)
           expect(finder.execute('0.6.0')).to eq(tag7)
+
+          # with a pre-release version
+          expect(finder.execute('0.6.0-rc1')).to eq(tag7)
 
           # with v at the beginning
           expect(finder.execute('v2.1.0')).to eq(nil)

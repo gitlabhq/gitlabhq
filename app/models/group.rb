@@ -350,7 +350,6 @@ class Group < Namespace
     # column is set to false anywhere in the ancestor hierarchy.
     def ids_with_disabled_email(groups)
       inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
-
       inner_query = inner_groups
         .self_and_ancestors
         .joins(:namespace_settings)

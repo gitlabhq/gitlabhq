@@ -55,7 +55,7 @@ function mountBoardApp(el) {
       releasesFetchPath: el.dataset.releasesFetchPath,
       timeTrackingLimitToHours: parseBoolean(el.dataset.timeTrackingLimitToHours),
       issuableType: TYPE_ISSUE,
-      emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
+      emailsEnabled: parseBoolean(el.dataset.emailsEnabled),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
       isIssueBoard: true,

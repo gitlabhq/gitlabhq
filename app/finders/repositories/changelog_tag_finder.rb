@@ -35,13 +35,18 @@ module Repositories
       tags = {}
 
       # Custom regex matcher extracts versions from repository tags
+      # This format is defined by the user and applied to repository tags only
+      # https://docs.gitlab.com/ee/user/project/changelogs.html#customize-the-tag-format-when-extracting-versions
       custom_regex_matcher = matcher(@regex)
 
       if Feature.enabled?(:update_changelog_logic, @project)
         # Default regex macher extracts the user provided version
+        # The regex is different here, because it must match API documentation requirements
+        # https://gitlab.com/gitlab-org/gitlab/-/blob/44ab4e5bccdea01642b2f42bcccef706409ebfec/doc/api/repositories.md#L338
         default_regex_matcher = matcher(Gitlab::Changelog::Config::DEFAULT_TAG_REGEX)
 
-        requested_version = extract_version(new_version, default_regex_matcher)
+        version_components = default_regex_matcher.match(new_version)
+        requested_version = assemble_version(version_components)
 
         unless requested_version
           raise Gitlab::Changelog::Error,
@@ -54,7 +59,16 @@ module Repositories
       versions = [requested_version]
 
       @project.repository.tags.each do |tag|
-        version = extract_version(tag.name, custom_regex_matcher)
+        version_components = custom_regex_matcher.match(tag.name)
+
+        next unless version_components
+
+        # When using this class for generating changelog data for a range of
+        # commits, we want to compare against the tag of the last _stable_
+        # release; not some random RC that came after that
+        next if version_components[:pre]
+
+        version = assemble_version(version_components)
 
         next unless version
 
@@ -84,15 +98,9 @@ module Repositories
       )
     end
 
-    def extract_version(string, version_matcher)
-      matches = version_matcher.match(string)
-
-      return unless matches
-
-      # When using this class for generating changelog data for a range of
-      # commits, we want to compare against the tag of the last _stable_
-      # release; not some random RC that came after that.
-      return if matches[:pre]
+    # Builds a version string based on regex matcher's output
+    def assemble_version(matches)
+      return if matches.blank?
 
       major = matches[:major]
       minor = matches[:minor]

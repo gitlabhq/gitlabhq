@@ -135,7 +135,7 @@ module Groups
 
     # overridden in EE
     def remove_unallowed_params
-      params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, group)
+      params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, group)
 
       unless can?(current_user, :update_default_branch_protection, group)
         params.delete(:default_branch_protection)

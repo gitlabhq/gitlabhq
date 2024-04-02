@@ -105,6 +105,38 @@ RSpec.describe IssuePresenter do
     end
   end
 
+  describe '#parent_emails_enabled?' do
+    subject { presenter.parent_emails_enabled? }
+
+    it 'returns true when email notifications are enabled for the project' do
+      is_expected.to be(true)
+    end
+
+    context 'when email notifications are disabled for the project' do
+      before do
+        allow(project).to receive(:emails_enabled?).and_return(false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when issue is group-level' do
+      let(:presented_issue) { create(:issue, :group_level, namespace: group) }
+
+      it 'returns true when email notifications are enabled for the group' do
+        is_expected.to be(true)
+      end
+
+      context 'when email notifications are disabled for the group' do
+        before do
+          allow(group).to receive(:emails_enabled?).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
   describe '#service_desk_reply_to' do
     context 'when issue is not a service desk issue' do
       subject { presenter.service_desk_reply_to }

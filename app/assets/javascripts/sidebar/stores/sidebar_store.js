@@ -31,7 +31,7 @@ export default class SidebarStore {
     this.moveToProjectId = 0;
     this.isLockDialogOpen = false;
     this.participants = [];
-    this.projectEmailsDisabled = false;
+    this.projectEmailsEnabled = true;
     this.subscribeDisabledDescription = '';
     this.subscribed = null;
     this.changing = false;

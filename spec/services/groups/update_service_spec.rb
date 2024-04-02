@@ -374,19 +374,19 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
-  context 'when updating #emails_disabled' do
-    let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
+  context 'when updating #emails_enabled' do
+    let(:service) { described_class.new(internal_group, user, emails_enabled: false) }
 
     it 'updates the attribute' do
       internal_group.add_member(user, Gitlab::Access::OWNER)
 
-      expect { service.execute }.to change { internal_group.emails_disabled }.to(true)
+      expect { service.execute }.to change { internal_group.emails_enabled }.to(false)
     end
 
     it 'does not update when not group owner' do
       internal_group.add_member(user, Gitlab::Access::MAINTAINER)
 
-      expect { service.execute }.not_to change { internal_group.emails_disabled }
+      expect { service.execute }.not_to change { internal_group.emails_enabled }
     end
   end
 

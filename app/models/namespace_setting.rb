@@ -36,6 +36,7 @@ class NamespaceSetting < ApplicationRecord
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
 
   NAMESPACE_SETTINGS_PARAMS = %i[
+    emails_enabled
     default_branch_name
     resource_access_token_creation_allowed
     prevent_sharing_groups_outside_hierarchy
