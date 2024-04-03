@@ -143,7 +143,7 @@ This rule schedules a scan pipeline, enforcing the defined actions on the schedu
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
+| `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
@@ -160,6 +160,9 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 
 NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+The comma (,), hyphens (-), or step operators (/) are not supported for minutes and hours.
+An error is displayed if the cadence is invalid when creating or editing a policy.
+The scheduled pipelines for a previously created policy using comma (,), hyphen(-), or step operator (/) in minutes or hours fields is skipped.
 
 When using the `schedule` rule type in conjunction with the `agents` field, note the following:
 
@@ -256,7 +259,7 @@ Note the following:
   - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
     be overridden by group or project CI/CD variables.
   - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
-    ignored, regardless of where they were defined: policy, group, or project.  
+    ignored, regardless of where they were defined: policy, group, or project.
 
 ## Security policy scopes
 

@@ -53,6 +53,11 @@ Configuration changes made with Switchboard can be applied immediately or deferr
 
 When applied immediately, changes may take up to 90 minutes to be deployed to your environment. Individual changes are applied in the order they are saved, or you may choose to save several changes at once before applying them in one batch. After your change is deployed, you will receive an email notification. You might have to check your spam folder if it does not show up in your main email folder.
 
+All users with access to view or edit your tenant in Switchboard will receive a notification for each change made. See how to [manage Switchboard notification preferences](#manage-notification-preferences).
+
+NOTE:
+You will only receive email notifications for changes made by a Switchboard tenant admin. Changes made by a GitLab Operator (e.g. a GitLab version update completed during a maintenance window) will not result in an email notification.
+
 ### Inbound Private Link
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.
@@ -263,6 +268,26 @@ To add a new user to your GitLab Dedicated instance:
 1. Select **Create**.
 
 An invitation to use Switchboard is sent to the user.
+
+#### Manage notification preferences
+
+You can specify whether or not you want to receive email notifications from Switchboard.
+
+To manage your own email notification preferences:
+
+1. From any page, open the dropdown next to your user name.
+1. To stop receiving email notifications, select **Toggle email notifications off**.
+1. To resume receiving email notifications, select **Toggle email notifications on**.
+
+You will see an alert confirming that your notification preferences have been updated.
+
+Switchboard Tenant Admins can also manage email notifications for other users with access to their organization's tenant:
+
+1. From the **Users** page, open the dropdown in the **Email notifications** column next to the user's email.
+1. To turn off email notifications for that user, select **No**.
+1. To turn on email notifications for that user, select **Yes**.
+
+You will see an alert confirming that your notification preferences have been updated.
 
 ### Access to application logs
 

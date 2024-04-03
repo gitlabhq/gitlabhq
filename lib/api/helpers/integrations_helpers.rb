@@ -581,6 +581,12 @@ module API
               type: Integer,
               desc: 'Unique identifier for the target message thread (topic in a forum supergroup)'
             },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent.'
+            },
             chat_notification_flags
           ].flatten,
           'unify-circuit' => [

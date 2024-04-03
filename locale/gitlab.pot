@@ -3058,9 +3058,6 @@ msgstr ""
 msgid "Add license"
 msgstr ""
 
-msgid "Add list"
-msgstr ""
-
 msgid "Add new"
 msgstr ""
 
@@ -6968,9 +6965,6 @@ msgid "Assets:"
 msgstr ""
 
 msgid "Assign"
-msgstr ""
-
-msgid "Assign custom color like #FF0000"
 msgstr ""
 
 msgid "Assign reviewer"

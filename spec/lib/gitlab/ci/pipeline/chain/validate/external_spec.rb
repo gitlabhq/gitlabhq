@@ -173,24 +173,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
         perform!
       end
 
-      context 'when feature flag ci_send_tag_list_for_external_validation is disabled' do
-        before do
-          stub_feature_flags(ci_send_tag_list_for_external_validation: false)
-        end
-
-        it 'tag_list inot present' do
-          expect(::Gitlab::HTTP).to receive(:post) do |_url, params|
-            payload = Gitlab::Json.parse(params[:body])
-            builds = payload['builds']
-
-            expect(builds[0]).not_to have_key("tag_list")
-            expect(builds[1]).not_to have_key("tag_list")
-          end
-
-          perform!
-        end
-      end
-
       context "with existing jobs from other project's alive pipelines" do
         before do
           create(:ci_pipeline, :with_job, user: user)

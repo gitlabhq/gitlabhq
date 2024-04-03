@@ -1,7 +1,6 @@
 - add_page_specific_style 'page_bundles/labels'
 - project = @target_project || @project
 - edit_context = local_assigns.fetch(:edit_context, nil) || project
-- show_create = local_assigns.fetch(:show_create, true)
 - extra_options = local_assigns.fetch(:extra_options, true)
 - filter_submit = local_assigns.fetch(:filter_submit, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
@@ -29,7 +28,5 @@
       = multi_label_name(selected, label_name)
     = sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon")
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height
-    = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer, show_create: show_create }
-    - if show_create && project && can?(current_user, :admin_label, project)
-      = render partial: "shared/issuable/label_page_create"
+    = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer }
     = dropdown_loading
