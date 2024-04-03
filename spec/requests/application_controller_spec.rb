@@ -13,6 +13,14 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
     subject(:request) { get root_path }
   end
 
+  it 'does not send Link header', :use_clean_rails_redis_caching do
+    sign_in(user)
+
+    get root_path
+
+    expect(response.headers['Link']).to be_nil
+  end
+
   describe 'session expiration' do
     context 'when user is authenticated' do
       it 'does not set the expire_after option' do

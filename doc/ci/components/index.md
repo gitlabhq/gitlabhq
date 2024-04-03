@@ -590,4 +590,4 @@ This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-p
 ```
 
 The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)
-in GitLab 16.11. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).
+in GitLab 16.10. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).

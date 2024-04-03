@@ -5,8 +5,11 @@ require('spec_helper')
 RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_auto_devops) { create(:project_auto_devops) }
+  let_it_be(:project) { project_auto_devops.project }
 
-  let(:project) { project_auto_devops.project }
+  before_all do
+    project.namespace.namespace_settings = create(:namespace_settings, allow_runner_registration_token: true)
+  end
 
   context 'as a maintainer' do
     before do

@@ -1255,7 +1255,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       before do
-        allow(ProtectedBranch).to receive(:protected?).with(source_project, 'fixes') { false }
+        allow(ProtectedBranch).to receive(:protected?).and_return(false)
       end
 
       it 'does not allow a maintainer of the target project to set `allow_collaboration`' do

@@ -42,6 +42,8 @@ This bulkhead can be used as a launching pad for a full data restore from `us-ea
 
 ### Select an alternate region
 
+We are going with **`us-central1`**. Discussion for this was done in <https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25094>
+
 - Dependencies: none
 - Teams: Ops
 

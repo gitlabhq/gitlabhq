@@ -24,21 +24,16 @@ provided that the agent is properly configured for remote development.
 
 ## Remote development settings
 
-To enable Remote Development and register a new workspace, the following GitLab Agent settings are mandatory: 
-
-- [`enabled`]
-- [`dns_zone`]
-
-| Setting                                                                                   | Description                                                                                                                         |
-|-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|
-| [`enabled`](#enabled)                                                                     | Indicates whether remote development is enabled for the GitLab agent.                                                               |
-| [`dns_zone`](#dns_zone)                                                                   | DNS zone where workspaces are available.                                                                                            |
-| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed. |
-| [`network_policy`](#network_policy)                                                       | Firewall rules for workspaces.                                                                                                      |
-| [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | Default requests and limits for CPU and memory per workspace container.                                                             |
-| [`max_resources_per_workspace`](#max_resources_per_workspace)                             | Maximum requests and limits for CPU and memory per workspace.                                                                       |
-| [`workspaces_quota`](#workspaces_quota)                                                   | Maximum number of workspaces for the GitLab agent.                                                                                  |
-| [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | Maximum number of workspaces per user.                                                                                              |
+| Setting                                                                                   | Required | Description |
+|-------------------------------------------------------------------------------------------|----------|-------------|
+| [`enabled`](#enabled)                                                                     | Yes      | Indicates whether remote development is enabled for the GitLab agent. |
+| [`dns_zone`](#dns_zone)                                                                   | Yes      | DNS zone where workspaces are available. |
+| [`gitlab_workspaces_proxy`](#gitlab_workspaces_proxy)                                     | No       | Namespace where [`gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy) is installed. |
+| [`network_policy`](#network_policy)                                                       | No       | Firewall rules for workspaces. |
+| [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | No       | Default requests and limits for CPU and memory per workspace container. |
+| [`max_resources_per_workspace`](#max_resources_per_workspace)                             | No       | Maximum requests and limits for CPU and memory per workspace. |
+| [`workspaces_quota`](#workspaces_quota)                                                   | No       | Maximum number of workspaces for the GitLab agent. |
+| [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | No       | Maximum number of workspaces per user. |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.

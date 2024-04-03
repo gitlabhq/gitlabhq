@@ -7,7 +7,7 @@ import {
   GlKeysetPagination,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { groupBy } from 'lodash';
+import { uniqBy } from 'lodash';
 import { s__ } from '~/locale';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { NEW_ROUTE_NAME } from '../constants';
@@ -103,9 +103,7 @@ export default {
       };
     },
     uniqueRecipients(userAchievements) {
-      return Object.entries(groupBy(userAchievements, 'user.id')).map(([, values]) => {
-        return values[0].user;
-      });
+      return uniqBy(userAchievements, 'user.id').map(({ user }) => user);
     },
   },
   i18n: {

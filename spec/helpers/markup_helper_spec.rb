@@ -476,7 +476,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
 
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
-        expected = "\n<pre class=\"code highlight js-syntax-highlight language-ruby\" lang=\"ruby\">" \
+        expected = "\n<pre class=\"code highlight js-syntax-highlight language-ruby\">" \
           "<code><span class=\"line\" lang=\"ruby\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>" \
           "</code></pre>\n"
 

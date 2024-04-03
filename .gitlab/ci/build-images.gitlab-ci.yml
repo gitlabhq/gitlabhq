@@ -49,7 +49,7 @@ build-gdk-image:
     - .base-image-build-buildx
     - .build-images:rules:build-gdk-image
   tags:
-    - saas-linux-xlarge-amd64
+    - docker
   stage: build-images
   needs:
     - job: retag-gdk-image

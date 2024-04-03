@@ -40,6 +40,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
       let(:value) { 1 } # Default resource_type
     end
 
+    it 'creates a component usage record' do
+      expect { perform }.to change { Ci::Catalog::Resources::Components::Usage.count }.by(1)
+    end
+
+    context 'when component usage has already been recorded', :freeze_time do
+      it 'does not create a component usage record' do
+        step.perform!
+
+        expect { perform }.not_to change { Ci::Catalog::Resources::Components::Usage.count }
+      end
+    end
+
     context 'when the FF `ci_track_catalog_component_usage` is disabled' do
       before do
         stub_feature_flags(ci_track_catalog_component_usage: false)
@@ -49,6 +61,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
         expect(Gitlab::InternalEvents).not_to receive(:track_event)
 
         perform
+      end
+
+      it 'does not create a component usage record' do
+        expect { perform }.not_to change { Ci::Catalog::Resources::Components::Usage.count }
       end
     end
   end

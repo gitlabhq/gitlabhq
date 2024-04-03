@@ -31,6 +31,8 @@ module Gitlab
                 value: component.resource_type_before_type_cast
               }
             )
+
+            ::Ci::Components::Usages::CreateService.new(component, used_by_project: project).execute
           end
 
           def included_catalog_components

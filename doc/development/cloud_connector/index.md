@@ -101,6 +101,7 @@ To add a new feature bound to a scope:
     token as a scope.
 
     <!-- markdownlint-disable proper-names -->
+    `backend` is the targeted backend service and will become the token audience.
 
     `service_start_time` is the cut-off date after which payment for this feature is required.
 

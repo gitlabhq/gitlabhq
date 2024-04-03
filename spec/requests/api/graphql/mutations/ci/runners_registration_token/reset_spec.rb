@@ -62,7 +62,7 @@ RSpec.describe 'RunnersRegistrationTokenReset', feature_category: :fleet_visibil
   end
 
   context 'applied to project' do
-    let_it_be(:project) { create_default(:project) }
+    let_it_be(:project) { create_default(:project, :allow_runner_registration_token) }
 
     let(:target) { project }
     let(:input) { { type: 'PROJECT_TYPE', id: project.to_global_id.to_s } }

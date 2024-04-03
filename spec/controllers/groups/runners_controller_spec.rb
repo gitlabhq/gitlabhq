@@ -11,8 +11,11 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
 
   let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
   let!(:instance_runner) { create(:ci_runner, :instance) }
+  let(:runner_registration_enabled) { true }
 
   before do
+    namespace_settings.update!(runner_registration_enabled: runner_registration_enabled)
+
     sign_in(user)
   end
 
@@ -75,6 +78,17 @@ RSpec.describe Groups::RunnersController, feature_category: :fleet_visibility do
 
         expect(assigns(:group_runner_registration_token)).not_to be_nil
         expect(assigns(:group_new_runner_path)).to eq(new_group_runner_path(group))
+      end
+
+      context 'when runner registration is disabled' do
+        let(:runner_registration_enabled) { false }
+
+        it 'does not expose runner creation and registration variables' do
+          execute_get_request
+
+          expect(assigns(:group_runner_registration_token)).to be_nil
+          expect(assigns(:group_new_runner_path)).to be_nil
+        end
       end
     end
 

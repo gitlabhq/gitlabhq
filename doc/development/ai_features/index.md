@@ -145,21 +145,23 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
 1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance and you applied Ultimate license.
    1. To verify that the license is applied go to **Admin Area** > **Subscription** and check the subscription plan.
 1. Allow use of EE features for your instance.
-   1. Go to **Admin Area** > **Settings** > **General** -> **Account and limit**
-   1. Enable **Allow use of licensed EE features**
+   1. Go to **Admin Area > Settings > General**.
+   1. Expand the **Account and limit** section.
+   1. Enable **Allow use of licensed EE features**.
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance).
 1. Ensure the group you want to test has an Ultimate license.
-   1. Go to **Admin Area** > **Overview** > **Groups**
+   1. Go to **Admin Area > Overview > Groups**.
    1. Select **Edit** for your chosen group.
-   1. Go to **Permissions and group features**
+   1. Go to **Permissions and group features**.
    1. Choose *Ultimate* from the **Plan** list.
 1. Enable `Experiment & Beta features` for your group.
-   1. Go to the group with the Ultimate license
-   1. **Group Settings** > **General** -> **Permissions and group features**
-   1. Enable **Experiment & Beta features**
-1. Enable the specific feature flag for the feature you want to test
-1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework
-1. Setup [AI Gateway](#local-setup)
+   1. Go to the group with the Ultimate license.
+   1. Select **Settings > General**.
+   1. Expand the **Permissions and group features** section.
+   1. Enable **Experiment & Beta features**.
+1. Enable the specific feature flag for the feature you want to test.
+1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework.
+1. Setup [AI Gateway](#local-setup).
 
 ### Bypass AI Gateway
 

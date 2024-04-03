@@ -132,7 +132,7 @@ RSpec.describe API::Ci::Runners, feature_category: :fleet_visibility do
 
   describe '/api/v4/projects/:id/runners/reset_registration_token' do
     describe 'POST /api/v4/projects/:id/runners/reset_registration_token' do
-      let_it_be(:project) { create_default(:project) }
+      let_it_be(:project) { create_default(:project, :allow_runner_registration_token) }
 
       let(:prefix) { "/projects/#{project.id}" }
 

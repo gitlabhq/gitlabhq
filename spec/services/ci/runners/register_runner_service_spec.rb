@@ -130,8 +130,8 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
     context 'when project registration token is used' do
       let_it_be(:project) { create(:project, :with_namespace_settings) }
+      let_it_be(:token) { project.runners_token }
 
-      let(:token) { project.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do
@@ -209,8 +209,8 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
     context 'when group registration token is used' do
       let_it_be_with_refind(:group) { create(:group) }
+      let_it_be(:token) { group.runners_token }
 
-      let(:token) { group.runners_token }
       let(:allow_group_runner_registration_token) { true }
 
       before do

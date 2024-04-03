@@ -3553,6 +3553,9 @@ msgstr ""
 msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
 msgstr ""
 
+msgid "AdminSettings|Allow runner registration token"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -3929,6 +3932,9 @@ msgid "AdminSettings|Use for cluster and index migrations. When indexing is paus
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
+msgstr ""
+
+msgid "AdminSettings|When disabled, runner registration tokens are disabled from runner pages, and maintainers and owners cannot use registration tokens to register runners. They can use runner authentication tokens instead as the more secure runner registration method."
 msgstr ""
 
 msgid "AdminSettings|When to delete inactive projects"
@@ -43527,6 +43533,9 @@ msgstr ""
 msgid "Runners|Created by %{user} %{timeAgo}"
 msgstr ""
 
+msgid "Runners|Creating runners with runner registration tokens is disabled. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "Runners|Creator"
 msgstr ""
 
@@ -43652,9 +43661,6 @@ msgstr ""
 msgid "Runners|Idle"
 msgstr ""
 
-msgid "Runners|If both settings are disabled, new runners cannot be registered."
-msgstr ""
-
 msgid "Runners|If you haven't already configured your Google Cloud project, this step enables the required services and creates a service account with the required permissions. "
 msgstr ""
 
@@ -43745,7 +43751,7 @@ msgstr ""
 msgid "Runners|Median"
 msgstr ""
 
-msgid "Runners|Members of the %{type} can register runners"
+msgid "Runners|Members of the %{type} can create runners"
 msgstr ""
 
 msgid "Runners|Minor version upgrades are available."
@@ -52942,6 +52948,9 @@ msgid "Timeout for most Gitaly operations (in seconds)."
 msgstr ""
 
 msgid "Timeout for the fastest Gitaly operations (in seconds)."
+msgstr ""
+
+msgid "Timeout: Element not found"
 msgstr ""
 
 msgid "Timezone"

@@ -2,6 +2,7 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { createLocalState } from '../graphql/list/local_state';
 import GroupRunnersApp from './group_runners_app.vue';
 
@@ -16,6 +17,7 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
   }
 
   const {
+    allowRegistrationToken,
     registrationToken,
     runnerInstallHelpPage,
     newRunnerPath,
@@ -44,9 +46,10 @@ export const initGroupRunners = (selector = '#js-group-runners') => {
     render(h) {
       return h(GroupRunnersApp, {
         props: {
-          registrationToken,
           groupFullPath,
           newRunnerPath,
+          allowRegistrationToken: parseBoolean(allowRegistrationToken),
+          registrationToken,
         },
       });
     },

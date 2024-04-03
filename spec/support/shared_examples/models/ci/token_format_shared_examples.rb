@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples_for 'ensures runners_token is prefixed' do |factory|
-  subject(:record) { FactoryBot.build(factory) }
-
+RSpec.shared_examples_for 'ensures runners_token is prefixed' do
   describe '#runners_token', feature_category: :system_access do
     let(:runners_prefix) { RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX }
 
@@ -11,7 +9,9 @@ RSpec.shared_examples_for 'ensures runners_token is prefixed' do |factory|
     end
 
     context 'when record has an invalid token' do
-      subject(:record) { FactoryBot.build(factory, runners_token: invalid_runners_token) }
+      before do
+        record.update!(runners_token: invalid_runners_token)
+      end
 
       let(:invalid_runners_token) { "not_start_with_runners_prefix" }
 

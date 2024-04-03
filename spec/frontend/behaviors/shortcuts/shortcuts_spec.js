@@ -2,9 +2,16 @@ import $ from 'jquery';
 import { flatten } from 'lodash';
 import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { Mousetrap } from '~/lib/mousetrap';
+import { waitForElement } from '~/lib/utils/dom_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/shortcuts';
 import MarkdownPreview from '~/behaviors/preview_markdown';
+
+const mockSearchInput = document.createElement('input');
+
+jest.mock('~/lib/utils/dom_utils', () => ({
+  waitForElement: jest.fn(() => Promise.resolve(mockSearchInput)),
+}));
 
 describe('Shortcuts', () => {
   let shortcuts;
@@ -128,6 +135,37 @@ describe('Shortcuts', () => {
 
     it('cancels the default behaviour of the event', () => {
       expect(event.defaultPrevented).toBe(true);
+    });
+  });
+
+  describe('focusSearchFile', () => {
+    let event;
+
+    beforeEach(() => {
+      jest.spyOn(mockSearchInput, 'dispatchEvent');
+      event = new KeyboardEvent('keydown', { cancelable: true });
+      Shortcuts.focusSearchFile(event);
+    });
+
+    it('clicks the super sidebar search button', () => {
+      expect(HTMLElement.prototype.click).toHaveBeenCalled();
+      expect(HTMLElement.prototype.click.mock.contexts[0].id).toBe('super-sidebar-search');
+    });
+
+    it('cancels the default behavior of the event', () => {
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('waits for the input to become available in the DOM', () => {
+      expect(waitForElement).toHaveBeenCalledWith('#super-sidebar-search-modal #search');
+    });
+
+    it('sets the value of the search input', () => {
+      expect(mockSearchInput.value).toBe('~');
+    });
+
+    it('dispatches an `input` event on the search input', () => {
+      expect(mockSearchInput.dispatchEvent).toHaveBeenCalledWith(new Event('input'));
     });
   });
 

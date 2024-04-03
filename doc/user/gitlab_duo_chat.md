@@ -78,6 +78,9 @@ You can ask about a specific GitLab issue. For example:
 - When you are viewing an issue in GitLab, you can ask `Generate a concise summary of the current issue.`
 - `How can I improve the description of <link to your issue> so that readers understand the value and problems to be solved?`
 
+NOTE:
+If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
 ### Ask about a specific epic
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for SaaS in GitLab 16.3.
@@ -88,6 +91,9 @@ You can ask about a specific GitLab epic. For example:
 - `Generate a summary for the epic identified via this link: <link to your epic>`
 - When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
 - `What are the unique use cases raised by commenters in <link to your epic>?`
+
+NOTE:
+If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
 ### Ask about code
 

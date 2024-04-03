@@ -49,6 +49,11 @@ module MergeRequests
           .inactive(payload: default_payload(args))
       end
 
+      def warning(**args)
+        Gitlab::MergeRequests::Mergeability::CheckResult
+          .warning(payload: default_payload(args))
+      end
+
       def default_payload(args)
         args.merge(identifier: self.class.identifier)
       end

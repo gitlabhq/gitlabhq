@@ -70,6 +70,8 @@ describe('Container protection rules project settings', () => {
   });
 
   describe('table "package protection rules"', () => {
+    const findTableRowCell = (i, j) => findTableRow(i).findAllByRole('cell').at(j);
+
     it('renders table with Container protection rules', async () => {
       createComponent();
 
@@ -79,9 +81,10 @@ describe('Container protection rules project settings', () => {
 
       containerProtectionRuleQueryPayload().data.project.containerRegistryProtectionRules.nodes.forEach(
         (protectionRule, i) => {
-          expect(findTableRow(i).text()).toContain(protectionRule.repositoryPathPattern);
-          expect(findTableRow(i).text()).toContain('Maintainer');
-          expect(findTableRow(i).text()).toContain('Maintainer');
+          expect(findTableRow(i).findAllByRole('cell').length).toBe(3);
+          expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
+          expect(findTableRowCell(i, 1).text()).toBe('Maintainer');
+          expect(findTableRowCell(i, 2).text()).toBe('Maintainer');
         },
       );
     });

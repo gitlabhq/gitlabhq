@@ -11253,6 +11253,7 @@ CREATE TABLE merge_requests (
     draft boolean DEFAULT false NOT NULL,
     prepared_at timestamp with time zone,
     merged_commit_sha bytea,
+    override_requested_changes boolean DEFAULT false NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 

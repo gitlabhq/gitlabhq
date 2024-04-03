@@ -6,9 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Service Ping development guidelines
 
-> - Introduced in GitLab Ultimate 11.2, more statistics.
-> - In GitLab 14.1, [renamed from Usage Ping to Service Ping](https://gitlab.com/groups/gitlab-org/-/epics/5990). In 14.0 and earlier, use the Usage Ping documentation for the Rails commands appropriate to your version.
-
 Service Ping is a GitLab process that collects and sends a weekly payload to GitLab.
 The payload provides important high-level data that helps our product, support,
 and sales teams understand how GitLab is used. The data helps to:

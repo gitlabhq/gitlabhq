@@ -3975,10 +3975,7 @@ test:
 #### `retry:exit_codes`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.11.
 
 Use `retry:exit_codes` with `retry:max` to retry jobs for only specific failure cases.
 `retry:max` is the maximum number of retries, like [`retry`](#retry), and can be

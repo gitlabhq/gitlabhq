@@ -14,7 +14,7 @@ function initPopovers(elements) {
     .catch(() => {});
 }
 
-// Render GitLab flavoured Markdown
+// Render GitLab flavored Markdown
 export function renderGFM(element) {
   if (!element) {
     return;
@@ -25,7 +25,7 @@ export function renderGFM(element) {
     '.js-render-kroki[hidden]',
     '.js-render-math',
     '.js-render-mermaid',
-    '[lang="json"][data-lang-params="table"]',
+    '[data-canonical-lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
     '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));

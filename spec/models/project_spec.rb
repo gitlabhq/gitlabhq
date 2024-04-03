@@ -14,7 +14,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'ensures runners_token is prefixed', :project
+  context 'when runner registration is allowed' do
+    let_it_be(:project) { create(:project, :allow_runner_registration_token) }
+
+    it_behaves_like 'ensures runners_token is prefixed' do
+      subject(:record) { project }
+    end
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:organization) }
@@ -1143,15 +1149,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'project token' do
-    it 'sets an random token if none provided' do
-      project = FactoryBot.create(:project, runners_token: '')
-      expect(project.runners_token).not_to eq('')
+  describe 'runner registration token' do
+    let(:project) { create(:project, :allow_runner_registration_token, runners_token: initial_token) }
+
+    context 'when no token provided' do
+      let(:initial_token) { '' }
+
+      it 'sets an random token' do
+        expect(project.runners_token).not_to be_nil
+        expect(project.runners_token).not_to eq(initial_token)
+      end
     end
 
-    it 'does not set an random token if one provided' do
-      project = FactoryBot.create(:project, runners_token: "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
-      expect(project.runners_token).to eq("#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
+    context 'when initial token exists' do
+      let(:initial_token) { "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token" }
+
+      it 'does not set an random token' do
+        expect(project.runners_token).to eq(initial_token)
+      end
     end
   end
 

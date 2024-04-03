@@ -110,6 +110,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.runner_registration_enabled?
   end
 
+  condition(:runner_registration_token_enabled, scope: :subject) do
+    @subject.allow_runner_registration_token?
+  end
+
   condition(:raise_admin_package_to_owner_enabled) do
     Feature.enabled?(:raise_group_admin_package_permission_to_owner, @subject)
   end
@@ -373,6 +377,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
     prevent :create_runner
+  end
+
+  rule { ~runner_registration_token_enabled }.policy do
+    prevent :register_group_runners
   end
 
   rule { migration_bot }.policy do

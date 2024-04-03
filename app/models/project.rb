@@ -2249,6 +2249,8 @@ class Project < ApplicationRecord
   end
 
   def runners_token
+    return unless namespace.allow_runner_registration_token?
+
     ensure_runners_token!
   end
 

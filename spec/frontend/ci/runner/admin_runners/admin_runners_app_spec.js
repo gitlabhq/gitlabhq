@@ -121,7 +121,6 @@ describe('AdminRunnersApp', () => {
     wrapper = mountFn(AdminRunnersApp, {
       apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
-        registrationToken: mockRegistrationToken,
         newRunnerPath,
         ...props,
       },
@@ -155,11 +154,19 @@ describe('AdminRunnersApp', () => {
     showToast.mockReset();
   });
 
-  it('shows the runner setup instructions', () => {
-    createComponent();
+  it('shows the runner registration token instructions', () => {
+    createComponent({
+      props: {
+        allowRegistrationToken: true,
+        registrationToken: mockRegistrationToken,
+      },
+    });
 
-    expect(findRegistrationDropdown().props('registrationToken')).toBe(mockRegistrationToken);
-    expect(findRegistrationDropdown().props('type')).toBe(INSTANCE_TYPE);
+    expect(findRegistrationDropdown().props()).toEqual({
+      allowRegistrationToken: true,
+      registrationToken: mockRegistrationToken,
+      type: INSTANCE_TYPE,
+    });
   });
 
   describe('shows total runner counts', () => {
@@ -491,7 +498,7 @@ describe('AdminRunnersApp', () => {
   });
 
   describe('when no runners are found', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       mockRunnersHandler.mockResolvedValue({
         data: {
           runners: {
@@ -500,15 +507,29 @@ describe('AdminRunnersApp', () => {
           },
         },
       });
-
-      await createComponent();
     });
 
-    it('shows no errors', () => {
+    it('shows no errors', async () => {
+      await createComponent();
+
       expect(createAlert).not.toHaveBeenCalled();
     });
 
-    it('shows an empty state', () => {
+    it('shows an empty state', async () => {
+      await createComponent();
+
+      expect(findRunnerListEmptyState().props()).toEqual({
+        newRunnerPath,
+        isSearchFiltered: false,
+        registrationToken: null,
+      });
+    });
+
+    it('shows an empty state with a legacy registration token', async () => {
+      await createComponent({
+        props: { registrationToken: mockRegistrationToken },
+      });
+
       expect(findRunnerListEmptyState().props()).toEqual({
         newRunnerPath,
         isSearchFiltered: false,
@@ -518,6 +539,8 @@ describe('AdminRunnersApp', () => {
 
     describe('when a filter is selected by the user', () => {
       beforeEach(async () => {
+        await createComponent();
+
         findRunnerFilteredSearchBar().vm.$emit('input', {
           runnerType: null,
           membership: DEFAULT_MEMBERSHIP,

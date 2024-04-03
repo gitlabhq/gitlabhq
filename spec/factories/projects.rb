@@ -608,4 +608,14 @@ FactoryBot.define do
     path { 'gitlab-profile' }
     files { { 'README.md' => 'Hello World' } }
   end
+
+  trait :allow_runner_registration_token do
+    after :create do |project|
+      if project.namespace.namespace_settings.nil?
+        project.namespace.namespace_settings = create(:namespace_settings, namespace: project.namespace)
+      end
+
+      project.namespace.allow_runner_registration_token = true
+    end
+  end
 end

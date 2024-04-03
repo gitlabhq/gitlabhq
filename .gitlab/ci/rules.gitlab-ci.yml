@@ -156,10 +156,10 @@
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-merge-request: &if-dot-com-gitlab-org-and-security-merge-request
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached")'
 
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_COMMIT_TAG'
 
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/'
@@ -1903,6 +1903,12 @@
       changes: *db-patterns
     - <<: *if-merge-request
       changes: *decomposed-db-models-patterns
+
+.rails:rules:db:migrate:multi-version-upgrade:
+  rules:
+    - if: '$DISABLE_DB_MULTI_VERSION_UPGRADE =~ /true|yes|1/i'
+      when: never
+    - !reference [".rails:rules:ee-and-foss-migration", rules]
 
 .rails:rules:db-backup:
   rules:

@@ -1410,6 +1410,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
             it { is_expected.to be_allowed(:register_group_runners) }
           end
+
+          context 'with specific group runner registration token disallowed' do
+            before do
+              group.allow_runner_registration_token = false
+            end
+
+            it { is_expected.to be_disallowed(:register_group_runners) }
+          end
         end
       end
 
@@ -1434,6 +1442,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       context 'with specific group runner registration disabled' do
         before do
           group.runner_registration_enabled = false
+        end
+
+        it { is_expected.to be_disallowed(:register_group_runners) }
+      end
+
+      context 'with specific group runner registration token disallowed' do
+        before do
+          group.allow_runner_registration_token = false
         end
 
         it { is_expected.to be_disallowed(:register_group_runners) }

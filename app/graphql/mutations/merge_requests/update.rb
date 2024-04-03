@@ -66,3 +66,5 @@ module Mutations
     end
   end
 end
+
+Mutations::MergeRequests::Update.prepend_mod_with('Mutations::MergeRequests::Update')

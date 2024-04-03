@@ -65,6 +65,11 @@ export default {
       required: false,
       default: null,
     },
+    allowRegistrationToken: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     registrationToken: {
       type: String,
       required: false,
@@ -223,7 +228,7 @@ export default {
           {{ s__('Runners|New group runner') }}
         </gl-button>
         <registration-dropdown
-          v-if="registrationToken"
+          :allow-registration-token="allowRegistrationToken"
           :registration-token="registrationToken"
           :type="$options.GROUP_TYPE"
           placement="right"

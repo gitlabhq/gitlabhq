@@ -66,7 +66,6 @@ module Banzai
 
         pre_node.add_class(CSS_CLASSES)
         pre_node.add_class("language-#{language}") if language
-        pre_node.set_attribute('lang', language)
         pre_node.set_attribute('v-pre', 'true')
         copy_code_btn = "<copy-code></copy-code>" unless language == 'suggestion'
 

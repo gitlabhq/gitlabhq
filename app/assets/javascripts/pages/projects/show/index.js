@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
+import { initFindFileShortcut } from '~/projects/behaviors';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import initTerraformNotification from '~/projects/terraform_notification';
@@ -82,3 +83,4 @@ const initCodeDropdown = () => {
 
 initCodeDropdown();
 initSourceCodeDropdowns();
+initFindFileShortcut();

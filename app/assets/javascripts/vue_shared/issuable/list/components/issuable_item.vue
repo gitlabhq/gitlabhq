@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     issuableId() {
-      return getIdFromGraphQLId(this.issuable.id);
+      return getIdFromGraphQLId(this.issuable.id) || this.issuable.id;
     },
     issuableIid() {
       return this.issuable.iid;

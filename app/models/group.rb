@@ -776,6 +776,8 @@ class Group < Namespace
   # we do this on read since migrating all existing groups is not a feasible
   # solution.
   def runners_token
+    return unless allow_runner_registration_token?
+
     ensure_runners_token!
   end
 

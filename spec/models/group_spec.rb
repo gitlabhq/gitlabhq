@@ -489,7 +489,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
-  it_behaves_like 'ensures runners_token is prefixed', :group
+  it_behaves_like 'ensures runners_token is prefixed' do
+    subject(:record) do
+      create(:group, namespace_settings: create(:namespace_settings, allow_runner_registration_token: true))
+    end
+  end
 
   context 'after initialized' do
     it 'has a group_feature' do

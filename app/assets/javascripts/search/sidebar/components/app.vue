@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
@@ -47,6 +48,7 @@ export default {
     MilestonesFilters,
     AllScopesStartFilters,
   },
+  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
@@ -57,7 +59,9 @@ export default {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
     isZoektSearch() {
-      return this.searchType === SEARCH_TYPE_ZOEKT;
+      return (
+        this.searchType === SEARCH_TYPE_ZOEKT && this.glFeatures.searchAddArchivedFilterToZoekt
+      );
     },
     showIssuesFilters() {
       return this.currentScope === SCOPE_ISSUES;

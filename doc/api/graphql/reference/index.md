@@ -6079,6 +6079,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
@@ -32467,6 +32468,7 @@ Representation of whether a mergeability check passed, failed or is inactive.
 | <a id="mergeabilitycheckstatusfailed"></a>`FAILED` | Mergeability check has failed. The merge request cannot be merged. |
 | <a id="mergeabilitycheckstatusinactive"></a>`INACTIVE` | Mergeability check is disabled via settings. |
 | <a id="mergeabilitycheckstatussuccess"></a>`SUCCESS` | Mergeability check has passed. |
+| <a id="mergeabilitycheckstatuswarning"></a>`WARNING` | Mergeability check has passed with a warning. |
 
 ### `MilestoneSort`
 
