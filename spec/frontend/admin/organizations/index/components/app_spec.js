@@ -47,6 +47,10 @@ describe('AdminOrganizationsIndexApp', () => {
     });
   };
 
+  beforeEach(() => {
+    gon.features = { allowOrganizationCreation: true };
+  });
+
   afterEach(() => {
     mockApollo = null;
   });
@@ -117,6 +121,17 @@ describe('AdminOrganizationsIndexApp', () => {
         organizations,
       });
     });
+  });
+
+  describe('when `allowOrganizationCreation` feature flag is disabled', () => {
+    beforeEach(() => {
+      gon.features = { allowOrganizationCreation: false };
+
+      createComponent();
+      return waitForPromises();
+    });
+
+    itDoesNotRenderNewOrganizationButton();
   });
 
   describe('when API call is successful and returns no organizations', () => {

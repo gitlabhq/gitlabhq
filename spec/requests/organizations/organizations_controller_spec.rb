@@ -153,6 +153,17 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
     subject(:gitlab_request) { get new_organization_path }
 
     it_behaves_like 'controller action that requires authentication by any user'
+
+    context 'when user is signed in and `allow_organization_creation` feature flag is disabled' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_feature_flags(allow_organization_creation: false)
+        sign_in(user)
+      end
+
+      it_behaves_like 'organization - not found response'
+    end
   end
 
   describe 'GET #index' do

@@ -426,7 +426,7 @@ module QA
           arr << result
         end
 
-        specs_array = specs_array.sort_by { |item| item[:runs] }.reverse.first(PROMOTION_BATCH_LIMIT) unless reliable
+        specs_array = specs_array.sort_by { |item| item[:runs] }.reverse unless reliable
 
         {
           type: reliable ? 'Unstable Specs' : 'Stable Specs',

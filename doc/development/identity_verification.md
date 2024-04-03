@@ -19,7 +19,6 @@ Before you enable these features, ensure [hard email confirmation](../security/u
 | `identity_verification` | Turns on email verification for all registration paths |
 | `identity_verification_phone_number` | Turns on phone verification for medium risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
 | `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
-| `arkose_labs_signup_challenge` | Enables Arkose challenge for all flows |
 
 ## Logging
 

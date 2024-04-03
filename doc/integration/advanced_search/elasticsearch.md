@@ -589,7 +589,7 @@ You can use this information, for example, to identify when a migration was intr
 To check for pending advanced search migrations, run this command:
 
 ```shell
-curl "$CLUSTER_URL/gitlab-production-migrations/_search?q=*" | jq .
+curl "$CLUSTER_URL/gitlab-production-migrations/_search?size=100&q=*" | jq .
 ```
 
 This should return something similar to:

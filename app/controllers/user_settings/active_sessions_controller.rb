@@ -20,3 +20,5 @@ module UserSettings
     end
   end
 end
+
+UserSettings::ActiveSessionsController.prepend_mod

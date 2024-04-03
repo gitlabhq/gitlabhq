@@ -57,7 +57,6 @@ To enable Arkose Protect:
 1. Enable the ArkoseLabs login challenge. Run the following commands in the Rails console, replacing `<your_public_api_key>` and `<your_private_api_key>` with your own API keys.
 
    ```ruby
-   Feature.enable(:arkose_labs_signup_challenge)
    ApplicationSetting.current.update(arkose_labs_public_api_key: '<your_public_api_key>')
    ApplicationSetting.current.update(arkose_labs_private_api_key: '<your_private_api_key>')
    ```

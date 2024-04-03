@@ -5,6 +5,9 @@ module Admin
     feature_category :cell
 
     before_action :check_feature_flag!
+    before_action only: [:index] do
+      push_frontend_feature_flag(:allow_organization_creation, current_user)
+    end
 
     def index; end
 

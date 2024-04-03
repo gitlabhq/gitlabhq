@@ -34,7 +34,7 @@ configure Git to begin using the key.
 Prerequisites:
 
 - Git 2.34.0 or newer.
-- OpenSSH 8.0 or newer.
+- OpenSSH 8.1 or newer.
 
   NOTE:
   OpenSSH 8.7 has broken signing functionality. If you are on OpenSSH 8.7, upgrade to OpenSSH 8.8.

@@ -205,9 +205,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def ensure_first_name_and_last_name_not_empty
-    # The key here will be affected by feature flag 'arkose_labs_signup_challenge'
-    # When flag is disabled, the key will be 'user' because #check_captcha will remove 'new_' prefix
-    # When flag is enabled, #check_captcha will be skipped, so the key will have 'new_' prefix
     first_name = params.dig(resource_name, :first_name) || params.dig("new_#{resource_name}", :first_name)
     last_name = params.dig(resource_name, :last_name) || params.dig("new_#{resource_name}", :last_name)
 
@@ -317,7 +314,7 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def arkose_labs_enabled?
+  def arkose_labs_enabled?(user: nil) # rubocop:disable Lint/UnusedMethodArgument -- Param is unused here but used in EE override
     false
   end
 end
