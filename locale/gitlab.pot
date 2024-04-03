@@ -31076,6 +31076,9 @@ msgstr ""
 msgid "MemberRole|Actions"
 msgstr ""
 
+msgid "MemberRole|Add at least one custom permission to the base role."
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this custom role? Before you delete this custom role, make sure no group member has this role."
 msgstr ""
 
@@ -31083,9 +31086,6 @@ msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
 msgid "MemberRole|Base role"
-msgstr ""
-
-msgid "MemberRole|Base role to use as template"
 msgstr ""
 
 msgid "MemberRole|Cannot create a member role with no enabled permissions"
@@ -31124,7 +31124,7 @@ msgstr ""
 msgid "MemberRole|Edit role"
 msgstr ""
 
-msgid "MemberRole|Enter a short name."
+msgid "MemberRole|Example: \"Developer with admin and read access to vulnerability\""
 msgstr ""
 
 msgid "MemberRole|Failed to create role."
@@ -31143,9 +31143,6 @@ msgid "MemberRole|Failed to fetch roles."
 msgstr ""
 
 msgid "MemberRole|ID"
-msgstr ""
-
-msgid "MemberRole|Incident manager"
 msgstr ""
 
 msgid "MemberRole|Manage roles"
@@ -31172,16 +31169,13 @@ msgstr ""
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
 msgstr ""
 
-msgid "MemberRole|Role name"
-msgstr ""
-
 msgid "MemberRole|Role successfully created."
 msgstr ""
 
 msgid "MemberRole|Role successfully deleted."
 msgstr ""
 
-msgid "MemberRole|Select a standard role to add permissions."
+msgid "MemberRole|Select a %{linkStart}pre-existing static role%{linkEnd} to predefine a set of permissions."
 msgstr ""
 
 msgid "MemberRole|Standard roles"
@@ -31197,6 +31191,9 @@ msgid "MemberRole|To delete the custom role make sure no group member has this c
 msgstr ""
 
 msgid "MemberRole|You can create a custom role by adding specific %{linkStart}permissions to a base role.%{linkEnd}"
+msgstr ""
+
+msgid "MemberRole|You must fill out all required fields."
 msgstr ""
 
 msgid "MemberRole|can't be changed"

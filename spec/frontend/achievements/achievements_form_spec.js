@@ -1,4 +1,4 @@
-import { GlAlert, GlAvatar, GlFormFields } from '@gitlab/ui';
+import { GlAlert, GlAvatar, GlFormFields, GlTruncate } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -159,7 +159,7 @@ describe('Achievements form', () => {
       });
 
       it('shows the image name', () => {
-        expect(findFormFields().text()).toContain('foo.png');
+        expect(findFormFields().findComponent(GlTruncate).props('text')).toBe('foo.png');
       });
 
       it('renders the reset button', () => {

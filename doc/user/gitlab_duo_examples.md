@@ -430,6 +430,10 @@ Create an observability application for Kubernetes which reads and prints the st
 // Create main package
 ```
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+Watch the recording here: [GitLab Duo Coffee Chat: Code Generation Challenge with Go and Kubernetes Observability](https://www.youtube.com/watch?v=ORpRqp-A9hQ)
+<!-- Video published on 2024-03-27. Maintainer: Developer Relations. -->
+
 ### Java code generation prompts
 
 Create a data analytics application, with different data sources for metrics.
@@ -506,6 +510,7 @@ The [GitLab Duo Coffee Chat](https://handbook.gitlab.com/handbook/marketing/deve
 
 ### Blog resources
 
+- [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/)
 - [Learning Rust with a little help from AI](https://about.gitlab.com/blog/2023/08/10/learning-rust-with-a-little-help-from-ai-code-suggestions-getting-started/)
 - [Learn advanced Rust programming with a little help from AI](https://about.gitlab.com/blog/2023/10/12/learn-advanced-rust-programming-with-a-little-help-from-ai-code-suggestions/)
 - [Learning Python with a little help from AI](https://about.gitlab.com/blog/2023/11/09/learning-python-with-a-little-help-from-ai-code-suggestions/)

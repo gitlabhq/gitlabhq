@@ -18,7 +18,11 @@ DETAILS:
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
 It can assist various tasks of your daily work with the AI-generated content.
-Here are the examples of use cases:
+
+NOTE:
+GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
+
+Here are examples of common use cases:
 
 | Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
 | -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
@@ -35,10 +39,7 @@ Here are the examples of use cases:
 
 1. GitLab Duo Chat is not available in the Web IDE on self-managed.
 
-NOTE:
-GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
-
-## Watch a demo
+## Watch a demo and get tips
 
 <div class="video-fallback">
   <a href="https://youtu.be/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_">View how to set up and use GitLab Duo Chat</a>.
@@ -46,6 +47,8 @@ GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+For tips and tricks about integrating GitLab Duo Chat into your AI-powered DevSecOps workflows, read the blog post: [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
 ## What GitLab Duo Chat can help with
 

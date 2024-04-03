@@ -41,6 +41,7 @@ than the more recent log files:
 - To uncompress the file, use `gunzip -S .s @40000000624492fa18da6f34.s`, replacing
   the filename with your compressed log file's name.
 - To read or pipe the file directly, use `zcat` or `zless`.
+- To search file contents, use `zgrep`.
 
 ### General Commands
 

@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlAvatar, GlButton, GlDrawer, GlForm, GlFormFields } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlAvatar,
+  GlButton,
+  GlDrawer,
+  GlForm,
+  GlFormFields,
+  GlTruncate,
+} from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { produce } from 'immer';
 import { get as getPropValueByPath } from 'lodash';
@@ -24,6 +32,7 @@ export default {
     GlDrawer,
     GlForm,
     GlFormFields,
+    GlTruncate,
     MountingPortal,
   },
   inject: ['groupFullPath', 'groupId'],
@@ -228,20 +237,28 @@ export default {
           <template #input(avatar)>
             <div class="gl-display-flex">
               <gl-avatar :src="previewImage" shape="rect" class="gl-border-none gl-mr-5" />
-              <div>
-                <gl-button data-testid="select-file-button" @click="$refs.fileUpload.click()">
-                  {{ __('Choose File...') }}
-                </gl-button>
-                <span v-if="filename" class="gl-ml-3">
-                  {{ filename }}
+              <div class="gl-overflow-hidden">
+                <div class="gl-display-flex">
+                  <gl-button data-testid="select-file-button" @click="$refs.fileUpload.click()">
+                    {{ __('Choose File...') }}
+                  </gl-button>
                   <gl-button
+                    v-if="filename"
+                    class="gl-ml-3"
                     data-testid="reset-file-button"
                     size="small"
-                    icon="close"
                     category="tertiary"
                     @click="resetFile"
-                  />
-                </span>
+                    >{{ __('Clear') }}</gl-button
+                  >
+                </div>
+                <gl-truncate
+                  v-if="filename"
+                  class="gl-mt-3"
+                  :text="filename"
+                  position="middle"
+                  with-tooltip
+                />
                 <input
                   ref="fileUpload"
                   data-testid="avatar-file-input"

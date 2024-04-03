@@ -251,40 +251,231 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
       end
     end
 
-    describe "#sidekiq_queue_length" do
-      context "when queue is empty" do
-        it "returns zero" do
-          Sidekiq::Testing.disable! do
-            expect(model.sidekiq_queue_length("test")).to eq 0
-          end
-        end
-      end
-
-      context "when queue contains jobs" do
-        it "returns correct size of the queue" do
-          Sidekiq::Testing.disable! do
-            worker.perform_async("Something", [1])
-            worker.perform_async("Something", [2])
-
-            expect(model.sidekiq_queue_length("test")).to eq 2
-          end
-        end
-      end
-    end
-
     describe "#sidekiq_queue_migrate" do
       it "migrates jobs from one sidekiq queue to another" do
         Sidekiq::Testing.disable! do
           worker.perform_async("Something", [1])
           worker.perform_async("Something", [2])
 
-          expect(model.sidekiq_queue_length("test")).to eq 2
-          expect(model.sidekiq_queue_length("new_test")).to eq 0
+          Sidekiq.redis do |c|
+            expect(c.llen("queue:test")).to eq 2
+            expect(c.llen("queue:destination")).to eq 0
+          end
 
-          model.sidekiq_queue_migrate("test", to: "new_test")
+          model.sidekiq_queue_migrate("test", to: "destination")
 
-          expect(model.sidekiq_queue_length("test")).to eq 0
-          expect(model.sidekiq_queue_length("new_test")).to eq 2
+          Sidekiq.redis do |c|
+            expect(c.llen("queue:test")).to eq 0
+            expect(c.llen("queue:destination")).to eq 2
+          end
+        end
+      end
+
+      shared_examples 'cross instance migration' do
+        it 'migrates jobs from main and shard instances to main instance' do
+          Sidekiq::Testing.disable! do
+            Sidekiq::Client.via(shard_instance.sidekiq_redis) { worker.perform_async("Something", [1]) }
+            Sidekiq::Client.via(Gitlab::Redis::Queues.sidekiq_redis) { worker.perform_async("Something", [2]) }
+
+            # 1 job in each instance's queue
+            Sidekiq::Client.via(shard_instance.sidekiq_redis) do
+              Sidekiq.redis do |c|
+                expect(c.llen("queue:test")).to eq 1
+                expect(c.llen("queue:destination")).to eq 0
+              end
+            end
+
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 1
+              expect(c.llen("queue:destination")).to eq 0
+            end
+
+            model.sidekiq_queue_migrate("test", to: "destination")
+
+            # 2 job in the main instance's queue
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq main_from_size
+              expect(c.llen("queue:destination")).to eq main_to_size
+            end
+
+            # queues in shard get emptied
+            Sidekiq::Client.via(shard_instance.sidekiq_redis) do
+              Sidekiq.redis do |c|
+                expect(c.llen("queue:test")).to eq shard_from_size
+                expect(c.llen("queue:destination")).to eq shard_to_size
+              end
+            end
+          end
+        end
+      end
+
+      shared_examples 'holds jobs in buffer until migration completes' do
+        before do
+          allow(Sidekiq).to receive(:load_json).and_raise(StandardError)
+        end
+
+        it 'stores migrated job in a buffer' do
+          Sidekiq::Testing.disable! do
+            worker.perform_async("Something", [1])
+            worker.perform_async("Something", [2])
+
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 2
+              expect(c.llen("queue:destination")).to eq 0
+            end
+
+            expect { model.sidekiq_queue_migrate("test", to: "destination") }.to raise_error(StandardError)
+
+            Sidekiq.redis do |c|
+              expect(c.llen("queue:test")).to eq 1
+              expect(c.llen("migration_buffer:queue:test")).to eq 1
+            end
+          end
+        end
+      end
+
+      context 'when migrating jobs across redis instances' do
+        let(:shard_instance) do
+          Class.new(Gitlab::Redis::Queues) do
+            define_singleton_method(:store_name) do
+              'shard'.camelize
+            end
+
+            define_singleton_method(:params) do
+              Gitlab::Redis::Queues.params.tap { |h| h[:db] = h[:db].to_i + 1 } # set shard instance in another db
+            end
+          end
+        end
+
+        let(:stores) { %w[main shard] }
+
+        before do
+          Gitlab::Redis::Queues.with(&:flushdb)
+          shard_instance.with(&:flushdb)
+
+          allow(Gitlab::Redis::Queues).to receive(:instances).and_return('main' => Gitlab::Redis::Queues,
+            'shard' => shard_instance) # stub Queues with extra shard instances
+
+          allow(Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:stores_with_queue).and_call_original
+
+          # stub .store since all worker classes does not implement generated_queue_name
+          allow(Gitlab::SidekiqConfig::WorkerRouter.global).to receive(:store).and_return(nil)
+
+          skip_default_enabled_yaml_check
+
+          # We stub using `allow(Feature)` as dynamically defined feature flag in Gitlab::SidekiqSharding::Router
+          # will require a definition file when using stub_feature_flags.
+          allow(Feature).to receive(:enabled?).and_call_original
+          allow(Feature).to receive(:enabled?).with(:sidekiq_route_to_shard, type: :ops,
+            default_enabled_if_undefined: nil).and_return(true)
+        end
+
+        context 'when there are multiple source stores and 1 destination store' do
+          before do
+            allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+              .to receive(:stores_with_queue).with('test').and_return(stores)
+          end
+
+          it_behaves_like 'cross instance migration' do
+            let(:main_from_size) { 0 }
+            let(:main_to_size) { 2 }
+
+            let(:shard_from_size) { 0 }
+            let(:shard_to_size) { 0 }
+          end
+
+          it_behaves_like 'holds jobs in buffer until migration completes'
+        end
+
+        context 'when there are multiple destination stores and 1 source store' do
+          before do
+            allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+              .to receive(:stores_with_queue).with('destination').and_return(stores)
+          end
+
+          it_behaves_like 'cross instance migration' do
+            let(:main_from_size) { 0 }
+            let(:main_to_size) { 1 }
+
+            let(:shard_from_size) { 1 } # shard store is not accessed
+            let(:shard_to_size) { 0 }
+          end
+
+          it_behaves_like 'holds jobs in buffer until migration completes'
+        end
+
+        context 'when there are multiple source and destination stores' do
+          before do
+            allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+              .to receive(:stores_with_queue).and_return(stores)
+
+            allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+              .to receive(:store).and_return('main', 'shard')
+          end
+
+          it_behaves_like 'cross instance migration' do
+            let(:main_from_size) { 0 }
+            let(:main_to_size) { 1 }
+
+            let(:shard_from_size) { 0 }
+            let(:shard_to_size) { 1 }
+          end
+
+          it_behaves_like 'holds jobs in buffer until migration completes'
+        end
+
+        context 'when there is 1 source and 1 destination store' do
+          context 'when it is the same instance' do
+            before do
+              allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+                .to receive(:stores_with_queue).and_return(['main'])
+            end
+
+            it_behaves_like 'cross instance migration' do
+              let(:main_from_size) { 0 }
+              let(:main_to_size) { 1 } # migrates job within instance
+
+              let(:shard_from_size) { 1 }
+              let(:shard_to_size) { 0 }
+            end
+          end
+
+          context 'when it is cross-instance' do
+            before do
+              allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+                .to receive(:stores_with_queue).with('test').and_return(['main'])
+              allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+                .to receive(:stores_with_queue).with('destination').and_return(['shard'])
+            end
+
+            it_behaves_like 'cross instance migration' do
+              let(:main_from_size) { 0 }
+              let(:main_to_size) { 0 }
+
+              let(:shard_from_size) { 1 }
+              let(:shard_to_size) { 1 } # migrates job across instance
+            end
+
+            it_behaves_like 'holds jobs in buffer until migration completes'
+          end
+
+          context 'when routing is disabled' do
+            before do
+              allow(Gitlab::SidekiqSharding::Router).to receive(:enabled?).and_return(false)
+              allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+                .to receive(:stores_with_queue).with('test').and_return(['main'])
+              allow(Gitlab::SidekiqConfig::WorkerRouter.global)
+                .to receive(:stores_with_queue).with('destination').and_return(['shard'])
+            end
+
+            it_behaves_like 'cross instance migration' do
+              let(:main_from_size) { 0 }
+              let(:main_to_size) { 1 } # migrate the job only on the main instance
+
+              let(:shard_from_size) { 1 }
+              let(:shard_to_size) { 0 }
+            end
+          end
         end
       end
     end

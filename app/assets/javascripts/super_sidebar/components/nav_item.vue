@@ -261,7 +261,7 @@ export default {
           />
         </slot>
       </div>
-      <div class="gl-flex-grow-1 gl-text-gray-900 gl-truncate-end">
+      <div class="gl-flex-grow-1 gl-text-gray-900" :class="{ 'gl-w-max-content': isFlyout }">
         {{ item.title }}
         <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-truncate-end">
           {{ item.subtitle }}
@@ -290,7 +290,7 @@ export default {
         v-gl-tooltip.noninteractive.right.viewport="$options.i18n.unpinItem"
         :aria-label="unpinAriaLabel"
         category="tertiary"
-        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"
+        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-translate-y-n50 gl-top-1/2"
         :class="{ 'gl-pointer-events-none': !canClickPinButton }"
         data-testid="nav-item-unpin"
         icon="thumbtack-solid"
@@ -303,7 +303,7 @@ export default {
         v-gl-tooltip.noninteractive.right.viewport="$options.i18n.pinItem"
         :aria-label="pinAriaLabel"
         category="tertiary"
-        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"
+        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-translate-y-n50 gl-top-1/2"
         :class="{ 'gl-pointer-events-none': !canClickPinButton }"
         data-testid="nav-item-pin"
         icon="thumbtack"

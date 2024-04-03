@@ -1,5 +1,6 @@
 ---
 Migration/EnsureFactoryForTable:
+  Details: grace period
   Exclude:
     - 'db/migrate/20230616164309_create_subscription_user_add_on_assignments.rb'
     - 'db/migrate/20230616200440_create_system_access_microsoft_application.rb'
