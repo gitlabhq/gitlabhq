@@ -10005,6 +10005,9 @@ msgstr ""
 msgid "Cannot modify provider during creation"
 msgstr ""
 
+msgid "Cannot proceed with the push mirroring. Please verify your mirror configuration."
+msgstr ""
+
 msgid "Cannot promote issue because it does not belong to a group."
 msgstr ""
 
@@ -32219,6 +32222,9 @@ msgid "Mirror branches"
 msgstr ""
 
 msgid "Mirror direction"
+msgstr ""
+
+msgid "Mirror does not exist"
 msgstr ""
 
 msgid "Mirror only protected branches"

@@ -185,6 +185,35 @@ Example response:
 }
 ```
 
+## Force push mirror update
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
+
+[Force an update](../user/project/repository/mirror/index.md#force-an-update) to a push mirror.
+
+```plaintext
+POST /projects/:id/remote_mirrors/:mirror_id/sync
+```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description                                                                          |
+|-------------|-------------------|----------|--------------------------------------------------------------------------------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
+
+If successful, returns [`204`](rest/index.md#status-codes).
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
+```
+
+Example response:
+
+An empty response with a HTTP response code 204.
+
 ## Delete a remote mirror
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82778) in GitLab 14.10.

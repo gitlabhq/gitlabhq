@@ -49,6 +49,30 @@ module API
         present mirror, with: Entities::RemoteMirror
       end
 
+      desc 'Triggers a push mirror operation' do
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
+      end
+      params do
+        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+      end
+      post ':id/remote_mirrors/:mirror_id/sync' do
+        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+
+        result = ::RemoteMirrors::SyncService.new(user_project, current_user).execute(mirror)
+
+        if result.success?
+          status :no_content
+        else
+          render_api_error!(result[:message], 400)
+        end
+      end
+
       desc 'Create remote mirror for a project' do
         success code: 201, model: Entities::RemoteMirror
         failure [
