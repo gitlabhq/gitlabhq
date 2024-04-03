@@ -1891,6 +1891,9 @@ msgstr ""
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
+msgid "A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch."
+msgstr ""
+
 msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
 msgstr ""
 
@@ -14881,6 +14884,9 @@ msgstr ""
 msgid "Create a new issue"
 msgstr ""
 
+msgid "Create a new merge request"
+msgstr ""
+
 msgid "Create a new project"
 msgstr ""
 
@@ -19071,6 +19077,9 @@ msgstr ""
 msgid "Edit public deploy key"
 msgstr ""
 
+msgid "Edit release"
+msgstr ""
+
 msgid "Edit sidebar"
 msgstr ""
 
@@ -19084,9 +19093,6 @@ msgid "Edit template"
 msgstr ""
 
 msgid "Edit this file only."
-msgstr ""
-
-msgid "Edit this release"
 msgstr ""
 
 msgid "Edit title and description"
@@ -29729,6 +29735,9 @@ msgid "Learn more about linking issues and incidents"
 msgstr ""
 
 msgid "Learn more about max seats used"
+msgstr ""
+
+msgid "Learn more about merge requests"
 msgstr ""
 
 msgid "Learn more about seats owed"
@@ -57329,6 +57338,9 @@ msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{
 msgstr ""
 
 msgid "When using the %{code_open}ssh://%{code_close} protocol, please use the following format: %{code_open}ssh://username@example.com/group/project.git%{code_close}."
+msgstr ""
+
+msgid "When you open a merge request, you can visualize and collaborate on the changes before merge."
 msgstr ""
 
 msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier."

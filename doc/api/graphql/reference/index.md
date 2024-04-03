@@ -4719,6 +4719,33 @@ Input type: `GoogleCloudLoggingConfigurationUpdateInput`
 | <a id="mutationgooglecloudloggingconfigurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationgooglecloudloggingconfigurationupdategooglecloudloggingconfiguration"></a>`googleCloudLoggingConfiguration` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | configuration updated. |
 
+### `Mutation.groupAuditEventStreamingDestinationsCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `GroupAuditEventStreamingDestinationsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationscreatecategory"></a>`category` | [`String!`](#string) | Destination category. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
+| <a id="mutationgroupauditeventstreamingdestinationscreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationgroupauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationgroupauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | Destination created. |
+
 ### `Mutation.groupMemberBulkUpdate`
 
 Input type: `GroupMemberBulkUpdateInput`
@@ -11644,6 +11671,29 @@ The edge type for [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingcon
 | ---- | ---- | ----------- |
 | <a id="googlecloudloggingconfigurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="googlecloudloggingconfigurationtypeedgenode"></a>`node` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | The item at the end of the edge. |
+
+#### `GroupAuditEventStreamingDestinationConnection`
+
+The connection type for [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationconnectionedges"></a>`edges` | [`[GroupAuditEventStreamingDestinationEdge]`](#groupauditeventstreamingdestinationedge) | A list of edges. |
+| <a id="groupauditeventstreamingdestinationconnectionnodes"></a>`nodes` | [`[GroupAuditEventStreamingDestination]`](#groupauditeventstreamingdestination) | A list of nodes. |
+| <a id="groupauditeventstreamingdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupAuditEventStreamingDestinationEdge`
+
+The edge type for [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupauditeventstreamingdestinationedgenode"></a>`node` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | The item at the end of the edge. |
 
 #### `GroupConnection`
 
@@ -20249,6 +20299,7 @@ GPG signature for a signed commit.
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` **{warning-solid}** | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
@@ -21478,6 +21529,20 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
 | <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+
+### `GroupAuditEventStreamingDestination`
+
+Represents an external destination to stream group level audit events.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="groupauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="groupauditeventstreamingdestinationgroup"></a>`group` | [`Group!`](#group) | Group to which the destination belongs. |
+| <a id="groupauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="groupauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 ### `GroupDataTransfer`
 
@@ -34756,6 +34821,21 @@ Implementations:
 | <a id="amazons3configurationinterfacebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
 | <a id="amazons3configurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="amazons3configurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
+#### `AuditEventStreamingDestinationInterface`
+
+Implementations:
+
+- [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreamingdestinationinterfacecategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="auditeventstreamingdestinationinterfaceconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="auditeventstreamingdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="auditeventstreamingdestinationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 #### `BaseHeaderInterface`
 

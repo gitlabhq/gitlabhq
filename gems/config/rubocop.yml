@@ -119,3 +119,7 @@ Style/RegexpLiteralMixedPreserve:
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/435940#note_1703307479
 Style/HashSyntax:
   EnforcedShorthandSyntax: never
+
+# This cop doesn't make sense in the context of gems
+Migration/EnsureFactoryForTable:
+  Enabled: false
