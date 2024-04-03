@@ -155,6 +155,8 @@ Hardcoded regular expressions with backtracking issues:
 Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
 
 ```ruby
+# For ruby versions < 3.2.0
+# Press ctrl+c to terminate a hung process
 class Email < ApplicationRecord
   DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
 
@@ -170,7 +172,17 @@ end
 
 ### Mitigation
 
-#### Ruby
+#### Ruby from 3.2.0
+
+Ruby released [Regexp improvements against ReDoS in 3.2.0](https://www.ruby-lang.org/en/news/2022/12/25/ruby-3-2-0-released/). ReDoS will no longer be an issue, with the exception of _"some kind of regular expressions, such as those including advanced features (e.g., back-references or look-around), or with a huge fixed number of repetitions"_.
+
+[Until GitLab enforces a global Regexp timeout](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145679) you should pass an explicit timeout parameter, particularly when using advanced features or a large number of repetitions. For example:
+
+```ruby
+Regexp.new('^a*b?a*()\1$', timeout: 1) # timeout in seconds
+```
+
+#### Ruby before 3.2.0
 
 GitLab has [`Gitlab::UntrustedRegexp`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/untrusted_regexp.rb)
  which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.

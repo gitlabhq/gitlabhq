@@ -250,6 +250,24 @@ sequenceDiagram
     Gitaly ->> Back end: List of diffs
 ```
 
+###### Database
+
+```mermaid
+sequenceDiagram
+    Back end ->> Database: What are the file paths for a known MR version?
+    Database ->> Back end: List of paths
+```
+
+###### Cache
+
+- Fresh render of a diff
+
+```mermaid
+sequenceDiagram
+    Back end ->> Cache: Give me the diff template for scenario XYZ
+    Cache ->> Back end: Static template to render diff in scenario XYZ
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

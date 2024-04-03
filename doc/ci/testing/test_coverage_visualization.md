@@ -287,7 +287,6 @@ run tests:
   script:
     - pip install pytest pytest-cov
     - pytest --cov --cov-report term --cov-report xml:coverage.xml
-  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
       coverage_report:
@@ -354,7 +353,6 @@ run tests:
     - cd build
     - make test
     - gcovr --xml-pretty --exclude-unreachable-branches --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
-  coverage: /^\s*lines:\s*\d+.\d+\%/
   artifacts:
     name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     expire_in: 2 days

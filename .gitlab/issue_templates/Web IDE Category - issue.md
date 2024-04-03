@@ -1,14 +1,22 @@
 MR: Pending
 <!--
-The first line of the MR must be one of the following:
+The first line of this issue description must be one of the following:
 
 1. `MR: Pending`
 2. `MR: <MR link with trailing +>`,
-   and the first description line of the MR should be `Issue: <Issue link with trailing +>` 
-3. `MR: No MR`
+3. If there are multiple MRs:
+   ```
+   MRs:
+   - <MR 1 link with trailing +>`
+   - <MR 2 link with trailing +>`
+   - ...
+   ```
+4. `MR: No MR`
+
+...and the first description line of the MR should be `Issue: <Issue link with trailing +>` 
 
 For more context, see:
-https://about.gitlab.com/handbook/engineering/development/dev/create/ide/index.html#1-to-1-relationship-of-issues-to-mrs
+https://about.gitlab.com/handbook/engineering/development/dev/create/ide/index.html#relationship-of-issues-to-mrs
 -->
 
 <!--
@@ -21,7 +29,10 @@ https://about.gitlab.com/handbook/engineering/development/dev/create/ide/#2-pre-
 ## Description
 
 TODO: Fill out (required)
-`As a [user or stakeholder], I want [goal or objective] so that [reason or benefit].`
+
+As a [user or stakeholder], I want [goal or objective] so that [reason or benefit].
+
+[Provide any additional description here.]
 
 ## Acceptance Criteria
 
@@ -32,26 +43,26 @@ TODO: Fill out (required)
 
 ## Technical Requirements
 
-TODO: Fill out or delete
+TODO: Fill out or delete (optional)
 [If applicable, please list out any technical requirements for this feature/enhancement.]
 
 ## Design Requirements
 
-TODO: Fill out or delete
+TODO: Fill out or delete (optional)
 [If applicable, please provide a link to the design specifications for this feature/enhancement.]
 
 ## Impact Assessment
 
-TODO: Fill out or delete
+TODO: Fill out or delete (optional)
 [Please describe the impact this feature/enhancement will have on the user experience and/or the product as a whole.]
 
 ## User Story
 
-TODO: Fill out or delete
+TODO: Fill out or delete (optional)
 [Provide a user story to illustrate the use case for this feature/enhancement. Include examples to help communicate the intended functionality.]
 
 
-/label ~"Category:Remote Development"
+/label ~"Category:Web IDE"
 /label  ~"section::dev"
 /label  ~"devops::create"
 /label  ~"group::ide"
