@@ -8,6 +8,7 @@ module Tooling
         ci_templates
         datateam
         feature_flag
+        master_pipeline_status
         roulette
         sidekiq_queues
         specialization_labels

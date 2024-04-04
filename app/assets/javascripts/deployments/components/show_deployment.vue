@@ -8,6 +8,7 @@ import environmentQuery from '../graphql/queries/environment.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
 import DeploymentAside from './deployment_aside.vue';
 import DeploymentDeployBlock from './deployment_deploy_block.vue';
+import DetailsFeedback from './details_feedback.vue';
 
 const DEPLOYMENT_QUERY_POLLING_INTERVAL = 3000;
 
@@ -18,6 +19,7 @@ export default {
     DeploymentHeader,
     DeploymentAside,
     DeploymentDeployBlock,
+    DetailsFeedback,
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
@@ -99,6 +101,7 @@ export default {
           :environment="environment"
           :loading="$apollo.queries.deployment.loading"
         />
+        <details-feedback class="gl-mt-6 gl-w-90p" />
         <deployment-approvals
           v-if="hasApprovalSummary"
           :approval-summary="deployment.approvalSummary"

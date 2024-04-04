@@ -10,8 +10,8 @@ import {
 import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
 
@@ -22,9 +22,9 @@ export default {
   },
   components: {
     AbuseCategorySelector,
-    CiIcon,
     CiResourceAbout,
     CiResourceHeaderSkeletonLoader,
+    CiVerificationBadge,
     GlAvatar,
     GlAvatarLink,
     GlDisclosureDropdown,
@@ -54,11 +54,6 @@ export default {
       required: false,
       default: 0,
     },
-    pipelineStatus: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     resource: {
       type: Object,
       required: true,
@@ -81,8 +76,8 @@ export default {
     hasLatestVersion() {
       return this.latestVersion?.name;
     },
-    hasPipelineStatus() {
-      return this.pipelineStatus?.text;
+    isVerified() {
+      return this.resource?.verificationLevel !== 'UNVERIFIED';
     },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || {};
@@ -139,11 +134,11 @@ export default {
               {{ versionBadgeText }}
             </gl-badge>
           </span>
-          <ci-icon
-            v-if="hasPipelineStatus"
-            :status="pipelineStatus"
-            show-status-text
-            class="gl-mt-2"
+          <ci-verification-badge
+            v-if="isVerified"
+            :verification-level="resource.verificationLevel"
+            :resource-id="resource.id"
+            show-text
           />
         </div>
       </div>

@@ -9,6 +9,7 @@ import { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import ShowDeployment from '~/deployments/components/show_deployment.vue';
 import DeploymentHeader from '~/deployments/components/deployment_header.vue';
 import DeploymentDeployBlock from '~/deployments/components/deployment_deploy_block.vue';
+import DetailsFeedback from '~/deployments/components/details_feedback.vue';
 import deploymentQuery from '~/deployments/graphql/queries/deployment.query.graphql';
 import environmentQuery from '~/deployments/graphql/queries/environment.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -104,6 +105,10 @@ describe('~/deployments/components/show_deployment.vue', () => {
         deployment: mockDeploymentFixture.data.project.deployment,
         environment: mockEnvironmentFixture.data.project.environment,
       });
+    });
+
+    it('shows an alert asking for feedback', () => {
+      expect(wrapper.findComponent(DetailsFeedback).exists()).toBe(true);
     });
 
     it('shows the deployment block if the deployment job is manual', () => {

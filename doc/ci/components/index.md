@@ -292,6 +292,17 @@ in the catalog. The project and its repository still exist, but are not visible 
 
 To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
 
+### Verified component creators
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+
+Some CI/CD components are badged with an icon to show that the component was created
+and is maintained by users verified by GitLab:
+
+- GitLab-maintained (**{tanuki-verified}**): Components that are created and maintained by GitLab.
+- GitLab Partner (**{partner-verified}**): Components that are created and maintained by
+  a GitLab-verified partner.
+
 ## Best practices
 
 This section describes some best practices for creating high quality component projects.

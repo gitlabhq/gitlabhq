@@ -830,13 +830,6 @@ class Namespace < ApplicationRecord
     Rails.cache.delete_multi(keys)
   end
 
-  def write_projects_repository_config
-    all_projects.find_each do |project|
-      project.set_full_path
-      project.track_project_repository
-    end
-  end
-
   def enforce_minimum_path_length?
     path_changed? && !project_namespace?
   end

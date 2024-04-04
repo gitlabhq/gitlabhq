@@ -133,7 +133,7 @@ module Projects
 
           project.old_path_with_namespace = @old_path
 
-          update_repository_configuration(@new_path)
+          update_repository_configuration
 
           remove_issue_contacts
 
@@ -196,8 +196,7 @@ module Projects
       project.visibility_level = to_namespace.visibility_level unless project.visibility_level_allowed_by_group?
     end
 
-    def update_repository_configuration(full_path)
-      project.set_full_path(gl_full_path: full_path)
+    def update_repository_configuration
       project.track_project_repository
     end
 
@@ -233,7 +232,7 @@ module Projects
     def rollback_side_effects
       project.reset
       update_namespace_and_visibility(@old_namespace)
-      update_repository_configuration(@old_path)
+      update_repository_configuration
     end
 
     def execute_system_hooks

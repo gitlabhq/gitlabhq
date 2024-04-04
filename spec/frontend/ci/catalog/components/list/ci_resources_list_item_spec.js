@@ -7,6 +7,7 @@ import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
 import { catalogSinglePageResponse } from '../../mock';
 
 Vue.use(VueRouter);
@@ -48,6 +49,7 @@ describe('CiResourcesListItem', () => {
   const findResourceName = () => wrapper.findByTestId('ci-resource-link');
   const findResourceDescription = () => wrapper.findByText(defaultProps.resource.description);
   const findUserLink = () => wrapper.findByTestId('user-link');
+  const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
 
@@ -135,6 +137,36 @@ describe('CiResourcesListItem', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
           '• Components: test-component, component_two, test-component, component_two, and test-component',
         );
+      });
+    });
+  });
+
+  describe('verification badge', () => {
+    describe('when the resource is not verified', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the verification badge', () => {
+        expect(findVerificationBadge().exists()).toBe(false);
+      });
+    });
+
+    describe.each`
+      verificationLevel | describeText
+      ${'GITLAB'}       | ${'GitLab'}
+      ${'PARTNER'}      | ${'partner'}
+    `('when the resource is $describeText maintained', ({ verificationLevel }) => {
+      beforeEach(() => {
+        createComponent({ props: { resource: { ...resource, verificationLevel } } });
+      });
+
+      it('renders the verification badge', () => {
+        expect(findVerificationBadge().exists()).toBe(true);
+      });
+
+      it('displays the correct badge', () => {
+        expect(findVerificationBadge().props('verificationLevel')).toBe(verificationLevel);
       });
     });
   });

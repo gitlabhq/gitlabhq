@@ -6022,7 +6022,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
-      expect(project).to receive(:set_full_path)
 
       project.after_import
     end
@@ -6172,30 +6171,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#set_full_path' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository.raw }
-
-    it 'writes full path in .git/config when key is missing' do
-      project.set_full_path
-
-      expect(repository.full_path).to eq project.full_path
-    end
-
-    it 'updates full path in .git/config when key is present' do
-      project.set_full_path(gl_full_path: 'old/path')
-
-      expect { project.set_full_path }.to change { repository.full_path }.from('old/path').to(project.full_path)
-    end
-
-    it 'does not raise an error with an empty repository' do
-      project = create(:project_empty_repo)
-
-      expect { project.set_full_path }.not_to raise_error
     end
   end
 

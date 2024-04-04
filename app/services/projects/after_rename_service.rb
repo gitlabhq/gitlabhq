@@ -97,7 +97,6 @@ module Projects
 
     def update_repository_configuration
       project.reload_repository!
-      project.set_full_path
       project.track_project_repository
     end
 

@@ -2283,16 +2283,6 @@ class Project < ApplicationRecord
     ensure_pages_metadatum.update!(onboarding_complete: true)
   end
 
-  def set_full_path(gl_full_path: full_path)
-    # We'd need to keep track of project full path otherwise directory tree
-    # created with hashed storage enabled cannot be usefully imported using
-    # the import rake task.
-    repository.raw_repository.set_full_path(full_path: gl_full_path)
-  rescue Gitlab::Git::Repository::NoRepository => e
-    Gitlab::AppLogger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
-    nil
-  end
-
   def after_import
     repository.expire_content_cache
     repository.remove_prohibited_branches
@@ -2315,7 +2305,6 @@ class Project < ApplicationRecord
     after_create_default_branch
     join_pool_repository
     refresh_markdown_cache!
-    set_full_path
   end
 
   def update_project_counter_caches

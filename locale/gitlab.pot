@@ -10774,6 +10774,12 @@ msgstr ""
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
+msgid "CiCatalog|Created and maintained by %{boldStart}GitLab%{boldEnd}"
+msgstr ""
+
+msgid "CiCatalog|Created and maintained by a %{boldStart}GitLab Partner%{boldEnd}"
+msgstr ""
+
 msgid "CiCatalog|Discover CI/CD components that can improve your pipeline with additional functionality."
 msgstr ""
 
@@ -10783,10 +10789,16 @@ msgstr ""
 msgid "CiCatalog|Get started with the CI/CD Catalog"
 msgstr ""
 
+msgid "CiCatalog|GitLab-maintained"
+msgstr ""
+
 msgid "CiCatalog|Go to the project"
 msgstr ""
 
 msgid "CiCatalog|How do I publish a component?"
+msgstr ""
+
+msgid "CiCatalog|Learn more about designated creators"
 msgstr ""
 
 msgid "CiCatalog|No component available"
@@ -10796,6 +10808,9 @@ msgid "CiCatalog|No release available"
 msgstr ""
 
 msgid "CiCatalog|No result found"
+msgstr ""
+
+msgid "CiCatalog|Partner"
 msgstr ""
 
 msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
@@ -17633,6 +17648,9 @@ msgstr ""
 msgid "DeploymentApproval| Current approvals: %{current}"
 msgstr ""
 
+msgid "DeploymentApproval|After deployment #%{deploymentIid} has the required approvals, you can run the manual job. Rejecting will fail the manual job."
+msgstr ""
+
 msgid "DeploymentApproval|Approval options"
 msgstr ""
 
@@ -17643,9 +17661,6 @@ msgid "DeploymentApproval|Approved %{time}"
 msgstr ""
 
 msgid "DeploymentApproval|Approved by you %{time}"
-msgstr ""
-
-msgid "DeploymentApproval|Approving will run the manual job from deployment #%{deploymentIid}. Rejecting will fail the manual job."
 msgstr ""
 
 msgid "DeploymentApproval|Deployment approved"
@@ -17785,6 +17800,9 @@ msgstr ""
 msgid "Deployment|Latest Deployed"
 msgstr ""
 
+msgid "Deployment|Leave feedback"
+msgstr ""
+
 msgid "Deployment|Needs Approval"
 msgstr ""
 
@@ -17848,6 +17866,12 @@ msgid "Deployment|Waiting"
 msgstr ""
 
 msgid "Deployment|Waiting to be deployed."
+msgstr ""
+
+msgid "Deployment|We know this page is a bit empty at the moment, but we're working hard to bring you a great experience! In the meantime, we'd love to hear your feedback."
+msgstr ""
+
+msgid "Deployment|What would you like to see here?"
 msgstr ""
 
 msgid "Deprecated API rate limits"

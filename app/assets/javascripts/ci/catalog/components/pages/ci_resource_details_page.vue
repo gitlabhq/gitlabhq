@@ -64,17 +64,8 @@ export default {
     isLoadingSharedData() {
       return this.$apollo.queries.resourceSharedData.loading;
     },
-    versions() {
-      return this.resourceAdditionalDetails?.versions?.nodes || [];
-    },
     version() {
-      return this.resourceAdditionalDetails?.versions?.nodes[0]?.name || '';
-    },
-    pipelineStatus() {
-      return (
-        this.resourceAdditionalDetails?.versions?.nodes[0]?.commit?.pipelines?.nodes[0]
-          ?.detailedStatus || null
-      );
+      return this.resourceSharedData?.versions?.nodes[0]?.name || '';
     },
   },
   i18n: {
@@ -102,7 +93,6 @@ export default {
         :open-merge-requests-count="resourceAdditionalDetails.openMergeRequestsCount"
         :is-loading-details="isLoadingDetails"
         :is-loading-shared-data="isLoadingSharedData"
-        :pipeline-status="pipelineStatus"
         :resource="resourceSharedData"
       />
       <ci-resource-details :resource-path="cleanFullPath" :version="version" />

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, :skip_live_env, product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'CI component' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:tag) { '1.0.0' }
@@ -66,6 +66,9 @@ module QA
         add_ci_file(component_project, 'templates/new-component.yml', component_content)
         component_project.create_release(tag)
 
+        QA::Runtime::Logger.info("Waiting for #{component_project.name}'s release #{tag} to be available")
+        Support::Waiter.wait_until { component_project.has_release?(tag) }
+
         test_project.visit!
         add_ci_file(test_project, '.gitlab-ci.yml', ci_yml_content)
       end
@@ -76,9 +79,11 @@ module QA
 
       it 'runs in project pipeline with correct inputs', :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/451582' do
-        Flow::Pipeline.visit_latest_pipeline(status: 'Passed')
+        Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |show|
+          Support::Waiter.wait_until { show.has_passed? }
+
           expect(show).to have_stage(test_stage), "Expected pipeline to have stage #{test_stage} but not found."
         end
 

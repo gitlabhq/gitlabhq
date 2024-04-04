@@ -1,10 +1,24 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { s__ } from '~/locale';
 
 export const CATALOG_FEEDBACK_DISMISSED_KEY = 'catalog_feedback_dismissed';
 
 export const SCOPE = {
   all: 'ALL',
   namespaces: 'NAMESPACES',
+};
+
+export const VerificationLevel = {
+  GITLAB: {
+    badgeText: s__('CiCatalog|GitLab-maintained'),
+    icon: 'tanuki-verified',
+    popoverText: s__('CiCatalog|Created and maintained by %{boldStart}GitLab%{boldEnd}'),
+  },
+  PARTNER: {
+    badgeText: s__('CiCatalog|Partner'),
+    icon: 'partner-verified',
+    popoverText: s__('CiCatalog|Created and maintained by a %{boldStart}GitLab Partner%{boldEnd}'),
+  },
 };
 
 export const SORT_OPTION_CREATED = 'CREATED';

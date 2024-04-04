@@ -449,7 +449,6 @@
 - spec/features/profiles/list_users_comment_template_spec.rb
 - spec/features/profiles/oauth_applications_spec.rb
 - spec/features/profiles/password_spec.rb
-- spec/features/profiles/personal_access_tokens_spec.rb
 - spec/features/profiles/two_factor_auths_spec.rb
 - spec/features/profiles/user_changes_notified_of_own_activity_spec.rb
 - spec/features/profiles/user_creates_comment_template_spec.rb

@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+master_pipeline_status.check!

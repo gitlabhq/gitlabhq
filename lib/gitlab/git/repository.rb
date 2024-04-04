@@ -1038,21 +1038,6 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
-      def set_full_path(full_path:)
-        return unless full_path.present?
-
-        # This guard avoids Gitaly log/error spam
-        raise NoRepository, 'repository does not exist' unless exists?
-
-        gitaly_repository_client.set_full_path(full_path)
-      end
-
-      def full_path
-        wrapped_gitaly_errors do
-          gitaly_repository_client.full_path
-        end
-      end
-
       def disconnect_alternates
         wrapped_gitaly_errors do
           gitaly_repository_client.disconnect_alternates

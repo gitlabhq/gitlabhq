@@ -14,6 +14,7 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
+import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 
 export default {
   i18n: {
@@ -22,6 +23,7 @@ export default {
     releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
   },
   components: {
+    CiVerificationBadge,
     GlAvatar,
     GlBadge,
     GlButton,
@@ -79,6 +81,9 @@ export default {
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
+    },
+    isVerified() {
+      return this.resource?.verificationLevel !== 'UNVERIFIED';
     },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || [];
@@ -143,7 +148,14 @@ export default {
       @click="navigateToDetailsPage"
     />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+      <div>
+        <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+        <ci-verification-badge
+          v-if="isVerified"
+          :resource-id="resource.id"
+          :verification-level="resource.verificationLevel"
+        />
+      </div>
       <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-1">
         <gl-link
           class="gl-text-gray-900! gl-mr-1"

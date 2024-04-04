@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :skip_live_env, product_group: :pipeline_authoring do
+  RSpec.describe 'Verify', product_group: :pipeline_authoring do
     describe 'CI catalog' do
       let(:project_count) { 3 }
 
