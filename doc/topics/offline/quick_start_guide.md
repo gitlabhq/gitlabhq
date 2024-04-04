@@ -289,43 +289,62 @@ if [ "$DATA_TYPE" == "license" ]; then
 elif [ "$DATA_TYPE" == "advisory" ]; then
   PKG_METADATA_DIR="$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories"
 else
-  echo "Usage: import_script.sh [licenses|advisories]"
+  echo "Usage: import_script.sh [license|advisory]"
   exit 1
 fi
 
 PKG_METADATA_BUCKET="prod-export-$DATA_TYPE-bucket-1a6c642fc4de57d4"
-PKG_METADATA_MANIFEST_OUTPUT_FILE="/tmp/package_metadata_${DATA_TYPE}_export_manifest.json"
 PKG_METADATA_DOWNLOADS_OUTPUT_FILE="/tmp/package_metadata_${DATA_TYPE}_object_links.tsv"
 
 # Download the contents of the bucket
 # Filter results using `prefix=v2` to only download v2 objects. v1 data is no longer used and deprecated since 16.3.
-# Maximum number of objects returned by the API seems to be 5000 and there are currently (2023-12-21) 2650 objects for V2 dataset.
-curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/$PKG_METADATA_BUCKET/o?prefix=v2%2f&maxResults=5000" > "$PKG_METADATA_MANIFEST_OUTPUT_FILE"
+# The script downloads all the objects and creates files with a maximum 1000 objects per file in JSON format.
+
+MAX_RESULTS=1000
+TEMP_FILE="out.json"
+
+curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/$PKG_METADATA_BUCKET/o?maxResults=$MAX_RESULTS&prefix=v2%2f" >"$TEMP_FILE"
+NEXT_PAGE_TOKEN="$(jq -r '.nextPageToken' $TEMP_FILE)"
+jq -r '.items[] | [.name, .mediaLink] | @tsv' "$TEMP_FILE" >"$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
+
+while [ "$NEXT_PAGE_TOKEN" != "null" ]; do
+  curl --silent --show-error --request GET "https://storage.googleapis.com/storage/v1/b/$PKG_METADATA_BUCKET/o?maxResults=$MAX_RESULTS&pageToken=$NEXT_PAGE_TOKEN&prefix=v2%2f" >"$TEMP_FILE"
+  NEXT_PAGE_TOKEN="$(jq -r '.nextPageToken' $TEMP_FILE)"
+  jq -r '.items[] | [.name, .mediaLink] | @tsv' "$TEMP_FILE" >>"$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
+  #use for API rate-limiting
+  sleep 1
+done
+
+trap 'rm -f "$TEMP_FILE"' EXIT
+
+echo "Fetched $DATA_TYPE export manifest"
 
 # Parse the links and names for the bucket objects and output them into a tsv file
-jq -r '.items[] | [.name, .mediaLink] | @tsv' "$PKG_METADATA_MANIFEST_OUTPUT_FILE" > "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
 
 echo -e "Saving package metadata exports to $PKG_METADATA_DIR\n"
 
 # Track how many objects will be downloaded
 INDEX=1
-TOTAL_OBJECT_COUNT="$(wc -l $PKG_METADATA_DOWNLOADS_OUTPUT_FILE | awk '{print $1}')"
+TOTAL_OBJECT_COUNT="$(wc -l "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE" | awk '{print $1}')"
 
 # Download the objects
 while IFS= read -r line; do
-   FILE="$(echo -n $line | awk '{print $1}')"
-   URL="$(echo -n $line | awk '{print $2}')"
-   OUTPUT_DIR="$(dirname $PKG_METADATA_DIR/$FILE)"
-   OUTPUT_PATH="$PKG_METADATA_DIR/$FILE"
+  FILE="$(echo -n "$line" | awk '{print $1}')"
+  URL="$(echo -n "$line" | awk '{print $2}')"
+  OUTPUT_PATH="$PKG_METADATA_DIR/$FILE"
 
-   echo "Downloading $FILE"
+  echo "Downloading $FILE"
 
-   curl --progress-bar --create-dirs --output "$OUTPUT_PATH" --request "GET" "$URL"
+  if [ ! -f "$OUTPUT_PATH" ]; then
+    curl --progress-bar --create-dirs --output "$OUTPUT_PATH" --request "GET" "$URL"
+  else
+    echo "Existing file found"
+  fi
 
-   echo -e "$INDEX of $TOTAL_OBJECT_COUNT objects downloaded\n"
+  echo -e "$INDEX of $TOTAL_OBJECT_COUNT objects downloaded\n"
 
-   let INDEX=(INDEX+1)
-done < "$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
+  INDEX=$((INDEX + 1))
+done <"$PKG_METADATA_DOWNLOADS_OUTPUT_FILE"
 
 echo "All objects saved to $PKG_METADATA_DIR"
 ```

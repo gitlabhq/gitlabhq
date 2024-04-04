@@ -1,6 +1,6 @@
 ---
 stage: Secure
-group: Static Analysis
+group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 <!-- markdownlint-disable MD025 -->
@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free
 **Offering:** GitLab.com
-**Status:** Experimental
+**Status:** GA
 
 Pipeline secret detection scans committed files after they has been pushed to GitLab.
 
@@ -570,10 +570,6 @@ variable, or as a CI/CD variable.
 
 - If using a variable, set the value of `ADDITIONAL_CA_CERT_BUNDLE` to the text
   representation of the certificate.
-
-## Supported languages and package managers
-
-## CycloneDX Software Bill of Materials Support
 
 ## FIPS-enabled images
 

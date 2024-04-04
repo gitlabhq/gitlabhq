@@ -10,6 +10,8 @@ module Groups
       reject_parent_id!
       remove_unallowed_params
 
+      invert_emails_disabled_to_emails_enabled
+
       before_assignment_hook(group, params)
 
       if renaming_group_with_container_registry_images?

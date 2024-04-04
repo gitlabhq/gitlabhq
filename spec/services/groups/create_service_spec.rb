@@ -98,6 +98,48 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     end
   end
 
+  context 'with `emails_disabled` attribute' do
+    context 'when emails_disabled is false' do
+      let(:extra_params) { { emails_disabled: false } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to true' do
+        expect(created_group.emails_enabled).to eq(true)
+      end
+    end
+
+    context 'when emails_disabled is true' do
+      let(:extra_params) { { emails_disabled: true } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to false' do
+        expect(created_group.emails_enabled).to eq(false)
+      end
+    end
+
+    context 'when emails_disabled is nil' do
+      let(:extra_params) { { emails_disabled: nil } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to default true' do
+        expect(created_group.emails_enabled).to eq(true)
+      end
+    end
+
+    context 'when emails_disabled is the string "false"' do
+      let(:extra_params) { { emails_disabled: "false" } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to false' do
+        expect(created_group.emails_enabled).to eq(true)
+      end
+    end
+  end
+
   context 'with `allow_mfa_for_subgroups` attribute' do
     let(:extra_params) { { allow_mfa_for_subgroups: false } }
 

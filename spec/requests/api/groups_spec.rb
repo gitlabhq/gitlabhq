@@ -1022,6 +1022,35 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
       end
 
+      context 'when updating :emails_disabled' do
+        context 'when setting to true' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
+
+        context 'when setting to nil' do
+          it 'sets :emails_enabled to default true' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: nil }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(true)
+          end
+        end
+
+        context 'when setting to string "true"' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: "true" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
+      end
+
       it 'removes the group avatar', :aggregate_failures do
         put api("/groups/#{group1.id}", user1), params: { avatar: '' }
 

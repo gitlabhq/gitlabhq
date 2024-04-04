@@ -390,6 +390,56 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when updating #emails_disabled' do
+    context 'when emails_disabled is true' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
+
+      it 'updates email_enabled to false' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(false)
+      end
+    end
+
+    context 'when emails_disabled is false' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: false) }
+
+      it 'email_enabled is set to true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(true)
+      end
+    end
+
+    context 'when emails_disabled is nil' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: nil) }
+
+      it 'email_enabled is set to the default value of true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(true)
+      end
+    end
+
+    context 'when emails_disabled is the string "true"' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: "true") }
+
+      it 'email_enabled is set to the default value of true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(false)
+      end
+    end
+  end
+
   context 'when updating #math_rendering_limits_enabled' do
     let(:service) { described_class.new(internal_group, user, math_rendering_limits_enabled: false) }
 

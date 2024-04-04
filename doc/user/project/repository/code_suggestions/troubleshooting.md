@@ -30,9 +30,11 @@ If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web
 1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion**
    checkbox.
 
+### View Code Suggestions logs
+
 If the settings are enabled, but Code Suggestions are still not displayed, try the following steps:
 
-1. Enable the `Debug` checkbox in the GitLab Workflow **Extension Settings**.
+1. In the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
 1. Open the extension log in **View > Output** and change the dropdown list to **GitLab Workflow** as the log filter. The command palette command is `GitLab: Show Extension Logs`.
 1. Disable and re-enable the **Enable code completion** checkbox.
 1. Verify that the debug log contains similar output:
@@ -42,6 +44,8 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 2023-07-14T17:29:01:802 [debug]: Enabling code completion
 2023-07-14T17:29:01:802 [debug]: AI Assist: Using server: https://cloud.gitlab.com/ai/v2/code/completions
 ```
+
+To enable debug logging for the Language Server (LS), enable **GitLab › Ls: Debug**.
 
 ### Code Suggestions not displayed in Microsoft Visual Studio
 
@@ -55,6 +59,22 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 14:48:21:344 LsClient.SendTextDocumentCompletionAsync("GitLab.Extension.Test\TestData.cs", 34, 0)
 14:48:21:346 LS(55096): time="2023-07-17T14:48:21-05:00" level=info msg="update context"
 ```
+
+## Code Suggestions return a 401 error
+
+Code Suggestions [depend on a license token](../../../ai_features.md) that
+[synchronizes your subscription](../../../../administration/license.md) with GitLab.
+
+If the token expires, GitLab Duo code suggestions returns the following error
+with status `401` when the token has expired:
+
+```plaintext
+Token validation failed in Language Server:
+(Failed to check token: Error: Fetching Information about Personal Access Token
+```
+
+If GitLab has access to the [cloud server](../../../ai_features.md), try
+[manually synchronizing your license](../../../../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details).
 
 ## Authentication troubleshooting
 

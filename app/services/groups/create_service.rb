@@ -51,6 +51,8 @@ module Groups
 
     def build_group
       remove_unallowed_params
+      invert_emails_disabled_to_emails_enabled
+
       set_visibility_level
 
       @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))

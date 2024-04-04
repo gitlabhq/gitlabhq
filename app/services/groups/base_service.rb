@@ -27,5 +27,24 @@ module Groups
     def remove_unallowed_params
       # overridden in EE
     end
+
+    # This is a temporary shim to address an issue with
+    #   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135959 and should
+    #   be removed when the issue is resolved.
+    #
+    # rubocop:disable Style/IfUnlessModifier -- you're entirely wrong
+    # rubocop:disable Style/NegatedIf -- you're entirely wrong
+    def invert_emails_disabled_to_emails_enabled
+      return unless Feature.enabled?(:invert_emails_disabled_to_emails_enabled)
+      return unless params.key?(:emails_disabled)
+
+      if !params[:emails_disabled].nil?
+        params[:emails_enabled] = !Gitlab::Utils.to_boolean(params[:emails_disabled])
+      end
+
+      params.delete(:emails_disabled)
+    end
+    # rubocop:enable Style/IfUnlessModifier
+    # rubocop:enable Style/NegatedIf
   end
 end

@@ -96,6 +96,126 @@ INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may
 it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
 timings are unaffected.
 
+### Add index and make application code change together if possible
+
+To minimize the risk of creating unnecessary indexes, do these in the same merge request if possible:
+
+- Make application code changes.
+- Create or remove indexes.
+
+The migrations that create indexes are usually short, and do not significantly increase a merge request's size.
+Doing so allows backend and database reviewers to review more efficiently without
+switching contexts between merge requests or commits.
+
+## Migration type to use
+
+The authoritative guide is [the migration style guide](../migration_style_guide.md#choose-an-appropriate-migration-type).
+When in doubt, consult the guide.
+
+Here are some common scenarios with a recommended choice as a quick reference.
+
+### Add an index to improve existing queries
+
+Use a post-deployment migration.
+Existing queries already work without the added indexes, and
+would not critical to operating the application.
+
+If indexing takes a long time to finish
+(a post-deployment migration should take less than [10 minutes](../migration_style_guide.md#how-long-a-migration-should-take))
+consider [indexing asynchronously](#create-indexes-asynchronously).
+
+### Add an index to support new or updated queries
+
+Always examine the query plans for new or updated queries. First, confirm they do not time-out
+or significantly exceed [the recommended query timings](query_performance.md#query-performance-guidelines)
+without a dedicated index.
+
+If the queries don't time-out or breach the query timings:
+
+- Any index added to improve the performance of the new queries is non-critical
+  to operating the application.
+- Use a post-deployment migration to create the index.
+- In the same merge request, ship the application code changes that generate and use the new queries.
+
+Queries that time-out or breach query timings require different actions, depending on
+whether they do so only on GitLab.com, or for all GitLab instances.
+Most features require a dedicated index only for GitLab.com, one of the largest GitLab installations.
+
+#### New or updated queries perform slowly on GitLab.com
+
+Use two MRs to create the index in a post-deployment migration and make the application code change:
+
+- The first MR uses a post-deployment migration to create the index.
+- The second MR makes application code changes. It should merge only after the first MR's
+  post-deployment migrations are executed on GitLab.com.
+
+NOTE:
+If you can use a feature flag, you might be able to use a single MR
+to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
+After the post-deployment migration executes, you can enable the feature flag.
+
+For GitLab.com, we execute post-deployment migrations throughout a single release through continuous integration:
+
+- At some time `t`, a group of merge requests are merged and ready to deploy.
+- At `t+1`, the regular migrations from the group are executed on GitLab.com's staging and production database.
+- At `t+2`, the application code changes from the group start deploying in a rolling manner
+
+After the application code changes are fully deployed,
+The release manager can choose to execute post-deployment migrations at their discretion at a much later time.
+The post-deployment migration executes one time per day pending GitLab.com availability.
+For this reason, you need a [confirmation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/post_deploy_migration#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom)
+the post-deployment migrations included in the first MR were executed before merging the second MR.
+
+#### New or updated queries might be slow on a large GitLab instance
+
+It's not possible to check query performance directly on self-managed instances.
+PostgreSQL produces an execution plan based on the data distribution, so
+guessing query performance is a hard task.
+
+If you are concerned about the performance of a query on self-managed instances
+and decide that self-managed instances must have an index, follow these recommendations:
+
+- For self-managed instances following [zero downtime](../../update/zero_downtime.md)
+  upgrades, post-deploy migrations execute when performing an upgrade after the application code deploys.
+- For self-managed instances that do not follow a zero-downtime upgrade,
+  the administrator might choose to execute the post-deployment migrations for a release later,
+  at the time of their choosing, after the regular migrations execute. The application code deploys when they upgrade.
+
+For this reason, an application must not assume a database schema applied by the
+post-deployment migrations has shipped in the same release. The application code
+should continue to work without the indexes added in the post-deployment migrations
+in the same release.
+
+You have two options depending on [how long it takes to create the index](../migration_style_guide.md#how-long-a-migration-should-take):
+
+1. Single release: if a regular migration can create the required index very fast
+   (usually because the table is new or very small) you can create the index in a
+   regular migration, and ship the application code change in the same MR and milestone.
+
+1. At least two releases: if the required index takes time to create,
+   you must create it in a PDM in one release then wait for the next release to
+   make the application code changes that rely on the index.
+
+### Add a unique index acting as a constraint to an existing table
+
+PostgreSQL's unique index acts as a constraint. Adding one to an existing table can be tricky.
+
+Unless the table is absolutely guaranteed to be tiny for GitLab.com and self-managed instances,
+you must use multiple post-deployment migrations over multiple releases to:
+
+- Remove and(or) fix the duplicate records.
+- Introduce a unique index constraining existing columns.
+
+Refer to the multi-release approach outlined in
+[the section for adding a NOT NULL constraint](not_null_constraints.md#add-a-not-null-constraint-to-an-existing-column).
+
+PostgreSQL's unique index, unlike the regular constraints, cannot be introduced in a non-validated state.
+You must use PostgreSQL's partial unique index and the application validation to enforce the desired uniqueness
+for new and updated records while the removal and fix are in progress.
+
+The details of the work might vary and require different approaches.
+Consult the Database team, reviewers, or maintainers to plan the work.
+
 ## Finding Unused Indexes
 
 To see which indexes are unused you can run the following query:
