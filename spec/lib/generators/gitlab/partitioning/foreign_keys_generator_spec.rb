@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'active_support/testing/stream'
 
 RSpec.describe Gitlab::Partitioning::ForeignKeysGenerator, :migration, :silence_stdout,
-feature_category: :continuous_integration do
+feature_category: :continuous_integration, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454333' do
   include ActiveSupport::Testing::Stream
   include MigrationsHelpers
 
