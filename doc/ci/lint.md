@@ -36,8 +36,6 @@ To check CI/CD configuration with the CI lint tool:
 
 ## Simulate a pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229794) in GitLab 13.3.
-
 You can simulate the creation of a GitLab CI/CD pipeline to find more complicated issues,
 including problems with [`needs`](yaml/index.md#needs) and [`rules`](yaml/index.md#rules)
 configuration. A simulation runs as a Git `push` event on the default branch.

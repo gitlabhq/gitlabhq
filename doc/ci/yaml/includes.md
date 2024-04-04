@@ -302,8 +302,6 @@ default:
 
 ### Use nested includes with duplicate `includes` entries
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28987) in GitLab 14.8
-
 Nested includes can include the same configuration file. The duplicate configuration
 file is included multiple times, but the effect is the same as if it was only
 included once.
@@ -365,29 +363,20 @@ smoke-test-job:
 
 ## Use variables with `include`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/284883) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/294294) in GitLab 13.9.
-> - [Support for project, group, and instance variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/219065) in GitLab 14.2.
-> - [Support for pipeline variables added](https://gitlab.com/gitlab-org/gitlab/-/issues/337633) in GitLab 14.5.
-
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
 - [Project variables](../variables/index.md#for-a-project).
 - [Group variables](../variables/index.md#for-a-group).
 - [Instance variables](../variables/index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
-- In GitLab 14.2 and later, the `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
-
-  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
-  ref path, like `refs/heads/branch-name`. In `include:rules`, you might need to use
-  `if: $CI_COMMIT_REF_NAME =~ /main/` (not `== main`). This behavior is resolved in GitLab 14.5.
-
-In GitLab 14.5 and later, you can also use:
-
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
 - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
 - The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
+- The `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
+
+  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
+  ref path, like `refs/heads/branch-name`.
 
 For example:
 
@@ -406,10 +395,6 @@ see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
 ## Use `rules` with `include`
 
-> - Introduced in GitLab 14.2 [with a flag](../../administration/feature_flags.md) named `ci_include_rules`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337507) in GitLab 14.4. Feature flag `ci_include_rules` removed.
-> - Support for `exists` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341511) in GitLab 14.5.
 > - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
 
 You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
@@ -544,9 +529,6 @@ In this example:
 - `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event.
 
 ## Use `include:local` with wildcard file paths
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/327315) in GitLab 14.2.
 
 You can use wildcard paths (`*` and `**`) with `include:local`.
 

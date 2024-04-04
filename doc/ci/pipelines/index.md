@@ -116,17 +116,15 @@ A link to the latest pipeline for the last commit of a given branch is available
 `/project/-/pipelines/[branch]/latest`. Also, `/project/-/pipelines/latest` redirects
 you to the latest pipeline for the last commit on the project's default branch.
 
-[Starting in GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/215367),
-you can filter the pipeline list by:
+You can filter the pipeline list by:
 
 - Trigger author
 - Branch name
-- Status ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
-- Tag ([GitLab 13.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/217617))
-- Source ([GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338347))
+- Status
+- Tag
+- Source
 
-[Starting in GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/26621), you can change the
-pipeline column to display the pipeline ID or the pipeline IID.
+You can change the pipeline column to display the pipeline ID or the pipeline IID.
 
 If you use VS Code to edit your GitLab CI/CD configuration, the
 [GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md) helps you
@@ -153,8 +151,6 @@ To execute a pipeline manually:
 The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -223,8 +219,6 @@ variables:
 
 ### Run a pipeline by using a URL query string
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
-
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
 **Run Pipeline** page with:
@@ -283,8 +277,6 @@ pipelines.
 
 ### Delete a pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
-
 Users with the Owner role for a project can delete a pipeline
 by selecting the pipeline in the **Build > Pipelines** to get to the **Pipeline Details**
 page, then selecting **Delete**.
@@ -333,8 +325,6 @@ page for additional security recommendations for securing your pipelines.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.
@@ -422,8 +412,6 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### View full pipeline graph
 
-> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
-
 The [pipeline details page](#view-pipelines) displays the full pipeline graph of
 all the jobs in the pipeline.
 
@@ -445,10 +433,6 @@ pipeline graph. The remaining jobs still run as usual. To see the jobs:
 - On the left sidebar, select **Build > Jobs**.
 
 ### View job dependencies in the pipeline graph
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/298973) in GitLab 13.12.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328538) in GitLab 14.2.
 
 To arrange jobs in the pipeline graph based on their [`needs`](../yaml/index.md#needs)
 dependencies, select **Job dependencies** in the **Group jobs by** section. This option
@@ -480,7 +464,7 @@ be found when you go to:
 - The pipelines index page.
 - A single commit page.
 - A merge request page.
-- The [pipeline editor](../pipeline_editor/index.md), [in GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) and later.
+- The [pipeline editor](../pipeline_editor/index.md).
 
 Pipeline mini graphs allow you to see all related jobs for a single commit and the net result
 of each stage of your pipeline. This allows you to quickly see what failed and

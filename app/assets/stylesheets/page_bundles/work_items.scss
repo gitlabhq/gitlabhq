@@ -383,8 +383,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     width: 95% !important;
 }
 
-.limit-container-width {
+.container-limited {
   .work-item-sticky-header-text {
-    max-width: $limited-layout-width;
+    max-width: $fixed-layout-width;
   }
 }

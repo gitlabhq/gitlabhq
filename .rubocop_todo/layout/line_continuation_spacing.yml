@@ -87,7 +87,6 @@ Layout/LineContinuationSpacing:
     - 'ee/spec/requests/api/graphql/mutations/users/abuse/namespace_bans/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/create_external_issue_link_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/destroy_external_issue_link_spec.rb'
-    - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
     - 'ee/spec/services/boards/epic_lists/destroy_service_spec.rb'
     - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/epics/epic_links/create_service_spec.rb'

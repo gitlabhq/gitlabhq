@@ -133,9 +133,6 @@ Replace:
 
 #### Access webhook payload
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31197) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321027) in GitLab 13.11.
-
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
 The payload is exposed as a [file-type variable](../variables/index.md#use-file-type-cicd-variables),

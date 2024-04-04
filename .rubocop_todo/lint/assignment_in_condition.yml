@@ -96,7 +96,6 @@ Lint/AssignmentInCondition:
     - 'config/initializers/zz_metrics.rb'
     - 'ee/app/controllers/concerns/gitlab_subscriptions/seat_count_alert.rb'
     - 'ee/app/controllers/omniauth_kerberos_controller.rb'
-    - 'ee/app/controllers/users/identity_verification_controller.rb'
     - 'ee/app/finders/ee/projects_finder.rb'
     - 'ee/app/finders/incident_management/oncall_users_finder.rb'
     - 'ee/app/graphql/mutations/boards/update_epic_user_preferences.rb'

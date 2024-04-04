@@ -124,7 +124,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/requests/api/graphql/mutations/iterations/cadences/update_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/iterations/create_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/security/finding/create_issue_spec.rb'
-    - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
     - 'ee/spec/services/boards/epic_lists/destroy_service_spec.rb'
     - 'ee/spec/services/ee/auth/container_registry_authentication_service_spec.rb'
     - 'ee/spec/services/ee/resource_events/merge_into_notes_service_spec.rb'

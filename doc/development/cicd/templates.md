@@ -333,11 +333,10 @@ release milestones. Name the stable version of a template as `<template-name>.gi
 for example `Jobs/Deploy.gitlab-ci.yml`.
 
 You can make a new stable template by copying [the latest template](#latest-version)
-available in a major milestone release of GitLab like `13.0`. All breaking changes
-must be announced in a blog post before the official release, for example
-[GitLab.com is moving to 13.0, with narrow breaking changes](https://about.gitlab.com/blog/2020/05/06/gitlab-com-13-0-breaking-changes/)
+available in a major milestone release of GitLab like `15.0`. All breaking changes must be announced
+on the [Deprecations and removals by version](../../update/deprecations.md) page.
 
-You can change a stable template version in a minor GitLab release like `13.1` if:
+You can change a stable template version in a minor GitLab release like `15.1` if:
 
 - The change is not a [breaking change](#backward-compatibility).
 - The change is ported to [the latest template](#latest-version), if one exists.
@@ -357,9 +356,9 @@ If the `latest` template does not exist yet, you can copy [the stable template](
 ### How to include an older stable template
 
 Users may want to use an older [stable template](#stable-version) that is not bundled
-in the current GitLab package. For example, the stable templates in GitLab 13.0 and
-GitLab 14.0 could be so different that a user wants to continue using the GitLab 13.0
-template even after upgrading to GitLab 14.0.
+in the current GitLab package. For example, the stable templates in GitLab 15.0 and
+GitLab 16.0 could be so different that a user wants to continue using the GitLab 15.0
+template even after upgrading to GitLab 16.0.
 
 You can add a note in the template or in documentation explaining how to use `include:remote`
 to include older template versions. If other templates are included with `include: template`,

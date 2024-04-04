@@ -41,9 +41,6 @@ Child pipelines:
 
 ### Nested child pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
-
 Parent and child pipelines have a maximum depth of two levels of child pipelines.
 
 A parent pipeline can trigger many child pipelines, and these child pipelines can trigger
@@ -147,8 +144,6 @@ job3:
 ```
 
 ### Use a child pipeline configuration file in a different project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
 You can use [`include:project`](../yaml/index.md#includeproject) in a trigger job
 to trigger child pipelines with a configuration file in a different project:
@@ -313,8 +308,6 @@ trigger_pipeline:
 ```
 
 ## View a downstream pipeline
-
-> - Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
 
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
 as a list of cards on the right of the graph. From this view, you can:

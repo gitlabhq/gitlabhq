@@ -31,7 +31,7 @@ To view logs associated to the [email stage](../security/identity_verification.m
 - Query the GitLab production logs with the following KQL:
 
   ```plaintext
-  KQL: json.controller:"IdentityVerificationController" AND json.username:replace_username_here
+  KQL: json.controller:"RegistrationsIdentityVerificationController" AND json.username:replace_username_here
   ```
 
 Valuable debugging information can be found in the `json.action` and `json.location` columns.
