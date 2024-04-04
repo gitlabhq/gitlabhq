@@ -1417,6 +1417,41 @@ Get the Packagist integration settings for a project.
 GET /projects/:id/integrations/packagist
 ```
 
+## Phorge
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863) in GitLab 16.11.
+
+### Set up Phorge
+
+Set up the Phorge integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/phorge
+```
+
+Parameters:
+
+| Parameter       | Type   | Required | Description           |
+|-----------------|--------|----------|-----------------------|
+| `issues_url`    | string | true     | URL of the issue.     |
+| `project_url`   | string | true     | URL of the project.   |
+
+### Disable Phorge
+
+Disable the Phorge integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/phorge
+```
+
+### Get Phorge settings
+
+Get the Phorge integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/phorge
+```
+
 ## Pipeline status emails
 
 ### Set up pipeline status emails

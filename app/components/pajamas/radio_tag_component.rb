@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 # Renders a Pajamas compliant radio button element
-# An instance of `ActionView::Helpers::FormBuilder` must be passed as the `form` argument.
-# The easiest way to use this component is by using the `gitlab_ui_radio_component` helper.
-# See https://docs.gitlab.com/ee/development/fe_guide/haml.html#gitlab_ui_radio_component
-# To use a radio button without an instance of `ActionView::Helpers::FormBuilder` use `RadioTagComponent`.
 module Pajamas
-  class RadioComponent < Pajamas::Component
+  class RadioTagComponent < Pajamas::Component
     include Pajamas::Concerns::CheckboxRadioLabelWithHelpText
     include Pajamas::Concerns::CheckboxRadioOptions
 
@@ -14,33 +10,34 @@ module Pajamas
     renders_one :help_text
 
     def initialize(
-      form:,
-      method:,
+      name:,
+      value:,
+      checked: false,
       label: nil,
       help_text: nil,
       label_options: {},
-      radio_options: {},
-      value: nil
+      radio_options: {}
     )
-      @form = form
-      @method = method
+      @name = name
+      @value = value
+      @checked = checked
       @label_argument = label
       @help_text_argument = help_text
       @label_options = label_options
+      @label_options[:for] ||= label_for(name, value)
       @input_options = radio_options
-      @value = value
     end
 
     private
 
     attr_reader(
-      :form,
-      :method,
+      :name,
+      :value,
+      :checked,
       :label_argument,
       :help_text_argument,
       :label_options,
-      :input_options,
-      :value
+      :input_options
     )
 
     def label_content
@@ -49,6 +46,10 @@ module Pajamas
 
     def help_text_content
       help_text? ? help_text : help_text_argument
+    end
+
+    def label_for(name, value)
+      "#{sanitize_to_id(name)}_#{value}"
     end
   end
 end

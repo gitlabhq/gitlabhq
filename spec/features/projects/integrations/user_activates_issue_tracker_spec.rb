@@ -92,4 +92,5 @@ RSpec.describe 'User activates issue tracker', :js, feature_category: :integrati
   it_behaves_like 'external issue tracker activation', tracker: 'Custom issue tracker'
   it_behaves_like 'external issue tracker activation', tracker: 'EWM', skip_test: true
   it_behaves_like 'external issue tracker activation', tracker: 'ClickUp', skip_new_issue_url: true
+  it_behaves_like 'external issue tracker activation', tracker: 'Phorge'
 end

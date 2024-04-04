@@ -69,7 +69,6 @@ module Gitlab
 
         def fetch_missing_commits(commits_to_fetch)
           return if commits_to_fetch.blank?
-          return unless Feature.enabled?(:fetch_commits_for_bitbucket_server, project.group)
 
           project.repository.fetch_remote(project.import_url, refmap: commits_to_fetch, prune: false)
         rescue Gitlab::Git::CommandError => e

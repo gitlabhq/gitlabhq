@@ -6,6 +6,7 @@ module Projects
       before_action :authorize_admin_project!
       before_action do
         push_frontend_feature_flag(:add_branch_rule, @project)
+        push_frontend_feature_flag(:approval_rules_drawer, @project)
       end
 
       feature_category :source_code_management

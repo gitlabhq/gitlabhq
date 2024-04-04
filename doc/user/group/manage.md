@@ -460,9 +460,6 @@ WARNING:
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
 
-NOTE:
-[GitLab Duo Chat](../../user/gitlab_duo_chat.md) is an only feature available in Premium tier.
-
 You can give all users in a top-level group access to Experiment and Beta features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.

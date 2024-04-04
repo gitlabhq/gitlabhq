@@ -2047,6 +2047,12 @@ msgstr ""
 msgid "AIPoweredSM|Enable Experiment and Beta AI-powered features"
 msgstr ""
 
+msgid "AIPoweredSM|Enable GitLab Duo features"
+msgstr ""
+
+msgid "AIPoweredSM|Enforce Duo features setting for all subgroups"
+msgstr ""
+
 msgid "AISummary|Generates a summary of all comments"
 msgstr ""
 
@@ -4595,6 +4601,9 @@ msgid "AiAgents|Create and manage your AI Agents"
 msgstr ""
 
 msgid "AiAgents|Create your own AI Agents"
+msgstr ""
+
+msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr ""
 
 msgid "Akismet"
@@ -8458,6 +8467,18 @@ msgstr ""
 msgid "Block user"
 msgstr ""
 
+msgid "BlockSeatOverages|%{root_namespace_name} has exceeded the number of seats in its subscription and is now %{link_start}read-only%{link_end}. To remove the read-only state, reduce the number of users in your top-level group to make seats available, or purchase more seats for the subscription."
+msgstr ""
+
+msgid "BlockSeatOverages|The top-level group %{root_namespace_name} is now read-only."
+msgstr ""
+
+msgid "BlockSeatOverages|To remove the %{link_start}read-only%{link_end} state, ask a user with the Owner role for %{root_namespace_name} to reduce the number of users in the group, or to purchase more seats for the subscription."
+msgstr ""
+
+msgid "BlockSeatOverages|Your top-level group %{root_namespace_name} is now read-only."
+msgstr ""
+
 msgid "Blocked"
 msgstr ""
 
@@ -8978,9 +8999,6 @@ msgid "BranchRules|Reject code pushes that change files listed in the CODEOWNERS
 msgstr ""
 
 msgid "BranchRules|Require approval from code owners."
-msgstr ""
-
-msgid "BranchRules|Required approvals (%{total})"
 msgstr ""
 
 msgid "BranchRules|Requires CODEOWNERS approval"
@@ -23849,9 +23867,6 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Copy digest"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Copy image URI"
-msgstr ""
-
 msgid "GoogleArtifactRegistry|Copy image path"
 msgstr ""
 
@@ -24710,6 +24725,12 @@ msgstr ""
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr ""
 
+msgid "GroupSettings|Duo features"
+msgstr ""
+
+msgid "GroupSettings|Enable GitLab Duo features for this group %{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
 msgstr ""
 
@@ -24843,6 +24864,9 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|Use Duo features"
 msgstr ""
 
 msgid "GroupSettings|Use Experiment and Beta features"
@@ -27971,6 +27995,12 @@ msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker."
 msgstr ""
 
 msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker. %{docs_link}"
+msgstr ""
+
+msgid "IssueTracker|Use Phorge as this project's issue tracker."
+msgstr ""
+
+msgid "IssueTracker|Use Phorge as this project's issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
@@ -37488,7 +37518,7 @@ msgstr ""
 msgid "Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch."
 msgstr ""
 
-msgid "Pipelines|This pipeline ran on the contents of the merge request's source branch, not the target branch."
+msgid "Pipelines|This pipeline ran on the contents of the merge requests source branch, not the target branch."
 msgstr ""
 
 msgid "Pipelines|This pipeline will run code originating from a forked project merge request. This means that the code can potentially have security considerations like exposing CI variables."
@@ -41374,6 +41404,9 @@ msgid "PumbleIntegration|Send notifications about project events to Pumble. %{do
 msgstr ""
 
 msgid "Purchase more minutes"
+msgstr ""
+
+msgid "Purchase more seats"
 msgstr ""
 
 msgid "Purchase more storage"

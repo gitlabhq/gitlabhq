@@ -21,7 +21,7 @@ RSpec.describe Packages::TerraformModule::ProcessPackageFileWorker, type: :worke
     end
 
     context 'when the package file does not exist' do
-      let(:package_file) { instance_double(Packages::PackageFile, id: 123) }
+      let(:package_file) { instance_double(Packages::PackageFile, id: non_existing_record_id) }
 
       it 'does not call the service' do
         expect(Packages::TerraformModule::ProcessPackageFileService).not_to receive(:new)

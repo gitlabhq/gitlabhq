@@ -119,17 +119,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
         end
       end
 
-      context 'when feature flag "fetch_commits_for_bitbucket_server" is disabled' do
-        before do
-          stub_feature_flags(fetch_commits_for_bitbucket_server: false)
-        end
-
-        it 'does not fetch anything' do
-          expect(repository).not_to receive(:fetch_remote)
-          importer.execute
-        end
-      end
-
       context 'when there are no commits to process' do
         before do
           Gitlab::Cache::Import::Caching.set_add(importer.already_processed_cache_key, 1)

@@ -263,7 +263,7 @@ to replace those values at runtime when each review app is created:
   variable or on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - `data-merge-request-id` is the merge request ID, which can be found by the
   `CI_MERGE_REQUEST_IID` variable. `CI_MERGE_REQUEST_IID` is available only if
-  [`rules:if: $CI_PIPELINE_SOURCE == "merge_request_event`](../pipelines/merge_request_pipelines.md#use-rules-to-add-jobs)
+  [`rules:if: $CI_PIPELINE_SOURCE == "merge_request_event`](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines)
   is used and the merge request is created.
 - `data-mr-url` is the URL of the GitLab instance and is the same for all
   review apps.

@@ -587,6 +587,7 @@ project:
 - harbor_integration
 - irker_integration
 - packagist_integration
+- phorge_integration
 - pivotaltracker_integration
 - prometheus_integration
 - assembla_integration

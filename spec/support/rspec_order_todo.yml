@@ -1098,7 +1098,6 @@
 - './ee/spec/lib/ee/gitlab/security/scan_configuration_spec.rb'
 - './ee/spec/lib/ee/gitlab/snippet_search_results_spec.rb'
 - './ee/spec/lib/ee/gitlab/template/gitlab_ci_yml_template_spec.rb'
-- './ee/spec/lib/ee/gitlab/tracking_spec.rb'
 - './ee/spec/lib/ee/gitlab/url_builder_spec.rb'
 - './ee/spec/lib/ee/gitlab/usage_data_counters/issue_activity_unique_counter_spec.rb'
 - './ee/spec/lib/ee/gitlab/usage_data_counters/merge_request_activity_unique_counter_spec.rb'

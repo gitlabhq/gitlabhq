@@ -561,6 +561,7 @@ Mailroom
 Makefile
 Makefiles
 malloc
+Maniphest
 Markdown
 markdownlint
 Marketo
@@ -687,6 +688,7 @@ Phabricator
 phaser
 phasers
 phpenv
+Phorge
 PHPUnit
 PIDs
 pipenv

@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,10 +11,10 @@ import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/canc
 import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import HeaderActions from '~/ci/pipeline_details/header/components/header_actions.vue';
+import HeaderBadges from '~/ci/pipeline_details/header/components/header_badges.vue';
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import {
   pipelineHeaderSuccess,
-  pipelineHeaderTrigger,
   pipelineHeaderRunning,
   pipelineHeaderRunningWithDuration,
   pipelineHeaderFailed,
@@ -32,7 +32,6 @@ describe('Pipeline details header', () => {
   let wrapper;
 
   const successHandler = jest.fn().mockResolvedValue(pipelineHeaderSuccess);
-  const triggerHandler = jest.fn().mockResolvedValue(pipelineHeaderTrigger);
   const runningHandler = jest.fn().mockResolvedValue(pipelineHeaderRunning);
   const runningHandlerWithDuration = jest.fn().mockResolvedValue(pipelineHeaderRunningWithDuration);
   const failedHandler = jest.fn().mockResolvedValue(pipelineHeaderFailed);
@@ -59,7 +58,7 @@ describe('Pipeline details header', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findStatus = () => wrapper.findComponent(CiIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAllBadges = () => wrapper.findAllComponents(GlBadge);
+  const findBadges = () => wrapper.findComponent(HeaderBadges);
   const findHeaderActions = () => wrapper.findComponent(HeaderActions);
   const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
   const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
@@ -155,11 +154,12 @@ describe('Pipeline details header', () => {
       expect(findCommitCopyButton().props('text')).toBe(pipeline.commit.sha);
     });
 
-    it('displays correct badges', () => {
-      expect(findAllBadges()).toHaveLength(2);
-      expect(wrapper.findByText('merged results').exists()).toBe(true);
-      expect(wrapper.findByText('Scheduled').exists()).toBe(true);
-      expect(wrapper.findByText('trigger token').exists()).toBe(false);
+    it('displays badges', () => {
+      expect(findBadges().exists()).toBe(true);
+    });
+
+    it('passes pipeline prop to HeaderBadges component', () => {
+      expect(findBadges().props('pipeline')).toEqual(pipelineHeaderSuccess.data.project.pipeline);
     });
 
     it('displays ref text', () => {
@@ -181,18 +181,6 @@ describe('Pipeline details header', () => {
       expect(findPipelineUserLink().attributes('data-user-id')).toBe(userId);
       expect(findPipelineUserLink().attributes('data-username')).toBe(user.username);
       expect(findPipelineUserLink().attributes('href')).toBe(user.webUrl);
-    });
-  });
-
-  describe('with triggered pipeline', () => {
-    beforeEach(async () => {
-      createComponent([[getPipelineDetailsQuery, triggerHandler]]);
-
-      await waitForPromises();
-    });
-
-    it('displays triggered badge', () => {
-      expect(wrapper.findByText('trigger token').exists()).toBe(true);
     });
   });
 

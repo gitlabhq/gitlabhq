@@ -94,25 +94,71 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
             description: 'some description',
             cron: 'abc',
             cronTimezone: 'cCc',
-            ref: 'asd',
+            ref: ref,
             active: true,
             variables: []
           }
         end
 
-        it do
-          post_graphql_mutation(mutation, current_user: current_user)
+        context 'when enforce_full_refs_for_pipeline_schedules is disabled' do
+          let(:ref) { "asd" }
 
-          expect(response).to have_gitlab_http_status(:success)
+          before do
+            stub_feature_flags(enforce_full_refs_for_pipeline_schedules: false)
+          end
 
-          expect(mutation_response['errors'])
-            .to match_array(
-              [
-                "Cron syntax is invalid",
-                "Cron timezone syntax is invalid",
-                "Ref is ambiguous"
-              ]
-            )
+          it do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+
+            expect(mutation_response['errors'])
+              .to match_array(
+                [
+                  "Cron syntax is invalid",
+                  "Cron timezone syntax is invalid"
+                ]
+              )
+          end
+        end
+
+        context 'when enforce_full_refs_for_pipeline_schedules is enabled' do
+          let(:ref) { "#{Gitlab::Git::TAG_REF_PREFIX}asd" }
+
+          before do
+            stub_feature_flags(enforce_full_refs_for_pipeline_schedules: true)
+          end
+
+          it do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+
+            expect(mutation_response['errors'])
+              .to match_array(
+                [
+                  "Cron syntax is invalid",
+                  "Cron timezone syntax is invalid"
+                ]
+              )
+          end
+
+          context 'when ref is short' do
+            let(:ref) { "asd" }
+
+            it 'returns ref is ambiguous' do
+              post_graphql_mutation(mutation, current_user: current_user)
+
+              expect(response).to have_gitlab_http_status(:success)
+
+              expect(mutation_response['errors'])
+                .to match_array(
+                  [
+                    "Ref is ambiguous"
+                  ]
+                )
+            end
+          end
         end
       end
 

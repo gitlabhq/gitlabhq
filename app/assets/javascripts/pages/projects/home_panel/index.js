@@ -79,7 +79,7 @@ const initHomePanel = () => {
       requestAccessPath,
       withdrawConfirmMessage,
       withdrawPath,
-      canEdit,
+      canEdit: parseBoolean(canEdit),
       editPath,
 
       // Fork component

@@ -822,7 +822,6 @@ Layout/ArgumentAlignment:
     - 'ee/lib/ee/gitlab/import_sources.rb'
     - 'ee/lib/ee/gitlab/middleware/read_only/controller.rb'
     - 'ee/lib/ee/gitlab/scim/group/deprovisioning_service.rb'
-    - 'ee/lib/ee/gitlab/tracking.rb'
     - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/lib/elastic/latest/commit_config.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/group/stage_summary.rb'

@@ -397,6 +397,7 @@ module API
               desc: 'The server'
             }
           ],
+          'phorge' => ::Integrations::Phorge.api_fields,
           'pipelines-email' => [
             {
               required: true,
@@ -658,6 +659,7 @@ module API
           ::Integrations::MattermostSlashCommands,
           ::Integrations::MicrosoftTeams,
           ::Integrations::Packagist,
+          ::Integrations::Phorge,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
           ::Integrations::Prometheus,

@@ -234,6 +234,7 @@ class Project < ApplicationRecord
   has_one :mock_ci_integration, class_name: 'Integrations::MockCi'
   has_one :mock_monitoring_integration, class_name: 'Integrations::MockMonitoring'
   has_one :packagist_integration, class_name: 'Integrations::Packagist'
+  has_one :phorge_integration, class_name: 'Integrations::Phorge'
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project

@@ -26,7 +26,6 @@ export const I18N = {
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
-  approvalsHeader: s__('BranchRules|Required approvals (%{total})'),
   allowForcePushTitle: s__('BranchRules|Allows force push'),
   doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),
   forcePushDescription: s__('BranchRules|From users with push access.'),

@@ -1,17 +1,9 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlIcon,
-  GlLink,
-  GlLoadingIcon,
-  GlSprintf,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import { __, n__, s__, sprintf, formatNumber } from '~/locale';
+import { __, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -23,15 +15,9 @@ import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutatio
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
 import HeaderActions from './components/header_actions.vue';
+import HeaderBadges from './components/header_badges.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
-import {
-  POLL_INTERVAL,
-  DETACHED_EVENT_TYPE,
-  AUTO_DEVOPS_SOURCE,
-  SCHEDULE_SOURCE,
-  MERGE_TRAIN_EVENT_TYPE,
-  MERGED_RESULT_EVENT_TYPE,
-} from './constants';
+import { POLL_INTERVAL } from './constants';
 
 export default {
   name: 'PipelineDetailsHeader',
@@ -44,53 +30,17 @@ export default {
     CiIcon,
     ClipboardButton,
     GlAlert,
-    GlBadge,
     GlIcon,
     GlLink,
     GlLoadingIcon,
     GlSprintf,
     HeaderActions,
+    HeaderBadges,
     TimeAgoTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
-  },
-  i18n: {
-    scheduleBadgeText: s__('Pipelines|Scheduled'),
-    scheduleBadgeTooltip: __('This pipeline was created by a schedule'),
-    triggerBadgeText: __('trigger token'),
-    triggerBadgeTooltip: __(
-      'This pipeline was created by an API call authenticated with a trigger token',
-    ),
-    childBadgeText: s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})'),
-    childBadgeTooltip: __('This is a child pipeline within the parent pipeline'),
-    latestBadgeText: s__('Pipelines|latest'),
-    latestBadgeTooltip: __('Latest pipeline for the most recent commit on this branch'),
-    mergeTrainBadgeText: s__('Pipelines|merge train'),
-    mergeTrainBadgeTooltip: s__(
-      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
-    ),
-    invalidBadgeText: s__('Pipelines|yaml invalid'),
-    failedBadgeText: s__('Pipelines|error'),
-    autoDevopsBadgeText: s__('Pipelines|Auto DevOps'),
-    autoDevopsBadgeTooltip: __(
-      'This pipeline makes use of a predefined CI/CD configuration enabled by Auto DevOps.',
-    ),
-    detachedBadgeText: s__('Pipelines|merge request'),
-    detachedBadgeTooltip: s__(
-      "Pipelines|This pipeline ran on the contents of the merge request's source branch, not the target branch.",
-    ),
-    mergedResultsBadgeText: s__('Pipelines|merged results'),
-    mergedResultsBadgeTooltip: s__(
-      'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch.',
-    ),
-    stuckBadgeText: s__('Pipelines|stuck'),
-    stuckBadgeTooltip: s__('Pipelines|This pipeline is stuck'),
-    computeMinutesTooltip: s__('Pipelines|Total amount of compute minutes used for the pipeline'),
-    totalJobsTooltip: s__('Pipelines|Total number of jobs for the pipeline'),
-    clipboardTooltip: __('Copy commit SHA'),
-    finishedText: s__('Pipelines|finished'),
   },
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for the pipeline header.'),
@@ -268,45 +218,6 @@ export default {
     triggeredByPath() {
       return this.pipeline?.triggeredByPath;
     },
-    mergeRequestEventType() {
-      return this.pipeline.mergeRequestEventType;
-    },
-    isMergeTrainPipeline() {
-      return this.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
-    },
-    isMergedResultsPipeline() {
-      return this.mergeRequestEventType === MERGED_RESULT_EVENT_TYPE;
-    },
-    isDetachedPipeline() {
-      return this.mergeRequestEventType === DETACHED_EVENT_TYPE;
-    },
-    isAutoDevopsPipeline() {
-      return this.pipeline.configSource === AUTO_DEVOPS_SOURCE;
-    },
-    isScheduledPipeline() {
-      return this.pipeline.source === SCHEDULE_SOURCE;
-    },
-    failureReason() {
-      return this.pipeline.failureReason;
-    },
-    badges() {
-      return {
-        schedule: this.isScheduledPipeline,
-        trigger: this.pipeline.trigger,
-        invalid: this.pipeline.yamlErrors,
-        child: this.pipeline.child,
-        latest: this.pipeline.latest,
-        mergeTrainPipeline: this.isMergeTrainPipeline,
-        mergedResultsPipeline: this.isMergedResultsPipeline,
-        detached: this.isDetachedPipeline,
-        failed: Boolean(this.failureReason),
-        autoDevops: this.isAutoDevopsPipeline,
-        stuck: this.pipeline.stuck,
-      };
-    },
-    yamlErrorMessages() {
-      return this.pipeline?.yamlErrorMessages || '';
-    },
   },
   methods: {
     reportFailure(errorType, errorMessages = []) {
@@ -393,7 +304,9 @@ export default {
         {{ failureMessage }}
       </div>
     </gl-alert>
+
     <gl-loading-icon v-if="loading" class="gl-text-left" size="lg" />
+
     <div v-else class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
       <div>
         <h3 v-if="pipelineName" class="gl-mt-0 gl-mb-3" data-testid="pipeline-name">
@@ -432,7 +345,7 @@ export default {
             <clipboard-button
               :text="commitSha"
               category="tertiary"
-              :title="$options.i18n.clipboardTooltip"
+              :title="__('Copy commit SHA')"
               data-testid="commit-copy-sha"
               size="small"
             />
@@ -445,7 +358,7 @@ export default {
               <time-ago-tooltip
                 :time="pipeline.createdAt"
                 data-testid="pipeline-finished-created-time-ago"
-              />, {{ $options.i18n.finishedText }}
+              />, {{ s__('Pipelines|finished') }}
               <time-ago-tooltip
                 :time="pipeline.finishedAt"
                 data-testid="pipeline-finished-time-ago"
@@ -455,117 +368,12 @@ export default {
         </div>
         <div v-safe-html="refText" class="gl-mb-3" data-testid="pipeline-ref-text"></div>
         <div>
-          <div class="gl-display-inline-block gl-mb-3">
-            <gl-badge
-              v-if="badges.schedule"
-              v-gl-tooltip
-              :title="$options.i18n.scheduleBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.scheduleBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.trigger"
-              v-gl-tooltip
-              :title="$options.i18n.triggerBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.triggerBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.child"
-              v-gl-tooltip
-              :title="$options.i18n.childBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              <gl-sprintf :message="$options.i18n.childBadgeText">
-                <template #link="{ content }">
-                  <gl-link :href="triggeredByPath" target="_blank">
-                    {{ content }}
-                  </gl-link>
-                </template>
-              </gl-sprintf>
-            </gl-badge>
-            <gl-badge
-              v-if="badges.latest"
-              v-gl-tooltip
-              :title="$options.i18n.latestBadgeTooltip"
-              variant="success"
-              size="sm"
-            >
-              {{ $options.i18n.latestBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.mergeTrainPipeline"
-              v-gl-tooltip
-              :title="$options.i18n.mergeTrainBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.mergeTrainBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.invalid"
-              v-gl-tooltip
-              :title="yamlErrorMessages"
-              variant="danger"
-              size="sm"
-            >
-              {{ $options.i18n.invalidBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.failed"
-              v-gl-tooltip
-              :title="failureReason"
-              variant="danger"
-              size="sm"
-            >
-              {{ $options.i18n.failedBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.autoDevops"
-              v-gl-tooltip
-              :title="$options.i18n.autoDevopsBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.autoDevopsBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.detached"
-              v-gl-tooltip
-              :title="$options.i18n.detachedBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.detachedBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.mergedResultsPipeline"
-              v-gl-tooltip
-              :title="$options.i18n.mergedResultsBadgeTooltip"
-              variant="info"
-              size="sm"
-            >
-              {{ $options.i18n.mergedResultsBadgeText }}
-            </gl-badge>
-            <gl-badge
-              v-if="badges.stuck"
-              v-gl-tooltip
-              :title="$options.i18n.stuckBadgeTooltip"
-              variant="warning"
-              size="sm"
-            >
-              {{ $options.i18n.stuckBadgeText }}
-            </gl-badge>
-          </div>
+          <header-badges :pipeline="pipeline" />
+
           <div class="gl-display-inline-block">
             <span
               v-gl-tooltip
-              :title="$options.i18n.totalJobsTooltip"
+              :title="s__('Pipelines|Total number of jobs for the pipeline')"
               class="gl-ml-2"
               data-testid="total-jobs"
             >
@@ -575,7 +383,7 @@ export default {
             <span
               v-if="showComputeMinutes"
               v-gl-tooltip
-              :title="$options.i18n.computeMinutesTooltip"
+              :title="s__('Pipelines|Total amount of compute minutes used for the pipeline')"
               class="gl-ml-2"
               data-testid="compute-minutes"
             >

@@ -1,0 +1,12 @@
+---
+# Warning: gitlab.HistoryItemsOrder
+#
+# Ensures history items come before the Details block.
+#
+extends: existence
+message: "History items must follow the tier, offering, or status details."
+link: https://docs.gitlab.com/ee/development/documentation/versions.html#add-a-version-history-item
+level: error
+scope: raw
+raw:
+  - '(?m)^\>[^\n]*\n\nDETAILS'

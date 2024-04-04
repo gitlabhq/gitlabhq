@@ -145,6 +145,7 @@ To use custom settings for a project or group integration:
 | [Mattermost slash commands](mattermost_slash_commands.md)                   | Run slash commands from a Mattermost chat environment.                | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)                         | Receive event notifications in Microsoft Teams.                       | **{dotted-circle}** No |
 | Packagist                                                                   | Update your PHP dependencies in Packagist.                            | **{check-circle}** Yes |
+| [Phorge](phorge.md)                                                         | Use Phorge as an issue tracker.                                       | **{dotted-circle}** No |
 | [Pipeline status emails](pipeline_status_emails.md)                         | Send the pipeline status to a list of recipients by email.            | **{dotted-circle}** No |
 | [Pivotal Tracker](pivotal_tracker.md)                                       | Add commit messages as comments to Pivotal Tracker stories.           | **{dotted-circle}** No |
 | [Pumble](pumble.md)                                                         | Send event notifications to a Pumble channel.                         | **{dotted-circle}** No |

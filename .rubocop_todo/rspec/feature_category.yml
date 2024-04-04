@@ -622,7 +622,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/ee/gitlab/security/scan_configuration_spec.rb'
     - 'ee/spec/lib/ee/gitlab/snippet_search_results_spec.rb'
     - 'ee/spec/lib/ee/gitlab/template/gitlab_ci_yml_template_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/tracking_spec.rb'
     - 'ee/spec/lib/ee/gitlab/url_builder_spec.rb'
     - 'ee/spec/lib/ee/gitlab/usage/metrics/aggregates/aggregate_spec.rb'
     - 'ee/spec/lib/ee/gitlab/usage/service_ping/payload_keys_processor_spec.rb'

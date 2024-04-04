@@ -1,4 +1,6 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
+import { mapActions } from 'vuex';
 import {
   GlSprintf,
   GlLink,
@@ -90,9 +92,16 @@ export default {
         const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
         this.branchRule = branchRule;
         this.branchProtection = branchRule?.branchProtection;
-        this.approvalRules = branchRule?.approvalRules?.nodes || [];
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
         this.matchingBranchesCount = branchRule?.matchingBranchesCount;
+
+        if (!this.showApprovers) return;
+        // The approval rules app uses a separate endpoint to fetch the list of approval rules.
+        // In future, we will update the GraphQL request to include the approval rules data.
+        // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/452330
+        const approvalRules = branchRule?.approvalRules?.nodes.map((rule) => rule.name) || [];
+        this.setRulesFilter(approvalRules);
+        this.fetchRules();
       },
       error(error) {
         createAlert({ message: error });
@@ -103,7 +112,6 @@ export default {
     return {
       branch: getParameterByName(BRANCH_PARAM_NAME),
       branchProtection: {},
-      approvalRules: [],
       statusChecks: [],
       branchRule: {},
       matchingBranchesCount: null,
@@ -174,12 +182,9 @@ export default {
     statusChecksHeader() {
       return '';
     },
-    // needed to override EE component
-    approvalsHeader() {
-      return '';
-    },
   },
   methods: {
+    ...mapActions(['setRulesFilter', 'fetchRules']),
     getAccessLevels,
     deleteBranchRule() {
       this.$apollo
@@ -340,13 +345,15 @@ export default {
         </template>
       </gl-sprintf>
 
-      <protection
-        class="gl-mt-3"
-        :header="approvalsHeader"
-        :header-link-title="$options.i18n.manageApprovalsLinkTitle"
-        :header-link-href="approvalRulesPath"
-        :approvals="approvalRules"
-      />
+      <approval-rules-app
+        :is-mr-edit="false"
+        :is-branch-rules-edit="true"
+        @submitted="$apollo.queries.project.refetch()"
+      >
+        <template #rules>
+          <project-rules />
+        </template>
+      </approval-rules-app>
     </template>
 
     <!-- Status checks -->
