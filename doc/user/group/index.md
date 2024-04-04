@@ -250,7 +250,7 @@ If you change your mind before your request is approved, select
 
 ## View group members
 
-To view a group's members:
+To view the direct and inherited members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -271,6 +271,8 @@ A table displays the member's:
 NOTE:
 The display of group members' **Source** might be inconsistent.
 For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
+
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/index.md#view-seat-usage).
 
 ## Filter and sort members in a group
 

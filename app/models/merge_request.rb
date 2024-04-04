@@ -325,9 +325,6 @@ class MergeRequest < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
-  scope :by_head_commit_sha, ->(sha) do
-    joins(:latest_merge_request_diff).where('merge_request_diffs.head_commit_sha' => sha)
-  end
   scope :by_merge_commit_sha, -> (sha) do
     where(merge_commit_sha: sha)
   end
@@ -340,9 +337,6 @@ class MergeRequest < ApplicationRecord
   scope :by_merged_or_merge_or_squash_commit_sha, -> (sha) do
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
-  scope :by_merge_commit_sha_or_head_commit_sha, -> (sha) do
-    from_union([by_merge_commit_sha(sha), by_head_commit_sha(sha)])
-  end
   scope :by_related_commit_sha, -> (sha) do
     from_union(
       [
@@ -352,6 +346,9 @@ class MergeRequest < ApplicationRecord
         by_merged_commit_sha(sha)
       ]
     )
+  end
+  scope :by_latest_merge_request_diffs, -> (merge_request_diffs) do
+    where(latest_merge_request_diff_id: merge_request_diffs)
   end
   scope :join_project, -> { joins(:target_project) }
   scope :join_metrics, -> (target_project_id = nil) do

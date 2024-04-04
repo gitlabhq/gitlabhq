@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-SEE_DOC = "see the [SaaS feature documentation](https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature)."
+SF_SEE_DOC = "see the [SaaS feature documentation](https://docs.gitlab.com/ee/development/ee_features.html#saas-only-feature)."
 
-SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
+SF_SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT.freeze
   ```suggestion
   group: "%<group>s"
   ```
 
-  #{SEE_DOC.capitalize}
+  #{SF_SEE_DOC.capitalize}
 SUGGEST_COMMENT
 
 def check_yaml(saas_feature)
@@ -20,7 +20,7 @@ def check_yaml(saas_feature)
   end
 rescue Psych::Exception
   # YAML could not be parsed, fail the build.
-  fail "#{helper.html_link(saas_feature.path)} isn't valid YAML! #{SEE_DOC.capitalize}"
+  fail "#{helper.html_link(saas_feature.path)} isn't valid YAML! #{SF_SEE_DOC.capitalize}"
 rescue StandardError => e
   warn "There was a problem trying to check the SaaS feature file. Exception: #{e.class.name} - #{e.message}"
 end
@@ -31,13 +31,13 @@ def message_for_missing_group!(saas_feature:, mr_group_label:)
   end
 
   if mr_line
-    markdown(format(SUGGEST_MR_COMMENT, group: mr_group_label), file: saas_feature.path, line: mr_line.succ)
+    markdown(format(SF_SUGGEST_MR_COMMENT, group: mr_group_label), file: saas_feature.path, line: mr_line.succ)
   elsif mr_group_label
     warn %(
-    Consider setting `group: "#{mr_group_label}"` in #{helper.html_link(saas_feature.path)}. #{SEE_DOC.capitalize}
+    Consider setting `group: "#{mr_group_label}"` in #{helper.html_link(saas_feature.path)}. #{SF_SEE_DOC.capitalize}
     )
   else
-    warn "Consider setting `group` in #{helper.html_link(saas_feature.path)}. #{SEE_DOC.capitalize}"
+    warn "Consider setting `group` in #{helper.html_link(saas_feature.path)}. #{SF_SEE_DOC.capitalize}"
   end
 end
 

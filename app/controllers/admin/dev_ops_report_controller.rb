@@ -5,11 +5,9 @@ class Admin::DevOpsReportController < Admin::ApplicationController
 
   helper_method :show_adoption?
 
-  track_event :show,
+  track_internal_event :show,
     name: 'i_analytics_dev_ops_score',
-    action: 'perform_analytics_usage_action',
-    label: 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly',
-    destinations: %i[redis_hll snowplow],
+    category: name,
     conditions: -> { should_track_devops_score? }
 
   feature_category :devops_reports

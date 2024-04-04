@@ -13,6 +13,8 @@ module Projects
       if Gitlab::HTTP_V2::UrlBlocker.blocked_url?(
         normalized_url(remote_mirror.url),
         schemes: Project::VALID_MIRROR_PROTOCOLS,
+        allow_localhost: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
+        allow_local_network: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
         deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
         outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
       )

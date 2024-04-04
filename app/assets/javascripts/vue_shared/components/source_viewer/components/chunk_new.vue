@@ -93,6 +93,7 @@ export default {
       >
         <a
           class="gl-select-none gl-shadow-none! file-line-blame"
+          data-event-tracking="click_chunk_blame_on_blob_page"
           :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
         ></a>
         <a

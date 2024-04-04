@@ -1,4 +1,7 @@
 # frozen_string_literal: true
 
+# Skip any unactionable RuboCop rules when an MR is reverted.
+return if helper.revert_mr? && !helper.stable_branch?
+
 rubocop.execute_inline_disable_suggestor
 rubocop.execute_todo_suggestor

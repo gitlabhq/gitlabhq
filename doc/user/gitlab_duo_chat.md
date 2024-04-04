@@ -245,44 +245,31 @@ Visual Studio support is [under active development](https://gitlab.com/groups/gi
 
 ## Enable GitLab Duo Chat
 
-### For SaaS users
+For the **GitLab Duo Chat** button to be displayed in the GitLab UI,
+you must enable GitLab Duo Chat.
 
-To use this feature at least one group that you're a member of must
-have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+### For GitLab.com
 
-You can only ask questions about resources that belong to groups where the experiment and beta features setting is enabled.
+To enable GitLab Duo Chat on GitLab.com:
 
-#### Troubleshoot Chat access
+- At least one group that you're a member of must
+  have the [Experiment and Beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+- You must belong to a group that has a Premium or Ultimate subscription.
 
-If you have access to GitLab Duo Chat responses you did not expect, you might be part of
-a group that has the **Use Experiment and Beta features** setting enabled.
-Review the list of your groups and verify which ones you have access to.
+You can ask questions only about resources that belong to groups where the experiment and beta features setting is enabled.
 
-GitLab.com administrators can verify your access by running this snippet in the Rails console:
-
-```ruby
-u = User.find_by_username($USERNAME)
-u.member_namespaces.namespace_settings_with_ai_features_enabled.with_ai_supported_plan(:ai_chat)
-```
-
-You can ask specific questions about group resources (like "summarize this issue") when this feature is enabled.
-
-### For self-managed users
-
-NOTE:
-Usage of GitLab Duo Chat is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
+### For self-managed and GitLab Dedicated
 
 Prerequisites:
 
-- You have GitLab version 16.8 or later.
-- The Premium or Ultimate license is activated in your GitLab instance by using [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
-- Your firewalls and HTTP proxy servers allow outbound connections
+- You must have GitLab version 16.8 or later.
+- You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- Your firewalls and HTTP proxy servers must allow outbound connections
   to `cloud.gitlab.com`. To use an HTTP proxy, both
   `gitLab _workhorse` and `gitLab_rails` have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - All of the users in your instance have the latest version of their IDE extension.
-- You are an administrator.
+- You must be an administrator.
 
 To enable GitLab Duo Chat for your self-managed GitLab instance:
 
@@ -292,6 +279,10 @@ To enable GitLab Duo Chat for your self-managed GitLab instance:
 1. Select **Save changes**.
 1. To make sure GitLab Duo Chat works immediately, you must
    [manually synchronize your subscription](#manually-synchronize-your-subscription).
+
+NOTE:
+Usage of GitLab Duo Chat is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 #### Manually synchronize your subscription
 
@@ -395,3 +386,49 @@ Leaving feedback helps us customize the Chat for your needs and improve its perf
 
 To give feedback about a specific response, use the feedback buttons in the response message.
 Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430124).
+
+## Troubleshooting
+
+When working with GitLab Duo Chat, you might encounter the following issues.
+
+### The **GitLab Duo Chat** button is not displayed
+
+If the button is not visible in the upper-right of the UI,
+ensure GitLab Duo Chat [is enabled](#enable-gitlab-duo-chat).
+
+The **GitLab Duo Chat** button is not displayed on personal projects,
+as well as groups and projects with GitLab Duo features disabled.
+
+After you enable GitLab Duo Chat, it might take a few minutes for the
+button to appear.
+
+### `This feature is only allowed in groups or projects that enable this feature`
+
+This error occurs when you ask about resources that do not have
+GitLab Duo Chat [enabled](#enable-gitlab-duo-chat).
+
+If any of the settings are not enabled, information about resources
+(like issues, epics, and merge requests) in the group or project
+cannot be processed by GitLab Duo Chat.
+
+### `I am sorry, I am unable to find what you are looking for`
+
+This error occurs when you ask GitLab Duo Chat about resources you don't have access to,
+or about resources that do not exist.
+
+Try again, asking about resources you have access to.
+
+### Reponses are unexpected
+
+If you have are on GitLab.com and have access to GitLab Duo Chat responses you did not expect,
+you might be part of a group that has the **Use Experiment and Beta features** setting enabled.
+Review the list of your groups and verify which ones you have access to.
+
+GitLab.com administrators can verify your access by running this snippet in the Rails console:
+
+```ruby
+u = User.find_by_username($USERNAME)
+u.member_namespaces.namespace_settings_with_ai_features_enabled.with_ai_supported_plan(:ai_chat)
+```
+
+You can ask specific questions about group resources (like "summarize this issue") when this feature is enabled.

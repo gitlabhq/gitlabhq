@@ -665,34 +665,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_head_commit_sha' do
-    subject(:by_head_commit_sha) { described_class.by_head_commit_sha(sha) }
-
-    let(:head_commit_sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
-
-    let!(:merge_request) do
-      create(:merge_request, merge_commit_sha: nil).tap do |mr|
-        create(:merge_request_diff, merge_request: mr, head_commit_sha: head_commit_sha)
-      end
-    end
-
-    context "with given sha equal to the merge_request_diff's head_commit_sha" do
-      let(:sha) { head_commit_sha }
-
-      it 'returns merge request' do
-        expect(by_head_commit_sha).to eq([merge_request])
-      end
-    end
-
-    context "with given sha not equal to any latest_merge_request_diff's head_commit_sha" do
-      let(:sha) { Digest::SHA1.hexdigest(SecureRandom.hex) } # generate a different sha
-
-      it 'returns empty merge requests' do
-        expect(by_head_commit_sha).to be_empty
-      end
-    end
-  end
-
   describe '.by_merged_commit_sha' do
     it 'returns merge requests that match the given merged commit' do
       mr = create(:merge_request, :merged, merged_commit_sha: '123abc')
@@ -739,36 +711,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_merge_commit_sha_or_head_commit_sha' do
-    subject(:by_merge_commit_sha_or_head_commit_sha) do
-      described_class.by_merge_commit_sha_or_head_commit_sha(sha)
-    end
+  describe '.by_latest_merge_request_diffs' do
+    let!(:merge_request) { create(:merge_request, merge_commit_sha: nil) }
+    let!(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    let(:sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+    subject(:by_latest_merge_request_diffs) { described_class.by_latest_merge_request_diffs(merge_request_diff_id) }
 
-    context "when given sha is equal to the merge_request's merge_commit_sha" do
-      let!(:merge_request) { create(:merge_request, merge_commit_sha: sha) }
+    context "when given merge_request_diff is the latest diff for the merge_request" do
+      let(:merge_request_diff_id) { merge_request_diff.id }
 
-      it 'returns the merge request' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to eq([merge_request])
+      it 'returns merge request' do
+        expect(by_latest_merge_request_diffs).to eq([merge_request])
       end
     end
 
-    context "when given sha is equal to the merge_request_diff's head_commit_sha" do
-      let!(:merge_request_with_diff) do
-        create(:merge_request, merge_commit_sha: nil).tap do |mr|
-          create(:merge_request_diff, merge_request: mr, head_commit_sha: sha)
-        end
-      end
+    context "when given merge_request_diff is not the latest diff for the merge request" do
+      let(:merge_request_diff_id) { merge_request_diff.id + 1 }
 
-      it 'returns the merge request' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to eq([merge_request_with_diff])
-      end
-    end
-
-    context "when given sha is not equal to any merge_commit_sha or latest diff's head_commit_sha" do
-      it 'returns an empty result' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to be_empty
+      it 'returns empty merge requests' do
+        expect(by_latest_merge_request_diffs).to be_empty
       end
     end
   end

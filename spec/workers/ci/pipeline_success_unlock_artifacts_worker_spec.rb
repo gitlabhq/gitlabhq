@@ -84,6 +84,7 @@ RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker, feature_category: :buil
   context 'with stop signal from database health check' do
     let(:pipeline_id) { non_existing_record_id }
     let(:health_signal_attrs) { described_class.database_health_check_attrs }
+    let(:setter) { instance_double('Sidekiq::Job::Setter') }
 
     around do |example|
       with_sidekiq_server_middleware do |chain|
@@ -104,7 +105,10 @@ RSpec.describe Ci::PipelineSuccessUnlockArtifactsWorker, feature_category: :buil
         expect(worker).not_to receive(:perform).with(pipeline_id)
       end
 
-      expect(described_class).to receive(:perform_in).with(health_signal_attrs[:delay_by], pipeline_id)
+      # stub the setter to avoid a call-loop between `.call` and `.perform_in` inside the SkipJobs middleware
+      # as Sidekiq::Testing.inline! would immediately process scheduled jobs.
+      expect(described_class).to receive(:deferred).and_return(setter)
+      expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay_by], pipeline_id)
 
       described_class.perform_async(pipeline_id)
     end

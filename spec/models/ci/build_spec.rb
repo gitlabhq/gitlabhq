@@ -5578,7 +5578,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#runtime_runner_features' do
     subject do
       build.save!
-      build.cancel_gracefully?
+      build.reload.cancel_gracefully?
     end
 
     let(:build) { create(:ci_build, pipeline: pipeline) }

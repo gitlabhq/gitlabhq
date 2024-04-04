@@ -53,8 +53,6 @@ module Ci
       strong_memoize_attr :attrs_from_token
 
       def registration_token_allowed?(attrs)
-        return false if registration_token.nil?
-
         case attrs[:runner_type]
         when :group_type
           token_scope.allow_runner_registration_token?

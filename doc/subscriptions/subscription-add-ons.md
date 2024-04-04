@@ -16,11 +16,26 @@ Subscription add-ons are purchased as additional seats in your subscription.
 Access to features provided by subscription add-ons is managed through seat assignment. Subscription
 add-ons can be assigned to billable users only.
 
+## Purchase GitLab Duo Pro seats
+
+You can purchase additional GitLab Duo Pro seats for your group namespace or self-managed instance. After you complete the purchase,
+you must assign the seats to billable users so that they can use GitLab Duo Pro.
+
+To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+
+1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
+1. On the subscription card, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Buy GitLab Duo Pro**.
+1. Enter the number of seats for GitLab Duo Pro.
+1. Review the **Purchase summary** section.
+1. From the **Payment method** dropdown list, select your payment method.
+1. Select **Purchase seats**.
+
 ## Assign GitLab Duo Pro seats
 
 Prerequisites:
 
-- You must purchase the GitLab Duo Pro add-on from the [GitLab Sales Team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+- You must purchase the GitLab Duo Pro add-on.
 - For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available for GitLab 16.8 and later only.
 
 After you purchase GitLab Duo Pro, you can assign seats to billable users to grant access to the add-on.
@@ -72,7 +87,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must purchase the GitLab Duo Pro add-on from the [GitLab Sales Team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+- You must purchase the GitLab Duo Pro add-on.
 
 You can purchase additional GitLab Duo Pro seats for your group namespace. After you complete the purchase,
 the seats are added to the total number of GitLab Duo Pro seats in your subscription.

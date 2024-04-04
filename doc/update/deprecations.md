@@ -233,6 +233,35 @@ Offset-based pagination for the [List registry repository tags](https://docs.git
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
+</div>
+
+The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
+This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
+with a GitLab instance at the instance, group, or project level through the API. In GitLab 17.0, registration tokens, and support for certain configuration arguments,
+will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md#prevent-your-runner-registration-workflow-from-breaking).
+
+The configuration arguments disabled for runner authentication tokens are:
+
+- `--locked`
+- `--access-level`
+- `--run-untagged`
+- `--maximum-timeout`
+- `--paused`
+- `--tag-list`
+- `--maintenance-note`
+
+This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
 <div class="deprecation-notes">
@@ -1603,35 +1632,6 @@ Running Sidekiq with a [queue selector](https://docs.gitlab.com/ee/administratio
 You can migrate away from queue selectors to [listening to all queues in all processes](https://docs.gitlab.com/ee/administration/sidekiq/extra_sidekiq_processes.html#start-multiple-processes). For example, if Sidekiq is currently running with 4 processes (denoted by 4 elements in `sidekiq['queue_groups']` in `/etc/gitlab/gitlab.rb`) with queue selector (`sidekiq['queue_selector'] = true`), you can change Sidekiq to listen to all queues in all 4 processes,for example `sidekiq['queue_groups'] = ['*'] * 4`. This approach is also recommended in our [Reference Architecture](https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html#configure-sidekiq). Note that Sidekiq can effectively run as many processes as the number of CPUs in the machine.
 
 While the above approach is recommended for most instances, Sidekiq can also be run using [routing rules](https://docs.gitlab.com/ee/administration/sidekiq/processing_specific_job_classes.html#routing-rules) which is also being used on GitLab.com. You can follow the [migration guide from queue selectors to routing rules](https://docs.gitlab.com/ee/administration/sidekiq/processing_specific_job_classes.html#migrating-from-queue-selectors-to-routing-rules). You need to take care with the migration to avoid losing jobs entirely.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
-</div>
-
-The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
-will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--maximum-timeout`
-- `--paused`
-- `--tag-list`
-- `--maintenance-note`
-
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -3105,25 +3105,6 @@ A runner's status will only relate to runner contact status, such as:
 
 When checking if a runner is `paused`, API users are advised to check the boolean attribute
 `paused` to be `true` instead. When checking if a runner is `active`, check if `paused` is `false`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### GraphQL API legacyMode argument for Runner status
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.0</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/360545).
-</div>
-
-The `legacyMode` argument to the `status` field in `RunnerType` will be rendered non-functional in the 16.0 release
-as part of the deprecations details in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-
-In GitLab 16.0 and later, the `status` field will act as if `legacyMode` is null. The `legacyMode` argument will
-be present during the 16.x cycle to avoid breaking the API signature, and will be removed altogether in the
-17.0 release.
 
 </div>
 

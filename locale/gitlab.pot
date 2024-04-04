@@ -3196,7 +3196,7 @@ msgstr ""
 msgid "AddMember|No users specified."
 msgstr ""
 
-msgid "AddMember|Not enough seats for this many users."
+msgid "AddMember|There are not enough available seats to invite this many users."
 msgstr ""
 
 msgid "AddMember|Too many users specified (limit is %{user_limit})"
@@ -38532,6 +38532,9 @@ msgstr ""
 msgid "ProductAnalytics|Connect your own provider"
 msgstr ""
 
+msgid "ProductAnalytics|Contact our sales team"
+msgstr ""
+
 msgid "ProductAnalytics|Creating your product analytics instance..."
 msgstr ""
 
@@ -45749,6 +45752,9 @@ msgid "SecurityOrchestration|Branch types don't match any existing branches."
 msgstr ""
 
 msgid "SecurityOrchestration|Branch: %{boldStart}%{branchName}%{boldEnd} was not found in project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."
+msgstr ""
+
+msgid "SecurityOrchestration|Cadence is invalid"
 msgstr ""
 
 msgid "SecurityOrchestration|Can't find project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."

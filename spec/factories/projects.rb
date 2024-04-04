@@ -612,10 +612,13 @@ FactoryBot.define do
   trait :allow_runner_registration_token do
     after :create do |project|
       if project.namespace.namespace_settings.nil?
-        project.namespace.namespace_settings = create(:namespace_settings, namespace: project.namespace)
+        project.namespace.namespace_settings = create(:namespace_settings,
+          namespace: project.namespace,
+          allow_runner_registration_token: true
+        )
+      else
+        project.namespace.allow_runner_registration_token = true
       end
-
-      project.namespace.allow_runner_registration_token = true
     end
   end
 end

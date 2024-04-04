@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalability do
   let(:job) { { 'jid' => 123, 'args' => [456] } }
   let(:queue) { 'test_queue' }
+  let(:setter) { instance_double('Sidekiq::Job::Setter') }
   let(:worker) do
     Class.new do
       def self.name
@@ -41,6 +42,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
 
           expect(job).not_to include('deferred_count')
         end
+
+        context 'when deferred jobs are re-enabled' do
+          let(:job) { { 'deferred' => true, 'args' => [456], 'jid' => 123 } }
+
+          it 'does not have the deferred key in job hash' do
+            subject.call(TestWorker.new, job, queue) { nil }
+
+            expect(job).not_to include('deferred')
+          end
+        end
       end
 
       shared_examples 'drops the job' do
@@ -73,7 +84,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         end
 
         it 'delays the job' do
-          expect(TestWorker).to receive(:perform_in).with(described_class::DELAY, *job['args'])
+          expect(TestWorker).to receive(:deferred).with(1, :feature_flag).and_return(setter)
+          expect(setter).to receive(:perform_in).with(described_class::DELAY, *job['args'])
 
           subject.call(TestWorker.new, job, queue) { nil }
         end
@@ -180,7 +192,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::SkipJobs, feature_category: :scalabili
         end
 
         it 'defers the job by set time' do
-          expect(TestWorker).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
+          expect(TestWorker).to receive(:deferred).with(1, :database_health_check).and_return(setter)
+          expect(setter).to receive(:perform_in).with(health_signal_attrs[:delay], *job['args'])
 
           TestWorker.perform_async(*job['args'])
         end

@@ -43,6 +43,21 @@ By default, the Zoekt search API is disabled on GitLab.com to avoid breaking cha
 
 To request access to this feature, contact GitLab.
 
+## Global code search
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147077) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `zoekt_cross_namespace_search`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `zoekt_cross_namespace_search`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+The feature is not ready for production use.
+
+Use this feature to search code across the entire GitLab instance.
+
+Global code search does not perform well on large GitLab instances.
+If you enable this feature for instances with more than 20,000 projects, your search might time out.
+
 ## Syntax
 
 This table shows some example queries for exact code search.

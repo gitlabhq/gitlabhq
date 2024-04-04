@@ -6,7 +6,7 @@ require_relative 'helpers/groups'
 
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will fetch any `failure::flaky-test` issues
-  # with more than 1000 reports and quarantine these tests.
+  # with more than MINIMUM_FLAKINESS_OCCURENCES reports and quarantine these tests.
   #
   # You can run it individually with:
   #
@@ -56,40 +56,7 @@ module Keeps
       file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{issue_url}' do")
       File.write(file, file_lines.join)
 
-      change = ::Gitlab::Housekeeper::Change.new
-      change.title = "Quarantine a flaky test"
-      change.identifiers = [self.class.name.demodulize, filename, line_number.to_s]
-      change.changed_files = [filename]
-      change.description = <<~MARKDOWN
-      The #{description} test has been reported as flaky more then #{MINIMUM_FLAKINESS_OCCURENCES} times.
-
-      This MR quarantines the test. This is a discussion starting point to let the responsible group know about the flakiness
-      so that they can take action:
-
-      - accept the merge request and schedule to improve the test
-      - close the merge request in favor of another merge request to delete the test
-
-      Relate to #{issue_url}.
-      MARKDOWN
-
-      group_label = flaky_issue['labels'].grep(/group::/).first
-      change.labels = [
-        'maintenance::refactor',
-        'test',
-        'failure::flaky-test',
-        'pipeline:expedite',
-        'quarantine',
-        'quarantine::flaky',
-        group_label
-      ].compact
-
-      if change.reviewers.empty? && group_label
-        group_data = groups_helper.group_for_group_label(group_label)
-
-        change.reviewers = groups_helper.pick_reviewer(group_data, change.identifiers) if group_data
-      end
-
-      change
+      construct_change(filename, line_number, description, flaky_issue)
     end
 
     def each_very_flaky_issue
@@ -107,6 +74,42 @@ module Keeps
 
       flaky_test_issues_above_threshold.map do |issue|
         yield(issue)
+      end
+    end
+
+    def construct_change(filename, line_number, description, flaky_issue)
+      ::Gitlab::Housekeeper::Change.new.tap do |change|
+        change.title = "Quarantine a flaky test"
+        change.identifiers = [self.class.name.demodulize, filename, line_number.to_s]
+        change.changed_files = [filename]
+        change.description = <<~MARKDOWN
+        The #{description} test has been reported as flaky more then #{MINIMUM_FLAKINESS_OCCURENCES} times.
+
+        This MR quarantines the test. This is a discussion starting point to let the responsible group know about the flakiness
+        so that they can take action:
+
+        - accept the merge request and schedule to improve the test
+        - close the merge request in favor of another merge request to delete the test
+
+        Related to #{issue_url}.
+        MARKDOWN
+
+        group_label = flaky_issue['labels'].grep(/group::/).first
+        change.labels = [
+          'maintenance::refactor',
+          'test',
+          'failure::flaky-test',
+          'pipeline:expedite',
+          'quarantine',
+          'quarantine::flaky',
+          group_label
+        ].compact
+
+        if change.reviewers.empty? && group_label
+          group_data = groups_helper.group_for_group_label(group_label)
+
+          change.reviewers = groups_helper.pick_reviewer(group_data, change.identifiers) if group_data
+        end
       end
     end
   end

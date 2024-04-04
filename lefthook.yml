@@ -112,7 +112,8 @@ pre-push:
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style
@@ -134,7 +135,8 @@ pre-commit:
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d --staged
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style

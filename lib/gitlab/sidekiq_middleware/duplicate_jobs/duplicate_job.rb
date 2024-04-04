@@ -177,6 +177,10 @@ module Gitlab
           options[:ttl] || DEFAULT_DUPLICATE_KEY_TTL
         end
 
+        def deferred?
+          job['deferred']
+        end
+
         private
 
         attr_writer :existing_wal_locations

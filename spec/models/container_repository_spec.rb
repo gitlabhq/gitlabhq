@@ -611,6 +611,21 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
+  describe '#image_manifest' do
+    let(:ref) { 'latest' }
+    let(:manifest_content) { '{"data":"example"}' }
+
+    it 'returns an image manifest from the registry' do
+      allow_next_instance_of(ContainerRegistry::Client) do |client|
+        allow(client).to receive(:repository_manifest)
+          .with(repository.path, ref)
+          .and_return(manifest_content)
+      end
+
+      expect(repository.image_manifest(ref)).to eq(manifest_content)
+    end
+  end
+
   describe '#valid?' do
     it 'is a valid repository' do
       expect(repository).to be_valid

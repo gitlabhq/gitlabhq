@@ -252,6 +252,8 @@ module Ci
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
         build.run!
+        persist_runtime_features(build, params)
+
         build.runner_manager = runner_manager if runner_manager
       end
 
@@ -288,6 +290,15 @@ module Ci
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
       )
+    end
+
+    def persist_runtime_features(build, params)
+      if params.dig(:info, :features, :cancel_gracefully) &&
+          Feature.enabled?(:ci_canceling_status, build.project)
+        build.set_cancel_gracefully
+
+        build.save
+      end
     end
 
     def pre_assign_runner_checks

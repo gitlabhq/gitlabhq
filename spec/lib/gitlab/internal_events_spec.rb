@@ -174,6 +174,29 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
+  context 'when feature_enabled_by_namespace_ids is passed' do
+    let(:feature_enabled_by_namespace_ids) { [1, 2, 3] }
+
+    it 'is sent to Snowplow' do
+      described_class.track_event(
+        event_name,
+        user: user,
+        project: project,
+        feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids
+      )
+
+      expect(fake_snowplow).to have_received(:event) do |_, _, args|
+        contexts = args[:context]&.map(&:to_json)
+
+        standard_context = contexts.find do |c|
+          c[:schema] == Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL
+        end
+
+        expect(standard_context[:data][:feature_enabled_by_namespace_ids]).to eq(feature_enabled_by_namespace_ids)
+      end
+    end
+  end
+
   context 'when arguments are invalid' do
     let(:error_class) { described_class::InvalidPropertyTypeError }
 

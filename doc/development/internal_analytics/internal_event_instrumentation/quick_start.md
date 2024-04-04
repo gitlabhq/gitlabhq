@@ -62,6 +62,16 @@ If a `project` but no `namespace` is provided, the `project.namespace` is used a
 
 In some cases you might want to specify the `category` manually or provide none at all. To do that, you can call the `InternalEvents.track_event` method directly instead of using the module.
 
+In case when a feature is enabled through multiple namespaces and its required to track why the feature is enabled, it is
+possible to pass an optional `feature_enabled_by_namespace_ids` parameter with an array of namespace ids.
+
+```ruby
+Gitlab::InternalEvents.track_event(
+  ...
+  feature_enabled_by_namespace_ids: [namespace_one.id, namespace_two.id]
+)
+```
+
 #### Additional properties
 
 Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).

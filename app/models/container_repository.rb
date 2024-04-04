@@ -445,6 +445,10 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  def image_manifest(reference)
+    client.repository_manifest(path, reference)
+  end
+
   def manifest
     @manifest ||= client.repository_tags(path)
   end

@@ -597,14 +597,7 @@ module API
               desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
             }
           ].flatten,
-          'webex-teams' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
-            }
-          ].flatten,
+          'webex-teams' => ::Integrations::WebexTeams.api_fields,
           'zentao' => [
             {
               required: true,

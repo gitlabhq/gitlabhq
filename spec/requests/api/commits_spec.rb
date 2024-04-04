@@ -90,6 +90,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           it_behaves_like 'project commits'
 
+          context 'when repository does not have commits' do
+            let_it_be(:project) { create(:project, :empty_repo) }
+
+            it 'returns an empty array' do
+              get api("/projects/#{project_id}/repository/commits", user)
+
+              expect(json_response).to eq([])
+            end
+          end
+
           context "since optional parameter" do
             it "returns project commits since provided parameter" do
               commits = project.repository.commits("master", limit: 2)

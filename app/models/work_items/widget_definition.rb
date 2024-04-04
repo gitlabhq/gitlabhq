@@ -37,7 +37,8 @@ module WorkItems
       rolledup_dates: 19, # EE-only
       participants: 20,
       time_tracking: 21,
-      designs: 22
+      designs: 22,
+      development: 23
     }
 
     def self.available_widgets

@@ -100,6 +100,11 @@ export default {
       required: false,
       default: __('Search for this text'),
     },
+    showSearchButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -337,6 +342,9 @@ export default {
         sortDirectionAscending: false,
       };
     },
+    onInput(tokens) {
+      this.$emit('onInput', this.removeQuotesEnclosure(uniqueTokens(tokens)));
+    },
   },
 };
 </script>
@@ -367,12 +375,14 @@ export default {
       :no-recent-searches-text="__(`You don't have any recent searches`)"
       :search-text-option-label="searchTextOptionLabel"
       :show-friendly-text="showFriendlyText"
+      :show-search-button="showSearchButton"
       :terms-as-tokens="termsAsTokens"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
       @clear="onClear"
       @clear-history="handleClearHistory"
       @submit="handleFilterSubmit"
+      @input="onInput"
     >
       <template #history-item="{ historyItem }">
         <template v-for="(token, index) in historyItem">

@@ -476,4 +476,81 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
     it_behaves_like 'handling graphql network errors with the container registry'
   end
+
+  context 'manifest field' do
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!, $n: String!) {
+          containerRepository(id: $id) {
+            manifest(reference: $n)
+          }
+        }
+      GQL
+    end
+
+    let(:reference) { 'latest' }
+    let(:manifest_response) { container_repository_details_response.dig('manifest') }
+    let(:variables) do
+      { id: container_repository_global_id, n: reference }
+    end
+
+    context 'without network error' do
+      before do
+        allow_next_instance_of(ContainerRegistry::Client) do |client|
+          allow(client).to receive(:repository_manifest)
+            .with(container_repository.path, reference)
+            .and_return(manifest_content)
+        end
+      end
+
+      context 'with existing manifest' do
+        let(:manifest_content) do
+          <<~JSON
+          {
+            "schemaVersion": 2,
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "config": {
+              "mediaType": "application/octet-stream",
+              "size": 1145,
+              "digest": "sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac"
+            },
+            "layers": [
+              {
+                "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+                "size": 2319870,
+                "digest": "sha256:420890c9e918b6668faaedd9000e220190f2493b0693ee563ebd7b4cc754a57d"
+              }
+            ]
+          }
+          JSON
+        end
+
+        it 'fetches manifest payload' do
+          subject
+
+          expect(manifest_response).to eq(manifest_content)
+        end
+      end
+
+      context 'with nonexisting manifest' do
+        let(:reference) { 'nonexistent' }
+        let(:manifest_content) { nil }
+
+        it 'returns null' do
+          subject
+          expect(manifest_response).to be_nil
+        end
+      end
+    end
+
+    context 'with a network error' do
+      it 'returns an error' do
+        stub_container_registry_network_error(client_method: :repository_manifest)
+
+        subject
+
+        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+      end
+    end
+  end
 end

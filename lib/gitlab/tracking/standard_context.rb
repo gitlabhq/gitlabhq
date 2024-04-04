@@ -6,7 +6,9 @@ module Gitlab
       GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-0-9'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
-      def initialize(namespace_id: nil, plan_name: nil, project_id: nil, user_id: nil, **extra)
+      def initialize(
+        namespace_id: nil, plan_name: nil, project_id: nil, user_id: nil,
+        feature_enabled_by_namespace_ids: nil, **extra)
         check_argument_type(:namespace_id, namespace_id, [Integer])
         check_argument_type(:plan_name, plan_name, [String])
         check_argument_type(:project_id, project_id, [Integer])
@@ -17,6 +19,7 @@ module Gitlab
         @project_id = project_id
         @user_id = user_id
         @extra = extra
+        @feature_enabled_by_namespace_ids = feature_enabled_by_namespace_ids
       end
 
       def to_context
@@ -41,7 +44,7 @@ module Gitlab
 
       private
 
-      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user_id
+      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user_id, :feature_enabled_by_namespace_ids
 
       def to_h
         {
@@ -53,6 +56,7 @@ module Gitlab
           is_gitlab_team_member: gitlab_team_member?(user_id),
           namespace_id: namespace_id,
           project_id: project_id,
+          feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           context_generated_at: Time.current
         }
       end

@@ -37,7 +37,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --location --output artifacts.zip --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+curl --location --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
 ```
 
 In the Premium and Ultimate tier you can authenticate with this endpoint

@@ -139,6 +139,10 @@ export default {
       <div class="gl-flex-grow-1"></div>
       <slot></slot>
     </div>
-    <div v-if="prevBlameLink" v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"></div>
+    <div
+      v-if="prevBlameLink"
+      v-safe-html:[$options.safeHtmlConfig]="prevBlameLink"
+      data-event-tracking="click_previous_blame_on_blob_page"
+    ></div>
   </div>
 </template>

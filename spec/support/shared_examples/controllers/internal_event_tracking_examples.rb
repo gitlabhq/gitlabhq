@@ -3,22 +3,28 @@
 # Requires a context containing:
 # - subject
 # - event
-# - user
 # Optionally, the context can contain:
+# - user
 # - project
 # - namespace
+# - category
+# - label
+# - property
+# - value
 
 RSpec.shared_examples 'internal event tracking' do
   let(:fake_tracker) { instance_spy(Gitlab::Tracking::Destinations::Snowplow) }
+  let(:fake_counter) { class_spy(Gitlab::UsageDataCounters::HLLRedisCounter) }
 
   before do
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_tracker)
+    stub_const('Gitlab::UsageDataCounters::HLLRedisCounter', fake_counter)
 
     allow(Gitlab::Tracking::StandardContext).to receive(:new).and_call_original
     allow(Gitlab::Tracking::ServicePingContext).to receive(:new).and_call_original
   end
 
-  it 'logs to Snowplow', :aggregate_failures do
+  it 'logs to Snowplow and Redis', :aggregate_failures do
     subject
 
     project = try(:project)
@@ -35,6 +41,7 @@ RSpec.shared_examples 'internal event tracking' do
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)
         .with(
+          feature_enabled_by_namespace_ids: try(:feature_enabled_by_namespace_ids),
           project_id: project&.id,
           user_id: user&.id,
           namespace_id: namespace&.id,
@@ -50,11 +57,24 @@ RSpec.shared_examples 'internal event tracking' do
       .with(
         category.to_s,
         event,
-        context: [
-          an_instance_of(SnowplowTracker::SelfDescribingJson),
-          an_instance_of(SnowplowTracker::SelfDescribingJson)
-        ],
-        **additional_properties
+        a_hash_including(
+          context: [
+            an_instance_of(SnowplowTracker::SelfDescribingJson),
+            an_instance_of(SnowplowTracker::SelfDescribingJson)
+          ],
+          **additional_properties
+        )
       )
+
+    Gitlab::InternalEvents::EventDefinitions.unique_properties(event).each do |property|
+      expect(fake_counter).to have_received(:track_event)
+        .with(
+          event,
+          a_hash_including(
+            values: send(property)&.id,
+            property_name: property
+          )
+        )
+    end
   end
 end

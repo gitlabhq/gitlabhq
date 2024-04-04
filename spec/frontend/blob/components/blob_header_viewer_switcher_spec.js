@@ -1,6 +1,7 @@
 import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import {
   RICH_BLOB_VIEWER,
@@ -11,6 +12,7 @@ import {
 
 describe('Blob Header Viewer Switcher', () => {
   let wrapper;
+  let trackingSpy;
 
   function createComponent(propsData = { showViewerToggles: true }) {
     wrapper = mountExtended(BlobHeaderViewerSwitcher, {
@@ -106,5 +108,19 @@ describe('Blob Header Viewer Switcher', () => {
     await nextTick();
 
     expect(wrapper.emitted('blame')).toHaveLength(1);
+  });
+
+  it('emits a tracking event when the Blame button is clicked', async () => {
+    trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    createComponent({ showBlameToggle: true });
+
+    findBlameButton().trigger('click');
+    await nextTick();
+
+    expect(trackingSpy).toHaveBeenCalledWith(
+      undefined,
+      'open_blame_viewer_on_blob_page',
+      expect.any(Object),
+    );
   });
 });

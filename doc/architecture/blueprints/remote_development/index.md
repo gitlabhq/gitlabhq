@@ -3,7 +3,7 @@ status: ongoing
 creation-date: "2022-11-15"
 authors: [ "@vtak" ]
 coach: "@grzesiek"
-approvers: [ "@ericschurter", "@oregand" ]
+approvers: [ "@michelle-chen", "@adebayo_a" ]
 owning-stage: "~devops::create"
 participating-stages: []
 ---

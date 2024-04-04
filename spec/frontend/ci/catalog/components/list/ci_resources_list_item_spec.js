@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { GlAvatar, GlBadge, GlSprintf } from '@gitlab/ui';
+import { update, cloneDeep } from 'lodash';
+import { GlAvatar, GlBadge, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { createRouter } from '~/ci/catalog/router/index';
@@ -18,20 +19,6 @@ describe('CiResourcesListItem', () => {
 
   const router = createRouter();
   const resource = catalogSinglePageResponse.data.ciCatalogResources.nodes[0];
-  const componentList = {
-    components: {
-      nodes: [
-        {
-          id: 'gid://gitlab/Ci::Catalog::Resources::Component/2',
-          name: 'test-component',
-        },
-        {
-          id: 'gid://gitlab/Ci::Catalog::Resources::Component/1',
-          name: 'component_two',
-        },
-      ],
-    },
-  };
   const release = {
     author: { id: 'author-id', name: 'author', username: 'author-username', webUrl: '/user/1' },
     createdAt: Date.now(),
@@ -50,6 +37,7 @@ describe('CiResourcesListItem', () => {
       },
       stubs: {
         GlSprintf,
+        GlTruncate,
       },
     });
   };
@@ -113,13 +101,40 @@ describe('CiResourcesListItem', () => {
         createComponent();
       });
 
-      it('renders the component name template', () => {
-        expect(findComponentNames().exists()).toBe(true);
+      it('renders the correct component names', () => {
+        expect(findComponentNames().text()).toMatchInterpolatedText(
+          '• Components: test-component and component_two',
+        );
       });
 
-      it('renders the correct component names', () => {
-        expect(findComponentNames().text()).toContain(componentList.components.nodes[0].name);
-        expect(findComponentNames().text()).toContain(componentList.components.nodes[1].name);
+      it('renders GlTruncate for each component name', () => {
+        const names = findComponentNames()
+          .findAllComponents(GlTruncate)
+          .wrappers.map((x) => x.props('text'));
+
+        expect(names).toEqual(['test-component', 'component_two']);
+      });
+    });
+
+    describe('when there are lots of components', () => {
+      beforeEach(() => {
+        // what: Update resource.versions to have at least 5 components
+        const versions = update(
+          cloneDeep(resource.versions),
+          'nodes[0].components.nodes',
+          (components) =>
+            Array(5)
+              .fill(1)
+              .map((x, idx) => components[idx % components.length]),
+        );
+
+        createComponent({ props: { resource: { ...resource, versions } } });
+      });
+
+      it('renders the correct component names with a delimeter', () => {
+        expect(findComponentNames().text()).toMatchInterpolatedText(
+          '• Components: test-component, component_two, test-component, component_two, and test-component',
+        );
       });
     });
   });

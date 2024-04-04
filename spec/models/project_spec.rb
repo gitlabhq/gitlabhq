@@ -1155,8 +1155,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when no token provided' do
       let(:initial_token) { '' }
 
-      it 'sets an random token' do
-        expect(project.runners_token).not_to be_nil
+      it 'sets a random token as the project runners_token' do
+        expect(project.runners_token).to be_present
         expect(project.runners_token).not_to eq(initial_token)
       end
     end
@@ -1164,7 +1164,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when initial token exists' do
       let(:initial_token) { "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token" }
 
-      it 'does not set an random token' do
+      it 'assigns the provided token value as the project runners_token' do
         expect(project.runners_token).to eq(initial_token)
       end
     end

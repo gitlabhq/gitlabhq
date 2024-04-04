@@ -158,6 +158,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
   end
 
   context 'with stop signal from database health check' do
+    let(:setter) { instance_double('Sidekiq::Job::Setter') }
+
     around do |example|
       with_sidekiq_server_middleware do |chain|
         chain.add Gitlab::SidekiqMiddleware::SkipJobs
@@ -177,7 +179,8 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         expect(worker).not_to receive(:perform).with(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
       end
 
-      expect(described_class).to receive(:perform_in).with(
+      expect(described_class).to receive(:deferred).and_return(setter)
+      expect(setter).to receive(:perform_in).with(
         described_class::DEFER_ON_HEALTH_DELAY,
         pipeline_tracker.id,
         pipeline_tracker.stage,

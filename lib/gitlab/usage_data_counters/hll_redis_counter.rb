@@ -12,8 +12,6 @@ module Gitlab
       LEGACY_EVENTS_PATH = Rails.root.join('lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml')
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/439982
       HALF_MIGRATED_EVENTS = %w[
-        i_analytics_dev_ops_adoption
-        i_analytics_dev_ops_score
         g_project_management_issue_cross_referenced
         k8s_api_proxy_requests_unique_users_via_ci_access
         k8s_api_proxy_requests_unique_users_via_pat_access

@@ -193,6 +193,17 @@ describe('FilteredSearchBarRoot', () => {
       await nextTick();
       expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
     });
+
+    it('emits component event `onInput` on filteredsearch input component', async () => {
+      const mockFilters = [tokenValueAuthor, 'foo'];
+      createComponent();
+
+      wrapper.findComponent(GlFilteredSearch).vm.$emit('input', mockFilters);
+
+      await nextTick();
+
+      expect(wrapper.emitted('onInput')[0]).toEqual([mockFilters]);
+    });
   });
 
   describe('methods', () => {
@@ -477,6 +488,18 @@ describe('FilteredSearchBarRoot', () => {
       ]);
 
       expect(sortBy).toBe(mockSortOptions[0].id);
+    });
+
+    describe('showSearchButton', () => {
+      it('sets showSearchButton on the filteredsearch component when provided', () => {
+        createComponent({ propsData: { showSearchButton: false } });
+        expect(findGlFilteredSearch().props('showSearchButton')).toBe(false);
+      });
+
+      it('sets defaults to true', () => {
+        createComponent();
+        expect(findGlFilteredSearch().props('showSearchButton')).toBe(true);
+      });
     });
   });
 

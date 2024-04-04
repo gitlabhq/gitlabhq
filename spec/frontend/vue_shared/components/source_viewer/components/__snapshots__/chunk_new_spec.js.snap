@@ -7,6 +7,7 @@ exports[`Chunk component rendering isHighlighted is true renders line numbers 1`
 >
   <a
     class="file-line-blame gl-select-none gl-shadow-none!"
+    data-event-tracking="click_chunk_blame_on_blob_page"
     href="some/blame/path.js#L71"
   />
   <a

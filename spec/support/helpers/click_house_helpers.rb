@@ -32,6 +32,8 @@ module ClickHouseHelpers
     ClickHouse::Client.execute(insert_query, :main)
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity -- the method is straightforward, just a lot of &.
+  # rubocop:disable Metrics/PerceivedComplexity -- same
   def insert_ci_builds_to_click_house(builds)
     values = builds.map do |build|
       <<~SQL.squish
@@ -48,6 +50,7 @@ module ClickHouseHelpers
         #{quote(build.runner_manager&.system_xid)},
         #{quote(build.runner&.run_untagged)},
         #{quote(Ci::Runner.runner_types[build.runner&.runner_type])},
+        #{quote(build.runner&.owner_runner_namespace&.namespace_id)},
         #{quote(build.runner_manager&.version || '')},
         #{quote(build.runner_manager&.revision || '')},
         #{quote(build.runner_manager&.platform || '')},
@@ -61,7 +64,7 @@ module ClickHouseHelpers
     query = <<~SQL
       INSERT INTO ci_finished_builds
           (id, project_id, pipeline_id, status, finished_at, created_at, started_at, queued_at,
-           runner_id, runner_manager_system_xid, runner_run_untagged, runner_type,
+           runner_id, runner_manager_system_xid, runner_run_untagged, runner_type, runner_owner_namespace_id,
            runner_manager_version, runner_manager_revision, runner_manager_platform, runner_manager_architecture)
       VALUES #{values}
     SQL
@@ -69,6 +72,8 @@ module ClickHouseHelpers
     result = ClickHouse::Client.execute(query, :main)
     expect(result).to eq(true)
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def format_datetime(date)
     quote(date&.utc&.to_f)

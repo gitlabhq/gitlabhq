@@ -15,6 +15,14 @@ module ClickHouse
       ClickHouse::Client.execute(query, database, configuration)
     end
 
+    def insert_csv(query, file)
+      ClickHouse::Client.insert_csv(query, file, database, configuration)
+    end
+
+    def ping
+      execute('SELECT 1')
+    end
+
     def database_name
       configuration.databases[database]&.database
     end
