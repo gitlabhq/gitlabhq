@@ -78,7 +78,7 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/sy
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/index.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
 ### Repository verification failures
 
@@ -86,13 +86,13 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/sy
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/index.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
 Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization.md#resync-project-and-project-wiki-repositories).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/index.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
 ## Generate Service Ping
 
