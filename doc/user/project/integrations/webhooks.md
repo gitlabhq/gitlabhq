@@ -94,17 +94,18 @@ To interpolate sensitive portions for each webhook, use `url_variables`.
 For example, if a webhook has the following URL:
 
 ```plaintext
-https://{subdomain}.example.com/{path}?key={value}
+https://webhook.example.com/{path}?key={value}
 ```
 
 You must define the following variables:
 
-- `subdomain`
 - `path`
 - `value`
 
-Variable names can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
-You can define URL variables directly using the REST API.
+Variable names must contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
+You can define URL variables directly with the REST API.
+The host portion of the URL (such as `webhook.example.com`) must remain valid without using a mask variable.
+Otherwise, a `URI is invalid` error occurs.
 
 ## Custom headers
 
