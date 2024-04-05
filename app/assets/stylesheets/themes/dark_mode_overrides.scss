@@ -68,6 +68,14 @@
       }
     }
   }
+
+  .gl-dark-invert-keep-hue {
+    filter: invert(0.8) hue-rotate(180deg);
+  }
+
+  .gl-dark-invert-keep-hue\! {
+    filter: invert(0.8) hue-rotate(180deg) !important;
+  }
 }
 
 // Some hacks and overrides for things that don't properly support dark mode

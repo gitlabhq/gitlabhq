@@ -66,6 +66,7 @@ compile-test-assets:
     expire_in: 7d
     paths:
       - public/assets/
+      - config/helpers/tailwind/ # Assets created during tailwind compilation
       - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
       - node_modules/@gitlab/svgs/dist/file_icons/file_icons.json  # app/helpers/icons_helper.rb uses this file
       - "${WEBPACK_COMPILE_LOG_PATH}"

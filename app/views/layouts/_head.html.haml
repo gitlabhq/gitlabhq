@@ -31,12 +31,12 @@
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities_dark"
-    = stylesheet_link_tag_defer "application_utilities_to_be_replaced_dark"
+    = stylesheet_link_tag_defer "application_utilities_to_be_replaced_dark" unless tailwind_all_the_way
   - else
     = stylesheet_link_tag_defer "application"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer 'application_utilities'
-    = stylesheet_link_tag_defer "application_utilities_to_be_replaced"
+    = stylesheet_link_tag_defer "application_utilities_to_be_replaced" unless tailwind_all_the_way
   - if tailwind_all_the_way
     = stylesheet_link_tag_defer 'tailwind_all_the_way'
   - else

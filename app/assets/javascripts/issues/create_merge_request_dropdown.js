@@ -26,6 +26,7 @@ const CREATE_BRANCH = 'create-branch';
 const VALIDATION_TYPE_BRANCH_UNAVAILABLE = 'branch_unavailable';
 const VALIDATION_TYPE_INVALID_CHARS = 'invalid_chars';
 
+const INPUT_TARGET_PROJECT = 'project';
 const INPUT_TARGET_BRANCH = 'branch';
 const INPUT_TARGET_REF = 'ref';
 
@@ -61,36 +62,32 @@ export default class CreateMergeRequestDropdown {
   constructor(wrapperEl) {
     this.wrapperEl = wrapperEl;
     this.availableButton = this.wrapperEl.querySelector('.available');
-    this.branchInput = this.wrapperEl.querySelector('.js-branch-name');
+    this.branchNameInput = this.wrapperEl.querySelector('.js-branch-name');
     this.branchMessage = this.wrapperEl.querySelector('.js-branch-message');
+    this.targetProjectInput = this.wrapperEl.querySelector('.js-target-project');
     this.createMergeRequestButton = this.wrapperEl.querySelector('.js-create-merge-request');
     this.createMergeRequestLoading = this.createMergeRequestButton.querySelector('.js-spinner');
     this.createTargetButton = this.wrapperEl.querySelector('.js-create-target');
     this.dropdownList = this.wrapperEl.querySelector('.dropdown-menu');
     this.dropdownToggle = this.wrapperEl.querySelector('.js-dropdown-toggle');
-    this.refInput = this.wrapperEl.querySelector('.js-ref');
+    this.sourceRefInput = this.wrapperEl.querySelector('.js-ref');
     this.refMessage = this.wrapperEl.querySelector('.js-ref-message');
     this.unavailableButton = this.wrapperEl.querySelector('.unavailable');
     this.unavailableButtonSpinner = this.unavailableButton.querySelector('.js-create-mr-spinner');
     this.unavailableButtonText = this.unavailableButton.querySelector('.text');
 
+    this.isBranchCreationMode = false;
     this.branchCreated = false;
     this.branchIsValid = true;
-    this.canCreatePath = this.wrapperEl.dataset.canCreatePath;
-    this.createBranchPath = this.wrapperEl.dataset.createBranchPath;
-    this.createMrPath = this.wrapperEl.dataset.createMrPath;
     this.droplabInitialized = false;
     this.isCreatingBranch = false;
     this.isCreatingMergeRequest = false;
-    this.isGettingRef = false;
     this.refCancelToken = null;
     this.mergeRequestCreated = false;
     this.refDebounce = debounce((value, target) => this.getRef(value, target), 500);
     this.refIsValid = true;
-    this.refsPath = this.wrapperEl.dataset.refsPath;
-    this.suggestedRef = this.refInput.value;
-    this.projectPath = this.wrapperEl.dataset.projectPath;
-    this.projectId = this.wrapperEl.dataset.projectId;
+    this.suggestedRef = this.refName;
+    this.cancelSources = new Set();
 
     // These regexps are used to replace
     // a backend generated new branch name and its source (ref)
@@ -114,6 +111,53 @@ export default class CreateMergeRequestDropdown {
     }
   }
 
+  get selectedProjectOption() {
+    if (this.targetProjectInput) {
+      return this.targetProjectInput.options[this.targetProjectInput.options.selectedIndex];
+    }
+    return null;
+  }
+
+  get sourceProject() {
+    return {
+      refsPath: this.wrapperEl.dataset.refsPath,
+      projectPath: this.wrapperEl.dataset.projectPath,
+      projectId: this.wrapperEl.dataset.projectId,
+    };
+  }
+
+  get targetProject() {
+    if (this.targetProjectInput) {
+      const option = this.selectedProjectOption;
+      return {
+        refsPath: this.targetProjectInput.value,
+        projectId: option.dataset.id,
+        projectPath: option.dataset.fullPath,
+      };
+    }
+    return this.sourceProject;
+  }
+
+  get branchName() {
+    return this.branchNameInput.value || this.branchNameInput.placeholder;
+  }
+
+  get refName() {
+    return this.sourceRefInput.value;
+  }
+
+  get canCreatePath() {
+    return this.wrapperEl.dataset.canCreatePath;
+  }
+
+  get createBranchPath() {
+    return this.wrapperEl.dataset.createBranchPath;
+  }
+
+  get createMrPath() {
+    return this.selectedProjectOption?.dataset?.createMrPath || this.wrapperEl.dataset.createMrPath;
+  }
+
   available() {
     this.availableButton.classList.remove('hidden');
     this.unavailableButton.classList.add('hidden');
@@ -128,17 +172,36 @@ export default class CreateMergeRequestDropdown {
       'click',
       this.onClickCreateMergeRequestButton.bind(this),
     );
-    this.branchInput.addEventListener('input', this.onChangeInput.bind(this));
-    this.branchInput.addEventListener('keyup', this.onChangeInput.bind(this));
+    this.branchNameInput.addEventListener('input', this.onBranchChange.bind(this));
+    this.branchNameInput.addEventListener('keyup', this.onBranchChange.bind(this));
+    if (this.targetProjectInput) {
+      this.targetProjectInput.addEventListener('change', this.onTargetProjectChange.bind(this));
+    }
     this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
     // Detect for example when user pastes ref using the mouse
-    this.refInput.addEventListener('input', this.onChangeInput.bind(this));
+    this.sourceRefInput.addEventListener('input', this.onRefChange.bind(this));
     // Detect for example when user presses right arrow to apply the suggested ref
-    this.refInput.addEventListener('keyup', this.onChangeInput.bind(this));
+    this.sourceRefInput.addEventListener('keyup', this.onRefChange.bind(this));
     // Detect when user clicks inside the input to apply the suggested ref
-    this.refInput.addEventListener('click', this.onChangeInput.bind(this));
+    this.sourceRefInput.addEventListener('click', this.onRefChange.bind(this));
     // Detect when user presses tab to apply the suggested ref
-    this.refInput.addEventListener('keydown', CreateMergeRequestDropdown.processTab.bind(this));
+    this.sourceRefInput.addEventListener(
+      'keydown',
+      CreateMergeRequestDropdown.processTab.bind(this),
+    );
+    Array.from(this.wrapperEl.querySelectorAll('.js-type-toggle')).forEach((el) => {
+      el.addEventListener('click', this.toggleBranchCreationMode.bind(this));
+    });
+  }
+
+  toggleBranchCreationMode(event) {
+    if (event.currentTarget.dataset.value === 'create-branch') {
+      this.disableProjectSelect();
+      this.isBranchCreationMode = true;
+    } else {
+      this.enableProjectSelect();
+      this.isBranchCreationMode = false;
+    }
   }
 
   checkAbilityToCreateBranch() {
@@ -165,8 +228,6 @@ export default class CreateMergeRequestDropdown {
         }
       })
       .catch(() => {
-        this.unavailable();
-        this.disable();
         createAlert({
           message: __('Failed to check related branches.'),
         });
@@ -174,19 +235,21 @@ export default class CreateMergeRequestDropdown {
   }
 
   createBranch(navigateToBranch = true) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    if (!this.refName) return Promise.reject(new Error('Missing ref name'));
+
     this.isCreatingBranch = true;
 
     const endpoint = createEndpoint(
-      this.projectPath,
-      mergeUrlParams(
-        { ref: this.refInput.value, branch_name: this.branchInput.value },
-        this.createBranchPath,
-      ),
+      this.sourceProject.projectPath,
+      mergeUrlParams({ ref: this.refName, branch_name: this.branchName }, this.createBranchPath),
     );
 
     return axios
       .post(endpoint, {
-        confidential_issue_project_id: canCreateConfidentialMergeRequest() ? this.projectId : null,
+        confidential_issue_project_id: canCreateConfidentialMergeRequest()
+          ? this.sourceProject.projectId
+          : null,
       })
       .then(({ data }) => {
         this.branchCreated = true;
@@ -210,14 +273,14 @@ export default class CreateMergeRequestDropdown {
       .then(() => {
         let path = canCreateConfidentialMergeRequest()
           ? this.createMrPath.replace(
-              this.projectPath,
+              this.targetProject.projectPath,
               confidentialMergeRequestState.selectedProject.pathWithNamespace,
             )
           : this.createMrPath;
         path = mergeUrlParams(
           {
-            'merge_request[target_branch]': this.refInput.value,
-            'merge_request[source_branch]': this.branchInput.value,
+            'merge_request[target_branch]': this.refName,
+            'merge_request[source_branch]': this.branchName,
           },
           path,
         );
@@ -250,6 +313,18 @@ export default class CreateMergeRequestDropdown {
 
     this.createTargetButton.classList.remove('disabled');
     this.createTargetButton.removeAttribute('disabled');
+  }
+
+  disableProjectSelect() {
+    if (!this.targetProjectInput) return;
+    this.targetProjectInput.classList.add('disabled');
+    this.targetProjectInput.setAttribute('disabled', 'disabled');
+  }
+
+  enableProjectSelect() {
+    if (!this.targetProjectInput) return;
+    this.targetProjectInput.classList.remove('disabled');
+    this.targetProjectInput.removeAttribute('disabled');
   }
 
   static findByValue(objects, ref, returnFirstMatch = false) {
@@ -295,13 +370,17 @@ export default class CreateMergeRequestDropdown {
   }
 
   getRef(ref, target = 'all') {
-    if (!ref) return false;
+    const source = axios.CancelToken.source();
+    this.cancelSources.add(source);
 
-    this.refCancelToken = axios.CancelToken.source();
+    const project =
+      target === INPUT_TARGET_REF && !this.isBranchCreationMode
+        ? this.targetProject
+        : this.sourceProject;
 
     return axios
-      .get(`${createEndpoint(this.projectPath, this.refsPath)}${encodeURIComponent(ref)}`, {
-        cancelToken: this.refCancelToken.token,
+      .get(`${createEndpoint(project.projectPath, project.refsPath)}${encodeURIComponent(ref)}`, {
+        cancelToken: source.token,
       })
       .then(({ data }) => {
         const branches = data[Object.keys(data)[0]];
@@ -317,31 +396,20 @@ export default class CreateMergeRequestDropdown {
           this.suggestedRef = result;
         }
 
-        this.isGettingRef = false;
-
-        return this.updateInputState(target, ref, result);
+        this.updateInputState(target, ref, result);
       })
       .catch((thrown) => {
         if (axios.isCancel(thrown)) {
-          return false;
+          return;
         }
-        this.unavailable();
         this.disable();
         createAlert({
           message: __('Failed to get ref.'),
         });
-
-        this.isGettingRef = false;
-
-        return false;
+      })
+      .finally(() => {
+        this.cancelSources.delete(source);
       });
-  }
-
-  getTargetData(target) {
-    return {
-      input: this[`${target}Input`],
-      message: this[`${target}Message`],
-    };
   }
 
   hide() {
@@ -372,43 +440,53 @@ export default class CreateMergeRequestDropdown {
       this.isCreatingMergeRequest ||
       this.mergeRequestCreated ||
       this.isCreatingBranch ||
-      this.branchCreated ||
-      this.isGettingRef
+      this.branchCreated
     );
   }
 
-  onChangeInput(event) {
-    this.disable();
-    let target;
-    let value;
-
+  beforeChange() {
     // User changed input, cancel to prevent previous request from interfering
-    if (this.refCancelToken !== null) {
-      this.refCancelToken.cancel();
+    if (this.cancelSources.size !== 0) {
+      this.cancelSources.forEach((token) => {
+        token.cancel();
+        this.cancelSources.delete(token);
+      });
+    }
+  }
+
+  onTargetProjectChange() {
+    this.beforeChange();
+    this.getRef(this.refName, INPUT_TARGET_REF);
+  }
+
+  onBranchChange(event) {
+    this.beforeChange();
+    this.handleChange(event, INPUT_TARGET_BRANCH, this.branchName);
+  }
+
+  onRefChange(event) {
+    this.beforeChange();
+
+    const target = INPUT_TARGET_REF;
+
+    if (event.target !== document.activeElement) {
+      this.handleChange(event, target, event.target.value);
+      return;
     }
 
-    if (event.target === this.branchInput) {
-      target = INPUT_TARGET_BRANCH;
-      ({ value } = this.branchInput);
-    } else if (event.target === this.refInput) {
-      target = INPUT_TARGET_REF;
-      if (event.target === document.activeElement) {
-        value =
-          event.target.value.slice(0, event.target.selectionStart) +
-          event.target.value.slice(event.target.selectionEnd);
-      } else {
-        value = event.target.value;
-      }
-    } else {
-      return false;
-    }
+    const value =
+      event.target.value.slice(0, event.target.selectionStart) +
+      event.target.value.slice(event.target.selectionEnd);
 
-    if (this.isGettingRef) return false;
+    this.handleChange(event, target, value);
+  }
 
+  handleChange(event, target, value) {
     // `ENTER` key submits the data.
     if (event.keyCode === 13 && this.inputsAreValid()) {
       event.preventDefault();
-      return this.createMergeRequestButton.click();
+      this.createMergeRequestButton.click();
+      return;
     }
 
     // If the input is empty, use the original value generated by the backend.
@@ -422,18 +500,17 @@ export default class CreateMergeRequestDropdown {
       this.enable();
       this.showAvailableMessage(target);
       this.refDebounce(value, target);
-      return true;
+      return;
     }
 
-    this.showCheckingMessage(target);
+    if (target !== INPUT_TARGET_PROJECT) this.showCheckingMessage(target);
     this.refDebounce(value, target);
-
-    return true;
   }
 
   onClickCreateMergeRequestButton(event) {
-    let xhr = null;
     event.preventDefault();
+
+    if (this.cancelSources.size !== 0) return;
 
     if (isConfidentialIssue() && !event.currentTarget.classList.contains('js-create-target')) {
       this.droplab.hooks.forEach((hook) => hook.list.toggle());
@@ -445,6 +522,7 @@ export default class CreateMergeRequestDropdown {
       return;
     }
 
+    let xhr = null;
     if (event.currentTarget.dataset.action === CREATE_MERGE_REQUEST) {
       xhr = this.createMergeRequest();
     } else if (event.currentTarget.dataset.action === CREATE_BRANCH) {
@@ -464,12 +542,12 @@ export default class CreateMergeRequestDropdown {
   }
 
   onClickSetFocusOnBranchNameInput() {
-    this.branchInput.focus();
+    this.branchNameInput.focus();
   }
 
   // `TAB` autocompletes the source.
   static processTab(event) {
-    if (event.keyCode !== 9 || this.isGettingRef) return;
+    if (event.keyCode !== 9) return;
 
     const selectedText = CreateMergeRequestDropdown.getInputSelectedText(this.refInput);
 
@@ -480,6 +558,22 @@ export default class CreateMergeRequestDropdown {
     event.preventDefault();
     const caretPositionEnd = this.refInput.value.length;
     this.refInput.setSelectionRange(caretPositionEnd, caretPositionEnd);
+  }
+
+  getTargetData(target) {
+    if (target === INPUT_TARGET_BRANCH) {
+      return {
+        input: this.branchNameInput,
+        message: this.branchMessage,
+      };
+    }
+    if (target === INPUT_TARGET_REF) {
+      return {
+        input: this.sourceRefInput,
+        message: this.refMessage,
+      };
+    }
+    return null;
   }
 
   removeMessage(target) {
@@ -534,13 +628,8 @@ export default class CreateMergeRequestDropdown {
     message.style.display = 'inline-block';
   }
 
-  unavailable() {
-    this.availableButton.classList.add('hidden');
-    this.unavailableButton.classList.remove('hidden');
-  }
-
   updateBranchName(suggestedBranchName) {
-    this.branchInput.value = suggestedBranchName;
+    this.branchNameInput.value = suggestedBranchName;
     this.updateInputState(INPUT_TARGET_BRANCH, suggestedBranchName, '');
   }
 
@@ -559,20 +648,20 @@ export default class CreateMergeRequestDropdown {
   }
 
   updateRefInput(ref, result) {
-    this.refInput.dataset.value = ref;
+    this.sourceRefInput.dataset.value = ref;
     if (ref === result) {
       this.refIsValid = true;
       this.showAvailableMessage(INPUT_TARGET_REF);
     } else {
       this.refIsValid = false;
-      this.refInput.dataset.value = ref;
+      this.sourceRefInput.dataset.value = ref;
       this.disableCreateAction();
       this.showNotAvailableMessage(INPUT_TARGET_REF);
 
       // Show ref hint.
       if (result) {
-        this.refInput.value = result;
-        this.refInput.setSelectionRange(ref.length, result.length);
+        this.sourceRefInput.value = result;
+        this.sourceRefInput.setSelectionRange(ref.length, result.length);
       }
     }
   }

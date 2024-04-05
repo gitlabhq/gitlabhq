@@ -118,8 +118,10 @@ jest-snapshot-test-report.json
 *.local
 /config/vite.gdk.json
 
-# CSS compilation for cssbundling
+# CSS compilation for cssbundling and tailwind
 app/assets/builds/
+config/helpers/tailwind/all_utilities.haml
+config/helpers/tailwind/css_in_js.js
 
 # ruby-lsp
 .index.yml

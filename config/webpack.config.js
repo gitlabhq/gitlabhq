@@ -309,6 +309,11 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /jsonc-parser\/.*\.js$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
         test: /_worker\.js$/,
         resourceQuery: /worker/,
         use: [

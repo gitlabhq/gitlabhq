@@ -1,3 +1,58 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 
+.gl-border {
+    @apply gl-border-gray-100;
+    @apply gl-border-solid;
+}
+
+.gl-border\! {
+    @apply gl-border !important;
+    @apply gl-border-gray-100 !important;
+    @apply gl-border-solid !important;
+}
+
+.gl-border-b {
+    @apply gl-border-b-gray-100;
+    @apply gl-border-b-solid;
+}
+
+.gl-border-b\! {
+    @apply gl-border-b !important;
+    @apply gl-border-b-gray-100 !important;
+    @apply gl-border-b-solid !important;
+}
+
+.gl-border-l {
+    @apply gl-border-l-gray-100;
+    @apply gl-border-l-solid;
+}
+
+.gl-border-l\! {
+    @apply gl-border-l !important;
+    @apply gl-border-l-gray-100 !important;
+    @apply gl-border-l-solid !important;
+}
+
+.gl-border-r {
+    @apply gl-border-r-gray-100;
+    @apply gl-border-r-solid;
+}
+
+.gl-border-r\! {
+    @apply gl-border-r !important;
+    @apply gl-border-r-gray-100 !important;
+    @apply gl-border-r-solid !important;
+}
+
+.gl-border-t {
+    @apply gl-border-t-gray-100;
+    @apply gl-border-t-solid;
+}
+
+.gl-border-t\! {
+    @apply gl-border-t !important;
+    @apply gl-border-t-gray-100 !important;
+    @apply gl-border-t-solid !important;
+}
+
 @tailwind utilities;

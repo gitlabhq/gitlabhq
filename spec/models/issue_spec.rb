@@ -1122,7 +1122,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         allow(project).to receive(:forked?).and_return(true)
       end
 
-      it { is_expected.not_to be_can_be_worked_on }
+      it { is_expected.to be_can_be_worked_on }
     end
 
     it { is_expected.to be_can_be_worked_on }

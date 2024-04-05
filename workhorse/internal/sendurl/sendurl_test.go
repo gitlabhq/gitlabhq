@@ -292,3 +292,22 @@ func TestErrorWithCustomStatusCode(t *testing.T) {
 
 	require.Equal(t, http.StatusTeapot, response.Code)
 }
+
+func TestHttpClientReuse(t *testing.T) {
+	expectedKey := cacheKey{
+		requestTimeout:  0,
+		responseTimeout: 0,
+		allowRedirects:  false,
+	}
+	httpClients.Delete(expectedKey)
+
+	response := testEntryServer(t, "/get/request", nil, false)
+	require.Equal(t, http.StatusOK, response.Code)
+	_, found := httpClients.Load(expectedKey)
+	require.Equal(t, true, found)
+
+	storedClient := &http.Client{}
+	httpClients.Store(expectedKey, storedClient)
+	require.Equal(t, cachedClient(entryParams{}), storedClient)
+	require.NotEqual(t, cachedClient(entryParams{AllowRedirects: true}), storedClient)
+}

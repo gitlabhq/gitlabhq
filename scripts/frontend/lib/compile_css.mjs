@@ -86,6 +86,10 @@ function findSourceFiles(globPath, options = {}) {
   });
 }
 
+function alwaysTrue() {
+  return true;
+}
+
 /**
  * This function returns a Map<inputPath, outputPath> of absolute paths
  * which map from a SCSS source file to a CSS output file.
@@ -98,7 +102,7 @@ function findSourceFiles(globPath, options = {}) {
  * but theoretically they could be completely separate files.
  *
  */
-function resolveCompilationTargets() {
+function resolveCompilationTargets(filter) {
   const inputGlobs = [
     [
       'app/assets/stylesheets/*.scss',
@@ -156,7 +160,9 @@ function resolveCompilationTargets() {
     const sources = findSourceFiles(sourcePath, options);
     console.log(`${sourcePath} resolved to:`, sources);
     for (const { source, dest } of sources) {
-      result.set(dest, source);
+      if (filter(source, dest)) {
+        result.set(dest, source);
+      }
     }
   }
 
@@ -174,10 +180,14 @@ function createPostCSSProcessors() {
   };
 }
 
-export async function compileAllStyles({ shouldWatch = false }) {
+export async function compileAllStyles({
+  shouldWatch = false,
+  style = null,
+  filter = alwaysTrue,
+} = {}) {
   const reverseDependencies = {};
 
-  const compilationTargets = resolveCompilationTargets();
+  const compilationTargets = resolveCompilationTargets(filter);
 
   const processors = createPostCSSProcessors();
 
@@ -188,7 +198,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
     // We probably want to change this later if there are more
     // post-processing steps, because we would compress
     // _after_ things like auto-prefixer, etc. happened
-    style: shouldWatch ? 'expanded' : 'compressed',
+    style: style ?? (shouldWatch ? 'expanded' : 'compressed'),
     sourceMap: shouldWatch,
     sourceMapIncludeSources: shouldWatch,
   };
