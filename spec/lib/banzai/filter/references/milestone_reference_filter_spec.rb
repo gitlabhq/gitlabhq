@@ -504,7 +504,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter, feature_cat
     context 'when referencing both group and subgroup milestones using absolute references' do
       let(:subgroup) { create(:group, :public, parent: group) }
       let(:group_milestone) { create(:milestone, title: 'group_milestone', group: group) }
-      let(:subgroup_milestone) { create(:milestone, title: 'group_milestone', group: subgroup) }
+      let(:subgroup_milestone) { create(:milestone, title: 'subgroup_milestone', group: subgroup) }
       let(:context) { { project: project, group: nil } }
 
       it 'links to valid references' do

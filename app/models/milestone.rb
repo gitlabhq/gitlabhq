@@ -300,9 +300,9 @@ class Milestone < ApplicationRecord
   # milestone titles must be unique across project and group milestones
   def uniqueness_of_title
     if project
-      relation = self.class.for_projects_and_groups([project_id], [project.group&.id])
+      relation = self.class.for_projects_and_groups([project_id], [project.group&.self_and_ancestors_ids])
     elsif group
-      relation = self.class.for_projects_and_groups(group.projects.select(:id), [group.id])
+      relation = self.class.for_projects_and_groups(group.all_project_ids, [group.self_and_hierarchy])
     end
 
     title_exists = relation.find_by_title(title)

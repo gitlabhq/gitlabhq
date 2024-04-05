@@ -108,12 +108,12 @@ You can define URL variables directly using the REST API.
 
 ## Custom headers
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_headers`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_headers`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_headers`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_headers`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can add up to 20 custom headers in the webhook configuration as part of the request.
 You can use these custom headers for authentication to external services.

@@ -33,43 +33,54 @@ RSpec.describe Milestone, feature_category: :team_planning do
   it_behaves_like 'a timebox', :milestone do
     let(:project) { create(:project, :public) }
     let(:timebox) { create(:milestone, project: project) }
+  end
 
-    describe "#uniqueness_of_title" do
-      context "per project" do
-        it "does not accept the same title in a project twice" do
-          new_timebox = timebox.dup
-          expect(new_timebox).not_to be_valid
-        end
+  describe "#uniqueness_of_title" do
+    let_it_be(:root_group) { create(:group) }
+    let_it_be(:sub_group) { create(:group, parent: root_group) }
+    let_it_be(:sub_sub_group) { create(:group, parent: sub_group) }
+    let_it_be(:sub_sub_project) { create(:project, group: sub_sub_group) }
+    let_it_be(:sub_sub_group_milestone) { create(:milestone, group: sub_sub_group) }
+    let_it_be(:sub_sub_project_milestone) { create(:milestone, project: sub_sub_project) }
 
-        it "accepts the same title in another project" do
-          project = create(:project)
-          new_timebox = timebox.dup
-          new_timebox.project = project
+    context "per project" do
+      it "does not accept the same title in a project twice" do
+        milestone = described_class.new(project: sub_sub_project, title: sub_sub_project_milestone.title)
 
-          expect(new_timebox).to be_valid
-        end
+        expect(milestone).not_to be_valid
       end
 
-      context "per group" do
-        let(:timebox) { create(:milestone, group: group) }
+      it "accepts the same title in another project" do
+        project = create(:project, group: sub_sub_group)
+        milestone = described_class.new(project: project, title: sub_sub_project_milestone.title)
 
-        before do
-          project.update!(group: group)
-        end
+        expect(milestone).to be_valid
+      end
+    end
 
-        it "does not accept the same title in a group twice" do
-          new_timebox = described_class.new(group: group, title: timebox.title)
+    context "per group" do
+      it "does not accept the same title in a group twice" do
+        milestone = described_class.new(group: sub_sub_group, title: sub_sub_group_milestone.title)
 
-          expect(new_timebox).not_to be_valid
-        end
+        expect(milestone).not_to be_valid
+      end
 
-        it "does not accept the same title of a child project timebox" do
-          create(:milestone, *timebox_args, project: group.projects.first)
+      it "does not accept the same title of a child project timebox" do
+        milestone = described_class.new(group: sub_sub_group, title: sub_sub_project_milestone.title)
 
-          new_timebox = described_class.new(group: group, title: timebox.title)
+        expect(milestone).not_to be_valid
+      end
 
-          expect(new_timebox).not_to be_valid
-        end
+      it "does not accept the same title in a descendant group" do
+        new_timebox = described_class.new(group: root_group, title: sub_sub_group_milestone.title)
+
+        expect(new_timebox).not_to be_valid
+      end
+
+      it "does not accept the same title in a descendant project" do
+        new_timebox = described_class.new(group: root_group, title: sub_sub_project_milestone.title)
+
+        expect(new_timebox).not_to be_valid
       end
     end
   end

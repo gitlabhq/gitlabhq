@@ -1288,10 +1288,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/eslint-plugin@19.4.0":
-  version "19.4.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.4.0.tgz#cffabc4a41a3e15491eaee87f282fef05d244b87"
-  integrity sha512-hFchl6UdzoOTFFiTx8myoJxe5SZ43LeC/+Er9tmIZ8HX3OZ6SFHTHaz61g2g4vvcwVHDMaAd5ncB6RCshlgv2A==
+"@gitlab/eslint-plugin@19.5.0":
+  version "19.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-19.5.0.tgz#4b5d397c1c5bb23fb37594ca8d094198ef28b315"
+  integrity sha512-Yb3D3IaARRDPcnQWhHbW2FUwndsZc+QtCHy2dYUiaT8AFobTshmdisDa7YGhKs+SQN6iMTV9p6ywnbD3JjaBSQ==
   dependencies:
     eslint-config-airbnb-base "^15.0.0"
     eslint-config-prettier "^6.10.0"

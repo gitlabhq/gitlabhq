@@ -10098,6 +10098,9 @@ msgstr ""
 msgid "Certificate Subject"
 msgstr ""
 
+msgid "Change (%%)"
+msgstr ""
+
 msgid "Change action"
 msgstr ""
 
@@ -15875,6 +15878,9 @@ msgid "DORA4Metrics|Change failure rate (Quality)"
 msgstr ""
 
 msgid "DORA4Metrics|Change failure rate (percentage)"
+msgstr ""
+
+msgid "DORA4Metrics|Code Suggestions usage"
 msgstr ""
 
 msgid "DORA4Metrics|Contributor count"
@@ -36567,6 +36573,9 @@ msgstr ""
 msgid "Password|requires at least one uppercase letter"
 msgstr ""
 
+msgid "Past 6 Months"
+msgstr ""
+
 msgid "Past due"
 msgstr ""
 
@@ -55970,6 +55979,9 @@ msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked iss
 msgstr ""
 
 msgid "ValueStreamAnalytics|Merge request analytics"
+msgstr ""
+
+msgid "ValueStreamAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique contributors."
 msgstr ""
 
 msgid "ValueStreamAnalytics|New Value Stream"

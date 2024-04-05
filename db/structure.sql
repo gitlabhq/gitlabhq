@@ -27599,6 +27599,8 @@ CREATE INDEX index_vulnerability_reads_common_finder_query_2 ON vulnerability_re
 
 CREATE INDEX index_vulnerability_reads_common_finder_query_w_namespace_id ON vulnerability_reads USING btree (namespace_id, state, report_type, severity, vulnerability_id DESC, dismissal_reason);
 
+CREATE INDEX index_vulnerability_reads_for_vulnerability_export ON vulnerability_reads USING btree (traversal_ids, vulnerability_id) WHERE (archived = false);
+
 CREATE INDEX index_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (cluster_agent_id) WHERE (report_type = 7);
 
 CREATE INDEX index_vulnerability_reads_on_location_image ON vulnerability_reads USING btree (location_image) WHERE (report_type = ANY (ARRAY[2, 7]));

@@ -3139,6 +3139,7 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 
 - The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
   To download artifacts from a job in the current pipeline, use [`needs:artifacts`](#needsartifacts).
+- You cannot use `needs:pipeline:job` in a [trigger job](#trigger).
 
 #### `needs:optional`
 
@@ -4941,6 +4942,7 @@ trigger-multi-project-pipeline:
 - [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
   are not available in trigger jobs.
 - Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
+- You cannot use [`needs:pipeline:job`](#needspipelinejob) in a trigger job.
 
 **Related topics**:
 

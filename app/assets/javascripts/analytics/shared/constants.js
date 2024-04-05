@@ -128,6 +128,10 @@ export const CONTRIBUTOR_METRICS = {
   COUNT: CONTRIBUTOR_COUNT_TYPE,
 };
 
+export const AI_METRICS = {
+  CODE_SUGGESTIONS_USAGE_RATE: 'code_suggestions_usage_rate',
+};
+
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
     description: s__(
@@ -227,6 +231,14 @@ export const METRIC_TOOLTIPS = {
     docsLink: helpPagePath('user/analytics/merge_request_analytics', {
       anchor: 'view-the-number-of-merge-requests-in-a-date-range',
     }),
+  },
+  [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
+    description: s__(
+      'ValueStreamAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique contributors.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/analytics'),
   },
 };
 
