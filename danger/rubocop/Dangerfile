@@ -5,3 +5,4 @@ return if helper.revert_mr? && !helper.stable_branch?
 
 rubocop.execute_inline_disable_suggestor
 rubocop.execute_todo_suggestor
+rubocop.execute_new_todo_reminder
