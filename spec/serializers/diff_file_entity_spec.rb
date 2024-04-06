@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffFileEntity do
+RSpec.describe DiffFileEntity, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
