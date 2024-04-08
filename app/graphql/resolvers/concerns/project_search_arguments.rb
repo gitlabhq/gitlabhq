@@ -19,6 +19,10 @@ module ProjectSearchArguments
     argument :topics, type: [GraphQL::Types::String],
                       required: false,
                       description: 'Filter projects by topics.'
+
+    argument :personal, GraphQL::Types::Boolean,
+             required: false,
+             description: 'Return only personal projects.'
   end
 
   private
@@ -29,7 +33,8 @@ module ProjectSearchArguments
       search: params[:search],
       search_namespaces: params[:search_namespaces],
       sort: params[:sort],
-      topic: params[:topics]
+      topic: params[:topics],
+      personal: params[:personal]
     }.compact
   end
 end

@@ -16,6 +16,10 @@ describe('ReviewerTitle component', () => {
         ...props,
       },
       provide: {
+        projectPath: 'gitlab-org/gitlab',
+        issuableId: '1',
+        issuableIid: '1',
+        multipleApprovalRulesAvailable: false,
         glFeatures: {
           reviewerAssignDrawer,
         },

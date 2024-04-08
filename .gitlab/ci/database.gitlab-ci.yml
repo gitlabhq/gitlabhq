@@ -58,6 +58,12 @@ db:migrate:multi-version-upgrade:
     - psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
     - bundle exec rake gitlab:db:configure
 
+# Validate minimum PG version supported by GitLab
+db:migrate:multi-version-upgrade-pg13:
+  extends:
+    - db:migrate:multi-version-upgrade
+    - .use-pg13
+
 db:migrate:reset:
   extends: .db-job-base
   script:

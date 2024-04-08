@@ -6,6 +6,8 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 export default {
   components: {
     GlDrawer,
+    ApprovalSummary: () =>
+      import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
   },
   props: {
     open: {
@@ -32,6 +34,9 @@ export default {
   >
     <template #title>
       <h4 class="gl-my-0">{{ __('Assign reviewers') }}</h4>
+    </template>
+    <template #header>
+      <approval-summary />
     </template>
   </gl-drawer>
 </template>

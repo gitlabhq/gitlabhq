@@ -8,6 +8,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
   describe '#resolve' do
     subject { resolve(described_class, obj: nil, args: filters, ctx: { current_user: current_user }).items }
 
+    let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:group) { create(:group, name: 'public-group') }
     let_it_be(:private_group) { create(:group, name: 'private-group') }
     let_it_be(:project) { create(:project, :public, topic_list: %w[ruby javascript]) }
@@ -16,8 +17,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
     let_it_be(:private_project) { create(:project, :private) }
     let_it_be(:other_private_project) { create(:project, :private) }
     let_it_be(:private_group_project) { create(:project, :private, group: private_group) }
-
-    let_it_be(:user) { create(:user) }
+    let_it_be(:private_personal_project) { create(:project, :private, namespace: user.namespace) }
 
     let(:filters) { {} }
 
@@ -74,16 +74,26 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
             is_expected.to contain_exactly(project)
           end
         end
+
+        context 'when personal filter is provided' do
+          let(:filters) { { personal: true } }
+
+          it 'returns all public projects' do
+            is_expected.to contain_exactly(project, other_project, group_project)
+          end
+        end
       end
     end
 
     context 'when user is logged in' do
       let(:current_user) { user }
-      let(:visible_projecs) { [project, other_project, group_project, private_project, private_group_project] }
+      let(:visible_projects) do
+        [project, other_project, group_project, private_project, private_group_project, private_personal_project]
+      end
 
       context 'when no filters are applied' do
         it 'returns all visible projects for the user' do
-          is_expected.to contain_exactly(project, other_project, group_project, private_project, private_group_project)
+          is_expected.to match_array(visible_projects)
         end
 
         context 'when search filter is provided' do
@@ -98,7 +108,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
           let(:filters) { { membership: true } }
 
           it 'returns projects that user is member of' do
-            is_expected.to contain_exactly(project, private_project, private_group_project)
+            is_expected.to contain_exactly(project, private_project, private_group_project, private_personal_project)
           end
         end
 
@@ -142,7 +152,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
           context 'when no sort is provided' do
             it 'returns projects in descending order by id' do
-              is_expected.to match_array((visible_projecs + named_projects).sort_by { |p| p[:id] }.reverse)
+              is_expected.to match_array((visible_projects + named_projects).sort_by { |p| p[:id] }.reverse)
             end
           end
         end
@@ -152,6 +162,14 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
           it 'returns matching project' do
             is_expected.to contain_exactly(project)
+          end
+        end
+
+        context 'when personal filter is provided' do
+          let(:filters) { { personal: true } }
+
+          it 'returns matching project' do
+            is_expected.to contain_exactly(private_personal_project)
           end
         end
       end

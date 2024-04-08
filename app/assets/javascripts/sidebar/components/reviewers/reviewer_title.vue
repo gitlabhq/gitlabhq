@@ -60,18 +60,6 @@ export default {
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <template v-if="editable">
       <gl-button
-        v-if="glFeatures.reviewerAssignDrawer"
-        v-tooltip.hover
-        :title="__('Add or edit reviewers')"
-        category="tertiary"
-        size="small"
-        class="gl-float-right gl-ml-2"
-        data-testid="drawer-toggle"
-        @click="toggleDrawerOpen"
-      >
-        {{ __('Edit') }}
-      </gl-button>
-      <gl-button
         v-tooltip.hover
         :title="__('Quick assign')"
         class="js-sidebar-dropdown-toggle edit-link gl-ml-auto hide-collapsed gl-float-right"
@@ -84,6 +72,18 @@ export default {
         :icon="glFeatures.reviewerAssignDrawer ? 'plus' : ''"
         ><template v-if="!glFeatures.reviewerAssignDrawer">{{ __('Edit') }}</template></gl-button
       >
+      <gl-button
+        v-if="glFeatures.reviewerAssignDrawer"
+        v-tooltip.hover
+        :title="__('Add or edit reviewers')"
+        category="tertiary"
+        size="small"
+        class="gl-float-right gl-ml-2"
+        data-testid="drawer-toggle"
+        @click="toggleDrawerOpen(!drawerOpen)"
+      >
+        {{ __('Edit') }}
+      </gl-button>
     </template>
     <mounting-portal v-if="glFeatures.reviewerAssignDrawer" mount-to="#js-reviewer-drawer-portal">
       <reviewer-drawer :open="drawerOpen" @close="toggleDrawerOpen(false)" />

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ReleasesHelper
-  IMAGE_PATH = 'illustrations/releases.svg'
+  IMAGE_PATH = 'illustrations/rocket-launch-md.svg'
   DOCUMENTATION_PATH = 'user/project/releases/index'
 
   # This needs to be kept in sync with the constant in

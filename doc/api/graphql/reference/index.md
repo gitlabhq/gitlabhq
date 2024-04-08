@@ -769,6 +769,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="queryprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="queryprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
@@ -16833,6 +16834,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnerprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="cirunnerprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="cirunnerprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="cirunnerprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="cirunnerprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.4. Default sort order will change in GitLab 17.0. Specify `"id_asc"` if you require the query results to be ordered by ascending IDs. |
@@ -24721,6 +24723,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="organizationprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="organizationprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="organizationprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |

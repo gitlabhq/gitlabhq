@@ -17595,7 +17595,8 @@ CREATE TABLE vulnerability_reads (
     archived boolean DEFAULT false NOT NULL,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
-    CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
+    CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),
+    CONSTRAINT check_f5ba7c2496 CHECK ((traversal_ids IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_reads_id_seq
@@ -20704,9 +20705,6 @@ ALTER TABLE sprints
 
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
-
-ALTER TABLE vulnerability_reads
-    ADD CONSTRAINT check_f5ba7c2496 CHECK ((traversal_ids IS NOT NULL)) NOT VALID;
 
 ALTER TABLE projects
     ADD CONSTRAINT check_fa75869cb1 CHECK ((project_namespace_id IS NOT NULL)) NOT VALID;

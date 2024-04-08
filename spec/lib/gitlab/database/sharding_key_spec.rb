@@ -23,16 +23,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_not_null) do
     [
       *tables_with_alternative_not_null_constraint,
-      'internal_ids.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
-      'internal_ids.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
-      'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
-      'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      *['boards.project_id', 'boards.group_id'],
+      *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
+      *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
+      *['milestones.project_id', 'milestones.group_id'],
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
       'path_locks.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
+      'sprints.group_id',
       'subscription_add_on_purchases.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
-      'temp_notes_backup.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/443667'
+      'temp_notes_backup.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/443667'
+      *['todos.project_id', 'todos.group_id']
     ]
   end
 

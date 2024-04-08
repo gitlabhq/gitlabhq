@@ -187,12 +187,18 @@ function mountSidebarReviewers(mediator) {
     return;
   }
 
-  const { iid, fullPath } = getSidebarOptions();
+  const { id, iid, fullPath, multipleApprovalRulesAvailable = false } = getSidebarOptions();
   // eslint-disable-next-line no-new
   new Vue({
     el,
     name: 'SidebarReviewersRoot',
     apolloProvider,
+    provide: {
+      issuableIid: String(iid),
+      issuableId: String(id),
+      projectPath: fullPath,
+      multipleApprovalRulesAvailable: parseBoolean(multipleApprovalRulesAvailable),
+    },
     render: (createElement) =>
       createElement(SidebarReviewers, {
         props: {

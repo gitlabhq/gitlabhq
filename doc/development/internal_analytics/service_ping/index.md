@@ -387,7 +387,7 @@ We return fallback values in these cases:
 
 ## Monitoring
 
-Service Ping reporting process state is monitored with [internal SiSense dashboard](https://app.periscopedata.com/app/gitlab/968489/Product-Intelligence---Service-Ping-Health).
+Service Ping reporting process state is monitored with [Tableau dashboard](https://10az.online.tableau.com/#/site/gitlab/workbooks/2327447/views).
 
 ## Related topics
 

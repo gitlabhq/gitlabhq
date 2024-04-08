@@ -405,7 +405,7 @@ You can use tags to run different jobs on different platforms. For
 example, if you have an OS X runner with tag `osx` and a Windows runner with tag
 `windows`, you can run a job on each platform.
 
-Update the `tags` field in the `config.toml`:
+Update the `tags` field in the `.gitlab-ci.yml`:
 
 ```yaml
 windows job:

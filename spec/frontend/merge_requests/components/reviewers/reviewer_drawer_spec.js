@@ -10,6 +10,12 @@ let wrapper;
 function createComponent(propsData = {}) {
   wrapper = shallowMount(ReviewerDrawer, {
     propsData,
+    provide: {
+      projectPath: 'gitlab-org/gitlab',
+      issuableId: '1',
+      issuableIid: '1',
+      multipleApprovalRulesAvailable: false,
+    },
   });
 }
 

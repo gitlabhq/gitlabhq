@@ -491,6 +491,19 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         expect(text).not_to match('<a')
       end
 
+      context 'custom emoji' do
+        it 'includes fallback-src data attribute' do
+          group = create(:group)
+          project = create(:project, :repository, group: group)
+          custom_emoji = create(:custom_emoji, group: group)
+
+          object = create_object(":#{custom_emoji.name}:", project: project)
+          expected = "<p><gl-emoji title=\"#{custom_emoji.name}\" data-name=\"#{custom_emoji.name}\" data-fallback-src=\"#{custom_emoji.url}\" data-unicode-version=\"custom\"></gl-emoji></p>"
+
+          expect(helper.first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
+        end
+      end
+
       context 'labels formatting' do
         let(:label_title) { 'this should be ~label_1' }
 
