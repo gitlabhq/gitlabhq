@@ -228,19 +228,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata, feature_category: 
       end
     end
 
-    context 'when auto_cancel_pipeline_on_job_failure feature is disabled' do
-      before do
-        stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-      end
-
-      it 'ignores the auto_cancel_on_job_failure value' do
-        run_chain
-
-        expect(pipeline.pipeline_metadata.auto_cancel_on_job_failure).to eq('none')
-        expect(pipeline.pipeline_metadata).not_to be_persisted
-      end
-    end
-
     context 'with workflow:rules:auto_cancel' do
       context 'with auto_cancel:on_new_commit not set and rules:workflow:auto_cancel:on_new_commit set' do
         let(:config) do

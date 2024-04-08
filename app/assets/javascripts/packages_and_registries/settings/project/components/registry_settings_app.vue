@@ -9,6 +9,7 @@ import {
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
+import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -20,6 +21,7 @@ export default {
         'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue'
       ),
     GlAlert,
+    MetadataDatabaseAlert,
     PackagesCleanupPolicy,
     PackagesProtectionRules: () =>
       import('~/packages_and_registries/settings/project/components/packages_protection_rules.vue'),
@@ -29,6 +31,7 @@ export default {
     'showContainerRegistrySettings',
     'showPackageRegistrySettings',
     'showDependencyProxySettings',
+    'isContainerRegistryMetadataDatabaseEnabled',
   ],
   i18n: {
     UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -67,6 +70,7 @@ export default {
 
 <template>
   <div data-testid="packages-and-registries-project-settings">
+    <metadata-database-alert v-if="!isContainerRegistryMetadataDatabaseEnabled" class="gl-mt-5" />
     <gl-alert
       v-if="showAlert"
       variant="success"

@@ -2205,6 +2205,7 @@
 
 .rails:rules:detect-tests:
   rules:
+    - if: '$ENABLE_DETECT_TESTS == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
@@ -2347,6 +2348,7 @@
 
 .static-analysis:rules:rubocop:
   rules:
+    - if: '$ENABLE_RUBOCOP == "true"'
     - <<: *if-default-refs
       changes: *rubocop-patterns
       variables:

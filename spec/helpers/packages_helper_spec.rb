@@ -252,6 +252,36 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
     end
   end
 
+  describe '#settings_data' do
+    let(:user) { build_stubbed(:user) }
+
+    subject { helper.settings_data(project) }
+
+    where(:config_registry, :permission, :supports_gitlab_api?, :expected_result) do
+      false | false | false | false
+      false | false | true  | false
+      false | true  | false | false
+      false | true  | true  | false
+      true  | false | false | false
+      true  | false | true  | false
+      true  | true  | false | false
+      true  | true  | true  | true
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        stub_config(registry: { enabled: config_registry })
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(supports_gitlab_api?)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :admin_container_image, project).and_return(permission)
+        allow(Ability).to receive(:allowed?).with(user, :admin_package, project).and_return(true)
+      end
+
+      it { is_expected.to include(is_container_registry_metadata_database_enabled: expected_result.to_s) }
+    end
+  end
+
   describe '#can_delete_packages?' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }

@@ -139,6 +139,8 @@ To update multiple epics at the same time:
 
 ## Delete an epic
 
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
+
 Prerequisites:
 
 - You must have the Owner role for the epic's group.
@@ -149,9 +151,6 @@ To delete the epic:
 1. Select **Delete**. A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
-
-WARNING:
-If you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
 
 ## Close an epic
 

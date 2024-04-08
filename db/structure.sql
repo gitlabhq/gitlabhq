@@ -6645,6 +6645,7 @@ CREATE TABLE ci_runner_machines (
     ip_address text,
     config jsonb DEFAULT '{}'::jsonb NOT NULL,
     system_xid text,
+    creation_state smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1537c1f66f CHECK ((char_length(platform) <= 255)),
     CONSTRAINT check_5253913ae9 CHECK ((char_length(system_xid) <= 64)),
     CONSTRAINT check_6f45a91da7 CHECK ((char_length(version) <= 2048)),
@@ -6730,6 +6731,7 @@ CREATE TABLE ci_runners (
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
     registration_type smallint DEFAULT 0 NOT NULL,
     creator_id bigint,
+    creation_state smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_ce275cee06 CHECK ((char_length(maintainer_note) <= 1024))
 );
 
@@ -29798,9 +29800,6 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY zoekt_repositories
     ADD CONSTRAINT fk_25a92aeccd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY epics
-    ADD CONSTRAINT fk_25b99c1be3 FOREIGN KEY (parent_id) REFERENCES epics(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_262d4c2d19 FOREIGN KEY (auto_canceled_by_id) REFERENCES ci_pipelines(id) ON DELETE SET NULL;
 
@@ -30745,6 +30744,9 @@ ALTER TABLE ONLY emails
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_epics_issue_id_with_on_delete_nullify FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY epics
+    ADD CONSTRAINT fk_epics_on_parent_id_with_on_delete_nullify FOREIGN KEY (parent_id) REFERENCES epics(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_f05c5e5a42 FOREIGN KEY (management_project_id) REFERENCES projects(id) ON DELETE SET NULL;

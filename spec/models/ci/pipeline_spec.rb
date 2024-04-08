@@ -5949,29 +5949,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       allow(pipeline).to receive(:auto_cancel_on_job_failure).and_return(auto_cancel_on_job_failure)
     end
 
-    shared_examples 'expected behaviour' do
-      it 'cancels the pipeline when expected' do
-        unless errors
-          if cancels
-            expect(::Ci::UserCancelPipelineWorker).to receive(:perform_async)
-          else
-            expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
-          end
-
-          subject
-        end
-      end
-
-      it 'raises errors when expected' do
-        if errors
-          expect { subject }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_job_failure value: invalid value')
-        else
-          expect { subject }.not_to raise_error
-        end
-      end
-    end
-
-    context 'when the auto_cancel_pipeline_on_job_failure feature flag is enabled' do
+    context 'with different configurations' do
       where(:auto_cancel_on_job_failure, :cancels, :errors) do
         'none'          | false | false
         'all'           | true  | false
@@ -5979,23 +5957,25 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       with_them do
-        it_behaves_like 'expected behaviour'
-      end
-    end
+        it 'cancels the pipeline when expected' do
+          unless errors
+            if cancels
+              expect(::Ci::UserCancelPipelineWorker).to receive(:perform_async)
+            else
+              expect(::Ci::UserCancelPipelineWorker).not_to receive(:perform_async)
+            end
 
-    context 'when the auto_cancel_pipeline_on_job_failure feature flag is disabled' do
-      before do
-        stub_feature_flags(auto_cancel_pipeline_on_job_failure: false)
-      end
+            subject
+          end
+        end
 
-      where(:auto_cancel_on_job_failure, :cancels, :errors) do
-        'none'          | false | false
-        'all'           | false | false
-        'invalid value' | false | false
-      end
-
-      with_them do
-        it_behaves_like 'expected behaviour'
+        it 'raises errors when expected' do
+          if errors
+            expect { subject }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_job_failure value: invalid value')
+          else
+            expect { subject }.not_to raise_error
+          end
+        end
       end
     end
   end

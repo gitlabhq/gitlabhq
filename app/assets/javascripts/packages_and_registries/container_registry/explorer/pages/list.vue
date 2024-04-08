@@ -16,11 +16,11 @@ import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
+import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import DeleteImage from '../components/delete_image.vue';
 import RegistryHeader from '../components/list_page/registry_header.vue';
 import DeleteModal from '../components/delete_modal.vue';
-
 import {
   DELETE_IMAGE_SUCCESS_MESSAGE,
   DELETE_IMAGE_ERROR_MESSAGE,
@@ -64,6 +64,7 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
+    MetadataDatabaseAlert,
     PersistedPagination,
     PersistedSearch,
   },
@@ -233,6 +234,7 @@ export default {
 
 <template>
   <div>
+    <metadata-database-alert v-if="!config.isMetadataDatabaseEnabled" />
     <gl-alert
       v-if="showDeleteAlert"
       :variant="deleteAlertType"

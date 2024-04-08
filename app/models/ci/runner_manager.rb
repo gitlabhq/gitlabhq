@@ -17,6 +17,11 @@ module Ci
 
     belongs_to :runner
 
+    enum creation_state: {
+      started: 0,
+      finished: 100
+    }, _suffix: true
+
     has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
       class_name: 'Ci::RunnerManagerBuild'
     has_many :builds, through: :runner_manager_builds, class_name: 'Ci::Build'
@@ -109,7 +114,9 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current if update_contacted_at
+
+        values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
+
         if values.include?(:executor)
           values[:executor_type] = Ci::Runner::EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end

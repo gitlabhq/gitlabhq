@@ -34,6 +34,11 @@ module Ci
       project_type: 3
     }
 
+    enum creation_state: {
+      started: 0,
+      finished: 100
+    }, _suffix: true
+
     enum registration_type: {
       registration_token: 0,
       authenticated_user: 1
@@ -454,7 +459,11 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current if update_contacted_at
+
+        if update_contacted_at
+          values.merge!(contacted_at: Time.current, creation_state: :finished)
+        end
+
         if values.include?(:executor)
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end

@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Partial clone
+# Use partial clones to reduce clone size
 
 As Git repositories grow in size, they can become cumbersome to work with
 because of:
@@ -39,7 +39,7 @@ git clone --filter=blob:limit=1m git@gitlab.com:gitlab-com/www-gitlab-com.git
 
 This would produce the following output:
 
-```plaintext
+```shell
 Cloning into 'www-gitlab-com'...
 remote: Enumerating objects: 832467, done.
 remote: Counting objects: 100% (832467/832467), done.
@@ -70,7 +70,7 @@ For repositories with millions of files and a long history, you can exclude all 
 [`git sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) to reduce the size of
 your working copy.
 
-```plaintext
+```shell
 # Clone the repo excluding all files
 $ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com.git
 Cloning into 'www-gitlab-com'...
@@ -143,7 +143,6 @@ For more details, see the Git documentation for
    clone command is not fully integrated with sparse checkout.
 
    ```shell
-
    # Clone the filtered set of objects using the filterspec stored on the
    # server. WARNING: this step may be very slow!
    git clone --sparse --filter=sparse:oid=master:shiny-app/.gitfilterspec <url>

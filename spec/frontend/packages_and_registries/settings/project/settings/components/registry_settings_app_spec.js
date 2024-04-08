@@ -9,6 +9,7 @@ import ContainerProtectionRules from '~/packages_and_registries/settings/project
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 import DependencyProxyPackagesSettings from 'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue';
+import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -26,6 +27,7 @@ describe('Registry Settings app', () => {
   const findDependencyProxyPackagesSettings = () =>
     wrapper.findComponent(DependencyProxyPackagesSettings);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findMetadataDatabaseAlert = () => wrapper.findComponent(MetadataDatabaseAlert);
 
   const defaultProvide = {
     projectPath: 'path',
@@ -37,6 +39,7 @@ describe('Registry Settings app', () => {
       containerRegistryProtectedContainers: true,
       packagesProtectedPackages: true,
     },
+    isContainerRegistryMetadataDatabaseEnabled: false,
   };
 
   const mountComponent = (provide = defaultProvide) => {
@@ -44,6 +47,23 @@ describe('Registry Settings app', () => {
       provide,
     });
   };
+
+  describe('metadata database alert', () => {
+    it('is rendered when metadata database is not enabled', () => {
+      mountComponent();
+
+      expect(findMetadataDatabaseAlert().exists()).toBe(true);
+    });
+
+    it('is not rendered when metadata database is enabled', () => {
+      mountComponent({
+        ...defaultProvide,
+        isContainerRegistryMetadataDatabaseEnabled: true,
+      });
+
+      expect(findMetadataDatabaseAlert().exists()).toBe(false);
+    });
+  });
 
   describe('container policy success alert handling', () => {
     const originalLocation = window.location.href;

@@ -531,11 +531,7 @@ In this example:
 #### `workflow:auto_cancel:on_job_failure`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To enable the feature, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
 Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
 
@@ -754,13 +750,17 @@ When the branch is something else:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
+> - `on_job_failure` option for `workflow:rules` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
+> - `on_job_failure` option for `workflow:rules` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
 Use `workflow:rules:auto_cancel` to configure the behavior of
-the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
+the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) or
+the [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure) features.
 
 **Possible inputs**:
 
 - `on_new_commit`: [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
+- `on_job_failure`: [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)
 
 **Example of `workflow:rules:auto_cancel`**:
 
@@ -768,10 +768,12 @@ the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) fe
 workflow:
   auto_cancel:
     on_new_commit: interruptible
+    on_job_failure: all
   rules:
     - if: $CI_COMMIT_REF_PROTECTED == 'true'
       auto_cancel:
         on_new_commit: none
+        on_job_failure: none
     - when: always                  # Run the pipeline in other cases
 
 test-job1:
@@ -784,8 +786,9 @@ test-job2:
 ```
 
 In this example, [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
-is set to `interruptible` for all jobs by default. But if a pipeline runs for a protected branch,
-the rule overrides the default with `on_new_commit: none`. For example, if a pipeline
+is set to `interruptible` and [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)
+is set to `all` for all jobs by default. But if a pipeline runs for a protected branch,
+the rule overrides the default with `on_new_commit: none` and `on_job_failure: none`. For example, if a pipeline
 is running for:
 
 - A non-protected branch and a new commit is pushed, `test-job1` continues to run and `test-job2` is canceled.

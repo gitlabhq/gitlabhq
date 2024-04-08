@@ -16,10 +16,6 @@ module Gitlab
         end
 
         def satisfied_by?(_pipeline, context)
-          if ::Feature.disabled?(:ci_rule_exists_extension_optimization, context.project, type: :gitlab_com_derisk)
-            return legacy_satisfied_by?(context)
-          end
-
           paths = worktree_paths(context)
           exact_globs, extension_globs, pattern_globs = separate_globs(context)
 
@@ -29,18 +25,6 @@ module Gitlab
         end
 
         private
-
-        def legacy_satisfied_by?(context)
-          paths = worktree_paths(context)
-          exact_globs, pattern_globs = legacy_separate_globs(context)
-
-          exact_matches?(paths, exact_globs) || pattern_matches?(paths, pattern_globs)
-        end
-
-        def legacy_separate_globs(context)
-          expanded_globs = expand_globs(context)
-          expanded_globs.partition(&method(:exact_glob?))
-        end
 
         def separate_globs(context)
           expanded_globs = expand_globs(context)

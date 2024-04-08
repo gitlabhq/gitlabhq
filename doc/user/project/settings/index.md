@@ -59,8 +59,7 @@ To enable or disable individual features in a project:
 
 ## Disable project analytics
 
-By default, [analytics for a project](../../analytics/index.md#project-level-analytics)
-are displayed under the **Analyze** item in the left sidebar.
+By default, project analytics are displayed under the **Analyze** item in the left sidebar.
 To disable this feature and remove the **Analyze** item from the left sidebar:
 
 1. On the left sidebar, select **Search or go to** and find your project.

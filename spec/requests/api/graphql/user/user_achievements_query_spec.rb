@@ -91,10 +91,8 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   context 'when current user is not a member of the private group' do
     let(:current_user) { create(:user) }
 
-    it 'returns all achievements' do
-      expect(graphql_data_at(:user, :userAchievements, :nodes)).to contain_exactly(
-        a_graphql_entity_for(non_revoked_achievement)
-      )
+    it 'returns no achievements' do
+      expect(graphql_data_at(:user, :userAchievements, :nodes)).to be_empty
     end
   end
 end

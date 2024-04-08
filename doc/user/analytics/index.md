@@ -7,55 +7,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Analyze GitLab usage
 
+> - Group-level analytics moved to GitLab Premium in 13.9.
+
 GitLab provides different types of analytics insights at the instance, group, and project level.
 These insights appear on the left sidebar, under [**Analyze**](../project/settings/index.md#disable-project-analytics).
 
-## Instance-level analytics
+## Analytics features
 
-Use [instance-level analytics](../../administration/analytics/index.md) to aggregate analytics across GitLab,
-so that you can view information across multiple projects and groups in one place.
-
-## Group-level analytics
-
-> - Moved to GitLab Premium in 13.9.
-
-Use group-level analytics to get insights into your groups':
-
-- [Security Dashboards](../application_security/security_dashboard/index.md)
-- [Contribution analytics](../group/contribution_analytics/index.md)
-- [DevOps adoption](../group/devops_adoption/index.md)
-- [Insights](../project/insights/index.md)
-- [Issue analytics](../group/issues_analytics/index.md)
-- [Productivity analytics](productivity_analytics.md)
-- [Repository analytics](../group/repositories_analytics/index.md)
-- [Value Stream Management Analytics](../group/value_stream_analytics/index.md) and [Value Stream Management Dashboard](value_streams_dashboard.md)
-
-## Project-level analytics
-
-Use project-level analytics to get insights into your projects':
-
-- [Analytics dashboards](analytics_dashboards.md)
-- [Security Dashboards](../application_security/security_dashboard/index.md)
-- [CI/CD analytics and DORA metrics](ci_cd_analytics.md)
-- [Code review analytics](code_review_analytics.md)
-- [Contributor analytics](../../user/analytics/contributor_analytics.md)
-- [Insights](../project/insights/index.md)
-- [Issue analytics](../group/issues_analytics/index.md)
-- [Merge request analytics](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
-  [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
-- [Repository analytics](repository_analytics.md)
-- [Value Stream Management Analytics](../group/value_stream_analytics/index.md) and [Value Stream Management Dashboard](value_streams_dashboard.md)
-
-## User-configurable analytics
-
-View vulnerabilities of your selected projects in the [Security Center](../application_security/security_dashboard/index.md#security-center).
-
-## Value streams management
-
-Analyze and visualize the performance of your projects and groups with:
-
-- [Value stream analytics for projects and groups](../group/value_stream_analytics/index.md)
-- [Value streams dashboard](value_streams_dashboard.md)
+| Feature | Description | Category | Project-level | Group-level | Instance-level |
+| ------- | ----------- | -------- | ------------- | ----------- | -------------- |
+| [Analytics dashboards](analytics_dashboards.md) | Built-in and customizable dashboards to visualize collected data. | End-to-end insight & visibility | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [CI/CD analytics and DORA metrics](ci_cd_analytics.md) | Pipeline duration and successes/failures, and DORA metrics over time. | CI/CD | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Code review analytics](code_review_analytics.md) | Open merge requests with information about merge request activity. | Productivity | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| [Contribution analytics](../group/contribution_analytics/index.md) | Overview of [contribution events](../../user/profile/contributions_calendar.md) made by group members, with bar chart of push events, merge requests, and issues. | Developer | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Contributor analytics](../../user/analytics/contributor_analytics.md) | Overview of commits made by project members, with line chart of number of commits. | Developer | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| [DevOps adoption](../group/devops_adoption/index.md) | Organization's maturity in DevOps adoption, with group-level feature adoption over time and adoption by subgroup. | End-to-end insight & visibility | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Insights](../project/insights/index.md) | Customizable reports to explore issues, merged merge requests, and triage hygiene. | End-to-end insight & visibility | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Instance-level analytics](../../administration/analytics/index.md) | Aggregated analytics across GitLab about multiple projects and groups in one place. | End-to-end insight & visibility | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Issue analytics](../group/issues_analytics/index.md) | Visualization of issues created each month. | Productivity | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Merge request analytics](merge_request_analytics.md) | Overview of merge requests, with mean time to merge, throughput, and activity details. | Productivity | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| [Productivity analytics](productivity_analytics.md) | Merge request lifecycle, filterable down to author level. | Productivity | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Repository analytics](../group/repositories_analytics/index.md) | Programming languages used in the repository and code coverage statistics. | Developer | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Security Dashboards](../application_security/security_dashboard/index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | Security | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Value Streams Dashboard](value_streams_dashboard.md) | Insights into DevSecOps trends, patterns, and opportunities for digital transformation improvements. | End-to-end insight & visibility | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| [Value Stream Management Analytics](../group/value_stream_analytics/index.md) | Insights into time-to-value through customizable stages. | End-to-end insight & visibility | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 
 ## Glossary
 

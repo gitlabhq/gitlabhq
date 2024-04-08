@@ -21,6 +21,7 @@ export default () => {
     cleanupSettingsPath,
     tagsRegexHelpPagePath,
     helpPagePath,
+    isContainerRegistryMetadataDatabaseEnabled,
     showContainerRegistrySettings,
     showPackageRegistrySettings,
     showDependencyProxySettings,
@@ -39,6 +40,9 @@ export default () => {
       cleanupSettingsPath,
       tagsRegexHelpPagePath,
       helpPagePath,
+      isContainerRegistryMetadataDatabaseEnabled: parseBoolean(
+        isContainerRegistryMetadataDatabaseEnabled,
+      ),
       showContainerRegistrySettings: parseBoolean(showContainerRegistrySettings),
       showPackageRegistrySettings: parseBoolean(showPackageRegistrySettings),
       showDependencyProxySettings: parseBoolean(showDependencyProxySettings),

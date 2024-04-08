@@ -35,6 +35,7 @@ export default () => {
     expirationPolicy,
     isGroupPage,
     isAdmin,
+    isMetadataDatabaseEnabled,
     showCleanupPolicyLink,
     showContainerRegistrySettings,
     showUnfinishedTagCleanupCallout,
@@ -74,6 +75,7 @@ export default () => {
             showUnfinishedTagCleanupCallout: parseBoolean(showUnfinishedTagCleanupCallout),
             connectionError: parseBoolean(connectionError),
             invalidPathError: parseBoolean(invalidPathError),
+            isMetadataDatabaseEnabled: parseBoolean(isMetadataDatabaseEnabled),
           },
           /* eslint-disable @gitlab/require-i18n-strings */
           dockerBuildCommand: `docker build -t ${config.repositoryUrl} .`,

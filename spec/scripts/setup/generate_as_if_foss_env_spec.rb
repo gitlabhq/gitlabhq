@@ -37,11 +37,13 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         'compile-storybook',
         'compile-test-assets',
         'cache-assets:test',
+        'detect-tests',
         'eslint',
         'generate-apollo-graphql-schema',
         'graphql-schema-dump',
         'jest 1/5',
         'jest-integration',
+        'rubocop',
         'qa:internal',
         'qa:selectors',
         'static-analysis'
@@ -66,6 +68,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
       expect(generate.variables).to eq({
         START_AS_IF_FOSS: 'true',
         RUBY_VERSION: ENV['RUBY_VERSION'],
+        CI_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+        CI_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
         ENABLE_RSPEC: 'true',
         ENABLE_RSPEC_FAST_SPEC_HELPER: 'true',
         ENABLE_RSPEC_UNIT: 'true',
@@ -84,11 +88,13 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_COMPILE_STORYBOOK: 'true',
         ENABLE_COMPILE_TEST_ASSETS: 'true',
         ENABLE_CACHE_ASSETS: 'true',
+        ENABLE_DETECT_TESTS: 'true',
         ENABLE_ESLINT: 'true',
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
         ENABLE_GRAPHQL_SCHEMA_DUMP: 'true',
         ENABLE_JEST: 'true',
         ENABLE_JEST_INTEGRATION: 'true',
+        ENABLE_RUBOCOP: 'true',
         ENABLE_QA_INTERNAL: 'true',
         ENABLE_QA_SELECTORS: 'true',
         ENABLE_STATIC_ANALYSIS: 'true'
@@ -103,6 +109,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
       expect { generate.display }.to output(<<~ENV).to_stdout
         START_AS_IF_FOSS=true
         RUBY_VERSION=#{ENV['RUBY_VERSION']}
+        CI_MERGE_REQUEST_PROJECT_PATH=#{ENV['CI_MERGE_REQUEST_PROJECT_PATH']}
+        CI_MERGE_REQUEST_IID=#{ENV['CI_MERGE_REQUEST_IID']}
         ENABLE_RSPEC=true
         ENABLE_RSPEC_FAST_SPEC_HELPER=true
         ENABLE_RSPEC_UNIT=true
@@ -121,11 +129,13 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_COMPILE_STORYBOOK=true
         ENABLE_COMPILE_TEST_ASSETS=true
         ENABLE_CACHE_ASSETS=true
+        ENABLE_DETECT_TESTS=true
         ENABLE_ESLINT=true
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true
         ENABLE_GRAPHQL_SCHEMA_DUMP=true
         ENABLE_JEST=true
         ENABLE_JEST_INTEGRATION=true
+        ENABLE_RUBOCOP=true
         ENABLE_QA_INTERNAL=true
         ENABLE_QA_SELECTORS=true
         ENABLE_STATIC_ANALYSIS=true

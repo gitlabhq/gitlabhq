@@ -27,7 +27,11 @@ RSpec.describe 'Merge request > User approves', :js, feature_category: :code_rev
 
   def verify_approvals_count_on_index!
     visit(project_merge_requests_path(project, state: :all))
-    expect(page.all('li').any? { |item| item["title"] == "1 approver (you've approved)" }).to be true
+    expect(
+      page.all('[data-testid="mr-appovals"]').any? do |item|
+        item["title"] == "1 approver (you've approved)"
+      end
+    ).to be true
     visit project_merge_request_path(project, merge_request)
   end
 

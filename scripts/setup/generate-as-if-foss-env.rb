@@ -12,9 +12,11 @@ class GenerateAsIfFossEnv
     compile-production-assets
     compile-storybook
     compile-test-assets
+    detect-tests
     eslint
     generate-apollo-graphql-schema
     graphql-schema-dump
+    rubocop
     qa:internal
     qa:selectors
     static-analysis
@@ -47,7 +49,9 @@ class GenerateAsIfFossEnv
 
     {
       START_AS_IF_FOSS: 'true',
-      RUBY_VERSION: ENV['RUBY_VERSION']
+      RUBY_VERSION: ENV['RUBY_VERSION'],
+      CI_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+      CI_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID']
     }.merge(rspec_variables).merge(other_jobs_variables)
   end
 

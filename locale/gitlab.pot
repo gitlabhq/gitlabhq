@@ -540,6 +540,9 @@ msgstr ""
 msgid "%{address} is an invalid IP address range"
 msgstr ""
 
+msgid "%{approvals_given} of %{required} Approvals"
+msgstr ""
+
 msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
@@ -1099,9 +1102,6 @@ msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "%{remaining_approvals} left"
-msgstr ""
 
 msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
 msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
@@ -14051,6 +14051,9 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are kept.
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are removed. %{linkStart}View regex examples.%{linkEnd}"
+msgstr ""
+
+msgid "ContainerRegistry|The %{linkStart}next-generation container registry%{linkEnd} is now available for upgrade and testing on self-managed instances as a Beta feature. This upgraded registry supports online garbage collection, and has significant performance and reliability improvements."
 msgstr ""
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}run cleanup now manually%{adminLinkEnd} or you can wait for the next scheduled run of the cleanup policy. %{docLinkStart}More information%{docLinkEnd}"
@@ -42949,10 +42952,10 @@ msgstr ""
 msgid "Require expiration date"
 msgstr ""
 
-msgid "Required approvals (%{approvals_given} given)"
+msgid "Required approvals (%{approvals_given} of %{required} given)"
 msgstr ""
 
-msgid "Required approvals (%{approvals_given} given, you've approved)"
+msgid "Required approvals (%{approvals_given} of %{required} given, you've approved)"
 msgstr ""
 
 msgid "Required in this project."
@@ -44065,6 +44068,9 @@ msgid "Runners|Runner hasn't contacted GitLab in more than %{elapsedTime} and la
 msgstr ""
 
 msgid "Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects."
+msgstr ""
+
+msgid "Runners|Runner is offline; it has never contacted this instance"
 msgstr ""
 
 msgid "Runners|Runner is offline; last contact was %{runner_contact} ago"

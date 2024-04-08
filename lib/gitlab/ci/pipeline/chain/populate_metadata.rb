@@ -55,8 +55,6 @@ module Gitlab
           end
 
           def set_auto_cancel_on_job_failure(auto_cancel)
-            return if Feature.disabled?(:auto_cancel_pipeline_on_job_failure, pipeline.project)
-
             auto_cancel_on_job_failure = auto_cancel[:on_job_failure]
 
             return if auto_cancel_on_job_failure.blank?

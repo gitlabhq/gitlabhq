@@ -18,6 +18,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
     sign_in(user)
     stub_container_registry_config(enabled: container_registry_enabled)
+    allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
   end
 
   context 'as owner', :js do

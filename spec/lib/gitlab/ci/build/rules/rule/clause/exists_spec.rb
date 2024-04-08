@@ -11,16 +11,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         let(:project) { create(:project, :custom_repo, files: files) }
       end
 
-      context 'with feature flag `ci_rule_exists_extension_optimization` disabled' do
-        before do
-          stub_feature_flags(ci_rule_exists_extension_optimization: false)
-        end
-
-        it_behaves_like 'a glob matching rule' do
-          let(:project) { create(:project, :custom_repo, files: files) }
-        end
-      end
-
       context 'when the rules:exists has a variable' do
         let_it_be(:project) { create(:project, :custom_repo, files: { 'helm/helm_file.txt' => '' }) }
 

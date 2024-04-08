@@ -242,7 +242,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, runner_type: :group_type, groups: [group], contacted_at: nil, created_at: 1.month.ago)
+          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 1.month.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 
@@ -261,7 +261,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
       context 'when abandoned runners cause application limits to not be exceeded' do
         before do
           create(:ci_runner, runner_type: :group_type, groups: [group], created_at: 4.months.ago, contacted_at: 3.months.ago)
-          create(:ci_runner, runner_type: :group_type, groups: [group], contacted_at: nil, created_at: 4.months.ago)
+          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 4.months.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 

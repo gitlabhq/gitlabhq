@@ -1413,8 +1413,6 @@ module Ci
     end
 
     def cancel_async_on_job_failure
-      return unless Feature.enabled?(:auto_cancel_pipeline_on_job_failure, project)
-
       case auto_cancel_on_job_failure
       when 'none'
         # no-op

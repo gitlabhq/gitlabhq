@@ -15384,7 +15384,7 @@ Represents the approval policy.
 | <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="approvalpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="approvalpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="approvalpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="approvalpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
@@ -28298,7 +28298,7 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="scanexecutionpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="scanexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
@@ -28318,7 +28318,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="scanresultpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="scanresultpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanresultpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
@@ -35165,7 +35165,7 @@ Implementations:
 | <a id="orchestrationpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="orchestrationpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="orchestrationpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="orchestrationpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="orchestrationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="orchestrationpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 

@@ -19,4 +19,5 @@
     invalid_path_error: (!!@invalid_path_error).to_s,
     user_callouts_path: callouts_path,
     user_callout_id: Users::CalloutsHelper::UNFINISHED_TAG_CLEANUP_CALLOUT,
+    is_metadata_database_enabled: ContainerRegistry::GitlabApiClient.supports_gitlab_api?.to_s,
     show_unfinished_tag_cleanup_callout: show_unfinished_tag_cleanup_callout?.to_s } }

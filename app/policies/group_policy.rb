@@ -165,16 +165,23 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_namespace
   end
 
-  rule { achievements_enabled }.policy do
+  rule { ~achievements_enabled }.policy do
+    prevent :read_achievement
+    prevent :admin_achievement
+    prevent :award_achievement
+    prevent :destroy_user_achievement
+  end
+
+  rule { can?(:read_group) }.policy do
     enable :read_achievement
   end
 
-  rule { can?(:maintainer_access) & achievements_enabled }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :admin_achievement
     enable :award_achievement
   end
 
-  rule { can?(:owner_access) & achievements_enabled }.policy do
+  rule { can?(:owner_access) }.policy do
     enable :destroy_user_achievement
   end
 

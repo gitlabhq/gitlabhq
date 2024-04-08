@@ -24,6 +24,7 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
 
       before do
         sign_in(user)
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
       end
 
       it 'pushes the feature flag "packages_protected_packages" to the view' do

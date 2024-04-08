@@ -749,7 +749,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 
 #### Number of Elasticsearch shards
 
-You must set the number of Elasticsearch shards per index to at least `5`.
+Set the number of Elasticsearch shards per index to at least `5`.
 To update the shard size for an index, change the setting and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
 
 ##### Indices with database data
@@ -777,12 +777,13 @@ For indices that contain repository data:
 Keep the average shard size between a few GB and 30 GB.
 If the average shard size grows to more than 30 GB, increase the shard size
 for the index and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
-To ensure the health of your cluster, the number of shards per node must be fewer than 20 per GB heap.
+To ensure the cluster is healthy, the number of shards per node
+must not exceed 20 times the configured heap size.
 For example, a node with a 30 GB heap must have a maximum of 600 shards.
 
 #### Number of Elasticsearch replicas
 
-You must set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
+Set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
 The number must not be `0` because losing one node corrupts the index.
 
 ### How to index large instances efficiently

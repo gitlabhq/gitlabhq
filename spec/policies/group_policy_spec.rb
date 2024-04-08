@@ -1727,10 +1727,16 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       specify { is_expected.to be_disallowed(:destroy_user_achievement) }
     end
 
-    context 'when current user can not see the group' do
+    context 'when current user is not a group member' do
       let(:current_user) { non_group_member }
 
-      specify { is_expected.to be_allowed(:read_achievement) }
+      specify { is_expected.to be_disallowed(:read_achievement) }
+
+      context 'when the group is public' do
+        let_it_be(:group) { create(:group, :public) }
+
+        specify { is_expected.to be_allowed(:read_achievement) }
+      end
     end
 
     context 'when current user is not an owner' do

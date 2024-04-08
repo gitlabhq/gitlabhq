@@ -10,6 +10,8 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
   let(:container_registry_enabled) { true }
   let(:container_registry_enabled_on_project) { ProjectFeature::ENABLED }
 
+  let(:help_page_href) { help_page_path('administration/packages/container_registry_metadata_database') }
+
   subject { visit project_settings_packages_and_registries_path(project) }
 
   before do
@@ -18,6 +20,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
     sign_in(user)
     stub_container_registry_config(enabled: container_registry_enabled)
+    allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
   end
 
   context 'as owner', :js do
@@ -50,6 +53,14 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       subject
 
       expect(page).to have_link('Edit cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
+    end
+
+    it 'has link to next generation container registry docs' do
+      allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+
+      subject
+
+      expect(page).to have_link('next-generation container registry', href: help_page_href)
     end
   end
 
