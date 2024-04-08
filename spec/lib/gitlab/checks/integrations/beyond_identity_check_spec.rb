@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
       it 'is rejected' do
         expect { check.validate! }
-          .to raise_error(::Gitlab::GitAccess::ForbiddenError, 'Commit is not signed by a GPG signature')
+          .to raise_error(::Gitlab::GitAccess::ForbiddenError, 'Commit is not signed with a GPG signature')
       end
 
       context 'when the push happens from web' do
@@ -32,6 +32,25 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
         it 'does not raise an error' do
           expect { check.validate! }.not_to raise_error
+        end
+      end
+
+      context 'when the push performed by service account' do
+        let_it_be(:user) { create(:user, :service_account) }
+
+        it 'is rejected' do
+          expect { check.validate! }
+            .to raise_error(::Gitlab::GitAccess::ForbiddenError, 'Commit is not signed with a GPG signature')
+        end
+
+        context 'when service accounts are excluded' do
+          let!(:beyond_identity_integration) do
+            create(:beyond_identity_integration, exclude_service_accounts: true)
+          end
+
+          it 'does not raise an error' do
+            expect { check.validate! }.not_to raise_error
+          end
         end
       end
     end

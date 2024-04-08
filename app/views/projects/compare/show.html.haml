@@ -4,7 +4,7 @@
 -# Only show commit list in the first page
 - hide_commit_list = params[:page].present? && params[:page] != '1'
 
-.sub-header-block.gl-border-b-0.gl-mb-0.gl-pt-4
+.gl-border-b-0.gl-mb-0.gl-pt-4
   .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 

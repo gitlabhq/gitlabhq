@@ -63,6 +63,7 @@ export default {
         :value="link"
         :name="name"
         :data-testid="inputId"
+        :label="label"
         readonly
         select-on-click
       >

@@ -20,9 +20,9 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     FIELDS
   end
 
-  let_it_be(:organization_user) { create(:organization_user) }
-  let_it_be(:organization) { organization_user.organization }
-  let_it_be(:user) { organization_user.user }
+  let_it_be(:organization_owner) { create(:organization_owner) }
+  let_it_be(:organization) { organization_owner.organization }
+  let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
     create(:group, name: 'other-group', organization: organization) { |g| g.add_developer(user) }
@@ -64,11 +64,16 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         <<~FIELDS
           organizationUsers {
             nodes {
+              accessLevel {
+                integerValue
+                stringValue
+              }
               badges {
                 text
                 variant
               }
               id
+              isLastOwner
               user {
                 id
               }
@@ -82,8 +87,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
+          "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
           "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
-          "id" => organization_user.to_global_id.to_s,
+          "id" => organization_owner.to_global_id.to_s,
+          "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }
         }
         expect(organization_user_nodes).to include(expected_attributes)

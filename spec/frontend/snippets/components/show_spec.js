@@ -1,7 +1,6 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
-import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 import SnippetApp from '~/snippets/components/show.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
@@ -11,7 +10,7 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
+import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 
 describe('Snippet view app', () => {
@@ -44,7 +43,6 @@ describe('Snippet view app', () => {
   }
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmbedDropdown = () => wrapper.findComponent(EmbedDropdown);
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -61,22 +59,11 @@ describe('Snippet view app', () => {
     expect(wrapper.findComponent(SnippetDescription).exists()).toBe(true);
   });
 
-  it('renders embed dropdown component if visibility allows', () => {
-    createComponent({
-      data: {
-        snippet: {
-          visibilityLevel: VISIBILITY_LEVEL_PUBLIC_STRING,
-          webUrl: 'http://foo.bar',
-        },
-      },
-    });
-    expect(findEmbedDropdown().exists()).toBe(true);
-  });
-
   it('renders correct snippet-blob components', () => {
     createComponent({
       data: {
         snippet: {
+          webUrl,
           blobs: [Blob, BinaryBlob],
         },
       },
@@ -85,36 +72,6 @@ describe('Snippet view app', () => {
     expect(blobs.length).toBe(2);
     expect(blobs.at(0).props('blob')).toEqual(Blob);
     expect(blobs.at(1).props('blob')).toEqual(BinaryBlob);
-  });
-
-  describe('Embed dropdown rendering', () => {
-    it.each`
-      snippetVisibility                   | projectVisibility                  | condition       | isRendered
-      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${undefined}                       | ${'render'}     | ${true}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'render'}     | ${true}
-      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${undefined}                       | ${'not render'} | ${false}
-      ${'foo'}                            | ${undefined}                       | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING} | ${'not render'} | ${false}
-    `(
-      'does $condition embed-dropdown by default',
-      ({ snippetVisibility, projectVisibility, isRendered }) => {
-        createComponent({
-          data: {
-            snippet: {
-              visibilityLevel: snippetVisibility,
-              webUrl,
-              project: {
-                visibility: projectVisibility,
-              },
-            },
-          },
-        });
-        expect(findEmbedDropdown().exists()).toBe(isRendered);
-      },
-    );
   });
 
   describe('hasUnretrievableBlobs alert rendering', () => {
@@ -126,6 +83,7 @@ describe('Snippet view app', () => {
       createComponent({
         data: {
           snippet: {
+            webUrl,
             hasUnretrievableBlobs,
           },
         },
@@ -134,7 +92,7 @@ describe('Snippet view app', () => {
     });
   });
 
-  describe('Clone button rendering', () => {
+  describe('Code button rendering', () => {
     it.each`
       httpUrlToRepo   | sshUrlToRepo   | shouldRender    | isRendered
       ${null}         | ${null}        | ${'Should not'} | ${false}
@@ -149,10 +107,41 @@ describe('Snippet view app', () => {
             snippet: {
               sshUrlToRepo,
               httpUrlToRepo,
+              webUrl,
             },
           },
         });
-        expect(wrapper.findComponent(CloneDropdownButton).exists()).toBe(isRendered);
+        expect(wrapper.findComponent(SnippetCodeDropdown).exists()).toBe(isRendered);
+      },
+    );
+
+    it.each`
+      snippetVisibility                   | projectVisibility                  | condition | embeddable
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${undefined}                       | ${''}     | ${true}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${''}     | ${true}
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${undefined}                       | ${'not'}  | ${false}
+      ${'foo'}                            | ${undefined}                       | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING} | ${'not'}  | ${false}
+    `(
+      'is $condition embeddable if snippetVisibility is $snippetVisibility and projectVisibility is $projectVisibility',
+      ({ snippetVisibility, projectVisibility, embeddable }) => {
+        createComponent({
+          data: {
+            snippet: {
+              sshUrlToRepo: dummySSHUrl,
+              httpUrlToRepo: dummyHTTPUrl,
+              visibilityLevel: snippetVisibility,
+              webUrl,
+              project: {
+                visibility: projectVisibility,
+              },
+            },
+          },
+        });
+        expect(wrapper.findComponent(SnippetCodeDropdown).props('embeddable')).toBe(embeddable);
       },
     );
   });

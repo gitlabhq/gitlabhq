@@ -33,13 +33,12 @@ module QA
           end
 
           base.view 'app/assets/javascripts/snippets/components/show.vue' do
-            element 'clone-button'
-            element 'snippet-embed-dropdown'
+            element 'code-button'
           end
 
-          base.view 'app/assets/javascripts/vue_shared/components/clone_dropdown/clone_dropdown.vue' do
-            element 'copy-http-url-button'
-            element 'copy-ssh-url-button'
+          base.view 'app/assets/javascripts/vue_shared/components/code_dropdown/snippet_code_dropdown.vue' do
+            element 'copy-http-url'
+            element 'copy-ssh-url'
           end
 
           base.view 'app/views/shared/notes/_comment_button.html.haml' do
@@ -71,10 +70,6 @@ module QA
           base.view 'app/views/projects/notes/_more_actions_dropdown.html.haml' do
             element 'more-actions-dropdown'
             element 'delete-comment-button'
-          end
-
-          base.view 'app/assets/javascripts/snippets/components/embed_dropdown.vue' do
-            element 'copy-button'
           end
 
           base.view 'app/assets/javascripts/blob/components/blob_header_default_actions.vue' do
@@ -154,13 +149,23 @@ module QA
           end
         end
 
-        RSpec::Matchers.define :have_embed_dropdown do
+        RSpec::Matchers.define :have_embed_option do
           match do |page|
-            page.has_element?('snippet-embed-dropdown')
+            page.has_element?('copy-embedded-code')
           end
 
           match_when_negated do |page|
-            page.has_no_element?('snippet-embed-dropdown')
+            page.has_no_element?('copy-embedded-code')
+          end
+        end
+
+        RSpec::Matchers.define :have_share_option do
+          match do |page|
+            page.has_element?('copy-share-url')
+          end
+
+          match_when_negated do |page|
+            page.has_no_element?('copy-share-url')
           end
         end
 
@@ -179,19 +184,23 @@ module QA
           end
         end
 
+        def click_code_button
+          click_element('code-button')
+        end
+
         def get_repository_uri_http
-          click_element('clone-button')
+          click_element('code-button')
           Git::Location.new(find_element('copy-http-url-button')['data-clipboard-text']).uri.to_s
         end
 
         def get_repository_uri_ssh
-          click_element('clone-button')
+          click_element('code-button')
           Git::Location.new(find_element('copy-ssh-url-button')['data-clipboard-text']).uri.to_s
         end
 
         def get_sharing_link
-          click_element('snippet-embed-dropdown')
-          find_element('copy-button', action: 'Share')['data-clipboard-text']
+          click_element('code-button')
+          Git::Location.new(find_element('copy-share-url-button')['data-clipboard-text']).uri.to_s
         end
 
         def add_comment(comment)

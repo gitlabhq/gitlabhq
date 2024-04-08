@@ -18,24 +18,11 @@
 
 module QA
   module Tools
-    class DeleteSubgroups
-      include Support::API
-      include Ci::Helpers
-      include Lib::Group
-
-      def initialize(delete_before: (Date.today - 3).to_s)
-        raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
-        raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
-
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @failed_deletion_attempts = []
-        @delete_before = Date.parse(delete_before)
-      end
-
+    class DeleteSubgroups < DeleteResourceBase
       def run
         if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS']
-          (1..7).each do |group_number|
-            group_id = fetch_group_id(@api_client, group_number)
+          SANDBOX_GROUPS.each do |name|
+            group_id = fetch_group_id(@api_client, name)
             delete_subgroups(group_id)
           end
 

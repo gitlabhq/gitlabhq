@@ -50,7 +50,7 @@ if lines_with_testids.any?
 
   markdown(<<~MARKDOWN)
     If the `e2e:package-and-test` job in the `qa` stage has run automatically, please ensure the tests are passing.
-    If the job has not run, please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline are passing.
+    If the job has not run, please start the `manual:e2e-test-pipeline-generate` job in the `prepare` stage and ensure the tests in `follow-up:e2e:package-and-test-ee` pipeline are passing.
 
     For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 

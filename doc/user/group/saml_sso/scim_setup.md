@@ -52,7 +52,7 @@ Other providers can work with GitLab but they have not been tested and are not s
 
 ### Configure Microsoft Entra ID (formerly Azure Active Directory)
 
-> - Updated to Microsoft Entra ID terminology in 16.10.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146) to Microsoft Entra ID terminology in GitLab 16.10.
 
 Prerequisites:
 
@@ -90,7 +90,7 @@ Under the **Mappings** section, first provision the groups:
    Entra ID SCIM provisioning log that may be confusing and misleading.
 
    NOTE:
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignored.
+   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
 
 1. Select **Save**.
 

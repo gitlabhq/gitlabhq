@@ -19,6 +19,7 @@ module Organizations
 
     scope :owners, -> { where(access_level: Gitlab::Access::OWNER) }
     scope :in_organization, ->(organization) { where(organization: organization) }
+    scope :with_active_users, -> { joins(:user).merge(User.active) }
 
     def self.create_default_organization_record_for(user_id, user_is_admin:)
       upsert(
@@ -67,6 +68,16 @@ module Organizations
           unique_by: [:organization_id, :user_id],
           on_duplicate: :skip # Do not change access_level, could make :owner :default
         )
+    end
+
+    def last_owner?
+      return false unless owner?
+
+      other_owners = organization.organization_users.owners.id_not_in(id)
+      # Try to keep the last active user as owner
+      return other_owners.with_active_users.empty? if user.active?
+
+      other_owners.empty?
     end
 
     private

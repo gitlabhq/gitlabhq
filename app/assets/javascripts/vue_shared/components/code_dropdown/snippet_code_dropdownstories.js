@@ -1,12 +1,12 @@
-import CloneDropdown from './clone_dropdown.vue';
+import SnippetCodeDropdown from './snippet_code_dropdown.vue';
 
 export default {
-  component: CloneDropdown,
-  title: 'vue_shared/components/clone_dropdown',
+  component: SnippetCodeDropdown,
+  title: 'vue_shared/components/snippet_code_dropdown',
 };
 
 const Template = (args, { argTypes }) => ({
-  components: { CloneDropdown },
+  components: { SnippetCodeDropdown },
   props: Object.keys(argTypes),
   template: '<clone-dropdown v-bind="$props" />',
 });

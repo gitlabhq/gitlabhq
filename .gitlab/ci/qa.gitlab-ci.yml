@@ -101,11 +101,13 @@ trigger-omnibus:
     branch: $TRIGGER_BRANCH
     strategy: depend
 
-# Same as trigger-omnibus but is manual and runs follow-up-e2e:package-and-test-ee automatically right after
-trigger-omnibus-and-follow-up-e2e:
+follow-up:trigger-omnibus:
   extends:
     - trigger-omnibus
-    - .qa:rules:manual-omnibus-and-follow-up-e2e
+    - .qa:rules:follow-up-e2e
+  needs:
+    - follow-up:trigger-omnibus-env
+    - follow-up:build-assets-image
 
 trigger-omnibus as-if-foss:
   extends:
@@ -132,19 +134,15 @@ e2e:package-and-test-ee:
     QA_RUN_TYPE: e2e-package-and-test
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
-# Same as e2e:package-and-test-ee but runs automatically after trigger-omnibus-and-follow-up-e2e
-follow-up-e2e:package-and-test-ee:
+# Same as e2e:package-and-test-ee but runs automatically after manual:e2e-test-pipeline-generate
+follow-up:e2e:package-and-test-ee:
   extends:
-    - .e2e-trigger-base
+    - e2e:package-and-test-ee
     - .qa:rules:follow-up-e2e
   needs:
-    - build-qa-image
-    - trigger-omnibus-and-follow-up-e2e
-    - e2e-test-pipeline-generate
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
-    QA_RUN_TYPE: e2e-package-and-test
-    PIPELINE_NAME: E2E Omnibus GitLab EE
+    - follow-up:build-qa-image
+    - follow-up:trigger-omnibus
+    - manual:e2e-test-pipeline-generate
 
 e2e:post-run-e2e-message:
   extends:

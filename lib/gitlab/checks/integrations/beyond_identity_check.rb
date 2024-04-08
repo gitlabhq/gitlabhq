@@ -5,7 +5,7 @@ module Gitlab
     module Integrations
       class BeyondIdentityCheck < ::Gitlab::Checks::BaseBulkChecker
         LOG_MESSAGE = 'Starting BeyondIdentity scan...'
-        COMMIT_HAS_NO_SIGNATURE_ERROR = 'Commit is not signed by a GPG signature'
+        COMMIT_HAS_NO_SIGNATURE_ERROR = 'Commit is not signed with a GPG signature'
 
         def initialize(integration_check)
           @changes_access = integration_check.changes_access
@@ -13,8 +13,7 @@ module Gitlab
         end
 
         def validate!
-          return unless integration_activated?
-          return if updated_from_web?
+          return if skip_validation?
 
           logger.log_timed(LOG_MESSAGE) do
             commits = changes_access.commits
@@ -39,8 +38,12 @@ module Gitlab
 
         attr_reader :integration
 
-        def integration_activated?
-          integration.present? && integration.activated?
+        def skip_validation?
+          return true unless integration&.activated?
+          return true if updated_from_web?
+          return true if integration.exclude_service_accounts? && user_access.user.service_account?
+
+          false
         end
       end
     end

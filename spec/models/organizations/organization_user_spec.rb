@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: :cell do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'associations' do
     it { is_expected.to belong_to(:organization).inverse_of(:organization_users).required }
     it { is_expected.to belong_to(:user).inverse_of(:organization_users).required }
@@ -90,6 +92,15 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       subject { described_class.in_organization(organization) }
 
       it { is_expected.to match_array(organization_users) }
+    end
+
+    describe '#with_active_users' do
+      let_it_be(:active_organization_user) { create(:organization_user) }
+      let_it_be(:inactive_organization_user) { create(:organization_user) { |org_user| org_user.user.block! } }
+
+      subject(:active_user) { described_class.with_active_users }
+
+      it { is_expected.to include(active_organization_user).and exclude(inactive_organization_user) }
     end
   end
 
@@ -247,6 +258,45 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
         expect { create_organization_record }.to change { described_class.count }.by(1)
         expect(organization.user?(user)).to be(true)
         expect(organization.owner?(user)).to be(false)
+      end
+    end
+  end
+
+  describe '#last_owner?' do
+    subject(:last_owner?) { organization_user.last_owner? }
+
+    context 'when user is not the owner' do
+      let(:organization_user) { build(:organization_user) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when user is the owner' do
+      let_it_be(:organization_user, reload: true) { create(:organization_owner) }
+      let_it_be(:organization) { organization_user.organization }
+
+      context 'when another owner does not exist' do
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when another owner exists' do
+        let_it_be(:another_owner, reload: true) { create(:organization_owner, organization: organization) }
+
+        where(:current_owner_active?, :another_owner_active?, :last_owner?) do
+          true  | true  | false
+          true  | false | true
+          false | true  | false
+          false | false | false
+        end
+
+        with_them do
+          before do
+            organization_user.user.block! unless current_owner_active?
+            another_owner.user.block! unless another_owner_active?
+          end
+
+          it { is_expected.to eq(last_owner?) }
+        end
       end
     end
   end

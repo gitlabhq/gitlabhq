@@ -220,6 +220,16 @@ e2e-test-pipeline-generate:
       - '*-pipeline.yml'
       - "${CI_PROJECT_DIR}/qa_tests_vars.env"
 
+# This is the manual start of the chain of E2E jobs
+# After playing this, it'll follow up with:
+# follow-up:compile-production-assets -> follow-up:build-assets-image --\
+#                                    \-> follow-up:trigger-omnibus-env -> follow-up:trigger-omnibus -> follow-up:e2e:package-and-test-ee
+# follow-up:build-qa-image --------------------------------------------------------------------------/
+manual:e2e-test-pipeline-generate:
+  extends:
+    - e2e-test-pipeline-generate
+    - .qa:rules:manual-e2e
+
 trigger-omnibus-env:
   stage: prepare
   extends:
@@ -263,3 +273,9 @@ trigger-omnibus-env as-if-foss:
     - compile-production-assets as-if-foss
   variables:
     FOSS_ONLY: "1"
+
+follow-up:trigger-omnibus-env:
+  extends:
+    - trigger-omnibus-env
+    - .qa:rules:follow-up-e2e
+  needs: ["follow-up:compile-production-assets"]

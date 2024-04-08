@@ -1,8 +1,8 @@
 import { GlButton, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CloneDropdownItem from '~/vue_shared/components/clone_dropdown/clone_dropdown_item.vue';
+import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
 
-describe('Clone Dropdown Button', () => {
+describe('CodeDropdownItem', () => {
   let wrapper;
   const link = 'ssh://foo.bar';
   const label = 'SSH';
@@ -16,7 +16,7 @@ describe('Clone Dropdown Button', () => {
   const findCopyButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = defaultPropsData) => {
-    wrapper = shallowMount(CloneDropdownItem, {
+    wrapper = shallowMount(CodeDropdownItem, {
       propsData,
       stubs: {
         GlFormInputGroup,
@@ -31,6 +31,10 @@ describe('Clone Dropdown Button', () => {
   describe('default', () => {
     it('sets form group label', () => {
       expect(wrapper.findComponent(GlFormGroup).attributes('label')).toBe(label);
+    });
+
+    it('sets form input group label', () => {
+      expect(wrapper.findComponent(GlFormInputGroup).props('label')).toBe(label);
     });
 
     it('sets form input group link', () => {

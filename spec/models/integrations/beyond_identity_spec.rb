@@ -43,6 +43,11 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations do
         name: :token,
         type: String,
         desc: 'API Token. User must have access to `git-commit-signing` endpoint.'
+      }, {
+        required: false,
+        name: :exclude_service_accounts,
+        type: Grape::API::Boolean,
+        desc: "If enabled, Beyond Identity will not check commits from service accounts."
       }])
     end
   end

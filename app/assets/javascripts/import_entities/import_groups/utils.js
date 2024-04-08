@@ -19,6 +19,11 @@ export function isAvailableForImport(group) {
 }
 
 export function isProjectCreationAllowed(group = {}) {
+  // When "No parent" is selected
+  if (group.fullPath === '') {
+    return true;
+  }
+
   return Boolean(group.projectCreationLevel) && group.projectCreationLevel !== 'noone';
 }
 

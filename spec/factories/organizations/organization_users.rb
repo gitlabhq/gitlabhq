@@ -8,5 +8,7 @@ FactoryBot.define do
     trait :owner do
       access_level { Gitlab::Access::OWNER }
     end
+
+    factory :organization_owner, traits: [:owner]
   end
 end

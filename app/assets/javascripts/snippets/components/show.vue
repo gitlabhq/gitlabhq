@@ -8,11 +8,10 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
+import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
 
 import { getSnippetMixin } from '../mixins/snippets';
 import { markBlobPerformance } from '../utils/blob';
-import EmbedDropdown from './embed_dropdown.vue';
 import SnippetBlob from './snippet_blob_view.vue';
 import SnippetHeader from './snippet_header.vue';
 import SnippetDescription from './snippet_description.vue';
@@ -21,13 +20,12 @@ eventHub.$on(SNIPPET_MEASURE_BLOBS_CONTENT, markBlobPerformance);
 
 export default {
   components: {
-    EmbedDropdown,
     SnippetHeader,
     SnippetDescription,
     GlAlert,
     GlLoadingIcon,
     SnippetBlob,
-    CloneDropdownButton,
+    SnippetCodeDropdown,
   },
   mixins: [getSnippetMixin],
   computed: {
@@ -65,17 +63,14 @@ export default {
       <snippet-header :snippet="snippet" />
       <snippet-description :snippet="snippet" />
       <div class="gl-display-flex gl-justify-content-end gl-mb-5">
-        <embed-dropdown
-          v-if="embeddable"
-          :url="snippet.webUrl"
-          data-testid="snippet-embed-dropdown"
-        />
-        <clone-dropdown-button
+        <snippet-code-dropdown
           v-if="canBeCloned"
           class="gl-ml-3"
           :ssh-link="snippet.sshUrlToRepo"
           :http-link="snippet.httpUrlToRepo"
-          data-testid="clone-button"
+          :url="snippet.webUrl"
+          :embeddable="embeddable"
+          data-testid="code-button"
         />
       </div>
       <gl-alert v-if="hasUnretrievableBlobs" variant="danger" class="gl-mb-3" :dismissible="false">

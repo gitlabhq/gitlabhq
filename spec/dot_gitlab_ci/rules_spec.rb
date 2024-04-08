@@ -26,8 +26,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
-  describe '.qa:rules:manual-omnibus-and-follow-up-e2e' do
-    let(:base_rules) { config.dig('.qa:rules:manual-omnibus-and-follow-up-e2e', 'rules') }
+  describe '.qa:rules:manual-e2e' do
+    let(:base_rules) { config.dig('.qa:rules:manual-e2e', 'rules') }
 
     context 'with .qa:rules:follow-up-e2e' do
       let(:derived_rules) { config.dig('.qa:rules:follow-up-e2e', 'rules') }

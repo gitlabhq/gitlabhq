@@ -21,7 +21,9 @@ module QA
           snippet.visit!
 
           sharing_link = Page::Dashboard::Snippet::Show.perform do |snippet|
-            expect(snippet).to have_embed_dropdown
+            snippet.click_code_button
+            expect(snippet).to have_share_option
+            snippet.click_code_button
             snippet.get_sharing_link
           end
 
@@ -33,7 +35,8 @@ module QA
             expect(snippet).to have_snippet_title('Shared snippet')
             expect(snippet).to have_visibility_description('The snippet can be accessed without any authentication.')
             expect(snippet).to have_file_content('code to be shared')
-            expect(snippet).to have_embed_dropdown
+            snippet.click_code_button
+            expect(snippet).to have_share_option
           end
         end
       end
@@ -43,7 +46,9 @@ module QA
           snippet.visit!
 
           Page::Dashboard::Snippet::Show.perform do |snippet|
-            expect(snippet).to have_embed_dropdown
+            snippet.click_code_button
+            expect(snippet).to have_share_option
+            expect(snippet).to have_embed_option
 
             snippet.click_edit_button
           end
@@ -54,7 +59,9 @@ module QA
           end
 
           Page::Dashboard::Snippet::Show.perform do |snippet|
-            expect(snippet).not_to have_embed_dropdown
+            snippet.click_code_button
+            expect(snippet).not_to have_share_option
+            expect(snippet).not_to have_embed_option
           end
         end
       end

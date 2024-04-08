@@ -7900,6 +7900,12 @@ msgstr ""
 msgid "BeyondIdentityService|API Token. User must have access to `git-commit-signing` endpoint."
 msgstr ""
 
+msgid "BeyondIdentityService|If enabled, Beyond Identity will not check commits from %{docs_link}."
+msgstr ""
+
+msgid "BeyondIdentityService|If enabled, Beyond Identity will not check commits from service accounts."
+msgstr ""
+
 msgid "BeyondIdentity|Verify that GPG keys are authorized by Beyond Identity Authenticator."
 msgstr ""
 
@@ -11310,9 +11316,6 @@ msgid "Clientside DSN"
 msgstr ""
 
 msgid "Clientside traces sample rate"
-msgstr ""
-
-msgid "Clone"
 msgstr ""
 
 msgid "Clone repository"
@@ -61540,6 +61543,9 @@ msgid "security policy bot users cannot be added to other projects"
 msgstr ""
 
 msgid "selective_code_owner_removals can only be enabled when retain_approvals_on_push is enabled"
+msgstr ""
+
+msgid "service accounts"
 msgstr ""
 
 msgid "severity|Blocker"
