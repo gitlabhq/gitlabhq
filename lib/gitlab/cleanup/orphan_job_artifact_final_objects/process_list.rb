@@ -133,7 +133,8 @@ module Gitlab
         end
 
         def add_deleted_object_to_list(fog_file)
-          deleted_list_file.puts([fog_file.key, fog_file.content_length].join(','))
+          # We log the object's generation (GCP-only attribute) because we need this for the GCP rollback task if ever
+          deleted_list_file.puts([fog_file.key, fog_file.content_length, fog_file.try(:generation)].compact.join(','))
         end
 
         def log_info(msg)

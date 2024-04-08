@@ -109,9 +109,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
     end
   end
 
-  describe '#upcoming_processables' do
-    subject { resource_group.upcoming_processables }
-
+  describe 'processables scope' do
     let_it_be(:project) { create(:project, :repository, group: group) }
     let_it_be(:pipeline_1) { create(:ci_pipeline, project: project) }
     let_it_be(:pipeline_2) { create(:ci_pipeline, project: project) }
@@ -123,45 +121,63 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
       let!("build_2_#{status}") { create(:ci_build, pipeline: pipeline_2, status: status, resource_group: resource_group) }
     end
 
-    context 'when process mode is unordered' do
-      let(:process_mode) { :unordered }
+    describe '#upcoming_processables' do
+      subject { resource_group.upcoming_processables }
 
-      it 'returns correct jobs in an indeterministic order' do
-        expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
+      context 'when process mode is unordered' do
+        let(:process_mode) { :unordered }
+
+        it 'returns correct jobs in an indeterministic order' do
+          expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
+        end
+      end
+
+      context 'when process mode is oldest_first' do
+        let(:process_mode) { :oldest_first }
+
+        it 'returns correct jobs in a specific order' do
+          expect(subject[0]).to eq(build_1_waiting_for_resource)
+          expect(subject[1..2]).to contain_exactly(build_1_created, build_1_scheduled)
+          expect(subject[3]).to eq(build_2_waiting_for_resource)
+          expect(subject[4..5]).to contain_exactly(build_2_created, build_2_scheduled)
+        end
+      end
+
+      context 'when process mode is newest_first' do
+        let(:process_mode) { :newest_first }
+
+        it 'returns correct jobs in a specific order' do
+          expect(subject[0]).to eq(build_2_waiting_for_resource)
+          expect(subject[1..2]).to contain_exactly(build_2_created, build_2_scheduled)
+          expect(subject[3]).to eq(build_1_waiting_for_resource)
+          expect(subject[4..5]).to contain_exactly(build_1_created, build_1_scheduled)
+        end
+      end
+
+      context 'when process mode is unknown' do
+        let(:process_mode) { :unordered }
+
+        before do
+          resource_group.update_column(:process_mode, 3)
+        end
+
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
       end
     end
 
-    context 'when process mode is oldest_first' do
-      let(:process_mode) { :oldest_first }
+    describe '#waiting_processables' do
+      subject { resource_group.waiting_processables }
 
-      it 'returns correct jobs in a specific order' do
-        expect(subject[0]).to eq(build_1_waiting_for_resource)
-        expect(subject[1..2]).to contain_exactly(build_1_created, build_1_scheduled)
-        expect(subject[3]).to eq(build_2_waiting_for_resource)
-        expect(subject[4..5]).to contain_exactly(build_2_created, build_2_scheduled)
-      end
-    end
+      where(:mode) { [:unordered, :oldest_first, :newest_first] }
 
-    context 'when process mode is newest_first' do
-      let(:process_mode) { :newest_first }
+      with_them do
+        let(:process_mode) { mode }
 
-      it 'returns correct jobs in a specific order' do
-        expect(subject[0]).to eq(build_2_waiting_for_resource)
-        expect(subject[1..2]).to contain_exactly(build_2_created, build_2_scheduled)
-        expect(subject[3]).to eq(build_1_waiting_for_resource)
-        expect(subject[4..5]).to contain_exactly(build_1_created, build_1_scheduled)
-      end
-    end
-
-    context 'when process mode is unknown' do
-      let(:process_mode) { :unordered }
-
-      before do
-        resource_group.update_column(:process_mode, 3)
-      end
-
-      it 'returns empty' do
-        is_expected.to be_empty
+        it 'returns waiting_for_resource jobs in an indeterministic order' do
+          expect(subject).to contain_exactly(build_1_waiting_for_resource, build_2_waiting_for_resource)
+        end
       end
     end
   end

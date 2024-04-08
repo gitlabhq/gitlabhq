@@ -20,7 +20,7 @@ import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.g
 import { POLL_INTERVAL } from './constants';
 
 export default {
-  name: 'PipelineDetailsHeader',
+  name: 'PipelineHeader',
   BUTTON_TOOLTIP_RETRY,
   BUTTON_TOOLTIP_CANCEL,
   pipelineCancel: 'pipelineCancel',
@@ -292,7 +292,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-my-4" data-testid="pipeline-details-header">
+  <div class="gl-my-4" data-testid="pipeline-header">
     <gl-alert
       v-if="hasError"
       class="gl-mb-4"

@@ -1,4 +1,6 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import toast from '~/vue_shared/plugins/global_toast';
+import { sprintf, __ } from '~/locale';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from './constants';
 
@@ -91,4 +93,17 @@ export const onPageChange = ({
   }
 
   return routeQuery;
+};
+
+export const renderProjectDeleteSuccessToast = (project) => {
+  toast(
+    sprintf(__("Project '%{name}' is being deleted."), {
+      name: project.name,
+    }),
+  );
+};
+
+export const deleteProjectParams = () => {
+  // Overridden in EE
+  return {};
 };

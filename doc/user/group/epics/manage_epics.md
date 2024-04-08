@@ -68,7 +68,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 On GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.
 An epic's color is shown in [roadmaps](../roadmap/index.md), and [epic boards](epic_boards.md).
@@ -259,7 +259,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of epics](#filter-the-list-of-epics) by:

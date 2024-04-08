@@ -16,7 +16,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 an administrator can [enable the feature flags](../../administration/feature_flags.md)
 named `activity_pub` and `activity_pub_project`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Usage of ActivityPub in GitLab is governed by the
 [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).

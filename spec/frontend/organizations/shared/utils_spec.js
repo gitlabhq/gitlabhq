@@ -1,7 +1,16 @@
-import { formatProjects, formatGroups, onPageChange } from '~/organizations/shared/utils';
+import {
+  formatProjects,
+  formatGroups,
+  onPageChange,
+  deleteProjectParams,
+  renderProjectDeleteSuccessToast,
+} from '~/organizations/shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import toast from '~/vue_shared/plugins/global_toast';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('formatProjects', () => {
   it('correctly formats the projects', () => {
@@ -120,5 +129,21 @@ describe('onPageChange', () => {
         }),
       ).toEqual({ end_cursor: 'newMockEndCursor' });
     });
+  });
+});
+
+describe('renderProjectDeleteSuccessToast', () => {
+  const [MOCK_PROJECT] = formatProjects(organizationProjects);
+
+  it('calls toast correctly', () => {
+    renderProjectDeleteSuccessToast(MOCK_PROJECT);
+
+    expect(toast).toHaveBeenCalledWith(`Project '${MOCK_PROJECT.name}' is being deleted.`);
+  });
+});
+
+describe('deleteProjectParams', () => {
+  it('returns {} always', () => {
+    expect(deleteProjectParams()).toStrictEqual({});
   });
 });

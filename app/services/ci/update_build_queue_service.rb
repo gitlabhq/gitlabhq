@@ -50,18 +50,19 @@ module Ci
     end
 
     ##
-    # Add shared runner build tracking entry (used for queuing).
+    # Add runner build tracking entry (used for queuing and for runner fleet dashboard).
     #
     def track(build, transition)
-      return unless build.shared_runner_build?
+      return if build.runner.nil?
+      return unless add_ci_running_build?(build)
 
       raise InvalidQueueTransition unless transition.to == 'running'
 
       transition.within_transaction do
-        result = ::Ci::RunningBuild.upsert_shared_runner_build!(build)
+        result = ::Ci::RunningBuild.upsert_build!(build)
 
         unless result.empty?
-          metrics.increment_queue_operation(:shared_runner_build_new)
+          metrics.increment_queue_operation(:shared_runner_build_new) if build.shared_runner_build?
 
           result.rows.dig(0, 0)
         end
@@ -69,11 +70,11 @@ module Ci
     end
 
     ##
-    # Remove a runtime build tracking entry for a shared runner build (used for
-    # queuing).
+    # Remove a runtime build tracking entry for a runner build (used for queuing and for runner fleet dashboard).
     #
     def untrack(build, transition)
-      return unless build.shared_runner_build?
+      return if build.runner.nil?
+      return unless remove_ci_running_build?(build)
 
       raise InvalidQueueTransition unless transition.from == 'running'
 
@@ -81,7 +82,7 @@ module Ci
         removed = build.all_runtime_metadata.delete_all
 
         if removed > 0
-          metrics.increment_queue_operation(:shared_runner_build_done)
+          metrics.increment_queue_operation(:shared_runner_build_done) if build.shared_runner_build?
 
           build.id
         end
@@ -108,6 +109,18 @@ module Ci
 
         runner.pick_build!(build)
       end
+    end
+
+    def add_ci_running_build?(build)
+      return true if Feature.enabled?(:add_all_ci_running_builds, Project.actor_from_id(build.project_id))
+
+      build.shared_runner_build?
+    end
+
+    def remove_ci_running_build?(build)
+      return true if Feature.enabled?(:remove_all_ci_running_builds, Project.actor_from_id(build.project_id))
+
+      build.shared_runner_build?
     end
   end
 end

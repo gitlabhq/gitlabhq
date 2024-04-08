@@ -29,6 +29,19 @@ All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
 the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
+## Sharding
+
+All calls to Sidekiq APIs must account for sharding. To achieve this,
+utilize the Sidekiq API within the `Sidekiq::Client.via` block to guarantee the correct `Sidekiq.redis` pool is utilized.
+Obtain the suitable Redis pool by invoking the `Gitlab::SidekiqSharding::Router.get_shard_instance` method.
+
+```ruby
+pool_name, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(worker_class.sidekiq_options['store'])
+Sidekiq::Client.via(pool) do
+  ...
+end
+```
+
 ## Retries
 
 Sidekiq defaults to using [25 retries](https://github.com/mperham/sidekiq/wiki/Error-Handling#automatic-job-retry),

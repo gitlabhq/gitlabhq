@@ -83,6 +83,8 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
     end
 
     context 'when pipeline exists' do
+      using RSpec::Parameterized::TableSyntax
+
       before do
         create(
           :ci_pipeline,
@@ -94,25 +96,37 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
         )
       end
 
-      context 'when the pipeline is running' do
-        let(:ci_status) { :running }
+      where(:ci_status, :expected_detailed_merge_status) do
+        :created   | :ci_still_running
+        :pending   | :ci_still_running
+        :running   | :ci_still_running
+        :manual    | :ci_still_running
+        :scheduled | :ci_still_running
+        :failed    | :ci_must_pass
+        :success   | :mergeable
+      end
 
-        it 'returns the failed check' do
-          expect(detailed_merge_status).to eq(:ci_still_running)
+      with_them do
+        it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
+      end
+
+      context 'with FF auto_merge_when_incomplete_pipeline_succeeds disabled' do
+        before do
+          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
         end
-      end
 
-      context 'when the pipeline is pending' do
-        let(:ci_status) { :pending }
+        where(:ci_status, :expected_detailed_merge_status) do
+          :created   | :ci_must_pass
+          :pending   | :ci_still_running
+          :running   | :ci_still_running
+          :manual    | :ci_must_pass
+          :scheduled | :ci_must_pass
+          :failed    | :ci_must_pass
+          :success   | :mergeable
+        end
 
-        it { expect(detailed_merge_status).to eq(:ci_still_running) }
-      end
-
-      context 'when the pipeline is not running' do
-        let(:ci_status) { :failed }
-
-        it 'returns the failed check' do
-          expect(detailed_merge_status).to eq(:ci_must_pass)
+        with_them do
+          it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
         end
       end
     end

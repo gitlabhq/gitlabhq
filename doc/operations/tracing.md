@@ -17,7 +17,7 @@ DETAILS:
 FLAG:
 On GitLab.com, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_tracing`.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 

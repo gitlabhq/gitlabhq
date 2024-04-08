@@ -49,7 +49,7 @@ In GitLab 16.1 and earlier, you should **not** use direct transfer with [schedul
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:

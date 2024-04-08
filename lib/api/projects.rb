@@ -228,7 +228,7 @@ module API
       end
 
       def add_import_params(params)
-        params[:import_type] = 'git' if params[:import_url]&.present?
+        params[:import_type] = 'git' if params[:import_url].present?
         params
       end
     end

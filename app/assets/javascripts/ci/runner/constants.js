@@ -121,8 +121,6 @@ export const I18N_NO_PROJECTS_FOUND = __('No projects found');
 
 // Runner registration
 
-export const I18N_REGISTRATION_SUCCESS = s__("Runners|You've created a new runner!");
-
 export const RUNNER_REGISTRATION_POLLING_INTERVAL_MS = 2000;
 
 // Styles

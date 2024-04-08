@@ -45,7 +45,7 @@ module AutoMerge
     end
 
     def check_availability(merge_request)
-      merge_request.diff_head_pipeline&.active?
+      merge_request.auto_merge_available_when_pipeline_succeeds?
     end
 
     def notify(merge_request)

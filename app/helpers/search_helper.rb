@@ -204,11 +204,11 @@ module SearchHelper
   end
 
   def search_has_group?
-    search_group&.present? && search_group&.persisted?
+    search_group.present? && search_group&.persisted?
   end
 
   def search_has_project?
-    @project&.present? && @project&.persisted?
+    @project.present? && @project&.persisted?
   end
 
   def header_search_context
@@ -228,7 +228,7 @@ module SearchHelper
       end
 
       hash[:scope] = search_scope if search_has_project? || search_has_group?
-      hash[:for_snippets] = @snippet&.present? || @snippets&.any?
+      hash[:for_snippets] = @snippet.present? || @snippets&.any?
     end
   end
 

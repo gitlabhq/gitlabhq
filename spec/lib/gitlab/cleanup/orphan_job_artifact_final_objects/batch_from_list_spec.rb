@@ -30,12 +30,14 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
       [
         [orphan_final_object_1.key, orphan_final_object_1.content_length].join(','),
         [orphan_final_object_2.key, orphan_final_object_2.content_length].join(','),
+        [non_existent_object.key, non_existent_object.content_length].join(','),
         [object_with_job_artifact_record.key, object_with_job_artifact_record.content_length].join(',')
       ]
     end
 
     let!(:orphan_final_object_1) { create_fog_file }
     let!(:orphan_final_object_2) { create_fog_file }
+    let!(:non_existent_object) { create_fog_file.tap(&:destroy) }
 
     let!(:object_with_job_artifact_record) do
       create_fog_file.tap do |file|
@@ -46,9 +48,10 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
     subject(:orphan_objects) { batch.orphan_objects }
 
     shared_examples_for 'returning orphan final job artifact objects' do
-      it 'returns all orphan Fog files from the given CSV entries' do
+      it 'returns all existing orphan Fog files from the given CSV entries' do
         expect(orphan_objects).to contain_exactly(orphan_final_object_1, orphan_final_object_2)
 
+        expect_skipping_non_existent_object_log_message(non_existent_object)
         expect_skipping_object_with_job_artifact_record_log_message(object_with_job_artifact_record)
       end
     end

@@ -17222,6 +17222,9 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr ""
 
+msgid "Dependencies|There was an error fetching the components for this group. Please try again later."
+msgstr ""
+
 msgid "Dependencies|There was an error fetching the projects for this group. Please try again later."
 msgstr ""
 
@@ -39402,6 +39405,12 @@ msgstr ""
 msgid "Project & Group can not be assigned at the same time"
 msgstr ""
 
+msgid "Project '%{name}' is being deleted."
+msgstr ""
+
+msgid "Project '%{name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "Project '%{project_name}' is being imported."
 msgstr ""
 
@@ -44420,9 +44429,6 @@ msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your instance 
 msgstr ""
 
 msgid "Runners|You may lose access to the runner token if you leave this page."
-msgstr ""
-
-msgid "Runners|You've created a new runner!"
 msgstr ""
 
 msgid "Runners|You've registered a new runner!"
@@ -52522,6 +52528,9 @@ msgid "This process deletes the project repository and all related resources."
 msgstr ""
 
 msgid "This project can be restored until %{date}."
+msgstr ""
+
+msgid "This project can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group."

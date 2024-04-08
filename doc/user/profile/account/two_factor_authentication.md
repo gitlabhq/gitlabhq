@@ -240,7 +240,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com and GitLab Dedicated, this
-feature is not available. The feature is not ready for production use.
+feature is not available. This feature is not ready for production use.
 
 You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must:
 

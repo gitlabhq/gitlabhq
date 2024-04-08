@@ -5,20 +5,11 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import GoogleCloudRegistrationInstructionsModal from '~/ci/runner/components/registration/google_cloud_registration_instructions_modal.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
-import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import { fetchPolicies } from '~/lib/graphql';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
-import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
 import provisionGoogleCloudRunnerGroup from '../../graphql/register/provision_google_cloud_runner_group.query.graphql';
 import provisionGoogleCloudRunnerProject from '../../graphql/register/provision_google_cloud_runner_project.query.graphql';
 
-import {
-  I18N_FETCH_ERROR,
-  STATUS_ONLINE,
-  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
-} from '../../constants';
 import { captureException } from '../../sentry_utils';
 
 const GC_PROJECT_PATTERN = /^[a-z][a-z0-9-]{4,28}[a-z0-9]$/; // https://cloud.google.com/resource-manager/reference/rest/v1/projects
@@ -101,25 +92,24 @@ export default {
     HelpPopover,
   },
   props: {
-    runnerId: {
+    token: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     projectPath: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
     groupPath: {
       type: String,
       required: false,
-      default: '',
+      default: null,
     },
   },
   data() {
     return {
-      token: '',
-      runner: null,
       showInstructionsModal: false,
       showInstructionsButtonVariant: 'default',
 
@@ -138,36 +128,6 @@ export default {
     };
   },
   apollo: {
-    runner: {
-      query: runnerForRegistrationQuery,
-      variables() {
-        return {
-          id: convertToGraphQLId(TYPENAME_CI_RUNNER, this.runnerId),
-        };
-      },
-      manual: true,
-      result({ data }) {
-        if (data?.runner) {
-          const { ephemeralAuthenticationToken, ...runner } = data.runner;
-          this.runner = runner;
-
-          // The token is available in the API for a limited amount of time
-          // preserve its original value if it is missing after polling.
-          this.token = ephemeralAuthenticationToken || this.token;
-        }
-      },
-      error(error) {
-        createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
-      },
-      pollInterval() {
-        if (this.isRunnerOnline) {
-          // stop polling
-          return 0;
-        }
-        return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
-      },
-    },
     project: {
       query: provisionGoogleCloudRunnerProject,
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
@@ -230,9 +190,6 @@ export default {
         machineType: this.machineType?.value,
       };
     },
-    isRunnerOnline() {
-      return this.runner?.status === STATUS_ONLINE;
-    },
     tokenMessage() {
       if (this.token) {
         return s__(
@@ -294,7 +251,6 @@ export default {
 <template>
   <div>
     <div class="gl-mt-5">
-      <h1 class="gl-heading-1">{{ $options.i18n.heading }}</h1>
       <p>
         <gl-icon name="information-o" class="gl-text-blue-600" />
         <gl-sprintf :message="tokenMessage">
@@ -538,12 +494,5 @@ export default {
     />
 
     <hr />
-    <!-- end: step two -->
-    <section v-if="isRunnerOnline">
-      <h2 class="gl-heading-2">🎉 {{ s__("Runners|You've registered a new runner!") }}</h2>
-      <p>
-        {{ s__('Runners|Your runner is online and ready to run jobs.') }}
-      </p>
-    </section>
   </div>
 </template>

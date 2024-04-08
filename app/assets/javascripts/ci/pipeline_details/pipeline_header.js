@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import PipelineDetailsHeader from './header/pipeline_details_header.vue';
+import PipelineHeader from './header/pipeline_header.vue';
 
 Vue.use(VueApollo);
 
-export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graphqlResourceEtag) => {
+export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResourceEtag) => {
   const el = document.querySelector(elSelector);
 
   if (!el) {
@@ -16,7 +16,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
   // eslint-disable-next-line no-new
   new Vue({
     el,
-    name: 'PipelineDetailsHeaderApp',
+    name: 'PipelineHeaderApp',
     apolloProvider,
     provide: {
       paths: {
@@ -27,7 +27,7 @@ export const createPipelineDetailsHeaderApp = (elSelector, apolloProvider, graph
       pipelineIid,
     },
     render(createElement) {
-      return createElement(PipelineDetailsHeader);
+      return createElement(PipelineHeader);
     },
   });
 };

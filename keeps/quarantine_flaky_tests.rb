@@ -48,12 +48,11 @@ module Keeps
 
       file = File.expand_path("../#{filename}", __dir__)
       full_file_content = File.read(file)
-      issue_url = flaky_issue['web_url']
 
       file_lines = full_file_content.lines
       return unless file_lines[line_number - 1].match?(EXAMPLE_LINE_REGEX)
 
-      file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{issue_url}' do")
+      file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{flaky_issue['web_url']}' do")
       File.write(file, file_lines.join)
 
       construct_change(filename, line_number, description, flaky_issue)
@@ -91,7 +90,7 @@ module Keeps
         - accept the merge request and schedule to improve the test
         - close the merge request in favor of another merge request to delete the test
 
-        Related to #{issue_url}.
+        Related to #{flaky_issue['web_url']}.
         MARKDOWN
 
         group_label = flaky_issue['labels'].grep(/group::/).first

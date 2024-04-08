@@ -15,7 +15,7 @@ DETAILS:
 
 FLAG:
 This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Metrics provide insight about the operational health of monitored systems.
 Use metrics to learn more about your systems and applications in a given time range.

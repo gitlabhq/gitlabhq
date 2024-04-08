@@ -139,7 +139,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 When this feature is enabled, when you move an issue to another project, all its child tasks are also
 moved to the target project and remain associated as child tasks on the moved issue.

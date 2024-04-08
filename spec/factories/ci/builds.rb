@@ -310,7 +310,7 @@ FactoryBot.define do
       runner factory: :ci_runner
 
       after(:create) do |build|
-        ::Ci::RunningBuild.upsert_shared_runner_build!(build)
+        ::Ci::RunningBuild.upsert_build!(build)
       end
     end
 

@@ -679,7 +679,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an
 administrator to [enable the feature flag](../../administration/feature_flags.md) named `board_multi_select`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 You can select multiple issue cards, then drag the group to another position within the list, or to
 another list. This makes it faster to reorder many issues at once.

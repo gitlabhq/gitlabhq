@@ -6410,4 +6410,58 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect { merge_request.batch_update_reviewer_state(user_ids, :reviewed) }.to change { merge_request.merge_request_reviewers.reload.all?(&:reviewed?) }.from(false).to(true)
     end
   end
+
+  describe '#auto_merge_available_when_pipeline_succeeds?' do
+    let(:merge_request) { build(:merge_request, project: project) }
+
+    subject { merge_request.auto_merge_available_when_pipeline_succeeds? }
+
+    context 'when there is no pipeline' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when there is a pipeline' do
+      before do
+        merge_request.head_pipeline = build(:ci_pipeline, sha: merge_request.diff_head_sha, status: pipeline_status)
+      end
+
+      where(:pipeline_status, :expected) do
+        'success'   | false
+        'failed'    | false
+        'canceled'  | false
+        'skipped'   | false
+        'created'   | true
+        'pending'   | true
+        'running'   | true
+        'scheduled' | true
+        'manual'    | true
+      end
+
+      with_them do
+        it { is_expected.to be expected }
+      end
+
+      context 'when FF auto_merge_when_incomplete_pipeline_succeeds is disabled' do
+        before do
+          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
+        end
+
+        where(:pipeline_status, :expected) do
+          'success'   | false
+          'failed'    | false
+          'canceled'  | false
+          'skipped'   | false
+          'created'   | false
+          'pending'   | true
+          'running'   | true
+          'scheduled' | false
+          'manual'    | false
+        end
+
+        with_them do
+          it { is_expected.to be expected }
+        end
+      end
+    end
+  end
 end

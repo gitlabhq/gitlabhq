@@ -7,8 +7,8 @@ module QA
         class Show < QA::Page::Base
           include Component::CiIcon
 
-          view 'app/assets/javascripts/ci/pipeline_details/header/pipeline_details_header.vue' do
-            element 'pipeline-details-header', required: true
+          view 'app/assets/javascripts/ci/pipeline_details/header/pipeline_header.vue' do
+            element 'pipeline-header', required: true
           end
 
           view 'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue' do
@@ -36,7 +36,7 @@ module QA
           end
 
           def running?(wait: 0)
-            within_element('pipeline-details-header') do
+            within_element('pipeline-header') do
               page.has_content?('running', wait: wait)
             end
           end

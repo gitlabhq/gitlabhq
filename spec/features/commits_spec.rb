@@ -41,7 +41,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
 
         it 'contains commit short id' do
-          within_testid('pipeline-details-header') do
+          within_testid('pipeline-header') do
             expect(page).to have_content pipeline.sha[0..7]
           end
         end

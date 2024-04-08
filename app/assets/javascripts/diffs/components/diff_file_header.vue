@@ -390,7 +390,7 @@ export default {
       />
       <gl-form-checkbox
         v-if="isReviewable && showLocalFileReviews"
-        v-gl-tooltip.hover.focus
+        v-gl-tooltip.hover.focus.left
         data-testid="fileReviewCheckbox"
         class="gl-mr-5 gl-mb-n3 gl-display-flex gl-align-items-center"
         :title="$options.i18n.fileReviewTooltip"

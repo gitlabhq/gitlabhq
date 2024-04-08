@@ -17,7 +17,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
@@ -37,7 +37,7 @@ FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `zoekt_search_api`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 
@@ -51,7 +51,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `zoekt_cross_namespace_search`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Use this feature to search code across the entire GitLab instance.
 

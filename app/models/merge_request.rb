@@ -2211,9 +2211,28 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.get_patch_id_sha
   end
 
+  def auto_merge_available_when_pipeline_succeeds?
+    pipeline = diff_head_pipeline
+    return unless pipeline
+
+    if auto_merge_when_incomplete_pipeline_succeeds_enabled?
+      !pipeline.complete?
+    else
+      pipeline.active?
+    end
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
+
+  def auto_merge_when_incomplete_pipeline_succeeds_enabled?
+    Feature.enabled?(
+      :auto_merge_when_incomplete_pipeline_succeeds,
+      Project.actor_from_id(target_project_id),
+      type: :gitlab_com_derisk
+    )
+  end
 
   def merge_base_pipelines
     return ::Ci::Pipeline.none unless diff_head_pipeline&.target_sha

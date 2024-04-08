@@ -948,8 +948,8 @@ module Ci
           let(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
 
           before do
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build2)
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build3)
+            ::Ci::RunningBuild.upsert_build!(build2)
+            ::Ci::RunningBuild.upsert_build!(build3)
           end
 
           it 'counts job queuing time histogram with expected labels' do

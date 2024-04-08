@@ -2,49 +2,20 @@ import { GlAlert } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
 import GoogleCloudRegistrationInstructionsModal from '~/ci/runner/components/registration/google_cloud_registration_instructions_modal.vue';
-import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import provisionGoogleCloudRunnerQueryProject from '~/ci/runner/graphql/register/provision_google_cloud_runner_project.query.graphql';
 import provisionGoogleCloudRunnerQueryGroup from '~/ci/runner/graphql/register/provision_google_cloud_runner_group.query.graphql';
-import { STATUS_ONLINE } from '~/ci/runner/constants';
 import {
-  runnerForRegistration,
   mockAuthenticationToken,
   projectRunnerCloudProvisioningSteps,
   groupRunnerCloudProvisioningSteps,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
-
-const mockRunnerResponse = {
-  data: {
-    runner: {
-      ...runnerForRegistration.data.runner,
-      ephemeralAuthenticationToken: mockAuthenticationToken,
-    },
-  },
-};
-const mockRunnerWithoutTokenResponse = {
-  data: {
-    runner: {
-      ...runnerForRegistration.data.runner,
-      ephemeralAuthenticationToken: null,
-    },
-  },
-};
-const mockRunnerOnlineResponse = {
-  data: {
-    runner: {
-      ...runnerForRegistration.data.runner,
-      status: STATUS_ONLINE,
-    },
-  },
-};
 
 const mockProjectRunnerCloudSteps = {
   data: {
@@ -62,7 +33,8 @@ const mockGroupRunnerCloudSteps = {
   },
 };
 
-const mockRunnerId = `${getIdFromGraphQLId(runnerForRegistration.data.runner.id)}`;
+const mockGroupPath = 'test/group';
+const mockProjectPath = 'test/project';
 
 describe('GoogleCloudRegistrationInstructions', () => {
   let wrapper;
@@ -100,44 +72,43 @@ describe('GoogleCloudRegistrationInstructions', () => {
     return waitForPromises();
   };
 
-  const runnerWithTokenResolver = jest.fn().mockResolvedValue(mockRunnerResponse);
-  const runnerWithoutTokenResolver = jest.fn().mockResolvedValue(mockRunnerWithoutTokenResponse);
-  const runnerOnlineResolver = jest.fn().mockResolvedValue(mockRunnerOnlineResponse);
   const projectInstructionsResolver = jest.fn().mockResolvedValue(mockProjectRunnerCloudSteps);
   const groupInstructionsResolver = jest.fn().mockResolvedValue(mockGroupRunnerCloudSteps);
+  const errorResolver = jest
+    .fn()
+    .mockRejectedValue(new Error('GraphQL error: One or more validations have failed'));
 
-  const error = new Error('GraphQL error: One or more validations have failed');
-  const errorResolver = jest.fn().mockRejectedValue(error);
-
-  const defaultHandlers = [[runnerForRegistrationQuery, runnerWithTokenResolver]];
-  const defaultProps = {
-    runnerId: mockRunnerId,
-    projectPath: 'test/project',
-  };
-
-  const createComponent = (handlers = defaultHandlers, props = defaultProps) => {
+  const createComponent = ({ props = {}, handlers = [] } = {}) => {
     wrapper = mountExtended(GoogleCloudRegistrationInstructions, {
       apolloProvider: createMockApollo(handlers),
       propsData: {
+        token: mockAuthenticationToken,
         ...props,
       },
       attachTo: document.body,
     });
   };
 
-  it('displays form inputs', () => {
+  it('displays runner token', async () => {
     createComponent();
 
-    expect(findProjectIdInput().exists()).toBe(true);
-    expect(findRegionInput().exists()).toBe(true);
-    expect(findZoneInput().exists()).toBe(true);
-    expect(findMachineTypeInput().exists()).toBe(true);
+    await waitForPromises();
+
+    expect(findToken().exists()).toBe(true);
+    expect(findToken().text()).toBe(mockAuthenticationToken);
+    expect(findClipboardButton().exists()).toBe(true);
+    expect(findClipboardButton().props('text')).toBe(mockAuthenticationToken);
   });
 
-  it('machine type input has a default value', () => {
-    createComponent();
+  it('does not display runner token', async () => {
+    createComponent({
+      props: { token: null },
+    });
 
-    expect(findMachineTypeInput().find('input').element.value).toEqual('n2d-standard-2');
+    await waitForPromises();
+
+    expect(findToken().exists()).toBe(false);
+    expect(findClipboardButton().exists()).toBe(false);
   });
 
   it('contains external docs links', () => {
@@ -154,30 +125,19 @@ describe('GoogleCloudRegistrationInstructions', () => {
     );
   });
 
-  it('calls runner for registration query', () => {
+  it('displays form inputs', () => {
     createComponent();
 
-    expect(runnerWithTokenResolver).toHaveBeenCalled();
+    expect(findProjectIdInput().exists()).toBe(true);
+    expect(findRegionInput().exists()).toBe(true);
+    expect(findZoneInput().exists()).toBe(true);
+    expect(findMachineTypeInput().exists()).toBe(true);
   });
 
-  it('displays runner token', async () => {
+  it('machine type input has a default value', () => {
     createComponent();
 
-    await waitForPromises();
-
-    expect(findToken().exists()).toBe(true);
-    expect(findToken().text()).toBe(mockAuthenticationToken);
-    expect(findClipboardButton().exists()).toBe(true);
-    expect(findClipboardButton().props('text')).toBe(mockAuthenticationToken);
-  });
-
-  it('does not display runner token', async () => {
-    createComponent([[runnerForRegistrationQuery, runnerWithoutTokenResolver]]);
-
-    await waitForPromises();
-
-    expect(findToken().exists()).toBe(false);
-    expect(findClipboardButton().exists()).toBe(false);
+    expect(findMachineTypeInput().find('input').element.value).toEqual('n2d-standard-2');
   });
 
   it('Shows an alert when the form has empty fields', async () => {
@@ -194,60 +154,84 @@ describe('GoogleCloudRegistrationInstructions', () => {
     );
   });
 
-  it('Hides an alert when the form is valid', async () => {
-    createComponent([[provisionGoogleCloudRunnerQueryProject, projectInstructionsResolver]]);
+  describe('when fetching instructions for a project runner', () => {
+    beforeEach(async () => {
+      createComponent({
+        props: { projectPath: mockProjectPath },
+        handlers: [[provisionGoogleCloudRunnerQueryProject, projectInstructionsResolver]],
+      });
 
-    await fillInGoogleForm();
+      await fillInGoogleForm();
+    });
 
-    expect(findAlert().exists()).toBe(false);
-  });
+    it('Hides an alert when the form is valid', () => {
+      expect(findAlert().exists()).toBe(false);
+    });
 
-  it('Shows a modal with the correspondent scripts for a project', async () => {
-    createComponent([[provisionGoogleCloudRunnerQueryProject, projectInstructionsResolver]]);
+    it('Shows a modal with the correspondent scripts for a project', () => {
+      expect(projectInstructionsResolver).toHaveBeenCalled();
+      expect(groupInstructionsResolver).not.toHaveBeenCalled();
 
-    await fillInGoogleForm();
-
-    expect(projectInstructionsResolver).toHaveBeenCalled();
-    expect(groupInstructionsResolver).not.toHaveBeenCalled();
-
-    expect(findGoogleCloudInstructionsModal().props()).toEqual({
-      visible: true,
-      applyTerraformScript: 'mock project apply terraform script',
-      setupBashScript: 'mock project setup bash script',
-      setupTerraformFile: 'mock project setup terraform file',
+      expect(findGoogleCloudInstructionsModal().props()).toEqual({
+        visible: true,
+        applyTerraformScript: 'mock project apply terraform script',
+        setupBashScript: 'mock project setup bash script',
+        setupTerraformFile: 'mock project setup terraform file',
+      });
     });
   });
 
-  it('Shows a modal with the correspondent scripts for a group', async () => {
-    createComponent([[provisionGoogleCloudRunnerQueryGroup, groupInstructionsResolver]], {
-      runnerId: mockRunnerId,
-      groupPath: 'groups/test',
+  describe('when fetching instructions for a group runner', () => {
+    beforeEach(async () => {
+      createComponent({
+        props: { groupPath: mockGroupPath },
+        handlers: [[provisionGoogleCloudRunnerQueryGroup, groupInstructionsResolver]],
+      });
+
+      await fillInGoogleForm();
     });
 
-    await fillInGoogleForm();
+    it('Hides an alert when the form is valid', () => {
+      expect(findAlert().exists()).toBe(false);
+    });
 
-    expect(groupInstructionsResolver).toHaveBeenCalled();
-    expect(projectInstructionsResolver).not.toHaveBeenCalled();
+    it('Shows a modal with the correspondent scripts for a group', () => {
+      expect(groupInstructionsResolver).toHaveBeenCalled();
+      expect(projectInstructionsResolver).not.toHaveBeenCalled();
 
-    expect(findGoogleCloudInstructionsModal().props()).toEqual({
-      visible: true,
-      applyTerraformScript: 'mock group apply terraform script',
-      setupBashScript: 'mock group setup bash script',
-      setupTerraformFile: 'mock group setup terraform file',
+      expect(findGoogleCloudInstructionsModal().props()).toEqual({
+        visible: true,
+        applyTerraformScript: 'mock group apply terraform script',
+        setupBashScript: 'mock group setup bash script',
+        setupTerraformFile: 'mock group setup terraform file',
+      });
     });
   });
 
-  it('Shows feedback when runner is online', async () => {
-    createComponent([[runnerForRegistrationQuery, runnerOnlineResolver]]);
+  describe('when fetching instructions fails', () => {
+    beforeEach(async () => {
+      createComponent({
+        props: { projectPath: mockProjectPath },
+        handlers: [[provisionGoogleCloudRunnerQueryProject, errorResolver]],
+      });
 
-    await waitForPromises();
-
-    expect(runnerOnlineResolver).toHaveBeenCalledTimes(1);
-    expect(runnerOnlineResolver).toHaveBeenCalledWith({
-      id: expect.stringContaining(mockRunnerId),
+      await fillInGoogleForm();
     });
 
-    expect(wrapper.text()).toContain('Your runner is online');
+    it('Does not display a modal with text when validation errors occur', () => {
+      expect(errorResolver).toHaveBeenCalled();
+
+      expect(findAlert().text()).toContain(
+        'To view the setup instructions, make sure all form fields are completed and correct.',
+      );
+
+      expect(findGoogleCloudInstructionsModal().props()).toEqual({
+        visible: true,
+        applyTerraformScript: null,
+        setupBashScript: null,
+        setupTerraformFile: null,
+      });
+    });
   });
 
   describe('Field validation', () => {
@@ -340,25 +324,6 @@ describe('GoogleCloudRegistrationInstructions', () => {
         await fillInTextField(findMachineTypeInput(), input);
 
         expectValidation(findMachineTypeInput(), { ariaInvalid, feedback });
-      });
-    });
-
-    it('Does not display a modal with text when validation errors occur', async () => {
-      createComponent([[provisionGoogleCloudRunnerQueryProject, errorResolver]]);
-
-      await fillInGoogleForm();
-
-      expect(errorResolver).toHaveBeenCalled();
-
-      expect(findAlert().text()).toContain(
-        'To view the setup instructions, make sure all form fields are completed and correct.',
-      );
-
-      expect(findGoogleCloudInstructionsModal().props()).toEqual({
-        visible: true,
-        applyTerraformScript: null,
-        setupBashScript: null,
-        setupTerraformFile: null,
       });
     });
   });

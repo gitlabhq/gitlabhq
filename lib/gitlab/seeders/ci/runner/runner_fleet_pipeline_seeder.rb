@@ -171,7 +171,10 @@ module Gitlab
 
             ::Ci::Build.transaction do
               build = ::Ci::Build.new(importing: true, **build_attrs).tap(&:save!)
-              ::Ci::RunningBuild.upsert_shared_runner_build!(build) if build.running? && build.shared_runner_build?
+              if build.running? &&
+                  (Feature.enabled?(:add_all_ci_running_builds, build.project) || build.shared_runner_build?)
+                ::Ci::RunningBuild.upsert_build!(build)
+              end
             end
           end
 
