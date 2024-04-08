@@ -57065,10 +57065,10 @@ msgstr ""
 msgid "Webhooks|+ Mask another portion of URL"
 msgstr ""
 
-msgid "Webhooks|A comment is added to a confidential issue."
+msgid "Webhooks|A comment is made or edited on a confidential issue."
 msgstr ""
 
-msgid "Webhooks|A comment is added to an issue or merge request."
+msgid "Webhooks|A comment is made or edited on an issue or merge request."
 msgstr ""
 
 msgid "Webhooks|A confidential issue is created, updated, closed, or reopened."

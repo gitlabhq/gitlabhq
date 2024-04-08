@@ -42,7 +42,9 @@ GitLab integrates with open-source tools for vulnerability static analysis in co
 
 WARNING:
 Support for Grype was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/439164) in GitLab
-16.9 and is planned for removal in 17.0. Use Trivy instead.
+16.9 and is planned for removal in 17.0. Use Trivy instead. 
+In GitLab 17.0 and later, the Grype analyzer will no longer be maintained, except for limited fixes as explained in our [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+The existing current major version for the Grype analyzer image will continue to be updated with the latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer will stop working.
 
 To integrate GitLab with security scanners other than those listed here, see
 [Security scanner integration](../../../development/integrations/secure.md).

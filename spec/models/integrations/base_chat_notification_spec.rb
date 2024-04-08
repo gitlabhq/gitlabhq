@@ -118,7 +118,7 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
       let_it_be(:issue) { create(:labeled_issue, project: project, labels: [label, label_2, label_3]) }
       let_it_be(:note) { create(:note, noteable: issue, project: project) }
 
-      let(:data) { Gitlab::DataBuilder::Note.build(note, user) }
+      let(:data) { Gitlab::DataBuilder::Note.build(note, user, :create) }
 
       shared_examples 'notifies the chat integration' do
         specify do
@@ -262,7 +262,7 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
         context 'labels are distributed on multiple objects' do
           let(:label_filter) { '~Bug, ~Backend' }
           let(:data) do
-            Gitlab::DataBuilder::Note.build(note, user).merge({
+            Gitlab::DataBuilder::Note.build(note, user, :create).merge({
               issue: {
                 labels: [
                   { title: 'Bug' }

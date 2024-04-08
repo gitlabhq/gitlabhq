@@ -102,7 +102,7 @@ module Notes
     def execute_note_webhook(note)
       return unless note.project && note.previous_changes.include?('note')
 
-      note_data = Gitlab::DataBuilder::Note.build(note, note.author)
+      note_data = Gitlab::DataBuilder::Note.build(note, note.author, :update)
       is_confidential = note.confidential?(include_noteable: true)
       hooks_scope = is_confidential ? :confidential_note_hooks : :note_hooks
 

@@ -29,7 +29,7 @@ module Notes
     end
 
     def hook_data
-      Gitlab::DataBuilder::Note.build(note, note.author)
+      Gitlab::DataBuilder::Note.build(note, note.author, :create)
     end
 
     def execute_note_hooks

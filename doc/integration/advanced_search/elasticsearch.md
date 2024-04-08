@@ -399,13 +399,7 @@ from the Elasticsearch index as expected.
 #### All project records are indexed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/432489) in GitLab 16.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145300) in GitLab 16.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `search_index_all_projects`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
 
 When you select the **Limit the amount of namespace and project data to index** checkbox:
 

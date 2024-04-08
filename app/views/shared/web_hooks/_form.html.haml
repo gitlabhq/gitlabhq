@@ -26,11 +26,11 @@
     %li.gl-pb-3
       = form.gitlab_ui_checkbox_component :note_events,
           integration_webhook_event_human_name(:note_events),
-          help_text: s_('Webhooks|A comment is added to an issue or merge request.')
+          help_text: s_('Webhooks|A comment is made or edited on an issue or merge request.')
     %li.gl-pb-3
       = form.gitlab_ui_checkbox_component :confidential_note_events,
           integration_webhook_event_human_name(:confidential_note_events),
-          help_text: s_('Webhooks|A comment is added to a confidential issue.')
+          help_text: s_('Webhooks|A comment is made or edited on a confidential issue.')
     %li.gl-pb-3
       = form.gitlab_ui_checkbox_component :issues_events,
           integration_webhook_event_human_name(:issues_events),

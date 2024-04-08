@@ -23,7 +23,7 @@ module Integrations
 
       no_data_error(s_('TestHooks|Ensure the project has notes.')) unless note.present?
 
-      Gitlab::DataBuilder::Note.build(note, current_user)
+      Gitlab::DataBuilder::Note.build(note, current_user, :create)
     end
 
     def issues_events_data

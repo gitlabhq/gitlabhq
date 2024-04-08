@@ -2,18 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::Note do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
-  let(:data) { described_class.build(note, user) }
+RSpec.describe Gitlab::DataBuilder::Note, feature_category: :webhooks do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let(:action) { :create }
+  let(:data) { described_class.build(note, user, action) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
 
   shared_examples 'includes general data' do
     specify do
       expect(data).to have_key(:object_attributes)
       expect(data[:object_attributes]).to have_key(:url)
-      expect(data[:object_attributes][:url])
-        .to eq(Gitlab::UrlBuilder.build(note))
+      expect(data[:object_attributes][:url]).to eq(Gitlab::UrlBuilder.build(note))
+      expect(data[:object_attributes][:action]).to eq('create')
       expect(data[:object_kind]).to eq('note')
       expect(data[:user]).to eq(user.hook_attrs)
     end
@@ -157,5 +158,21 @@ RSpec.describe Gitlab::DataBuilder::Note do
 
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
+  end
+
+  describe 'object_attributes.action value' do
+    let_it_be(:note) { create(:note, project: project) }
+
+    describe 'when action is `:update`' do
+      let(:action) { :update }
+
+      it { expect(data[:object_attributes][:action]).to eq('update') }
+    end
+
+    describe 'when action is invalid' do
+      let(:action) { :invalid }
+
+      it { expect { data }.to raise_error(ArgumentError) }
+    end
   end
 end

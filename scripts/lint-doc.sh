@@ -90,15 +90,30 @@ fi
 
 # Do not use dashes (-) in directory names, use underscores (_) instead.
 # Number of directories with dashes as of 2021-09-17
-NUMBER_DASHES=2
-FIND_DASHES=$(find doc -type d -name "*-*" | wc -l)
+DIR_NUMBER_DASHES=2
+DIR_FIND_DASHES=$(find doc -type d -name "*-*" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for directory names containing dashes...${COLOR_RESET}\n"
-if [ "${FIND_DASHES}" -ne $NUMBER_DASHES ]
+if [ "${DIR_FIND_DASHES}" -ne $DIR_NUMBER_DASHES ]
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: The number of directory names containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the directory names.\n" >&2
   printf "If removing a directory containing dashes, update NUMBER_DASHES in lint-doc.sh.\n" >&2
+  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
+   ((ERRORCODE++))
+fi
+
+# Do not use dashes (-) in filenames, use underscores (_) instead.
+# Number of filenames with dashes as of 2024-03-29
+FILE_NUMBER_DASHES=73
+FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"
+if [ "${FILE_FIND_DASHES}" -ne $FILE_NUMBER_DASHES ]
+then
+  # shellcheck disable=2059
+  printf "${COLOR_RED}ERROR: The number of filenames containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the filenames.\n" >&2
+  printf "If removing a file containing dashes, update the filename NUMBER_DASHES in lint-doc.sh.\n" >&2
   printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
    ((ERRORCODE++))
 fi

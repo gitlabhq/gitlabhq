@@ -144,7 +144,7 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key" do
-        data = Gitlab::DataBuilder::Note.build(commit_note, user)
+        data = Gitlab::DataBuilder::Note.build(commit_note, user, :create)
 
         WebMock.stub_request(:post, webhook_url_regex)
           .with { |request| expect(thread_key_from_request(request)).to match(/commit .*?/) }
@@ -163,7 +163,7 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key" do
-        data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
+        data = Gitlab::DataBuilder::Note.build(merge_request_note, user, :create)
 
         WebMock.stub_request(:post, webhook_url_regex)
           .with { |request| expect(thread_key_from_request(request)).to match(/merge request .*?/) }
@@ -182,7 +182,7 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key" do
-        data = Gitlab::DataBuilder::Note.build(issue_note, user)
+        data = Gitlab::DataBuilder::Note.build(issue_note, user, :create)
 
         WebMock.stub_request(:post, webhook_url_regex)
           .with { |request| expect(thread_key_from_request(request)).to match(/issue .*?/) }
@@ -201,7 +201,7 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key" do
-        data = Gitlab::DataBuilder::Note.build(snippet_note, user)
+        data = Gitlab::DataBuilder::Note.build(snippet_note, user, :create)
 
         WebMock.stub_request(:post, webhook_url_regex)
           .with { |request| expect(thread_key_from_request(request)).to match(/snippet .*?/) }
