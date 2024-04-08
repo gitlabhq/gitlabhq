@@ -19,7 +19,7 @@ If you need to configure runners on the machine where you installed GitLab Runne
 
 You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
-used of it is shorter than the job timeout defined in the project.
+used if it is shorter than the job timeout defined in the project.
 
 ### For an instance runner
 

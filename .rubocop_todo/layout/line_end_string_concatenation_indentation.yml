@@ -215,7 +215,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/redis_queue_usage.rb'
     - 'rubocop/cop/rspec/factory_bot/inline_association.rb'
     - 'rubocop/cop/rspec/factory_bot/strategy_in_callback.rb'
-    - 'rubocop/cop/rspec/have_gitlab_http_status.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'
     - 'rubocop/cop/user_admin.rb'
     - 'scripts/lib/glfm/parse_examples.rb'

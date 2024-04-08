@@ -1444,10 +1444,10 @@ You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in 
 
 **Possible inputs**:
 
-- `all` (default): Artifacts in public pipelines are available for download by anyone, including anonymous,
-  guest, and reporter users.
-- `developer`: Artifacts are only available for download by users with the Developer role or higher.
-- `none`: Artifacts are not available for download by anyone.
+- `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
+  including anonymous, guest, and reporter users.
+- `developer`: Artifacts in the job are only available for download by users with the Developer role or higher.
+- `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:
 
@@ -1456,6 +1456,11 @@ job:
   artifacts:
     access: 'developer'
 ```
+
+**Additional details**:
+
+- `artifacts:access` affects all [`artifacts:reports`](#artifactsreports) too,
+  so you can also restrict access to [artifacts for reports](artifacts_reports.md).
 
 #### `artifacts:reports`
 

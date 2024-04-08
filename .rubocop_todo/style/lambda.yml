@@ -54,7 +54,6 @@ Style/Lambda:
     - 'lib/gitlab/utils/usage_data.rb'
     - 'qa/qa/runtime/allure_report.rb'
     - 'rubocop/cop/inject_enterprise_edition_module.rb'
-    - 'rubocop/cop/rspec/have_gitlab_http_status.rb'
     - 'spec/controllers/concerns/routable_actions_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'
     - 'spec/graphql/types/base_object_spec.rb'

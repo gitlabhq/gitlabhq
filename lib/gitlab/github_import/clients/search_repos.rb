@@ -15,9 +15,10 @@ module Gitlab
         private
 
         def graphql_request(query)
+          is_default_host = (URI.parse(api_endpoint).host == URI.parse(::Octokit::Default::API_ENDPOINT).host)
           with_retry do
             octokit.post(
-              '/graphql',
+              "#{'/api' unless is_default_host}/graphql",
               { query: query }.to_json
             ).to_h
           end

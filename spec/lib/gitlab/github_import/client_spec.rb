@@ -677,6 +677,20 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         client.search_repos_by_name_graphql('test')
       end
 
+      context 'when api_endpoint is not api.github.com' do
+        it 'uses the graphql api path for a self-hosted instance' do
+          expect(client)
+            .to receive(:api_endpoint)
+            .and_return('https://github.kittens.com/')
+
+          expect(client.octokit).to receive(:post).with(
+            '/api/graphql', { query: expected_graphql }.to_json
+          )
+
+          client.search_repos_by_name_graphql('test')
+        end
+      end
+
       context 'when relation type option present' do
         context 'when relation type is owned' do
           let(:expected_query) { 'test in:name is:public,private fork:true user:user' }

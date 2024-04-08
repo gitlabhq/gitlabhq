@@ -265,6 +265,11 @@ If duplicate environment variables are present in a `dotenv` report:
 - In GitLab 14.6 and later, the last one specified is used.
 - In GitLab 14.5 and earlier, an error occurs.
 
+You should avoid storing sensitive data like credentials in dotenv reports, as the
+reports can be downloaded from the pipeline details page. If necessary, you can use
+[artifacts:access](index.md#artifactsaccess) to restrict the users that can download
+the report artifacts in a job.
+
 The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
 
 - The variable key can contain only letters, digits, and underscores (`_`).

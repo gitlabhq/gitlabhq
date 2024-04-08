@@ -4919,7 +4919,6 @@ RSpec/FeatureCategory:
     - 'spec/rubocop/cop/rspec/factory_bot/avoid_create_spec.rb'
     - 'spec/rubocop/cop/rspec/factory_bot/inline_association_spec.rb'
     - 'spec/rubocop/cop/rspec/factory_bot/strategy_in_callback_spec.rb'
-    - 'spec/rubocop/cop/rspec/have_gitlab_http_status_spec.rb'
     - 'spec/rubocop/cop/rspec/modify_sidekiq_middleware_spec.rb'
     - 'spec/rubocop/cop/rspec/top_level_describe_path_spec.rb'
     - 'spec/rubocop/cop/rspec/web_mock_enable_spec.rb'
