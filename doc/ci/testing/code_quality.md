@@ -107,6 +107,7 @@ Prerequisites:
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 - If you're using instance runners, the Code Quality job must be configured for the
   [Docker-in-Docker workflow](../docker/using_docker_build.md#use-docker-in-docker).
+  When using this workflow, the `/builds` volume must be mapped to allow reports to be saved.
 - If you're using private runners, you should use an
   [alternative configuration](#improve-code-quality-performance-with-private-runners)
   recommended for running Code Quality analysis more efficiently.
