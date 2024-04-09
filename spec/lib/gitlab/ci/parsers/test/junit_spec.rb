@@ -424,6 +424,30 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
 
         expect(test_cases[0].job).to eq(job)
       end
+
+      context 'when attachment is way too long' do
+        let(:junit) do
+          <<~EOF
+            <testsuites>
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                  <failure>Some failure</failure>
+                  <system-out>#{'[[ATTACHMENT|' * 20000}some/path.png]]</system-out>
+                </testcase>
+              </testsuite>
+            </testsuites>
+          EOF
+        end
+
+        it 'assigns correct attributes to the test case' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases[0].has_attachment?).to be_truthy
+          expect(test_cases[0].attachment).to eq("some/path.png")
+
+          expect(test_cases[0].job).to eq(job)
+        end
+      end
     end
 
     context 'when data contains multiple attachments tag' do

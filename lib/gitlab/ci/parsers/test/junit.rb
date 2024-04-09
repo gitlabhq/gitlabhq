@@ -6,7 +6,7 @@ module Gitlab
       module Test
         class Junit
           JunitParserError = Class.new(Gitlab::Ci::Parsers::ParserError)
-          ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>.+?)\]\]/
+          ATTACHMENT_TAG_REGEX = /\[\[ATTACHMENT\|(?<path>[^\[\]\|]+?)\]\]/
 
           def parse!(xml_data, test_report, job:)
             test_suite = test_report.get_suite(job.test_suite_name)
