@@ -593,7 +593,7 @@ module Gitlab
 
     # We need this for initializers that need to be run before Zeitwerk is loaded
     initializer :before_zeitwerk, before: :setup_main_autoloader, after: :prepend_helpers_path do
-      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].each do |initializer|
         load_config_initializer(initializer)
       end
     end

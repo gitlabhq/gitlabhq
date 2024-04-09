@@ -38517,9 +38517,6 @@ msgstr ""
 msgid "Product analytics"
 msgstr ""
 
-msgid "Product analytics requires Experiment and Beta features to be enabled."
-msgstr ""
-
 msgid "ProductAnalytics|1. Add the NPM package to your package.json using your preferred package manager"
 msgstr ""
 
@@ -38727,9 +38724,6 @@ msgstr ""
 msgid "ProductAnalytics|Previous month"
 msgstr ""
 
-msgid "ProductAnalytics|Product Analytics"
-msgstr ""
-
 msgid "ProductAnalytics|Product analytics onboarding"
 msgstr ""
 
@@ -38779,9 +38773,6 @@ msgid "ProductAnalytics|Snowplow configurator connection string"
 msgstr ""
 
 msgid "ProductAnalytics|Something went wrong while loading product analytics usage data. Refresh the page to try again."
-msgstr ""
-
-msgid "ProductAnalytics|Store, query, and visualize quantitative data to get insights into user value."
 msgstr ""
 
 msgid "ProductAnalytics|Tell us what you think!"
@@ -38842,9 +38833,6 @@ msgid "ProductAnalytics|Use GitLab-managed provider"
 msgstr ""
 
 msgid "ProductAnalytics|Use a GitLab-managed infrastructure to process, store, and query analytics events data."
-msgstr ""
-
-msgid "ProductAnalytics|Use product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
@@ -46087,6 +46075,9 @@ msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
 msgid "SecurityOrchestration|Overwrite the current CI/CD code with the new file's content?"
+msgstr ""
+
+msgid "SecurityOrchestration|Pipeline execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Please remove duplicated values"

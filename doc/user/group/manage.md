@@ -451,9 +451,10 @@ for the ability to set merge request approval rules for groups is tracked in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
+> - [Added to GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147833) in GitLab 16.11.
 
 WARNING:
 [Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results

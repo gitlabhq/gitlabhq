@@ -64,7 +64,6 @@
 
   .event-body {
     margin-top: $gl-padding-4;
-    margin-right: 174px;
     color: $gl-text-color;
 
     .event-note {
@@ -150,7 +149,9 @@
   }
 
   .event-item-timestamp {
-    float: right;
+    @include media-breakpoint-up(sm) {
+      float: right;
+    }
   }
 }
 

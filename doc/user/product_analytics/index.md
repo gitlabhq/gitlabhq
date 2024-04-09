@@ -84,7 +84,6 @@ These group-level settings are available for top-level groups and cascade to all
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Use Experiment and Beta features** checkbox.
-1. Check **Use product analytics** checkbox.
 1. Select **Save changes**.
 
 ### Project-level settings

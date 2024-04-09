@@ -44,7 +44,9 @@ $tabs-holder-z-index: 250;
 .diff-comment-avatar,
 .diff-comments-more-count {
   position: absolute;
-  left: 0;
+  // center 24px avatar on a 20px line
+  left: -2px;
+  top: -2px;
   margin-right: 0;
   border-color: var(--white, $white);
   cursor: pointer;

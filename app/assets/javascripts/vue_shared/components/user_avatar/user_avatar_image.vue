@@ -22,11 +22,6 @@ import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';
 
-/* We force a mininum avatar size to prevent blurryness of certain avatars
-   especially on retina displays. If we adjust this make sure to adjust
-   it in app/helpers/avatars_helper.rb as well. */
-const MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY = 48;
-
 export default {
   name: 'UserAvatarImage',
   components: {
@@ -68,6 +63,12 @@ export default {
       required: false,
       default: 'top',
     },
+    // Render avatar using pseudo-elements so that they cannot be selected or copied
+    pseudo: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     // API response sends null when gravatar is disabled and
@@ -82,9 +83,9 @@ export default {
     },
     maximumSize() {
       if (isObject(this.size)) {
-        return Math.max(MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY, ...Object.values(this.size));
+        return Math.max(...Object.values(this.size)) * 2;
       }
-      return Math.max(MIN_AVATAR_SIZE_TO_NOT_BE_BLURRY, this.size);
+      return this.size * 2;
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
@@ -96,14 +97,17 @@ export default {
 <template>
   <span ref="userAvatar">
     <gl-avatar
+      class="gl-bg-size-cover"
       :class="{
         lazy: lazy,
         [cssClasses]: true,
       }"
-      :src="resultantSrcAttribute"
+      :src="pseudo ? undefined : resultantSrcAttribute"
+      :style="pseudo ? { backgroundImage: `url('${sanitizedSource}')` } : null"
       :data-src="sanitizedSource"
       :size="size"
       :alt="imgAlt"
+      data-testid="user-avatar-image"
     />
 
     <gl-tooltip

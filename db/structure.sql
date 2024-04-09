@@ -17197,6 +17197,7 @@ CREATE TABLE vs_code_settings (
     content text NOT NULL,
     uuid uuid,
     version integer DEFAULT 0,
+    CONSTRAINT check_2082c35541 CHECK ((version IS NOT NULL)),
     CONSTRAINT check_4680ca265d CHECK ((uuid IS NOT NULL)),
     CONSTRAINT check_5da3b2910b CHECK ((char_length(content) <= 524288)),
     CONSTRAINT check_994c503fc4 CHECK ((char_length(setting_type) <= 256))

@@ -330,3 +330,16 @@ contexts.
 | for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on |  |
 | for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
 | for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` group setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
+
+## Running GitLab Duo Chat prompt experiments
+
+Before being merged, all prompt or model changes for GitLab Duo Chat should both:
+
+1. Be behind a feature flag *and*
+1. Be evaluated locally
+
+The type of local evaluation needed depends on the type of change. GitLab Duo Chat local evaluation using the Prompt Library is an effective way of measuring average correctness of responses to questions about issues and epics.
+
+Follow [the Prompt Library guide](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md#seeding-the-local-gdk-instance-with-issue-and-epics-data) to evaluate GitLab Duo Chat changes locally. The prompt library docs are the single source of truth and should be the most up-to-date.
+
+Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.

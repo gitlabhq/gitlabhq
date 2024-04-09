@@ -164,25 +164,13 @@ In order of highest priority first, the component version can be:
   the commit SHA takes precedence over the tag.
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest`, which is a special version that always points to the latest semantic version
-  published in the CI/CD Catalog. Use `~latest` only if you want to use
-  the absolute latest version at all times, which could include breaking changes.
+- `~latest`, which is a special version that always points to the latest
+  [semantic version published in the CI/CD Catalog](#semantic-versioning).
+  Use `~latest` only if you want to use the absolute latest version at all times,
+  which could include breaking changes.
 
-You can use any [version](#component-versions) supported by the component, but using a
-version published to the CI/CD catalog is recommended.
-
-#### Use semantic versioning
-
-When tagging and [releasing new versions](#publish-a-new-release) of components,
-you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
-for communicating that a change is a major, minor, patch, or other kind of change.
-
-For example:
-
-- `1.0.0`
-- `2.1.3`
-- `1.0.0-alpha`
-- `3.0.0-rc1`
+You can use any version supported by the component, but using a version published
+to the CI/CD catalog is recommended.
 
 ## CI/CD Catalog
 
@@ -277,9 +265,27 @@ To publish a new version of the component to the catalog:
 
 1. Create a [new tag](../../user/project/repository/tags/index.md#create-a-tag) for the release,
    which should trigger a tag pipeline that contains the job responsible for creating the release.
+   The tag must use [semantic versioning](#semantic-versioning).
 
 After the release job completes successfully, the release is created and the new version
 is published to the CI/CD catalog.
+
+#### Semantic versioning
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) in GitLab 16.10.
+
+When tagging and [releasing new versions](#publish-a-new-release) of components to the Catalog,
+you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
+for communicating that a change is a major, minor, patch, or other kind of change.
+
+For example:
+
+- `1.0.0`
+- `2.1.3`
+- `1.0.0-alpha`
+- `3.0.0-rc1`
+
+Use the [`~latest` component version](#component-versions) to always fetch the highest semantic version released.
 
 ### Unpublish a component project
 

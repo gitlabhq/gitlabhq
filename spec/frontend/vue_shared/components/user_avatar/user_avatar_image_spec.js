@@ -7,7 +7,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 jest.mock('images/no_avatar.png', () => 'default-avatar-url');
 
 const PROVIDED_PROPS = {
-  size: 48,
+  size: 24,
   imgSrc: 'myavatarurl.com',
   imgAlt: 'mydisplayname',
   cssClasses: 'myextraavatarclass',
@@ -31,10 +31,10 @@ describe('User Avatar Image Component', () => {
 
     it('should render `GlAvatar` and provide correct properties to it', () => {
       expect(findAvatar().attributes('data-src')).toBe(
-        `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size * 2}`,
       );
       expect(findAvatar().props()).toMatchObject({
-        src: `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        src: `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size * 2}`,
         alt: PROVIDED_PROPS.imgAlt,
         size: PROVIDED_PROPS.size,
       });
@@ -61,7 +61,7 @@ describe('User Avatar Image Component', () => {
       expect(findAvatar().classes()).toContain('lazy');
       expect(findAvatar().attributes()).toMatchObject({
         src: placeholderImage,
-        'data-src': `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size}`,
+        'data-src': `${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size * 2}`,
       });
     });
 
@@ -74,7 +74,7 @@ describe('User Avatar Image Component', () => {
         },
       });
 
-      expect(findAvatar().attributes('data-src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${64}`);
+      expect(findAvatar().attributes('data-src')).toBe(`${PROVIDED_PROPS.imgSrc}?width=${128}`);
     });
   });
 
@@ -89,19 +89,21 @@ describe('User Avatar Image Component', () => {
     });
 
     it('should have default avatar image', () => {
-      expect(findAvatar().props('src')).toBe(`${defaultAvatarUrl}?width=${PROVIDED_PROPS.size}`);
+      expect(findAvatar().props('src')).toBe(
+        `${defaultAvatarUrl}?width=${PROVIDED_PROPS.size * 2}`,
+      );
     });
 
     it.each`
       size                               | expected
-      ${96}                              | ${96}
-      ${64}                              | ${64}
-      ${48}                              | ${48}
-      ${32}                              | ${48}
+      ${96}                              | ${192}
+      ${64}                              | ${128}
+      ${48}                              | ${96}
+      ${32}                              | ${64}
       ${24}                              | ${48}
-      ${16}                              | ${48}
-      ${{ default: 16, md: 32, lg: 24 }} | ${48}
-      ${{ default: 16, md: 32, lg: 96 }} | ${96}
+      ${16}                              | ${32}
+      ${{ default: 16, md: 32, lg: 24 }} | ${64}
+      ${{ default: 16, md: 32, lg: 96 }} | ${192}
     `(
       'should use the $expected x $expected source image if the size provided is $size',
       ({ size, expected }) => {
@@ -148,6 +150,23 @@ describe('User Avatar Image Component', () => {
       it('renders the content provided via default slot', () => {
         expect(wrapper.findComponent(GlTooltip).text()).toContain(slots.default[0]);
       });
+    });
+  });
+
+  describe('when pseudo prop is true', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(UserAvatarImage, {
+        propsData: { ...PROVIDED_PROPS, pseudo: true },
+      });
+    });
+
+    it('passes image to GlAvatar through style attribute', () => {
+      // using falsy here to avoid issues with Vue 3
+      // eslint-disable-next-line jest/no-restricted-matchers
+      expect(wrapper.findComponent(GlAvatar).props('src')).toBeFalsy();
+      expect(wrapper.findComponent(GlAvatar).attributes('style')).toBe(
+        `background-image: url(${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size});`,
+      );
     });
   });
 });

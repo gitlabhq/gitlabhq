@@ -63,7 +63,7 @@ class ReleaseHighlight
 
   def self.relative_file_paths
     Rails.cache.fetch(self.cache_key('file_paths'), expires_in: CACHE_DURATION) do
-      Dir.glob(whats_new_path).sort.reverse.map { |path| path.delete_prefix(Rails.root.to_s) }
+      Dir.glob(whats_new_path).reverse.map { |path| path.delete_prefix(Rails.root.to_s) }
     end
   end
 

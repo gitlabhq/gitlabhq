@@ -69,10 +69,10 @@ require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest
-Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_examples/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 require_relative '../tooling/quality/test_level'
 

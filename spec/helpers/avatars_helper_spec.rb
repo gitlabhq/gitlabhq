@@ -276,7 +276,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     end
 
     it "contains the user's avatar image" do
-      is_expected.to include(CGI.escapeHTML(user.avatar_url(size: 48)))
+      is_expected.to include(CGI.escapeHTML(user.avatar_url(size: 32)))
     end
   end
 
