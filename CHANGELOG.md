@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.2 (2024-04-09)
+
+### Fixed (1 change)
+
+- [Fix URL validator for mirror services when using localhost](gitlab-org/security/gitlab@82ee9dbd7b4f52507563a509eaa8d2e4839b2e58)
+
+### Security (3 changes)
+
+- [Update Gitlab::Regex::Packages#slack_link_regex](gitlab-org/security/gitlab@25d2355e4cd84a5c1005f1769624e83bfc6d63c2) ([merge request](gitlab-org/security/gitlab!3945))
+- [Fix XSS in autocomplete in rich text editor](gitlab-org/security/gitlab@dc132c61a896afc1b63ce9cf31b69797eecf95ce) ([merge request](gitlab-org/security/gitlab!3946))
+- [Correctly parse attachments for junit result](gitlab-org/security/gitlab@e729252188fd47950e27abe14bad4bf748e99455) ([merge request](gitlab-org/security/gitlab!3934))
+
 ## 16.10.1 (2024-03-27)
 
 ### Fixed (2 changes)
