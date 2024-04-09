@@ -344,7 +344,7 @@ Auto-deploy shall continue to work as it does today as our Primary Cell is equiv
   - Ring 1 contains main stage of the .com infra - this is the cut off for release tools
   - All cells will deploy the same way; this eliminates needing to deal with differing deployment technologies
   - `release-tools` will interact with the Coordinator to pilot the deployments to Ring 0 as part of its coordinator pipeline
-- Release-tools must be able to  `graduate` a package:
+- Release-tools must be able to `graduate` a package:
   - A `graduate` version of GitLab is any `auto-deploy` version which has a successful deploy onto the Main Stage of Production and the [Post Deploy Migration (PDM)](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md) has completed.
   - This could mean we expect to see a single package deploy each day to our Secondary Cells. Currently, the PDM is only run 1 time per day. Note that there are exceptions to this rule.
   - This will enable us to use our existing procedures to remediate high severity incidents where application code may be at fault.

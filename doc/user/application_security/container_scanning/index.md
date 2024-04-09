@@ -857,6 +857,12 @@ variables:
   AWS_DEFAULT_REGION: <AWS_REGION_FOR_ECR>
 ```
 
+### `unable to open a file: open /home/gitlab/.cache/trivy/ee/db/metadata.json: no such file or directory`
+
+The compressed Trivy database is stored in the `/tmp` folder of the container and it is extracted to `/home/gitlab/.cache/trivy/{ee|ce}/db` at runtime. This error can happen if you have a volume mount for `/tmp` directory in your runner configuration.
+
+To resolve this, instead of binding the `/tmp` folder, bind specific files or folders in `/tmp` (for example `/tmp/myfile.txt`).
+
 ## Changes
 
 Changes to the container scanning analyzer can be found in the project's

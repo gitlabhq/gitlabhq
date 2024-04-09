@@ -33,7 +33,7 @@
       ]
     },
     "product_group": {
-      "type": "string"
+      "$ref": "product_groups.json"
     },
     "value_type": {
       "type": "string",

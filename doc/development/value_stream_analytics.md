@@ -263,8 +263,8 @@ The reason for this was that we'd like to add the abilities to hide and order st
   - Responsible for composing the initial query.
   - Deals with `Stage` specific configuration: events and their query customizations.
   - Parameters coming from the UI: date ranges.
-- `Median`: Calculates the median duration for a stage using the query from  `BaseQueryBuilder`.
-- `RecordsFetcher`: Loads relevant records for a stage using the query from  `BaseQueryBuilder` and specific `Finder` classes to apply visibility rules.
+- `Median`: Calculates the median duration for a stage using the query from `BaseQueryBuilder`.
+- `RecordsFetcher`: Loads relevant records for a stage using the query from `BaseQueryBuilder` and specific `Finder` classes to apply visibility rules.
 - `DataForDurationChart`: Loads calculated durations with the finish time (end event timestamp) for the scatterplot chart.
 
 For a new calculation or a query, implement it as a new method call in the `DataCollector` class.

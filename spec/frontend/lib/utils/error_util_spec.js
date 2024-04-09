@@ -2,6 +2,7 @@ import {
   ActiveModelError,
   generateHelpTextWithLinks,
   mapSystemToFriendlyError,
+  isKnownErrorCode,
 } from '~/lib/utils/error_utils';
 import { convertObjectPropsToLowerCase } from '~/lib/utils/common_utils';
 
@@ -189,6 +190,27 @@ describe('Error Alert Utils', () => {
           new Error('The error cannot be empty.'),
         );
       });
+    });
+  });
+
+  describe('isKnownErrorCode', () => {
+    const errorDictionary = {
+      known_error_code: 'Friendly error for known error code',
+    };
+
+    it.each`
+      error                   | result
+      ${'known_error_code'}   | ${true}
+      ${'unknown_error_code'} | ${false}
+      ${new Error()}          | ${false}
+      ${1000}                 | ${false}
+      ${''}                   | ${false}
+      ${{}}                   | ${false}
+      ${[]}                   | ${false}
+      ${undefined}            | ${false}
+      ${null}                 | ${false}
+    `('returns $result when error is $error', ({ error, result }) => {
+      expect(isKnownErrorCode(error, errorDictionary)).toBe(result);
     });
   });
 });

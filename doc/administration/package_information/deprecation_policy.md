@@ -97,6 +97,6 @@ the feature continues working the same way as if you had `gitlab_rails['better_c
 However, setting the old version of the configuration prints out a deprecation
 notice at the end of installation/upgrade/reconfigure run.
 
-In GitLab 11, `gitlab_rails['configuration'] = true`  no longer works and you must manually change the configuration in `/etc/gitlab/gitlab.rb` to the new valid configuration.
+In GitLab 11, `gitlab_rails['configuration'] = true` no longer works and you must manually change the configuration in `/etc/gitlab/gitlab.rb` to the new valid configuration.
 **Note** If this configuration option is sensitive and can put integrity of the installation or
 data in danger,the installation or upgrade is aborted.

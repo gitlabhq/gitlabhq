@@ -147,3 +147,19 @@ export const generateHelpTextWithLinks = (error) => {
   const links = generateLinks(error.links);
   return sprintf(error.message, links, false);
 };
+
+/**
+ * Receives an error code and an error dictionary and returns true
+ * if the error code is found in the dictionary and false otherwise.
+ *
+ * @param {String} errorCode
+ * @param {Object} errorDictionary
+ * @returns {Boolean}
+ */
+export const isKnownErrorCode = (errorCode, errorDictionary) => {
+  if (errorCode instanceof String || typeof errorCode === 'string') {
+    return Object.keys(errorDictionary).includes(errorCode.toLowerCase());
+  }
+
+  return false;
+};

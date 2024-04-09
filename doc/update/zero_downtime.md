@@ -405,7 +405,7 @@ below:
 
     1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
 
-    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and  `geo_secondary['auto_migrate'] = false` in the
+    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
        `/etc/gitlab/gitlab.rb` configuration file.
 
     1. Run the `reconfigure` command to get the latest code in place as well as restart:
@@ -453,7 +453,7 @@ below:
 
     1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and  `geo_secondary['auto_migrate'] = false` in the
+    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
        `/etc/gitlab/gitlab.rb` configuration file.
 
     1. Run the `reconfigure` command to get the latest code in place as well as restart:

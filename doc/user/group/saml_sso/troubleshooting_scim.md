@@ -44,7 +44,7 @@ The following are possible solutions for problems where users cannot sign in:
   Alternatively, self-managed administrators can [add a user identity](../../../administration/admin_area.md#user-identities).
 - The **Identity** (`extern_uid`) value stored by GitLab is updated by SCIM whenever `id` or `externalId` changes. Users
   cannot sign in unless the GitLab identifier (`extern_uid`) of the sign-in method matches the ID sent by the provider, such as
-  the  `NameId` sent by SAML. This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
+  the `NameId` sent by SAML. This value is also used by SCIM to match users on the `id`, and is updated by SCIM whenever the `id` or `externalId` values change.
 - On GitLab.com, the SCIM `id` and SCIM `externalId` must be configured to the same value as the SAML `NameId`. You can trace SAML responses
   using [debugging tools](troubleshooting.md#saml-debugging-tools), and check any errors against the
   [SAML troubleshooting](troubleshooting.md) information.

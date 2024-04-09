@@ -229,7 +229,7 @@ Include in the MR description:
 
 #### Preparation when using bulk update operations
 
-Using  `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
+Using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
 ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
 can destroy data if improperly scoped. These methods are also
 [incompatible with Common Table Expression (CTE) statements](sql.md#when-to-use-common-table-expressions).
