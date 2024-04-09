@@ -1,11 +1,20 @@
 ---
-redirect_to: '../../api_security_testing/checks/cleartext_authentication_check.md'
-remove_date: '2024-07-08'
+stage: Secure
+group: Dynamic Analysis
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-This document was moved to [another location](../../api_security_testing/checks/cleartext_authentication_check.md).
+# Cleartext authentication
 
-<!-- This redirect file can be deleted after <2024-07-08>. -->
-<!-- Redirects that point to other docs in the same project expire in three months. -->
-<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
-<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
+## Description
+
+This check looks for cleartext authentication such as HTTP Basic auth with no-TLS.
+
+## Remediation
+
+Authentication credentials are transported via unencrypted channel (HTTP). This exposes the transmitted credentials to any attacker who can monitor (sniff) the network traffic during transmission. Sensitive information such as credentials should always be transmitted via encrypted channels such as HTTPS.
+
+## Links
+
+- [OWASP](https://owasp.org/Top10/A02_2021-Cryptographic_Failures)
+- [CWE](https://cwe.mitre.org/data/definitions/319.html)

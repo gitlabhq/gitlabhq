@@ -2029,7 +2029,7 @@ msgstr ""
 msgid "AIAgent|Edit Ai Agent"
 msgstr ""
 
-msgid "AIAgent|Prompt (optional)"
+msgid "AIAgent|Prompt"
 msgstr ""
 
 msgid "AIAgent|Settings"

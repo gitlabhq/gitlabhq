@@ -27,6 +27,8 @@ module DropzoneHelper
     # Attach files to the fake input selector with Capybara
     attach_file('fakeFileInput', files)
 
+    first('.div-dropzone')
+
     # Manually trigger a Dropzone "drop" event with the fake input's file list
     page.execute_script <<-JS.strip_heredoc
       var dropzone = $('.div-dropzone')[0].dropzone;

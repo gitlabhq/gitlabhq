@@ -18,7 +18,7 @@ module API
       expose :lock_math_rendering_limits_enabled, documentation: { type: 'boolean' }
       expose :default_branch_name, as: :default_branch
       expose :default_branch_protection
-      expose :default_branch_protection_defaults
+      expose :default_branch_protection_settings, as: :default_branch_protection_defaults
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end

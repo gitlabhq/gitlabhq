@@ -65,6 +65,14 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect { create_draft_note }.to change { DraftNote.count }.by(1)
     end
 
+    it 'creates an internal draft note' do
+      create_draft_note(draft_overrides: { internal: true })
+
+      draft_note = DraftNote.find_by(author: user)
+
+      expect(draft_note.internal).to eq(true)
+    end
+
     it 'creates draft note with position' do
       diff_refs = project.commit(sample_commit.id).try(:diff_refs)
 

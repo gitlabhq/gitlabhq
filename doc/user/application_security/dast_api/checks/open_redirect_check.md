@@ -1,11 +1,20 @@
 ---
-redirect_to: '../../api_security_testing/checks/open_redirect_check.md'
-remove_date: '2024-07-08'
+stage: Secure
+group: Dynamic Analysis
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-This document was moved to [another location](../../api_security_testing/checks/open_redirect_check.md).
+# Open redirect
 
-<!-- This redirect file can be deleted after <2024-07-08>. -->
-<!-- Redirects that point to other docs in the same project expire in three months. -->
-<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
-<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
+## Description
+
+Identify open redirects and determine if they can be abused by attackers.
+
+## Remediation
+
+Unvalidated redirects and forwards are possible when a web application accepts untrusted input that could cause the web application to redirect the request to a URL contained within untrusted input. By modifying untrusted URL input to a malicious site, an attacker may successfully launch a phishing scam and steal user credentials. Because the server name in the modified link is identical to the original site, phishing attempts may have a more trustworthy appearance. Unvalidated redirect and forward attacks can also be used to maliciously craft a URL that would pass the application’s access control check and then forward the attacker to privileged functions that they would normally not be able to access.
+
+## Links
+
+- [OWASP](https://owasp.org/Top10/A01_2021-Broken_Access_Control)
+- [CWE](https://cwe.mitre.org/data/definitions/601.html)

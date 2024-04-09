@@ -149,7 +149,7 @@
         }
       }
 
-      &.new:not(.hll), &.new-nomappinginraw:not(.hll) {
+      &.new, &.new-nomappinginraw {
         background-color: $gray-50;
 
         &::before {
@@ -164,6 +164,11 @@
 
       &.match {
         @include match-line;
+      }
+
+      &.hll {
+        --highlight-border-color: #{$orange-200};
+        background-color: $orange-50;
       }
     }
   }

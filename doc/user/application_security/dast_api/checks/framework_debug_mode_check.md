@@ -1,11 +1,21 @@
 ---
-redirect_to: '../../api_security_testing/checks/framework_debug_mode_check.md'
-remove_date: '2024-07-08'
+stage: Secure
+group: Dynamic Analysis
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-This document was moved to [another location](../../api_security_testing/checks/framework_debug_mode_check.md).
+# Framework debug mode
 
-<!-- This redirect file can be deleted after <2024-07-08>. -->
-<!-- Redirects that point to other docs in the same project expire in three months. -->
-<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
-<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
+## Description
+
+Checks to see if debug mode is enabled in various frameworks such as Flask and ASP.NET. This check has a low false positive rate.
+
+## Remediation
+
+The Flask or ASP .NET framework was identified with debug mode enabled. This allows an attacker the ability to download any file on the file system and other capabilities. This is a high severity issue that is easy for an attacker to exploit.
+
+## Links
+
+- [OWASP](https://owasp.org/Top10/A05_2021-Security_Misconfiguration)
+- [CWE-23: Relative Path Traversal](https://cwe.mitre.org/data/definitions/23.html)
+- [CWE-285: Improper Authorization](https://cwe.mitre.org/data/definitions/285.html)

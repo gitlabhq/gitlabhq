@@ -2399,7 +2399,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
+      changes: *setup-test-env-patterns
 
 .ping-appsec-for-sast-findings:rules:
   rules:
@@ -2410,7 +2410,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-merge-request
-      changes: *code-backstage-qa-patterns
+      changes: *setup-test-env-patterns
 
 .ping-appsec-for-dependency-review:rules:
   rules:

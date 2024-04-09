@@ -38,8 +38,8 @@ Prerequisites:
 
    ```shell
    OTEL_EXPORTER = "otlphttp"
-   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/logs"
-   OTEL_EXPORTER_OTLP_METRICS_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
+   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/logs"
+   OTEL_EXPORTER_OTLP_LOGS_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
    ```
 
    Use the following values:

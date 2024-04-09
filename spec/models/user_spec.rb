@@ -6155,27 +6155,6 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
         end
       end
-
-      context 'when organization is not specified' do
-        context 'and FeatureFlag personal_namespace_require_org is disabled' do
-          before do
-            stub_feature_flags(personal_namespace_require_org: false)
-          end
-
-          # This logic will be removed when organization becomes a required argument
-          it 'builds a new namespace using default organization' do
-            user.assign_personal_namespace
-
-            expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
-          end
-        end
-
-        context 'and FeatureFlag personal_namespace_require_org is enabled' do
-          it 'raises an argument error' do
-            expect { user.assign_personal_namespace }.to raise_error(ArgumentError, 'Organization is missing')
-          end
-        end
-      end
     end
   end
 

@@ -1,9 +1,0 @@
----
-name: personal_namespace_require_org
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443494
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147670
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/451479
-milestone: '16.11'
-group: group::tenant scale
-type: gitlab_com_derisk
-default_enabled: false

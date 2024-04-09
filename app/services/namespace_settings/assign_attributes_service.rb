@@ -23,11 +23,11 @@ module NamespaceSettings
         param_key: :new_user_signups_cap,
         user_policy: :change_new_user_signups_cap
       )
-      validate_settings_param_for_root_group(
+      validate_settings_param_for_admin(
         param_key: :default_branch_protection,
         user_policy: :update_default_branch_protection
       )
-      validate_settings_param_for_root_group(
+      validate_settings_param_for_admin(
         param_key: :default_branch_protection_defaults,
         user_policy: :update_default_branch_protection
       )

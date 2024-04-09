@@ -46,7 +46,7 @@ describe('Branch rules app', () => {
     .mockResolvedValue(protectableBranchesMockResponse);
 
   const createComponent = async ({
-    glFeatures = { addBranchRule: true },
+    glFeatures = { editBranchRules: true },
     queryHandler = branchRulesQuerySuccessHandler,
     mutationHandler = addRuleMutationSuccessHandler,
   } = {}) => {
@@ -157,9 +157,9 @@ describe('Branch rules app', () => {
     });
   });
 
-  describe('Add branch rule when addBranchRule FF disabled', () => {
+  describe('Add branch rule when editBranchRule FF disabled', () => {
     beforeEach(() => {
-      createComponent({ glFeatures: { addBranchRule: false } });
+      createComponent({ glFeatures: { editBranchRule: false } });
     });
     it('renders an Add branch rule button', () => {
       expect(findAddBranchRuleButton().exists()).toBe(true);

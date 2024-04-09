@@ -109,7 +109,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
       :note,
       :position,
       :resolve_discussion,
-      :line_code
+      :line_code,
+      :internal
     ).tap do |h|
       # Old FE version will still be sending `draft_note[commit_id]` as 'undefined'.
       # That can result to having a note linked to a commit with 'undefined' ID

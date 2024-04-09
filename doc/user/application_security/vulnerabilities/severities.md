@@ -76,11 +76,11 @@ When available, the vendor severity level takes precedence and is used by the an
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
 | [`Browser-based DAST`](../dast/browser/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW`, `INFO` |
 
-## API Security Testing
+## DAST API
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`API Security Testing`](../api_security_testing/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
+| [`DAST API`](../dast_api/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
 
 ## Dependency Scanning
 

@@ -150,6 +150,15 @@ RSpec.describe Branches::CreateService, :use_clean_rails_redis_caching, feature_
       end
     end
 
+    context 'when provided ref is empty' do
+      it 'returns an error' do
+        result = service.execute('my-feature', '')
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('Ref is missing')
+      end
+    end
+
     context 'when branch already exists' do
       it 'returns an error' do
         result = service.execute('master', 'master')

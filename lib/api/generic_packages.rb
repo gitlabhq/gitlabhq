@@ -148,16 +148,11 @@ module API
       def authorize_workhorse_params
         project = authorized_user_project
 
-        params = {
+        {
           subject: project,
-          maximum_size: project.actual_limits.generic_packages_max_file_size
+          maximum_size: project.actual_limits.generic_packages_max_file_size,
+          use_final_store_path: true
         }
-
-        if ::Feature.enabled?(:skip_copy_operation_in_generic_packages_upload, project)
-          params[:use_final_store_path] = true
-        end
-
-        params
       end
     end
   end

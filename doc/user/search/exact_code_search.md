@@ -39,8 +39,10 @@ To hide the feature, an administrator can [disable the feature flag](../../admin
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
+With the Zoekt search API, you can use the [search API](../../api/search.md) for exact code search.
+When this feature is disabled, basic or advanced search is used instead.
 
+By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 To request access to this feature, contact GitLab.
 
 ## Global code search

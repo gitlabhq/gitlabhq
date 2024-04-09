@@ -239,7 +239,7 @@ export default {
     <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
       <h3 class="gl-mb-5">{{ $options.i18n.pageTitle }}</h3>
       <gl-button
-        v-if="glFeatures.addBranchRule && branchRule"
+        v-if="glFeatures.editBranchRules && branchRule"
         v-gl-modal="$options.deleteModalId"
         data-testid="delete-rule-button"
         category="secondary"
@@ -255,7 +255,7 @@ export default {
           <div class="gl-display-flex gl-justify-content-space-between">
             <strong>{{ $options.i18n.targetRule }}</strong>
             <gl-button
-              v-if="glFeatures.addBranchRule"
+              v-if="glFeatures.addBranchRule || glFeatures.editBranchRules"
               v-gl-modal="$options.editModalId"
               data-testid="edit-rule-button"
               size="small"
@@ -377,7 +377,7 @@ export default {
     </template>
     <!-- EE end -->
     <gl-modal
-      v-if="glFeatures.addBranchRule"
+      v-if="glFeatures.editBranchRules"
       :ref="$options.deleteModalId"
       :modal-id="$options.deleteModalId"
       :title="$options.i18n.deleteRuleModalTitle"
@@ -389,7 +389,7 @@ export default {
     </gl-modal>
 
     <branch-rule-modal
-      v-if="glFeatures.addBranchRule"
+      v-if="glFeatures.editBranchRules"
       :id="$options.editModalId"
       :ref="$options.editModalId"
       :title="$options.i18n.updateTargetRule"

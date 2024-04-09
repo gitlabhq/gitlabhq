@@ -8,6 +8,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   let(:project) { merge_request.target_project }
   let(:user) { merge_request.author }
   let(:commit) { project.commit(sample_commit.id) }
+  let(:internal) { false }
 
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -25,7 +26,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
   context 'single draft note' do
     let(:commit_id) { nil }
-    let!(:drafts) { create_list(:draft_note, 2, merge_request: merge_request, author: user, commit_id: commit_id, position: position) }
+    let!(:drafts) { create_list(:draft_note, 2, merge_request: merge_request, author: user, commit_id: commit_id, position: position, internal: internal) }
 
     it 'publishes' do
       expect { publish(draft: drafts.first) }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(1)
@@ -59,6 +60,18 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
         expect(result[:status]).to eq(:success)
         expect(merge_request.notes.first.commit_id).to eq(commit_id)
+      end
+    end
+
+    context 'internal is set' do
+      let(:position) { nil }
+      let(:internal) { true }
+
+      it 'creates internal note from draft' do
+        result = publish(draft: drafts.first)
+
+        expect(result[:status]).to eq(:success)
+        expect(merge_request.notes.first.internal).to eq(internal)
       end
     end
   end

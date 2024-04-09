@@ -147,7 +147,7 @@ export default {
         </div>
       </div>
       <gl-disclosure-dropdown
-        v-if="glFeatures.addBranchRule"
+        v-if="glFeatures.editBranchRules"
         :toggle-text="$options.i18n.addBranchRule"
         :items="addRuleItems"
         size="small"
@@ -181,7 +181,7 @@ export default {
       </div>
     </ul>
     <branch-rule-modal
-      v-if="glFeatures.addBranchRule"
+      v-if="glFeatures.editBranchRules"
       :id="$options.modalId"
       :ref="$options.modalId"
       :title="$options.i18n.createBranchRule"

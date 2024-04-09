@@ -76,7 +76,7 @@ describe('View branch rules', () => {
   const errorHandler = jest.fn().mockRejectedValue('error');
 
   const createComponent = async (
-    glFeatures = { addBranchRule: true },
+    glFeatures = { editBranchRules: true },
     mockResponse,
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
     editMutationHandler = editBranchRuleSuccessHandler,
@@ -207,7 +207,7 @@ describe('View branch rules', () => {
     });
 
     it('if error happens it shows an alert', async () => {
-      await createComponent({ addBranchRule: true }, branchProtectionsMockResponse, errorHandler);
+      await createComponent({ editBranchRules: true }, branchProtectionsMockResponse, errorHandler);
       findDeleteRuleModal().vm.$emit('ok');
       await nextTick();
       await waitForPromises();
@@ -313,7 +313,7 @@ describe('View branch rules', () => {
   });
 
   describe('When add branch rules is FF disabled', () => {
-    beforeEach(() => createComponent({ addBranchRule: false }));
+    beforeEach(() => createComponent({ editBranchRule: false }));
     it('does not render delete rule button and modal when ff is disabled', () => {
       expect(findDeleteRuleButton().exists()).toBe(false);
       expect(findDeleteRuleModal().exists()).toBe(false);

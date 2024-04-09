@@ -8,7 +8,7 @@ module Projects
       before_action :define_variables, only: [:create_deploy_token]
 
       before_action do
-        push_frontend_feature_flag(:add_branch_rule, @project)
+        push_frontend_feature_flag(:edit_branch_rules, @project)
       end
 
       feature_category :source_code_management, [:show, :cleanup, :update]
