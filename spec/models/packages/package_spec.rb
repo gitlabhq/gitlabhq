@@ -72,7 +72,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
   describe '.sort_by_attribute' do
     let_it_be(:group) { create(:group, :public) }
-    let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A') }
+    let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
 
     let!(:package1) { create(:npm_package, project: project, version: '3.1.0', name: "@#{project.root_namespace.path}/foo1") }
     let!(:package2) { create(:nuget_package, project: project, version: '2.0.4') }
@@ -119,8 +119,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     it_behaves_like 'package sorting by attribute', 'project_path' do
-      let(:another_project) { create(:project, :public, namespace: group, name: 'project B') }
-      let!(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
+      let_it_be(:another_project) { create(:project, :public, namespace: group, name: 'project B', path: 'project-b') }
+      let_it_be(:package4) { create(:npm_package, project: another_project, version: '3.1.0', name: "@#{project.root_namespace.path}/bar") }
 
       let(:packages) { [package1, package2, package3, package4] }
     end

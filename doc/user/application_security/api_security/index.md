@@ -20,5 +20,5 @@ Some of the features discussed are specific to web APIs and others are more gene
 - [Dependency Scanning](../dependency_scanning) reviews a project 3rd party dependencies for known vulnerabilities (for example CVEs).
 - [Container Scanning](../container_scanning) analyzes container images to identify known OS package vulnerabilities and installed language dependencies.
 - [API Discovery](api_discovery) examines an application containing a REST API and intuits an OpenAPI specification for that API. OpenAPI specification documents are used by other GitLab security tools.
-- [DAST API](../dast_api) performs dynamic analysis security testing of web APIs. It can identify various security vulnerabilities in your application, including the OWASP Top 10.
+- [API Security Testing](../api_security_testing) performs dynamic analysis security testing of web APIs. It can identify various security vulnerabilities in your application, including the OWASP Top 10.
 - [API Fuzzing](../api_fuzzing) performs fuzz testing of a web API. Fuzz testing looks for issues in an application that are not previously known and don't map to classic vulnerability types such as SQL Injection.

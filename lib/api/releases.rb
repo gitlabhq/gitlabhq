@@ -263,6 +263,13 @@ module API
           type: DateTime,
           desc: 'Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). ' \
                 'Only provide this field if creating an upcoming or historical release.'
+
+        optional :legacy_catalog_publish,
+          type: Boolean,
+          desc: 'If true, the release will be published to the CI catalog. ' \
+                'This parameter is for internal use only and will be removed in a future release. ' \
+                'If the feature flag ci_release_cli_catalog_publish_option is disabled, this parameter will be ignored ' \
+                'and the release will published to the CI catalog as it was before this parameter was introduced.'
       end
       route_setting :authentication, job_token_allowed: true
       post ':id/releases' do

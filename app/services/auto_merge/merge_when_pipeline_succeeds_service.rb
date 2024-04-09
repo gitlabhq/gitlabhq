@@ -9,13 +9,13 @@ module AutoMerge
     end
 
     def process(merge_request)
-      logger.info("Processing Automerge")
+      logger.info("Processing Automerge - MWPS")
       return unless merge_request.diff_head_pipeline_success?
 
-      logger.info("Pipeline Success")
+      logger.info("Pipeline Success - MWPS")
       return unless merge_request.mergeable?
 
-      logger.info("Merge request mergeable")
+      logger.info("Merge request mergeable - MWPS")
 
       merge_request.merge_async(merge_request.merge_user_id, merge_request.merge_params)
     end

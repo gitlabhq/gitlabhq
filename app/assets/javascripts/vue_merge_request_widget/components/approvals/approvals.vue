@@ -275,7 +275,7 @@ export default {
       <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
-          <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
+          <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3">
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form
                 ref="form"
@@ -289,7 +289,6 @@ export default {
                   size="small"
                   :category="action.category"
                   :loading="isApproving"
-                  class="gl-mr-3"
                   data-testid="approve-button"
                   type="submit"
                 >
@@ -305,7 +304,6 @@ export default {
                 size="small"
                 :category="action.category"
                 :loading="isApproving"
-                class="gl-mr-3"
                 data-testid="approve-button"
                 @click="action.action"
               >

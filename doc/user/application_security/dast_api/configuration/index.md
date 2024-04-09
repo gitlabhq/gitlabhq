@@ -1,15 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+redirect_to: '../../api_security_testing/configuration/index.md'
+remove_date: '2024-07-08'
 ---
 
-# Configuration
+This document was moved to [another location](../../api_security_testing/configuration/index.md).
 
-- [Requirements](requirements.md)
-- [Enabling the analyzer](enabling_the_analyzer.md)
-- [Customize analyzer settings](customizing_analyzer_settings.md)
-- [Overriding analyzer jobs](overriding_analyzer_jobs.md)
-- [Available CI/CD variables](variables.md)
-- [Offline configuration](offline_configuration.md)
+<!-- This redirect file can be deleted after <2024-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

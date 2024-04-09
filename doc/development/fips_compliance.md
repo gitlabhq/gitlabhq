@@ -59,13 +59,13 @@ listed here that also do not work properly in FIPS mode:
 - [Container Scanning](../user/application_security/container_scanning/index.md) support for scanning images in repositories that require authentication.
 - [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
 - [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
-- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/proxy-based.md) supports a reduced set of analyzers. The proxy-based analyzer and on-demand scanning is not available in FIPS mode today, however browser-based DAST, DAST API, and DAST API Fuzzing images are available.
+- [Dynamic Application Security Testing (DAST)](../user/application_security/dast/proxy-based.md) supports a reduced set of analyzers. The proxy-based analyzer and on-demand scanning is not available in FIPS mode today, however browser-based DAST, API Security Testing, and API Fuzzing images are available.
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- Advanced search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
+- Advanced search is not included in FIPS mode. It must be disabled to be FIPS-compliant.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
 
 Additionally, these package repositories are disabled in FIPS mode:

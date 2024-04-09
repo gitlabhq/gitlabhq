@@ -6,5 +6,9 @@ FactoryBot.define do
 
     relation { :issues }
     status { 0 }
+
+    trait :started do
+      status { 1 }
+    end
   end
 end

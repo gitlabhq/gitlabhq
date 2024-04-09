@@ -105,7 +105,10 @@ module Gitlab
       end
 
       def print_change_details(change, branch_name)
-        puts "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}".yellowish
+        base_message = "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}."
+        base_message << " CI skipped." if change.push_options.ci_skip
+
+        puts base_message.yellowish
         puts "=> #{change.identifiers.join(': ')}".purple
 
         puts '=> Title:'.purple
@@ -137,7 +140,7 @@ module Gitlab
           target_project_id: housekeeper_target_project_id
         )
 
-        git.push(branch_name) unless non_housekeeper_changes.include?(:code)
+        git.push(branch_name, change.push_options) unless non_housekeeper_changes.include?(:code)
 
         gitlab_client.create_or_update_merge_request(
           change: change,

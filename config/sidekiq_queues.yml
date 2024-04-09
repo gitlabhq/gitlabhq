@@ -611,6 +611,8 @@
   - 1
 - - projects_import_export_relation_export
   - 1
+- - projects_import_export_relation_import
+  - 1
 - - projects_import_export_wait_relation_exports
   - 1
 - - projects_inactive_projects_deletion_notification

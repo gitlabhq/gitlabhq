@@ -4032,6 +4032,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { expect(project.gitea_import?).to be true }
   end
 
+  describe '#any_import_in_progress?' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    subject { project.any_import_in_progress? }
+
+    context 'when a file import is in progress' do
+      before do
+        create(:import_state, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a relation import is in progress' do
+      before do
+        create(:relation_import_tracker, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when direct transfer is in progress' do
+      before do
+        create(:bulk_import_entity, :project_entity, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when no imports are in progress' do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#has_remote_mirror?' do
     let(:project) { create(:project, :remote_mirror, :import_started) }
 

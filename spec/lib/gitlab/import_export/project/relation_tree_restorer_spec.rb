@@ -88,4 +88,134 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
       relation_tree_restorer.restore
     end
   end
+
+  describe '#restore_single_relation' do
+    let_it_be(:importable) { create(:project) }
+
+    let(:relation_reader) do
+      Gitlab::ImportExport::Json::NdjsonReader.new(
+        'spec/fixtures/lib/gitlab/import_export/complex/tree'
+      )
+    end
+
+    let(:relation_tree_restorer) do
+      described_class.new(
+        user: user,
+        shared: shared,
+        relation_reader: relation_reader,
+        object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
+        members_mapper: members_mapper,
+        relation_factory: Gitlab::ImportExport::Project::RelationFactory,
+        reader: reader,
+        importable: importable,
+        importable_path: importable_name,
+        importable_attributes: attributes,
+        skip_on_duplicate_iid: skip_on_duplicate_iid
+      )
+    end
+
+    subject(:restore_relations) { relation_tree_restorer.restore_single_relation(relation_key) }
+
+    shared_examples 'saving single relation' do
+      context 'when skipping existing IIDs' do
+        let(:skip_on_duplicate_iid) { true }
+
+        it 'does not attempt to save the duplicate relation' do
+          expect(relation_tree_restorer).not_to receive(:save_relation_object)
+
+          restore_relations
+        end
+      end
+
+      context 'when not skipping existing IIDs' do
+        let(:skip_on_duplicate_iid) { false }
+
+        it 'attempts to save the duplicate relation' do
+          expect(relation_tree_restorer).to receive(:save_relation_object).once
+
+          restore_relations
+        end
+      end
+    end
+
+    context 'when importing issues' do
+      let(:relation_key) { 'issues' }
+
+      before do
+        importable.issues.create!(iid: 123, title: 'Issue', author: user)
+
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'issues')
+          .and_return([[build(:issue, iid: 123, title: 'Issue', author_id: user.id), 0]])
+      end
+
+      include_examples 'saving single relation'
+    end
+
+    context 'when importing milestones' do
+      let(:relation_key) { 'milestones' }
+
+      before do
+        importable.milestones.create!(iid: 123, title: 'Milestone')
+
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'milestones')
+          .and_return([[build(:milestone, iid: 123, name: 'Milestone'), 0]])
+      end
+
+      include_examples 'saving single relation'
+    end
+
+    context 'when importing CI pipelines' do
+      let(:relation_key) { 'ci_pipelines' }
+
+      before do
+        create(
+          :ci_pipeline,
+          project: importable,
+          iid: 123
+        )
+
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'ci_pipelines')
+          .and_return([[build(:ci_pipeline, iid: 123), 0]])
+      end
+
+      include_examples 'saving single relation'
+    end
+
+    context 'when importing merge requests' do
+      let(:relation_key) { 'merge_requests' }
+
+      before do
+        create(
+          :merge_request,
+          iid: 123,
+          source_project: importable,
+          target_project: importable
+        )
+
+        allow(relation_reader)
+          .to receive(:consume_relation)
+          .with(importable_name, 'merge_requests')
+          .and_return([[build(:merge_request, iid: 123), 0]])
+      end
+
+      include_examples 'saving single relation'
+    end
+
+    context 'when importing an unknown relation' do
+      let(:relation_key) { 'unknown' }
+      let(:skip_on_duplicate_iid) { false }
+
+      it 'does not attempt an import' do
+        expect(relation_tree_restorer).not_to receive(:save_relation_object)
+
+        restore_relations
+      end
+    end
+  end
 end

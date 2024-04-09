@@ -12,29 +12,49 @@ RSpec.describe Tooling::Danger::CiTemplates, feature_category: :tooling do
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
 
-  before do
-    allow(fake_helper).to receive(:ci?).and_return(ci_env)
-  end
-
   describe '#check!' do
-    context 'when not in ci environment' do
-      let(:ci_env) { false }
+    context 'when checking for mr labels' do
+      context 'when mr does not have a ci::templates label' do
+        it 'does not add the danger message, markdown and warning' do
+          expect(ci_templates).not_to receive(:message)
+          expect(ci_templates).not_to receive(:markdown)
+          expect(ci_templates).not_to receive(:warn)
 
-      it 'does not add the warnings' do
-        expect(ci_templates).not_to receive(:message)
-        expect(ci_templates).not_to receive(:markdown)
-        expect(ci_templates).not_to receive(:warn)
+          ci_templates.check!
+        end
+      end
 
-        ci_templates.check!
+      context 'when mr has a ci::templates label' do
+        before do
+          allow(fake_helper).to receive(:mr_labels).and_return(['ci::templates'])
+          allow(ci_templates).to receive(:message)
+          allow(ci_templates).to receive(:markdown)
+        end
+
+        it 'adds the danger message and markdown' do
+          expect(ci_templates).to receive(:message)
+          expect(ci_templates).to receive(:markdown)
+
+          ci_templates.check!
+        end
       end
     end
 
-    context 'when in ci environment' do
-      let(:ci_env) { true }
-      let(:modified_files) { %w[lib/gitlab/ci/templates/ci_template.rb] }
-      let(:fake_changes) { instance_double(Gitlab::Dangerfiles::Changes, files: modified_files) }
+    context 'when checking for changes to ci templates' do
+      context 'when there are no updated ci templates' do
+        it 'does not add the danger message, markdown and warning' do
+          expect(ci_templates).not_to receive(:message)
+          expect(ci_templates).not_to receive(:markdown)
+          expect(ci_templates).not_to receive(:warn)
+
+          ci_templates.check!
+        end
+      end
 
       context 'when there are updates to the ci templates' do
+        let(:modified_files) { %w[lib/gitlab/ci/templates/ci_template.rb] }
+        let(:fake_changes) { instance_double(Gitlab::Dangerfiles::Changes, files: modified_files) }
+
         before do
           allow(fake_changes).to receive(:by_category).with(:ci_template).and_return(fake_changes)
           allow(fake_helper).to receive(:changes).and_return(fake_changes)
@@ -58,16 +78,6 @@ RSpec.describe Tooling::Danger::CiTemplates, feature_category: :tooling do
 
             ci_templates.check!
           end
-        end
-      end
-
-      context 'when there are no updated ci templates' do
-        it 'does not add the danger message, markdown and warning' do
-          expect(ci_templates).not_to receive(:message)
-          expect(ci_templates).not_to receive(:markdown)
-          expect(ci_templates).not_to receive(:warn)
-
-          ci_templates.check!
         end
       end
     end

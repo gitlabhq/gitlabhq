@@ -1,20 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../api_security_testing/checks/shellshock_check.md'
+remove_date: '2024-07-08'
 ---
 
-# Shellshock
+This document was moved to [another location](../../api_security_testing/checks/shellshock_check.md).
 
-## Description
-
-Check for Shellshock vulnerabilities.
-
-## Remediation
-
-Shellshock vulnerability takes advantage of a bug in BASH, in which, BASH incorrectly executes trailing commands when it imports a function definition stored into an environment variable. Any environment which allows defining BASH environmental variables could be vulnerable to this bug, as for example a Apache Web Server using mod_cgi and mod_cgid modules. A known-good request was modified to include malicious content. The malicious content includes an Shell shock attack in which the server-side application returns a specific text (evidence) in the response headers.
-
-## Links
-
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
-- [CWE](https://cwe.mitre.org/data/definitions/78.html)
+<!-- This redirect file can be deleted after <2024-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

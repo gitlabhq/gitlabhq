@@ -8,10 +8,11 @@ module Gitlab
         SINGLE_FLAGS = %i[name description tag_name tag_message ref released_at].freeze
         ARRAY_FLAGS = %i[milestones].freeze
 
-        attr_reader :config
+        attr_reader :job, :config
 
-        def initialize(config:)
-          @config = config
+        def initialize(job:)
+          @job = job
+          @config = job.options[:release]
         end
 
         def script
@@ -19,6 +20,7 @@ module Gitlab
           single_flags.each { |k, v| command.concat(" --#{k.to_s.dasherize} \"#{v}\"") }
           array_commands.each { |k, v| v.each { |elem| command.concat(" --#{k.to_s.singularize.dasherize} \"#{elem}\"") } }
           asset_links.each { |link| command.concat(" --assets-link #{stringified_json(link)}") }
+          command.concat(" --catalog-publish") if catalog_publish?
 
           [command.freeze]
         end
@@ -39,6 +41,12 @@ module Gitlab
 
         def stringified_json(object)
           "#{object.to_json.to_json}"
+        end
+
+        def catalog_publish?
+          return false if ::Feature.disabled?(:ci_release_cli_catalog_publish_option, job.project)
+
+          job.project.catalog_resource
         end
       end
     end

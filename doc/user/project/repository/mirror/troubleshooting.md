@@ -41,7 +41,7 @@ One of these issues might be occurring:
 When upgrading GitLab, a change in how usernames are represented means that you
 must update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
 
-## Connection blocked because server only allows public key authentication
+## Connection blocked: server only allows public key authentication
 
 The connection between GitLab and the remote repository is blocked. Even if a
 [TCP Check](../../../../administration/raketasks/maintenance.md#check-tcp-connectivity-to-a-remote-site)
@@ -182,7 +182,7 @@ To resolve the issue:
 
 - Select **Mirror repository**.
 
-## Transfer mirror users and tokens to a single service account in Rails console
+## Transfer mirror users and tokens to a single service account
 
 This requires access to the [GitLab Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
@@ -230,7 +230,7 @@ HTTP redirects are not followed and omitting `.git` can result in a 301 error:
 13:fetch remote: "fatal: unable to access 'https://gitlab.com/group/project': The requested URL returned error: 301\n": exit status 128.
 ```
 
-## Push mirror from GitLab instance to Geo secondary fails: `The requested URL returned error: 302`
+## Push mirror from GitLab instance to Geo secondary fails
 
 Push mirroring of a GitLab repository using the HTTP or HTTPS protocols fails when the destination
 is a Geo secondary node due to the proxying of the push request to the Geo primary node,

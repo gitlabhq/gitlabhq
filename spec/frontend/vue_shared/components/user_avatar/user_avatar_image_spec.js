@@ -165,7 +165,7 @@ describe('User Avatar Image Component', () => {
       // eslint-disable-next-line jest/no-restricted-matchers
       expect(wrapper.findComponent(GlAvatar).props('src')).toBeFalsy();
       expect(wrapper.findComponent(GlAvatar).attributes('style')).toBe(
-        `background-image: url(${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size});`,
+        `background-image: url(${PROVIDED_PROPS.imgSrc}?width=${PROVIDED_PROPS.size * 2});`,
       );
     });
   });

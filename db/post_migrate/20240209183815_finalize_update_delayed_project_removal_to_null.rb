@@ -9,12 +9,10 @@ class FinalizeUpdateDelayedProjectRemovalToNull < Gitlab::Database::Migration[2.
   MIGRATION = 'UpdateDelayedProjectRemovalToNullForUserNamespaces'
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: MIGRATION,
-      table_name: :namespace_settings,
-      column_name: :namespace_id,
-      job_arguments: []
-    )
+    # We are deleting the migration because there could be instances where the migration to remove the
+    # column delayed_project_removal was already executed before this migration.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/451760#note_1835290333 for details.
+    delete_batched_background_migration(MIGRATION, :namespace_settings, :namespace_id, [])
   end
 
   def down

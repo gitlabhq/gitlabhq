@@ -29,7 +29,7 @@ are in production. DAST is a foundational component of software security and sho
 tandem with SAST, dependency and license scanning, and secret detection, to provide a comprehensive
 security assessment of your applications.
 
-GitLab’s Browser-based DAST and DAST API are proprietary runtime tools, which provide broad security
+GitLab’s Browser-based DAST and API Security Testing are proprietary runtime tools, which provide broad security
 coverage for modern-day web applications and APIs.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -46,7 +46,7 @@ For scanning websites, use one of:
 
 For scanning APIs, use:
 
-- The [DAST API analyzer](../dast_api/index.md) for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
+- The [API Security Testing analyzer](../api_security_testing/index.md) for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
 
 Analyzers follow the architectural patterns described in [Secure your application](../index.md).
 Each analyzer can be configured in the pipeline using a CI template and runs the scan in a Docker container. Scans output a [DAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdast)
@@ -85,7 +85,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Analyzer configuration
 
-See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser_based.md) or [DAST API analyzer](../dast_api/index.md) for
+See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser_based.md) or [API Security Testing analyzer](../api_security_testing/index.md) for
 analyzer-specific configuration instructions.
 
 ### View scan results

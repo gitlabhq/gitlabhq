@@ -492,6 +492,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       {
         'URL' => url,
         'AllowRedirects' => false,
+        'Header' => {},
         'Body' => '',
         'Method' => 'GET'
       }

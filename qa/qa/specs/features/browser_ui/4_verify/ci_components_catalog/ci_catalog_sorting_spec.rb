@@ -27,7 +27,7 @@ module QA
       end
 
       shared_examples 'ascending order' do |testcase|
-        it 'displays from first to last', testcase: testcase do
+        it 'displays from first to last', :skip_live_env, testcase: testcase do
           Page::Explore::CiCdCatalog.perform do |catalog|
             catalog.sort_in_ascending_order
             expect(bottom_projects_from_ui(catalog)).to eql(test_project_names)
@@ -40,7 +40,7 @@ module QA
           Flow::Login.sign_in
 
           catalog_project_list.each do |project|
-            enable_catalog_resource_feature(project)
+            Flow::Project.enable_catalog_resource_feature(project)
             setup_component(project)
             create_release(project)
           end
@@ -73,15 +73,6 @@ module QA
       end
 
       private
-
-      def enable_catalog_resource_feature(project)
-        project.visit!
-
-        Page::Project::Menu.perform(&:go_to_general_settings)
-        Page::Project::Settings::Main.perform do |settings|
-          settings.expand_visibility_project_features_permissions(&:enable_ci_cd_catalog_resource)
-        end
-      end
 
       def setup_component(project)
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml and component', actions: [

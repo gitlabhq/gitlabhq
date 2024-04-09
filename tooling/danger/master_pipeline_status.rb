@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 require 'gitlab'
+require "net/http"
+require "uri"
 
 module Tooling
   module Danger
     module MasterPipelineStatus
-      MASTER_PIPELINE_STATUS_PROJECT_ID = '40549124' # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents
-      MASTER_PIPELINE_STATUS_BRANCH = 'master-pipeline-status'
-      MASTER_PIPELINE_STATUS_FILE_NAME = 'canonical-gitlab-master-pipeline-status.json'
-      STATUS_PAGE_URL = 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/raw/master-pipeline-status/canonical-gitlab-master-pipeline-status.json'
-      INCIDENT_TRACKER_URL = 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues'
+      STATUS_FILE_PROJECT = 'https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents'
+      STATUS_FILE_BRANCH = 'master-pipeline-status'
+      STATUS_FILE_NAME = 'canonical-gitlab-master-pipeline-status.json'
 
       def check!
-        return unless helper.ci?
+        return unless helper.ci? && applicable_mr?
 
         failed_master_pipeline_jobs = master_pipeline_jobs_statuses.select { |job| job['status'] == 'failed' }
         return if failed_master_pipeline_jobs.empty?
@@ -26,25 +26,30 @@ module Tooling
 
       private
 
+      def applicable_mr?
+        helper.mr_target_branch == 'master' && ENV['CI_MERGE_REQUEST_EVENT_TYPE'] == 'merged_result'
+      end
+
       def master_pipeline_jobs_statuses
-        status_file_content = begin
-          gitlab.api.file_contents(
-            MASTER_PIPELINE_STATUS_PROJECT_ID,
-            MASTER_PIPELINE_STATUS_FILE_NAME,
-            MASTER_PIPELINE_STATUS_BRANCH
-          )
-        rescue StandardError
-          '[]'
+        status_page_uri = URI(status_file_url)
+        res = Net::HTTP.get_response(status_page_uri)
+
+        unless res.is_a?(Net::HTTPSuccess)
+          puts "Request to #{status_file_url} returned #{res.code} #{res.message}. Ignoring."
+          return []
         end
 
-        JSON.parse(status_file_content)
-      rescue JSON::ParserError
+        JSON.parse(res.body)
+      rescue JSON::ParserError => e
+        puts "Failed to parse JSON for #{status_file_url}. Ignoring. Full error:"
+        puts e.message
         []
       end
 
       def pipeline_jobs(project_id, pipeline_id)
         gitlab.api.pipeline_jobs(project_id, pipeline_id).auto_paginate
-      rescue StandardError
+      rescue StandardError => e
+        puts "Failed to retrieve CI jobs via API for project #{project_id} and #{pipeline_id}: #{e.class}. Ignoring."
         []
       end
 
@@ -58,18 +63,22 @@ module Tooling
         end
       end
 
+      def status_file_url
+        "#{STATUS_FILE_PROJECT}/-/raw/#{STATUS_FILE_BRANCH}/#{STATUS_FILE_NAME}"
+      end
+
       def construct_message(job_statuses_to_warn)
         job_list = job_statuses_to_warn.map do |job|
           "* [#{job['name']}](#{job.dig('last_failed', 'web_url')})"
         end.join("\n")
 
         <<~MSG
-          The [master pipeline status page](#{STATUS_PAGE_URL}) reported failures in
+          The [master pipeline status page](#{status_file_url}) reported failures in
 
           #{job_list}
 
           If these jobs fail in your merge request with the same errors, then they are not caused by your changes.
-          Please check for any on-going incidents in the [incident issue tracker](#{INCIDENT_TRACKER_URL}) or in the `#master-broken` Slack channel.
+          Please check for any on-going incidents in the [incident issue tracker](#{STATUS_FILE_PROJECT}/-/issues) or in the `#master-broken` Slack channel.
         MSG
       end
     end

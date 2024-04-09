@@ -83,9 +83,9 @@ const InternalEvents = {
     const loadEvents = parent.querySelectorAll(LOAD_INTERNAL_EVENTS_SELECTOR);
 
     loadEvents.forEach((element) => {
-      const action = createInternalEventPayload(element);
-      if (action) {
-        this.trackEvent(action);
+      const { event, additionalProperties = {} } = createInternalEventPayload(element);
+      if (event) {
+        this.trackEvent(event, additionalProperties);
       }
     });
 

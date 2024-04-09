@@ -572,6 +572,12 @@ msgid_plural "%{boldStart}Merge blocked:%{boldEnd} %{count} checks failed"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{boldStart}Merge with caution%{boldEnd}: Override added"
+msgstr ""
+
+msgid "%{boldStart}Ready to be merged with caution%{boldEnd}: Override added"
+msgstr ""
+
 msgid "%{boldStart}Ready to merge by members who can write to the target branch.%{boldEnd}"
 msgstr ""
 
@@ -1955,6 +1961,9 @@ msgid "A ready-to-go template for use with Android apps"
 msgstr ""
 
 msgid "A ready-to-go template for use with iOS Swift apps"
+msgstr ""
+
+msgid "A relation import is already in progress for this project"
 msgstr ""
 
 msgid "A release with a date in the future is labeled as an %{linkStart}Upcoming Release%{linkEnd}."
@@ -9605,6 +9614,15 @@ msgid "By week"
 msgstr ""
 
 msgid "ByAuthor|by"
+msgstr ""
+
+msgid "Bypass blocking reviews"
+msgstr ""
+
+msgid "Bypass requested changes"
+msgstr ""
+
+msgid "Bypassing blocking reviews will allow the merge request to be merged even if any reviewer has requested changes. This applies to future reviews as well."
 msgstr ""
 
 msgid "CHANGELOG"
@@ -26355,6 +26373,9 @@ msgstr ""
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
 msgstr ""
 
+msgid "Imported relation must be one of %{relations}"
+msgstr ""
+
 msgid "Imported requirements"
 msgstr ""
 
@@ -39519,6 +39540,9 @@ msgstr ""
 msgid "Project navigation"
 msgstr ""
 
+msgid "Project not found"
+msgstr ""
+
 msgid "Project or Group"
 msgstr ""
 
@@ -42157,6 +42181,9 @@ msgstr ""
 msgid "Remove avatar"
 msgstr ""
 
+msgid "Remove bypass"
+msgstr ""
+
 msgid "Remove card"
 msgstr ""
 
@@ -42389,6 +42416,9 @@ msgid "Removes the due date."
 msgstr ""
 
 msgid "Removes time estimate."
+msgstr ""
+
+msgid "Removing the bypass will cause the merge request to be blocked if any reviews have requested changes."
 msgstr ""
 
 msgid "Removing this group also removes all child projects, including archived projects, and their resources."
@@ -45907,6 +45937,9 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this project."
 msgstr ""
 
+msgid "SecurityOrchestration|Enforce custom CI with pipeline execution action for scan execution policies. %{linkStart}How do I implement this feature?%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|Enforce policy on all groups, subgroups, and projects linked to the security policy project. %{linkStart}How does scoping work?%{linkEnd}"
 msgstr ""
 
@@ -45952,9 +45985,6 @@ msgstr ""
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
-msgid "SecurityOrchestration|Granularly scope your policies to selected projects. Enforce custom CI with pipeline execution action for scan execution policies. %{linkStart}How do I implement these features?%{linkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|Groups"
 msgstr ""
 
@@ -45976,7 +46006,7 @@ msgstr ""
 msgid "SecurityOrchestration|Inherited from %{namespace}"
 msgstr ""
 
-msgid "SecurityOrchestration|Introducing Policy Scoping and Pipeline Execution Policy Action experimental features"
+msgid "SecurityOrchestration|Introducing Pipeline Execution Policy Action experimental feature"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
@@ -51078,6 +51108,9 @@ msgstr ""
 msgid "The branch to merge into."
 msgstr ""
 
+msgid "The change requests must be completed or resolved."
+msgstr ""
+
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
@@ -55791,6 +55824,9 @@ msgstr ""
 msgid "Users to exclude from the rate limit"
 msgstr ""
 
+msgid "Users who can merge this merge request can override the request for changes, and unblock this merge request."
+msgstr ""
+
 msgid "Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
 msgstr ""
 
@@ -58716,6 +58752,9 @@ msgstr ""
 msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."
 msgstr ""
 
+msgid "You can't override the request for changes because you don't have permission to merge this merge request. To override, ask someone who is eligible to merge this merge request."
+msgstr ""
+
 msgid "You cannot %{action} %{state} users."
 msgstr ""
 
@@ -60970,6 +61009,15 @@ msgid "mrWidget|Assign yourself to this issue"
 msgstr ""
 
 msgid "mrWidget|Auto-merge enabled"
+msgstr ""
+
+msgid "mrWidget|Bypass"
+msgstr ""
+
+msgid "mrWidget|Bypassed"
+msgstr ""
+
+msgid "mrWidget|Can't bypass"
 msgstr ""
 
 msgid "mrWidget|Cancel auto-merge"

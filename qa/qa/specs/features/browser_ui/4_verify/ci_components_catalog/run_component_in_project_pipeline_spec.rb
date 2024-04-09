@@ -5,9 +5,13 @@ module QA
     describe 'CI component' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:tag) { '1.0.0' }
-      let(:domain_name) { Runtime::Scenario.gitlab_address.split("/").last }
       let(:test_stage) { 'test' }
       let(:test_phrase) { 'this is NOT secret!!!!!!!' }
+
+      let(:domain_name) do
+        address = Runtime::Scenario.gitlab_address
+        address.include?('https') ? address.sub!('https://', '') : address.sub!('http://', '')
+      end
 
       let(:component_project) do
         create(:project, :with_readme, name: 'component-project', description: 'This is a project with CI component.')
@@ -62,7 +66,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        enable_catalog_resource_feature
+        Flow::Project.enable_catalog_resource_feature(component_project)
         add_ci_file(component_project, 'templates/new-component.yml', component_content)
         component_project.create_release(tag)
 
@@ -96,15 +100,6 @@ module QA
       end
 
       private
-
-      def enable_catalog_resource_feature
-        component_project.visit!
-
-        Page::Project::Menu.perform(&:go_to_general_settings)
-        Page::Project::Settings::Main.perform do |settings|
-          settings.expand_visibility_project_features_permissions(&:enable_ci_cd_catalog_resource)
-        end
-      end
 
       def add_ci_file(project, file_path, content)
         create(:commit, project: project, commit_message: 'Add CI yml file', actions: [

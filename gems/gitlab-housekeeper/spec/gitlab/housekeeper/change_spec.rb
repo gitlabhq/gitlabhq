@@ -17,6 +17,7 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
 
       expect(change.labels).to eq([])
       expect(change.reviewers).to eq([])
+      expect(change.push_options.ci_skip).to eq(false)
     end
   end
 

@@ -20,8 +20,6 @@ module Tooling
       MSG
 
       def check!
-        return unless helper.ci?
-
         return unless helper.mr_labels.include?('ci::templates') || changes.any?
 
         message('This merge request adds or changes files that require a ' \

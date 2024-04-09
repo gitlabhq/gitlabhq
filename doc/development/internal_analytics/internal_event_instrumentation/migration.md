@@ -105,7 +105,7 @@ For raw JavaScript:
    });
 ```
 
-If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking.
+If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking. If there are additional tracking attributes like `data-track-label`, `data-track-property` and `data-track-value` then you can replace them with `data-event-label`, `data-event-property` and `data-event-value` respectively.
 
 For example, if a button is defined like this:
 
@@ -131,6 +131,8 @@ This can be converted to Internal Events Tracking like this:
   :aria-label="externalUrlLabel"
   target="_blank"
   data-event-tracking="click_toggle_external_button"
+  data-event-label="diff_toggle_external_button"
+  data-event-property="diff_toggle_external"
   icon="external-link"
 />
 ```

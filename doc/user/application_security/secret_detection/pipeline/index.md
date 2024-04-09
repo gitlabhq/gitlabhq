@@ -8,8 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Pipeline secret detection
 
 DETAILS:
-**Tier:** Free
-**Offering:** GitLab.com
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** GA
 
 Pipeline secret detection scans committed files after they has been pushed to GitLab.
@@ -301,7 +301,7 @@ You can customize which [secrets are reported in the GitLab UI](#pipeline-secret
 However, the `secret_detection` job logs always include the number
 of secrets detected by the default Pipeline Secret Detection rules.
 
-The following customization options can be used separately, or in combination:
+The following customization options can be used separately, or in combination (except for disabling or overriding rules when using a remote configuration file):
 
 - [Disable predefined rules](#disable-predefined-analyzer-rules).
 - [Override predefined rules](#override-predefined-analyzer-rules).
@@ -407,6 +407,10 @@ secret_detection:
 
 #### Override predefined analyzer rules
 
+WARNING:
+Overriding rules does not currently work when using a [remote configuration file](#specify-a-remote-configuration-file).
+[Issue 425251](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) proposes to fix this limitation.
+
 If there are specific Pipeline Secret Detection rules you want to customize, you can override them. For
 example, you might increase the severity of specific secrets.
 
@@ -444,6 +448,10 @@ In the following example `secret-detection-ruleset.toml` file, rules are matched
 ```
 
 #### Disable predefined analyzer rules
+
+WARNING:
+Disabling rules does not currently work when using a [remote configuration file](#specify-a-remote-configuration-file).
+[Issue 425251](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) proposes to fix this limitation.
 
 If there are specific Pipeline Secret Detection rules that you don't want active, you can disable them.
 

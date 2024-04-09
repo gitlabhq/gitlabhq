@@ -24,6 +24,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     [
       *tables_with_alternative_not_null_constraint,
       *['boards.project_id', 'boards.group_id'],
+      'ci_pipeline_schedules.project_id',
+      'ci_triggers.project_id',
       *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
       *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161

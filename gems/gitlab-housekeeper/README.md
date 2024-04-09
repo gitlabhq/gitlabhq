@@ -69,6 +69,9 @@ module Keeps
 
         change.changed_files = [file_name]
 
+        # to push changes without triggering a pipeline.
+        change.push_options.ci_skip = true
+
         yield(change)
       end
     end

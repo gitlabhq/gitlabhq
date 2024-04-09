@@ -262,12 +262,12 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
               if Gitlab.ee?
                 [
                   %w[incident_management_close_incident status_page_publish],
-                  %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import project_template_export]
+                  %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export projects_import_export_relation_import repository_import project_template_export]
                 ]
               else
                 [
                   %w[incident_management_close_incident],
-                  %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export repository_import]
+                  %w[bulk_imports_pipeline bulk_imports_pipeline_batch bulk_imports_relation_batch_export bulk_imports_relation_export project_export projects_import_export_parallel_project_export projects_import_export_relation_export projects_import_export_relation_import repository_import]
                 ]
               end
 

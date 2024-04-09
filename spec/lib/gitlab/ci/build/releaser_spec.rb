@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Releaser do
-  subject { described_class.new(config: config[:release]).script }
+RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integration do
+  let(:job) { build(:ci_build, options: { release: config[:release] }) }
+
+  subject(:releaser) { described_class.new(job: job) }
 
   describe '#script' do
+    subject(:script) { releaser.script }
+
     context 'all nodes' do
       let(:config) do
         {
@@ -27,8 +31,37 @@ RSpec.describe Gitlab::Ci::Build::Releaser do
         }
       end
 
+      let(:result_script) do
+        'release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" ' \
+          '--tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" ' \
+          '--milestone "m1" --milestone "m2" --milestone "m3" --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\",\"filepath\":\"/pretty/asset/1\"}" ' \
+          '--assets-link "{\"name\":\"asset2\",\"url\":\"https://example.com/assets/2\"}"'
+      end
+
       it 'generates the script' do
-        expect(subject).to eq(['release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3" --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\",\"filepath\":\"/pretty/asset/1\"}" --assets-link "{\"name\":\"asset2\",\"url\":\"https://example.com/assets/2\"}"'])
+        expect(script).to eq([result_script])
+      end
+
+      context 'when the project is a catalog resource' do
+        let_it_be(:project) { create(:project, :catalog_resource_with_components) }
+        let_it_be(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+        let(:job) { build(:ci_build, pipeline: pipeline, options: { release: config[:release] }) }
+
+        it 'generates the script with --catalog-publish' do
+          expect(script).to eq(["#{result_script} --catalog-publish"])
+        end
+
+        context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
+          before do
+            stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+          end
+
+          it 'generates the script without --catalog-publish' do
+            expect(script).to eq([result_script])
+          end
+        end
       end
     end
 
@@ -57,7 +90,7 @@ RSpec.describe Gitlab::Ci::Build::Releaser do
         end
 
         it 'generates the script' do
-          expect(subject).to eq([result])
+          expect(script).to eq([result])
         end
       end
     end

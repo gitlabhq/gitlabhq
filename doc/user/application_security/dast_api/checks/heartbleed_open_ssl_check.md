@@ -1,22 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../api_security_testing/checks/heartbleed_open_ssl_check.md'
+remove_date: '2024-07-08'
 ---
 
-# Heartbleed OpenSSL vulnerability
+This document was moved to [another location](../../api_security_testing/checks/heartbleed_open_ssl_check.md).
 
-## Description
-
-Check for Heartbleed OpenSSL vulnerability.
-
-## Remediation
-
-The Heartbleed vulnerability is a serious bug in the popular OpenSSL cryptographic library. OpenSSL is used to encrypt and decrypt communications and secure the Internet traffic. This vulnerability allows the attacker to steal protected information, which should not be accessible under other circumstance such as secret keys that are used to encrypt sensitive information.
-
-Anyone on with access to the target API can use the Heartbleed vulnerability to read the memory from protected systems taking advantage of vulnerable versions of OpenSSL library.
-
-## Links
-
-- [OWASP](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components)
-- [CWE](https://cwe.mitre.org/data/definitions/119.html)
+<!-- This redirect file can be deleted after <2024-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -1,20 +1,11 @@
 ---
-stage: Secure
-group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+redirect_to: '../../api_security_testing/checks/json_injection_check.md'
+remove_date: '2024-07-08'
 ---
 
-# JSON injection
+This document was moved to [another location](../../api_security_testing/checks/json_injection_check.md).
 
-## Description
-
-Check for JSON serialization/injection vulnerabilities.
-
-## Remediation
-
-JSON injection is an attack technique used to manipulate or compromise the logic of a JSON application or service. The injection of unintended JSON content and/or structures into an JSON message can alter the intend logic of the application. Further, JSON injection can cause the insertion of malicious content into the resulting message/document.
-
-## Links
-
-- [OWASP](https://owasp.org/Top10/A03_2021-Injection)
-- [CWE](CWE-929: OWASP Top Ten 2013 Category A1 - Injection)
+<!-- This redirect file can be deleted after <2024-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

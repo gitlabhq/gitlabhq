@@ -659,11 +659,47 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_2428b5519042() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_3857ca5ea4af() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_388e93f88fdd() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."id_convert_to_bigint" := NEW."id";
+  RETURN NEW;
+END;
+$$;
+
+CREATE FUNCTION trigger_fb587b1ae7ad() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."head_pipeline_id_convert_to_bigint" := NEW."head_pipeline_id";
   RETURN NEW;
 END;
 $$;
@@ -11256,6 +11292,7 @@ CREATE TABLE merge_requests (
     prepared_at timestamp with time zone,
     merged_commit_sha bytea,
     override_requested_changes boolean DEFAULT false NOT NULL,
+    head_pipeline_id_convert_to_bigint bigint,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -11317,7 +11354,8 @@ CREATE TABLE merge_trains (
     target_branch text NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     merged_at timestamp with time zone,
-    duration integer
+    duration integer,
+    pipeline_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE merge_trains_id_seq
@@ -12352,7 +12390,8 @@ ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id integer NOT NULL,
-    pipeline_id integer
+    pipeline_id integer,
+    pipeline_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE packages_build_infos_id_seq
@@ -17316,7 +17355,8 @@ CREATE TABLE vulnerability_feedback (
     comment_timestamp timestamp with time zone,
     finding_uuid uuid,
     dismissal_reason smallint,
-    migrated_to_state_transition boolean DEFAULT false
+    migrated_to_state_transition boolean DEFAULT false,
+    pipeline_id_convert_to_bigint bigint
 );
 
 CREATE SEQUENCE vulnerability_feedback_id_seq
@@ -29582,11 +29622,19 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 
 CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
+CREATE TRIGGER trigger_2428b5519042 BEFORE INSERT OR UPDATE ON vulnerability_feedback FOR EACH ROW EXECUTE FUNCTION trigger_2428b5519042();
+
+CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR EACH ROW EXECUTE FUNCTION trigger_3857ca5ea4af();
+
+CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
+
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
+
+CREATE TRIGGER trigger_fb587b1ae7ad BEFORE INSERT OR UPDATE ON merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_fb587b1ae7ad();
 
 CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 

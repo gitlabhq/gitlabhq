@@ -1,0 +1,9 @@
+---
+name: ci_release_cli_catalog_publish_option
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442066
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146198
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443782
+milestone: '16.11'
+group: group::pipeline authoring
+type: ops
+default_enabled: false

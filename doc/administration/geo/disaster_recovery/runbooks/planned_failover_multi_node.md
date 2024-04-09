@@ -230,7 +230,7 @@ the **secondary** to the **primary**.
 
 WARNING:
 If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken` error during this process, read
-[the troubleshooting advice](../../replication/troubleshooting/index.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+[the troubleshooting advice](../../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 
 The `gitlab-ctl promote-to-primary-node` command cannot be used in
 conjunction with multiple servers, as it can only

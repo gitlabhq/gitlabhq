@@ -213,7 +213,32 @@ describe('InternalEvents', () => {
         querySelectorAllMock.mockReturnValue(mockElements);
 
         const result = InternalEvents.trackInternalLoadEvents();
-        expect(trackEventSpy).toHaveBeenCalledWith(action);
+        expect(trackEventSpy).toHaveBeenCalledWith(action, {});
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(querySelectorAllMock).toHaveBeenCalledWith(LOAD_INTERNAL_EVENTS_SELECTOR);
+        expect(result).toEqual(mockElements);
+      });
+
+      it('should track event along with additional Properties if action exists', () => {
+        mockElements = [
+          {
+            dataset: {
+              eventTracking: action,
+              eventTrackingLoad: true,
+              eventProperty: 'test-property',
+              eventLabel: 'test-label',
+              eventValue: 2,
+            },
+          },
+        ];
+        querySelectorAllMock.mockReturnValue(mockElements);
+
+        const result = InternalEvents.trackInternalLoadEvents();
+        expect(trackEventSpy).toHaveBeenCalledWith(action, {
+          label: 'test-label',
+          property: 'test-property',
+          value: 2,
+        });
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(querySelectorAllMock).toHaveBeenCalledWith(LOAD_INTERNAL_EVENTS_SELECTOR);
         expect(result).toEqual(mockElements);

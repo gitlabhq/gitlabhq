@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
 
-API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [DAST API](../../dast_api/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
+API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [API Security Testing](../../api_security_testing/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 
 ## Supported frameworks
 
@@ -22,7 +22,7 @@ API Discovery analyzes your application and produces an OpenAPI document describ
 
 API Discovery runs as a standalone job in your pipeline. The resulting OpenAPI document is captured as a job artifact so it can be used by other jobs in later stages.
 
-API Discovery runs in the `test` stage by default. The `test` stage was chosen as it typically executes before the stages used by other API Security features such as DAST API and API Fuzzing.
+API Discovery runs in the `test` stage by default. The `test` stage was chosen as it typically executes before the stages used by other API Security features such as API Security Testing and API Fuzzing.
 
 ## Example API Discovery configurations
 

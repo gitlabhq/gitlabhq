@@ -106,13 +106,6 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
 
 The backup command backs up registry data when they are stored in the default location on the file system.
 
-#### Object storage
-
-The [backup command](#backup-command) doesn't back up blobs that aren't stored on the file system. If you're using [object storage](../object_storage.md), be sure to enable backups with your object storage provider. For example, see:
-
-- [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
-- [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
-
 ### Storing configuration files
 
 WARNING:

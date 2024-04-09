@@ -137,7 +137,10 @@ export default {
 </script>
 
 <template>
-  <div data-testid="approvals-summary-content">
+  <div
+    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-2"
+    data-testid="approvals-summary-content"
+  >
     <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>

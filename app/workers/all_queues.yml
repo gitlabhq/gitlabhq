@@ -3765,6 +3765,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: projects_import_export_relation_import
+  :worker_name: Projects::ImportExport::RelationImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: projects_import_export_wait_relation_exports
   :worker_name: Projects::ImportExport::WaitRelationExportsWorker
   :feature_category: :importers

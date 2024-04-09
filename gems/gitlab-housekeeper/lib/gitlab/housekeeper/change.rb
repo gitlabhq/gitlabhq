@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/housekeeper/push_options'
+
 module Gitlab
   module Housekeeper
     class Change
@@ -10,12 +12,14 @@ module Gitlab
         :labels,
         :keep_class,
         :changelog_type,
-        :mr_web_url
+        :mr_web_url,
+        :push_options
       attr_reader :reviewers
 
       def initialize
         @labels = []
         @reviewers = []
+        @push_options = PushOptions.new
       end
 
       def reviewers=(reviewers)

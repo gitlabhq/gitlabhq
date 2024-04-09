@@ -1541,6 +1541,16 @@ class Project < ApplicationRecord
       URI.parse(import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
   end
 
+  # Determine whether any kind of import is in progress.
+  # - Full file import
+  # - Relation import
+  # - Direct Transfer
+  def any_import_in_progress?
+    relation_import_trackers.last&.started? ||
+      import_started? ||
+      BulkImports::Entity.with_status(:started).where(project_id: id).any?
+  end
+
   def has_remote_mirror?
     remote_mirror_available? && remote_mirrors.enabled.exists?
   end

@@ -95,12 +95,12 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
       expect(git).to receive(:push)
-        .with('the-identifier-for-the-first-change')
+        .with('the-identifier-for-the-first-change', change1.push_options)
       expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
         .with('git', '--no-pager', 'diff', '--color=always', 'master',
           'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
       expect(git).to receive(:push)
-        .with('the-identifier-for-the-second-change')
+        .with('the-identifier-for-the-second-change', change2.push_options)
 
       # Merge requests get created
       expect(gitlab_client).to receive(:create_or_update_merge_request)
@@ -163,7 +163,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           .with('git', '--no-pager', 'diff', '--color=always', 'master',
             'the-identifier-for-the-second-change', '--', 'change1.txt', 'change2.txt')
         expect(git).to receive(:push)
-          .with('the-identifier-for-the-second-change')
+          .with('the-identifier-for-the-second-change', change2.push_options)
 
         # Merge requests get created
         expect(gitlab_client).to receive(:create_or_update_merge_request)
@@ -207,9 +207,9 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
         expect(git).not_to receive(:push)
-          .with('the-identifier-for-the-first-change')
+          .with('the-identifier-for-the-first-change', change1.push_options)
         expect(git).to receive(:push)
-          .with('the-identifier-for-the-second-change')
+          .with('the-identifier-for-the-second-change', change2.push_options)
 
         expect(gitlab_client).to receive(:create_or_update_merge_request)
           .with(

@@ -53,10 +53,16 @@ sudo docker exec gitlab update-permissions
 sudo docker restart gitlab
 ```
 
-## Windows/Mac: `Error executing action run on resource ruby_block[directory resource: /data/GitLab]`
+## Error executing action run on resource `ruby_block`
 
 This error occurs when using Docker Toolbox with VirtualBox on Windows or Mac,
-and making use of Docker volumes. The `/c/Users` volume is mounted as a
+and making use of Docker volumes:
+
+```plaintext
+Error executing action run on resource ruby_block[directory resource: /data/GitLab]
+```
+
+The `/c/Users` volume is mounted as a
 VirtualBox Shared Folder, and does not support the all POSIX file system features.
 The directory ownership and permissions cannot be changed without remounting, and
 GitLab fails.

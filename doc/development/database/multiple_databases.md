@@ -47,7 +47,7 @@ The usage of schema enforces the base class to be used:
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
-### Guidelines on choosing between `gitlab_main_cell` and `gitlab_main_clusterwide` schema
+### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
@@ -151,7 +151,7 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
-#### Defining a `desired_sharding_key` for automatically backfilling a `sharding_key`
+#### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
 This process will involve creating a merge request like
@@ -196,7 +196,7 @@ background migration. It also specifies a `belongs_to` relation which
 will be added to the model to automatically populate the `sharding_key` in
 the `before_save`.
 
-##### Defining a `desired_sharding_key` when the parent table also has a `desired_sharding_key`
+##### Define a `desired_sharding_key` when the parent table also has one
 
 By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
 exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration

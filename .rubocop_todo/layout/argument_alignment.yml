@@ -1203,7 +1203,6 @@ Layout/ArgumentAlignment:
     - 'spec/lib/feature/definition_spec.rb'
     - 'spec/lib/feature/gitaly_spec.rb'
     - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/generators/gitlab/partitioning/foreign_keys_generator_spec.rb'
     - 'spec/lib/gitlab/checks/changes_access_spec.rb'
     - 'spec/lib/gitlab/checks/single_change_access_spec.rb'
     - 'spec/lib/gitlab/conan_token_spec.rb'

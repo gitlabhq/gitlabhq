@@ -2,6 +2,7 @@
 
 require 'logger'
 require 'gitlab/housekeeper/shell'
+require 'gitlab/housekeeper/push_options'
 
 module Gitlab
   module Housekeeper
@@ -46,8 +47,11 @@ module Gitlab
         Shell.execute("git", "commit", "-m", change.commit_message)
       end
 
-      def push(branch_name)
-        Shell.execute('git', 'push', '-f', housekeeper_remote, "#{branch_name}:#{branch_name}")
+      def push(branch_name, push_options = PushOptions.new)
+        push_command = ['git', 'push', '-f', housekeeper_remote, "#{branch_name}:#{branch_name}"]
+        push_command << '-o ci.skip' if push_options.ci_skip
+
+        Shell.execute(*push_command)
       end
 
       private
