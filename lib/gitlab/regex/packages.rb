@@ -264,7 +264,7 @@ module Gitlab
       end
 
       def slack_link_regex
-        @slack_link_regex ||= /<(.*[|].*)>/i
+        @slack_link_regex ||= Gitlab::UntrustedRegexp.new('<([^|<>]*[|][^|<>]*)>')
       end
 
       private
