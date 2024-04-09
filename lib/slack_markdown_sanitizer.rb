@@ -10,6 +10,10 @@ module SlackMarkdownSanitizer
   end
 
   def self.sanitize_slack_link(string)
-    string.gsub(Gitlab::Regex.slack_link_regex) { |m| m.gsub("<", "&lt;").gsub(">", "&gt;") }
+    return string unless Gitlab::Regex.slack_link_regex.match?(string)
+
+    Gitlab::Regex.slack_link_regex.replace_gsub(string) do |match|
+      match.to_s.gsub("<", "&lt;").gsub(">", "&gt;")
+    end
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
+import { escape } from 'lodash';
 import { __, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -57,11 +58,11 @@ export default {
     },
     highlight(text) {
       return this.searchTerm
-        ? String(text).replace(
+        ? String(escape(text)).replace(
             new RegExp(this.searchTerm, 'i'),
             (match) => `<strong>${match}</strong>`,
           )
-        : text;
+        : escape(text);
     },
   },
   i18n: {
@@ -86,7 +87,7 @@ export default {
     @select="selectTemplate"
   >
     <template #list-item="{ item }">
-      <span v-safe-html:safeHtmlConfig="highlight(item.text)"> </span>
+      <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.text)"> </span>
     </template>
   </gl-collapsible-listbox>
 </template>
