@@ -19,7 +19,7 @@ When you use Google Chrome to sign in to GitLab with Kerberos, you must enter yo
 If you do not enter your full username, the sign-in fails. Check the logs to see the following event message as evidence of this sign-in failure:
 
 ```plain
-"message":"OmniauthKerberosController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested\nUnknown error"`.
+"message":"OmniauthKerberosController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested\nUnknown error".
 ```
 
 ## Test connectivity between the GitLab and Kerberos servers

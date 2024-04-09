@@ -2464,6 +2464,14 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
+.reports:rules:docs_code_quality:
+  # Similar to above, run docs code quality job in every pipeline so there is always
+  # a report artifact to compare against.
+  rules:
+    - !reference [".reports:rules:code_quality", rules]
+    - <<: *if-default-refs
+      changes: *docs-patterns
+
 .reports:rules:code_quality_cache:
   rules:
     - <<: *if-default-branch-refs

@@ -174,9 +174,8 @@ If you're not sure what queue a worker uses,
 you can find it using `SomeWorker.queue`. There is almost never a reason to
 manually override the queue name using `sidekiq_options queue: :some_queue`.
 
-After adding a new worker, run `bin/rake
-gitlab:sidekiq:all_queues_yml:generate` to regenerate
-`app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
+After adding a new worker, run `bin/rake gitlab:sidekiq:all_queues_yml:generate`
+to regenerate `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so that
 it can be picked up by
 [`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
 in installations that don't use routing rules. For more information about potential changes,

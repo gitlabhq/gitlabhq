@@ -705,7 +705,7 @@ GEM
       fog-core (~> 2.1)
       fog-json (~> 1.2)
       mime-types
-    gitlab-glfm-markdown (0.0.13)
+    gitlab-glfm-markdown (0.0.14)
       rb_sys (~> 0.9.86)
     gitlab-labkit (0.35.1)
       actionpack (>= 5.0.0, < 8.0.0)
@@ -1025,7 +1025,7 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.0)
       addressable (~> 2.7)
-    lefthook (1.5.6)
+    lefthook (1.6.8)
     letter_opener (1.7.0)
       launchy (~> 2.2)
     letter_opener_web (2.0.0)
@@ -1910,7 +1910,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 4.7.0)
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 1.9.1)
-  gitlab-glfm-markdown (~> 0.0.13)
+  gitlab-glfm-markdown (~> 0.0.14)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-labkit (~> 0.35.1)
@@ -1986,7 +1986,7 @@ DEPENDENCIES
   knapsack (~> 1.22.0)
   kramdown (~> 2.3.1)
   kubeclient (~> 4.11.0)
-  lefthook (~> 1.5.6)
+  lefthook (~> 1.6.8)
   letter_opener_web (~> 2.0.0)
   license_finder (~> 7.0)
   licensee (~> 9.16)

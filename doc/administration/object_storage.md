@@ -826,8 +826,8 @@ Prerequisites:
    ```
 
 1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
-   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone
-   sync`, check your Rclone configuration and try again.
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running
+   `rclone sync`, check your Rclone configuration and try again.
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
 
@@ -961,8 +961,8 @@ GitLab Workhorse uploads files to S3 using pre-signed URLs that do
 not have a `Content-MD5` HTTP header computed for them. To ensure data
 is not corrupted, Workhorse checks that the MD5 hash of the data sent
 equals the ETag header returned from the S3 server. When encryption is
-enabled, this is not the case, which causes Workhorse to report an `ETag
-mismatch` error during an upload.
+enabled, this is not the case, which causes Workhorse to report an `ETag mismatch`
+error during an upload.
 
 When the consolidated form is:
 

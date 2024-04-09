@@ -295,8 +295,8 @@ The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
 fine in most cases, but can cause problems when data is rapidly changing.
 
-When data changes while `tar` is reading it, the error `file changed as we read
-it` may occur, and causes the backup process to fail. In that case, you can use
+When data changes while `tar` is reading it, the error `file changed as we read it`
+may occur, and causes the backup process to fail. In that case, you can use
 the backup strategy called `copy`. The strategy copies data files
 to a temporary location before calling `tar` and `gzip`, avoiding the error.
 

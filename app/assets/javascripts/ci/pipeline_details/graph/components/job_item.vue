@@ -80,11 +80,6 @@ export default {
       required: false,
       default: '',
     },
-    dropdownLength: {
-      type: Number,
-      required: false,
-      default: Infinity,
-    },
     groupTooltip: {
       type: String,
       required: false,
@@ -125,6 +120,11 @@ export default {
       required: false,
       default: SINGLE_JOB,
     },
+    isLink: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -134,14 +134,14 @@ export default {
     };
   },
   computed: {
-    boundary() {
-      return this.dropdownLength === 1 ? 'viewport' : 'scrollParent';
-    },
     computedJobId() {
       return this.pipelineId > -1 ? `${this.job.name}-${this.pipelineId}` : '';
     },
     detailsPath() {
-      return this.status.detailsPath;
+      if (this.isLink) {
+        return this.status.detailsPath;
+      }
+      return null;
     },
     hasDetails() {
       return this.status.hasDetails;
@@ -161,8 +161,11 @@ export default {
     kind() {
       return this.job?.kind || '';
     },
+    shouldRenderLink() {
+      return this.isLink && this.hasDetails;
+    },
     nameComponent() {
-      return this.hasDetails ? 'gl-link' : 'div';
+      return this.shouldRenderLink ? 'gl-link' : 'div';
     },
     retryTriggerJobWarningText() {
       return sprintf(this.$options.i18n.confirmationModal.title, {
@@ -323,7 +326,7 @@ export default {
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
-      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-w-full"
+      class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
       :data-testid="testId"
       @click="jobItemClick"
       @mouseout="hideTooltips"
@@ -331,7 +334,9 @@ export default {
       <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
         <ci-icon :status="job.status" :use-link="false" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
-          <div class="gl-text-truncate gl-pr-9 gl-line-height-normal">{{ job.name }}</div>
+          <div class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700">
+            {{ job.name }}
+          </div>
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"

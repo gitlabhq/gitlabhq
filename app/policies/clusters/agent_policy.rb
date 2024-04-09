@@ -21,3 +21,5 @@ module Clusters
     end
   end
 end
+
+Clusters::AgentPolicy.prepend_mod_with('Clusters::AgentPolicy')

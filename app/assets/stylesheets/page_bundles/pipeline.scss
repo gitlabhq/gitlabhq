@@ -137,10 +137,6 @@
   }
 }
 
-.gl-pipeline-job-width\! {
-  width: 100% !important;
-}
-
 .gl-downstream-pipeline-job-width {
   width: 8rem;
 
@@ -321,6 +317,29 @@
 
   .pipeline-graph .pipeline-graph {
     background-color: $gray-100;
+  }
+}
+
+.stage-column .ci-job-group-dropdown {
+  &,
+  .gl-new-dropdown-custom-toggle {
+    width: 100%;
+  }
+
+  // Reset padding, as inner element will
+  // define padding
+  .gl-new-dropdown-item-content,
+  .gl-new-dropdown-item-text-wrapper {
+    padding: 0;
+  }
+
+  // Set artificial focus on the menu-item to keep
+  // it consistent with the original dropdown items
+  .gl-new-dropdown-item:focus .menu-item,
+  .gl-new-dropdown-item-content:focus .menu-item {
+    background-color: $gray-50;
+    border-radius: $border-radius-default;
+    @include gl-focus($inset: true);
   }
 }
 

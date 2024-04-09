@@ -127,7 +127,7 @@ The examples in this document all use the project-level prefix.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/debian`
+/projects/:id/packages/debian
 ```
 
 | Attribute | Type | Required | Description |
@@ -137,7 +137,7 @@ The examples in this document all use the project-level prefix.
 ### Group-level
 
 ```plaintext
- /groups/:id/-/packages/debian`
+/groups/:id/-/packages/debian
 ```
 
 | Attribute | Type | Required | Description |

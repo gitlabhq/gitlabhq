@@ -166,9 +166,9 @@ job. By default, GitLab ensures that:
 - Your repository is clean.
 
 [`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags) is disabled when set
-to `none`. On very big repositories, this might be desired because `git
-clean` is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx
--e .build/` (for example) allows you to control and disable removal of some
+to `none`. On very big repositories, this might be desired because `git clean`
+is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx -e .build/`
+(for example) allows you to control and disable removal of some
 directories in the worktree between subsequent runs, which can speed-up
 the incremental builds. This has the biggest effect if you re-use existing
 machines and have an existing worktree that you can re-use for builds.

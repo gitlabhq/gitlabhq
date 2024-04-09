@@ -189,8 +189,8 @@ sequenceDiagram
    appropriate Gitaly server.
 1. The Gitaly server calls `git archive <ref>` to begin generating
    the Git archive on-the-fly. If the `include_lfs_blobs` flag is enabled,
-   Gitaly enables a custom LFS smudge filter via the `-c
-   filter.lfs.smudge=/path/to/gitaly-lfs-smudge` Git option.
+   Gitaly enables a custom LFS smudge filter with the `-c filter.lfs.smudge=/path/to/gitaly-lfs-smudge`
+   Git option.
 1. When `git` identifies a possible LFS pointer using the
    `.gitattributes` file, `git` calls `gitaly-lfs-smudge` and provides the
    LFS pointer via the standard input. Gitaly provides `GL_PROJECT_PATH`

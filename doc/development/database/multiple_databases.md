@@ -549,8 +549,8 @@ it does less joins and needs less filtering.
 
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
-Sometimes a join query is caused by using `has_one ... through:` or `has_many
-... through:` across tables that span the different databases. These joins
+Sometimes a join query is caused by using `has_one ... through:` or `has_many ... through:`
+across tables that span the different databases. These joins
 sometimes can be solved by adding
 [`disable_joins:true`](https://edgeguides.rubyonrails.org/active_record_multiple_databases.html#handling-associations-with-joins-across-databases).
 This is a Rails feature which we

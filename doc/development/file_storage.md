@@ -85,7 +85,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 | ----------------------- + ------------------------- + --------------------------------- + -------------------------------- |
 | `CarrierWave.root`      | `GitlabUploader.base_dir` | `GitlabUploader#dynamic_segment`  | `CarrierWave::Uploader#filename` |
 |                         | `CarrierWave::Uploader#store_dir`                             |                                  |
-|                         |                           | `FileUploader#upload_path                                            |
+|                         |                           | `FileUploader#upload_path`                                           |
 
 |   ObjectStore::Concern (store = remote)
 | ----------------------- + ------------------------- + ----------------------------------- + -------------------------------- |
@@ -93,7 +93,7 @@ All the `GitlabUploader` derived classes should comply with this path segment sc
 | ----------------------- + ------------------------- + ----------------------------------- + -------------------------------- |
 | `#fog_dir`              | `GitlabUploader.base_dir` | `GitlabUploader#dynamic_segment`    | `CarrierWave::Uploader#filename` |
 |                         |                           | `ObjectStorage::Concern#store_dir`  |                                  |
-|                         |                           | `ObjectStorage::Concern#upload_path                                    |
+|                         |                           | `ObjectStorage::Concern#upload_path`                                   |
 ```
 
 The `RecordsUploads::Concern` concern creates an `Upload` entry for every file stored by a `GitlabUploader` persisting the dynamic parts of the path using

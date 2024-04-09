@@ -298,7 +298,7 @@ Given that non-Ruby parsers parse IDs as Ruby Objects, the [naming conventions](
 Examples of invalid IDs:
 
 - IDs that start with a number
-- IDs that have special characters (-, !, $, @, `, =, <, >, ;, :)
+- IDs that have special characters (`-`, `!`, `$`, `@`, `` ` ``, `=`, `<`, `>`, `;`, `:`)
 
 #### ActiveRecord::AssociationTypeMismatch: Model expected, got ... which is an instance of String
 

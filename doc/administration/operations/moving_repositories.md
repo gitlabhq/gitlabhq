@@ -367,7 +367,7 @@ cat /home/git/transfer-logs/* | sort | uniq -u |\
     /home/git/transfer-logs/success-$(date +%s).log \
     /home/git/repositories \
     /mnt/gitlab/repositories
-`
+'
 ```
 
 #### Parallel `rsync` only for repositories with recent activity
@@ -383,8 +383,8 @@ Using `rsync` to migrate Git data can cause data loss and repository corruption.
 
 Suppose you have already done one sync that started after 2015-10-1 12:00 UTC.
 Then you might only want to sync repositories that were changed by using GitLab
-after that time. You can use the `SINCE` variable to tell `rake
-gitlab:list_repos` to only print repositories with recent activity.
+after that time. You can use the `SINCE` variable to tell `rake gitlab:list_repos`
+to only print repositories with recent activity.
 
 ```shell
 # Omnibus

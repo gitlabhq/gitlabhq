@@ -557,7 +557,7 @@ There are two methods to update the `extern_uid`:
 - Using the [Rails console](../administration/operations/rails_console.md):
 
   ```ruby
-  Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')`
+  Identity.where(extern_uid: 'old-id').update!(extern_uid: 'new-id')
   ```
 
 ## Known issues

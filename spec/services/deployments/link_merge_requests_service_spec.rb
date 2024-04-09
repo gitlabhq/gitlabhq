@@ -238,10 +238,6 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
         )
       end
 
-      before do
-        project.update!(merge_requests_ff_only_enabled: true)
-      end
-
       it "links merge requests by the HEAD commit sha of the MR's diff" do
         link_merge_requests_for_range
 

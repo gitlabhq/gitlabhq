@@ -59,9 +59,9 @@ On rows where `json.event` is `Failed Attempt`, you can find valuable debugging 
 
 To view Telesign status updates logs for SMS sent to a user, query the GitLab production logs with:
 
-   ```plaintext
-   json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.username:<username>`
-   ```
+```plaintext
+json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.username:<username>
+```
 
 Status update logs include the following fields:
 

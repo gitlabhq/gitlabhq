@@ -108,8 +108,7 @@ in case the customer has [configured SAML Group Sync](group_sync.md):
 
 In the relevant log entry, the:
 
-- `json.args` are in the form `<userID>, <group ID>,
-  [group link ID 1, group link ID 2, ..., group link ID N]`.
+- `json.args` are in the form `<userID>, <group ID>, [group link ID 1, group link ID 2, ..., group link ID N]`.
 - `json.extra.group_saml_group_sync_worker.stats.*` fields show how many times
   this run of group sync `added`, `removed` or `changed` the user's membership.
 

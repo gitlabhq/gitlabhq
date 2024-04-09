@@ -27,7 +27,6 @@ module QA
 
           view 'app/assets/javascripts/ci/pipeline_details/graph/components/job_group_dropdown.vue' do
             element 'job-dropdown-container'
-            element 'jobs-dropdown-menu'
           end
 
           view 'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue' do
@@ -121,7 +120,7 @@ module QA
           end
 
           def has_skipped_job_in_group?
-            within_element('jobs-dropdown-menu') do
+            within_element('disclosure-content') do
               all_elements('job-with-link', minimum: 1).all? do
                 has_selector?('.ci-status-icon-skipped')
               end
@@ -129,7 +128,7 @@ module QA
           end
 
           def has_no_skipped_job_in_group?
-            within_element('jobs-dropdown-menu') do
+            within_element('disclosure-content') do
               all_elements('job-with-link', minimum: 1).all? do
                 has_no_selector?('.ci-status-icon-skipped')
               end

@@ -249,8 +249,7 @@ impersonation credentials in the following way:
     - Project `group1/group1-1/project1` has ID 150.
     - Job running in the `prod` environment, which has the `production` environment tier.
 
-  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group_env_tier:23:production, gitlab:group:25,
-     gitlab:group_env_tier:25:production, gitlab:project:150, gitlab:project_env:150:prod, gitlab:project_env_tier:150:production]`.
+  Group list would be `[gitlab:ci_job, gitlab:group:23, gitlab:group_env_tier:23:production, gitlab:group:25, gitlab:group_env_tier:25:production, gitlab:project:150, gitlab:project_env:150:prod, gitlab:project_env_tier:150:production]`.
 
 - `Extra` carries extra information about the request. The following properties are set on the impersonated identity:
 

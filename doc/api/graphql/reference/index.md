@@ -6237,6 +6237,44 @@ Input type: `NamespaceCiCdSettingsUpdateInput`
 | <a id="mutationnamespacecicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacecicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.namespaceCreateRemoteDevelopmentClusterAgentMapping`
+
+Input type: `NamespaceCreateRemoteDevelopmentClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be associated with the namespace. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | GlobalID of the namespace to be associated with the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.namespaceDeleteRemoteDevelopmentClusterAgentMapping`
+
+Input type: `NamespaceDeleteRemoteDevelopmentClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be un-associated from the namespace. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | GlobalID of the namespace to be un-associated from the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.namespaceIncreaseStorageTemporarily`
 
 Input type: `NamespaceIncreaseStorageTemporarilyInput`

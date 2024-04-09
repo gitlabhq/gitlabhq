@@ -459,8 +459,7 @@ DETAILS:
   `MigrateMergeRequestDiffCommitUsers` background migration jobs are
   foregrounded in GitLab 14.5, and may take a long time to complete.
   You can check the count of pending jobs for
-  `MigrateMergeRequestDiffCommitUsers` by using the PostgreSQL console (or `sudo
-  gitlab-psql`):
+  `MigrateMergeRequestDiffCommitUsers` by using the PostgreSQL console (or `sudo gitlab-psql`):
 
   ```sql
   select status, count(*) from background_migration_jobs

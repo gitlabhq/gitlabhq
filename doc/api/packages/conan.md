@@ -49,7 +49,7 @@ for Conan recipes.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/conan/v1`
+/projects/:id/packages/conan/v1
 ```
 
 | Attribute | Type | Required | Description |

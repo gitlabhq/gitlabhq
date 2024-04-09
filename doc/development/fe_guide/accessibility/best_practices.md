@@ -417,10 +417,10 @@ Therefore, you do not need to add `aria-hidden="true"` to `GlIcon`, as this is r
 
 ```html
 <!-- unnecessary — gl-icon hides icons from screen readers by default -->
-<gl-icon name="rocket" aria-hidden="true" />`
+<gl-icon name="rocket" aria-hidden="true" />
 
 <!-- good -->
-<gl-icon name="rocket" />`
+<gl-icon name="rocket" />
 ```
 
 ### Icons that convey information
@@ -433,10 +433,10 @@ Icons that convey information must have an accessible name so that the informati
 
 ```html
 <!-- bad -->
-<gl-icon name="eye-slash" />`
+<gl-icon name="eye-slash" />
 
 <!-- good -->
-<gl-icon name="eye-slash" :aria-label="__('Confidential issue')" />`
+<gl-icon name="eye-slash" :aria-label="__('Confidential issue')" />
 ```
 
 ### Icons that are clickable

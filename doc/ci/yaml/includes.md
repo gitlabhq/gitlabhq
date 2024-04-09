@@ -571,3 +571,21 @@ which configuration file is the source of the loop or excessive included files.
 
 In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) self-managed users can
 change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
+
+### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` and other network failures
+
+When using [`include:remote`](index.md#includeremote), GitLab tries to fetch the remote file
+through HTTP(S). This process can fail because of a variety of connectivity issues.
+
+The `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` error
+happens when GitLab can't establish an HTTPS connection to the remote host. This issue
+can be caused if the remote host has rate limits to prevent overloading the server
+with requests.
+
+For example, the [GitLab Pages](../../user/project/pages/index.md) server for GitLab.com
+is rate limited. Repeated attempts to fetch CI/CD configuration files hosted on GitLab Pages
+can cause the rate limit to be reached and cause the error. You should avoid hosting
+CI/CD configuration files on a GitLab Pages site.
+
+When possible, use [`include:project`](index.md#includeproject) to fetch configuration
+files from other projects within the GitLab instance without making external HTTP(S) requests.

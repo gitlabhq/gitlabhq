@@ -427,8 +427,8 @@ For example:
 CREATE INDEX CONCURRENTLY some_index ON users (email) WHERE id < 100
 ```
 
-This index would only index the `email` value of rows that match `WHERE id <
-100`. We can use partial indexes to change our Twitter index to the following:
+This index would only index the `email` value of rows that match `WHERE id < 100`.
+We can use partial indexes to change our Twitter index to the following:
 
 ```sql
 CREATE INDEX CONCURRENTLY twitter_test ON users (twitter) WHERE twitter != '';

@@ -230,7 +230,7 @@ gem 'asciidoctor-kroki', '~> 0.8.0', require: false # rubocop:todo Gemfile/Missi
 gem 'rouge', '~> 4.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'truncato', '~> 0.7.12' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-glfm-markdown', '~> 0.0.13', feature_category: :team_planning
+gem 'gitlab-glfm-markdown', '~> 0.0.14', feature_category: :team_planning
 
 # Calendar rendering
 gem 'icalendar' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -402,7 +402,7 @@ gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client'
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :development do
-  gem 'lefthook', '~> 1.5.6', require: false, feature_category: :tooling
+  gem 'lefthook', '~> 1.6.8', require: false, feature_category: :tooling
   gem 'rubocop', feature_category: :tooling
   gem 'solargraph', '~> 0.47.2', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
