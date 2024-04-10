@@ -86,9 +86,6 @@ The following metrics are available:
 | `gitlab_transaction_event_push_branch_total`                     | Counter     | 9.4     | Counter for all branch pushes                                                                                         |                                                           |
 | `gitlab_transaction_event_rails_exception_total`                 | Counter     | 9.4     | Counter for number of rails exceptions                                                                                |                                                           |
 | `gitlab_transaction_event_receive_email_total`                   | Counter     | 9.4     | Counter for received emails                                                                                           | `handler`                                                 |
-| `gitlab_transaction_event_remote_mirrors_failed_total`           | Counter     | 10.8    | Counter for failed remote mirrors                                                                                     |                                                           |
-| `gitlab_transaction_event_remote_mirrors_finished_total`         | Counter     | 10.8    | Counter for finished remote mirrors                                                                                   |                                                           |
-| `gitlab_transaction_event_remote_mirrors_running_total`          | Counter     | 10.8    | Counter for running remote mirrors                                                                                    |                                                           |
 | `gitlab_transaction_event_remove_branch_total`                   | Counter     | 9.4     | Counter when a branch is removed for any repository                                                                   |                                                           |
 | `gitlab_transaction_event_remove_repository_total`               | Counter     | 9.4     | Counter when a repository is removed                                                                                  |                                                           |
 | `gitlab_transaction_event_remove_tag_total`                      | Counter     | 9.4     | Counter when a tag is remove for any repository                                                                       |                                                           |
@@ -413,6 +410,9 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_design_management_repositories_verified`            | Gauge   | 16.1 | Number of design repositories verified on secondary | `url` |
 | `geo_design_management_repositories_verification_failed` | Gauge   | 16.1 | Number of design repositories verifications failed on secondary | `url` |
 | `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3 | The number of active runners that can process the CI/CD queue in a project | |
+| `gitlab_transaction_event_remote_mirrors_failed_total`           | Counter     | 10.8    | Counter for failed remote mirrors                                                                                     |                                                           |
+| `gitlab_transaction_event_remote_mirrors_finished_total`         | Counter     | 10.8    | Counter for finished remote mirrors                                                                                   |                                                           |
+| `gitlab_transaction_event_remote_mirrors_running_total`          | Counter     | 10.8    | Counter for running remote mirrors                                                                                    |                                                           |
 
 ## Database load balancing metrics
 

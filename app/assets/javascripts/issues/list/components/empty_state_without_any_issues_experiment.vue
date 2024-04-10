@@ -93,6 +93,9 @@ export default {
         :href="newIssuePath"
         variant="confirm"
         data-testid="empty-state-new-issue-btn"
+        data-track-action="click_new_issue_project_issues_empty_list_page"
+        data-track-label="new_issue_project_issues_empty_list"
+        data-track-experiment="issues_mrs_empty_state"
       >
         {{ __('Create a new issue') }}
       </gl-button>
@@ -102,6 +105,9 @@ export default {
         button-class="gl-w-full"
         variant="default"
         :text="__('Email a new issue')"
+        data-track-action="click_email_issue_project_issues_empty_list_page"
+        data-track-label="email_issue_project_issues_empty_list"
+        data-track-experiment="issues_mrs_empty_state"
       />
     </div>
 
@@ -121,6 +127,9 @@ export default {
                 v-gl-modal="importModalId"
                 class="gl-mt-3 gl-ml-0! gl-mb-0!"
                 data-testid="empty-state-import-csv-btn"
+                data-track-action="click_import_csv_project_issues_empty_list_page"
+                data-track-label="import_csv_project_issues_empty_list"
+                data-track-experiment="issues_mrs_empty_state"
               >
                 {{ __('Import CSV') }}
               </gl-button>
@@ -130,6 +139,9 @@ export default {
                 class="gl-mt-3 gl-mb-0!"
                 :href="projectImportJiraPath"
                 data-testid="empty-state-import-jira-btn"
+                data-track-action="click_import_jira_project_issues_empty_list_page"
+                data-track-label="import_jira_project_issues_empty_list"
+                data-track-experiment="issues_mrs_empty_state"
               >
                 {{ __('Import from Jira') }}
               </gl-button>
@@ -137,7 +149,14 @@ export default {
           </template>
         </gl-card-empty-state-experiment>
 
-        <a class="gl-text-decoration-none!" :href="$options.issuesHelpPagePath">
+        <a
+          class="gl-text-decoration-none!"
+          :href="$options.issuesHelpPagePath"
+          data-testid="empty-state-learn-more-link"
+          data-track-action="click_learn_more_project_issues_empty_list_page"
+          data-track-label="learn_more_project_issues_empty_list"
+          data-track-experiment="issues_mrs_empty_state"
+        >
           <gl-card-empty-state-experiment
             class="gl-h-13 gl-justify-content-center gl-hover-text-blue-600 gl-text-gray-900"
             icon="issue-type-issue"
@@ -157,7 +176,14 @@ export default {
       <div
         class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-center"
       >
-        <a class="gl-text-decoration-none!" :href="jiraIntegrationPath">
+        <a
+          class="gl-text-decoration-none!"
+          :href="jiraIntegrationPath"
+          data-testid="empty-state-jira-int-link"
+          data-track-action="click_jira_int_project_issues_empty_list_page"
+          data-track-label="jira_int_project_issues_empty_list"
+          data-track-experiment="issues_mrs_empty_state"
+        >
           <gl-card-empty-state-experiment
             class="gl-h-13 gl-hover-text-blue-600 gl-text-gray-900"
             icon="api"

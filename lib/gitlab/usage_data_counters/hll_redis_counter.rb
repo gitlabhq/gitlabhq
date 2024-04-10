@@ -10,10 +10,6 @@ module Gitlab
       REDIS_SLOT = 'hll_counters'
       KEY_OVERRIDES_PATH = Rails.root.join('lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml')
       LEGACY_EVENTS_PATH = Rails.root.join('lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml')
-      # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/439982
-      HALF_MIGRATED_EVENTS = %w[
-        g_project_management_issue_cross_referenced
-      ].freeze
 
       EventError = Class.new(StandardError)
       UnknownEvent = Class.new(EventError)
@@ -159,7 +155,7 @@ module Gitlab
                       "When an event gets migrated to Internal Events, its name needs to be removed " \
                       "from hll_redis_legacy_events.yml and added to hll_redis_key_overrides.yml: #{link}"
             Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnfinishedEventMigrationError.new(message), event_name: event_name)
-          elsif !property_name && legacy_events.exclude?(event_name) && HALF_MIGRATED_EVENTS.exclude?(event_name)
+          elsif !property_name && legacy_events.exclude?(event_name)
             message = "Event #{event_name} has been invoked with no property_name.\n" \
                       "When a new non-internal event gets created, its name needs to be added " \
                       "to the hll_redis_legacy_events.yml file."

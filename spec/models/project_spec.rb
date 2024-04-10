@@ -9444,4 +9444,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe '.by_project_namespace' do
+    let_it_be(:project) { create(:project) }
+    let(:project_namespace) { project.project_namespace }
+
+    it 'returns project' do
+      expect(described_class.by_project_namespace(project_namespace)).to match_array([project])
+    end
+
+    context 'when using ID' do
+      it 'returns project' do
+        expect(described_class.by_project_namespace(project_namespace.id)).to match_array([project])
+      end
+    end
+
+    context 'when using non-existent-id' do
+      it 'returns nothing' do
+        expect(described_class.by_project_namespace(non_existing_record_id)).to be_empty
+      end
+    end
+  end
 end

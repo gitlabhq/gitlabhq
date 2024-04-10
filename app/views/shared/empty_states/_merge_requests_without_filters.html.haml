@@ -1,6 +1,10 @@
 - button_path = local_assigns[:button_path]
 - button_text = _('New merge request')
 
+- project_tracking_data = @project ? { track_action: 'click_new_mr_project_mrs_empty_list_page',
+  track_label: 'new_mr_project_mrs_empty_list',
+  track_experiment: 'issues_mrs_empty_state' } : {}
+
 = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
   empty_state_options: { data: { testid: 'issuable-empty-state' } },
   title: _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")) do |c|
@@ -13,4 +17,4 @@
           title: button_text,
           id: 'new_merge_request_link',
           variant: :confirm,
-          data: { testid: 'new-merge-request-button', event_tracking: 'click_new_merge_request_empty_list' }
+          data: { testid: 'new-merge-request-button', **project_tracking_data }

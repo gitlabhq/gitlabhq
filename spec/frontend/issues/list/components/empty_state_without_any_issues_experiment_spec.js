@@ -23,6 +23,8 @@ describe('EmptyStateWithoutAnyIssuesExperiment component', () => {
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findCsvImportButton = () => wrapper.findByTestId('empty-state-import-csv-btn');
   const findImportFromJiraButton = () => wrapper.findByTestId('empty-state-import-jira-btn');
+  const findLearnMoreLink = () => wrapper.findByTestId('empty-state-learn-more-link');
+  const findJiraIntLink = () => wrapper.findByTestId('empty-state-jira-int-link');
 
   const mountComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = mountExtended(EmptyStateWithoutAnyIssuesExperiment, {
@@ -153,6 +155,86 @@ describe('EmptyStateWithoutAnyIssuesExperiment component', () => {
           expect(findCsvImportButton().exists()).toBe(false);
           expect(findImportFromJiraButton().exists()).toBe(false);
         });
+      });
+    });
+  });
+
+  describe('tracking', () => {
+    const experimentTracking = { 'data-track-experiment': 'issues_mrs_empty_state' };
+
+    const newIssueButtonTracking = {
+      'data-track-action': 'click_new_issue_project_issues_empty_list_page',
+      'data-track-label': 'new_issue_project_issues_empty_list',
+    };
+
+    const issuableByEmailTracking = {
+      'data-track-action': 'click_email_issue_project_issues_empty_list_page',
+      'data-track-label': 'email_issue_project_issues_empty_list',
+    };
+
+    const importCsvTracking = {
+      'data-track-action': 'click_import_csv_project_issues_empty_list_page',
+      'data-track-label': 'import_csv_project_issues_empty_list',
+    };
+
+    const importJiraTracking = {
+      'data-track-action': 'click_import_jira_project_issues_empty_list_page',
+      'data-track-label': 'import_jira_project_issues_empty_list',
+    };
+
+    const learnMoreLinkTracking = {
+      'data-track-action': 'click_learn_more_project_issues_empty_list_page',
+      'data-track-label': 'learn_more_project_issues_empty_list',
+    };
+
+    const jiraIntLinkTracking = {
+      'data-track-action': 'click_jira_int_project_issues_empty_list_page',
+      'data-track-label': 'jira_int_project_issues_empty_list',
+    };
+
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('tracks new issue button', () => {
+      expect(findNewIssueButton().attributes()).toMatchObject({
+        ...newIssueButtonTracking,
+        ...experimentTracking,
+      });
+    });
+
+    it('tracks IssuableByEmail', () => {
+      expect(findIssuableByEmail().attributes()).toMatchObject({
+        ...issuableByEmailTracking,
+        ...experimentTracking,
+      });
+    });
+
+    it('tracks import CSV button', () => {
+      expect(findCsvImportButton().attributes()).toMatchObject({
+        ...importCsvTracking,
+        ...experimentTracking,
+      });
+    });
+
+    it('tracks import Jira button', () => {
+      expect(findImportFromJiraButton().attributes()).toMatchObject({
+        ...importJiraTracking,
+        ...experimentTracking,
+      });
+    });
+
+    it('tracks learn more link', () => {
+      expect(findLearnMoreLink().attributes()).toMatchObject({
+        ...learnMoreLinkTracking,
+        ...experimentTracking,
+      });
+    });
+
+    it('tracks Jira integration link', () => {
+      expect(findJiraIntLink().attributes()).toMatchObject({
+        ...jiraIntLinkTracking,
+        ...experimentTracking,
       });
     });
   });

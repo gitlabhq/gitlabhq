@@ -15,18 +15,20 @@ module Gitlab
 
             user_id = author_id(issue_event)
             note_body = cross_reference_note_content(mentioned_in_record.gfm_reference(project))
-            track_activity(mentioned_in_record_class, user_id)
-            create_note(issue_event, note_body, user_id)
+
+            note = create_note(issue_event, note_body, user_id)
+
+            track_activity(mentioned_in_record_class, note.author)
           end
 
           private
 
-          def track_activity(mentioned_in_class, user_id)
+          def track_activity(mentioned_in_class, author)
             return if mentioned_in_class != Issue
 
-            Gitlab::UsageDataCounters::HLLRedisCounter.track_event(
-              Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CROSS_REFERENCED,
-              values: user_id
+            Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_cross_referenced_action(
+              author: author,
+              project: project
             )
           end
 

@@ -5,7 +5,11 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Add, commit, and push a file to your Git repository using the command line."
 ---
 
-# Use Git to add a file to a repository
+# Add files and make changes to a Git repository
+
+You use Git the Git command line to add files, and make changes to existing files, and delete files in a Git repository.
+
+## Add files to a Git repository
 
 To add a new file from the command line:
 
@@ -86,7 +90,7 @@ repository.
 To create a merge request, copy the link sent back from the remote
 repository and paste it into a browser window.
 
-## Add a file to the last commit
+### Add a file to the last commit
 
 ```shell
 git add <filename>
@@ -95,6 +99,108 @@ git commit --amend
 
 Append `--no-edit` to the `commit` command if you do not want to edit the commit
 message.
+
+## Make changes to existing files
+
+When you make changes to files in a repository, Git tracks the changes
+against the most recent version of the checked out branch. You can use
+Git commands to review and commit your changes to the branch, and push
+your work to GitLab.
+
+### View repository status
+
+When you add, change, or delete files or folders, Git knows about the
+changes. To check which files have been changed:
+
+- From your repository, run `git status`.
+
+The branch name, most recent commit, and any new or changed files are displayed.
+New files are displayed in green. Changed files are displayed in red.
+
+### View differences
+
+You can display the difference (or diff) between your local
+changes and the most recent version of a branch. View a diff to
+understand your local changes before you commit them to the branch.
+
+To view the differences between your local unstaged changes and the
+latest version that you cloned or pulled:
+
+- From your repository, run `git diff`.
+
+  To compare your changes against a specific branch, run
+  `git diff <branch>`.
+
+The diff is displayed:
+
+- Lines with additions begin with a plus (`+`) and are displayed in green.
+- Lines with removals or changes begin with a minus (`-`) and are displayed in red.
+
+If the diff is large, by default only a portion of the diff is
+displayed. You can advance the diff with <kbd>Enter</kbd>, and quit
+back to your terminal with <kbd>Q</kbd>.
+
+### Add and commit local changes
+
+When you're ready to write your changes to the branch, you can commit
+them. A commit includes a comment that records information about the
+changes, and usually becomes the new tip of the branch.
+
+Git doesn't automatically include any files you move, change, or
+delete in a commit. This prevents you from accidentally including a
+change or file, like a temporary directory. To include changes in a
+commit, stage them with `git add`.
+
+To stage and commit your changes:
+
+1. From your repository, for each file or directory you want to add, run `git add <file name or path>`.
+
+   To stage all files in the current working directory, run `git add .`.
+
+1. Confirm that the files have been added to staging:
+
+   ```shell
+   git status
+   ```
+
+   The files are displayed in green.
+
+1. To commit the staged files:
+
+   ```shell
+   git commit -m "<comment that describes the changes>"
+   ```
+
+The changes are committed to the branch.
+
+### Commit all changes
+
+You can stage all your changes and commit them with one command:
+
+```shell
+git commit -a -m "<comment that describes the changes>"
+```
+
+Be careful your commit doesn't include files you don't want to record
+to the remote repository. As a rule, always check the status of your
+local repository before you commit changes.
+
+### Send changes to GitLab
+
+To push all local changes to the remote repository:
+
+```shell
+git push <remote> <name-of-branch>
+```
+
+For example, to push your local commits to the `main` branch of the `origin` remote:
+
+```shell
+git push origin main
+```
+
+Sometimes Git does not allow you to push to a repository. Instead,
+you must [force an update](../topics/git/git_rebase.md#force-pushing).
 
 ## Related topics
 

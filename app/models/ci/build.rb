@@ -1162,7 +1162,7 @@ module Ci
     end
 
     def job_jwt_variables
-      if id_tokens?
+      if Feature.enabled?(:remove_shared_jwts) || id_tokens?
         id_tokens_variables
       else
         predefined_jwt_variables
@@ -1183,6 +1183,8 @@ module Ci
 
     def id_tokens_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless id_tokens?
+
         id_tokens.each do |var_name, token_data|
           token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']))
 

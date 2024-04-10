@@ -1,5 +1,7 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 
+@tailwind base;
+
 .gl-border {
     @apply gl-border-gray-100;
     @apply gl-border-solid;

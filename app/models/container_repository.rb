@@ -498,7 +498,7 @@ class ContainerRepository < ApplicationRecord
     raise 'too many pages requested' if page_count >= MAX_TAGS_PAGES
   end
 
-  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil)
+  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil, referrer_type: nil)
     raise ArgumentError, 'not a migrated repository' unless migrated?
 
     page = gitlab_api_client.tags(
@@ -508,7 +508,8 @@ class ContainerRepository < ApplicationRecord
       last: last,
       sort: sort,
       name: name,
-      referrers: referrers
+      referrers: referrers,
+      referrer_type: referrer_type
     )
 
     {

@@ -241,7 +241,8 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
                       last: last_param,
                       name: nil,
                       before: nil,
-                      referrers: nil
+                      referrers: nil,
+                      referrer_type: nil
                     )
                   end
 

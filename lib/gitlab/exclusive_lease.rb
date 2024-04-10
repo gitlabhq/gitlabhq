@@ -106,7 +106,7 @@ module Gitlab
       set_skip_transaction_check_flag(previous_skip_transaction_check)
     end
 
-    def initialize(key, uuid: nil, timeout:)
+    def initialize(key, timeout:, uuid: nil)
       @redis_shared_state_key = self.class.redis_shared_state_key(key)
       @timeout = timeout
       @uuid = uuid || SecureRandom.uuid

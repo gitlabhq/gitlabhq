@@ -1080,7 +1080,12 @@ export default {
 
     <gitlab-experiment v-if="showIssuableByEmail" name="issues_mrs_empty_state">
       <template #control>
-        <issuable-by-email class="gl-text-center gl-pt-5 gl-pb-7" />
+        <issuable-by-email
+          class="gl-text-center gl-pt-5 gl-pb-7"
+          data-track-action="click_email_issue_project_issues_empty_list_page"
+          data-track-label="email_issue_project_issues_empty_list"
+          data-track-experiment="issues_mrs_empty_state"
+        />
       </template>
     </gitlab-experiment>
   </div>

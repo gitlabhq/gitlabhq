@@ -1,3 +1,4 @@
 /* stylelint-disable scss/at-rule-no-unknown */
 
+@tailwind base;
 @tailwind utilities;

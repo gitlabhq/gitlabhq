@@ -96,7 +96,7 @@ module Gitlab
           [min_date, max_date]
         end
 
-        def partition_for(lower_bound: nil, upper_bound:)
+        def partition_for(upper_bound:, lower_bound: nil)
           TimePartition.new(table_name, lower_bound, upper_bound)
         end
 

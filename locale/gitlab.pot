@@ -5101,10 +5101,16 @@ msgstr ""
 msgid "Allow possible spam"
 msgstr ""
 
+msgid "Allow pre-receive secret detection"
+msgstr ""
+
 msgid "Allow project maintainers to configure repository mirroring"
 msgstr ""
 
 msgid "Allow projects and subgroups to override the group setting"
+msgstr ""
+
+msgid "Allow projects to enable pre-receive detection. This does not enable pre-receive secret detection. When you enable this feature, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
@@ -7888,6 +7894,9 @@ msgstr ""
 msgid "BetaBadge|A Beta feature:"
 msgstr ""
 
+msgid "BetaBadge|A Beta feature: "
+msgstr ""
+
 msgid "BetaBadge|Beta"
 msgstr ""
 
@@ -7904,6 +7913,9 @@ msgid "BetaBadge|Should not cause data loss."
 msgstr ""
 
 msgid "BetaBadge|What's Beta?"
+msgstr ""
+
+msgid "BetaBadge|What's a Beta?"
 msgstr ""
 
 msgid "BeyondIdentityService|API Token. User must have access to `git-commit-signing` endpoint."
@@ -13591,9 +13603,6 @@ msgstr ""
 msgid "Configure repository storage."
 msgstr ""
 
-msgid "Configure secret detection behavior for all projects in your GitLab instance"
-msgstr ""
-
 msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
@@ -15251,6 +15260,9 @@ msgid "CreateValueStreamForm|New Value Stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|New stage"
+msgstr ""
+
+msgid "CreateValueStreamForm|New value stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|Plan stage start"
@@ -19513,9 +19525,6 @@ msgid "Enable or disable keyboard shortcuts in your %{linkStart}user preferences
 msgstr ""
 
 msgid "Enable or disable version check and Service Ping."
-msgstr ""
-
-msgid "Enable pre-receive secret detection"
 msgstr ""
 
 msgid "Enable rate limiting for requests to the specified paths"
@@ -30635,6 +30644,9 @@ msgstr ""
 msgid "Manage rules"
 msgstr ""
 
+msgid "Manage secret detection behavior for all projects in your GitLab instance"
+msgstr ""
+
 msgid "Manage two-factor authentication"
 msgstr ""
 
@@ -32303,9 +32315,6 @@ msgid "Min Value"
 msgstr ""
 
 msgid "Minimal Access"
-msgstr ""
-
-msgid "Minimize the risk of secrets from being committed to any repository in this GitLab instance."
 msgstr ""
 
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
@@ -38431,6 +38440,9 @@ msgid "Prevent outdated deployment jobs"
 msgstr ""
 
 msgid "Prevent project forking outside current group"
+msgstr ""
+
+msgid "Prevent secrets such as keys and API tokens from being committed to any repository in this GitLab instance."
 msgstr ""
 
 msgid "Prevent users from changing their profile name"
@@ -46107,6 +46119,9 @@ msgstr ""
 msgid "SecurityOrchestration|Pipeline execution"
 msgstr ""
 
+msgid "SecurityOrchestration|Pipeline execution policy"
+msgstr ""
+
 msgid "SecurityOrchestration|Please remove duplicated values"
 msgstr ""
 
@@ -46167,7 +46182,13 @@ msgstr ""
 msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the following options:"
 msgstr ""
 
+msgid "SecurityOrchestration|Run a CI Yaml file from project: demo-project with ref: 123 File path: group-name/project-name/file-name"
+msgstr ""
+
 msgid "SecurityOrchestration|Run a DAST scan with Scan Profile A and Site Profile A when a pipeline run against the main branch."
+msgstr ""
+
+msgid "SecurityOrchestration|Run a customized CI Yaml file."
 msgstr ""
 
 msgid "SecurityOrchestration|Save changes"

@@ -144,7 +144,7 @@ GitLab Dedicated limits the number of reverse PrivateLink connections to 10.
 
 ### IP allowlist
 
-GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned. The IP allowlist is applied to incoming Web requests only and does not apply to incoming SSH requests.
+GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned.
 
 IP addresses that have been added to your IP allowlist can be viewed on the Configuration page in Switchboard. You can add or remove IP addresses from your allowlist with Switchboard or a support request.
 

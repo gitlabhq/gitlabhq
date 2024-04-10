@@ -172,7 +172,7 @@ module ContainerRegistry
     end
 
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#list-repository-tags
-    def tags(path, page_size: 100, last: nil, before: nil, name: nil, sort: nil, referrers: nil)
+    def tags(path, page_size: 100, last: nil, before: nil, name: nil, sort: nil, referrers: nil, referrer_type: nil)
       limited_page_size = [page_size, MAX_TAGS_PAGE_SIZE].min
       with_token_faraday do |faraday_client|
         url = "#{GITLAB_REPOSITORIES_PATH}/#{path}/tags/list/"
@@ -183,6 +183,7 @@ module ContainerRegistry
           req.params['name'] = name if name.present?
           req.params['sort'] = sort if sort
           req.params['referrers'] = 'true' if referrers
+          req.params['referrer_type'] = referrer_type if referrer_type
         end
 
         unless response.success?

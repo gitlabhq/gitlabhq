@@ -33,7 +33,7 @@ module Gitlab
 
           delegate :file_path, :start_line, :end_line, to: :location
 
-          def initialize(identifiers:, flags: [], links: [], remediations: [], location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists
+          def initialize(identifiers:, location:, evidence:, metadata_version:, name:, original_data:, report_type:, scanner:, scan:, uuid:, flags: [], links: [], remediations: [], confidence: nil, severity: nil, details: {}, signatures: [], project_id: nil, vulnerability_finding_signatures_enabled: false, found_by_pipeline: nil, cvss: []) # rubocop:disable Metrics/ParameterLists -- TODO: Reduce number of parameters in this function
             @confidence = confidence
             @identifiers = identifiers
             @flags = flags

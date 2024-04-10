@@ -62,6 +62,12 @@ module.exports = {
     Maybe compatible?
      */
     outlineWidth: false,
+    /*
+    Disable preflight styles so that `@tailwind base` compiles to CSS vars declarations without
+    any of the resets which we don't need.
+    More on this at https://tailwindcss.com/docs/preflight.
+     */
+    preflight: false,
   },
   theme: {
     // These extends probably should be moved to GitLab UI:

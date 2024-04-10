@@ -816,6 +816,7 @@ class Project < ApplicationRecord
   end
 
   scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :by_project_namespace, -> (project_namespace) { where(project_namespace_id: project_namespace) }
 
   scope :not_a_fork, -> {
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })

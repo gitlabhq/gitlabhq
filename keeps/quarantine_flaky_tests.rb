@@ -16,7 +16,7 @@ module Keeps
   # ```
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
     MINIMUM_FLAKINESS_OCCURENCES = 1000
-    FLAKY_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&not%5Blabels%5D%5B%5D=QA&not%5Blabel_name%5D%5B%5D=quarantine&per_page=10"
+    FLAKY_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&not%5Blabels%5D%5B%5D=QA&not%5Blabel_name%5D%5B%5D=quarantine&per_page=100"
     FLAKY_TEST_ISSUE_NOTES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%%2Fgitlab/issues/%<issue_iid>s/notes"
     EXAMPLE_LINE_REGEX = /([\w'",])? do$/
 
@@ -90,7 +90,7 @@ module Keeps
         - accept the merge request and schedule to improve the test
         - close the merge request in favor of another merge request to delete the test
 
-        Related to #{flaky_issue['web_url']}.
+        Related to ##{flaky_issue['iid']}.
         MARKDOWN
 
         group_label = flaky_issue['labels'].grep(/group::/).first

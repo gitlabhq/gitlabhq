@@ -11,7 +11,7 @@ describe('CsvImportExportButtons', () => {
   const exportCsvPath = '/gitlab-org/gitlab-test/-/issues/export_csv';
   const issuableCount = 10;
 
-  function createComponent(injectedProperties = {}) {
+  function createComponent(injectedProperties = {}, props = {}) {
     glModalDirective = jest.fn();
     return mountExtended(CsvImportExportButtons, {
       directives: {
@@ -28,6 +28,7 @@ describe('CsvImportExportButtons', () => {
       propsData: {
         exportCsvPath,
         issuableCount,
+        ...props,
       },
     });
   }
@@ -138,6 +139,63 @@ describe('CsvImportExportButtons', () => {
 
       it('does not render the import modal', () => {
         expect(findImportCsvModal().exists()).toBe(false);
+      });
+    });
+
+    describe('tracking', () => {
+      const experimentTracking = { 'data-track-experiment': 'issues_mrs_empty_state' };
+
+      const importCsvTracking = {
+        'data-track-action': 'click_import_csv_project_issues_empty_list_page',
+        'data-track-label': 'import_csv_project_issues_empty_list',
+      };
+
+      const importJiraTracking = {
+        'data-track-action': 'click_import_jira_project_issues_empty_list_page',
+        'data-track-label': 'import_jira_project_issues_empty_list',
+      };
+
+      describe('when the trackImportClick=true', () => {
+        beforeEach(() => {
+          wrapper = createComponent(
+            { showImportButton: true, canEdit: true },
+            { trackImportClick: true },
+          );
+        });
+
+        it('tracks import CSV button', () => {
+          expect(findImportCsvButton().attributes()).toMatchObject({
+            ...importCsvTracking,
+            ...experimentTracking,
+          });
+        });
+
+        it('tracks import Jira link', () => {
+          expect(findImportFromJiraLink().attributes()).toMatchObject({
+            ...importJiraTracking,
+            ...experimentTracking,
+          });
+        });
+      });
+
+      describe('when the trackImportClick=false', () => {
+        beforeEach(() => {
+          wrapper = createComponent({ showImportButton: true, canEdit: true });
+        });
+
+        it('does not track import CSV button', () => {
+          expect(findImportCsvButton().attributes()).not.toMatchObject({
+            ...importCsvTracking,
+            ...experimentTracking,
+          });
+        });
+
+        it('does not track import Jira link', () => {
+          expect(findImportFromJiraLink().attributes()).not.toMatchObject({
+            ...importJiraTracking,
+            ...experimentTracking,
+          });
+        });
       });
     });
   });

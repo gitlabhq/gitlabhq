@@ -1,0 +1,9 @@
+---
+name: remove_shared_jwts
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423106
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148106
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452294
+milestone: '16.11'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

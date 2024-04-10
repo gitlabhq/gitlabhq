@@ -10,7 +10,7 @@ module Gitlab
 
       attr_reader :logger, :cut_off_date, :revocation_time, :group
 
-      def initialize(cut_off_date: DEFAULT_TIME_PERIOD.ago.beginning_of_day, logger: nil, group_full_path:)
+      def initialize(group_full_path:, cut_off_date: DEFAULT_TIME_PERIOD.ago.beginning_of_day, logger: nil)
         @cut_off_date = cut_off_date
 
         # rubocop: disable CodeReuse/ActiveRecord

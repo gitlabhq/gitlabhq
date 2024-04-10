@@ -83,16 +83,16 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
       context 'with parameters' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:before, :after, :sort, :name, :first, :last, :sort_value, :referrers) do
-          nil  | nil  | 'NAME_DESC' | ''  | 10  | nil | '-name' | nil
-          'bb' | nil  | 'NAME_ASC'  | 'a' | nil | 5   | 'name'  | false
-          nil  | 'aa' | 'NAME_DESC' | 'a' | 10  | nil | '-name' | true
+        where(:before, :after, :sort, :name, :first, :last, :sort_value, :referrers, :referrer_type) do
+          nil  | nil  | 'NAME_DESC' | ''  | 10  | nil | '-name' | nil   | nil
+          'bb' | nil  | 'NAME_ASC'  | 'a' | nil | 5   | 'name'  | false | nil
+          nil  | 'aa' | 'NAME_DESC' | 'a' | 10  | nil | '-name' | true  | 'application/example'
         end
 
         with_them do
           let(:args) do
-            { before: before, after: after, sort: sort, name: name,
-              first: first, last: last, referrers: referrers }.compact
+            { before: before, after: after, sort: sort, name: name, first: first,
+              last: last, referrers: referrers, referrer_type: referrer_type }.compact
           end
 
           it 'calls ContainerRepository#tags_page with correct parameters' do
@@ -102,7 +102,8 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
               sort: sort_value,
               name: name,
               page_size: [first, last].map(&:to_i).max,
-              referrers: referrers
+              referrers: referrers,
+              referrer_type: referrer_type
             )
 
             resolver(args)

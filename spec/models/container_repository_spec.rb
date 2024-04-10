@@ -865,9 +865,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     let_it_be(:last) { 'last' }
     let_it_be(:sort) { '-name' }
     let_it_be(:name) { 'repo' }
+    let_it_be(:referrers) { true }
+    let_it_be(:referrer_type) { 'application/example' }
 
     subject do
-      repository.tags_page(before: before, last: last, sort: sort, name: name, page_size: page_size)
+      repository.tags_page(before: before, last: last, sort: sort, name: name, page_size: page_size,
+        referrers: referrers, referrer_type: referrer_type)
     end
 
     before do
@@ -877,7 +880,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it 'calls GitlabApiClient#tags and passes parameters' do
       allow(repository.gitlab_api_client).to receive(:tags).and_return({})
       expect(repository.gitlab_api_client).to receive(:tags).with(
-        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name, referrers: nil)
+        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name,
+        referrers: referrers, referrer_type: referrer_type)
 
       subject
     end

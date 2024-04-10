@@ -10,7 +10,7 @@ module Gitlab
         # The `ca_certs` parameter, if provided, is an array of CA certificates
         # that will be attached in the signature together with the main `cert`.
         # This will be typically intermediate CAs
-        def self.sign(cert:, key:, ca_certs: nil, data:)
+        def self.sign(cert:, key:, data:, ca_certs: nil)
           signed_data = OpenSSL::PKCS7.sign(cert, key, data, Array.wrap(ca_certs), OpenSSL::PKCS7::DETACHED)
           OpenSSL::PKCS7.write_smime(signed_data)
         end
@@ -21,7 +21,7 @@ module Gitlab
         # in the array by creating a trusted store, stopping validation at the first match
         # This is relevant when using intermediate CAs, `ca_certs` should only
         # include the trusted, root CA
-        def self.verify_signature(ca_certs: nil, signed_data:)
+        def self.verify_signature(signed_data:, ca_certs: nil)
           store = OpenSSL::X509::Store.new
           store.set_default_paths
           Array.wrap(ca_certs).compact.each { |ca_cert| store.add_cert(ca_cert) }

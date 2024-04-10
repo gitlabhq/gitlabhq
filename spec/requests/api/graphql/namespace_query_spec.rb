@@ -11,7 +11,7 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
   let_it_be(:group_namespace) { create(:group, :private) }
   let_it_be(:public_group_namespace) { create(:group, :public) }
   let_it_be(:user_namespace) { create(:user_namespace, owner: user) }
-  let_it_be(:project_namespace) { create(:project_namespace, parent: group_namespace) }
+  let_it_be(:project) { create(:project, group: group_namespace) }
 
   describe '.namespace' do
     subject { post_graphql(query, current_user: current_user) }
@@ -106,27 +106,31 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
       end
     end
 
-    it_behaves_like 'retrieving a namespace' do
-      let(:target_namespace) { group_namespace }
+    context 'when used with a private namespace' do
+      context 'retrieving a group' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { group_namespace }
 
-      before do
-        group_namespace.add_developer(user)
-      end
-    end
-
-    it_behaves_like 'retrieving a namespace' do
-      let(:target_namespace) { user_namespace }
-    end
-
-    context 'does not retrieve project namespace' do
-      let(:target_namespace) { project_namespace }
-
-      before do
-        subject
+          before do
+            group_namespace.add_developer(user)
+          end
+        end
       end
 
-      it 'does not retrieve the record' do
-        expect(query_result).to be_nil
+      context 'retrieving a user namespace' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { user_namespace }
+        end
+      end
+
+      context 'retrieving a project' do
+        it_behaves_like 'retrieving a namespace' do
+          let(:target_namespace) { project }
+
+          before do
+            group_namespace.add_developer(user)
+          end
+        end
       end
     end
   end

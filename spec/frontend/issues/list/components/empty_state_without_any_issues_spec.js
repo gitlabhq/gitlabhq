@@ -27,8 +27,10 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     showNewIssueLink: false,
     signInPath: 'sign/in/path',
     groupId: '',
+    isProject: false,
   };
 
+  const findSignedInEmptyStateBlock = () => wrapper.findByTestId('signed-in-empty-state-block');
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findCsvImportExportDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -173,6 +175,89 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               mountComponent({ props: { showNewIssueDropdown: false } });
 
               expect(findNewResourceDropdown().exists()).toBe(false);
+            });
+          });
+        });
+      });
+
+      describe('tracking', () => {
+        const experimentTracking = { 'data-track-experiment': 'issues_mrs_empty_state' };
+
+        const emptyStateBlockTracking = {
+          'data-track-action': 'render_project_issues_empty_list_page',
+          'data-track-label': 'project_issues_empty_list',
+        };
+
+        const issueHelpLinkTracking = {
+          'data-track-action': 'click_learn_more_project_issues_empty_list_page',
+          'data-track-label': 'learn_more_project_issues_empty_list',
+        };
+
+        const jiraDocsLinkTracking = {
+          'data-track-action': 'click_jira_int_project_issues_empty_list_page',
+          'data-track-label': 'jira_int_project_issues_empty_list',
+        };
+
+        it('tracks new issue link', () => {
+          mountComponent({ provide: { showNewIssueLink: true } });
+
+          expect(findNewIssueLink().attributes()).toMatchObject({
+            'data-track-action': 'click_new_issue_project_issues_empty_list_page',
+            'data-track-label': 'new_issue_project_issues_empty_list',
+            ...experimentTracking,
+          });
+        });
+
+        describe('when the isProject=true', () => {
+          beforeEach(() => {
+            mountComponent({ provide: { isProject: true } });
+          });
+
+          it('tracks empty state block', () => {
+            expect(findSignedInEmptyStateBlock().attributes()).toMatchObject({
+              ...emptyStateBlockTracking,
+              ...experimentTracking,
+            });
+          });
+
+          it('tracks issue help link', () => {
+            expect(findIssuesHelpPageLink().attributes()).toMatchObject({
+              ...issueHelpLinkTracking,
+              ...experimentTracking,
+            });
+          });
+
+          it('tracks Jira docs link', () => {
+            expect(findJiraDocsLink().attributes()).toMatchObject({
+              ...jiraDocsLinkTracking,
+              ...experimentTracking,
+            });
+          });
+        });
+
+        describe('when the isProject=false', () => {
+          beforeEach(() => {
+            mountComponent();
+          });
+
+          it('does not track empty state block', () => {
+            expect(findSignedInEmptyStateBlock().attributes()).not.toMatchObject({
+              ...emptyStateBlockTracking,
+              ...experimentTracking,
+            });
+          });
+
+          it('does not track issue help link', () => {
+            expect(findIssuesHelpPageLink().attributes()).not.toMatchObject({
+              ...issueHelpLinkTracking,
+              ...experimentTracking,
+            });
+          });
+
+          it('does not track Jira docs link', () => {
+            expect(findJiraDocsLink().attributes()).not.toMatchObject({
+              ...jiraDocsLinkTracking,
+              ...experimentTracking,
             });
           });
         });

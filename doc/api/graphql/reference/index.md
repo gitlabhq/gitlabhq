@@ -17600,6 +17600,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
+| <a id="containerrepositorydetailstagsreferrertype"></a>`referrerType` | [`String`](#string) | Comma-separated list of artifact types used to filter referrers. Applies only when `referrers` is set to `true`. |
 | <a id="containerrepositorydetailstagsreferrers"></a>`referrers` | [`Boolean`](#boolean) | Include tag referrers. |
 | <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
@@ -24508,6 +24509,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespacescanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
+##### `Namespace.workItem`
+
+Find a work item by IID directly associated with the namespace(project or group).  Returns `null` for group level work items if the `namespace_level_work_items` feature flag is disabled.
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Returns [`WorkItem`](#workitem).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
 
 ### `NamespaceBan`
 

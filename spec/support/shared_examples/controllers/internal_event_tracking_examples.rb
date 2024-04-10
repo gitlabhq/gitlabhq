@@ -64,7 +64,7 @@ RSpec.shared_examples 'internal event tracking' do
           ],
           **additional_properties
         )
-      )
+      ).at_least(:once)
 
     Gitlab::InternalEvents::EventDefinitions.unique_properties(event).each do |property|
       expect(fake_counter).to have_received(:track_event)
@@ -76,5 +76,22 @@ RSpec.shared_examples 'internal event tracking' do
           )
         )
     end
+  end
+end
+
+# Requires a context containing:
+# - subject
+# Optionally, the context can contain:
+# - event
+
+RSpec.shared_examples 'internal event not tracked' do
+  it 'does not record an internal event' do
+    if defined?(event)
+      expect(Gitlab::InternalEvents).not_to receive(:track_event).with(event, any_args)
+    else
+      expect(Gitlab::InternalEvents).not_to receive(:track_event)
+    end
+
+    subject
   end
 end

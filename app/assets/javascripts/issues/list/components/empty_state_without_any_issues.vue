@@ -33,6 +33,7 @@ export default {
     'showNewIssueLink',
     'signInPath',
     'groupId',
+    'isProject',
   ],
   props: {
     currentTabCount: {
@@ -65,7 +66,13 @@ export default {
 </script>
 
 <template>
-  <div v-if="isSignedIn">
+  <div
+    v-if="isSignedIn"
+    data-testid="signed-in-empty-state-block"
+    :data-track-action="isProject && 'render_project_issues_empty_list_page'"
+    :data-track-label="isProject && 'project_issues_empty_list'"
+    :data-track-experiment="isProject && 'issues_mrs_empty_state'"
+  >
     <gitlab-experiment name="issues_mrs_empty_state">
       <template #candidate>
         <empty-state-without-any-issues-experiment
@@ -83,7 +90,12 @@ export default {
             data-testid="issuable-empty-state"
           >
             <template #description>
-              <gl-link :href="$options.issuesHelpPagePath">
+              <gl-link
+                :href="$options.issuesHelpPagePath"
+                :data-track-action="isProject && 'click_learn_more_project_issues_empty_list_page'"
+                :data-track-label="isProject && 'learn_more_project_issues_empty_list'"
+                :data-track-experiment="isProject && 'issues_mrs_empty_state'"
+              >
                 {{ $options.i18n.noIssuesDescription }}
               </gl-link>
               <p v-if="canCreateProjects">
@@ -108,6 +120,9 @@ export default {
                 :href="newIssuePath"
                 variant="confirm"
                 class="gl-mx-2 gl-mb-3"
+                data-track-action="click_new_issue_project_issues_empty_list_page"
+                data-track-label="new_issue_project_issues_empty_list"
+                data-track-experiment="issues_mrs_empty_state"
               >
                 {{ $options.i18n.newIssueLabel }}
               </gl-button>
@@ -121,6 +136,7 @@ export default {
                 <csv-import-export-buttons
                   :export-csv-path="exportCsvPathWithQuery"
                   :issuable-count="currentTabCount"
+                  track-import-click
                 />
               </gl-disclosure-dropdown>
 
@@ -141,7 +157,14 @@ export default {
           <p class="gl-text-center gl-mb-0">
             <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
               <template #jiraDocsLink="{ content }">
-                <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
+                <gl-link
+                  :href="jiraIntegrationPath"
+                  :data-track-action="isProject && 'click_jira_int_project_issues_empty_list_page'"
+                  :data-track-label="isProject && 'jira_int_project_issues_empty_list'"
+                  :data-track-experiment="isProject && 'issues_mrs_empty_state'"
+                >
+                  {{ content }}
+                </gl-link>
               </template>
             </gl-sprintf>
           </p>

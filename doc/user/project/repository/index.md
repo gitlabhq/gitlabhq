@@ -83,7 +83,7 @@ to a branch in the repository. When you use the command line, you can commit mul
 
 ## Clone a repository
 
-You can [clone a repository by using the command line](../../../gitlab-basics/start-using-git.md#clone-a-repository).
+You can [clone a repository by using the command line](../../../topics/git/get_started.md#cloning-git-repositories).
 
 Alternatively, you can clone directly into a code editor.
 

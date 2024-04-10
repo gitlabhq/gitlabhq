@@ -136,7 +136,7 @@ You can create a merge request by running Git commands on your local machine.
    git commit -m "My commit message"
    ```
 
-1. [Push your branch and its commits to GitLab](../../../gitlab-basics/start-using-git.md#send-changes-to-gitlab):
+1. Push your branch and its commits to GitLab:
 
    ```shell
    git push origin my-new-branch

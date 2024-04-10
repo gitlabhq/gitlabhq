@@ -3,7 +3,7 @@ module Gitlab
   module MergeRequests
     module Mergeability
       class ResultsStore
-        def initialize(interface: RedisInterface.new, merge_request:)
+        def initialize(merge_request:, interface: RedisInterface.new)
           @interface = interface
           @merge_request = merge_request
         end
