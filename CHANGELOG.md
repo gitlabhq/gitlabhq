@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.6 (2024-04-09)
+
+### Security (3 changes)
+
+- [Update Gitlab::Regex::Packages#slack_link_regex](gitlab-org/security/gitlab@1f88950d5d570b14915818539d88d54999e2606c) ([merge request](gitlab-org/security/gitlab!3902))
+- [Fix XSS in autocomplete in rich text editor](gitlab-org/security/gitlab@60f3d5f99ae8c8df2f5a5543b61ce09f8bddc06e) ([merge request](gitlab-org/security/gitlab!3948))
+- [Correctly parse attachments for junit result](gitlab-org/security/gitlab@2059390df321318c2f82b83e488e76ff23d6609c) ([merge request](gitlab-org/security/gitlab!3910))
+
 ## 16.8.5 (2024-03-27)
 
 ### Security (2 changes)
