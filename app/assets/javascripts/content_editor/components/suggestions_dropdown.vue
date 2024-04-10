@@ -288,15 +288,14 @@ export default {
               @click="selectItem(index)"
             >
               <div class="gl-new-dropdown-item-text-wrapper">
-                <span v-if="isUser" class="gl-flex">
+                <span v-if="isUser" class="gl-display-flex gl-align-items-center gl-gap-3">
                   <gl-avatar
                     :src="item.avatar_url"
                     :entity-name="item.username"
                     :size="24"
                     :shape="item.type === 'Group' ? 'rect' : 'circle'"
-                    class="gl-vertical-align-middle gl-mx-2"
                   />
-                  <span class="gl-vertical-align-middle">
+                  <span>
                     <span v-safe-html:safeHtmlConfig="highlight(item.username)"></span>
                     <small
                       v-safe-html:safeHtmlConfig="highlight(avatarSubLabel(item))"

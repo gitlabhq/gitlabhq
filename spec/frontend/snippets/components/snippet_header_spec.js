@@ -14,9 +14,15 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import {
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+} from '~/visibility_level/constants';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import SnippetHeader, { i18n } from '~/snippets/components/snippet_header.vue';
+import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
 import DeleteSnippetMutation from '~/snippets/mutations/delete_snippet.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
@@ -79,6 +85,7 @@ describe('Snippet header component', () => {
         },
       },
       stubs: {
+        SnippetCodeDropdown,
         GlButton,
         GlDisclosureDropdown,
         GlDisclosureDropdownGroup,
@@ -105,7 +112,11 @@ describe('Snippet header component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
   const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
+  const findCodeDropdown = () => wrapper.findComponent(SnippetCodeDropdown);
 
+  const webUrl = 'http://foo.bar';
+  const dummyHTTPUrl = webUrl;
+  const dummySSHUrl = 'ssh://foo.bar';
   const title = 'The property of Thor';
 
   beforeEach(() => {
@@ -403,5 +414,55 @@ describe('Snippet header component', () => {
 
       expect(findTooltip()).toBeDefined();
     });
+  });
+
+  describe('Code button rendering', () => {
+    it.each`
+      httpUrlToRepo   | sshUrlToRepo   | shouldRender    | isRendered
+      ${null}         | ${null}        | ${'Should not'} | ${false}
+      ${null}         | ${dummySSHUrl} | ${'Should'}     | ${true}
+      ${dummyHTTPUrl} | ${null}        | ${'Should'}     | ${true}
+      ${dummyHTTPUrl} | ${dummySSHUrl} | ${'Should'}     | ${true}
+    `(
+      '$shouldRender render "Code" button when `httpUrlToRepo` is $httpUrlToRepo and `sshUrlToRepo` is $sshUrlToRepo',
+      ({ httpUrlToRepo, sshUrlToRepo, isRendered }) => {
+        createComponent({
+          snippetProps: {
+            sshUrlToRepo,
+            httpUrlToRepo,
+            webUrl,
+          },
+        });
+        expect(findCodeDropdown().exists()).toBe(isRendered);
+      },
+    );
+
+    it.each`
+      snippetVisibility                   | projectVisibility                  | condition | embeddable
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${undefined}                       | ${''}     | ${true}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${''}     | ${true}
+      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${undefined}                       | ${'not'}  | ${false}
+      ${'foo'}                            | ${undefined}                       | ${'not'}  | ${false}
+      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING} | ${'not'}  | ${false}
+    `(
+      'is $condition embeddable if snippetVisibility is $snippetVisibility and projectVisibility is $projectVisibility',
+      ({ snippetVisibility, projectVisibility, embeddable }) => {
+        createComponent({
+          snippetProps: {
+            sshUrlToRepo: dummySSHUrl,
+            httpUrlToRepo: dummyHTTPUrl,
+            visibilityLevel: snippetVisibility,
+            webUrl,
+            project: {
+              visibility: projectVisibility,
+            },
+          },
+        });
+        expect(findCodeDropdown().props('embeddable')).toBe(embeddable);
+      },
+    );
   });
 });

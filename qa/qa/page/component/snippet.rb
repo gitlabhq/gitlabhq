@@ -22,6 +22,7 @@ module QA
             element 'snippet-container'
             element 'snippet-action-button'
             element 'delete-snippet-button'
+            element 'code-button'
           end
 
           base.view 'app/assets/javascripts/blob/components/blob_header_filepath.vue' do
@@ -30,10 +31,6 @@ module QA
 
           base.view 'app/assets/javascripts/blob/components/blob_content.vue' do
             element 'blob-viewer-file-content'
-          end
-
-          base.view 'app/assets/javascripts/snippets/components/show.vue' do
-            element 'code-button'
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/code_dropdown/snippet_code_dropdown.vue' do

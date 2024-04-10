@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ClickHouse::MigrationSupport::MigrationContext,
   click_house: :without_migrations, feature_category: :database do
-  include ClickHouseTestHelpers
+  include ClickHouseSchemaHelpers
 
   # We don't need to delete data since we don't modify Postgres data
   self.use_transactional_tests = false

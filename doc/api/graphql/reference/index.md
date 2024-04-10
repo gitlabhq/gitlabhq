@@ -8834,6 +8834,8 @@ Input type: `VulnerabilitiesDismissInput`
 
 ### `Mutation.vulnerabilitiesRemoveAllFromProject`
 
+Remove all Vulnerabilities and related information from a given project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412602) in GitLab 16.7.
+
 Input type: `VulnerabilitiesRemoveAllFromProjectInput`
 
 #### Arguments
@@ -15223,6 +15225,14 @@ Extra metadata for AI message.
 | <a id="aimessageextrashasfeedback"></a>`hasFeedback` | [`Boolean`](#boolean) | Whether the user has provided feedback for the mesage. |
 | <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
 
+### `AiMetrics`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimetricscodesuggestionsusagerate"></a>`codeSuggestionsUsageRate` | [`Float!`](#float) | Percentage of contributors who used GitLab Duo Code Suggestions features. |
+
 ### `AlertManagementAlert`
 
 Describes an alert from the project's Alert Management.
@@ -20455,6 +20465,23 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
+
+##### `Group.aiMetrics`
+
+AI-related metrics.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`AiMetrics`](#aimetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="groupaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Group.approvalPolicies`
 
@@ -25751,6 +25778,23 @@ Returns [`AiAgent`](#aiagent).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectaiagentid"></a>`id` | [`AiAgentID!`](#aiagentid) | ID of the Agent. |
+
+##### `Project.aiMetrics`
+
+AI-related metrics.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`AiMetrics`](#aimetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="projectaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Project.alertManagementAlert`
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ClickHouseTestHelpers
+module ClickHouseSchemaHelpers
   def migrate(migration_context, target_version, step = nil)
     quietly { migration_context.up(target_version, step) }
   end

@@ -81,16 +81,13 @@ Administrators of self-managed instances can also assign users by using a [Rake 
 
 ## Purchase additional GitLab Duo Pro seats
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+You can purchase additional GitLab Duo Pro seats for your group namespace or self-managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo Pro seats in your subscription.
 
 Prerequisites:
 
 - You must purchase the GitLab Duo Pro add-on.
 
-You can purchase additional GitLab Duo Pro seats for your group namespace. After you complete the purchase,
-the seats are added to the total number of GitLab Duo Pro seats in your subscription.
+### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
@@ -102,6 +99,19 @@ the seats are added to the total number of GitLab Duo Pro seats in your subscrip
 1. Select the **Privacy Policy** and **Terms of Service** checkbox.
 1. Select **Purchase seats**.
 1. Select the **GitLab SaaS** tab and refresh the page.
+
+### For self-managed and GitLab Dedicated
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
+1. On the **GitLab Duo Pro** section of your subscription card click **Add seats** button.
+1. Enter the number of seats. The amount cannot be higher than the number of seats in the subscription.
+1. Review the **Purchase summary** section.
+1. From the **Payment method** dropdown list, select your payment method.
+1. Select **Purchase seats**.
 
 ## Start GitLab Duo Pro trial
 

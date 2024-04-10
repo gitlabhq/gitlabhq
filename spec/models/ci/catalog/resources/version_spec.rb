@@ -12,8 +12,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
   let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today, sha: 'patch_sha') }
   let!(:v1_1_0) do
-    create(:ci_catalog_resource_version, version: '1.1.0', catalog_resource: resource, release:
-                         minor_release)
+    create(:ci_catalog_resource_version, version: '1.1.0', catalog_resource: resource, release: minor_release)
   end
 
   let!(:v1_1_3) { create(:ci_catalog_resource_version, version: '1.1.3', catalog_resource: resource, release: patch) }
@@ -92,10 +91,35 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe '.latest' do
-    subject { described_class.latest }
+    context 'when providing the ~latest tag' do
+      it 'returns the latest version' do
+        latest_version = described_class.latest
 
-    it 'returns the latest version by released date' do
-      is_expected.to eq(v2_0_0)
+        expect(latest_version).to eq(v2_0_0)
+      end
+    end
+
+    context 'when providing only a major version number' do
+      it 'returns the latest for the given major version' do
+        latest_major_version = described_class.latest('1')
+
+        expect(latest_major_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing a major and minor version number' do
+      it 'returns the latest for the given minor version' do
+        latest_minor_version = described_class.latest('1', '1')
+
+        expect(latest_minor_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing only a minor version but no major version' do
+      it 'raises an error' do
+        expect { described_class.latest(nil, '1') }
+        .to raise_error(ArgumentError, 'semver minor version used without major version')
+      end
     end
   end
 

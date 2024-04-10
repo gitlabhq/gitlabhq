@@ -7,9 +7,6 @@ import {
   SNIPPET_MEASURE_BLOBS_CONTENT,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import SnippetCodeDropdown from '~/vue_shared/components/code_dropdown/snippet_code_dropdown.vue';
-
 import { getSnippetMixin } from '../mixins/snippets';
 import { markBlobPerformance } from '../utils/blob';
 import SnippetBlob from './snippet_blob_view.vue';
@@ -25,23 +22,9 @@ export default {
     GlAlert,
     GlLoadingIcon,
     SnippetBlob,
-    SnippetCodeDropdown,
   },
   mixins: [getSnippetMixin],
   computed: {
-    embeddable() {
-      return (
-        this.snippet.visibilityLevel === VISIBILITY_LEVEL_PUBLIC_STRING && !this.isInPrivateProject
-      );
-    },
-    isInPrivateProject() {
-      const projectVisibility = this.snippet?.project?.visibility;
-      const isLimitedVisibilityProject = projectVisibility !== VISIBILITY_LEVEL_PUBLIC_STRING;
-      return projectVisibility ? isLimitedVisibilityProject : false;
-    },
-    canBeCloned() {
-      return Boolean(this.snippet.sshUrlToRepo || this.snippet.httpUrlToRepo);
-    },
     hasUnretrievableBlobs() {
       return this.snippet.hasUnretrievableBlobs;
     },
@@ -62,17 +45,6 @@ export default {
     <template v-else>
       <snippet-header :snippet="snippet" />
       <snippet-description :snippet="snippet" />
-      <div class="gl-display-flex gl-justify-content-end gl-mb-5">
-        <snippet-code-dropdown
-          v-if="canBeCloned"
-          class="gl-ml-3"
-          :ssh-link="snippet.sshUrlToRepo"
-          :http-link="snippet.httpUrlToRepo"
-          :url="snippet.webUrl"
-          :embeddable="embeddable"
-          data-testid="code-button"
-        />
-      </div>
       <gl-alert v-if="hasUnretrievableBlobs" variant="danger" class="gl-mb-3" :dismissible="false">
         {{
           __(
@@ -85,7 +57,7 @@ export default {
         :key="blob.path"
         :snippet="snippet"
         :blob="blob"
-        class="project-highlight-puc"
+        class="project-highlight-puc gl-mt-5"
       />
     </template>
   </div>

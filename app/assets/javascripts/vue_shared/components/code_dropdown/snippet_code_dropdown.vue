@@ -65,10 +65,11 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    :toggle-text="$options.labels.defaultLabel"
     category="primary"
     variant="confirm"
     placement="right"
+    block
+    :toggle-text="$options.labels.defaultLabel"
   >
     <code-dropdown-item
       v-for="{ label, link, testId } in sections"

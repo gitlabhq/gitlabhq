@@ -56,7 +56,7 @@ Features behind default-disabled feature flags are not recommended for use in a 
 and problems caused by using a default disabled features aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
-and do not follow our regular [maintenance policy](../policy/maintenance.md#security-releases)
+and do not follow our regular [maintenance policy](../policy/maintenance.md#patch-releases)
 with regards to backporting the fix.
 
 ## Risks when disabling released features

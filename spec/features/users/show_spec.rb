@@ -467,45 +467,18 @@ RSpec.describe 'User page', feature_category: :user_profile do
       stub_feature_flags(profile_tabs_vue: false)
     end
 
-    describe 'feature flag enabled' do
-      before do
-        stub_feature_flags(security_auto_fix: true)
-      end
+    it 'only shows Overview and Activity tabs' do
+      subject
 
-      it 'only shows Overview and Activity tabs' do
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).not_to have_link('Groups')
-          expect(page).not_to have_link('Contributed projects')
-          expect(page).not_to have_link('Personal projects')
-          expect(page).not_to have_link('Snippets')
-          expect(page).not_to have_link('Followers')
-          expect(page).not_to have_link('Following')
-        end
-      end
-    end
-
-    describe 'feature flag disabled' do
-      before do
-        stub_feature_flags(security_auto_fix: false)
-      end
-
-      it 'only shows Overview and Activity tabs' do
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).to have_link('Groups')
-          expect(page).to have_link('Contributed projects')
-          expect(page).to have_link('Personal projects')
-          expect(page).to have_link('Snippets')
-          expect(page).to have_link('Followers')
-          expect(page).to have_link('Following')
-        end
+      page.within '.nav-links' do
+        expect(page).to have_link('Overview')
+        expect(page).to have_link('Activity')
+        expect(page).to have_link('Groups')
+        expect(page).to have_link('Contributed projects')
+        expect(page).to have_link('Personal projects')
+        expect(page).to have_link('Snippets')
+        expect(page).to have_link('Followers')
+        expect(page).to have_link('Following')
       end
     end
   end

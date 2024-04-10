@@ -52,8 +52,6 @@
                 %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Contact')
                 - if @user.website_url.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
-                    - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                      = sprite_icon('question-o', css_class: 'gl-text-blue-500')
                     = sprite_icon('earth', css_class: 'fgray gl-mt-1 flex-shrink-0')
                     = link_to @user.short_website_url, @user.full_website_url, class: 'gl-text-gray-900', target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
                 - if display_public_email?(@user)

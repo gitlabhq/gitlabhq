@@ -34,8 +34,15 @@ module Ci
         after_save :update_catalog_resource
 
         class << self
-          def latest
-            with_semver.order_by_semantic_version_desc.first
+          def latest(major = nil, minor = nil)
+            raise ArgumentError, 'semver minor version used without major version' if minor.present? &&
+              major.blank?
+
+            relation = with_semver
+            relation = relation.where(semver_major: major) if major
+            relation = relation.where(semver_minor: minor) if minor
+
+            relation.order_by_semantic_version_desc.first
           end
 
           def versions_for_catalog_resources(catalog_resources)
