@@ -63,7 +63,7 @@ module CycleAnalyticsHelpers
   def save_value_stream(custom_value_stream_name)
     fill_in 'create-value-stream-name', with: custom_value_stream_name
 
-    page.find_button(s_('CreateValueStreamForm|Create value stream')).click
+    click_button(_('New value stream'))
     wait_for_requests
   end
 
@@ -73,7 +73,7 @@ module CycleAnalyticsHelpers
 
   def create_custom_value_stream(custom_value_stream_name)
     toggle_value_stream_dropdown
-    page.find_button(_('New Value Stream')).click
+    find_by_testid('create-value-stream-option').click
 
     add_custom_stage_to_form
     save_value_stream(custom_value_stream_name)

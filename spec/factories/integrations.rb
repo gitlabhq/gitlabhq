@@ -85,7 +85,8 @@ FactoryBot.define do
   factory :phorge_integration, class: 'Integrations::Phorge' do
     project
     active { true }
-    issue_tracker
+    project_url { 'http://phorge.example.com' }
+    issues_url { 'http://phorge.example.com/issues/:id' }
   end
 
   factory :prometheus_integration, class: 'Integrations::Prometheus' do

@@ -1,14 +1,16 @@
 <script>
 import {
   GlAlert,
+  GlButton,
   GlCard,
-  GlTable,
-  GlLoadingIcon,
   GlKeysetPagination,
+  GlLoadingIcon,
   GlModalDirective,
+  GlTable,
 } from '@gitlab/ui';
 import protectionRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -28,7 +30,9 @@ const ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL = {
 
 export default {
   components: {
+    ContainerProtectionRuleForm,
     GlAlert,
+    GlButton,
     GlCard,
     GlKeysetPagination,
     GlLoadingIcon,
@@ -99,6 +103,9 @@ export default {
         this.protectionRulesQueryPageInfo.hasPreviousPage ||
         this.protectionRulesQueryPageInfo.hasNextPage
       );
+    },
+    isAddProtectionRuleButtonDisabled() {
+      return this.protectionRuleFormVisibility;
     },
   },
   methods: {
@@ -181,10 +188,25 @@ export default {
         <template #header>
           <div class="gl-new-card-title-wrapper gl-justify-content-space-between">
             <h3 class="gl-new-card-title">{{ $options.i18n.settingBlockTitle }}</h3>
+            <div class="gl-new-card-actions">
+              <gl-button
+                size="small"
+                :disabled="isAddProtectionRuleButtonDisabled"
+                @click="showProtectionRuleForm"
+              >
+                {{ s__('ContainerRegistry|Add protection rule') }}
+              </gl-button>
+            </div>
           </div>
         </template>
 
         <template #default>
+          <container-protection-rule-form
+            v-if="protectionRuleFormVisibility"
+            @cancel="hideProtectionRuleForm"
+            @submit="refetchProtectionRules"
+          />
+
           <gl-alert
             v-if="alertErrorMessage"
             class="gl-mb-5"

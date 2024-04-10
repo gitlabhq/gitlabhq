@@ -7,11 +7,7 @@ module QA
       let(:tag) { '1.0.0' }
       let(:test_stage) { 'test' }
       let(:test_phrase) { 'this is NOT secret!!!!!!!' }
-
-      let(:domain_name) do
-        address = Runtime::Scenario.gitlab_address
-        address.include?('https') ? address.sub!('https://', '') : address.sub!('http://', '')
-      end
+      let(:domain_name) { Support::GitlabAddress.host_with_port(with_default_port: false) }
 
       let(:component_project) do
         create(:project, :with_readme, name: 'component-project', description: 'This is a project with CI component.')

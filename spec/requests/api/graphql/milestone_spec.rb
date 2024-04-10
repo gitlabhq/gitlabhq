@@ -40,7 +40,11 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
   context 'when we post the query' do
     context 'and the project is private' do
       let(:query) do
-        graphql_query_for('milestone', { id: milestone.to_global_id.to_s }, all_graphql_fields_for('Milestone'))
+        graphql_query_for(
+          'milestone',
+          { id: milestone.to_global_id.to_s },
+          all_graphql_fields_for('Milestone', excluded: %w[project group])
+        )
       end
 
       subject { graphql_data['milestone'] }
@@ -54,6 +58,15 @@ RSpec.describe 'Querying a Milestone', feature_category: :team_planning do
           let(:current_user) { guest }
 
           it_behaves_like 'returns the milestone successfully'
+
+          context 'when milestone has no dates' do
+            it 'returns upcoming and expired as false' do
+              expect(graphql_data_at(:milestone, :due_date)).to be_nil
+              expect(graphql_data_at(:milestone, :start_date)).to be_nil
+              expect(graphql_data_at(:milestone, :upcoming)).to be false
+              expect(graphql_data_at(:milestone, :expired)).to be false
+            end
+          end
 
           context 'when there are two milestones' do
             let_it_be(:milestone_b) { create(:milestone, project: project) }

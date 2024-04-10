@@ -461,6 +461,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - **New value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the **New value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+
 ### Create a value stream with GitLab default stages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
@@ -479,7 +484,7 @@ create custom stages in addition to those provided in the default template.
 1. To add a custom stage, select **Add another stage**.
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 
 NOTE:
 If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
@@ -494,13 +499,13 @@ When you create a value stream, you can create and add custom stages that align 
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 1. For each stage:
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
 1. To add another stage, select **Add another stage**.
 1. To re-order the stages, select the up or down arrows.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 
 #### Label-based stages for custom value streams
 
@@ -527,6 +532,10 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+> - **Edit value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the **Edit value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 

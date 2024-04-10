@@ -3296,6 +3296,11 @@ class Project < ApplicationRecord
     false
   end
 
+  # Overridden in EE
+  def supports_saved_replies?
+    false
+  end
+
   private
 
   # overridden in EE

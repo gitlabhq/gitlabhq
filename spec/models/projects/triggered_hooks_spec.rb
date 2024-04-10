@@ -49,18 +49,6 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
 
       run_hooks(:resource_access_token_hooks, data)
     end
-
-    context 'when access_tokens_webhooks feature flag is disabled' do
-      before do
-        stub_feature_flags(access_tokens_webhooks: false)
-      end
-
-      it 'does not execute the hook' do
-        expect(WebHookService).not_to receive(:new)
-
-        run_hooks(:resource_access_token_hooks, data)
-      end
-    end
   end
 
   context 'with emoji hooks' do

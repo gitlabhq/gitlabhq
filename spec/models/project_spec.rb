@@ -9465,4 +9465,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe '#supports_saved_replies?' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(project.supports_saved_replies?).to eq(false) }
+  end
 end

@@ -25,7 +25,8 @@ merge request, authored by the user who suggested the changes.
    - To select a single line, hover over the line number and
      select **Add a comment to this line** (**{comment}**).
    - To select multiple lines:
-     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**).
+     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**):
+        ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
      1. Select and drag your selection until all desired lines are included. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
 1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
@@ -73,6 +74,10 @@ When applied, the suggestion replaces from 2 lines above to 2 lines below the co
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
+
+Multiline comments display the comment's line numbers above the body of the comment:
+
+![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 
 #### Using the rich text editor
 

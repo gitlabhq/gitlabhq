@@ -202,3 +202,25 @@ export const containerProtectionRuleQueryPayload = ({
     },
   },
 });
+
+export const createContainerProtectionRuleMutationPayload = ({ override, errors = [] } = {}) => ({
+  data: {
+    createContainerRegistryProtectionRule: {
+      containerRegistryProtectionRule: {
+        ...containerProtectionRulesData[0],
+        ...override,
+      },
+      errors,
+    },
+  },
+});
+
+export const createContainerProtectionRuleMutationInput = {
+  repositoryPathPattern: `@flight/flight-developer-14-*`,
+  pushProtectedUpToAccessLevel: 'DEVELOPER',
+  deleteProtectedUpToAccessLevel: 'DEVELOPER',
+};
+
+export const createContainerProtectionRuleMutationPayloadErrors = [
+  'Repository path pattern has already been taken',
+];

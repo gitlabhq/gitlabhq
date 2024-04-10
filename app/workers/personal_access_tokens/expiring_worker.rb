@@ -114,7 +114,6 @@ module PersonalAccessTokens
     def execute_web_hooks(token, bot_user)
       resource = bot_user.resource_bot_resource
 
-      return unless ::Feature.enabled?(:access_tokens_webhooks, resource)
       return if resource.is_a?(Project) && !resource.has_active_hooks?(:resource_access_token_hooks)
 
       hook_data = Gitlab::DataBuilder::ResourceAccessToken.build(token, :expiring, resource)

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Use the unstage command in Git to stop tracking your changes to a file."
 ---
 
-# Unstage a file in Git
+# Unstage files by using Git
 
 When you _stage_ a file in Git, you instruct Git to track changes to the file in
 preparation for a commit. To disregard changes to a file, and not

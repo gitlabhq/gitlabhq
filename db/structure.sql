@@ -944,7 +944,7 @@ CREATE TABLE p_ci_builds (
     started_at timestamp without time zone,
     runner_id integer,
     coverage double precision,
-    commit_id integer,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
@@ -973,7 +973,7 @@ CREATE TABLE p_ci_builds (
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id integer,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -983,12 +983,12 @@ CREATE TABLE p_ci_builds (
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     auto_canceled_by_id bigint,
-    commit_id_convert_to_bigint bigint,
+    commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
     project_id_convert_to_bigint bigint,
     runner_id_convert_to_bigint bigint,
     trigger_request_id_convert_to_bigint bigint,
-    upstream_pipeline_id_convert_to_bigint bigint,
+    upstream_pipeline_id bigint,
     user_id_convert_to_bigint bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 )
@@ -5926,7 +5926,7 @@ CREATE TABLE ci_builds (
     started_at timestamp without time zone,
     runner_id integer,
     coverage double precision,
-    commit_id integer,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
@@ -5955,7 +5955,7 @@ CREATE TABLE ci_builds (
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id integer,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -5965,12 +5965,12 @@ CREATE TABLE ci_builds (
     partition_id bigint NOT NULL,
     auto_canceled_by_partition_id bigint DEFAULT 100 NOT NULL,
     auto_canceled_by_id bigint,
-    commit_id_convert_to_bigint bigint,
+    commit_id bigint,
     erased_by_id_convert_to_bigint bigint,
     project_id_convert_to_bigint bigint,
     runner_id_convert_to_bigint bigint,
     trigger_request_id_convert_to_bigint bigint,
-    upstream_pipeline_id_convert_to_bigint bigint,
+    upstream_pipeline_id bigint,
     user_id_convert_to_bigint bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
@@ -24117,18 +24117,6 @@ CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON v
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
-CREATE INDEX p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX index_357cc39ca4 ON ci_builds USING btree (commit_id_convert_to_bigint, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX p_ci_builds_upstream_pipeline_id_bigint_idx ON ONLY p_ci_builds USING btree (upstream_pipeline_id_convert_to_bigint) WHERE (upstream_pipeline_id_convert_to_bigint IS NOT NULL);
-
-CREATE INDEX index_89477d6012 ON ci_builds USING btree (upstream_pipeline_id_convert_to_bigint) WHERE (upstream_pipeline_id_convert_to_bigint IS NOT NULL);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_status_type_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, status, type);
-
-CREATE INDEX index_8c07a79c70 ON ci_builds USING btree (commit_id_convert_to_bigint, status, type);
-
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -24364,10 +24352,6 @@ CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_backgr
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
-
-CREATE INDEX p_ci_builds_resource_group_id_status_commit_id_bigint_idx ON ONLY p_ci_builds USING btree (resource_group_id, status, commit_id_convert_to_bigint) WHERE (resource_group_id IS NOT NULL);
-
-CREATE INDEX index_bc23fb9243 ON ci_builds USING btree (resource_group_id, status, commit_id_convert_to_bigint) WHERE (resource_group_id IS NOT NULL);
 
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
@@ -25047,10 +25031,6 @@ CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group 
 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_hash_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (hash_sha256);
 
-CREATE INDEX p_ci_builds_commit_id_bigint_stage_idx_created_at_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, stage_idx, created_at);
-
-CREATE INDEX index_d46de3aa4f ON ci_builds USING btree (commit_id_convert_to_bigint, stage_idx, created_at);
-
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
 CREATE UNIQUE INDEX index_dast_pre_scan_verifications_on_ci_pipeline_id ON dast_pre_scan_verifications USING btree (ci_pipeline_id);
@@ -25388,14 +25368,6 @@ CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON personal_a
 CREATE UNIQUE INDEX index_external_audit_event_destinations_on_namespace_id ON audit_events_external_audit_event_destinations USING btree (namespace_id, destination_url);
 
 CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON external_pull_requests USING btree (project_id, source_branch, target_branch);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_type_ref_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, type, ref);
-
-CREATE INDEX index_fc42f73fa6 ON ci_builds USING btree (commit_id_convert_to_bigint, type, ref);
-
-CREATE INDEX p_ci_builds_commit_id_bigint_type_name_ref_idx ON ONLY p_ci_builds USING btree (commit_id_convert_to_bigint, type, name, ref);
-
-CREATE INDEX index_feafb4d370 ON ci_builds USING btree (commit_id_convert_to_bigint, type, name, ref);
 
 CREATE UNIQUE INDEX index_feature_flag_scopes_on_flag_id_and_environment_scope ON operations_feature_flag_scopes USING btree (feature_flag_id, environment_scope);
 
@@ -29489,15 +29461,7 @@ ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
 
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
 
-ALTER INDEX p_ci_builds_commit_id_bigint_artifacts_expire_at_id_idx ATTACH PARTITION index_357cc39ca4;
-
-ALTER INDEX p_ci_builds_upstream_pipeline_id_bigint_idx ATTACH PARTITION index_89477d6012;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_status_type_idx ATTACH PARTITION index_8c07a79c70;
-
 ALTER INDEX p_ci_builds_runner_id_bigint_id_idx ATTACH PARTITION index_adafd086ad;
-
-ALTER INDEX p_ci_builds_resource_group_id_status_commit_id_bigint_idx ATTACH PARTITION index_bc23fb9243;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 
@@ -29578,12 +29542,6 @@ ALTER INDEX p_ci_stages_pipeline_id_position_idx ATTACH PARTITION index_ci_stage
 ALTER INDEX p_ci_stages_pipeline_id_name_partition_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_name_partition_id_unique;
 
 ALTER INDEX p_ci_stages_project_id_idx ATTACH PARTITION index_ci_stages_on_project_id;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_stage_idx_created_at_idx ATTACH PARTITION index_d46de3aa4f;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_type_ref_idx ATTACH PARTITION index_fc42f73fa6;
-
-ALTER INDEX p_ci_builds_commit_id_bigint_type_name_ref_idx ATTACH PARTITION index_feafb4d370;
 
 ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
 
@@ -30153,9 +30111,6 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_6b6c3f3e70 FOREIGN KEY (upstream_pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ai_agent_versions
     ADD CONSTRAINT fk_6c2f682587 FOREIGN KEY (agent_id) REFERENCES ai_agents(id) ON DELETE CASCADE;
 
@@ -30317,9 +30272,6 @@ ALTER TABLE ONLY work_item_dates_sources
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE p_ci_builds
-    ADD CONSTRAINT fk_8d588a7095 FOREIGN KEY (commit_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY raw_usage_data
     ADD CONSTRAINT fk_8e21125854 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

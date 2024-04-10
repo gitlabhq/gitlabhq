@@ -4,7 +4,9 @@ module Integrations
   class Phorge < BaseIssueTracker
     include HasIssueTrackerFields
 
-    validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
+    PHORGE_FIELDS = %w[project_url issues_url].freeze
+
+    validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
     # See https://we.phorge.it/source/phorge/browse/master/src/infrastructure/markup/rule/PhabricatorObjectRemarkupRule.php
     # for a canonical source of the regular expression used to parse Phorge
@@ -35,24 +37,27 @@ module Integrations
       s_("IssueTracker|Use Phorge as this project's issue tracker.")
     end
 
-    # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
     def self.help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'),
+      docs_link = ActionController::Base.helpers.link_to(
+        '',
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/phorge'),
         target: '_blank',
         rel: 'noopener noreferrer'
-
-      # rubocop:disable Gitlab/Rails/SafeFormat -- See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863#note_1845580057
-      format(
-        s_("IssueTracker|Use Phorge as this project's issue tracker. %{docs_link}").html_safe,
-        docs_link: docs_link.html_safe
       )
-      # rubocop:enable Gitlab/Rails/SafeFormat
+      tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+
+      safe_format(
+        s_("IssueTracker|Use Phorge as this project's issue tracker. %{link_start}Learn more.%{link_end}"),
+        tag_pair_docs_link
+      )
     end
-    # rubocop:enable Rails/OutputSafety
 
     def self.to_param
       'phorge'
+    end
+
+    def self.fields
+      super.select { |field| PHORGE_FIELDS.include?(field.name) }
     end
   end
 end

@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import ContainerProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
@@ -27,6 +28,9 @@ describe('Container protection rules project settings', () => {
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAddProtectionRuleForm = () => wrapper.findComponent(ContainerProtectionRuleForm);
+  const findAddProtectionRuleFormSubmitButton = () =>
+    wrapper.findByRole('button', { name: /add protection rule/i });
   const findAlert = () => wrapper.findByRole('alert');
 
   const mountComponent = (mountFn = mountExtended, provide = defaultProvidedValues, config) => {
@@ -70,7 +74,7 @@ describe('Container protection rules project settings', () => {
     expect(findTable().exists()).toBe(true);
   });
 
-  describe('table "package protection rules"', () => {
+  describe('table "container protection rules"', () => {
     const findTableRowCell = (i, j) => findTableRow(i).findAllByRole('cell').at(j);
 
     it('renders table with Container protection rules', async () => {
@@ -250,6 +254,77 @@ describe('Container protection rules project settings', () => {
           );
         });
       });
+    });
+  });
+
+  describe('button "Add protection rule"', () => {
+    it('button exists', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findAddProtectionRuleFormSubmitButton().isVisible()).toBe(true);
+    });
+
+    it('does not initially render form "add protection rule"', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findAddProtectionRuleFormSubmitButton().isVisible()).toBe(true);
+      expect(findAddProtectionRuleForm().exists()).toBe(false);
+    });
+
+    describe('when button is clicked', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        await findAddProtectionRuleFormSubmitButton().trigger('click');
+      });
+
+      it('renders form "add protection rule"', () => {
+        expect(findAddProtectionRuleForm().isVisible()).toBe(true);
+      });
+
+      it('disables the button "add protection rule"', () => {
+        expect(findAddProtectionRuleFormSubmitButton().attributes('disabled')).toBeDefined();
+      });
+    });
+  });
+
+  describe('form "add protection rule"', () => {
+    let containerProtectionRuleQueryResolver;
+
+    beforeEach(async () => {
+      containerProtectionRuleQueryResolver = jest
+        .fn()
+        .mockResolvedValue(containerProtectionRuleQueryPayload());
+
+      createComponent({ containerProtectionRuleQueryResolver });
+
+      await waitForPromises();
+
+      await findAddProtectionRuleFormSubmitButton().trigger('click');
+    });
+
+    it('handles event "submit"', async () => {
+      await findAddProtectionRuleForm().vm.$emit('submit');
+
+      expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+
+      expect(findAddProtectionRuleForm().exists()).toBe(false);
+      expect(findAddProtectionRuleFormSubmitButton().attributes('disabled')).not.toBeDefined();
+    });
+
+    it('handles event "cancel"', async () => {
+      await findAddProtectionRuleForm().vm.$emit('cancel');
+
+      expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+      expect(findAddProtectionRuleForm().exists()).toBe(false);
+      expect(findAddProtectionRuleFormSubmitButton().attributes()).not.toHaveProperty('disabled');
     });
   });
 

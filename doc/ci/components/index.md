@@ -169,8 +169,26 @@ In order of highest priority first, the component version can be:
   Use `~latest` only if you want to use the absolute latest version at all times,
   which could include breaking changes.
 
-You can use any version supported by the component, but using a version published
-to the CI/CD catalog is recommended.
+You can use any [version](#component-versions) supported by the component, but using a
+version published to the CI/CD catalog is recommended.
+
+#### Use semantic versioning
+
+When tagging and [releasing new versions](#publish-a-new-release) of components,
+you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
+for communicating that a change is a major, minor, patch, or other kind of change.
+
+For example, the following component versions are released in order:
+
+1. `1.0.0`
+1. `2.3.0`
+1. `1.0.0-alpha`
+1. `2.1.3`
+
+For catalog resources, you can use a shorthand to fetch the latest versions for major or minor releases:
+
+- `2` returns the latest version for a major release: `2.3.0`
+- `2.1` returns the latest version for a minor release: `2.1.3`
 
 ## CI/CD Catalog
 
@@ -388,7 +406,7 @@ ensure-job-added:
   script:
     - |
       route="${CI_API_V4_URL}/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
-      count=`curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" $route | jq 'map(select(.name | contains("component job of my-component"))) | length'`
+      count=`curl --silent --header $route | jq 'map(select(.name | contains("component job of my-component"))) | length'`
       if [ "$count" != "1" ]; then
         exit 1; else
         echo "Component Job present"
@@ -409,6 +427,9 @@ create-release:
 
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
+
+NOTE:
+Authentication is necessary if the project is private.
 
 #### Test a component against sample files
 

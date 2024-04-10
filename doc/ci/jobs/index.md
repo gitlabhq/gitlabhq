@@ -62,7 +62,7 @@ You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).
 When a pipeline fails or is allowed to fail, there are several places where you
 can find the reason:
 
-- In the [pipeline graph](../pipelines/index.md#visualize-pipelines), on the pipeline detail view.
+- In the [pipeline graph](../pipelines/index.md#pipeline-details), in the pipeline details view.
 - In the pipeline widgets, in the merge requests and commit pages.
 - In the job views, in the global and detailed views of a job.
 
@@ -76,7 +76,7 @@ You can also see the reason it failed on the Job detail page.
 
 The order of jobs in a pipeline depends on the type of pipeline graph.
 
-- For [full pipeline graphs](../pipelines/index.md#view-full-pipeline-graph), jobs are sorted by name.
+- For [full pipeline graphs](../pipelines/index.md#pipeline-details), jobs are sorted by name.
 - For [pipeline mini graphs](../pipelines/index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
 
 The job status order is:
@@ -123,7 +123,7 @@ If the same job name is used in one or more included files,
 
 ## Group jobs in a pipeline
 
-If you have many similar jobs, your [pipeline graph](../pipelines/index.md#visualize-pipelines) becomes long and hard
+If you have many similar jobs, your [pipeline graph](../pipelines/index.md#pipeline-details) becomes long and hard
 to read.
 
 You can automatically group similar jobs together. If the job names are formatted in a certain way,

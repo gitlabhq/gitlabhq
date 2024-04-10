@@ -309,7 +309,7 @@ trigger_pipeline:
 
 ## View a downstream pipeline
 
-In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
+In the [pipeline details page](index.md#pipeline-details), downstream pipelines display
 as a list of cards on the right of the graph. From this view, you can:
 
 - Select a trigger job to see the triggered downstream pipeline's jobs.
@@ -433,7 +433,7 @@ trigger_job:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
-to the right of the [pipeline graph](index.md#visualize-pipelines).
+to the right of the [pipeline graph](index.md#view-pipelines).
 
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.

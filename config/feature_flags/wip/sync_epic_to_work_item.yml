@@ -1,5 +1,5 @@
 ---
-name: epic_creation_with_synced_work_item
+name: sync_epic_to_work_item
 feature_issue_url:
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140232
 rollout_issue_url:

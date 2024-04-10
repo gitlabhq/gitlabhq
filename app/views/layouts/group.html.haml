@@ -18,6 +18,7 @@
 
 - content_for :before_content do
   = render 'groups/invite_members_modal', group: @group
+  = render_if_exists "shared/saml_reload_modal", group_or_project: @group
 
 = dispensable_render_if_exists "shared/web_hooks/group_web_hook_disabled_alert"
 = dispensable_render_if_exists "shared/free_user_cap_alert", source: @group

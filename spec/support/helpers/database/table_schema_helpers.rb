@@ -155,6 +155,27 @@ module Database
       SQL
     end
 
+    def foreign_key_by_name(source, name)
+      connection.foreign_keys(source).find do |key|
+        key.name == name.to_s
+      end
+    end
+
+    def index_by_name(table, name, partitioned_table: nil)
+      if partitioned_table
+        partitioned_index = index_by_name(partitioned_table, name)
+        return unless partitioned_index
+
+        connection.indexes(table).find do |key|
+          key.columns == partitioned_index.columns
+        end
+      else
+        connection.indexes(table).find do |key|
+          key.name == name.to_s
+        end
+      end
+    end
+
     def check_constraint_definition(table_name, constraint_name, schema: nil)
       table_name = schema ? "#{schema}.#{table_name}" : table_name
 

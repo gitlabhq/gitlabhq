@@ -126,18 +126,6 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
 
         expect { worker.perform }.not_to exceed_all_query_limit(control)
       end
-
-      context 'when access_tokens_webhooks feature is disabled' do
-        before do
-          stub_feature_flags(access_tokens_webhooks: false)
-        end
-
-        it "does not execute access token webhook" do
-          expect(::Projects::TriggeredHooks).not_to receive(:execute)
-
-          worker.perform
-        end
-      end
     end
 
     context 'when a token is owned by a group bot' do

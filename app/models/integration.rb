@@ -10,7 +10,7 @@ class Integration < ApplicationRecord
   include Integrations::ResetSecretFields
   include FromUnion
   include EachBatch
-  include IgnorableColumns
+  extend SafeFormatHelper
   extend ::Gitlab::Utils::Override
 
   UnknownType = Class.new(StandardError)
