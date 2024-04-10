@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import WikiTemplate from '~/pages/shared/wikis/components/wiki_template.vue';
 
@@ -21,8 +21,8 @@ describe('WikiTemplate', () => {
     format: 'markdown',
   };
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(WikiTemplate, {
+  const createComponent = (props = {}, mountFn = shallowMount) => {
+    wrapper = mountFn(WikiTemplate, {
       propsData: { ...defaultProps, ...props },
     });
   };
@@ -49,5 +49,22 @@ describe('WikiTemplate', () => {
         .props('items')
         .map((item) => item.text),
     ).toEqual(expectedItems);
+  });
+
+  it('prevents xss by escaping template names before inserting in DOM', () => {
+    createComponent(
+      {
+        templates: [
+          {
+            title: 'Malacious template <script>alert(1)</script>',
+            path: '/path/to/template1',
+            format: 'markdown',
+          },
+        ],
+      },
+      mount,
+    );
+
+    expect(wrapper.html()).toContain('Malacious template &lt;script&gt;alert(1)&lt;/script&gt;');
   });
 });
