@@ -1,14 +1,25 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
+import NewEditForm from '~/projects/components/new_edit_form.vue';
 
 export default {
   name: 'OrganizationProjectsEditApp',
-  components: { GlSprintf },
+  components: { GlSprintf, NewEditForm },
   i18n: {
     pageTitle: __('Edit project: %{project_name}'),
   },
-  inject: ['project'],
+  inject: ['projectsOrganizationPath', 'previewMarkdownPath', 'project'],
+  data() {
+    return {
+      loading: false,
+    };
+  },
+  methods: {
+    async onSubmit() {
+      // Make API call. Coming in future MR
+    },
+  },
 };
 </script>
 
@@ -19,5 +30,12 @@ export default {
         <template #project_name>{{ project.fullName }}</template>
       </gl-sprintf>
     </h1>
+    <new-edit-form
+      :loading="loading"
+      :initial-form-values="project"
+      :preview-markdown-path="previewMarkdownPath"
+      :cancel-button-href="projectsOrganizationPath"
+      @submit="onSubmit"
+    />
   </div>
 </template>

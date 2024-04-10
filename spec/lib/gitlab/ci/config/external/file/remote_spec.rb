@@ -96,9 +96,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
     end
   end
 
-  # When the FF ci_parallel_remote_includes is removed,
-  # convert this `shared_context` to `describe` and remove `rubocop:disable`.
-  shared_context "#content" do # rubocop:disable RSpec/ContextWording -- This is temporary until the FF is removed.
+  describe "#content" do
     subject(:content) do
       remote_file.preload_content
       remote_file.content
@@ -145,16 +143,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         expect(content).to be_nil
       end
     end
-  end
-
-  it_behaves_like "#content"
-
-  context 'when the FF ci_parallel_remote_includes is disabled' do
-    before do
-      stub_feature_flags(ci_parallel_remote_includes: false)
-    end
-
-    it_behaves_like "#content"
   end
 
   describe '#preload_content' do

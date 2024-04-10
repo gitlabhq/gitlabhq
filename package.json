@@ -12,7 +12,7 @@
     "prejest": "yarn check-dependencies",
     "build:css": "node scripts/frontend/build_css.mjs",
     "tailwindcss:build": "node scripts/frontend/tailwindcss.mjs",
-    "pretailwindcss:build": "node scripts/frontend/tailwind_all_the_way.mjs",
+    "pretailwindcss:build": "node scripts/frontend/tailwind_all_the_way.mjs --only-used",
     "jest": "jest --config jest.config.js",
     "jest-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "jest:ci": "jest --config jest.config.js --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js",

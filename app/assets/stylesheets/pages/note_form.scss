@@ -107,6 +107,12 @@
       border-bottom-right-radius: calc(#{$border-radius-large} - 3px);
     }
   }
+
+  &.is-invalid {
+    .md-area {
+      border-color: var(--red-500, $red-500);
+    }
+  }
 }
 
 .md-header {

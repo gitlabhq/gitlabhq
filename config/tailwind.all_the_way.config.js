@@ -23,15 +23,9 @@ try {
   delete require.cache[path.resolve(__filename)];
 }
 
-const { content, ...remainingConfig } = tailwindGitLabDefaults;
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  ...remainingConfig,
-  content: [
-    process.argv.includes('--only-used') ? 'false' : './config/helpers/tailwind/all_utilities.haml',
-    ...content,
-  ],
+  ...tailwindGitLabDefaults,
   corePlugins: {
     /*
     We set background: none, Tailwind background-image: none...

@@ -39,3 +39,26 @@ rules:interruptible as boolean:
   rules:
     - if: $TEST
       interruptible: true
+
+# valid rules:exists
+rules:exists as an array:
+  rules:
+    - exists: [abc.md, def.md]
+
+rules:exists:paths:
+  rules:
+    - exists:
+        paths: [abc.md]
+
+rules:exists:project:
+  rules:
+    - exists:
+        paths: [abc.md]
+        project: my-group/my-project
+
+rules:exists:project with ref:
+  rules:
+    - exists:
+        paths: [abc.md]
+        project: my-group/my-project
+        ref: main

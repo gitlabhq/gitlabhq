@@ -116,6 +116,33 @@ RSpec.describe Gitlab::EncodingHelper, feature_category: :shared do
     end
   end
 
+  describe '#encode_uft8_with_unicode_escaping!' do
+    where(:input, :expected) do
+      "abcd" | "abcd"
+      "🐤🐤🐤🐤\xF0\x9F\x90" | "🐤🐤🐤🐤\\u00f0\\u009f\\u0090"
+      "\xD0\x9F\xD1\x80 \x90" | "Пр \\u0090"
+      "abcd \xE9efgh" | "abcd \\u00e9efgh"
+      "\xFE\xFF\x00\x41BC" | "\\u00fe\\u00ffABC" # An "ABC" prepended with UTF-16-BE BOM
+      "\xFF\xFE\x00\ABC\xE9" | "\\u00ff\\u00feABC\\u00e9" # An "ABC" prepended with UTF-16-LE BOM and an added e-acute.
+    end
+
+    with_them do
+      it 'escapes to unicode' do
+        expect(ext_class.encode_uft8_with_unicode_escaping(input.dup.force_encoding(Encoding::UTF_16BE))).to eq(expected)
+        expect(ext_class.encode_uft8_with_unicode_escaping(input.dup.force_encoding(Encoding::UTF_8))).to eq(expected)
+        expect(ext_class.encode_uft8_with_unicode_escaping(input.dup.force_encoding(Encoding::UTF_16BE))).to eq(expected)
+        expect(ext_class.encode_uft8_with_unicode_escaping(input.dup.force_encoding(Encoding::WINDOWS_1252))).to eq(expected)
+        expect(ext_class.encode_uft8_with_unicode_escaping(input)).to eq(expected)
+      end
+    end
+
+    it 'does not mutate the input message' do
+      input = "🐤🐤🐤🐤\xF0\x9F\x90"
+      ext_class.encode_uft8_with_unicode_escaping(input)
+      expect(input).to eq("🐤🐤🐤🐤\xF0\x9F\x90")
+    end
+  end
+
   describe '#encode_utf8' do
     [
       ["nil", nil, nil],

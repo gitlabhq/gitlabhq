@@ -2,22 +2,16 @@
 import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { n__, s__, __ } from '~/locale';
-import { slugify } from '~/lib/utils/text_utility';
-import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   FORM_FIELD_NAME,
   FORM_FIELD_ID,
-  FORM_FIELD_PATH,
   FORM_FIELD_DESCRIPTION,
-  FORM_FIELD_AVATAR,
   MAX_DESCRIPTION_COUNT,
-  FORM_FIELD_PATH_VALIDATORS,
   FORM_FIELD_DESCRIPTION_VALIDATORS,
-} from '../constants';
-import OrganizationUrlField from './organization_url_field.vue';
+} from './constants';
 
 export default {
   name: 'NewEditForm',
@@ -25,8 +19,6 @@ export default {
     GlForm,
     GlFormFields,
     GlButton,
-    OrganizationUrlField,
-    AvatarUploadDropzone,
     MarkdownField,
   },
   i18n: {
@@ -34,12 +26,9 @@ export default {
     charactersRemaining: (char) => n__('%d character remaining', '%d characters remaining', char),
     charactersOverLimit: (char) => n__('%d character over limit', '%d characters over limit', char),
   },
-  formId: 'organization-form',
-  markdownDocsPath: helpPagePath('user/organization/index', {
-    anchor: 'organization-description-supported-markdown',
-  }),
+  formId: 'new-edit-project-form',
+  markdownDocsPath: helpPagePath('user/markdown'),
   restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
-  inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {
     loading: {
       type: Boolean,
@@ -51,56 +40,49 @@ export default {
       default() {
         return {
           [FORM_FIELD_NAME]: '',
-          [FORM_FIELD_PATH]: '',
+          [FORM_FIELD_ID]: '',
           [FORM_FIELD_DESCRIPTION]: '',
-          [FORM_FIELD_AVATAR]: null,
         };
-      },
-    },
-    fieldsToRender: {
-      type: Array,
-      required: false,
-      default() {
-        return [FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR];
       },
     },
     submitButtonText: {
       type: String,
       required: false,
-      default: s__('Organization|Create organization'),
+      default: __('Save changes'),
     },
-    showCancelButton: {
-      type: Boolean,
-      required: false,
-      default: true,
+    previewMarkdownPath: {
+      type: String,
+      required: true,
+    },
+    cancelButtonHref: {
+      type: String,
+      required: true,
     },
   },
   data() {
     return {
       formValues: this.initialFormValues,
-      hasPathBeenManuallySet: false,
     };
   },
   computed: {
     fields() {
       const fields = {
         [FORM_FIELD_NAME]: {
-          label: s__('Organization|Organization name'),
-          validators: [formValidators.required(s__('Organization|Organization name is required.'))],
+          label: s__('ProjectsNew|Project name'),
+          validators: [formValidators.required(s__('ProjectsNewEdit|Project name is required.'))],
           groupAttrs: {
             class: 'gl-w-full',
             description: s__(
-              'Organization|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
+              'ProjectsNewEdit|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
             ),
           },
           inputAttrs: {
             class: 'gl-md-form-input-lg',
-            placeholder: s__('Organization|My organization'),
-            'data-testid': 'organization-name',
+            placeholder: s__('ProjectsNewEdit|My awesome project'),
           },
         },
         [FORM_FIELD_ID]: {
-          label: s__('Organization|Organization ID'),
+          label: __('Project ID'),
           groupAttrs: {
             class: 'gl-w-full',
           },
@@ -109,39 +91,16 @@ export default {
             disabled: true,
           },
         },
-        [FORM_FIELD_PATH]: {
-          label: s__('Organization|Organization URL'),
-          validators: FORM_FIELD_PATH_VALIDATORS,
-          groupAttrs: {
-            class: 'gl-w-full',
-          },
-        },
         [FORM_FIELD_DESCRIPTION]: {
-          label: s__('Organization|Organization description (optional)'),
+          label: s__('ProjectsNewEdit|Project description (optional)'),
           validators: FORM_FIELD_DESCRIPTION_VALIDATORS,
           groupAttrs: {
             class: 'gl-w-full common-note-form',
           },
         },
-        [FORM_FIELD_AVATAR]: {
-          label: s__('Organization|Organization avatar'),
-          groupAttrs: {
-            class: 'gl-w-full',
-            labelSrOnly: true,
-          },
-        },
       };
 
-      return Object.entries(fields).reduce((accumulator, [fieldKey, fieldDefinition]) => {
-        if (!this.fieldsToRender.includes(fieldKey)) {
-          return accumulator;
-        }
-
-        return {
-          ...accumulator,
-          [fieldKey]: fieldDefinition,
-        };
-      }, {});
+      return fields;
     },
     textareaCharacterCounter() {
       const remainingCharacters =
@@ -160,22 +119,6 @@ export default {
       };
     },
   },
-  watch: {
-    'formValues.name': function watchName(value) {
-      if (this.hasPathBeenManuallySet || !this.fieldsToRender.includes(FORM_FIELD_PATH)) {
-        return;
-      }
-
-      this.formValues.path = slugify(value);
-    },
-  },
-  methods: {
-    onPathInput(event, formFieldsInputEvent) {
-      formFieldsInputEvent(event);
-      this.hasPathBeenManuallySet = true;
-    },
-    helpPagePath,
-  },
 };
 </script>
 
@@ -188,15 +131,6 @@ export default {
       class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
     >
-      <template #input(path)="{ id, value, validation, input, blur }">
-        <organization-url-field
-          :id="id"
-          :value="value"
-          :validation="validation"
-          @input="onPathInput($event, input)"
-          @blur="blur"
-        />
-      </template>
       <template #input(description)="{ id, value, input, blur }">
         <div class="gl-md-form-input-xl">
           <markdown-field
@@ -224,14 +158,6 @@ export default {
           >
         </div>
       </template>
-      <template #input(avatar)="{ input, value }">
-        <avatar-upload-dropzone
-          :value="value"
-          :entity="formValues"
-          :label="fields.avatar.label"
-          @input="input"
-        />
-      </template>
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">
       <gl-button
@@ -242,9 +168,7 @@ export default {
         data-testid="submit-button"
         >{{ submitButtonText }}</gl-button
       >
-      <gl-button v-if="showCancelButton" :href="organizationsPath">{{
-        $options.i18n.cancel
-      }}</gl-button>
+      <gl-button :href="cancelButtonHref">{{ $options.i18n.cancel }}</gl-button>
     </div>
   </gl-form>
 </template>

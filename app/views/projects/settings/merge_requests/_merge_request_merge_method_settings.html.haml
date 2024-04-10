@@ -14,9 +14,7 @@
 - ffTrains = s_('ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts.')
 - ffTrainsHelp = link_to s_('ProjectSettings|What are merge trains?'), help_page_path('ci/pipelines/merge_trains', anchor: 'enable-merge-trains'), target: '_blank', rel: 'noopener noreferrer'
 
-- ffTrainsWithFastForward = (noMergeCommit + "<br />" + ffOnly + "<br />" + ffConflictRebase + "<br />" + ffTrains + " " + ffTrainsHelp).html_safe
-- ffTrainsWithoutFastForward = (noMergeCommit + "<br />" + ffOnly + "<br />" + ffConflictRebase).html_safe
-- ffTrainsHelpFullHelpText = Feature.enabled?(:fast_forward_merge_trains_support) ? ffTrainsWithFastForward : ffTrainsWithoutFastForward
+- ffTrainsHelpFullHelpText = (noMergeCommit + "<br />" + ffOnly + "<br />" + ffConflictRebase + "<br />" + ffTrains + " " + ffTrainsHelp).html_safe
 
 .form-group
   %b= s_('ProjectSettings|Merge method')

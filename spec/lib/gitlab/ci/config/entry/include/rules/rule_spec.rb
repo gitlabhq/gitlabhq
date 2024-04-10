@@ -18,7 +18,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
     it { is_expected.to be_valid }
 
     it 'returns the expected value' do
-      expect(entry.value).to eq(expected_value || config.compact)
+      # Change `subject` to `entry` after FF `ci_support_rules_exists_paths_and_project` removed
+      expect(subject.value).to eq(expected_value || config.compact)
     end
   end
 
@@ -26,7 +27,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
     it { is_expected.not_to be_valid }
 
     it 'has errors' do
-      expect(entry.errors).to include(error_message)
+      # Change `subject` to `entry` after FF `ci_support_rules_exists_paths_and_project` removed
+      expect(subject.errors).to include(error_message)
     end
   end
 
@@ -85,20 +87,77 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
   end
 
   context 'when specifying an exists: clause' do
-    let(:config) { { exists: './this.md' } }
+    context 'with a string' do
+      let(:config) { { exists: 'paths/**/*.rb' } }
 
-    it_behaves_like 'a valid config'
-
-    context 'when exists: clause is an array' do
-      let(:config) { { exists: ['./this.md', './that.md'] } }
-
-      it_behaves_like 'a valid config'
+      it_behaves_like 'a valid config', { exists: { paths: ['paths/**/*.rb'] } }
     end
 
-    context 'when exists: clause is null' do
+    context 'with an array' do
+      let(:config) { { exists: ['this.md', 'subdir/that.md'] } }
+
+      it_behaves_like 'a valid config', { exists: { paths: ['this.md', 'subdir/that.md'] } }
+    end
+
+    context 'with a nil value' do
       let(:config) { { exists: nil } }
 
+      it_behaves_like 'a valid config', {}
+    end
+
+    context 'with a hash' do
+      let(:config) { { exists: { paths: ['this.md'] } } }
+
       it_behaves_like 'a valid config'
+
+      context 'with project:' do
+        let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project' } } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'with project: and ref:' do
+        let(:config) { { exists: { paths: ['this.md'], project: 'path/to/project', ref: 'refs/heads/branch1' } } }
+
+        it_behaves_like 'a valid config'
+      end
+    end
+
+    context 'when FF `ci_support_rules_exists_paths_and_project` is disabled' do
+      let(:new_factory) do
+        Gitlab::Config::Entry::Factory.new(described_class).value(config)
+      end
+
+      subject(:new_entry) { new_factory.create! }
+
+      before do
+        stub_feature_flags(ci_support_rules_exists_paths_and_project: false)
+        new_entry.compose!
+      end
+
+      context 'when exists: clause is a string' do
+        let(:config) { { exists: './this.md' } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when exists: clause is an array' do
+        let(:config) { { exists: ['./this.md', './that.md'] } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when exists: clause is null' do
+        let(:config) { { exists: nil } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when exists: clause is a hash' do
+        let(:config) { { exists: { paths: ['abc.md'] } } }
+
+        it_behaves_like 'an invalid config', /should be an array of strings or a string/
+      end
     end
   end
 

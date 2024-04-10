@@ -40626,6 +40626,21 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
+msgid "ProjectsNewEdit|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
+msgstr ""
+
+msgid "ProjectsNewEdit|My awesome project"
+msgstr ""
+
+msgid "ProjectsNewEdit|Project description (optional)"
+msgstr ""
+
+msgid "ProjectsNewEdit|Project description is too long (maximum is %{count} characters)."
+msgstr ""
+
+msgid "ProjectsNewEdit|Project name is required."
+msgstr ""
+
 msgid "ProjectsNew|%d group or namespace found"
 msgid_plural "ProjectsNew|%d groups or namespaces found"
 msgstr[0] ""

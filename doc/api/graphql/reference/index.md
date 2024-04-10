@@ -133,6 +133,20 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.auditEventsInstanceStreamingDestinations`
+
+Instance-level external audit event streaming destinations.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`InstanceAuditEventStreamingDestinationConnection`](#instanceauditeventstreamingdestinationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.boardList`
 
 Find an issue board list.
@@ -12042,6 +12056,29 @@ The edge type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configu
 | ---- | ---- | ----------- |
 | <a id="instanceamazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="instanceamazons3configurationtypeedgenode"></a>`node` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | The item at the end of the edge. |
+
+#### `InstanceAuditEventStreamingDestinationConnection`
+
+The connection type for [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationconnectionedges"></a>`edges` | [`[InstanceAuditEventStreamingDestinationEdge]`](#instanceauditeventstreamingdestinationedge) | A list of edges. |
+| <a id="instanceauditeventstreamingdestinationconnectionnodes"></a>`nodes` | [`[InstanceAuditEventStreamingDestination]`](#instanceauditeventstreamingdestination) | A list of nodes. |
+| <a id="instanceauditeventstreamingdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceAuditEventStreamingDestinationEdge`
+
+The edge type for [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instanceauditeventstreamingdestinationedgenode"></a>`node` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | The item at the end of the edge. |
 
 #### `InstanceExternalAuditEventDestinationConnection`
 
@@ -28258,6 +28295,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
+| <a id="repositoryblobunicodeescapedblob"></a>`unicodeEscapedBlob` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Raw content of the blob where invalid UTF-8 characters are escaped to unicode. Returns `null` if the `unicode_escaped_data` feature flag is disabled. |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 
 #### Fields with arguments
@@ -32669,6 +32707,7 @@ Member role permission.
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
 | <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
+| <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows assigning security policy projects. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |

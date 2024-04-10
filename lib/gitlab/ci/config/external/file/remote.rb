@@ -20,11 +20,7 @@ module Gitlab
 
             def content
               fetch_with_error_handling do
-                if fetch_async_content
-                  fetch_async_content.value
-                else
-                  fetch_sync_content
-                end
+                fetch_async_content.value
               end
             end
             strong_memoize_attr :content
@@ -54,20 +50,12 @@ module Gitlab
             private
 
             def fetch_async_content
-              return unless YamlProcessor::FeatureFlags.enabled?(:ci_parallel_remote_includes)
-
               # It starts fetching the remote content in a separate thread and returns a lazy_response immediately.
               Gitlab::HTTP.get(location, async: true).tap do |lazy_response|
                 context.execute_remote_parallel_request(lazy_response)
               end
             end
             strong_memoize_attr :fetch_async_content
-
-            def fetch_sync_content
-              context.logger.instrument(:config_file_fetch_remote_content) do
-                Gitlab::HTTP.get(location)
-              end
-            end
 
             def fetch_with_error_handling
               begin

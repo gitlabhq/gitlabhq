@@ -67,8 +67,10 @@ module Organizations
       shared_organization_index_app_data.to_json
     end
 
-    def organization_projects_edit_app_data(project)
+    def organization_projects_edit_app_data(organization, project)
       {
+        projects_organization_path: groups_and_projects_organization_path(organization, { display: 'projects' }),
+        preview_markdown_path: preview_markdown_organizations_path,
         project: project.slice(:id, :name, :full_name, :description)
       }.to_json
     end

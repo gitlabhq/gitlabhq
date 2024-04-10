@@ -16,6 +16,9 @@
     "admin_push_rules": {
       "type": "boolean"
     },
+    "manage_security_policy_link": {
+      "type": "boolean"
+    },
     "admin_terraform_state": {
       "type": "boolean"
     },

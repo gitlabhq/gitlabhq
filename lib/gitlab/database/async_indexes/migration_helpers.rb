@@ -35,6 +35,17 @@ module Gitlab
         #
         # If the requested index has already been created, it is not stored in the table for
         # asynchronous creation.
+        #
+        # Note: The `add_index_options` is the same method Rails uses to generate the index creation statements.
+        # As such, we can pass index creation options to the method the same as we would standard index creation.
+        #
+        # Example usage:
+        #
+        # INITIAL_PIPELINE_INDEX = 'tmp_index_vulnerability_occurrences_id_and_initial_pipline_id'
+        # INITIAL_PIPELINE_COLUMNS = [:id, :initial_pipeline_id]
+        #
+        # prepare_async_index TABLE_NAME, INITIAL_PIPELINE_COLUMNS, name: INITIAL_PIPELINE_INDEX, where: 'initial_pipeline_id IS NULL'
+
         def prepare_async_index(table_name, column_name, **options)
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 

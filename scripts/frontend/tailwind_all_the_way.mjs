@@ -2,7 +2,7 @@
 
 /* eslint-disable import/extensions */
 
-import fs from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -26,50 +26,26 @@ const ROOT_PATH = path.resolve(path.dirname(PATH_TO_FILE), '../../');
 const tempDir = path.join(ROOT_PATH, 'config', 'helpers', 'tailwind');
 const allUtilitiesFile = path.join(tempDir, './all_utilities.haml');
 
-export async function convertUtilsToCSSInJS() {
-  console.log('# Compiling legacy styles');
-
-  await compileAllStyles({
-    style: 'expanded',
-    filter: (source) => source.includes('application_utilities_to_be_replaced'),
+async function writeCssInJs(data) {
+  const formatted = await prettier.format(data, {
+    printWidth: 100,
+    singleQuote: true,
+    arrowParens: 'always',
+    trailingComma: 'all',
+    parser: 'babel',
   });
+  return writeFile(path.join(tempDir, './css_in_js.js'), formatted, 'utf-8');
+}
 
-  fs.mkdirSync(tempDir, { recursive: true });
-
-  const oldUtilityDefinitions = extractRules(
-    loadCSSFromFile('app/assets/builds/application_utilities_to_be_replaced.css'),
-    { convertColors: true },
-  );
-
-  // Write out all found css classes in order to run tailwind on it.
-  fs.writeFileSync(
-    allUtilitiesFile,
-    Object.keys(oldUtilityDefinitions)
-      .map((clazz) => {
-        return (
-          // Add `gl-` prefix to all classes
-          `.gl-${clazz.substring(1)}`
-            // replace the escaped `\!` with !
-            .replace(/\\!/g, '!')
-        );
-      })
-      .join('\n'),
-  );
-
-  // Lazily require
-  const { default: tailwindConfig } = await import('../../config/tailwind.all_the_way.config.js');
-
-  const { css: tailwindClasses } = await postcss([
-    tailwindcss({
-      ...tailwindConfig,
-      // We only want to generate the utils based on the fresh
-      // allUtilitiesFile
-      content: [allUtilitiesFile],
-      // We are disabling all plugins, so that the css-to-js
-      // import doesn't cause trouble.
-      plugins: [],
-    }),
-  ]).process('@tailwind utilities;', { map: false, from: undefined });
+/**
+ * Writes the CSS in Js in compatibility mode. We write all the utils and we surface things we might
+ * want to look into (hardcoded colors, definition mismatches).
+ *
+ * @param {string} tailwindClasses
+ * @param {Object} oldUtilityDefinitionsRaw
+ */
+async function toCompatibilityUtils(tailwindClasses, oldUtilityDefinitionsRaw) {
+  const oldUtilityDefinitions = _.clone(oldUtilityDefinitionsRaw);
 
   const tailwindDefinitions = extractRules(tailwindClasses);
 
@@ -115,7 +91,7 @@ export async function convertUtilsToCSSInJS() {
 
   console.log(stats);
 
-  const output = await prettier.format(
+  await writeCssInJs(
     [
       stats.potentialMismatches &&
         `
@@ -153,18 +129,124 @@ const hardCodedColors = ${JSON.stringify(hardcodedColors, null, 2)};
     },
   );
 
-  fs.writeFileSync(path.join(tempDir, './css_in_js.js'), output);
+  return stats;
+}
 
-  console.log('# Rebuilding tailwind-all-the-way');
+/**
+ * Writes only the style definitions we actually need.
+ */
+async function toMinimalUtilities() {
+  // We re-import the config with a `?minimal` query in order to cache-bust
+  // the previously loaded config, which doesn't have the latest css_in_js
+  const { default: tailwindConfig } = await import(
+    '../../config/tailwind.all_the_way.config.js?minimal'
+  );
 
-  await buildTailwind({ tailWindAllTheWay: true });
+  const { css: tailwindClasses } = await postcss([
+    tailwindcss({
+      ...tailwindConfig,
+      // Disable all core plugins, all we care about are the legacy utils
+      // that are provided via addUtilities.
+      corePlugins: [],
+    }),
+  ]).process('@tailwind utilities;', { map: false, from: undefined });
+
+  const rules = extractRules(tailwindClasses);
+
+  const minimalUtils = Object.keys(rules).length;
+
+  await writeCssInJs(`
+      /**
+       * The following ${minimalUtils} definitions need to be migrated to Tailwind.
+       * Let's do this! 🚀
+       */
+      module.exports = ${JSON.stringify(rules)}`);
+
+  return { minimalUtils };
+}
+
+/**
+ * To run the script in compatibility mode:
+ *
+ * ./scripts/frontend/tailwind_all_the_way.mjs
+ *
+ * This forces the generation of all possible utilities and surfaces the ones that might require
+ * further investigation. Once the output has been verified, the script can be re-run in minimal
+ * mode to only generate the utilities that are used in the product:
+ *
+ * ./scripts/frontend/tailwind_all_the_way.mjs --only-used
+ *
+ */
+export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
+  console.log('# Compiling legacy styles');
+
+  await compileAllStyles({
+    style: 'expanded',
+    filter: (source) => source.includes('application_utilities_to_be_replaced'),
+  });
+
+  await mkdir(tempDir, { recursive: true });
+
+  const oldUtilityDefinitions = extractRules(
+    loadCSSFromFile('app/assets/builds/application_utilities_to_be_replaced.css'),
+    { convertColors: true },
+  );
+
+  // Write out all found css classes in order to run tailwind on it.
+  await writeFile(
+    allUtilitiesFile,
+    Object.keys(oldUtilityDefinitions)
+      .map((clazz) => {
+        return (
+          // Add `gl-` prefix to all classes
+          `.gl-${clazz.substring(1)}`
+            // replace the escaped `\!` with !
+            .replace(/\\!/g, '!')
+        );
+      })
+      .join('\n'),
+    'utf-8',
+  );
+
+  // Lazily import the tailwind config
+  const { default: tailwindConfig } = await import(
+    '../../config/tailwind.all_the_way.config.js?default'
+  );
+
+  const { css: tailwindClasses } = await postcss([
+    tailwindcss({
+      ...tailwindConfig,
+      // We only want to generate the utils based on the fresh
+      // allUtilitiesFile
+      content: [allUtilitiesFile],
+      // We are disabling all plugins, so that the css-to-js
+      // import doesn't cause trouble.
+      plugins: [],
+    }),
+  ]).process('@tailwind utilities;', { map: false, from: undefined });
+
+  const stats = await toCompatibilityUtils(tailwindClasses, oldUtilityDefinitions);
+
+  if (buildOnlyUsed) {
+    console.log('# Reducing utility definitions to minimally used');
+
+    const { minimalUtils } = await toMinimalUtilities();
+
+    console.log(`Went from ${stats.safeToUseLegacyUtils} => ${minimalUtils} utility classes`);
+  }
+
+  await buildTailwind({
+    tailWindAllTheWay: true,
+    content: buildOnlyUsed ? false : allUtilitiesFile,
+  });
 
   return stats;
 }
 
 if (PATH_TO_FILE.includes(path.resolve(process.argv[1]))) {
   console.log('Script called directly.');
-  convertUtilsToCSSInJS().catch((e) => {
+  console.log(`CWD${process.cwd()}`);
+  convertUtilsToCSSInJS({ buildOnlyUsed: process.argv.includes('--only-used') }).catch((e) => {
     console.warn(e);
     process.exitCode = 1;
   });

@@ -211,7 +211,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('*.md') +
       Dir.glob('changelogs/*') +
       Dir.glob('doc/.{markdownlint,vale}/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('keeps/**/*') +
       Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +

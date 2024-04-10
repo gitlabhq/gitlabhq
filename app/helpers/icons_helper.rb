@@ -184,13 +184,24 @@ module IconsHelper
   def known_sprites
     return if Rails.env.production?
 
-    @known_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
+    @known_sprites ||= parse_sprite_definition('icons.json')['icons']
   end
 
   def known_file_icon_sprites
     return if Rails.env.production?
 
-    @known_file_icon_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/file_icons/file_icons.json')))['icons']
+    @known_file_icon_sprites ||= parse_sprite_definition('file_icons/file_icons.json')['icons']
+  end
+
+  def parse_sprite_definition(sprite_definition)
+    Gitlab::Json.parse(
+      Rails.application
+           .assets_manifest
+           .find_sources(sprite_definition)
+           .first
+           .to_s
+           .force_encoding('UTF-8')
+    )
   end
 
   def memoized_icon(key)

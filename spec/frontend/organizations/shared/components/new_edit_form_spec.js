@@ -4,6 +4,7 @@ import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import OrganizationUrlField from '~/organizations/shared/components/organization_url_field.vue';
 import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   FORM_FIELD_NAME,
@@ -85,17 +86,7 @@ describe('NewEditForm', () => {
         anchor: 'organization-description-supported-markdown',
       }),
       textareaValue: '',
-      restrictedToolBarItems: [
-        'code',
-        'quote',
-        'bullet-list',
-        'numbered-list',
-        'task-list',
-        'collapsible-section',
-        'table',
-        'attach-file',
-        'full-screen',
-      ],
+      restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
     });
   });
 

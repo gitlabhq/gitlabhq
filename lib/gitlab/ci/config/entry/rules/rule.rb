@@ -14,10 +14,14 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
+          # Remove `exists` when FF `ci_support_rules_exists_paths_and_project` is removed
           attributes :if, :exists, :when, :start_in, :allow_failure, :interruptible
 
           entry :changes, Entry::Rules::Rule::Changes,
             description: 'File change condition rule.'
+
+          entry :exists, Entry::Rules::Rule::Exists,
+            description: 'File exists condition rule.'
 
           entry :variables, Entry::Variables,
             description: 'Environment variables to define for rule conditions.'
@@ -39,7 +43,7 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :if, expression: true
-              validates :exists, array_of_strings: true, length: { maximum: 50 }
+              validates :exists, array_of_strings: true, length: { maximum: 50 }, unless: :complex_exists_enabled?
               validates :allow_failure, boolean: true
               validates :interruptible, boolean: true
             end
@@ -61,12 +65,22 @@ module Gitlab
           end
 
           def value
-            config.merge(
-              changes: (changes_value if changes_defined?),
-              variables: (variables_value if variables_defined?),
-              needs: (needs_value if needs_defined?),
-              auto_cancel: (auto_cancel_value if auto_cancel_defined?)
-            ).compact
+            if complex_exists_enabled?
+              config.merge(
+                changes: (changes_value if changes_defined?),
+                exists: (exists_value if exists_defined?),
+                variables: (variables_value if variables_defined?),
+                needs: (needs_value if needs_defined?),
+                auto_cancel: (auto_cancel_value if auto_cancel_defined?)
+              ).compact
+            else
+              config.merge(
+                changes: (changes_value if changes_defined?),
+                variables: (variables_value if variables_defined?),
+                needs: (needs_value if needs_defined?),
+                auto_cancel: (auto_cancel_value if auto_cancel_defined?)
+              ).compact
+            end
           end
 
           def specifies_delay?
@@ -74,6 +88,10 @@ module Gitlab
           end
 
           def default
+          end
+
+          def complex_exists_enabled?
+            YamlProcessor::FeatureFlags.enabled?(:ci_support_rules_exists_paths_and_project, type: :gitlab_com_derisk)
           end
         end
       end

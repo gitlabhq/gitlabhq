@@ -2,4 +2,4 @@
 - add_to_breadcrumbs _('Groups and projects'), groups_and_projects_organization_path(@organization, { display: 'projects' })
 - add_to_breadcrumbs @project.name, project_path(@project)
 
-#js-organizations-projects-edit{ data: { app_data: organization_projects_edit_app_data(@project) } }
+#js-organizations-projects-edit{ data: { app_data: organization_projects_edit_app_data(@organization, @project) } }

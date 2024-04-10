@@ -317,9 +317,17 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   describe '#organization_projects_edit_app_data' do
     let_it_be(:project) { build_stubbed(:project, organization: organization) }
 
+    before do
+      allow(helper).to receive(:groups_and_projects_organization_path)
+        .with(organization, { display: 'projects' })
+        .and_return(groups_and_projects_organization_path)
+    end
+
     it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(project))).to eq(
+      expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(organization, project))).to eq(
         {
+          'projects_organization_path' => groups_and_projects_organization_path,
+          'preview_markdown_path' => preview_markdown_organizations_path,
           'project' => {
             'id' => project.id,
             'name' => project.name,

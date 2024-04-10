@@ -83,11 +83,14 @@ export const ISSUES_VIEW_TYPE_KEY = 'issuesViewType';
 export const ISSUES_LIST_VIEW_KEY = 'List';
 export const ISSUES_GRID_VIEW_KEY = 'Grid';
 
+export const CLOSED = __('Closed');
+export const CLOSED_MOVED = __('Closed (moved)');
+
 export const i18n = {
   actionsLabel: __('Actions'),
   calendarLabel: __('Subscribe to calendar'),
-  closed: __('Closed'),
-  closedMoved: __('Closed (moved)'),
+  closed: CLOSED,
+  closedMoved: CLOSED_MOVED,
   confidentialNo: __('No'),
   confidentialYes: __('Yes'),
   downvotes: __('Downvotes'),

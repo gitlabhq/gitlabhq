@@ -13,22 +13,38 @@ const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 export async function build({
   shouldWatch = false,
   tailWindAllTheWay = Boolean(process.env.TAILWIND_ALL_THE_WAY),
+  content = false,
 } = {}) {
+  const processorOptions = {
+    '--watch': shouldWatch,
+    '--output': path.join(ROOT_PATH, 'app/assets/builds', 'tailwind.css'),
+    '--input': path.join(ROOT_PATH, 'app/assets/stylesheets', 'tailwind.css'),
+  };
+
   let config = path.join(ROOT_PATH, 'config/tailwind.config.js');
-  let fileName = 'tailwind.css';
   if (tailWindAllTheWay) {
+    console.log('# Building "all the way" tailwind');
     config = path.join(ROOT_PATH, 'config/tailwind.all_the_way.config.js');
-    fileName = 'tailwind_all_the_way.css';
+    processorOptions['--output'] = path.join(
+      ROOT_PATH,
+      'app/assets/builds',
+      'tailwind_all_the_way.css',
+    );
+    processorOptions['--input'] = path.join(
+      ROOT_PATH,
+      'app/assets/stylesheets',
+      'tailwind_all_the_way.css',
+    );
+  } else {
+    console.log('# Building "normal" tailwind');
   }
 
-  const processor = await createProcessor(
-    {
-      '--watch': shouldWatch,
-      '--output': path.join(ROOT_PATH, 'app/assets/builds', fileName),
-      '--input': path.join(ROOT_PATH, 'app/assets/stylesheets', fileName),
-    },
-    config,
-  );
+  if (content) {
+    console.log(`Setting content to ${content}`);
+    processorOptions['--content'] = content;
+  }
+
+  const processor = await createProcessor(processorOptions, config);
 
   if (shouldWatch) {
     return processor.watch();

@@ -345,13 +345,15 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
         context 'when artifacts are stored remotely' do
           let(:proxy_download) { false }
           let(:job) { create(:ci_build, pipeline: pipeline) }
-          let(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+          let(:fixed_time) { Time.new(2001, 1, 1) }
+          let(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job, created_at: fixed_time) }
 
           before do
             stub_artifacts_object_storage(proxy_download: proxy_download)
 
             artifact
             job.reload
+            travel_to fixed_time
 
             get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
           end

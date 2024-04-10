@@ -4182,7 +4182,7 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 Use `exists` to run a job when certain files exist in the repository.
 
-**Keyword type**: Job keyword. You can use it only as part of a job.
+**Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
 
 **Possible inputs**:
 
@@ -4212,6 +4212,87 @@ job:
   the `exists` rules are checked more than 10,000 times.
 - A maximum of 50 patterns or file paths can be defined per `rules:exists` section.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
+- With job-level `rules:exists`, GitLab searches for the files in the project and
+  ref that runs the pipeline. When using [`include` with `rules:exists`](includes.md#include-with-rulesexists),
+  GitLab searches for the files in the project and ref of the file that contains the `include`
+  section. The project containing the `include` section can be different than the project
+  running the pipeline when using:
+  - [Nested includes](includes.md#use-nested-includes).
+  - [Compliance pipelines](../../user/group/compliance_pipelines.md).
+
+##### `rules:exists:paths`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+`rules:exists:paths` is the same as using [`rules:exists`](#rulesexists) without
+any subkeys. All additional details are the same.
+
+**Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
+
+**Possible inputs**:
+
+- An array of file paths.
+
+**Example of `rules:exists:paths`**:
+
+```yaml
+docker-build-1:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists:
+        - Dockerfile
+
+docker-build-2:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists:
+        paths:
+          - Dockerfile
+```
+
+In this example, both jobs have the same behavior.
+
+##### `rules:exists:project`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+Use `rules:exists:project` to specify the location in which to search for the files
+listed under [`rules:exists:paths`](#rulesexistspaths). Must be used with `rules:exists:paths`.
+
+**Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include), and it must be combined with `rules:exists:paths`.
+
+**Possible inputs**:
+
+- `exists:project`: A full project path, including namespace and group.
+- `exists:ref`: Optional. The commit ref to use to search for the file. The ref can be a tag, branch name, or SHA. Defaults to the `HEAD` of the project when not specified.
+
+**Example of `rules:exists:project`**:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - exists:
+        paths:
+          - Dockerfile
+        project: my-group/my-project
+        ref: v1.0.0
+```
+
+In this example, the `docker build` job is only included when the `Dockerfile` exists in
+the project `my-group/my-project` on the commit tagged with `v1.0.0`.
 
 #### `rules:allow_failure`
 
