@@ -235,7 +235,7 @@ fi
 
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Looking for Vale to lint prose, either installed locally or available in documentation linting image...${COLOR_RESET}\n"
-run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl --glob=${MD_DOC_PATH}" 'doc'
+run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl" "${MD_DOC_PATH}"
 
 if [ "$ERRORCODE" -ne 0 ]
 then

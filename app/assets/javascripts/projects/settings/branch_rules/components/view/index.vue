@@ -351,7 +351,7 @@ export default {
         @submitted="$apollo.queries.project.refetch()"
       >
         <template #rules>
-          <project-rules />
+          <project-rules :is-branch-rules-edit="true" />
         </template>
       </approval-rules-app>
     </template>

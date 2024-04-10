@@ -17,7 +17,7 @@ When the state of a feature flag changes, the developer who made the change
 
 Every feature introduced to the codebase, even if it's behind a disabled flag,
 must be documented. For more information, see
-[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment or Beta](../../policy/experiment-beta-support.md) features are usually behind a feature flag and must also be documented. For more information, see [Document Experiment or Beta features](experiment_beta.md).
+[the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment or Beta](../../policy/experiment-beta-support.md) features are usually behind a flag and must also be documented. For more information, see [Document Experiment or Beta features](experiment_beta.md).
 
 When the feature is [implemented in multiple merge requests](../feature_flags/index.md#feature-flags-in-gitlab-development),
 discuss the plan with your technical writer.
@@ -43,7 +43,7 @@ When you document feature flags, you must:
 
 ## Add history text
 
-When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the
+When the state of a flag changes (for example, from disabled by default to enabled by default), add the change to the
 [history](versions.md#add-a-history-item).
 
 Possible history entries are:
@@ -132,7 +132,7 @@ To make it available, an administrator can [enable the feature flag](../administ
 On GitLab.com and GitLab Dedicated, this feature is not available.
 ```
 
-When the feature is enabled by default on self-managed GitLab:
+When the feature is enabled by default on self-managed and GitLab Dedicated:
 
 ```markdown
 > - [Introduced](issue-link) in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
@@ -188,7 +188,7 @@ Combine entries if they happened in the same release:
   > - [Enabled on self-managed, GitLab.com, and GitLab Dedicated](issue-link) in GitLab 14.3.
   ```
 
-Delete `Enabled` entries when the feature is enabled by default for all offerings and the flag is removed:
+Delete `Enabled on GitLab.com` entries only when the feature is enabled by default for all offerings and the flag is removed:
 
 - Before:
 
@@ -203,5 +203,6 @@ Delete `Enabled` entries when the feature is enabled by default for all offering
 
   ```markdown
   > - [Introduced](issue-link) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+  > - [Enabled on self-managed and GitLab Dedicated](issue-link) in GitLab 15.7.
   > - [Generally available](issue-link) in GitLab 15.9. Feature flag `ci_hooks_pre_get_sources_script` removed.
   ```

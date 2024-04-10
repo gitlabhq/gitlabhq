@@ -3,3 +3,13 @@
 - if @group.licensed_feature_available?(:stale_runner_cleanup_for_namespace)
   .gl-mb-5
     #stale-runner-cleanup-form{ data: { group_full_path: @group.full_path, stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i } }
+
+- if @group.root? && Gitlab::CurrentSettings.allow_runner_registration_token
+  -# Only available to top-level groups when the registration token is available in the instance
+  .gl-mb-5
+  = gitlab_ui_form_for @group, url: group_settings_ci_cd_path(@group, anchor: 'runners-settings') do |f|
+    = f.hidden_field :allow_runner_registration_token, class: 'js-allow-runner-registration-token-input', value: @group.allow_runner_registration_token?
+    = render Pajamas::ToggleComponent.new(classes: 'js-allow-runner-registration-token-toggle',
+      label: s_("GroupSettings|Allow members of projects and groups to create runners with runner registration tokens"),
+      is_checked: @group.allow_runner_registration_token?) do
+      = s_("GroupSettings|When disabled, members will not be able to register runners using runner registration tokens. They can instead use runner authentication tokens as a more secure runner registration method.")

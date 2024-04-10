@@ -4950,6 +4950,32 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
+### `Mutation.instanceAuditEventStreamingDestinationsCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `InstanceAuditEventStreamingDestinationsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatecategory"></a>`category` | [`String!`](#string) | Destination category. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | Destination created. |
+
 ### `Mutation.instanceExternalAuditEventDestinationCreate`
 
 Input type: `InstanceExternalAuditEventDestinationCreateInput`
@@ -21984,6 +22010,19 @@ Stores instance level Amazon S3 configurations for audit event streaming.
 | <a id="instanceamazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="instanceamazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
+### `InstanceAuditEventStreamingDestination`
+
+Represents an external destination to stream instance level audit events.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="instanceauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="instanceauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="instanceauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
 ### `InstanceExternalAuditEventDestination`
 
 Represents an external resource to send instance audit events to.
@@ -34908,6 +34947,7 @@ Implementations:
 Implementations:
 
 - [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination)
+- [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination)
 
 ##### Fields
 

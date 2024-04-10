@@ -124,6 +124,8 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
+You can [view and restore groups marked for deletion](../../user/group/index.md#restore-a-group).
+
 ## Delayed project deletion
 
 DETAILS:
@@ -135,6 +137,8 @@ After May 08, 2023, all groups have delayed project deletion enabled by default.
 Projects are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
+
+You can [view and restore projects marked for deletion](../../user/project/working_with_projects.md#restore-a-project).
 
 ## Inactive project deletion
 

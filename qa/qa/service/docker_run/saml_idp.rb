@@ -97,7 +97,7 @@ module QA
 
           config = ERB.new(read_fixture('saml', "#{AUTHSOURCES_FILENAME}.erb")).result(binding)
           ::File.write(config_path, config)
-          config_path.gsub("/home/gitlab/qa", "/builds/gitlab-org/gitlab/qa")
+          config_path.gsub("/home/gitlab/qa", "/builds/#{File.join(Runtime::Env.ci_project_path, 'qa')}")
         end
       end
     end

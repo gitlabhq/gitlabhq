@@ -86,6 +86,10 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
+      def ci_project_path
+        ENV['CI_PROJECT_PATH']
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end

@@ -13,10 +13,11 @@ require 'digest'
 module Gitlab
   module Housekeeper
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [])
+      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [], target_branch: 'master')
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
+        @target_branch = target_branch
         require_keeps
 
         @keeps = if keeps
@@ -95,7 +96,7 @@ module Gitlab
       end
 
       def git
-        @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger)
+        @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger, branch_from: @target_branch)
       end
 
       def require_keeps
@@ -127,7 +128,7 @@ module Gitlab
         end
 
         puts '=> Diff:'
-        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', 'master', branch_name, '--',
+        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', @target_branch, branch_name, '--',
           *change.changed_files)
         puts
       end
@@ -136,7 +137,7 @@ module Gitlab
         non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
 
@@ -146,7 +147,7 @@ module Gitlab
           change: change,
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id,
           update_title: !non_housekeeper_changes.include?(:title),
           update_description: !non_housekeeper_changes.include?(:description),
@@ -159,7 +160,7 @@ module Gitlab
         gitlab_client.get_existing_merge_request(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
       end

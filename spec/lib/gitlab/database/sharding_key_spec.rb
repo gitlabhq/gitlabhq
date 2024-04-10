@@ -217,6 +217,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   def tables_missing_sharding_key(starting_from_milestone:)
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
+        !entry.exempt_from_sharding? &&
         entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.cell_local?(entry.gitlab_schema)
     end

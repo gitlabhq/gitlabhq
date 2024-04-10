@@ -558,3 +558,60 @@ Alternative solutions were discussed in
 ## Decisions
 
 - [ADR-001: Allow direct connections](decisions/001_direct_connections.md)
+
+## Future work
+
+AI Gateway aim is to become the primary method for the monolith to **access** machine learning models across all usages of GitLab and create a consistent user journey when developing AI-backed features. To do so, these goal is split down into three categories:
+
+- Centralized Access Through AI Gateway
+- Self Managed AI Gateway
+- Unit Primitives
+
+### Centralized Access Through AI Gateway
+
+The AI Gateway, a standalone service, is the sole access point for all communication between GitLab installations and third-party AI models. It is designed to centralize and manage access to all GitLab features, whether they are in-app functionalities or code suggestions, irrespective of their deployment methods. 
+
+This strategy significantly simplifies enterprise management and abstracts machine learning away from the monolith. With future expansions including telemetry, embeddings API, and multi-region/customer-specific deployments, our goal is to provide a scalable, comprehensive AI solution for all GitLab users, regardless of their installation type.
+
+[Model registry](../../../user/project/ml/model_registry/index.md) is a feature that allows users to use GitLab to manage the machine learning models. While not solely focused on large language models, and currently more targeted at smaller model applications, which could be deployed in various ways: as a standalone library, a service, a pod, a cloud deployment, and so forth. For these user-deployed models, the ability to auto-configure an API that's accessible through the AI Gateway could be a significant feature.
+
+- [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+
+### Unit Primitives
+
+Unit Primitives are a fundamental part of our strategy for managing access to AI features through the AI Gateway. They represent the smallest unit of functionality that can be accessed and managed through the Gateway. This approach provides a more granular control over the functionalities exposed through the AI Gateway and simplifies the management of AI features. It also paves the way for future work on supporting user-deployed models and locally hosted models. From a business perspective, unit primitives are the smallest pieces that may be shuffled across various tiers or packaging models, providing flexibility and adaptability in our offerings.
+
+In the initial iteration, we will support two primitives: Code Suggestions and Chat. The latter will encompass all Chat features in one primitive. 
+
+In the next iteration, we plan to decompose the Chat primitive into multiple primitives based on top-level tools. This work is dependent on the completion of the task to move classification into the AI Gateway. 
+
+The introduction of Unit Primitives will simplify the management of AI features and provide a more granular control over the functionalities exposed through the AI Gateway. This will also pave the way for future work on supporting user-deployed models and locally hosted models.
+
+For more details, refer to the [Initial Set of Unit Primitives](https://gitlab.com/gitlab-org/gitlab/-/issues/444934) issue.
+
+- [Unit Primitives for Accessing CC Features](https://gitlab.com/groups/gitlab-org/-/epics/12556)
+
+### Self Managed AI Gateway
+
+Self-managed instances can either use GitLab-hosted AI Gateway or have their own AI Gateway if they want to use self-deployed models, with Runway likely being the deployment method. This means part of our work will be to ensure that the AI Gateway can be deployed in a self-managed environment. This work will go hand-in-hand with the work to support locally hosted models (local inference) in support of GitLab AI features.
+
+- [Self Managed AI Gateway](https://gitlab.com/groups/gitlab-org/-/epics/13162)
+
+## Other components in the AI stack
+
+While AI Gateway centralizes _access_ to AI features and models, it interacts with other components to help users achieve their goals:
+
+- AI Agents: create and manage agents and prompts
+- Model registry: manage and deployment machine learning models
+
+### Model registry
+
+[Model registry](../../../user/project/ml/model_registry/index.md) is a feature that allows users to use GitLab to manage the machine learning models. While not solely focused on large language models, and currently more targeted at smaller model applications, which could be deployed in various ways: as a standalone library, a service, a pod, a cloud deployment, and so forth. For these user-deployed models, the ability to auto-configure an API that's accessible through the AI Gateway could be a significant feature.
+
+### AI Agents
+
+[AI Agents](https://gitlab.com/groups/gitlab-org/-/epics/12330) is a feature that allows users to implement and manage their own chats and AI features, managing prompts, models and tools. Development is currently in its early stages. Once mature, we intend to move GitLab feature to agents, but there are blockers that currently prevent us from doing so: 
+
+- [Lack of prompt templating](https://gitlab.com/gitlab-org/gitlab/-/issues/441081).
+- Implement replication of user-defined prompts into ai-gateway.
+- Implement replication of GitLab-defined prompts into self-managed installations (e.g., organization-level agents where we prepopulate with a few agents).

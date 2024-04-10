@@ -128,7 +128,7 @@ The following languages and dependency managers are supported:
       <td>Y</td>
     </tr>
     <tr>
-      <td rowspan="2">Java and Kotlin (not Android)<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
+      <td rowspan="2">Java and Kotlin<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup></td>
       <td rowspan="2">
         8 LTS,
         11 LTS,
@@ -237,7 +237,7 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
     <p>
-      Support for Kotlin projects for Android is tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336866">issue 336866</a>.
+      Android is supported when <a href="#analyzer-specific-settings"><code>DS_EXPERIMENTAL_GRADLE_BUILTIN_PARSER</code></a> is set to <code>true</code>.
     </p>
   </li>
   <li>

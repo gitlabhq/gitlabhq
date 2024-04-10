@@ -135,6 +135,36 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       expect(change2.keep_class).to eq(fake_keep)
     end
 
+    context 'when given target_branch' do
+      it 'branches from that target branch' do
+        # Branches get created
+        expect(::Gitlab::Housekeeper::Git).to receive(:new)
+          .with(logger: anything, branch_from: 'the-target-branch')
+          .and_return(git)
+
+        # Branches get shown and pushed
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', '--no-pager', 'diff', '--color=always', 'the-target-branch',
+            'the-identifier-for-the-first-change', '--', 'change1.txt', 'change2.txt')
+
+        # Merge requests get created
+        expect(gitlab_client).to receive(:create_or_update_merge_request)
+          .with(
+            change: change1,
+            source_project_id: '123',
+            source_branch: 'the-identifier-for-the-first-change',
+            target_branch: 'the-target-branch',
+            target_project_id: '456',
+            update_title: true,
+            update_description: true,
+            update_labels: true,
+            update_reviewers: true
+          ).twice.and_return({ 'web_url' => 'https://example.com' })
+
+        described_class.new(max_mrs: 1, keeps: [fake_keep], target_branch: 'the-target-branch').run
+      end
+    end
+
     context 'when given filter_identifiers' do
       it 'skips a change that does not match the filter_identifiers' do
         # Branches get created

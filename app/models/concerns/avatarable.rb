@@ -61,6 +61,10 @@ module Avatarable
       return uncached_avatar_path(only_path: only_path, size: size)
     end
 
+    if self.try(:static_avatar_path?)
+      return self.static_avatar_path(size)
+    end
+
     # Cache this avatar path only within the request because avatars in
     # object storage may be generated with time-limited, signed URLs.
     key = "#{self.class.name}:#{self.id}:#{only_path}:#{size}"

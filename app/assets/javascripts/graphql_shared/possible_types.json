@@ -56,7 +56,8 @@
     "InstanceExternalAuditEventDestination"
   ],
   "AuditEventStreamingDestinationInterface": [
-    "GroupAuditEventStreamingDestination"
+    "GroupAuditEventStreamingDestination",
+    "InstanceAuditEventStreamingDestination"
   ],
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"

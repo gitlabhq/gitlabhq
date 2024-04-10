@@ -9,7 +9,7 @@ gem 'activesupport', '~> 7.0.8.1' # This should stay in sync with the root's Gem
 gem 'allure-rspec', '~> 2.24.2'
 gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
-gem 'rake', '~> 13', '>= 13.2.0'
+gem 'rake', '~> 13', '>= 13.2.1'
 gem 'rspec', '~> 3.13'
 gem 'selenium-webdriver', '= 4.19.0'
 gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default

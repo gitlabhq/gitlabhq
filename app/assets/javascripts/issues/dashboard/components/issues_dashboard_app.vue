@@ -529,7 +529,6 @@ export default {
       <gl-empty-state
         :description="emptyStateDescription"
         :svg-path="emptyStateSvgPath"
-        :svg-height="150"
         :title="emptyStateTitle"
       />
     </template>
