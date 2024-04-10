@@ -42,6 +42,23 @@ You can set all new projects to have instance runners available by default.
 
 Any time a new project is created, the instance runners are available.
 
+## Enable runner registrations tokens
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 17.0
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+In GitLab 17.0, the use of runner registration tokens to create runners was disabled in all GitLab instances.
+Users must use runner authentication tokens instead.
+If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
+you can enable runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Select the **Allow runner registration token** checkbox.
+
 ## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific

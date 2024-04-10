@@ -408,7 +408,7 @@ class IssuableBaseService < ::BaseContainerService
 
       before_update(issuable, skip_spam_check: true)
 
-      if issuable.with_transaction_returning_status { issuable.save }
+      if issuable.with_transaction_returning_status { transaction_update_task(issuable) }
         create_system_notes(issuable, old_labels: nil)
 
         handle_task_changes(issuable)
@@ -425,6 +425,10 @@ class IssuableBaseService < ::BaseContainerService
     end
 
     issuable
+  end
+
+  def transaction_update_task(issuable)
+    issuable.save
   end
 
   # Handle the `update_task` event sent from UI.  Attempts to update a specific

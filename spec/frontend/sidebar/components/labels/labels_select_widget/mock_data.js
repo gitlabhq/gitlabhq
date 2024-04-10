@@ -178,6 +178,7 @@ export const updateLabelsMutationResponse = {
           name: 'John Smith',
           username: 'jsmith',
           webUrl: 'http://gdk.test:3000/jsmith',
+          webPath: '/jsmith',
           __typename: 'UserCore',
         },
         __typename: 'Issue',

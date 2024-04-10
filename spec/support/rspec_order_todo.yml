@@ -2093,7 +2093,6 @@
 - './ee/spec/requests/api/project_approval_settings_spec.rb'
 - './ee/spec/requests/api/project_approvals_spec.rb'
 - './ee/spec/requests/api/project_clusters_spec.rb'
-- './ee/spec/requests/api/project_import_spec.rb'
 - './ee/spec/requests/api/project_milestones_spec.rb'
 - './ee/spec/requests/api/project_mirror_spec.rb'
 - './ee/spec/requests/api/project_push_rule_spec.rb'

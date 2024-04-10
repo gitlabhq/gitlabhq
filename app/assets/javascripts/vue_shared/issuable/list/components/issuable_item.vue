@@ -334,7 +334,7 @@ export default {
                   :data-username="author.username"
                   :data-name="author.name"
                   :data-avatar-url="author.avatarUrl"
-                  :href="author.webUrl"
+                  :href="author.webPath"
                   data-testid="issuable-author"
                   class="author-link js-user-link gl-font-sm gl-text-gray-500!"
                 >

@@ -176,6 +176,7 @@ export const mockAssigneesList = [
     avatar_url: 'https://www.gravatar.com/avatar/598fd02741ac58b88854a99d16704309?s=80&d=identicon',
     web_url: 'http://127.0.0.1:3001/monserrate.gleichner',
     path: '/monserrate.gleichner',
+    webPath: '/monserrate.gleichner',
   },
   {
     id: 12,
@@ -185,6 +186,7 @@ export const mockAssigneesList = [
     avatar_url: 'https://www.gravatar.com/avatar/e021a7b0f3e4ae53b5068d487e68c031?s=80&d=identicon',
     web_url: 'http://127.0.0.1:3001/tana_harvey',
     path: '/tana_harvey',
+    webPath: '/tana_harvey',
   },
   {
     id: 20,
@@ -194,6 +196,7 @@ export const mockAssigneesList = [
     avatar_url: 'https://www.gravatar.com/avatar/c43c506cb6fd7b37017d3b54b94aa937?s=80&d=identicon',
     web_url: 'http://127.0.0.1:3001/juliana_gulgowski',
     path: '/juliana_gulgowski',
+    webPath: '/juliana_gulgowski',
   },
   {
     id: 6,
@@ -203,6 +206,7 @@ export const mockAssigneesList = [
     avatar_url: 'https://www.gravatar.com/avatar/cc2518f2c6f19f8fac49e1a5ee092a9b?s=80&d=identicon',
     web_url: 'http://127.0.0.1:3001/melynda',
     path: '/melynda',
+    webPath: '/melynda',
   },
   {
     id: 1,
@@ -212,6 +216,7 @@ export const mockAssigneesList = [
     avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
     web_url: 'http://127.0.0.1:3001/root',
     path: '/root',
+    webPath: '/root',
   },
 ];
 

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
-    describe 'CI component' do
+    describe 'CI component', :skip_live_env do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:tag) { '1.0.0' }
       let(:test_stage) { 'test' }

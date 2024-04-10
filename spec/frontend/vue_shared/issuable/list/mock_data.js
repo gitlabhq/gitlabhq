@@ -11,6 +11,7 @@ export const mockAuthor = {
   name: 'Administrator',
   username: 'root',
   webUrl: 'http://0.0.0.0:3000/root',
+  webPath: '/root',
 };
 
 export const mockRegularLabel = {

@@ -29,6 +29,7 @@ const assignee = {
   name: 'Developer',
   username: 'dev',
   webUrl: '/dev',
+  webPath: '/dev',
   status: null,
 };
 

@@ -22,7 +22,8 @@ describe('Container protection rules project settings', () => {
   const $toast = { show: jest.fn() };
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
-  const findTable = () => extendedWrapper(wrapper.findByRole('table', /protected Container/i));
+  const findTable = () =>
+    extendedWrapper(wrapper.findByRole('table', { name: /protected containers/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -189,7 +190,7 @@ describe('Container protection rules project settings', () => {
           .mockResolvedValueOnce(containerProtectionRuleQueryPayload());
 
         const findPaginationButtonPrev = () =>
-          extendedWrapper(findPagination()).findByRole('button', { name: 'Previous' });
+          extendedWrapper(findPagination()).findByRole('button', { name: /previous/i });
 
         beforeEach(async () => {
           createComponent({ containerProtectionRuleQueryResolver });
@@ -228,7 +229,7 @@ describe('Container protection rules project settings', () => {
           );
 
         const findPaginationButtonNext = () =>
-          extendedWrapper(findPagination()).findByRole('button', { name: 'Next' });
+          extendedWrapper(findPagination()).findByRole('button', { name: /next/i });
 
         beforeEach(async () => {
           createComponent({ containerProtectionRuleQueryResolver });

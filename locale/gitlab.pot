@@ -16997,6 +16997,9 @@ msgid_plural "Delete %d rows"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Delete rule"
+msgstr ""
+
 msgid "Delete selected"
 msgstr ""
 
@@ -26786,6 +26789,9 @@ msgstr ""
 msgid "Incidents|Must start with http or https"
 msgstr ""
 
+msgid "Incidents|Must start with http:// or https://"
+msgstr ""
+
 msgid "Incident|Add new timeline event"
 msgstr ""
 
@@ -35947,7 +35953,10 @@ msgstr ""
 msgid "PackageRegistry|Add composer registry"
 msgstr ""
 
-msgid "PackageRegistry|Add package protection rule"
+msgid "PackageRegistry|Add protection rule"
+msgstr ""
+
+msgid "PackageRegistry|Add rule"
 msgstr ""
 
 msgid "PackageRegistry|Additional metadata"
@@ -36208,6 +36217,9 @@ msgstr ""
 msgid "PackageRegistry|Maven XML"
 msgstr ""
 
+msgid "PackageRegistry|Name pattern"
+msgstr ""
+
 msgid "PackageRegistry|Npm"
 msgstr ""
 
@@ -36246,19 +36258,10 @@ msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "PackageRegistry|Package name pattern"
-msgstr ""
-
 msgid "PackageRegistry|Package protection rule deleted."
 msgstr ""
 
 msgid "PackageRegistry|Package protection rule updated."
-msgstr ""
-
-msgid "PackageRegistry|Package protection rules"
-msgstr ""
-
-msgid "PackageRegistry|Package type"
 msgstr ""
 
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
@@ -36283,6 +36286,9 @@ msgid "PackageRegistry|Pip Command"
 msgstr ""
 
 msgid "PackageRegistry|Project-level"
+msgstr ""
+
+msgid "PackageRegistry|Protected packages"
 msgstr ""
 
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."
@@ -36415,6 +36421,9 @@ msgid "PackageRegistry|This NuGet package has no dependencies."
 msgstr ""
 
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
+msgstr ""
+
+msgid "PackageRegistry|Type"
 msgstr ""
 
 msgid "PackageRegistry|Unable to fetch package version information."

@@ -65,13 +65,13 @@ Each compliance violation has one of the following severities.
 
 <!-- vale gitlab.SubstitutionWarning = NO -->
 
-| Icon                                          | Severity level |
-|:----------------------------------------------|:---------------|
-| **{severity-critical, 18, gl-fill-red-800}**  | Critical       |
-| **{severity-high, 18, gl-fill-red-600}**      | High           |
-| **{severity-medium, 18, gl-fill-orange-400}** | Medium         |
-| **{severity-low, 18, gl-fill-orange-300}**    | Low            |
-| **{severity-info, 18, gl-fill-blue-400}**     | Info           |
+| Icon                    | Severity level |
+|:------------------------|:---------------|
+| **{severity-critical}** | Critical       |
+| **{severity-high}**     | High           |
+| **{severity-medium}**   | Medium         |
+| **{severity-low}**      | Low            |
+| **{severity-info}**     | Info           |
 
 <!-- vale gitlab.SubstitutionWarning = YES -->
 

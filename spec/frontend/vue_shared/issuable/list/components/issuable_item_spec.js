@@ -439,7 +439,7 @@ describe('IssuableItem', () => {
         'data-username': mockAuthor.username,
         'data-name': mockAuthor.name,
         'data-avatar-url': mockAuthor.avatarUrl,
-        href: mockAuthor.webUrl,
+        href: mockAuthor.webPath,
       });
       expect(authorEl.text()).toBe(mockAuthor.name);
     });

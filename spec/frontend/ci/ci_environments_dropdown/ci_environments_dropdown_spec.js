@@ -5,7 +5,7 @@ import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown
 describe('Ci environments dropdown', () => {
   let wrapper;
 
-  const envs = ['dev', 'prod', 'staging'];
+  const envs = ['DEV', 'PROD', 'STAGING'];
   const defaultProps = {
     isEnvironmentRequired: true,
     areEnvironmentsLoading: false,
@@ -200,7 +200,7 @@ describe('Ci environments dropdown', () => {
         await findListbox().vm.$emit('search', searchTerm);
 
         expect(findAllListboxItems()).toHaveLength(envs.length + 1);
-        expect(findListboxItemByIndex(1).text()).toBe(searchTerm);
+        expect(findListboxItemByIndex(0).text()).toBe(searchTerm);
       });
 
       it('excludes new environment scope in search if it does not match the search term', async () => {

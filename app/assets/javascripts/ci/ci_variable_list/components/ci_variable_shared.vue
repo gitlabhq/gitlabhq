@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import {
+  ENVIRONMENT_FETCH_ERROR,
   ENVIRONMENT_QUERY_LIMIT,
   mapEnvironmentNames,
 } from '~/ci/common/private/ci_environments_dropdown';
@@ -13,7 +14,6 @@ import {
   SORT_DIRECTIONS,
   UPDATE_MUTATION_ACTION,
   mapMutationActionToToast,
-  environmentFetchErrorText,
   genericMutationErrorText,
   variableFetchErrorText,
 } from '../constants';
@@ -176,7 +176,7 @@ export default {
         return mapEnvironmentNames(this.queryData.environments.lookup(data)?.nodes);
       },
       error() {
-        createAlert({ message: environmentFetchErrorText });
+        createAlert({ message: ENVIRONMENT_FETCH_ERROR });
       },
     },
   },

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', product_group: :pipeline_authoring do
-    describe 'CI catalog' do
+    describe 'CI catalog', :skip_live_env do
       let(:project_count) { 3 }
 
       let(:catalog_project_list) do
@@ -27,7 +27,7 @@ module QA
       end
 
       shared_examples 'ascending order' do |testcase|
-        it 'displays from first to last', :skip_live_env, testcase: testcase do
+        it 'displays from first to last', testcase: testcase do
           Page::Explore::CiCdCatalog.perform do |catalog|
             catalog.sort_in_ascending_order
             expect(bottom_projects_from_ui(catalog)).to eql(test_project_names)

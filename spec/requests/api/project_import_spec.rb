@@ -43,7 +43,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'POST /projects/import' do
-    subject { upload_archive(file_upload, workhorse_headers, params) }
+    subject(:perform_archive_upload) { upload_archive(file_upload, workhorse_headers, params) }
 
     let(:file_upload) { fixture_file_upload(file) }
 
@@ -62,7 +62,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it_behaves_like 'requires import source to be enabled'
 
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
-      control = ActiveRecord::QueryRecorder.new { subject }
+      control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
 
       expect(control.count).to be <= 111
     end
@@ -71,7 +71,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       stub_import(namespace)
       params[:namespace] = namespace.id
 
-      subject
+      perform_archive_upload
 
       expect(response).to have_gitlab_http_status(:created)
     end
@@ -80,7 +80,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       stub_import(namespace)
       params[:namespace] = namespace.full_path
 
-      subject
+      perform_archive_upload
 
       expect(response).to have_gitlab_http_status(:created)
     end
@@ -93,7 +93,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         params[:name] = expected_name
         params[:namespace] = namespace.id
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -103,7 +103,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         params[:name] = expected_name
         params[:namespace] = namespace.full_path
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -113,7 +113,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         params[:name] = expected_name
         params[:namespace] = namespace.full_path
 
-        subject
+        perform_archive_upload
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq(expected_name)
@@ -125,7 +125,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         params[:namespace] = namespace.full_path
         params[:overwrite] = true
 
-        subject
+        perform_archive_upload
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq('new project name')
@@ -136,7 +136,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         params[:name] = nil
         params[:namespace] = namespace.full_path
 
-        subject
+        perform_archive_upload
 
         project = Project.find(json_response['id'])
         expect(project.name).to eq('test-import')
@@ -148,7 +148,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         stub_import(user.namespace)
         params[:path] = 'test-import2'
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -162,7 +162,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           params[:namespace] = nil
           params[:path] = 'test-import3'
 
-          subject
+          perform_archive_upload
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq("Namespace is not valid")
@@ -177,7 +177,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       params[:namespace] = 'nonexistent'
       params[:path] = 'test-import2'
 
-      subject
+      perform_archive_upload
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
@@ -190,7 +190,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       params[:path] = 'test-import3'
       params[:namespace] = new_namespace.full_path
 
-      subject
+      perform_archive_upload
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Namespace Not Found')
@@ -203,7 +203,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         expect_any_instance_of(ProjectImportState).not_to receive(:schedule)
         params[:namespace] = user.namespace.full_path
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq("Namespace is not valid")
@@ -218,7 +218,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
         params[:path] = 'test-import3'
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']['error']).to eq('You need to upload a GitLab project export archive (ending in .gz).')
@@ -232,7 +232,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       params[:namespace] = namespace.id
       params[:override_params] = override_params
 
-      subject
+      perform_archive_upload
 
       import_project = Project.find(json_response['id'])
 
@@ -246,7 +246,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       params[:namespace] = namespace.id
       params[:override_params] = override_params
 
-      subject
+      perform_archive_upload
 
       import_project = Project.find(json_response['id'])
 
@@ -261,7 +261,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
         params[:path] = existing_project.path
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Path has already been taken')
@@ -274,7 +274,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           params[:path] = existing_project.path
           params[:overwrite] = true
 
-          subject
+          perform_archive_upload
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -289,7 +289,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       it 'prevents users from importing projects' do
         params[:namespace] = namespace.id
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
@@ -318,7 +318,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         stub_import(namespace)
         params[:namespace] = namespace.id
 
-        subject
+        perform_archive_upload
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -342,7 +342,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'POST /projects/remote-import' do
-    subject do
+    subject(:perform_remote_import) do
       post api('/projects/remote-import', user), params: params
     end
 
@@ -370,7 +370,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           .to receive(:execute)
           .and_return(service_response)
 
-        subject
+        perform_remote_import
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to include({
@@ -393,7 +393,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           .to receive(:execute)
           .and_return(service_response)
 
-        subject
+        perform_remote_import
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({
@@ -404,7 +404,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'POST /projects/remote-import-s3' do
-    subject do
+    subject(:perform_import_from_s3) do
       post api('/projects/remote-import-s3', user), params: params
     end
 
@@ -436,7 +436,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           .to receive(:execute)
           .and_return(service_response)
 
-        subject
+        perform_import_from_s3
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to include({
@@ -459,7 +459,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           .to receive(:execute)
           .and_return(service_response)
 
-        subject
+        perform_import_from_s3
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({
@@ -513,13 +513,13 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'POST /projects/import/authorize' do
-    subject { post api('/projects/import/authorize', user), headers: workhorse_headers }
+    subject(:authorize_import) { post api('/projects/import/authorize', user), headers: workhorse_headers }
 
     it_behaves_like 'requires authentication'
     it_behaves_like 'requires import source to be enabled'
 
     it 'authorizes importing project with workhorse header' do
-      subject
+      authorize_import
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
@@ -529,7 +529,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it 'rejects requests that bypassed gitlab-workhorse' do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
-      subject
+      authorize_import
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
@@ -541,7 +541,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         end
 
         it 'responds with status 200, location of file remote store and object details' do
-          subject
+          authorize_import
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
@@ -560,7 +560,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
         end
 
         it 'handles as a local file' do
-          subject
+          authorize_import
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)

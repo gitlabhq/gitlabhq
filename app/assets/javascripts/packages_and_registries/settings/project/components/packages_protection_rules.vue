@@ -42,7 +42,7 @@ export default {
   },
   inject: ['projectPath'],
   i18n: {
-    settingBlockTitle: s__('PackageRegistry|Package protection rules'),
+    settingBlockTitle: s__('PackageRegistry|Protected packages'),
     settingBlockDescription: s__(
       'PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package.',
     ),
@@ -229,24 +229,24 @@ export default {
   fields: [
     {
       key: 'col_1_package_name_pattern',
-      label: s__('PackageRegistry|Package name pattern'),
-      tdClass: 'gl-w-30',
+      label: s__('PackageRegistry|Name pattern'),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'col_2_package_type',
-      label: s__('PackageRegistry|Package type'),
-      tdClass: 'gl-w-10',
+      label: s__('PackageRegistry|Type'),
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'col_3_push_protected_up_to_access_level',
       label: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
-      tdClass: 'gl-w-15',
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'col_4_actions',
       label: '',
       thClass: 'gl-display-none',
-      tdClass: 'gl-w-10',
+      tdClass: 'gl-vertical-align-middle! gl-text-right',
     },
   ],
   modal: { id: 'delete-package-protection-rule-confirmation-modal' },
@@ -276,7 +276,7 @@ export default {
                 :disabled="isAddProtectionRuleButtonDisabled"
                 @click="showProtectionRuleForm"
               >
-                {{ s__('PackageRegistry|Add package protection rule') }}
+                {{ s__('PackageRegistry|Add protection rule') }}
               </gl-button>
             </div>
           </div>
@@ -313,6 +313,7 @@ export default {
             <template #cell(col_3_push_protected_up_to_access_level)="{ item }">
               <gl-form-select
                 v-model="item.pushProtectedUpToAccessLevel"
+                class="gl-max-w-34"
                 required
                 :aria-label="$options.i18n.pushProtectedUpToAccessLevel"
                 :options="pushProtectedUpToAccessLevelOptions"
@@ -329,14 +330,15 @@ export default {
                 size="small"
                 :disabled="isProtectionRuleDeleteButtonDisabled(item)"
                 @click="showProtectionRuleDeletionConfirmModal(item)"
-                >{{ __('Delete') }}</gl-button
+                >{{ __('Delete rule') }}</gl-button
               >
             </template>
           </gl-table>
 
-          <div class="gl-display-flex gl-justify-content-center gl-mb-3">
+          <div class="gl-display-flex gl-justify-content-center">
             <gl-keyset-pagination
               v-bind="packageProtectionRulesQueryPageInfo"
+              class="gl-mb-3"
               :prev-text="__('Previous')"
               :next-text="__('Next')"
               @prev="onPrevPage"

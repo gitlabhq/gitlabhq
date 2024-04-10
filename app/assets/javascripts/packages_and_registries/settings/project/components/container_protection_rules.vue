@@ -148,17 +148,17 @@ export default {
     {
       key: 'repositoryPathPattern',
       label: s__('ContainerRegistry|Repository path pattern'),
-      tdClass: 'gl-w-30 gl-vertical-align-middle!',
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'pushProtectedUpToAccessLevel',
       label: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
-      tdClass: 'gl-w-15 gl-vertical-align-middle!',
+      tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'deleteProtectedUpToAccessLevel',
       label: I18N_DELETE_PROTECTED_UP_TO_ACCESS_LEVEL,
-      tdClass: 'gl-w-15 gl-vertical-align-middle!',
+      tdClass: 'gl-vertical-align-middle!',
     },
   ],
 };
@@ -207,12 +207,10 @@ export default {
             </template>
           </gl-table>
 
-          <div
-            v-if="shouldShowPagination"
-            class="gl-display-flex gl-justify-content-center gl-mb-3"
-          >
+          <div v-if="shouldShowPagination" class="gl-display-flex gl-justify-content-center">
             <gl-keyset-pagination
               v-bind="protectionRulesQueryPageInfo"
+              class="gl-mb-3"
               :prev-text="__('Previous')"
               :next-text="__('Next')"
               @prev="onPrevPage"
