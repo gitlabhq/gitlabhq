@@ -13,14 +13,10 @@ module Gitlab
             ALLOWED_KEYS = %i[if exists when changes].freeze
             ALLOWED_WHEN = %w[never always].freeze
 
-            # Remove `exists` when FF `ci_support_rules_exists_paths_and_project` is removed
             attributes :if, :exists, :when
 
             entry :changes, Entry::Rules::Rule::Changes,
               description: 'File change condition rule.'
-
-            entry :exists, Entry::Rules::Rule::Exists,
-              description: 'File exists condition rule.'
 
             validations do
               validates :config, presence: true
@@ -29,26 +25,15 @@ module Gitlab
 
               with_options allow_nil: true do
                 validates :if, expression: true
-                validates :exists, array_of_strings_or_string: true, allow_blank: true, unless: :complex_exists_enabled?
+                validates :exists, array_of_strings_or_string: true, allow_blank: true
                 validates :when, allowed_values: { in: ALLOWED_WHEN }
               end
             end
 
             def value
-              if complex_exists_enabled?
-                config.merge(
-                  changes: (changes_value if changes_defined?),
-                  exists: (exists_value if exists_defined?)
-                ).compact
-              else
-                config.merge(
-                  changes: (changes_value if changes_defined?)
-                ).compact
-              end
-            end
-
-            def complex_exists_enabled?
-              YamlProcessor::FeatureFlags.enabled?(:ci_support_rules_exists_paths_and_project, type: :gitlab_com_derisk)
+              config.merge(
+                changes: (changes_value if changes_defined?)
+              ).compact
             end
           end
         end

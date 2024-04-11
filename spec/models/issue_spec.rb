@@ -1189,8 +1189,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     context 'with a group level issue' do
-      let(:group) { create(:group) }
-      let(:issue) { build(:work_item, namespace: group) }
+      let_it_be(:group) { create(:group) }
+      let(:issue) { build(:work_item, :group_level, namespace: group) }
 
       context 'when readable_by? is false' do
         it 'returns false' do
@@ -1200,19 +1200,37 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       context 'when readable_by? is true' do
+        before do
+          allow(issue).to receive(:readable_by?).and_return true
+        end
+
+        it { is_expected.to eq(true) }
+
         context 'when user.can_read_all_resources? is true' do
-          it 'returns true' do
+          before do
             allow(user).to receive(:can_read_all_resources?).and_return true
+          end
+
+          it { is_expected.to eq(true) }
+
+          it 'does not check project external authorization' do
+            expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
 
             is_expected.to eq(true)
           end
         end
 
         context 'when user.can_read_all_resources? is false' do
-          it 'returns false' do
+          before do
             allow(user).to receive(:can_read_all_resources?).and_return false
+          end
 
-            is_expected.to eq(false)
+          it { is_expected.to eq(true) }
+
+          it 'does not check project external authorization' do
+            expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+            is_expected.to eq(true)
           end
         end
       end

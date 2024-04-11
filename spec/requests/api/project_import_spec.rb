@@ -512,6 +512,114 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
   end
 
+  describe 'POST /projects/:id/import-relation' do
+    subject(:perform_relation_import) { upload_relation_archive(file_upload, workhorse_headers, params) }
+
+    let(:file_upload) { fixture_file_upload(file) }
+
+    let(:params) do
+      {
+        path: 'test-import',
+        relation: 'issues',
+        'file.size' => file_upload.size
+      }
+    end
+
+    before do
+      allow(ImportExportUploader).to receive(:workhorse_upload_path).and_return('/')
+    end
+
+    it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
+
+    it 'executes a limited number of queries', :use_clean_rails_redis_caching do
+      control = ActiveRecord::QueryRecorder.new { perform_relation_import }
+
+      expect(control.count).to be <= 111
+    end
+
+    context 'when the project is valid' do
+      context 'and the user is a maintainer' do
+        it 'allows the import' do
+          project = create(
+            :project,
+            name: 'test-import',
+            path: 'test-import'
+          )
+
+          project.add_maintainer(user)
+
+          params[:path] = project.full_path
+
+          perform_relation_import
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    it 'does not schedule a relation import for a project that does not exist' do
+      params[:path] = 'missing/test-import'
+
+      perform_relation_import
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('Project not found')
+    end
+
+    it 'does not schedule a relation import if the user has no permission to the project' do
+      project = create(
+        :project,
+        name: 'test-import',
+        path: 'test-import'
+      )
+
+      params[:path] = project.full_path
+
+      perform_relation_import
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['message']).to eq('You are not authorized to perform this action')
+    end
+
+    context 'if user uploads no valid file' do
+      let(:file) { 'README.md' }
+
+      it 'does not schedule a relation import' do
+        params[:path] = 'test-import'
+
+        perform_relation_import
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']['error']).to eq('You need to upload a GitLab project export archive (ending in .gz).')
+      end
+    end
+
+    context 'when request exceeds the rate limit' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      end
+
+      it 'prevents users from importing relations' do
+        perform_relation_import
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+    end
+
+    def upload_relation_archive(file, headers = {}, params = {})
+      workhorse_finalize(
+        api("/projects/import-relation", user),
+        method: :post,
+        file_key: :file,
+        params: params.merge(file: file),
+        headers: headers,
+        send_rewritten_field: true
+      )
+    end
+  end
+
   describe 'POST /projects/import/authorize' do
     subject(:authorize_import) { post api('/projects/import/authorize', user), headers: workhorse_headers }
 
@@ -568,6 +676,29 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
           expect(json_response['RemoteObject']).to be_nil
         end
       end
+    end
+  end
+
+  describe 'POST /projects/import-relation/authorize' do
+    subject(:authorize_import) { post api('/projects/import-relation/authorize', user), headers: workhorse_headers }
+
+    it_behaves_like 'requires authentication'
+    it_behaves_like 'requires import source to be enabled'
+
+    it 'authorizes importing project with workhorse header' do
+      authorize_import
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+      expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
+    end
+
+    it 'rejects requests that bypassed gitlab-workhorse' do
+      workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+
+      authorize_import
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

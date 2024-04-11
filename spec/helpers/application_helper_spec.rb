@@ -559,6 +559,7 @@ RSpec.describe ApplicationHelper do
             group_full_path: nil,
             project_id: project.id,
             project: project.path,
+            project_full_path: project.full_path,
             namespace_id: project.namespace.id
           }
         )
@@ -578,6 +579,7 @@ RSpec.describe ApplicationHelper do
               group_full_path: project.group.full_path,
               project_id: project.id,
               project: project.path,
+              project_full_path: project.full_path,
               namespace_id: project.namespace.id
             }
           )
@@ -605,6 +607,7 @@ RSpec.describe ApplicationHelper do
                 group_full_path: nil,
                 project_id: issue.project.id,
                 project: issue.project.path,
+                project_full_path: project.full_path,
                 namespace_id: issue.project.namespace.id
               }
             )

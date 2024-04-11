@@ -62,16 +62,29 @@ The parent epic's start date then reflects this change and propagates upwards to
 
 ### Epic color
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) on GitLab.com, GitLab Dedicated, and self-managed in GitLab 16.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
+On self-managed GitLab, by default this feature is available. To disable it per group, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-On GitLab Dedicated, this feature is not available.
+On GitLab Dedicated, this feature is available.
 This feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.
 An epic's color is shown in [roadmaps](../roadmap/index.md), and [epic boards](epic_boards.md).
+
+To do this:
+
+1. Create a new epic, or edit an existing epic.
+1. Go to the epic's **Detail** page.
+1. Select a **Color**, then save your changes.
+
+The epic's color is shown on roadmaps and epic boards.
 
 ## Edit an epic
 

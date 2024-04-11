@@ -12,4 +12,4 @@
     = render Pajamas::ToggleComponent.new(classes: 'js-allow-runner-registration-token-toggle',
       label: s_("GroupSettings|Allow members of projects and groups to create runners with runner registration tokens"),
       is_checked: @group.allow_runner_registration_token?) do
-      = s_("GroupSettings|When disabled, members will not be able to register runners using runner registration tokens. They can instead use runner authentication tokens as a more secure runner registration method.")
+      = s_("GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method.")

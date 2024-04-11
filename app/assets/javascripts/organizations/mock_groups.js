@@ -7,6 +7,7 @@
 export const organizationGroups = [
   {
     id: 'gid://gitlab/Group/29',
+    fullPath: 'group/29',
     fullName: 'Commit451',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/Commit451',
@@ -27,6 +28,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/33',
+    fullPath: 'group/33',
     fullName: 'Flightjs',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/flightjs',
@@ -47,6 +49,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/24',
+    fullPath: 'group/24',
     fullName: 'Gitlab Org',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/gitlab-org',
@@ -67,6 +70,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/27',
+    fullPath: 'group/27',
     fullName: 'Gnuwget',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/gnuwgetf',
@@ -87,6 +91,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/31',
+    fullPath: 'group/31',
     fullName: 'Jashkenas',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/jashkenas',
@@ -106,6 +111,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/22',
+    fullPath: 'group/22',
     fullName: 'Toolbox',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/toolbox',
@@ -126,6 +132,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/35',
+    fullPath: 'group/35',
     fullName: 'Twitter',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/twitter',
@@ -146,6 +153,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/73',
+    fullPath: 'group/73',
     fullName: 'test',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/test',
@@ -165,6 +173,7 @@ export const organizationGroups = [
   },
   {
     id: 'gid://gitlab/Group/74',
+    fullPath: 'group/74',
     fullName: 'Twitter / test subgroup',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/twitter/test-subgroup',

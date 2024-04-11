@@ -118,21 +118,12 @@ these steps, sign out of your GitLab account and sign in again.
 
 To import your GitHub repository using a GitHub Personal Access Token:
 
-1. Generate a GitHub personal access token:
-    - For a classic token:
-      1. Go to <https://github.com/settings/tokens/new>.
-      1. In the **Note** field, enter a token description.
-      1. select the `repo` scope.
-      1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-      1. Select **Generate token**.
-    - For a Fine-grained token:
-      1. Go to <https://github.com/settings/tokens/new>.
-      1. In the **Note** field, enter a token description.
-      1. The token has `repository:read-only` permission by default.
-      1. Optional. To [import collaborators](#select-additional-items-to-import), ensure the token has the `administration:read-only` permission:
-          - Click on 'Repository Permissions'
-          - In the Administration section select `Access:read-only` from the dropdown list.
-      1. Select **Generate token**.
+1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+   1. Go to <https://github.com/settings/tokens/new>.
+   1. In the **Note** field, enter a token description.
+   1. Select the `repo` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Select **Generate token**.
 1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
@@ -156,23 +147,12 @@ The REST API is limited to authenticating with GitLab Personal Access Tokens.
 
 To import your GitHub repository using the GitLab REST API:
 
-1. Generate a GitHub personal access token:
-    - For a classic token:
-      1. Go to <https://github.com/settings/tokens/new>.
-      1. In the **Note** field, enter a token description.
-      1. select the `repo` scope.
-      1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-      1. Select **Generate token**.
-    - For a fine-grained token:
-      1. Go to <https://github.com/settings/tokens/new>.
-      1. In the **Note** field, enter a token description.
-      1. Select the repository you want to access in the "Only select repositories" section
-      1. The token has `repository:read-only` permission by default.
-      1. Grant `read-only` permission to Issues, Metadata, Pull Requests, and Contents.
-      1. Optional. To [import collaborators](#select-additional-items-to-import), ensure the token has the `administration:read-only` permission:
-          - Click on 'Repository Permissions'
-          - In the Administration section select `Access:read-only` from the dropdown list.
-      1. Select **Generate token**.
+1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+   1. Go to <https://github.com/settings/tokens/new>.
+   1. In the **Note** field, enter a token description.
+   1. Select the `repo` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Select **Generate token**.
 1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list

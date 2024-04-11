@@ -35,7 +35,7 @@ describe('Import Advanced Settings', () => {
 
   it('renders a warning message', () => {
     expect(findAlert().text()).toMatchInterpolatedText(
-      'The more information you select, the longer it will take to import To import collaborators, you must use a classic personal access token with read:org scope or a fine-grained personal access token with administration:read-only permission. For more information, see the documentation.',
+      'The more information you select, the longer it will take to import To import collaborators, you must use a classic personal access token with read:org scope. Learn more.',
     );
   });
 

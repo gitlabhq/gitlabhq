@@ -23292,15 +23292,6 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
-msgid "GithubImporter|%{code_start}Administration:read-only%{code_end} (optional): Used to import collaborators from GitHub repositories."
-msgstr ""
-
-msgid "GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to connect to."
-msgstr ""
-
-msgid "GithubImporter|%{code_start}Repository:read-only%{code_end}: Used to display a list of your public and private repositories that are available to import from."
-msgstr ""
-
 msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories."
 msgstr ""
 
@@ -23388,13 +23379,10 @@ msgstr ""
 msgid "GithubImport|\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
 msgstr ""
 
+msgid "GithubImport|%{link_start}Learn more%{link_end}."
+msgstr ""
+
 msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}."
-msgstr ""
-
-msgid "GithubImport|For classic tokens, you must select the following scopes:"
-msgstr ""
-
-msgid "GithubImport|For fine-grained tokens, you must select the following permissions:"
 msgstr ""
 
 msgid "GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})"
@@ -23412,16 +23400,19 @@ msgstr ""
 msgid "GithubImport|To import GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
 msgstr ""
 
+msgid "GithubImport|Use a classic GitHub personal access token with the following scopes:"
+msgstr ""
+
 msgid "GithubImport|You are not allowed to import projects in this namespace."
 msgstr ""
 
-msgid "GithubImport|Your GitHub personal access token does not have read access to collaborators. Please use a classic token with the `read:org` scope or a fine-grained token with the `administration:read-only` permission."
+msgid "GithubImport|Your GitHub personal access token does not have read access to collaborators. Please use a classic GitHub personal access token with the `read:org` scope. Fine-grained tokens are not supported."
 msgstr ""
 
-msgid "GithubImport|Your GitHub personal access token does not have read access to the repository. Please use a classic token with the `repo` scope or a fine-grained token with `read-only` permissions to Repository, Issues, Metadata, Pull Requests, and Contents."
+msgid "GithubImport|Your GitHub personal access token does not have read access to the repository. Please use a classic GitHub personal access token with the `repo` scope. Fine-grained tokens are not supported."
 msgstr ""
 
-msgid "GithubImport|Your GitHub personal access token does not have the required scope or permission to import. Please see our %{link_start}documentation%{link_end} for more information about GitHub access tokens."
+msgid "GithubImport|Your GitHub personal access token does not have the required scope to import. %{link_start}Learn More%{link_end}."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -24029,145 +24020,22 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Your Google Cloud project must have specific Identity and Access Management (IAM) policies to use the Artifact Registry repository in this GitLab project."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|%{linkStart}Switch to the guided setup%{linkEnd} if you can manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
+msgid "GoogleCloud|%{linkStart}Switch to the guided setup%{linkEnd} if you can manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|%{linkStart}Switch to the manual setup%{linkEnd} if you cannot manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
+msgid "GoogleCloud|%{linkStart}Switch to the manual setup%{linkEnd} if you cannot manage workload identity federation in Google Cloud. %{link2Start}What are the required permissions?%{link2End}"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
+msgid "GoogleCloud|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|After Google Cloud workload identity federation has been set up, enter the details in the following form."
+msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, enter the details in the following form."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
+msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Connect to Google Cloud"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Connect to Google Cloud with workload identity federation for secure access without accounts or keys."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Connect to Google Cloud with workload identity federation. Select %{strongStart}Guided setup%{strongEnd} if you can manage workload identity federation in Google Cloud. %{linkStart}What are the required permissions?%{linkEnd}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Example: %{code_open}my-sample-project-191923%{code_close}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud IAM"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project ID for the Workload Identity Federation."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Guided setup"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Identify the Google Cloud project with the workload identity pool and provider. %{linkStart}Where are my project ID and project number?%{linkEnd}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Instructions"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Invite member to set up"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM). Simplify and secure your usage, without the need to manage accounts or keys."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Manage your artifacts in Google Artifact Registry."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Manual setup"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Pool ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Project ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Project number"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Project with the Artifact Registry repository."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Provider ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Replace %{codeStart}your_access_token%{codeEnd} with a %{linkStart}new personal access token%{linkEnd} with the %{strongStart}api%{strongEnd} scope. This token sets up your Google Cloud IAM integration in GitLab."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Replace %{codeStart}your_google_cloud_project_id%{codeEnd} with your Google Cloud project ID. To improve security, use a dedicated project for identity management, separate from resources and CI/CD projects. %{linkStart}Where’s my project ID?%{linkEnd}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Repository location"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Repository must be Docker format and Standard mode."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Repository name"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Run the following command to set up and connect to your Google Cloud project with workload identity federation."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Share the following information with someone that can manage Google Cloud workload identity federation. Or %{linkStart}invite them%{linkEnd} to set up."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|The Google Cloud Identity and Access Management integration is not configured for this project"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|The Google Cloud Identity and Access Management integration is not enabled for this project"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|The google_cloud_support feature is not available"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|The setup instructions page"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Workload identity federation"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|You might be prompted to sign in to Google."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Your GitLab project ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Your workload identify federation (WLIF) issuer URL."
+msgid "GoogleCloud|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -24176,7 +24044,22 @@ msgstr ""
 msgid "GoogleCloud|Configured region is linked to the selected branch or tag"
 msgstr ""
 
+msgid "GoogleCloud|Connect to Google Cloud"
+msgstr ""
+
+msgid "GoogleCloud|Connect to Google Cloud with workload identity federation for secure access without accounts or keys."
+msgstr ""
+
+msgid "GoogleCloud|Connect to Google Cloud with workload identity federation. Select %{strongStart}Guided setup%{strongEnd} if you can manage workload identity federation in Google Cloud. %{linkStart}What are the required permissions?%{linkEnd}"
+msgstr ""
+
 msgid "GoogleCloud|Create service account"
+msgstr ""
+
+msgid "GoogleCloud|Example: %{code_open}314053285323%{code_close}"
+msgstr ""
+
+msgid "GoogleCloud|Example: %{code_open}my-sample-project-191923%{code_close}"
 msgstr ""
 
 msgid "GoogleCloud|Generated service account is linked to the selected branch or tag"
@@ -24185,7 +24068,19 @@ msgstr ""
 msgid "GoogleCloud|Google Artifact Management"
 msgstr ""
 
+msgid "GoogleCloud|Google Cloud IAM"
+msgstr ""
+
 msgid "GoogleCloud|Google Cloud project"
+msgstr ""
+
+msgid "GoogleCloud|Google Cloud project ID"
+msgstr ""
+
+msgid "GoogleCloud|Google Cloud project ID for the Workload Identity Federation."
+msgstr ""
+
+msgid "GoogleCloud|Google Cloud project number for the Workload Identity Federation."
 msgstr ""
 
 msgid "GoogleCloud|Google OAuth2 token revocation request failed"
@@ -24194,19 +24089,112 @@ msgstr ""
 msgid "GoogleCloud|Google OAuth2 token revocation requested"
 msgstr ""
 
+msgid "GoogleCloud|Guided setup"
+msgstr ""
+
 msgid "GoogleCloud|I understand the responsibilities involved with managing service account keys"
+msgstr ""
+
+msgid "GoogleCloud|ID of the Workload Identity Pool provider."
+msgstr ""
+
+msgid "GoogleCloud|ID of the Workload Identity Pool."
+msgstr ""
+
+msgid "GoogleCloud|Identify the Google Cloud project with the workload identity pool and provider. %{linkStart}Where are my project ID and project number?%{linkEnd}"
+msgstr ""
+
+msgid "GoogleCloud|Instructions"
+msgstr ""
+
+msgid "GoogleCloud|Invite member to set up"
+msgstr ""
+
+msgid "GoogleCloud|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
+msgstr ""
+
+msgid "GoogleCloud|Manage permissions for Google Cloud resources with Identity and Access Management (IAM). Simplify and secure your usage, without the need to manage accounts or keys."
+msgstr ""
+
+msgid "GoogleCloud|Manage your artifacts in Google Artifact Registry."
+msgstr ""
+
+msgid "GoogleCloud|Manual setup"
 msgstr ""
 
 msgid "GoogleCloud|New service account is generated for the selected Google Cloud project"
 msgstr ""
 
+msgid "GoogleCloud|Pool ID"
+msgstr ""
+
+msgid "GoogleCloud|Project ID"
+msgstr ""
+
+msgid "GoogleCloud|Project number"
+msgstr ""
+
+msgid "GoogleCloud|Project with the Artifact Registry repository."
+msgstr ""
+
+msgid "GoogleCloud|Provider ID"
+msgstr ""
+
 msgid "GoogleCloud|Refs"
+msgstr ""
+
+msgid "GoogleCloud|Replace %{codeStart}your_access_token%{codeEnd} with a %{linkStart}new personal access token%{linkEnd} with the %{strongStart}api%{strongEnd} scope. This token sets up your Google Cloud IAM integration in GitLab."
+msgstr ""
+
+msgid "GoogleCloud|Replace %{codeStart}your_google_cloud_project_id%{codeEnd} with your Google Cloud project ID. To improve security, use a dedicated project for identity management, separate from resources and CI/CD projects. %{linkStart}Where’s my project ID?%{linkEnd}"
+msgstr ""
+
+msgid "GoogleCloud|Repository location"
+msgstr ""
+
+msgid "GoogleCloud|Repository must be Docker format and Standard mode."
+msgstr ""
+
+msgid "GoogleCloud|Repository name"
 msgstr ""
 
 msgid "GoogleCloud|Revoke authorizations"
 msgstr ""
 
 msgid "GoogleCloud|Revoke authorizations granted to GitLab. This does not invalidate service accounts."
+msgstr ""
+
+msgid "GoogleCloud|Run the following command to set up and connect to your Google Cloud project with workload identity federation."
+msgstr ""
+
+msgid "GoogleCloud|Share the following information with someone that can manage Google Cloud workload identity federation. Or %{linkStart}invite them%{linkEnd} to set up."
+msgstr ""
+
+msgid "GoogleCloud|The Google Cloud Identity and Access Management integration is not configured for this project"
+msgstr ""
+
+msgid "GoogleCloud|The Google Cloud Identity and Access Management integration is not enabled for this project"
+msgstr ""
+
+msgid "GoogleCloud|The google_cloud_support feature is not available"
+msgstr ""
+
+msgid "GoogleCloud|The setup instructions page"
+msgstr ""
+
+msgid "GoogleCloud|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
+msgstr ""
+
+msgid "GoogleCloud|Workload identity federation"
+msgstr ""
+
+msgid "GoogleCloud|You might be prompted to sign in to Google."
+msgstr ""
+
+msgid "GoogleCloud|Your GitLab project ID"
+msgstr ""
+
+msgid "GoogleCloud|Your workload identify federation (WLIF) issuer URL."
 msgstr ""
 
 msgid "GooglePlayStore|Protected branches and tags only"
@@ -24968,7 +24956,7 @@ msgstr ""
 msgid "GroupSettings|What is Insights?"
 msgstr ""
 
-msgid "GroupSettings|When disabled, members will not be able to register runners using runner registration tokens. They can instead use runner authentication tokens as a more secure runner registration method."
+msgid "GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method."
 msgstr ""
 
 msgid "GroupSettings|When you enable any of these features, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
@@ -26397,7 +26385,7 @@ msgstr ""
 msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
-msgid "ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope or a fine-grained personal access token with %{codeStart}administration:read-only%{codeEnd} permission. For more information, see the %{linkStart}documentation%{linkEnd}."
+msgid "ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
@@ -35666,6 +35654,9 @@ msgid "Organization|Select an organization"
 msgstr ""
 
 msgid "Organization|Switch organizations"
+msgstr ""
+
+msgid "Organization|Switching between organizations is not currently supported."
 msgstr ""
 
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."

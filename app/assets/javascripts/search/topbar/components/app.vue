@@ -1,12 +1,21 @@
 <script>
-import { GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
-import { ZOEKT_SEARCH_TYPE, ADVANCED_SEARCH_TYPE } from '~/search/store/constants';
+import {
+  ZOEKT_SEARCH_TYPE,
+  ADVANCED_SEARCH_TYPE,
+  REGEX_PARAM,
+  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
+} from '~/search/store/constants';
 import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
+import { loadDataFromLS } from '../../store/utils';
+
 import SearchTypeIndicator from './search_type_indicator.vue';
+import GlSearchBoxByType from './search_box_by_type.vue';
 
 export default {
   name: 'GlobalSearchTopbar',
@@ -23,8 +32,14 @@ export default {
     MarkdownDrawer,
     SearchTypeIndicator,
   },
+  mixins: [glFeatureFlagsMixin()],
+  data() {
+    return {
+      regexEnabled: false,
+    };
+  },
   computed: {
-    ...mapState(['query', 'searchType', 'defaultBranchName']),
+    ...mapState(['query', 'searchType', 'defaultBranchName', 'urlQuery']),
     search: {
       get() {
         return this.query ? this.query.search : '';
@@ -47,14 +62,39 @@ export default {
     isDefaultBranch() {
       return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
     },
+    isRegexButtonVisible() {
+      return (
+        this.searchType === ZOEKT_SEARCH_TYPE &&
+        this.isDefaultBranch &&
+        this.glFeatures.zoektExactSearch
+      );
+    },
+    localstorageReguralExpressionItem() {
+      return `${REGEX_PARAM}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`;
+    },
+    loadRegexStateFromLocalStorage() {
+      return loadDataFromLS(this.localstorageReguralExpressionItem);
+    },
   },
   created() {
     this.preloadStoredFrequentItems();
+    this.regexEnabled = this.loadRegexStateFromLocalStorage;
+
+    if (!this.urlQuery?.[REGEX_PARAM] && this.regexEnabled) {
+      this.addReguralExpressionToQuery(this.regexEnabled);
+    }
   },
   methods: {
     ...mapActions(['applyQuery', 'setQuery', 'preloadStoredFrequentItems']),
     onToggleDrawer() {
       this.$refs.markdownDrawer.toggleDrawer();
+    },
+    regexButtonHandler() {
+      this.addReguralExpressionToQuery();
+    },
+    addReguralExpressionToQuery(value = !this.regexEnabled) {
+      this.setQuery({ key: REGEX_PARAM, value });
+      this.applyQuery();
     },
   },
 };
@@ -91,6 +131,9 @@ export default {
             id="dashboard_search"
             v-model="search"
             name="search"
+            :regex-button-is-visible="isRegexButtonVisible"
+            :regex-button-state="regexEnabled"
+            :regex-button-handler="regexButtonHandler"
             :placeholder="$options.i18n.searchPlaceholder"
             @keydown.enter.stop.prevent="applyQuery"
           />

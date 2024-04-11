@@ -27,6 +27,11 @@ export const mismatchAllowList = [
   '.translate-y-0',
   '.rotate-90',
   '.rotate-180',
+  // the border-style utils in tailwind do not allow for top, bottom, right, left
+  '.border-b-solid',
+  '.border-l-solid',
+  '.border-r-solid',
+  '.border-t-solid',
   // Our border shorthand classes are slightly different,
   // we migrated them by prepending them to the tailwind.css
   '.border',

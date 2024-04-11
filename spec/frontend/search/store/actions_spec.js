@@ -12,6 +12,8 @@ import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
   SIDEBAR_PARAMS,
+  REGEX_PARAM,
+  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
 } from '~/search/store/constants';
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
@@ -185,6 +187,26 @@ describe('Global Search Store Actions', () => {
 
       it(`should dispatch the correct mutations`, () => {
         return testAction({ action: actions.setQuery, payload, state, expectedMutations });
+      });
+    });
+  });
+
+  describe.each`
+    payload
+    ${{ key: REGEX_PARAM, value: true }}
+    ${{ key: REGEX_PARAM, value: { random: 'test' } }}
+  `('setQuery', ({ payload }) => {
+    describe(`when query param is ${payload.key}`, () => {
+      beforeEach(() => {
+        storeUtils.setDataToLS = jest.fn();
+        actions.setQuery({ state, commit: jest.fn() }, payload);
+      });
+
+      it(`setsItem in local storage`, () => {
+        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(
+          `${payload.key}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`,
+          expect.anything(),
+        );
       });
     });
   });

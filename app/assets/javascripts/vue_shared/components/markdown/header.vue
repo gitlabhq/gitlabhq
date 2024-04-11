@@ -335,7 +335,7 @@ export default {
                 @replace="replaceTextarea"
               />
             </div>
-            <header-divider v-if="previewMarkdown || enablePreview" />
+            <header-divider v-if="enablePreview && !previewMarkdown" />
           </div>
           <toolbar-button
             v-show="!previewMarkdown"

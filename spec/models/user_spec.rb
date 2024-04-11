@@ -1430,18 +1430,13 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe '.with_personal_access_tokens_expiring_soon_and_ids' do
+    describe '.with_personal_access_tokens_expiring_soon' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
       let_it_be(:pat1) { create(:personal_access_token, user: user1, expires_at: 2.days.from_now) }
       let_it_be(:pat2) { create(:personal_access_token, user: user2, expires_at: 7.days.from_now) }
-      let_it_be(:ids) { [user1.id] }
 
-      subject(:users) { described_class.with_personal_access_tokens_expiring_soon_and_ids(ids) }
-
-      it 'filters users only by id' do
-        expect(users).to contain_exactly(user1)
-      end
+      subject(:users) { described_class.with_personal_access_tokens_expiring_soon }
 
       it 'includes expiring personal access tokens' do
         expect(users.first.expiring_soon_and_unnotified_personal_access_tokens).to be_loaded

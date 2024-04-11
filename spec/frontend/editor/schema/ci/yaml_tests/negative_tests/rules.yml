@@ -24,28 +24,3 @@ rules:interruptible as integer:
   rules:
     - if: $TEST
       interruptible: 1
-
-# invalid rules:exists
-rules:exists as string:
-  rules:
-    - exists: abc.md
-
-rules:exists as integer:
-  rules:
-    - exists: 1
-
-rules:exists:paths as string:
-  rules:
-    - exists:
-        paths: abc.md
-
-rules:exists:project without paths:
-  rules:
-    - exists:
-        project: my-group/my-project
-
-rules:exists:ref without project:
-  rules:
-    - exists:
-        paths: [abc.md]
-        ref: main

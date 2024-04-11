@@ -4783,6 +4783,33 @@ Input type: `GroupAuditEventStreamingDestinationsDeleteInput`
 | <a id="mutationgroupauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupauditeventstreamingdestinationsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.groupAuditEventStreamingDestinationsUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `GroupAuditEventStreamingDestinationsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateid"></a>`id` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | ID of external audit event destination to update. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | Updated destination. |
+
 ### `Mutation.groupMemberBulkUpdate`
 
 Input type: `GroupMemberBulkUpdateInput`
@@ -11778,6 +11805,29 @@ The edge type for [`ExternalStatusCheck`](#externalstatuscheck).
 | ---- | ---- | ----------- |
 | <a id="externalstatuscheckedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="externalstatuscheckedgenode"></a>`node` | [`ExternalStatusCheck`](#externalstatuscheck) | The item at the end of the edge. |
+
+#### `FeatureFlagConnection`
+
+The connection type for [`FeatureFlag`](#featureflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagconnectionedges"></a>`edges` | [`[FeatureFlagEdge]`](#featureflagedge) | A list of edges. |
+| <a id="featureflagconnectionnodes"></a>`nodes` | [`[FeatureFlag]`](#featureflag) | A list of nodes. |
+| <a id="featureflagconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `FeatureFlagEdge`
+
+The edge type for [`FeatureFlag`](#featureflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="featureflagedgenode"></a>`node` | [`FeatureFlag`](#featureflag) | The item at the end of the edge. |
 
 #### `ForecastDatapointConnection`
 
@@ -19960,6 +20010,16 @@ Describes an external status check.
 | <a id="externalstatuscheckid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="externalstatuscheckname"></a>`name` | [`String!`](#string) | Name of the rule. |
 
+### `FeatureFlag`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagactive"></a>`active` | [`Boolean!`](#boolean) | Whether the feature flag is active. |
+| <a id="featureflagid"></a>`id` | [`OperationsFeatureFlagID!`](#operationsfeatureflagid) | Global ID of the feature flag. |
+| <a id="featureflagname"></a>`name` | [`String!`](#string) | Name of the feature flag. |
+
 ### `FileUpload`
 
 #### Fields
@@ -20528,6 +20588,7 @@ GPG signature for a signed commit.
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -20541,6 +20602,7 @@ GPG signature for a signed commit.
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
+| <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group will be deleted if delayed group deletion is enabled. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in this group. |
@@ -30848,6 +30910,17 @@ Represents designs widget.
 | <a id="workitemwidgetdesignsdesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with the issue. |
 | <a id="workitemwidgetdesignstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetDevelopment`
+
+Represents a development widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetHealthStatus`
 
 Represents a health status widget.
@@ -34056,6 +34129,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypedesigns"></a>`DESIGNS` | Designs widget. |
+| <a id="workitemwidgettypedevelopment"></a>`DEVELOPMENT` | Development widget. |
 | <a id="workitemwidgettypehealth_status"></a>`HEALTH_STATUS` | Health Status widget. |
 | <a id="workitemwidgettypehierarchy"></a>`HIERARCHY` | Hierarchy widget. |
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
@@ -34751,6 +34825,12 @@ An example `NoteID` is: `"gid://gitlab/Note/1"`.
 A `NoteableID` is a global ID. It is encoded as a string.
 
 An example `NoteableID` is: `"gid://gitlab/Noteable/1"`.
+
+### `OperationsFeatureFlagID`
+
+A `OperationsFeatureFlagID` is a global ID. It is encoded as a string.
+
+An example `OperationsFeatureFlagID` is: `"gid://gitlab/Operations::FeatureFlag/1"`.
 
 ### `OrganizationsOrganizationID`
 
@@ -35859,6 +35939,7 @@ Implementations:
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)
+- [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)
 - [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus)
 - [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)

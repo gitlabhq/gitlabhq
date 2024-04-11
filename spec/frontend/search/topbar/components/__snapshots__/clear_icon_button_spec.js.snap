@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Clear Icon Button renders successfully 1`] = `
+<gl-button-stub
+  aria-label="Tooltip Text"
+  buttontextclasses=""
+  category="tertiary"
+  class="gl-clear-icon-button"
+  icon="clear"
+  name="clear"
+  size="small"
+  title="Tooltip Text"
+  variant="default"
+/>
+`;

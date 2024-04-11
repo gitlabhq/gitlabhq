@@ -54,7 +54,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                'ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope or a fine-grained personal access token with %{codeStart}administration:read-only%{codeEnd} permission. For more information, see the %{linkStart}documentation%{linkEnd}.',
+                'ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}.',
               )
             "
           >

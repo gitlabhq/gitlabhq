@@ -207,38 +207,6 @@ include:  # Execute individual project's configuration (if project contains .git
       - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
 ```
 
-#### Compliance pipelines in projects with no configuration file
-
-The [example configuration](#example-configuration) above assumes that all projects contain
-a pipeline configuration file (`.gitlab-ci.yml` by default). However, in projects
-with no configuration file (and therefore no pipelines by default), the compliance pipeline
-fails because the file specified in `include:project` is required.
-
-To only include a configuration file if it exists in a target project, use
-[`rules:exists:project`](../../ci/yaml/index.md#rulesexistsproject):
-
-```yaml
-include:  # Execute individual project's configuration
-  - project: '$CI_PROJECT_PATH'
-    file: '$CI_CONFIG_PATH'
-    ref: '$CI_COMMIT_SHA'
-    rules:
-      - exists:
-          paths:
-            - '$CI_CONFIG_PATH'
-          project: '$CI_PROJECT_PATH'
-          ref: '$CI_COMMIT_SHA'
-```
-
-In this example, a configuration file is only included if it exists for the given `ref`
-in the project in `exists:project: $CI_PROJECT_PATH'`.
-
-You cannot use [`rules:exists` with `include`](../../ci/yaml/includes.md#include-with-rulesexists)
-to solve this problem because `include:rules:exists` searches for files in the project
-in which the `include` is defined. In compliance pipelines, the `include` from the example above
-is defined in the project hosting the compliance pipeline configuration file, not the project
-running the pipeline.
-
 ## Ensure compliance jobs are always run
 
 Compliance pipelines [use GitLab CI/CD](../../ci/index.md) to give you an incredible amount of flexibility

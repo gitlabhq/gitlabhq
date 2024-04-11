@@ -34,11 +34,6 @@ module Gitlab
               # we can end with different config types like String
               next unless config.is_a?(Hash)
 
-              if key == :exists
-                next unless Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?(
-                  :ci_support_rules_exists_paths_and_project, type: :gitlab_com_derisk)
-              end
-
               entry_create!(key, config[key])
             end
 

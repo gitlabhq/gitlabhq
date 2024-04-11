@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::Authentication, feature_category: :audit_events do
+RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audit_events do
   describe '#generate_access_token' do
     let_it_be(:client_email) { 'test@example.com' }
     let_it_be(:private_key) { 'private_key' }

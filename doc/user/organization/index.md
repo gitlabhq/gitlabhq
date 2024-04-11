@@ -67,6 +67,16 @@ To view the organizations you have access to:
 1. In the **Organization URL** text box, edit the URL.
 1. Select **Change organization URL**.
 
+## Switch organizations
+
+NOTE:
+Switching between organizations is not supported in [Cells 1.0](../../architecture/blueprints/cells/iterations/cells-1.0.md),
+but is supported in [Cells 1.5](../../architecture/blueprints/cells/iterations/cells-1.5.md).
+
+To switch organizations:
+
+- On the left sidebar, in the upper corner, from the **Current organization** dropdown list select the organization you want to switch to.
+
 ## Manage groups and projects
 
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.

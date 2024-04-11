@@ -695,6 +695,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "deployments"
+  WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_b2d852e1e2cb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8150,6 +8166,7 @@ CREATE TABLE deployment_approvals (
     status smallint NOT NULL,
     comment text,
     approval_rule_id bigint,
+    project_id bigint,
     CONSTRAINT check_e2eb6a17d8 CHECK ((char_length(comment) <= 255))
 );
 
@@ -25129,6 +25146,8 @@ CREATE INDEX index_deployment_approvals_on_created_at_and_id ON deployment_appro
 
 CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_user_approval_rule ON deployment_approvals USING btree (deployment_id, user_id, approval_rule_id);
 
+CREATE INDEX index_deployment_approvals_on_project_id ON deployment_approvals USING btree (project_id);
+
 CREATE INDEX index_deployment_approvals_on_user_id ON deployment_approvals USING btree (user_id);
 
 CREATE UNIQUE INDEX index_deployment_clusters_on_cluster_id_and_deployment_id ON deployment_clusters USING btree (cluster_id, deployment_id);
@@ -29611,6 +29630,8 @@ CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR 
 
 CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
 
+CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
+
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
@@ -30094,6 +30115,9 @@ ALTER TABLE ONLY vulnerability_reads
 
 ALTER TABLE ONLY saml_group_links
     ADD CONSTRAINT fk_6336b1d1d0 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY deployment_approvals
+    ADD CONSTRAINT fk_63920ba071 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_641731faff FOREIGN KEY (updated_by_id) REFERENCES users(id) ON DELETE SET NULL;

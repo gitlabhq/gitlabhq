@@ -404,7 +404,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
           end
 
           context 'authorized user' do
-            it 'returns the file remote URL' do
+            it 'returns the file remote URL', :freeze_time do
+              # Signed URLs contain timestamps. Freeze time to avoid flakiness.
               expect(response).to redirect_to(artifact.file.url)
             end
           end

@@ -268,6 +268,52 @@ curl --request POST \
 The `Content-Length` header must return a valid number. The maximum file size is 10 GB.
 The `Content-Type` header must be `application/gzip`.
 
+## Import a single relation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
+
+This endpoints accepts a project export archive and a named relation (issues,
+merge requests, pipelines, or milestones) and re-imports that relation, skipping
+items that have already been imported.
+
+The required project export file adheres to the same structure and size requirements described in
+[Import a file](#import-a-file).
+
+- The extracted files must adhere to the structure of a GitLab project export.
+- The archive must not exceed the maximum import file size configured by the Administrator.
+
+```plaintext
+POST /projects/import-relation
+```
+
+| Attribute  | Type   | Required | Description                                                                                                    |
+|------------|--------|----------|----------------------------------------------------------------------------------------------------------------|
+| `file`     | string | yes      | The file to be uploaded.                                                                                       |
+| `path`     | string | yes      | Name and path for new project.                                                                                 |
+| `relation` | string | yes      | The name of the relation to import. Must be one of `issues`, `milestones`, `ci_pipelines` or `merge_requests`. |
+
+To upload a file from your file system, use the `--form` option, which causes
+cURL to post data using the header `Content-Type: multipart/form-data`.
+The `file=` parameter must point to a file on your file system and be preceded
+by `@`. For example:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form "path=api-project" \
+     --form "file=@/path/to/file" \
+     --form "relation=issues" \
+     "https://gitlab.example.com/api/v4/projects/import-relation"
+```
+
+```json
+{
+  "id": 9,
+  "project_path": "namespace1/project1",
+  "relation": "issues",
+  "status": "finished"
+}
+```
+
 ## Import a file from AWS S3
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.

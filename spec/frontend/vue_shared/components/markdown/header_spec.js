@@ -109,6 +109,12 @@ describe('Markdown field header component', () => {
     expect(findToolbar().findAllComponents(GlButton)).toHaveLength(1);
   });
 
+  it('hides divider in preview mode', () => {
+    createWrapper({ props: { previewMarkdown: true } });
+
+    expect(findDividers().length).toBe(0);
+  });
+
   it('emits toggle markdown event when clicking preview toggle', async () => {
     findPreviewToggle().vm.$emit('click', true);
 

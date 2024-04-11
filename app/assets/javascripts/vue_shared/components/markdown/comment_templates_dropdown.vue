@@ -24,10 +24,13 @@ export default {
       },
       variables() {
         const groupPath = document.body.dataset.groupFullPath;
+        const projectPath = document.body.dataset.projectFullPath;
 
         return {
           groupPath,
           hideGroup: !groupPath,
+          projectPath,
+          hideProject: !projectPath,
         };
       },
       skip() {

@@ -165,6 +165,8 @@ func TestAcceleratedUpload(t *testing.T) {
 		{"POST", `/api/v4/groups/import/`, true},
 		{"POST", `/api/v4/projects/import`, true},
 		{"POST", `/api/v4/projects/import/`, true},
+		{"POST", `/api/v4/projects/import-relation`, true},
+		{"POST", `/api/v4/projects/import-relation/`, true},
 		{"POST", `/import/gitlab_project`, true},
 		{"POST", `/import/gitlab_project/`, true},
 		{"POST", `/import/gitlab_group`, true},

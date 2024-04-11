@@ -22,7 +22,7 @@ module Operations
     # strategies exists only for the second version
     has_many :strategies, class_name: 'Operations::FeatureFlags::Strategy'
     has_many :feature_flag_issues
-    has_many :issues, through: :feature_flag_issues
+    has_many :issues, through: :feature_flag_issues, inverse_of: :feature_flags
 
     validates :project, presence: true
     validates :name,
@@ -53,6 +53,10 @@ module Operations
     class << self
       def preload_relations
         preload(strategies: [:scopes, :user_list])
+      end
+
+      def preload_project
+        preload(:project)
       end
 
       def for_unleash_client(project, environment)

@@ -36,7 +36,7 @@ module PersonalAccessTokens
 
         break if tokens.empty?
 
-        users = User.with_personal_access_tokens_expiring_soon_and_ids(tokens.pluck(:user_id).uniq)
+        users = User.id_in(tokens.pluck(:user_id).uniq).with_personal_access_tokens_expiring_soon
 
         users.each do |user|
           with_context(user: user) do

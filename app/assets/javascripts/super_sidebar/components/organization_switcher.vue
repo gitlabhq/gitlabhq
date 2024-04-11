@@ -1,10 +1,11 @@
 <script>
-import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink } from '@gitlab/ui';
 import getCurrentUserOrganizations from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { defaultOrganization } from '~/organizations/mock_data';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   AVATAR_SHAPE_OPTION_RECT,
@@ -21,8 +22,15 @@ export default {
   i18n: {
     currentOrganization: s__('Organization|Current organization'),
     switchOrganizations: s__('Organization|Switch organizations'),
+    switchingNotSupportedMessage: s__(
+      'Organization|Switching between organizations is not currently supported.',
+    ),
+    learnMore: __('Learn more'),
   },
-  components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon },
+  switchingOrganizationsDocsPath: helpPagePath('user/organization/index.md', {
+    anchor: 'switch-organizations',
+  }),
+  components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink },
   data() {
     return {
       organizations: {},
@@ -36,7 +44,12 @@ export default {
         return data.currentUser.organizations;
       },
       skip() {
-        return !this.dropdownShown;
+        // In Cells 1.0 users will not be able to switch organizations.
+        // This means we don't need to fetch available organizations.
+        // In Cells 1.5 we will update this to fetch the organizations.
+        // See https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.0.html#features-on-gitlabcom-that-are-not-supported-on-cells
+        // and https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.5.html
+        return !this.organizationSwitchingEnabled || !this.dropdownShown;
       },
       error() {
         this.organizations = {
@@ -47,6 +60,9 @@ export default {
     },
   },
   computed: {
+    organizationSwitchingEnabled() {
+      return gon?.features?.organizationSwitching;
+    },
     loading() {
       return this.$apollo.queries.organizations.loading;
     },
@@ -81,22 +97,30 @@ export default {
         ];
       }
 
-      const items = this.nodes
-        .map((node) => ({
-          id: getIdFromGraphQLId(node.id),
-          text: node.name,
-          href: node.webUrl,
-          avatarUrl: node.avatarUrl,
-        }))
-        .filter((item) => item.id !== this.currentOrganization.id);
+      // In Cells 1.0 users will not be able to switch organizations.
+      // This means we don't render available organizations.
+      // See https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.0.html#features-on-gitlabcom-that-are-not-supported-on-cells
+      // and https://docs.gitlab.com/ee/architecture/blueprints/cells/iterations/cells-1.5.html
+      if (this.organizationSwitchingEnabled) {
+        const items = this.nodes
+          .map((node) => ({
+            id: getIdFromGraphQLId(node.id),
+            text: node.name,
+            href: node.webUrl,
+            avatarUrl: node.avatarUrl,
+          }))
+          .filter((item) => item.id !== this.currentOrganization.id);
 
-      return [
-        currentOrganizationGroup,
-        {
-          name: this.$options.i18n.switchOrganizations,
-          items: items.length ? items : [this.$options.ITEM_EMPTY],
-        },
-      ];
+        return [
+          currentOrganizationGroup,
+          {
+            name: this.$options.i18n.switchOrganizations,
+            items: items.length ? items : [this.$options.ITEM_EMPTY],
+          },
+        ];
+      }
+
+      return [currentOrganizationGroup];
     },
   },
   methods: {
@@ -143,6 +167,23 @@ export default {
           :src="item.avatarUrl"
         />
         <span>{{ item.text }}</span>
+      </div>
+    </template>
+
+    <template v-if="!organizationSwitchingEnabled" #footer>
+      <div class="gl-border-t gl-border-t-gray-200 gl-px-4 gl-pt-3 gl-mt-2">
+        <div class="gl-font-sm gl-font-weight-bold">
+          {{ $options.i18n.switchOrganizations }}
+        </div>
+        <div class="gl-py-3">
+          <p class="gl-m-0 gl-text-secondary gl-font-sm">
+            {{ $options.i18n.switchingNotSupportedMessage }}
+            <gl-link class="gl-font-sm" :href="$options.switchingOrganizationsDocsPath">{{
+              $options.i18n.learnMore
+            }}</gl-link
+            >.
+          </p>
+        </div>
       </div>
     </template>
   </gl-disclosure-dropdown>

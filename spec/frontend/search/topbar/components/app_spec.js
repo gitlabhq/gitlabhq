@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
@@ -8,6 +8,7 @@ import { stubComponent } from 'helpers/stub_component';
 import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import SearchTypeIndicator from '~/search/topbar/components/search_type_indicator.vue';
+import GlSearchBoxByType from '~/search/topbar/components/search_box_by_type.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import {
   SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
@@ -15,6 +16,10 @@ import {
 } from '~/search/topbar/constants';
 
 Vue.use(Vuex);
+
+jest.mock('~/search/store/utils', () => ({
+  loadDataFromLS: jest.fn(() => true),
+}));
 
 describe('GlobalSearchTopbar', () => {
   let wrapper;
@@ -38,6 +43,11 @@ describe('GlobalSearchTopbar', () => {
       store,
       propsData: { defaultBranchName },
       stubs,
+      provide: {
+        glFeatures: {
+          zoektExactSearch: true,
+        },
+      },
     });
   };
 
@@ -51,8 +61,27 @@ describe('GlobalSearchTopbar', () => {
       createComponent();
     });
 
-    it('always renders Search box', () => {
-      expect(findGlSearchBox().exists()).toBe(true);
+    describe.each`
+      searchType    | hasRegexSearch
+      ${'basic'}    | ${undefined}
+      ${'advanced'} | ${undefined}
+      ${'zoekt'}    | ${'true'}
+    `('Seachbox options for searchType: $searchType', ({ searchType, hasRegexSearch }) => {
+      beforeEach(() => {
+        createComponent({
+          query: { repository_ref: 'master' },
+          searchType,
+          defaultBranchName: 'master',
+        });
+      });
+
+      it('always renders Search box', () => {
+        expect(findGlSearchBox().exists()).toBe(true);
+      });
+
+      it('shows regular expression button', () => {
+        expect(findGlSearchBox().attributes('regexbuttonisvisible')).toBe(hasRegexSearch);
+      });
     });
 
     it('always renders Search indicator', () => {

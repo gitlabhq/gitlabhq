@@ -622,9 +622,8 @@ class User < MainClusterwide::ApplicationRecord
         .expiring_soon_and_not_notified)
   end
 
-  scope :with_personal_access_tokens_expiring_soon_and_ids, ->(ids) do
-    where(id: ids)
-    .includes(:expiring_soon_and_unnotified_personal_access_tokens)
+  scope :with_personal_access_tokens_expiring_soon, -> do
+    includes(:expiring_soon_and_unnotified_personal_access_tokens)
   end
 
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }

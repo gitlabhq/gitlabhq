@@ -558,10 +558,10 @@ class Issue < ApplicationRecord
   # or an anonymous user.
   def visible_to_user?(user = nil)
     return publicly_visible? unless user
-    return false unless readable_by?(user)
     return true if user.can_read_all_resources?
+    return readable_by?(user) unless project
 
-    access_allowed_for_project_with_external_authorization?(user, project)
+    readable_by?(user) && access_allowed_for_project_with_external_authorization?(user, project)
   end
 
   # Always enforce spam check for support bot but allow for other users when issue is not publicly visible

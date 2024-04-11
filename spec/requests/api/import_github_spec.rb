@@ -191,9 +191,8 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to the repository. " \
-                                                "Please use a classic token with the `repo` scope or a fine-grained " \
-                                                "token with `read-only` permissions to Repository, Issues, Metadata, " \
-                                                "Pull Requests, and Contents.")
+                                                "Please use a classic GitHub personal access token with the `repo` scope. " \
+                                                "Fine-grained tokens are not supported.")
         end
       end
 
@@ -214,9 +213,8 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to the repository. " \
-                                                "Please use a classic token with the `repo` scope or a fine-grained " \
-                                                "token with `read-only` permissions to Repository, Issues, Metadata, " \
-                                                "Pull Requests, and Contents.")
+                                                "Please use a classic GitHub personal access token with the `repo` scope. " \
+                                                "Fine-grained tokens are not supported.")
         end
       end
 
@@ -238,8 +236,8 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:unprocessable_entity)
           expect(json_response['errors']).to eq("Your GitHub personal access token does not have read access to collaborators. " \
-                                                "Please use a classic token with the `read:org` scope or a fine-grained " \
-                                                "token with the `administration:read-only` permission.")
+                                                "Please use a classic GitHub personal access token with the `read:org` scope. " \
+                                                "Fine-grained tokens are not supported.")
         end
       end
     end

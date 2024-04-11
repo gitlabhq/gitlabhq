@@ -415,9 +415,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: "Your GitHub personal access token does not have read access to the repository. Please use a classic " \
-               "token with the `repo` scope or a fine-grained token with `read-only` permissions to Repository, " \
-               "Issues, Metadata, Pull Requests, and Contents."
+      message: "Your GitHub personal access token does not have read access to the repository. " \
+               "Please use a classic GitHub personal access token with the `repo` scope. Fine-grained tokens are not " \
+               "supported."
     }
   end
 
@@ -425,8 +425,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: "Your GitHub personal access token does not have read access to collaborators. Please use a classic " \
-               "token with the `read:org` scope or a fine-grained token with the `administration:read-only` permission."
+      message: "Your GitHub personal access token does not have read access to collaborators. " \
+               "Please use a classic GitHub personal access token with the `read:org` scope. Fine-grained tokens are " \
+               "not supported."
     }
   end
 

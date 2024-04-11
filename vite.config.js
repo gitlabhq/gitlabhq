@@ -88,18 +88,33 @@ const JH_ALIAS_FALLBACK = [
 
 const autoRestartPlugin = {
   configureServer(server) {
-    const watcher = chokidar.watch(['node_modules/.yarn-integrity'], {
+    const nodeModulesWatcher = chokidar.watch(['node_modules/.yarn-integrity'], {
       ignoreInitial: true,
     });
+    const pageEntrypointsWatcher = chokidar.watch(
+      [
+        'app/assets/javascripts/pages/**/*.js',
+        'ee/app/assets/javascripts/pages/**/*.js',
+        'jh/app/assets/javascripts/pages/**/*.js',
+      ],
+      {
+        ignoreInitial: true,
+      },
+    );
 
     // GDK will restart Vite server for us
-    const stop = () => server.stop();
+    const stop = () => process.kill(process.pid);
 
-    watcher.on('add', stop);
-    watcher.on('change', stop);
-    watcher.on('unlink', stop);
+    pageEntrypointsWatcher.on('add', stop);
+    pageEntrypointsWatcher.on('unlink', stop);
+    nodeModulesWatcher.on('add', stop);
+    nodeModulesWatcher.on('change', stop);
+    nodeModulesWatcher.on('unlink', stop);
 
-    server.httpServer?.addListener?.('close', () => watcher.close());
+    server.httpServer?.addListener?.('close', () => {
+      pageEntrypointsWatcher.close();
+      nodeModulesWatcher.close();
+    });
   },
 };
 

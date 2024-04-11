@@ -145,6 +145,7 @@ module ApplicationHelper
     {
       project_id: @project.id,
       project: @project.path,
+      project_full_path: @project.full_path,
       group: @project.group&.path,
       group_full_path: @project.group&.full_path,
       namespace_id: @project.namespace&.id

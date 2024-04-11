@@ -1830,8 +1830,6 @@
     - <<: *if-default-refs
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request
-      changes: *backend-patterns
 
 .rails:rules:clusterwide-db:
   rules:

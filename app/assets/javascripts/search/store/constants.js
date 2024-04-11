@@ -20,6 +20,12 @@ export const SIDEBAR_PARAMS = [
   archivedFilterData.filterParam,
 ];
 
+export const REGEX_PARAM = 'regex';
+
+export const PRESERVED_PARAMS = [REGEX_PARAM];
+
+export const LOCAL_STORAGE_NAME_SPACE_EXTENSION = 'advanced_search';
+
 export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };
 
 export const ICON_MAP = {

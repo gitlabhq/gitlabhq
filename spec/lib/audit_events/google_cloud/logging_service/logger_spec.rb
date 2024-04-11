@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::LoggingService::Logger, feature_category: :audit_events do
+RSpec.describe AuditEvents::GoogleCloud::LoggingService::Logger, feature_category: :audit_events do
   let_it_be(:client_email) { 'test@example.com' }
   let_it_be(:private_key) { 'private_key' }
   let_it_be(:payload) { [{ logName: 'test-log' }.to_json] }
@@ -16,7 +16,7 @@ RSpec.describe GoogleCloud::LoggingService::Logger, feature_category: :audit_eve
   describe '#log' do
     context 'when access token is available' do
       before do
-        allow_next_instance_of(GoogleCloud::Authentication) do |instance|
+        allow_next_instance_of(AuditEvents::GoogleCloud::Authentication) do |instance|
           allow(instance).to receive(:generate_access_token).with(client_email, private_key).and_return(access_token)
         end
       end
@@ -48,7 +48,7 @@ RSpec.describe GoogleCloud::LoggingService::Logger, feature_category: :audit_eve
       let(:access_token) { nil }
 
       it 'does not call Gitlab::HTTP.post' do
-        allow_next_instance_of(GoogleCloud::Authentication) do |instance|
+        allow_next_instance_of(AuditEvents::GoogleCloud::Authentication) do |instance|
           allow(instance).to receive(:generate_access_token).with(client_email, private_key).and_return(access_token)
         end
 
