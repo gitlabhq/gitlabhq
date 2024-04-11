@@ -51,7 +51,7 @@ module API
           notes = paginate(raw_notes)
           notes = prepare_notes_for_rendering(notes)
           notes = notes.select { |note| note.readable_by?(current_user) }
-          present notes, with: Entities::Note
+          present notes, with: Entities::Note, current_user: current_user
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

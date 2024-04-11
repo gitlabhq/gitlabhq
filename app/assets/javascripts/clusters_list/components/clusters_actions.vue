@@ -91,8 +91,6 @@ export default {
       :title="$options.i18n.actionsDisabledHint"
     />
 
-    <!--TODO: Replace button-group workaround once `split` option for new dropdowns is implemented.-->
-    <!-- See issue at https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2263-->
     <gl-button-group ref="actions" class="gl-w-full gl-mb-3 gl-md-w-auto gl-md-mb-0">
       <gl-button
         v-gl-modal-directive="shouldTriggerModal && $options.INSTALL_AGENT_MODAL_ID"
@@ -106,8 +104,6 @@ export default {
       </gl-button>
       <gl-disclosure-dropdown
         v-if="actionItems.length"
-        class="split"
-        toggle-class="gl-rounded-top-left-none! gl-rounded-bottom-left-none! gl-pl-1!"
         category="primary"
         variant="confirm"
         placement="right"

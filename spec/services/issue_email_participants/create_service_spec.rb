@@ -12,6 +12,7 @@ RSpec.describe IssueEmailParticipants::CreateService, feature_category: :service
       note = issue.notes.last
       expect(note.system?).to be true
       expect(note.author).to eq(user)
+      expect(note.system_note_metadata.action).to eq('issue_email_participants')
 
       participants_emails = issue.email_participants_emails_downcase
 

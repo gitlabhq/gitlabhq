@@ -440,7 +440,7 @@ module SystemNotes
     end
 
     def email_participants(body)
-      create_note(NoteSummary.new(noteable, project, author, body))
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'issue_email_participants'))
     end
 
     def discussion_lock

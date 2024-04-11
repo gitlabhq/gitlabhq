@@ -2932,7 +2932,7 @@ Input type: `CreateDiffNoteInput`
 | <a id="mutationcreatediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreatediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
-| <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | Position of this note on a diff. |
+| <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | Position of the note on a diff. |
 
 #### Fields
 
@@ -3007,7 +3007,7 @@ Input type: `CreateImageDiffNoteInput`
 | <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreateimagediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
-| <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | Position of this note on a diff. |
+| <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | Position of the note on a diff. |
 
 #### Fields
 
@@ -7358,7 +7358,7 @@ Input type: `RepositionImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrepositionimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrepositionimagediffnoteid"></a>`id` | [`DiffNoteID!`](#diffnoteid) | Global ID of the DiffNote to update. |
-| <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | Position of this note on a diff. |
+| <a id="mutationrepositionimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput!`](#updatediffimagepositioninput) | Position of the note on a diff. |
 
 #### Fields
 
@@ -8382,7 +8382,7 @@ Input type: `UpdateImageDiffNoteInput`
 | <a id="mutationupdateimagediffnotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdateimagediffnoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
-| <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | Position of this note on a diff. |
+| <a id="mutationupdateimagediffnoteposition"></a>`position` | [`UpdateDiffImagePositionInput`](#updatediffimagepositioninput) | Position of the note on a diff. |
 
 #### Fields
 
@@ -24817,30 +24817,30 @@ Represents the network policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="noteauthor"></a>`author` | [`UserCore`](#usercore) | User who wrote this note. |
+| <a id="noteauthor"></a>`author` | [`UserCore`](#usercore) | User who wrote the note. |
 | <a id="noteauthoriscontributor"></a>`authorIsContributor` | [`Boolean`](#boolean) | Indicates whether the note author is a contributor. |
 | <a id="noteawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the note. (see [Connections](#connections)) |
 | <a id="notebody"></a>`body` | [`String!`](#string) | Content of the note. |
-| <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `note`. |
+| <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of the content of the note. |
 | <a id="noteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 15.5. This was renamed. Use: `internal`. |
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
-| <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion this note is a part of. |
+| <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion the note is a part of. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
-| <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if this note is internal. |
+| <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if the note is internal. |
 | <a id="notelasteditedat"></a>`lastEditedAt` | [`Time`](#time) | Timestamp when note was last edited. |
 | <a id="notelasteditedby"></a>`lastEditedBy` | [`UserCore`](#usercore) | User who last edited the note. |
 | <a id="notemaxaccesslevelofauthor"></a>`maxAccessLevelOfAuthor` | [`String`](#string) | Max access level of the note author in the project. |
-| <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of this note on a diff. |
+| <a id="noteposition"></a>`position` | [`DiffPosition`](#diffposition) | Position of the note on a diff. |
 | <a id="noteproject"></a>`project` | [`Project`](#project) | Project associated with the note. |
 | <a id="noteresolvable"></a>`resolvable` | [`Boolean!`](#boolean) | Indicates if the object can be resolved. |
 | <a id="noteresolved"></a>`resolved` | [`Boolean!`](#boolean) | Indicates if the object is resolved. |
 | <a id="noteresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the object was resolved. |
 | <a id="noteresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User who resolved the object. |
-| <a id="notesystem"></a>`system` | [`Boolean!`](#boolean) | Indicates whether this note was created by the system or by a user. |
+| <a id="notesystem"></a>`system` | [`Boolean!`](#boolean) | Indicates whether the note was created by the system or by a user. |
 | <a id="notesystemnoteiconname"></a>`systemNoteIconName` | [`String`](#string) | Name of the icon corresponding to a system note. |
 | <a id="notesystemnotemetadata"></a>`systemNoteMetadata` | [`SystemNoteMetadata`](#systemnotemetadata) | Metadata for the given note if it is a system note. |
 | <a id="noteupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the note's last activity. |
-| <a id="noteurl"></a>`url` | [`String`](#string) | URL to view this Note in the Web UI. |
+| <a id="noteurl"></a>`url` | [`String`](#string) | URL to view the note in the Web UI. |
 | <a id="noteuserpermissions"></a>`userPermissions` | [`NotePermissions!`](#notepermissions) | Permissions for the current user on the resource. |
 
 ### `NotePermissions`

@@ -629,6 +629,15 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         project_blob_url: project_blob_path(
           project, project.default_branch)
       )
+
+      current_ref = 'test'
+
+      expect(helper.command_palette_data(project: project, current_ref: current_ref)).to eq(
+        project_files_url: project_files_path(
+          project, current_ref, format: :json),
+        project_blob_url: project_blob_path(
+          project, current_ref)
+      )
     end
 
     it 'returns empty object when project is nil' do

@@ -43,7 +43,7 @@ To run SAST jobs, by default, you need GitLab Runner with the
 If you're using SaaS runners on GitLab.com, this is enabled by default.
 
 NOTE:
-GitLab SAST analyzers only run in a Docker on Linux amd64 environment, which is **not** `Docker 19.03.0`. See [troubleshooting information](troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+GitLab SAST analyzers only run in a Docker on Linux amd64 environment, which is **not** `Docker 19.03.0`. See [Docker error](troubleshooting.md#docker-error) for details.
 
 ## Supported languages and frameworks
 

@@ -53,6 +53,14 @@ module Keeps
       return unless file_lines[line_number - 1].match?(EXAMPLE_LINE_REGEX)
 
       file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{flaky_issue['web_url']}' do")
+
+      if file_lines[line_number - 1].size > 120
+        file_lines[line_number - 1].sub!(
+          /\n\z/,
+          " # rubocop:disable Layout/LineLength -- We prefer to keep it on a single line, for simplicity sake\n"
+        )
+      end
+
       File.write(file, file_lines.join)
 
       construct_change(filename, line_number, description, flaky_issue)
@@ -90,7 +98,7 @@ module Keeps
         - accept the merge request and schedule to improve the test
         - close the merge request in favor of another merge request to delete the test
 
-        Related to ##{flaky_issue['iid']}.
+        Related to #{flaky_issue['web_url']}.
         MARKDOWN
 
         group_label = flaky_issue['labels'].grep(/group::/).first

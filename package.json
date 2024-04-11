@@ -42,7 +42,7 @@
     "preinstall": "node ./scripts/frontend/preinstall.mjs",
     "postinstall": "node ./scripts/frontend/postinstall.js",
     "storybook:install": "yarn --cwd ./storybook install",
-    "storybook:build": "yarn --cwd ./storybook build --quiet",
+    "storybook:build": "yarn pretailwindcss:build && yarn --cwd ./storybook build --quiet",
     "storybook:start": "./scripts/frontend/start_storybook.sh",
     "swagger:validate": "swagger-cli validate",
     "webpack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.config.js",

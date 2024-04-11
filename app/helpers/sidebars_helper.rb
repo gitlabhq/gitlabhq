@@ -160,13 +160,13 @@ module SidebarsHelper
     end
   end
 
-  def command_palette_data(project: nil)
+  def command_palette_data(project: nil, current_ref: nil)
     return {} unless project&.repo_exists?
     return {} if project.empty_repo?
 
     {
-      project_files_url: project_files_path(project, project.default_branch, format: :json),
-      project_blob_url: project_blob_path(project, project.default_branch)
+      project_files_url: project_files_path(project, current_ref || project.default_branch, format: :json),
+      project_blob_url: project_blob_path(project, current_ref || project.default_branch)
     }
   end
 

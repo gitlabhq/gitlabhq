@@ -108,7 +108,7 @@ Prerequisites:
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See
-  [troubleshooting information](../../sast/troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error)
+  [Docker error](../../sast/troubleshooting.md#docker-error)
   for details.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 
