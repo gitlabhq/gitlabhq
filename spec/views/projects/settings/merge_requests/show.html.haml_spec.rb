@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/settings/merge_requests/show' do
+RSpec.describe 'projects/settings/merge_requests/show', feature_category: :code_review_workflow do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
@@ -24,7 +24,7 @@ RSpec.describe 'projects/settings/merge_requests/show' do
     it 'displays a placeholder if none is set' do
       render
 
-      placeholder = "Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)"
+      placeholder = "Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)\n\n%{co_authored_by}"
 
       expect(rendered).to have_field('project[suggestion_commit_message]', placeholder: placeholder)
     end

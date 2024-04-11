@@ -533,19 +533,15 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     def stub_user_session(user, csrf_token)
       stub_session(
-        {
-          'warden.user.user.key' => [[user.id], user.authenticatable_salt],
-          '_csrf_token' => csrf_token
-        }
+        'warden.user.user.key' => [[user.id], user.authenticatable_salt],
+        '_csrf_token' => csrf_token
       )
     end
 
     def stub_user_session_with_no_user_id(user, csrf_token)
       stub_session(
-        {
-          'warden.user.user.key' => [[nil], user.authenticatable_salt],
-          '_csrf_token' => csrf_token
-        }
+        'warden.user.user.key' => [[nil], user.authenticatable_salt],
+        '_csrf_token' => csrf_token
       )
     end
 

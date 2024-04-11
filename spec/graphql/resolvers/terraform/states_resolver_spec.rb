@@ -16,7 +16,7 @@ RSpec.describe Resolvers::Terraform::StatesResolver do
     let_it_be(:other_state) { create(:terraform_state) }
 
     let(:ctx) { Hash(current_user: user) }
-    let(:user) { create(:user, developer_projects: [project]) }
+    let(:user) { create(:user, developer_of: project) }
 
     subject { resolve(described_class, obj: project, ctx: ctx) }
 

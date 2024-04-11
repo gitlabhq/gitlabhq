@@ -3,7 +3,7 @@
 RSpec.shared_examples 'pipeline status changes email' do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user, developer_projects: [project]) }
+  let(:user) { create(:user, developer_of: project) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 

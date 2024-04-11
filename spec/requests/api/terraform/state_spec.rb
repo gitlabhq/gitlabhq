@@ -6,8 +6,8 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   include HttpBasicAuthHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user, developer_projects: [project]) }
-  let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
 
   let(:current_user) { maintainer }
   let(:auth_header) { user_basic_auth_header(current_user) }

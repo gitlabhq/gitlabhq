@@ -24,8 +24,8 @@ RSpec.describe 'getting user information', feature_category: :user_management do
   context 'looking up a user by username' do
     let_it_be(:project_a) { create(:project, :repository) }
     let_it_be(:project_b) { create(:project, :repository) }
-    let_it_be(:user, reload: true) { create(:user, developer_projects: [project_a, project_b]) }
-    let_it_be(:authorised_user) { create(:user, developer_projects: [project_a, project_b]) }
+    let_it_be(:user, reload: true) { create(:user, developer_of: [project_a, project_b]) }
+    let_it_be(:authorised_user) { create(:user, developer_of: [project_a, project_b]) }
     let_it_be(:unauthorized_user) { create(:user) }
 
     let_it_be(:assigned_mr) do

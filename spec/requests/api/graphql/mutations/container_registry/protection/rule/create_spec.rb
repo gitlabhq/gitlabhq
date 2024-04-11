@@ -6,7 +6,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:container_registry_protection_rule_attributes) do
     build_stubbed(:container_registry_protection_rule, project: project)

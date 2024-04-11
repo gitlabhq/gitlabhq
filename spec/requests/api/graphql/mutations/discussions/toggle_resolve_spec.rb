@@ -25,7 +25,7 @@ RSpec.describe 'Toggling the resolve status of a discussion', feature_category: 
   end
 
   context 'when user has permission' do
-    let_it_be(:current_user) { create(:user, developer_projects: [project]) }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
 
     it 'returns the discussion without errors', :aggregate_failures do
       post_graphql_mutation(mutation, current_user: current_user)

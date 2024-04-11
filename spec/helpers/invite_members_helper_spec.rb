@@ -7,7 +7,7 @@ RSpec.describe InviteMembersHelper do
 
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group, projects: [project]) }
-  let_it_be(:developer) { create(:user, developer_projects: [project]) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:owner) { project.owner }
 

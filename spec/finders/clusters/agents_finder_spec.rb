@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Clusters::AgentsFinder do
   describe '#execute' do
     let(:project) { create(:project) }
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
 
     let!(:matching_agent) { create(:cluster_agent, project: project) }
     let!(:wrong_project) { create(:cluster_agent) }

@@ -174,6 +174,7 @@ The template for commit messages for applied suggestions supports these variable
 | `%{suggestions_count}` | The number of suggestions applied.| `3` |
 | `%{username}`          | The username of the user applying suggestions. | `user_1` |
 | `%{user_full_name}`    | The full name of the user applying suggestions. | `User 1` |
+| `%{co_authored_by}`    | Names and emails of suggestion authors in a `Co-authored-by` Git commit trailer format. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 
 For example, to customize the commit message to output
 `Addresses user_1's review`, set the custom text to

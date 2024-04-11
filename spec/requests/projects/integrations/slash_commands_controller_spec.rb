@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Projects::Integrations::SlashCommandsController, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:chat_name) { create(:chat_name, user: user) }
 
   let(:params) do

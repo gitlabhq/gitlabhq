@@ -4,7 +4,7 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be(:variables) { { path: project.full_path } }
 
   let(:fields) { all_graphql_fields_for("#{access_level_kind.to_s.classify}AccessLevel") }

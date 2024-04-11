@@ -187,18 +187,21 @@ FactoryBot.define do
     end
 
     transient do
-      developer_projects { [] }
-      maintainer_projects { [] }
+      # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+      guest_of {}
+      reporter_of {}
+      developer_of {}
+      maintainer_of {}
+      owner_of {}
+      # rubocop:enable Lint/EmptyBlock
     end
 
     after(:create) do |user, evaluator|
-      evaluator.developer_projects.each do |project|
-        project.add_developer(user)
-      end
-
-      evaluator.maintainer_projects.each do |project|
-        project.add_maintainer(user)
-      end
+      Array.wrap(evaluator.guest_of).each { |target| target.add_guest(user) }
+      Array.wrap(evaluator.reporter_of).each { |target| target.add_reporter(user) }
+      Array.wrap(evaluator.developer_of).each { |target| target.add_developer(user) }
+      Array.wrap(evaluator.maintainer_of).each { |target| target.add_maintainer(user) }
+      Array.wrap(evaluator.owner_of).each { |target| target.add_owner(user) }
     end
 
     factory :omniauth_user do

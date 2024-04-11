@@ -96,9 +96,13 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
         let(:message) { '' }
 
         it 'uses the default commit message' do
-          expect(project.repository.commit.message).to(
-            match(/\AApply #{suggestions.size} suggestion\(s\) to \d+ file\(s\)\z/)
+          message = project.repository.commit.message
+          expect(message).to match(
+            /Apply #{suggestions.size} suggestion\(s\) to \d+ file\(s\)/
           )
+
+          author = suggestion.note.author
+          expect(message).to include("Co-authored-by: #{author.name} <#{author.email}>")
         end
       end
 

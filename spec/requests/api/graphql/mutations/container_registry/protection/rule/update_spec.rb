@@ -10,7 +10,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     create(:container_registry_protection_rule, project: project, push_protected_up_to_access_level: :developer)
   end
 
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:container_registry_protection_rule_attributes) do
     build_stubbed(:container_registry_protection_rule, project: project)

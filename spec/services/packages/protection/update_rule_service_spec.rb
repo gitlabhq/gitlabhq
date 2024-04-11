@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_category: :environment_management do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, project: project) }
 
   let(:service) { described_class.new(package_protection_rule, current_user: current_user, params: params) }

@@ -61,6 +61,24 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS || allowed_visibility_levels.empty?
   end
 
+  condition(:create_subgroup_disabled, scope: :subject) do
+    next true if @user.nil?
+
+    visibility_levels = if @user.can_admin_all_resources?
+                          # admin can create groups even with restricted visibility levels
+                          Gitlab::VisibilityLevel.values
+                        else
+                          Gitlab::VisibilityLevel.allowed_levels
+                        end
+
+    # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy sub-group.
+    subgroup = Group.new(parent_id: @subject.id)
+
+    # if a subgroup with none of the remaining visibility levels can be allowed by the group,
+    # then it means that the `Create subgroup` button must be disabled.
+    visibility_levels.none? { |level| subgroup.visibility_level_allowed?(level) }
+  end
+
   condition(:developer_maintainer_access, scope: :subject) do
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
@@ -310,6 +328,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { create_projects_disabled }.policy do
     prevent :create_projects
     prevent :import_projects
+  end
+
+  rule { create_subgroup_disabled }.policy do
+    prevent :create_subgroup
   end
 
   rule { owner | admin | organization_owner }.policy do

@@ -6,7 +6,7 @@ RSpec.describe 'Slack application', :js, feature_category: :integrations do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:integration) { create(:gitlab_slack_application_integration, project: project) }
   let(:slack_application_form_path) { edit_project_settings_integration_path(project, integration) }
 

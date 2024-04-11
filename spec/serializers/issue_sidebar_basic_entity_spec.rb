@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe IssueSidebarBasicEntity do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
   let(:serializer) { IssueSerializer.new(current_user: user, project: project) }

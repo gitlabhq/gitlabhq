@@ -22,6 +22,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import { InternalEvents } from '~/tracking';
+import { initFindFileShortcut } from '~/projects/behaviors';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -65,6 +66,7 @@ const initRefSwitcher = () => {
 
 initRefSwitcher();
 initAmbiguousRefModal();
+initFindFileShortcut();
 
 if (viewBlobEl) {
   const {

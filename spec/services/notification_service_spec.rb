@@ -1349,9 +1349,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       let_it_be(:design) { create(:design, :with_file) }
       let_it_be(:project) { design.project }
-      let_it_be(:member_and_mentioned) { create(:user, developer_projects: [project]) }
-      let_it_be(:member_and_author_of_second_note) { create(:user, developer_projects: [project]) }
-      let_it_be(:member_and_not_mentioned) { create(:user, developer_projects: [project]) }
+      let_it_be(:member_and_mentioned) { create(:user, developer_of: project) }
+      let_it_be(:member_and_author_of_second_note) { create(:user, developer_of: project) }
+      let_it_be(:member_and_not_mentioned) { create(:user, developer_of: project) }
       let_it_be(:non_member_and_mentioned) { create(:user) }
       let_it_be(:note) do
         create(

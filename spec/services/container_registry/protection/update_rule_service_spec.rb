@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', feature_category: :container_registry do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:container_registry_protection_rule) do
     create(:container_registry_protection_rule, project: project)
   end

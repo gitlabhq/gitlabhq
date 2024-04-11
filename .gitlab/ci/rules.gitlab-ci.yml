@@ -557,6 +557,7 @@
   - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
+  - "keeps/**/*"
   - "Rakefile"
   - "tests.yml"
   - "config.ru"

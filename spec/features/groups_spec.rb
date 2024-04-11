@@ -582,6 +582,14 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
             expect(page).not_to have_link('New project')
           end
         end
+
+        it 'does not display the "New subgroup" button' do
+          visit group_path(group)
+
+          within_testid 'group-buttons' do
+            expect(page).not_to have_link('New subgroup')
+          end
+        end
       end
     end
   end

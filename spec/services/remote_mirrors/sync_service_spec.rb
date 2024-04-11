@@ -6,7 +6,7 @@ RSpec.describe RemoteMirrors::SyncService, feature_category: :source_code_manage
   subject(:sync_service) { described_class.new(project, current_user) }
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:remote_mirror) { create(:remote_mirror, project: project, enabled: true) }
 
   let(:current_user) { maintainer }

@@ -9,7 +9,7 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
   let_it_be(:issue)         { create(:issue, iid: 10) }
   let_it_be(:issue_proj_2)  { create(:issue, iid: 20) }
   let_it_be(:issue_b)       { create(:issue, project: issue.project) }
-  let_it_be(:developer)     { create(:user, developer_projects: [issue.project, issue_proj_2.project]) }
+  let_it_be(:developer)     { create(:user, developer_of: [issue.project, issue_proj_2.project]) }
   let_it_be(:design_a)      { create(:design, :with_versions, issue: issue) }
   let_it_be(:design_b)      { create(:design, :with_versions, issue: issue_b) }
   let_it_be(:design_proj_2) { create(:design, :with_versions, issue: issue_proj_2) }

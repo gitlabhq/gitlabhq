@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:seeds_block) {}
   let(:command) { initialize_command }

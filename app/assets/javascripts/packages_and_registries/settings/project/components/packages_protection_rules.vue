@@ -330,7 +330,7 @@ export default {
                 size="small"
                 :disabled="isProtectionRuleDeleteButtonDisabled(item)"
                 @click="showProtectionRuleDeletionConfirmModal(item)"
-                >{{ __('Delete rule') }}</gl-button
+                >{{ s__('PackageRegistry|Delete rule') }}</gl-button
               >
             </template>
           </gl-table>

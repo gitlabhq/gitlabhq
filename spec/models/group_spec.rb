@@ -864,6 +864,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.groups_user_can' do
+    let_it_be(:public_group) { create(:group, :public) }
+    let_it_be(:internal_subgroup) { create(:group, :internal, parent: public_group) }
+    let_it_be(:private_subgroup_1) { create(:group, :private, parent: internal_subgroup) }
+    let_it_be(:private_subgroup_2) { create(:group, :private, parent: private_subgroup_1) }
+
+    let_it_be(:user) { create(:user) }
+
+    it 'filters groups based on permissions' do
+      private_subgroup_2.add_guest(user)
+
+      expect(described_class.groups_user_can(public_group.self_and_descendants, user, :read_group)).to contain_exactly(
+        public_group,
+        internal_subgroup,
+        private_subgroup_2
+      )
+    end
+  end
+
   describe '.execute_integrations' do
     let(:integration) { create(:integrations_slack, :group, group: group) }
     let(:test_data) { { 'foo' => 'bar' } }

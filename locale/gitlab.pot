@@ -12358,6 +12358,9 @@ msgstr ""
 msgid "Clusters|An error occurred while loading clusters"
 msgstr ""
 
+msgid "Co-authored-by: ..."
+msgstr ""
+
 msgid "Code"
 msgstr ""
 
@@ -17008,9 +17011,6 @@ msgid "Delete row"
 msgid_plural "Delete %d rows"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Delete rule"
-msgstr ""
 
 msgid "Delete selected"
 msgstr ""
@@ -24062,9 +24062,6 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Example: %{code_open}my-sample-project-191923%{code_close}"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Google Artifact Registry"
-msgstr ""
-
 msgid "GoogleCloudPlatformService|Google Cloud IAM"
 msgstr ""
 
@@ -24183,6 +24180,9 @@ msgid "GoogleCloud|Create service account"
 msgstr ""
 
 msgid "GoogleCloud|Generated service account is linked to the selected branch or tag"
+msgstr ""
+
+msgid "GoogleCloud|Google Artifact Management"
 msgstr ""
 
 msgid "GoogleCloud|Google Cloud project"
@@ -36104,6 +36104,9 @@ msgid "PackageRegistry|Delete package version"
 msgstr ""
 
 msgid "PackageRegistry|Delete packages"
+msgstr ""
+
+msgid "PackageRegistry|Delete rule"
 msgstr ""
 
 msgid "PackageRegistry|Delete selected"

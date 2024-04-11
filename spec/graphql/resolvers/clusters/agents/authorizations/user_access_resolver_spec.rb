@@ -11,7 +11,7 @@ RSpec.describe Resolvers::Clusters::Agents::Authorizations::UserAccessResolver,
 
   describe '#resolve' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+    let_it_be(:user) { create(:user, maintainer_of: project) }
 
     let(:ctx) { { current_user: user } }
 

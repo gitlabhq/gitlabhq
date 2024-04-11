@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe AutoDevops::DisableWorker, '#perform', feature_category: :auto_devops do
-  let(:user) { create(:user, developer_projects: [project]) }
+  let(:user) { create(:user, developer_of: project) }
   let(:project) { create(:project, :repository, :auto_devops) }
   let(:auto_devops) { project.auto_devops }
   let(:pipeline) { create(:ci_pipeline, :failed, :auto_devops_source, project: project, user: user) }

@@ -337,6 +337,12 @@ class Group < Namespace
       where('NOT EXISTS (?)', integrations)
     end
 
+    def groups_user_can(groups, user, action, same_root: false)
+      DeclarativePolicy.user_scope do
+        groups.select { |group| Ability.allowed?(user, action, group) }
+      end
+    end
+
     # This method can be used only if all groups have the same top-level
     # group
     def preset_root_ancestor_for(groups)

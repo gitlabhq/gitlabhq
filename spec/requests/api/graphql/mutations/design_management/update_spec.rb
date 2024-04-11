@@ -8,7 +8,7 @@ RSpec.describe "updating designs", feature_category: :design_management do
 
   let_it_be(:issue) { create(:issue) }
   let_it_be_with_reload(:design) { create(:design, description: 'old description', issue: issue) }
-  let_it_be(:developer) { create(:user, developer_projects: [issue.project]) }
+  let_it_be(:developer) { create(:user, developer_of: issue.project) }
 
   let(:user) { developer }
   let(:description) { 'new description' }

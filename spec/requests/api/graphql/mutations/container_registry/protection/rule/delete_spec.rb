@@ -10,7 +10,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
     create(:container_registry_protection_rule, project: project)
   end
 
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:mutation) { graphql_mutation(:delete_container_registry_protection_rule, input) }
   let(:mutation_response) { graphql_mutation_response(:delete_container_registry_protection_rule) }

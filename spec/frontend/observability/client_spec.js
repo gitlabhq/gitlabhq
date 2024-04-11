@@ -831,6 +831,18 @@ describe('buildClient', () => {
       });
     });
 
+    it('sets the visual param when specified', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      await client.fetchMetric('name', 'type', { visual: 'heatmap' });
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type', mvisual: 'heatmap' }),
+      });
+    });
+
     describe('query filter params', () => {
       beforeEach(() => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });

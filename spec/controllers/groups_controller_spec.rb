@@ -128,6 +128,33 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
   describe 'GET #new' do
     context 'when creating subgroups' do
+      context 'when user does not have `:create_subgroup` permissions' do
+        before do
+          sign_in(user)
+          allow(controller).to receive(:can?).with(user, :create_subgroup, group).and_return(false)
+        end
+
+        it 'returns a 404' do
+          get :new, params: { parent_id: group.id }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when user has `:create_subgroup` permissions' do
+        before do
+          sign_in(user)
+          allow(controller).to receive(:can?).with(user, :create_subgroup, group).and_return(true)
+        end
+
+        it 'renders `new` template' do
+          get :new, params: { parent_id: group.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:new)
+        end
+      end
+
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           before do

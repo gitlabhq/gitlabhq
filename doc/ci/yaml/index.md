@@ -4489,13 +4489,15 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
 #### `secrets:vault`
 
+> - `generic` engine option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab Runner 16.11.
+
 Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://www.vaultproject.io/).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Possible inputs**:
 
-- `engine:name`: Name of the secrets engine.
+- `engine:name`: Name of the secrets engine. Can be one of `kv-v2` (default), `kv-v1`, or `generic`.
 - `engine:path`: Path to the secrets engine.
 - `path`: Path to the secret.
 - `field`: Name of the field where the password is stored.

@@ -955,7 +955,7 @@ lib/gitlab/checks/**
 /doc/user/project/integrations/beyond_identity.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @msedlakjakubowski
 /doc/user/project/integrations/github.md @marcel.amirault @lyspin
-/doc/user/project/integrations/google_artifact_registry.md @marcel.amirault
+/doc/user/project/integrations/google_artifact_management.md @marcel.amirault
 /doc/user/project/integrations/harbor.md @marcel.amirault
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/members/ @lciutacu

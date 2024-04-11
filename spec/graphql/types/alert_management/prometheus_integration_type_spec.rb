@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['AlertManagementPrometheusIntegration'] do
     end
 
     let_it_be_with_reload(:integration) { create(:prometheus_integration) }
-    let_it_be(:user) { create(:user, maintainer_projects: [integration.project]) }
+    let_it_be(:user) { create(:user, maintainer_of: integration.project) }
 
     it_behaves_like 'has field with value', 'name' do
       let(:value) { integration.title }

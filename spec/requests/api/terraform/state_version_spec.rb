@@ -6,8 +6,8 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
   include HttpBasicAuthHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user, developer_projects: [project]) }
-  let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:user_without_access) { create(:user) }
 
   let_it_be_with_reload(:state) { create(:terraform_state, project: project) }

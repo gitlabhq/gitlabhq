@@ -672,12 +672,12 @@ project.
 
 ## Enable use of runner registration tokens in projects and groups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148557) in GitLab 17.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148557) in GitLab 16.11
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
-In GitLab 17.0, the use of runner registration tokens to create runners was disabled in all GitLab instances.
+In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
 Users must use runner authentication tokens instead.
 If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
 you can enable runner registration tokens for projects and groups. This setting and support for runner registration tokens will be removed in GitLab 18.0.

@@ -10,7 +10,7 @@ RSpec.describe 'Updating the packages protection rule', :aggregate_failures, fea
     create(:package_protection_rule, project: project, push_protected_up_to_access_level: :developer)
   end
 
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:package_protection_rule_attributes) { build_stubbed(:package_protection_rule, project: project) }
 

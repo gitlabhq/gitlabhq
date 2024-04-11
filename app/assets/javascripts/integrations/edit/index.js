@@ -91,7 +91,7 @@ function parseDatasetToProps(data) {
       initialProjectKey: projectKey,
       initialProjectKeys: projectKeys,
     },
-    googleCloudArtifactRegistryProps: {
+    googleArtifactManagementProps: {
       artifactRegistryPath,
       workloadIdentityFederationPath,
     },

@@ -6,7 +6,7 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:package_protection_rule_attributes) { build_stubbed(:package_protection_rule, project: project) }
 

@@ -401,6 +401,10 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
       mtype: type,
     });
 
+    if (options.visual) {
+      params.append('mvisual', options.visual);
+    }
+
     const { attributes, dateRange, groupBy } = options.filters ?? {};
 
     if (attributes) {

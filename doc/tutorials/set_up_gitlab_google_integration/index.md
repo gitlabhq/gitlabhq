@@ -167,5 +167,5 @@ deploys to Google Cloud.
 ## Related topics
 
 - [Google Cloud IAM integration](../../integration/google_cloud_iam.md)
-- [Google Artifact Registry integration](../../user/project/integrations/google_artifact_registry.md)
+- [Google Artifact Management integration](../../user/project/integrations/google_artifact_management.md)
 - [Provisioning runners in Google Cloud](../../ci/runners/provision_runners_google_cloud.md)

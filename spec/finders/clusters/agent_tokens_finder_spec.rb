@@ -6,7 +6,7 @@ RSpec.describe Clusters::AgentTokensFinder do
   describe '#execute' do
     let_it_be(:project) { create(:project) }
     let_it_be(:agent) { create(:cluster_agent, project: project) }
-    let(:user) { create(:user, maintainer_projects: [project]) }
+    let(:user) { create(:user, maintainer_of: project) }
 
     let_it_be(:active_agent_tokens) do
       [

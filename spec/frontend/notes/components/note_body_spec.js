@@ -100,7 +100,7 @@ describe('issue_note_body component', () => {
             namespaced: true,
             state: {
               defaultSuggestionCommitMessage:
-                '%{branch_name}%{project_path}%{project_name}%{username}%{user_full_name}%{file_paths}%{suggestions_count}%{files_count}',
+                '*** %{branch_name} %{project_path} %{project_name} %{username} %{user_full_name} %{file_paths} %{suggestions_count} %{files_count} %{co_authored_by}',
             },
             getters: { suggestionCommitMessage },
           },
@@ -132,7 +132,9 @@ describe('issue_note_body component', () => {
     it('passes the correct default placeholder commit message for a suggestion to the suggestions component', () => {
       const commitMessage = wrapper.findComponent(Suggestions).attributes('defaultcommitmessage');
 
-      expect(commitMessage).toBe('branch/pathnameuseruser usertonabc11');
+      expect(commitMessage).toBe(
+        '*** branch /path name user user userton abc 1 1 Co-authored-by: ...',
+      );
     });
   });
 });

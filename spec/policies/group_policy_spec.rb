@@ -690,31 +690,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let_it_be(:private) { Gitlab::VisibilityLevel::PRIVATE }
       let_it_be(:policy) { :create_projects }
 
-      where(:restricted_visibility_levels, :group_visibility, :can_create_project?) do
-        []                                            | ref(:public)   | true
-        []                                            | ref(:internal) | true
-        []                                            | ref(:private)  | true
-        [ref(:public)]                                | ref(:public)   | true
-        [ref(:public)]                                | ref(:internal) | true
-        [ref(:public)]                                | ref(:private)  | true
-        [ref(:internal)]                              | ref(:public)   | true
-        [ref(:internal)]                              | ref(:internal) | true
-        [ref(:internal)]                              | ref(:private)  | true
-        [ref(:private)]                               | ref(:public)   | true
-        [ref(:private)]                               | ref(:internal) | true
-        [ref(:private)]                               | ref(:private)  | false
-        [ref(:public), ref(:internal)]                | ref(:public)   | true
-        [ref(:public), ref(:internal)]                | ref(:internal) | true
-        [ref(:public), ref(:internal)]                | ref(:private)  | true
-        [ref(:public), ref(:private)]                 | ref(:public)   | true
-        [ref(:public), ref(:private)]                 | ref(:internal) | true
-        [ref(:public), ref(:private)]                 | ref(:private)  | false
-        [ref(:private), ref(:internal)]               | ref(:public)   | true
-        [ref(:private), ref(:internal)]               | ref(:internal) | false
-        [ref(:private), ref(:internal)]               | ref(:private)  | false
-        [ref(:public), ref(:internal), ref(:private)] | ref(:public)   | false
-        [ref(:public), ref(:internal), ref(:private)] | ref(:internal) | false
-        [ref(:public), ref(:internal), ref(:private)] | ref(:private)  | false
+      where(:restricted_visibility_levels, :group_visibility, :can_create_project?, :can_create_subgroups?) do
+        []                                            | ref(:public)   | true  | true
+        []                                            | ref(:internal) | true  | true
+        []                                            | ref(:private)  | true  | true
+        [ref(:public)]                                | ref(:public)   | true  | true
+        [ref(:public)]                                | ref(:internal) | true  | true
+        [ref(:public)]                                | ref(:private)  | true  | true
+        [ref(:internal)]                              | ref(:public)   | true  | true
+        [ref(:internal)]                              | ref(:internal) | true  | true
+        [ref(:internal)]                              | ref(:private)  | true  | true
+        [ref(:private)]                               | ref(:public)   | true  | true
+        [ref(:private)]                               | ref(:internal) | true  | true
+        [ref(:private)]                               | ref(:private)  | false | false
+        [ref(:public), ref(:internal)]                | ref(:public)   | true  | true
+        [ref(:public), ref(:internal)]                | ref(:internal) | true  | true
+        [ref(:public), ref(:internal)]                | ref(:private)  | true  | true
+        [ref(:public), ref(:private)]                 | ref(:public)   | true  | true
+        [ref(:public), ref(:private)]                 | ref(:internal) | true  | true
+        [ref(:public), ref(:private)]                 | ref(:private)  | false | false
+        [ref(:private), ref(:internal)]               | ref(:public)   | true  | true
+        [ref(:private), ref(:internal)]               | ref(:internal) | false | false
+        [ref(:private), ref(:internal)]               | ref(:private)  | false | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:public)   | false | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:internal) | false | false
+        [ref(:public), ref(:internal), ref(:private)] | ref(:private)  | false | false
       end
 
       with_them do
@@ -726,6 +726,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         context 'with non-admin user' do
           let(:current_user) { owner }
 
+          it { is_expected.to(can_create_subgroups? ? be_allowed(:create_subgroup) : be_disallowed(:create_subgroup)) }
           it { is_expected.to(can_create_project? ? be_allowed(policy) : be_disallowed(policy)) }
         end
 

@@ -84,10 +84,13 @@ export default {
       const batchFilePaths = this.getSuggestionsFilePaths();
       const filePaths = batchFilePaths.length ? batchFilePaths : [this.file.file_path];
       const filesCount = filePaths.length;
+      // Can be potentially replaced by calculated co-authors of a particular suggestion or batched suggestion
+      const coAuthoredByTrailer = __('Co-authored-by: ...');
       const suggestion = this.suggestionCommitMessage({
         file_paths: filePaths.join(', '),
         suggestions_count: suggestionsCount,
         files_count: filesCount,
+        co_authored_by: coAuthoredByTrailer,
       });
 
       return escape(suggestion);

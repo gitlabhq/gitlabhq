@@ -219,7 +219,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
     it_behaves_like 'Web hook destroyer'
 
     context 'when user does not have permission' do
-      let(:user) { create(:user, developer_projects: [project]) }
+      let(:user) { create(:user, developer_of: project) }
 
       it 'renders a 404' do
         delete :destroy, params: params

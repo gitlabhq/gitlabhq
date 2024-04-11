@@ -27761,6 +27761,8 @@ CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports US
 
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
 
+CREATE INDEX index_zoekt_indices_on_namespace_id ON zoekt_indices USING btree (namespace_id, zoekt_enabled_namespace_id);
+
 CREATE UNIQUE INDEX index_zoekt_indices_on_state_and_id ON zoekt_indices USING btree (state, id);
 
 CREATE UNIQUE INDEX index_zoekt_indices_on_zoekt_node_id_and_id ON zoekt_indices USING btree (zoekt_node_id, id);

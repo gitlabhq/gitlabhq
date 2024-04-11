@@ -897,7 +897,7 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
-## Google Artifact Registry
+## Google Artifact Management
 
 DETAILS:
 **Offering:** GitLab.com
@@ -908,9 +908,9 @@ DETAILS:
 FLAG:
 On GitLab.com, this feature is not available. This feature is not ready for production use.
 
-### Set up Google Artifact Registry
+### Set up Google Artifact Management
 
-Set up the Google Artifact Registry integration for a project.
+Set up the Google Artifact Management integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -924,17 +924,17 @@ Parameters:
 | `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
 
-### Disable Google Artifact Registry
+### Disable Google Artifact Management
 
-Disable the Google Artifact Registry integration for a project. Integration settings are reset.
+Disable the Google Artifact Management integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/google-cloud-platform-artifact-registry
 ```
 
-### Get Google Artifact Registry settings
+### Get Google Artifact Management settings
 
-Get the Google Artifact Registry integration settings for a project.
+Get the Google Artifact Management integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/google-cloud-platform-artifact-registry

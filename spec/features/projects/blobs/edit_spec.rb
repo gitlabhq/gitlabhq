@@ -124,7 +124,7 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
         expect(page).to have_content 'NextFeature'
       end
 
-      it 'previews content' do
+      it 'previews content', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448293' do
         edit_and_commit(commit_changes: false)
         click_link 'Preview changes'
         wait_for_requests

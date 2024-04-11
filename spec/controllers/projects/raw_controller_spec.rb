@@ -269,7 +269,7 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
 
       context 'when a public project has private repo' do
         let(:project) { create(:project, :public, :repository, :repository_private) }
-        let(:user) { create(:user, maintainer_projects: [project]) }
+        let(:user) { create(:user, maintainer_of: project) }
 
         it 'does not set public caching header' do
           sign_in user

@@ -73,7 +73,7 @@ export default {
     isSlackIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_SLACK;
     },
-    isGoogleCloudArtifactRegistryIntegration() {
+    isGoogleArtifactManagementIntegration() {
       return this.propsSource.type === INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY;
     },
     isGoogleCloudIAMIntegration() {
@@ -82,7 +82,7 @@ export default {
     showHelpHtml() {
       if (
         this.isSlackIntegration ||
-        this.isGoogleCloudArtifactRegistryIntegration ||
+        this.isGoogleArtifactManagementIntegration ||
         this.isGoogleCloudIAMIntegration
       ) {
         return this.helpHtml;

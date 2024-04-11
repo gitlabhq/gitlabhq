@@ -12,7 +12,7 @@ RSpec.describe 'getting project flow metrics', feature_category: :value_stream_m
   let_it_be(:project2) { project1 }
   let_it_be(:production_environment1) { create(:environment, :production, project: project1) }
   let_it_be(:production_environment2) { production_environment1 }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project1]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project1) }
 
   let(:full_path) { project1.full_path }
   let(:context) { :project }

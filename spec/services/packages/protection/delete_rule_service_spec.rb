@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Protection::DeleteRuleService, '#execute', feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_refind(:package_protection_rule) { create(:package_protection_rule, project: project) }
 
   subject { described_class.new(package_protection_rule, current_user: current_user).execute }

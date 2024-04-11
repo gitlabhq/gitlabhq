@@ -118,10 +118,10 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
       it 'avoids N+1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
 
-        user1 = create(:user, :project_bot, developer_projects: [project])
+        user1 = create(:user, :project_bot, developer_of: project)
         create(:personal_access_token, user: user1, expires_at: 5.days.from_now)
 
-        user2 = create(:user, :project_bot, developer_projects: [project])
+        user2 = create(:user, :project_bot, developer_of: project)
         create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
 
         expect { worker.perform }.not_to exceed_all_query_limit(control)

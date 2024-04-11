@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_category: :continuous_integration do
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   # Assigning partition_id here to validate it is being propagated correctly
   let(:pipeline) { Ci::Pipeline.new(partition_id: ci_testing_partition_id) }
