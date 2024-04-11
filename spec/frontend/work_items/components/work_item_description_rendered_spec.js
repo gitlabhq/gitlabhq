@@ -21,12 +21,18 @@ describe('WorkItemDescription', () => {
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
     disableInlineEditing = false,
+    mockComputed = {},
+    hasWorkItemsMvc2 = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
       propsData: {
         workItemDescription,
         canEdit,
         disableInlineEditing,
+      },
+      computed: mockComputed,
+      provide: {
+        workItemsMvc2: hasWorkItemsMvc2,
       },
     });
   };
@@ -37,6 +43,44 @@ describe('WorkItemDescription', () => {
     await nextTick();
 
     expect(renderGFM).toHaveBeenCalled();
+  });
+
+  describe('with truncation', () => {
+    it('shows the untruncate action', () => {
+      createComponent({
+        workItemDescription: {
+          description: 'This is a long description',
+          descriptionHtml: '<p>This is a long description</p>',
+        },
+        mockComputed: {
+          isTruncated() {
+            return true;
+          },
+        },
+        hasWorkItemsMvc2: true,
+      });
+
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(true);
+    });
+  });
+
+  describe('without truncation', () => {
+    it('does not show the untruncate action', () => {
+      createComponent({
+        workItemDescription: {
+          description: 'This is a long description',
+          descriptionHtml: '<p>This is a long description</p>',
+        },
+        mockComputed: {
+          isTruncated() {
+            return false;
+          },
+        },
+        hasWorkItemsMvc2: true,
+      });
+
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+    });
   });
 
   describe('with checkboxes', () => {

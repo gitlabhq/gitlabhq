@@ -40131,9 +40131,6 @@ msgstr ""
 msgid "ProjectSettings|Infrastructure"
 msgstr ""
 
-msgid "ProjectSettings|Instrument your application"
-msgstr ""
-
 msgid "ProjectSettings|Instrumentation details"
 msgstr ""
 
@@ -40447,9 +40444,6 @@ msgid "ProjectSettings|Wiki"
 msgstr ""
 
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
-msgstr ""
-
-msgid "ProjectSettings|You need to %{linkStart}set up product analytics%{linkEnd} before your application can be instrumented."
 msgstr ""
 
 msgid "ProjectSettings|Your project is set up. %{linkStart}View instrumentation instructions%{linkEnd}."

@@ -88,6 +88,36 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
       subject.run_create_task(backup_tasks)
     end
+
+    context 'when the task succeeds' do
+      it 'returns true' do
+        expect(target).to receive(:dump)
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... done')
+        expect(subject.run_create_task(backup_tasks)).to be_truthy
+      end
+    end
+
+    context 'when the task fails with a known error' do
+      it 'returns false' do
+        allow(target).to receive(:dump).and_raise(Backup::DatabaseBackupError.new({ host: 'foo', port: 'bar', database: 'baz' }, 'foo'))
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... ')
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: match('Dumping database failed: Failed to create compressed file '))
+
+        expect(subject.run_create_task(backup_tasks)).to be_falsey
+      end
+    end
+
+    context 'when the task fails with an unknown error' do
+      it 'returns false' do
+        allow(target).to receive(:dump).and_raise(StandardError)
+        expect(Gitlab::BackupLogger).to receive(:info).with(message: 'Dumping database ... ')
+
+        expect do
+          subject.run_create_task(backup_tasks)
+        end.to raise_error(StandardError)
+      end
+    end
   end
 
   describe '#run_restore_task' do
@@ -995,6 +1025,22 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
                                   .with(a_string_matching('GitLab version mismatch'))
           end
         end
+      end
+    end
+
+    context 'when a single task fails' do
+      before do
+        stub_env('SKIP', 'tar') # avoiding an error during #pack
+      end
+
+      after do
+        FileUtils.rm_rf(Dir.glob(backup_path.join('*')), secure: true)
+      end
+
+      it 'returns false' do
+        allow(lfs).to receive(:backup!).and_raise(Backup::FileBackupError.new('foo', 'bar'))
+
+        expect(subject.create).to be_falsey # rubocop:disable Rails/SaveBang -- not a Rails create method
       end
     end
   end

@@ -30,7 +30,7 @@ module Gitlab
       end
 
       def run
-        created = 0
+        mrs_created_count = 0
 
         git.with_clean_state do
           @keeps.each do |keep_class|
@@ -80,14 +80,27 @@ module Gitlab
 
               create(change, branch_name) unless @dry_run
 
-              created += 1
-              break if created >= @max_mrs
+              mrs_created_count += 1
+              break if mrs_created_count >= @max_mrs
             end
-            break if created >= @max_mrs
+            break if mrs_created_count >= @max_mrs
           end
         end
 
-        puts "Housekeeper created #{created} MRs"
+        print_completion_message(mrs_created_count)
+      end
+
+      def print_completion_message(mrs_created_count)
+        mr_count_string = "#{mrs_created_count} #{'MR'.pluralize(mrs_created_count)}"
+
+        completion_message = if @dry_run
+                               "Dry run complete. Housekeeper would have created #{mr_count_string} on an actual run."
+                             else
+                               "Housekeeper created #{mr_count_string}."
+                             end
+
+        puts completion_message.yellowish
+        puts
       end
 
       def add_standard_change_data(change)

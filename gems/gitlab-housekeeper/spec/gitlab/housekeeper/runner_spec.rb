@@ -269,6 +269,16 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         described_class.new(max_mrs: 2, keeps: [fake_keep]).run
       end
     end
+
+    context 'on dry run' do
+      context 'for completion message' do
+        it 'prints the expected message' do
+          expect do
+            described_class.new(max_mrs: 1, keeps: [fake_keep], dry_run: true).run
+          end.to output(/Dry run complete. Housekeeper would have created 1 MR on an actual run./).to_stdout
+        end
+      end
+    end
   end
 
   describe '#housekeeper_fork_project_id' do

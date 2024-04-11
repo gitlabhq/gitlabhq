@@ -61,6 +61,7 @@ export default {
   data() {
     return {
       workItem: {},
+      disableTruncation: false,
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
@@ -181,6 +182,7 @@ export default {
     },
     async startEditing() {
       this.isEditing = true;
+      this.disableTruncation = true;
 
       this.descriptionText = getDraft(this.autosaveKey) || this.workItemDescription?.description;
 
@@ -359,6 +361,7 @@ export default {
       :disable-inline-editing="disableInlineEditing"
       :work-item-description="workItemDescription"
       :can-edit="canEdit"
+      :disable-truncation="disableTruncation"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />
