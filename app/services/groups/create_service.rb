@@ -9,7 +9,6 @@ module Groups
       @current_user = user
       @params = params.dup
       @chat_team = @params.delete(:create_chat_team)
-      @create_event = @params.delete(:create_event)
     end
 
     def execute
@@ -37,8 +36,6 @@ module Groups
     end
 
     private
-
-    attr_reader :create_event
 
     def create_chat_team
       return unless valid_to_create_chat_team?

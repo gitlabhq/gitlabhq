@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def validation_errors
-        SCHEMA.validate(attributes.stringify_keys).map do |error|
+        SCHEMA.validate(attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Definition file: #{path}

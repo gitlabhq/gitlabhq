@@ -5,7 +5,7 @@ classes:
 feature_categories:
 - runner
 - fleet_visibility
-- runner_saas
+- hosted_runners
 description: Registered CI runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62
 milestone: '8.0'

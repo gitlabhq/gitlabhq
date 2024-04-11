@@ -53,4 +53,38 @@ RSpec.describe Integrations::Telegram, feature_category: :integrations do
       end
     end
   end
+
+  describe '#notify' do
+    let(:subject) { build(:telegram_integration) }
+    let(:message) { instance_double(Integrations::ChatMessage::PushMessage, summary: '_Test message') }
+    let(:header) { { 'Content-Type' => 'application/json' } }
+    let(:response) { instance_double(HTTParty::Response, bad_request?: true, success?: true) }
+    let(:body_1) do
+      {
+        text: '_Test message',
+        chat_id: subject.room,
+        message_thread_id: subject.thread,
+        parse_mode: 'markdown'
+      }.compact_blank
+    end
+
+    let(:body_2) { body_1.without(:parse_mode) }
+
+    before do
+      allow(Gitlab::HTTP).to receive(:post).and_return(response)
+    end
+
+    it 'removes the parse mode if the first request fails with a bad request' do
+      expect(Gitlab::HTTP).to receive(:post).with(subject.webhook, headers: header, body: Gitlab::Json.dump(body_1))
+      expect(Gitlab::HTTP).to receive(:post).with(subject.webhook, headers: header, body: Gitlab::Json.dump(body_2))
+
+      subject.send(:notify, message, {})
+    end
+
+    it 'makes a second request if the first one fails with a bad request' do
+      expect(Gitlab::HTTP).to receive(:post).twice
+
+      subject.send(:notify, message, {})
+    end
+  end
 end

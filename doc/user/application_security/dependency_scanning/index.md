@@ -1164,8 +1164,8 @@ To use a copy of the GitLab Advisory Database:
    dependency_scanning:
      before_script:
        - wget https://local.example.com/gemnasium_db.tar.gz
-       - mkdir $GEMNASIUM_DB_LOCAL_PATH
-       - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
+       - mkdir -p $GEMNASIUM_DB_LOCAL_PATH
+       - tar -xzvf gemnasium_db.tar.gz --strip-components=1 -C $GEMNASIUM_DB_LOCAL_PATH
    ```
 
 ## Using a proxy with Gradle projects

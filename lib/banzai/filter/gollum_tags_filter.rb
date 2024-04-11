@@ -64,8 +64,8 @@ module Banzai
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
           next unless node.content =~ TAGS_PATTERN
 
-          html = node.content.gsub(TAGS_PATTERN) do
-            process_tag(Regexp.last_match(1)) || Regexp.last_match(0)
+          html = CGI.escapeHTML(node.content).gsub(TAGS_PATTERN) do
+            process_tag(CGI.unescapeHTML(Regexp.last_match(1))) || Regexp.last_match(0)
           end
 
           node.replace(html)

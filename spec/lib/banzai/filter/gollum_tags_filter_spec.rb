@@ -119,6 +119,34 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
     end
   end
 
+  it 'leaves other text content untouched' do
+    doc = filter('This is [[a link|link]]', wiki: wiki)
+
+    expect(doc.to_html).to eq "This is <a href=\"#{wiki.wiki_base_path}/link\" class=\"gfm gfm-gollum-wiki-page\" data-canonical-src=\"link\" data-link=\"true\" data-gollum=\"true\" data-reference-type=\"wiki_page\" data-project=\"#{project.id}\"\>a link</a>"
+  end
+
+  context 'sanitization of HTML entities' do
+    it 'does not unescape HTML entities' do
+      doc = filter('This is [[a link|&lt;script&gt;alert(0)&lt;/script&gt;]]', wiki: wiki)
+
+      expect(doc.to_html).to eq "This is <a href=\"#{wiki.wiki_base_path}/&lt;script&gt;alert(0)&lt;/script&gt;\" class=\"gfm gfm-gollum-wiki-page\" data-canonical-src=\"&lt;script&gt;alert(0)&lt;/script&gt;\" data-link=\"true\" data-gollum=\"true\" data-reference-type=\"wiki_page\" data-project=\"#{project.id}\">a link</a>"
+    end
+
+    it 'does not unescape HTML entities in the link text' do
+      doc = filter('This is [[&lt;script&gt;alert(0)&lt;/script&gt;|link]]', wiki: wiki)
+
+      expect(doc.to_html).to eq "This is <a href=\"#{wiki.wiki_base_path}/link\" class=\"gfm gfm-gollum-wiki-page\" data-canonical-src=\"link\" data-link=\"true\" data-gollum=\"true\" data-reference-type=\"wiki_page\" data-project=\"#{project.id}\">&lt;script&gt;alert(0)&lt;/script&gt;</a>"
+    end
+
+    it 'does not unescape HTML entities outside the link text' do
+      doc = filter('This is &lt;script&gt;alert(0)&lt;/script&gt; [[a link|link]]', wiki: wiki)
+
+      # This is <script>alert(0)</script> <a href="/namespace1/project-1/-/wikis/link" class="gfm gfm-gollum-wiki-page" data-canonical-src="link" data-link="true" data-gollum="true" data-reference-type="wiki_page" data-project="8">a link</a>
+
+      expect(doc.to_html).to eq "This is &lt;script&gt;alert(0)&lt;/script&gt; <a href=\"#{wiki.wiki_base_path}/link\" class=\"gfm gfm-gollum-wiki-page\" data-canonical-src=\"link\" data-link=\"true\" data-gollum=\"true\" data-reference-type=\"wiki_page\" data-project=\"#{project.id}\">a link</a>"
+    end
+  end
+
   it 'adds `gfm-gollum-wiki-page` classes to the link' do
     tag = '[[wiki-slug]]'
     doc = filter("See #{tag}", wiki: wiki)

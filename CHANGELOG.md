@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.2 (2024-04-09)
+
+### Fixed (1 change)
+
+- [Fix URL validator for mirror services when using localhost](gitlab-org/security/gitlab@82ee9dbd7b4f52507563a509eaa8d2e4839b2e58)
+
+### Security (3 changes)
+
+- [Update Gitlab::Regex::Packages#slack_link_regex](gitlab-org/security/gitlab@25d2355e4cd84a5c1005f1769624e83bfc6d63c2) ([merge request](gitlab-org/security/gitlab!3945))
+- [Fix XSS in autocomplete in rich text editor](gitlab-org/security/gitlab@dc132c61a896afc1b63ce9cf31b69797eecf95ce) ([merge request](gitlab-org/security/gitlab!3946))
+- [Correctly parse attachments for junit result](gitlab-org/security/gitlab@e729252188fd47950e27abe14bad4bf748e99455) ([merge request](gitlab-org/security/gitlab!3934))
+
 ## 16.10.1 (2024-03-27)
 
 ### Fixed (2 changes)
@@ -699,6 +711,14 @@ entry.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.4 (2024-04-09)
+
+### Security (3 changes)
+
+- [Update Gitlab::Regex::Packages#slack_link_regex](gitlab-org/security/gitlab@af54b6789912e394423920674ac2f4f0e38f9ff7) ([merge request](gitlab-org/security/gitlab!3903))
+- [Fix XSS in autocomplete in rich text editor](gitlab-org/security/gitlab@bf84ed8c4d716d642ed36c1a804733a17dace11a) ([merge request](gitlab-org/security/gitlab!3947))
+- [Correctly parse attachments for junit result](gitlab-org/security/gitlab@ed457bf14d21566b98fa461dfac10dac06b054ac) ([merge request](gitlab-org/security/gitlab!3911))
 
 ## 16.9.3 (2024-03-27)
 
@@ -1479,6 +1499,14 @@ entry.
 ### EE (1 change)
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
+
+## 16.8.6 (2024-04-09)
+
+### Security (3 changes)
+
+- [Update Gitlab::Regex::Packages#slack_link_regex](gitlab-org/security/gitlab@1f88950d5d570b14915818539d88d54999e2606c) ([merge request](gitlab-org/security/gitlab!3902))
+- [Fix XSS in autocomplete in rich text editor](gitlab-org/security/gitlab@60f3d5f99ae8c8df2f5a5543b61ce09f8bddc06e) ([merge request](gitlab-org/security/gitlab!3948))
+- [Correctly parse attachments for junit result](gitlab-org/security/gitlab@2059390df321318c2f82b83e488e76ff23d6609c) ([merge request](gitlab-org/security/gitlab!3910))
 
 ## 16.8.5 (2024-03-27)
 

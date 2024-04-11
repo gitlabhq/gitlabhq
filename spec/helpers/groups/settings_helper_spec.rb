@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::SettingsHelper do
   include GroupsHelper
+  include NumbersHelper
 
   let_it_be(:group) { create(:group, path: "foo") }
 

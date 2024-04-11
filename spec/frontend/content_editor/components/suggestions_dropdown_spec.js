@@ -180,6 +180,33 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
     );
   });
 
+  it.each`
+    query      | expectedHTML
+    ${''}      | ${'<small class="gl-text-gray-500">Administrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
+    ${'Admin'} | ${'<small class="gl-text-gray-500"><strong class="gl-text-body!">Admin</strong>istrator &lt;script&gt;alert("hello")&lt;/script&gt;</small></span></span>'}
+  `('escapes stray html before appending to DOM', ({ query, expectedHTML }) => {
+    buildWrapper({
+      propsData: {
+        char: '@',
+        nodeType: 'reference',
+        nodeProps: {
+          referenceType: 'user',
+        },
+        items: [
+          {
+            name: 'Administrator <script>alert("hello")</script>',
+            avatar_url: 'root_avatar.png',
+            type: 'User',
+            user: 'root',
+          },
+        ],
+        query,
+      },
+    });
+
+    expect(wrapper.html()).toContain(expectedHTML);
+  });
+
   describe('on item select', () => {
     it.each`
       nodeType       | referenceType      | char                 | reference               | insertedText                  | insertedProps

@@ -113,3 +113,9 @@ You might get an error that states `Error: services is forbidden: User "gitlab:u
 This error happens when a user is not allowed to do the specified operation in the [Kubernetes RBAC](https://kubernetes.io/docs/reference/access-authn-authz/rbac/).
 
 To resolve, check your [RBAC configuration](../../user/clusters/agent/user_access.md#configure-kubernetes-access). If the RBAC is properly configured, contact your Kubernetes administrator.
+
+## GitLab agent dropdown list is empty
+
+When you configure a new environment, the **GitLab agent** dropdown list might be empty, even if you have configured Kubernetes clusters.
+
+To populate the **GitLab agent** dropdown list, grant an agent Kubernetes access with the [`user_access`](../../user/clusters/agent/user_access.md) keyword.

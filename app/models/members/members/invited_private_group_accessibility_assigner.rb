@@ -12,11 +12,12 @@ module Members
     include Gitlab::Utils::StrongMemoize
 
     def initialize(members, source:, current_user:)
-      if !members.is_a?(Array) && !members.is_a?(MembersPresenter)
-        raise ArgumentError, "members should be an instance of Array or MembersPresenter"
-      end
+      @members = if members.is_a?(ActiveRecord::Base)
+                   Array.wrap(members)
+                 else
+                   members.to_a
+                 end
 
-      @members = members
       @source = source
       @current_user = current_user
     end

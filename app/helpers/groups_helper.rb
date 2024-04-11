@@ -102,17 +102,20 @@ module GroupsHelper
   end
 
   def additional_removed_items(group)
-    list_content = ''.html_safe
+    relations = {
+      _('subgroup') => group.children,
+      _('active project') => group.all_projects.non_archived,
+      _('archived project') => group.all_projects.archived
+    }
 
-    list_content << content_tag(:li, pluralize(group.subgroup_count, _('subgroup'))) if group.subgroup_count > 0
-    list_content << content_tag(:li, pluralize(group.all_projects.non_archived.count, _('active project'))) if group.all_projects.non_archived.count > 0
-    list_content << content_tag(:li, pluralize(group.all_projects.archived.count, _('archived project'))) if group.all_projects.archived.count > 0
+    counts = relations.filter_map do |singular, relation|
+      count = limited_counter_with_delimiter(relation, limit: 100, include_zero: false)
+      content_tag(:li, pluralize(count, singular)) if count
+    end.join.html_safe
 
-    if list_content.present?
+    if counts.present?
       content_tag(:span, _(" This action will also remove:")) +
-        content_tag(:ul) do
-          list_content
-        end
+        content_tag(:ul, counts)
     else
       ''.html_safe
     end

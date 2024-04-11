@@ -131,35 +131,124 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     let(:linked_group_user) { create(:user) }
     let!(:project_group_link) { create(:project_group_link, project: project, group: linked_group) }
     let(:invited_group_developer) { create(:user, username: 'invited_group_developer') }
-    let(:invited_group) { create(:group) { |group| group.add_developer(invited_group_developer) } }
+    let(:invited_group) do
+      create(:group) do |group|
+        group.add_owner(maintainer)
+        group.add_developer(invited_group_developer, maintainer)
+      end
+    end
 
     let(:project) do
       create(:project, :public, group: nested_group) do |project|
-        project.add_developer(project_user)
+        project.add_developer(project_user, current_user: maintainer)
       end
     end
 
     let(:linked_group) do
       create(:group) do |linked_group|
-        linked_group.add_developer(linked_group_user)
+        linked_group.add_owner(maintainer)
+        linked_group.add_developer(linked_group_user, maintainer)
       end
     end
 
     let(:nested_group) do
       create(:group, parent: group) do |nested_group|
-        nested_group.add_developer(nested_user)
+        nested_group.add_developer(nested_user, maintainer)
         create(:group_group_link, :guest, shared_with_group: invited_group, shared_group: nested_group)
       end
     end
 
-    it 'finds all project members including inherited members and members shared into ancestor groups' do
-      get api("/projects/#{project.id}/members/all", developer)
+    context 'when invited groups have public visibility' do
+      it 'finds all project members including inherited members and members shared into ancestor groups' do
+        get api("/projects/#{project.id}/members/all", developer)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id, invited_group_developer.id]
-      expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id, invited_group_developer.id]
+        expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+      end
+
+      it 'finds all group members including inherited members and members shared into ancestor groups' do
+        get api("/groups/#{nested_group.id}/members/all", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expected_user_ids = [maintainer.id, developer.id, nested_user.id, invited_group_developer.id]
+        expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+      end
+    end
+
+    context 'when invited groups have private visibility' do
+      before do
+        linked_group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        invited_group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'when current user is a member of the shared source' do
+        it 'hides the created_by attribute of the invited group members of the current project' do
+          get api("/projects/#{project.id}/members/all", developer)
+
+          expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id, invited_group_developer.id]
+          expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+
+          hidden_created_by_user_ids = [maintainer.id, linked_group_user.id, invited_group_developer.id]
+          hidden_created_by_members, revealed_created_by_members = json_response
+            .partition { |u| hidden_created_by_user_ids.include?(u['id']) }
+
+          expect(hidden_created_by_members.map { |u| u['created_by'] }).to all(be_nil)
+          expect(revealed_created_by_members.map { |u| u['created_by'] }).to all(be_present)
+        end
+
+        it 'hides the created_by attribute of the invited group members of the current group' do
+          get api("/groups/#{nested_group.id}/members/all", developer)
+
+          expected_user_ids = [maintainer.id, developer.id, nested_user.id, invited_group_developer.id]
+          expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+
+          hidden_created_by_user_ids = [maintainer.id, invited_group_developer.id]
+          hidden_created_by_members, revealed_created_by_members = json_response
+            .partition { |u| hidden_created_by_user_ids.include?(u['id']) }
+
+          expect(hidden_created_by_members.map { |u| u['created_by'] }).to all(be_nil)
+          expect(revealed_created_by_members.map { |u| u['created_by'] }).to all(be_present)
+        end
+
+        context 'when current user is an admin of the shared source' do
+          it 'reveals the created_by attribute of all the invited group members of the current project' do
+            get api("/projects/#{project.id}/members/all", maintainer)
+
+            expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id, invited_group_developer.id]
+            expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+            expect(json_response.reject { |u| u['id'] == maintainer.id }.map { |u| u['created_by'] }).to all(be_present)
+          end
+
+          it 'reveals the created_by attribute of all the invited group members of the current group' do
+            get api("/groups/#{nested_group.id}/members/all", maintainer)
+
+            expected_user_ids = [maintainer.id, developer.id, nested_user.id, invited_group_developer.id]
+            expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+            expect(json_response.reject { |u| u['id'] == maintainer.id }.map { |u| u['created_by'] }).to all(be_present)
+          end
+        end
+      end
+
+      context 'when current user is a non-member of the shared source' do
+        it 'does not return the members of the invited private group of the current project' do
+          get api("/projects/#{project.id}/members/all", create(:user))
+
+          expected_user_ids = [maintainer.id, developer.id, nested_user.id, project_user.id]
+          expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+        end
+
+        it 'does not return the members of the invited private group of the current group' do
+          get api("/groups/#{nested_group.id}/members/all", create(:user))
+
+          expected_user_ids = [maintainer.id, developer.id, nested_user.id]
+          expect(json_response.map { |u| u['id'] }).to match_array expected_user_ids
+        end
+      end
     end
 
     it 'returns only one member for each user without returning duplicated members with correct access levels' do
@@ -203,6 +292,133 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
       it 'subgroup member cannot get parent group members list' do
         get api("/groups/#{group.id}/members/all", developer)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe 'GET /:source_type/:id/members/all/:user_id' do
+    let(:nested_user) { create(:user) }
+    let(:project_user) { create(:user) }
+    let(:linked_group_user) { create(:user) }
+    let!(:project_group_link) { create(:project_group_link, project: project, group: linked_group) }
+    let(:invited_group_developer) { create(:user, username: 'invited_group_developer') }
+    let(:invited_group) do
+      create(:group) do |group|
+        group.add_owner(maintainer)
+        group.add_developer(invited_group_developer, maintainer)
+      end
+    end
+
+    let(:project) do
+      create(:project, :public, group: nested_group) do |project|
+        project.add_developer(project_user, current_user: maintainer)
+      end
+    end
+
+    let(:linked_group) do
+      create(:group) do |linked_group|
+        linked_group.add_owner(maintainer)
+        linked_group.add_developer(linked_group_user, maintainer)
+      end
+    end
+
+    let(:nested_group) do
+      create(:group, parent: group) do |nested_group|
+        nested_group.add_developer(nested_user, maintainer)
+        create(:group_group_link, :guest, shared_with_group: invited_group, shared_group: nested_group)
+      end
+    end
+
+    context 'when invited groups have public visibility' do
+      it 'finds all project members including inherited members and members shared into ancestor groups' do
+        get api("/projects/#{project.id}/members/all/#{linked_group_user.id}", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(linked_group_user.id)
+        expect(json_response['created_by']).to be_present
+      end
+
+      it 'finds all group members including inherited members and members shared into ancestor groups' do
+        get api("/groups/#{nested_group.id}/members/all/#{invited_group_developer.id}", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(invited_group_developer.id)
+        expect(json_response['created_by']).to be_present
+      end
+    end
+
+    context 'when invited groups have private visibility' do
+      before do
+        linked_group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        invited_group.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'when current user is a member of the shared source' do
+        it 'hides the created_by attribute of the invited group members of the current project' do
+          get api("/projects/#{project.id}/members/all/#{linked_group_user.id}", developer)
+
+          expect(json_response['id']).to eq(linked_group_user.id)
+          expect(json_response['created_by']).to be_nil
+        end
+
+        it 'hides the created_by attribute of the invited group members of the current group' do
+          get api("/groups/#{nested_group.id}/members/all/#{invited_group_developer.id}", developer)
+
+          expect(json_response['id']).to eq(invited_group_developer.id)
+          expect(json_response['created_by']).to be_nil
+        end
+
+        context 'when current user is an admin of the shared source' do
+          it 'reveals the created_by attribute of all the invited group members of the current project' do
+            get api("/projects/#{project.id}/members/all/#{linked_group_user.id}", maintainer)
+
+            expect(json_response['id']).to eq(linked_group_user.id)
+            expect(json_response['created_by']).to be_present
+          end
+
+          it 'reveals the created_by attribute of all the invited group members of the current group' do
+            get api("/groups/#{nested_group.id}/members/all/#{invited_group_developer.id}", maintainer)
+
+            expect(json_response['id']).to eq(invited_group_developer.id)
+            expect(json_response['created_by']).to be_present
+          end
+        end
+      end
+
+      context 'when current user is a non-member of the shared source' do
+        it 'does not return the member of the invited private group of the current project' do
+          get api("/projects/#{project.id}/members/all/#{linked_group_user.id}", create(:user))
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not return the member of the invited private group of the current group' do
+          get api("/groups/#{nested_group.id}/members/all/#{invited_group_developer.id}", create(:user))
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    it 'finds the inherited group member' do
+      get api("/groups/#{nested_group.id}/members/all/#{maintainer.id}", developer)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['id']).to eq(maintainer.id)
+    end
+
+    context 'with a subgroup' do
+      let(:group) { create(:group, :private) }
+      let(:subgroup) { create(:group, :private, parent: group) }
+      let(:project) { create(:project, group: subgroup) }
+
+      before do
+        subgroup.add_developer(developer)
+      end
+
+      it 'subgroup member cannot get parent group members list' do
+        get api("/groups/#{group.id}/members/all/#{maintainer.id}", developer)
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end

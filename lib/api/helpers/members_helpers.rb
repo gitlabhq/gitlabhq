@@ -80,6 +80,14 @@ module API
         present invitations, with: Entities::Invitation, current_user: current_user
       end
 
+      def present_members_with_invited_private_group_accessibility(members, source)
+        ::Members::InvitedPrivateGroupAccessibilityAssigner
+          .new(members, source: source, current_user: current_user)
+          .execute
+
+        present_members members
+      end
+
       def add_single_member_by_user_id(create_service_params)
         source = create_service_params[:source]
         user_id = create_service_params[:user_id]

@@ -230,7 +230,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`. These
       values must always match, but it doesn't matter if one ends with a `/` and
       the other doesn't.
-   1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
+   1. Optional. In **Internal URL (optional)**, enter an internal URL for the secondary site.
    1. Optional. Select which groups or storage shards should be replicated by the
       **secondary** site. Leave blank to replicate all. For more information, see
       [selective synchronization](#selective-synchronization).

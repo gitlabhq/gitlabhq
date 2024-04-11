@@ -92,6 +92,13 @@ module Integrations
       header = { 'Content-Type' => 'application/json' }
       response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
 
+      # We're retrying the request with a different format to ensure accurate formatting and
+      # avoid receiving a 400 response due to invalid markdown.
+      if response.bad_request?
+        body.except!(:parse_mode)
+        response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump(body))
+      end
+
       response if response.success?
     end
 
