@@ -620,6 +620,62 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
   end
 
+  describe 'GET /projects/:id/relation-imports' do
+    context 'when the user is unauthorized' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it 'returns unauthorized response' do
+        get api("/projects/#{project.id}/relation-imports", nil)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when the user is not associated with the project' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it 'returns unauthorized response' do
+        get api("/projects/#{project.id}/relation-imports", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the user is a maintainer on the project' do
+      let_it_be_with_reload(:project) do
+        project = create(:project)
+
+        project.relation_import_trackers.create!(relation: 'issues')
+        project.relation_import_trackers.create!(relation: 'merge_requests')
+
+        project
+      end
+
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it 'returns an array of import statuses' do
+        get api("/projects/#{project.id}/relation-imports", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+        expect(json_response.count).to eq(2)
+      end
+
+      it 'includes the import status information' do
+        get api("/projects/#{project.id}/relation-imports", user)
+
+        expect(json_response.first).to include(
+          'relation' => 'issues',
+          'status' => 'created'
+        )
+      end
+    end
+  end
+
   describe 'POST /projects/import/authorize' do
     subject(:authorize_import) { post api('/projects/import/authorize', user), headers: workhorse_headers }
 

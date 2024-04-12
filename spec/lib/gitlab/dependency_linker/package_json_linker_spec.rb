@@ -116,5 +116,19 @@ RSpec.describe Gitlab::DependencyLinker::PackageJsonLinker do
         expect(subject).not_to include(%(<a href))
       end
     end
+
+    context 'when `dependencies` is not a hash' do
+      let(:file_content) do
+        <<-CONTENT.strip_heredoc
+        {
+          "dependencies": "wrong"
+        }
+        CONTENT
+      end
+
+      it 'does not link it' do
+        expect(subject).not_to include(%(<a href))
+      end
+    end
   end
 end

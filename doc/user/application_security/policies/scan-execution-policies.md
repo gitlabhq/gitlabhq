@@ -20,43 +20,46 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-Group, subgroup, or project owners can use scan execution policies to require that security scans
-run on a specified schedule or with the project pipeline. The security scan runs with multiple
-project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
-scans into the CI/CD pipeline as new jobs.
 
-Scan execution policies are enforced for all applicable projects, even those without a GitLab
-CI/CD configuration file or where AutoDevOps is disabled. Security policies create the file
-implicitly so that the policies can be enforced. This ensures policies enabling execution of
-secret detection, static analysis, or other scanners that do not require a build in the
-project, are still able to execute and be enforced.
+Use scan execution policies to enforce security scans, either as part of the pipeline or on a
+specified schedule. The security scans run with multiple project pipelines if you define the policy
+at a group or subgroup level.
 
-GitLab appends a hyphen and a number to the job name. The number is unique per policy action to avoid name conflicts.
-policy at the group level, it applies to every child project or subgroup. You cannot edit a
-group-level policy from a child project or subgroup.
+Scan execution policies are enforced for all applicable projects. For projects without a
+`.gitlab-ci.yml` file, or where AutoDevOps is disabled, security policies create the
+`.gitlab-ci.yml` file implicitly. This ensures policies enabling execution of secret detection,
+static analysis, or other scanners that do not require a build in the project, are still able to
+run and be enforced.
 
 This feature has some overlap with [compliance framework pipelines](../../group/compliance_pipelines.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
 
-NOTE:
-Policy jobs for scans other than DAST scans are created in the `test` stage of the pipeline. If you modify the default pipeline
-[`stages`](../../../ci/yaml/index.md#stages),
-to remove the `test` stage, jobs will run in the `scan-policies` stage instead. This stage is injected into the CI pipeline at evaluation time if it doesn't exist. If the `build` stage exists, it is injected just after the `build` stage. If the `build` stage does not exist, it is injected at the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not exist, then a `dast` stage is injected at the end of the pipeline.
-
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
-## Requirements and limitations
+## Jobs
 
-- The maximum number of scan execution policies is five per security policy project.
+Policy jobs for scans, other than DAST scans, are created in the `test` stage of the pipeline. If
+you remove the `test` stage from the default pipeline, jobs run in the `scan-policies` stage
+instead. This stage is injected into the CI/CD pipeline at evaluation time if it doesn't exist. If
+the `build` stage exists, it is injected just after the `build` stage, otherwise it is injected at
+the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not
+exist, then a `dast` stage is injected at the end of the pipeline.
+
+To avoid job name conflicts, a hyphen and a number is appended to the job name. The number is unique
+per policy action.
 
 ## Scan execution policy editor
 
-NOTE:
-Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
-to select Security Policy Project.
+Use the scan execution policy editor to create or edit a scan execution policy.
+
+Prerequisites:
+
+- Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
+  to select Security Policy Project.
+- The maximum number of scan execution policies is five per security policy project.
 
 Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's

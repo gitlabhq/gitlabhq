@@ -21702,7 +21702,7 @@ msgstr ""
 msgid "FeatureFlags|There was an error fetching the feature flags."
 msgstr ""
 
-msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel."
+msgid "FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this dialog to cancel."
 msgstr ""
 
 msgid "FeatureFlags|Try again in a few moments or contact your support team."
@@ -24246,6 +24246,12 @@ msgid "GooglePlay|Use GitLab to build and release an app in Google Play."
 msgstr ""
 
 msgid "Got it"
+msgstr ""
+
+msgid "GpgKeys|Manage GPG keys"
+msgstr ""
+
+msgid "GpgKeys|There is an unverified GPG key associated with your profile. Please review your GPG keys."
 msgstr ""
 
 msgid "Grafana URL"
@@ -27704,6 +27710,9 @@ msgstr ""
 msgid "InviteMembersModal|Please add members to invite"
 msgstr ""
 
+msgid "InviteMembersModal|Purchase more seats"
+msgstr ""
+
 msgid "InviteMembersModal|Review the invite errors and try again:"
 msgstr ""
 
@@ -27743,6 +27752,9 @@ msgid "InviteMembersModal|To invite new users to this top-level group, you must 
 msgstr ""
 
 msgid "InviteMembersModal|Username, name or email address"
+msgstr ""
+
+msgid "InviteMembersModal|You must purchase more seats for your subscription before this amount of users can be added."
 msgstr ""
 
 msgid "InviteMembersModal|You only have space for %{count} more %{members} in %{name}"

@@ -27,6 +27,7 @@ export default (function initInviteMembersModal() {
           name: el.dataset.name,
           overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
           hasGitlabSubscription: parseBoolean(el.dataset.hasGitlabSubscription),
+          addSeatsHref: el.dataset.addSeatsHref,
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

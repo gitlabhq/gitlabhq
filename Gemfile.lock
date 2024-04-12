@@ -328,7 +328,7 @@ GEM
     axe-core-api (4.8.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.8.2)
+    axe-core-rspec (4.9.0)
       axe-core-api
       dumb_delegator
       virtus
@@ -1554,7 +1554,7 @@ GEM
     seed-fu (2.3.7)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
-    selenium-webdriver (4.18.1)
+    selenium-webdriver (4.19.0)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -1837,7 +1837,7 @@ DEPENDENCIES
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.191.3)
   aws-sdk-s3 (~> 1.144.0)
-  axe-core-rspec (~> 4.8.2)
+  axe-core-rspec (~> 4.9.0)
   babosa (~> 2.0)
   base32 (~> 0.3.0)
   batch-loader (~> 2.0.1)
@@ -2075,7 +2075,7 @@ DEPENDENCIES
   retriable (~> 3.1.2)
   rexml (~> 3.2.6)
   rouge (~> 4.2.0)
-  rqrcode (~> 2.0)
+  rqrcode (~> 2.2)
   rspec-benchmark (~> 0.6.0)
   rspec-parameterized (~> 1.0)
   rspec-rails (~> 6.1.1)
@@ -2096,7 +2096,7 @@ DEPENDENCIES
   sanitize (~> 6.0.2)
   sd_notify (~> 0.1.0)
   seed-fu (~> 2.3.7)
-  selenium-webdriver (~> 4.18, >= 4.18.1)
+  selenium-webdriver (~> 4.19)
   semver_dialects (~> 2.0)
   sentry-rails (~> 5.10.0)
   sentry-raven (~> 3.1)
@@ -2150,4 +2150,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.5.7
+   2.5.8

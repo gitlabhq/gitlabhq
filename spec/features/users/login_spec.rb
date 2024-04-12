@@ -103,7 +103,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     before do
       stub_application_setting_enum('email_confirmation_setting', 'hard')
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
-      stub_feature_flags(identity_verification: false)
     end
 
     context 'within the grace period' do
@@ -1092,7 +1091,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
     before do
       stub_application_setting_enum('email_confirmation_setting', 'soft')
-      stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end
 

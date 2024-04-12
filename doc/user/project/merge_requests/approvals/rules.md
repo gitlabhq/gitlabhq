@@ -302,6 +302,21 @@ on the merge request to indicate which steps are needed to proceed.
 
 These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).
 
+## Edit approval rules in a drawer
+
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439397) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`. Enabled by default. This feature is in [Beta](../../../../policy/experiment-beta-support.md).
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`.
+On GitLab.com and GitLab Dedicated, this feature is available.
+
+When this feature is enabled, the dialog to [add](#add-an-approval-rule) or
+[edit an approval](#edit-an-approval-rule) rule opens in a drawer on the right.
+
 ## Troubleshooting
 
 ### Approval rule name can't be blank

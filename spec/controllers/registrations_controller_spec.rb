@@ -132,7 +132,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
-              stub_feature_flags(identity_verification: false)
             end
 
             it 'sends a confirmation email' do
@@ -160,10 +159,6 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
     end
 
     context 'with email confirmation' do
-      before do
-        stub_feature_flags(identity_verification: false)
-      end
-
       context 'when email confirmation setting is set to `off`' do
         it 'signs the user in' do
           stub_application_setting_enum('email_confirmation_setting', 'off')

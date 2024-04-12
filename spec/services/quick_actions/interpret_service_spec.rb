@@ -1712,7 +1712,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
     context '/label command' do
       context 'when target is a group level work item' do
-        let_it_be(:new_group) { create(:group).tap { |g| g.add_developer(developer) } }
+        let_it_be(:new_group) { create(:group, developers: developer) }
         let_it_be(:group_level_work_item) { create(:work_item, :group_level, namespace: new_group) }
         # this label should not be show on the list as belongs to another group
         let_it_be(:invalid_label) { create(:group_label, title: 'not_from_group', group: group) }

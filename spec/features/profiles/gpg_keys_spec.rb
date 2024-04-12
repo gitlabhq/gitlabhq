@@ -78,4 +78,33 @@ RSpec.describe 'User Settings > GPG Keys', feature_category: :user_profile do
       gpg_key: nil
     )
   end
+
+  context 'when external verification is required' do
+    let!(:beyond_identity_integration) { create(:beyond_identity_integration) }
+    let!(:gpg_key) do
+      create :gpg_key, externally_verified: externally_verified, user: user, key: GpgHelpers::User2.public_key
+    end
+
+    before do
+      visit user_settings_gpg_keys_path
+    end
+
+    context 'and user has a key that is externally verified' do
+      let(:externally_verified) { true }
+
+      it 'considers the key Verified' do
+        expect(page).to have_content('bette.cartwright@example.com Verified')
+      end
+    end
+
+    context 'and user has a key that is not externally verified' do
+      let(:externally_verified) { false }
+
+      it 'considers the key Unverified' do
+        expect(page).not_to have_content('bette.cartwright@example.com')
+        expect(page).not_to have_content('Verified')
+        expect(page).not_to have_content('Unverified')
+      end
+    end
+  end
 end

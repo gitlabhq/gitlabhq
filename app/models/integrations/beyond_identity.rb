@@ -60,6 +60,10 @@ module Integrations
       %w[]
     end
 
+    def self.activated_for_instance?
+      !!::Integrations::BeyondIdentity.for_instance.first&.activated?
+    end
+
     def inheritable?
       false
     end

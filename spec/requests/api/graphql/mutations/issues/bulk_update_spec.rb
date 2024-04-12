@@ -6,7 +6,7 @@ RSpec.describe 'Bulk update issues', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }
-  let_it_be(:group) { create(:group).tap { |group| group.add_developer(developer) } }
+  let_it_be(:group) { create(:group, developers: developer) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:label1) { create(:group_label, group: group) }
   let_it_be(:label2) { create(:group_label, group: group) }

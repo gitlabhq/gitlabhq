@@ -40,7 +40,8 @@ module Members
       result
     rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError, SeatLimitExceededError => e
       Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user.id)
-      error(e.message)
+
+      error(e.message, pass_back: { reason: e.class.name.demodulize.underscore.to_sym })
     end
 
     def single_member

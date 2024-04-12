@@ -457,7 +457,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
     end
 
     context 'when user can not import projects' do
-      let!(:other_namespace) { create(:group, name: 'other_namespace').tap { |other_namespace| other_namespace.add_developer(user) } }
+      let!(:other_namespace) { create(:group, name: 'other_namespace', developers: user) }
 
       it 'returns 422 response' do
         post :create, params: { target_namespace: other_namespace.name }, format: :json

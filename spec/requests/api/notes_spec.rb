@@ -49,37 +49,6 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       end
     end
 
-    context 'when system note with issue_email_participants action' do
-      let!(:email) { 'user@example.com' }
-      let!(:note_text) { "added #{email}" }
-      let!(:note) do
-        create(:note, :system, project: project, noteable: issue, author: Users::Internal.support_bot, note: note_text)
-      end
-
-      let!(:system_note_metadata) { create(:system_note_metadata, note: note, action: :issue_email_participants) }
-      let!(:another_user) { create(:user) }
-
-      let(:obfuscated_email) { 'us*****@e*****.c**' }
-
-      it 'returns obfuscated email' do
-        get api("/projects/#{project.id}/issues/#{issue.iid}/notes", another_user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-        expect(json_response.first['body']).to include(obfuscated_email)
-      end
-
-      context 'when user has at least the reporter role in project' do
-        it 'returns email' do
-          get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response.first['body']).to include(email)
-        end
-      end
-    end
-
     context "when referencing other project" do
       # For testing the cross-reference of a private issue in a public project
       let(:private_project) do

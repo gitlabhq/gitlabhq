@@ -11,7 +11,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_category: :importers do
   describe '#restore' do
-    let(:group) { create(:group).tap { |g| g.add_owner(user) } }
+    let(:group) { create(:group, owners: user) }
     let(:importable) { create(:group, parent: group) }
 
     include_context 'relation tree restorer shared context' do

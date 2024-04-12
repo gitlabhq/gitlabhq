@@ -1821,4 +1821,30 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
     end
   end
+
+  describe '#show_invalid_gpg_key_message?' do
+    subject { helper.show_invalid_gpg_key_message? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when external verification is required for gpg keys' do
+      let!(:integration) { create(:beyond_identity_integration) }
+
+      context 'and user has a gpg key' do
+        let!(:gpg_key) { create :gpg_key, externally_verified: externally_verified, user: user }
+
+        context 'and the gpg key is not verified' do
+          let(:externally_verified) { false }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'and the gpg key is verified' do
+          let(:externally_verified) { true }
+
+          it { is_expected.to be_falsy }
+        end
+      end
+    end
+  end
 end

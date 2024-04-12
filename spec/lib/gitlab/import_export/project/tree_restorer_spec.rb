@@ -899,7 +899,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       end
 
       context 'with existing group models' do
-        let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
+        let(:group) { create(:group, maintainers: user) }
         let!(:project) do
           create(
             :project,
@@ -937,7 +937,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
       end
 
       context 'with clashing milestones on IID' do
-        let(:group) { create(:group).tap { |g| g.add_maintainer(user) } }
+        let(:group) { create(:group, maintainers: user) }
         let!(:project) do
           create(
             :project,

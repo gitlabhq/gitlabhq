@@ -8,11 +8,11 @@ RSpec.describe ForkTargetsFinder, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, namespace: create(:group)) }
   let_it_be(:user) { create(:user) }
   let_it_be(:maintained_group) do
-    create(:group).tap { |g| g.add_maintainer(user) }
+    create(:group, maintainers: user)
   end
 
   let_it_be(:owned_group) do
-    create(:group).tap { |g| g.add_owner(user) }
+    create(:group, owners: user)
   end
 
   let_it_be(:developer_group) do
@@ -22,11 +22,11 @@ RSpec.describe ForkTargetsFinder, feature_category: :source_code_management do
   end
 
   let_it_be(:reporter_group) do
-    create(:group).tap { |g| g.add_reporter(user) }
+    create(:group, reporters: user)
   end
 
   let_it_be(:guest_group) do
-    create(:group).tap { |g| g.add_guest(user) }
+    create(:group, guests: user)
   end
 
   let_it_be(:shared_group_to_group_with_owner_access) do

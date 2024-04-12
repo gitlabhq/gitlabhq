@@ -2805,7 +2805,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
 
     context "sole owner of a group" do
-      let!(:group) { create(:group).tap { |group| group.add_owner(user) } }
+      let!(:group) { create(:group, owners: user) }
 
       context "hard delete disabled" do
         it "does not delete user" do

@@ -9406,7 +9406,8 @@ CREATE TABLE gpg_keys (
     user_id integer,
     primary_keyid bytea,
     fingerprint bytea,
-    key text
+    key text,
+    externally_verified boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE gpg_keys_id_seq

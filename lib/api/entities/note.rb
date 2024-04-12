@@ -8,11 +8,7 @@ module API
 
       expose :id
       expose :type
-
-      expose :body do |note|
-        NotePresenter.new(note, current_user: options[:current_user]).note
-      end
-
+      expose :note, as: :body
       expose :attachment_identifier, as: :attachment
       expose :author, using: Entities::UserBasic
       expose :created_at, :updated_at

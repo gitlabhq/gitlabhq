@@ -413,7 +413,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/elastic/group_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/indexer_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/project_search_results_spec.rb'
-    - 'ee/spec/lib/gitlab/email/feature_flag_wrapper_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/geo/geo_node_status_check_spec.rb'
     - 'ee/spec/lib/gitlab/geo/geo_tasks_spec.rb'

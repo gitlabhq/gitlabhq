@@ -26,6 +26,7 @@ module GpgKeys
       return unless integration&.activated?
 
       integration.execute({ key_id: key.primary_keyid, committer_email: key.user.email })
+      key.externally_verified = true
     rescue ::Gitlab::BeyondIdentity::Client::Error => e
       key.errors.add(:base, "BeyondIdentity: #{e.message}")
     end

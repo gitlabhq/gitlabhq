@@ -22,7 +22,7 @@ RSpec.shared_examples 'import controller status' do
 
   context 'when format is html' do
     context 'when namespace_id is present' do
-      let!(:developer_group) { create(:group).tap { |g| g.add_developer(user) } }
+      let!(:developer_group) { create(:group, developers: user) }
 
       context 'when user cannot import projects' do
         it 'returns 404' do

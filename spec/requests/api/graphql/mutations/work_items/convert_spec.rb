@@ -63,7 +63,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
   context 'when converting epic work item' do
     let_it_be(:new_type) { create(:work_item_type, :issue, :default) }
     let(:current_user) { developer }
-    let_it_be(:group) { create(:group).tap { |group| group.add_developer(developer) } }
+    let_it_be(:group) { create(:group, developers: developer) }
 
     before do
       allow(Ability).to receive(:allowed?).and_call_original

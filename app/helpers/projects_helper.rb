@@ -242,6 +242,12 @@ module ProjectsHelper
       current_user.require_ssh_key?
   end
 
+  def show_invalid_gpg_key_message?
+    return false unless Integrations::BeyondIdentity.activated_for_instance?
+
+    current_user.gpg_keys.externally_invalid.exists?
+  end
+
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
       current_user.require_extra_setup_for_git_auth?

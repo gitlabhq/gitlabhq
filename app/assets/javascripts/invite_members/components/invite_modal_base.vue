@@ -315,6 +315,8 @@ export default {
           <slot name="select" v-bind="{ exceptionState, inputId: selectId }"></slot>
         </gl-form-group>
 
+        <slot name="after-members-input"></slot>
+
         <gl-form-group
           class="gl-sm-w-half gl-w-full"
           :label="$options.ACCESS_LEVEL"

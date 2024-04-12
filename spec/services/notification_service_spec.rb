@@ -3403,7 +3403,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
-        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
+        let(:group) { create(:group, owners: group_owner) }
 
         context 'when the project has no maintainers' do
           context 'when the group has at least one owner' do

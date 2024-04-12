@@ -266,6 +266,28 @@ module API
       end
 
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      end
+      desc 'Get the statuses of relation imports for specified project' do
+        detail 'This feature was introduced in GitLab 16.11.'
+        success code: 200, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_import']
+      end
+      get ':id/relation-imports' do
+        forbidden!('Project') unless user_project && can?(current_user, :admin_project, user_project)
+
+        import_statuses = user_project.relation_import_trackers
+        present import_statuses, with: Entities::RelationImportTracker, current_user: current_user
+      end
+
+      params do
         requires :region, type: String, desc: 'AWS region'
         requires :bucket_name, type: String, desc: 'Bucket name'
         requires :file_key, type: String, desc: 'File key'

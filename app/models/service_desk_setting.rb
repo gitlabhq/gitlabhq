@@ -23,7 +23,7 @@ class ServiceDeskSetting < ApplicationRecord
     length: { maximum: 255 },
     uniqueness: true,
     allow_nil: true,
-    format: Gitlab::Utils::Email::EMAIL_REGEXP_WITH_ANCHORS
+    format: /\A[\w\-._]+@[\w\-.]+\.{1}[a-zA-Z]{2,}\z/
 
   validates :custom_email_credential,
     presence: true,

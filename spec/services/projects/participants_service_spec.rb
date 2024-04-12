@@ -23,7 +23,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
     end
 
     it 'returns results in correct order' do
-      group = create(:group).tap { |g| g.add_owner(user) }
+      group = create(:group, owners: user)
 
       expect(run_service.pluck(:username)).to eq([
         noteable.author.username, 'all', user.username, group.full_path

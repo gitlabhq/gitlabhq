@@ -272,7 +272,7 @@ The `Content-Type` header must be `application/gzip`.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
 
-This endpoints accepts a project export archive and a named relation (issues,
+This endpoint accepts a project export archive and a named relation (issues,
 merge requests, pipelines, or milestones) and re-imports that relation, skipping
 items that have already been imported.
 
@@ -313,6 +313,47 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   "status": "finished"
 }
 ```
+
+## Check relation import statuses
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
+
+This endpoint fetches the status of any relation imports associated with a project. Because 
+only one relation import can be scheduled at a time, you can use this endpoint to check whether
+the previous import completed successfully.
+
+```plaintext
+GET /projects/:id/relation-imports
+```
+
+| Attribute | Type               | Required | Description                                                                          |
+| --------- |--------------------| -------- |--------------------------------------------------------------------------------------|
+| `id`      | integer or string  | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     "https://gitlab.example.com/api/v4/projects/18/relation-imports"
+```
+
+```json
+[
+  {
+    "id": 1,
+    "project_path": "namespace1/project1",
+    "relation": "issues",
+    "status": "created",
+    "created_at": "2024-03-25T11:03:48.074Z",
+    "updated_at": "2024-03-25T11:03:48.074Z"
+  }
+]
+```
+
+Status can be one of:
+
+- `created`: The import has been scheduled, but has not started.
+- `started`: The import is being processed.
+- `finished`: The import has completed.
+- `failed`: The import was not able to be completed.
 
 ## Import a file from AWS S3
 

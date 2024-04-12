@@ -5,13 +5,6 @@ module Gitlab
     module Email
       extend self
 
-      # Don't use Devise.email_regexp or URI::MailTo::EMAIL_REGEXP to be a bit more restrictive
-      # on the format of an email. Especially for custom email addresses which cannot contain a `+`
-      # in app/models/service_desk_setting.rb
-      EMAIL_REGEXP = /[\w\-._]+@[\w\-.]+\.{1}[a-zA-Z]{2,}/
-      EMAIL_REGEXP_WITH_CAPTURING_GROUP = /(#{EMAIL_REGEXP})/
-      EMAIL_REGEXP_WITH_ANCHORS = /\A#{EMAIL_REGEXP.source}\z/
-
       # Replaces most visible characters with * to obfuscate an email address
       # deform adds a fix number of * to ensure the address cannot be guessed. Also obfuscates TLD with **
       def obfuscated_email(email, deform: false)
@@ -19,17 +12,6 @@ module Gitlab
 
         masker_class = deform ? Deform : Symmetrical
         masker_class.new(email).masked
-      end
-
-      # Runs email address obfuscation on the given text.
-      def obfuscate_emails_in_text(text)
-        return text unless text.present?
-
-        matches = text.scan(EMAIL_REGEXP_WITH_CAPTURING_GROUP).flatten.index_with do |match|
-          obfuscated_email(match, deform: true)
-        end
-
-        text.gsub(Regexp.union(matches.keys), matches)
       end
 
       class Masker

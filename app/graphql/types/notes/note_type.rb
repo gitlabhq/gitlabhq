@@ -13,8 +13,6 @@ module Types
 
       implements Types::ResolvableInterface
 
-      present_using NotePresenter
-
       field :max_access_level_of_author, GraphQL::Types::String,
         null: true,
         description: "Max access level of the note author in the project.",
@@ -30,11 +28,11 @@ module Types
 
       field :author, Types::UserType,
         null: true,
-        description: 'User who wrote the note.'
+        description: 'User who wrote this note.'
 
       field :system, GraphQL::Types::Boolean,
         null: false,
-        description: 'Indicates whether the note was created by the system or by a user.'
+        description: 'Indicates whether this note was created by the system or by a user.'
       field :system_note_icon_name,
         GraphQL::Types::String,
         null: true,
@@ -51,7 +49,7 @@ module Types
 
       field :confidential, GraphQL::Types::Boolean,
         null: true,
-        description: 'Indicates if the note is confidential.',
+        description: 'Indicates if this note is confidential.',
         method: :confidential?,
         deprecated: {
           reason: :renamed,
@@ -61,7 +59,7 @@ module Types
 
       field :internal, GraphQL::Types::Boolean,
         null: true,
-        description: 'Indicates if the note is internal.',
+        description: 'Indicates if this note is internal.',
         method: :confidential?
 
       field :created_at, Types::TimeType,
@@ -69,16 +67,16 @@ module Types
         description: 'Timestamp of the note creation.'
       field :discussion, Types::Notes::DiscussionType,
         null: true,
-        description: 'Discussion the note is a part of.'
+        description: 'Discussion this note is a part of.'
       field :position, Types::Notes::DiffPositionType,
         null: true,
-        description: 'Position of the note on a diff.'
+        description: 'Position of this note on a diff.'
       field :updated_at, Types::TimeType,
         null: false,
         description: "Timestamp of the note's last activity."
       field :url, GraphQL::Types::String,
         null: true,
-        description: 'URL to view the note in the Web UI.'
+        description: 'URL to view this Note in the Web UI.'
 
       field :last_edited_at, Types::TimeType,
         null: true,
@@ -97,10 +95,7 @@ module Types
         null: true,
         description: 'Metadata for the given note if it is a system note.'
 
-      field :body_html, GraphQL::Types::String,
-        method: :note_html,
-        null: true,
-        description: "GitLab Flavored Markdown rendering of the content of the note."
+      markdown_field :body_html, null: true, method: :note
 
       def url
         ::Gitlab::UrlBuilder.build(object)
@@ -123,8 +118,7 @@ module Types
       def id
         return super unless object.is_a?(SyntheticNote)
 
-        # object is a presenter, so object.object returns the concrete note object.
-        ::Gitlab::GlobalId.build(object, model_name: object.object.class.to_s, id: object.discussion_id)
+        ::Gitlab::GlobalId.build(object, model_name: object.class.to_s, id: object.discussion_id)
       end
     end
   end

@@ -4,6 +4,7 @@
   = render partial: 'deletion_failed', locals: { project: project }
   - if current_user && can?(current_user, :read_code, project)
     = render 'shared/no_ssh'
+    = render 'shared/invalid_gpg_key'
     = render 'shared/no_password'
     - unless project.empty_repo?
       = render 'shared/auto_devops_implicitly_enabled_banner', project: project

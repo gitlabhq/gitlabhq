@@ -60,7 +60,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
     let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
 
     let_it_be(:group) do
-      create(:group, :shared_runners_disabled_and_unoverridable).tap { |g| g.add_maintainer(user) }
+      create(:group, :shared_runners_disabled_and_unoverridable, maintainers: user)
     end
 
     before do

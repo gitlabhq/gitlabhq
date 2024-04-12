@@ -51,20 +51,4 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
       end
     end
   end
-
-  describe '.obfuscate_emails_in_text' do
-    where(:input, :output) do
-      nil | nil
-      '' | ''
-      'added no email address' | 'added no email address'
-      'added user@example.com' | 'added us*****@e*****.c**'
-      'added user@example.com and hello@example.com' | 'added us*****@e*****.c** and he*****@e*****.c**'
-      'removed user@example.com, hello@example.com and bye@example.com' |
-        'removed us*****@e*****.c**, he*****@e*****.c** and by*****@e*****.c**'
-    end
-
-    with_them do
-      it { expect(described_class.obfuscate_emails_in_text(input)).to eq(output) }
-    end
-  end
 end

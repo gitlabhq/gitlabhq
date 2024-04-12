@@ -588,7 +588,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     let(:service) { described_class.new(group, user, **params) }
     let(:root_group) { create(:group, path: 'root') }
     let(:group) do
-      create(:group, parent: root_group, path: 'old-path').tap { |g| g.add_owner(user) }
+      create(:group, parent: root_group, path: 'old-path', owners: user)
     end
 
     context 'when changing a group path' do

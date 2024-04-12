@@ -16,9 +16,10 @@
                     %code= subkey.fingerprint
 
   %td{ data: { label: _('Status') } }
-    - key.emails_with_verified_status.map do |email, verified|
-      %div{ class: 'gl-text-left!' }
-        = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }
+    - if !require_external_verification || key.externally_verified?
+      - key.emails_with_verified_status.map do |email, verified|
+        %div{ class: 'gl-text-left!' }
+          = render partial: 'shared/email_with_badge', locals: { email: email, verified: verified }
 
   %td{ data: { label: _('Created') } }
     = html_escape(s_('Created %{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at) }

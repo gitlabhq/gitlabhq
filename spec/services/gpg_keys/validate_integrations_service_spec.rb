@@ -42,6 +42,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
       end
 
       expect(service.execute).to eq(true)
+      expect(gpg_key.externally_verified).to be_truthy
     end
 
     it 'returns false and sets an error on unsuccessful check' do

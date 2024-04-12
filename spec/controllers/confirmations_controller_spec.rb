@@ -122,10 +122,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
 
     subject(:perform_request) { post(:create, params: { user: { email: user.email } }) }
 
-    before do
-      stub_feature_flags(identity_verification: false)
-    end
-
     context "when `email_confirmation_setting` is set to `soft`" do
       before do
         stub_application_setting_enum('email_confirmation_setting', 'soft')

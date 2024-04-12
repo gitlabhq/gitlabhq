@@ -63,6 +63,14 @@ FactoryBot.define do
       runners_token { nil }
       runner_token_expiration_interval { nil }
       runner_token_expiration_interval_human_readable { nil }
+
+      # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+      guests {}
+      reporters {}
+      developers {}
+      maintainers {}
+      owners {}
+      # rubocop:enable Lint/EmptyBlock
     end
 
     after(:build) do |project, evaluator|
@@ -144,6 +152,12 @@ FactoryBot.define do
 
       # simulating ::Projects::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
       project.create_ci_project_mirror!(namespace_id: project.namespace_id) unless project.ci_project_mirror
+
+      project.add_members(Array.wrap(evaluator.guests), :guest)
+      project.add_members(Array.wrap(evaluator.reporters), :reporter)
+      project.add_members(Array.wrap(evaluator.developers), :developer)
+      project.add_members(Array.wrap(evaluator.maintainers), :maintainer)
+      project.add_members(Array.wrap(evaluator.owners), :owner)
     end
 
     trait :public do

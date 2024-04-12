@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab and Google Cloud integration
 
 DETAILS:
-**Tier:** Premium, Ultimate
+**Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 **Status:** Beta
 

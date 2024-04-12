@@ -12,7 +12,7 @@ RSpec.describe 'new navigation toggle', :js, feature_category: :navigation do
   end
 
   context 'when inside a group' do
-    let_it_be(:group) { create(:group).tap { |record| record.add_owner(user) } }
+    let_it_be(:group) { create(:group, owners: user) }
 
     before do
       visit group_path(group)
