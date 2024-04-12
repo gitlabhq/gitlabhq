@@ -229,7 +229,7 @@ for example.
 
 #### Find most common Geo sync errors
 
-If [the `geo:status` Rake task](../geo/replication/troubleshooting/index.md#sync-status-rake-task)
+If [the `geo:status` Rake task](../geo/replication/troubleshooting/common.md#sync-status-rake-task)
 repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 

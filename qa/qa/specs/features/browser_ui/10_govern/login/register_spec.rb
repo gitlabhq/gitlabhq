@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 module QA
   RSpec.shared_examples 'registration and login' do
     it 'allows the user to register and login' do
@@ -159,7 +157,7 @@ module QA
         Page::Main::Menu.perform(&:go_to_admin_area)
         Page::Admin::Menu.perform(&:go_to_users_overview)
         Page::Admin::Overview::Users::Index.perform do |index|
-          index.choose_pending_approval_filter
+          index.click_pending_approval_tab
           index.search_user(user.username)
           index.click_user(user.name)
         end

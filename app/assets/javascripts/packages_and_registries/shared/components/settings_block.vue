@@ -2,9 +2,9 @@
   <section class="settings-section">
     <div class="settings-sticky-header">
       <div class="settings-sticky-header-inner">
-        <h4 class="gl-my-0">
+        <h3 class="gl-heading-3 gl-mb-0!">
           <slot name="title"></slot>
-        </h4>
+        </h3>
       </div>
     </div>
     <p class="gl-text-secondary">

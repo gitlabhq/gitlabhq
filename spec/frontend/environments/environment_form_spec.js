@@ -106,6 +106,11 @@ describe('~/environments/components/form.vue', () => {
       expect(link.attributes('href')).toBe('/help/ci/environments/index.md');
     });
 
+    it('links to documentation regarding granting kubernetes access', () => {
+      const link = wrapper.findByRole('link', { name: 'How do I grant Kubernetes access?' });
+      expect(link.attributes('href')).toBe('/help/user/clusters/agent/user_access.md');
+    });
+
     it('links the cancel button to the cancel path', () => {
       const cancel = wrapper.findByRole('link', { name: 'Cancel' });
 

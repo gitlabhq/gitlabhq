@@ -238,6 +238,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    describe '.merged_without_state_event_source' do
+      let(:source_merge_request) { nil }
+      let(:source_commit) { nil }
+
+      subject { described_class.merged_without_state_event_source }
+
+      before do
+        create(:resource_state_event, merge_request: merge_request1, state: :merged, source_merge_request: source_merge_request, source_commit: source_commit)
+      end
+
+      context 'when the state matches and event source is empty' do
+        it 'filters by resource_state_event' do
+          expect(subject).to contain_exactly(merge_request1)
+        end
+      end
+
+      context 'when source_merge_request is not empty' do
+        let(:source_merge_request) { merge_request2 }
+
+        it 'filters by resource_state_event' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'when source_commit is not empty' do
+        let(:source_commit) { 'abcd1234' }
+
+        it 'filters by resource_state_event' do
+          expect(subject).to be_empty
+        end
+      end
+    end
   end
 
   describe '#squash?' do

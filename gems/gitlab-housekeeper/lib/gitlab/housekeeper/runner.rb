@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string'
+require 'gitlab/housekeeper/logger'
 require 'gitlab/housekeeper/keep'
 require 'gitlab/housekeeper/keeps/rubocop_fixer'
 require 'gitlab/housekeeper/gitlab_client'
@@ -34,10 +35,11 @@ module Gitlab
 
         git.with_clean_state do
           @keeps.each do |keep_class|
-            keep = keep_class.new
+            @logger.puts "Running keep #{keep_class}"
+            keep = keep_class.new(logger: @logger)
             keep.each_change do |change|
               unless change.valid?
-                puts "Ignoring invalid change from: #{keep_class}"
+                @logger.warn "Ignoring invalid change from: #{keep_class}"
                 next
               end
 
@@ -56,9 +58,10 @@ module Gitlab
                   git.create_commit(change)
                 end
 
-                puts "Skipping change: #{change.identifiers} due to not matching filter."
-                puts "Modified files have been committed to branch #{branch_name.yellowish}, but will not be pushed."
-                puts
+                @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}," \
+                             "but will not be pushed."
+                @logger.puts
 
                 next
               end
@@ -99,8 +102,8 @@ module Gitlab
                                "Housekeeper created #{mr_count_string}."
                              end
 
-        puts completion_message.yellowish
-        puts
+        @logger.puts completion_message.yellowish
+        @logger.puts
       end
 
       def add_standard_change_data(change)
@@ -122,28 +125,28 @@ module Gitlab
         base_message = "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}."
         base_message << " CI skipped." if change.push_options.ci_skip
 
-        puts base_message.yellowish
-        puts "=> #{change.identifiers.join(': ')}".purple
+        @logger.puts base_message.yellowish
+        @logger.puts "=> #{change.identifiers.join(': ')}".purple
 
-        puts '=> Title:'.purple
-        puts change.title.purple
-        puts
+        @logger.puts '=> Title:'.purple
+        @logger.puts change.title.purple
+        @logger.puts
 
-        puts '=> Description:'
-        puts change.description
-        puts
+        @logger.puts '=> Description:'
+        @logger.puts change.description
+        @logger.puts
 
         if change.labels.present? || change.reviewers.present?
-          puts '=> Attributes:'
-          puts "Labels: #{change.labels.join(', ')}"
-          puts "Reviewers: #{change.reviewers.join(', ')}"
-          puts
+          @logger.puts '=> Attributes:'
+          @logger.puts "Labels: #{change.labels.join(', ')}"
+          @logger.puts "Reviewers: #{change.reviewers.join(', ')}"
+          @logger.puts
         end
 
-        puts '=> Diff:'
-        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', @target_branch, branch_name, '--',
+        @logger.puts '=> Diff:'
+        @logger.puts Shell.execute('git', '--no-pager', 'diff', '--color=always', @target_branch, branch_name, '--',
           *change.changed_files)
-        puts
+        @logger.puts
       end
 
       def create(change, branch_name)

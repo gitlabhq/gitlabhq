@@ -11,7 +11,8 @@ RSpec.describe API::Entities::Tag, feature_category: :source_code_management do
     let_it_be(:user) { create(:user) }
 
     let(:tag) { repository.find_tag('v1.0.0') }
-    let(:entity) { described_class.new(tag, project: project) }
+    let(:releases) { nil }
+    let(:entity) { described_class.new(tag, project: project, releases: releases) }
 
     it 'includes basic fields', :aggregate_failures do
       is_expected.to include(
@@ -33,6 +34,23 @@ RSpec.describe API::Entities::Tag, feature_category: :source_code_management do
 
       it 'returns an empty created_at' do
         is_expected.to include(name: 'v1.2.3', created_at: nil)
+      end
+    end
+
+    context 'with releases' do
+      let(:release) { build(:release, tag: tag.name) }
+      let(:releases) { [release] }
+
+      it 'returns release details' do
+        is_expected.to include(release: { tag_name: tag.name, description: release.description })
+      end
+
+      context 'when release tag name does not match' do
+        let(:release) { build(:release, tag: 'unknown_tag') }
+
+        it 'returns an empty release' do
+          is_expected.to include(release: nil)
+        end
       end
     end
   end

@@ -358,6 +358,12 @@ table {
       border: 1px solid $gray-500;
     }
   }
+
+  .reply-placeholder-input-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
+    }
+  }
 }
 
 .comment-toolbar {

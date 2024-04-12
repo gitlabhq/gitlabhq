@@ -190,15 +190,11 @@ For a deeper exploration of the impact on select features, see the [list of feat
 
 ### Alignment between Organization and Fulfillment
 
-Fulfillment is supportive of an entity above top-level groups. Their perspective is outlined in issue [#1138](https://gitlab.com/gitlab-org/fulfillment-meta/-/issues/1138).
+Fulfillment enhancements for Organizations will happen in a different timeline to the [Cells](../cells/index.md) project and should not be seen as blockers to any Cells timelines. 
 
-#### Goals of Fulfillment
+For Cells 1.0, Billing remains at the top-level Group. Said otherwise, Billing will not occur at the Organization level. The guidance for Cells 1.0 is for GitLab.com SaaS customers to use a single top-level Group to keep Billing consolidated.
 
-- Fulfillment has a longstanding plan to move billing from the top-level Group to a level above. This would mean that a license applies to an Organization and all its top-level Groups.
-- Fulfillment uses Zuora for billing and would like to have a 1-to-1 relationship between an Organization and their Zuora entity called BillingAccount. They want to move away from tying a license to a single top-level Group.
-- If a customer needs multiple Organizations, they will need to have a separate BillingAccount per each.
-- Ideally, a self-managed instance has a single Organization by default, which should be enough for most customers.
-- Fulfillment prefers only one additional entity.
+We are currently [evaluating future architecture designs](https://gitlab.com/gitlab-org/gitlab/-/issues/443708) (e.g. Zuora Billing Accounts being aligned to Organizations) but have yet to determine the North star direction and how/if it aligns to the Cells iterations.
 
 ### Open-source Contributions in Organizations
 

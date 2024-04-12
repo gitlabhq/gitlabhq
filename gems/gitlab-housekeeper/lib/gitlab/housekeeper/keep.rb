@@ -15,6 +15,10 @@ module Gitlab
     #   )
     #   ```
     class Keep
+      def initialize(logger: nil)
+        @logger = logger || Logger.new(nil)
+      end
+
       # The each_change method must update local working copy files and yield a Change object which describes the
       # specific changed files and other data that will be used to generate a merge request. This is the core
       # implementation details for a specific housekeeper keep. This does not need to commit the changes or create the

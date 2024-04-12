@@ -1,8 +1,12 @@
 <script>
+import { GlFormInput } from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
   name: 'ReplyPlaceholder',
+  components: {
+    GlFormInput,
+  },
   props: {
     placeholderText: {
       type: String,
@@ -19,12 +23,11 @@ export default {
 </script>
 
 <template>
-  <textarea
-    ref="textarea"
-    rows="1"
-    class="reply-placeholder-text-field js-vue-discussion-reply"
+  <gl-form-input
+    class="reply-placeholder-input-field"
+    data-testid="discussion-reply-tab"
     :placeholder="placeholderText"
     :aria-label="labelText"
     @focus="$emit('focus')"
-  ></textarea>
+  />
 </template>

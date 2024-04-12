@@ -73,6 +73,7 @@ class NamespaceSetting < ApplicationRecord
     all_ancestors_have_emails_enabled?
   end
 
+  # Where this function is used, a returned "nil" is considered a truthy value
   def show_diff_preview_in_email?
     return show_diff_preview_in_email unless namespace.has_parent?
 

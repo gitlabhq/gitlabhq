@@ -12,6 +12,14 @@ module API
       not_found! unless user_project.repo_exists?
     end
 
+    helpers do
+      def find_releases(tags)
+        tag_names = [tags].flatten.map(&:name)
+
+        user_project.releases.by_tag(tag_names)
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
@@ -48,6 +56,7 @@ module API
         present_cached paginated_tags,
                        with: Entities::Tag,
                        project: user_project,
+                       releases: find_releases(paginated_tags),
                        current_user: current_user,
                        cache_context: -> (_tag) do
                          [user_project.cache_key, can?(current_user, :read_release, user_project)].join(':')
@@ -74,7 +83,7 @@ module API
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
-        present tag, with: Entities::Tag, project: user_project, current_user: current_user
+        present tag, with: Entities::Tag, project: user_project, releases: find_releases(tag), current_user: current_user
       end
 
       desc 'Create a new repository tag' do
@@ -100,7 +109,8 @@ module API
         if result[:status] == :success
           present result[:tag],
                   with: Entities::Tag,
-                  project: user_project
+                  project: user_project,
+                  releases: find_releases(result[:tag])
         else
           render_api_error!(result[:message], 400)
         end

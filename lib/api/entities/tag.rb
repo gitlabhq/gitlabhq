@@ -15,7 +15,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       expose :release, using: Entities::TagRelease, if: ->(*) { can_read_release? } do |repo_tag, options|
-        options[:project].releases.find_by(tag: repo_tag.name)
+        options[:releases]&.find { |r| r.tag == repo_tag.name }
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

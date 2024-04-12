@@ -21,7 +21,10 @@ module Sidebars
 
         override :render?
         def render?
-          !!context.current_user && !Gitlab::CurrentSettings.personal_access_tokens_disabled?
+          return false unless context.current_user
+          return false if Gitlab::CurrentSettings.personal_access_tokens_disabled?
+
+          true
         end
 
         override :active_routes
@@ -37,3 +40,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::UserSettings::Menus::AccessTokensMenu.prepend_mod

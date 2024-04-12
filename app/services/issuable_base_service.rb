@@ -349,12 +349,7 @@ class IssuableBaseService < ::BaseContainerService
 
         issuable.updated_by = current_user if should_touch
 
-        # `issuable` could create a ghost user when updating `last_edited_by`.
-        # Users::Internal.ghost will obtain an ExclusiveLease within this transaction.
-        # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441526
-        Gitlab::ExclusiveLease.skipping_transaction_check do
-          transaction_update(issuable, { save_with_touch: should_touch })
-        end
+        transaction_update(issuable, { save_with_touch: should_touch })
       end
 
       if issuable_saved

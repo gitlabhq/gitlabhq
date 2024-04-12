@@ -481,6 +481,11 @@ class MergeRequest < ApplicationRecord
     end
   }
 
+  scope :merged_without_state_event_source, -> {
+    joins(:resource_state_events)
+    .merge(ResourceStateEvent.merged_with_no_event_source)
+  }
+
   def self.total_time_to_merge
     join_metrics
       .where(

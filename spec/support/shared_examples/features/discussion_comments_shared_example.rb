@@ -84,7 +84,7 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
         end
 
         def submit_reply(text)
-          find("#{comments_selector} .js-vue-discussion-reply").click
+          find("#{comments_selector} [data-testid=\"discussion-reply-tab\"]").click
           find("#{comments_selector} .note-textarea").send_keys(text)
 
           find("#{comments_selector} .js-comment-button").click
@@ -240,7 +240,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
         end
 
         def submit_reply(text)
-          find("#{comments_selector} .js-vue-discussion-reply").click
+          find("#{comments_selector} [data-testid=\"discussion-reply-tab\"]").click
           find("#{comments_selector} .note-textarea").send_keys(text)
 
           # .js-comment-button here refers to the reply button in note_form.vue

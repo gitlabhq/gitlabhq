@@ -11,8 +11,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
-experience a problem not addressed here, or the information here does not fix your problem, create a
-support ticket. For more details, see the [GitLab Support](https://about.gitlab.com/support/) page.
+experience a problem not addressed here, or the information here does not fix your problem, see the
+[GitLab Support](https://about.gitlab.com/support/) page for ways to get help.
 
 ## Debug-level logging
 

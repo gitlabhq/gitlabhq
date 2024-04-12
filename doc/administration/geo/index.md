@@ -123,7 +123,7 @@ The following are required to run Geo:
   - [Ubuntu](https://ubuntu.com) 16.04 or later
 - Where possible, you should also use the same operating system version on all
   Geo sites. If using different operating system versions between Geo sites, you
-  **must** [check OS locale data compatibility](replication/troubleshooting/index.md#check-os-locale-data-compatibility)
+  **must** [check OS locale data compatibility](replication/troubleshooting/common.md#check-os-locale-data-compatibility)
   across Geo sites to avoid silent corruption of database indexes.
 - [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
   - [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.

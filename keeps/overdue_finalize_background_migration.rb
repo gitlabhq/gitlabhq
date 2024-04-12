@@ -25,8 +25,6 @@ module Keeps
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
     CUTOFF_MILESTONE = '16.8' # Only finalize migrations added before this
 
-    def initialize; end
-
     def each_change
       each_batched_background_migration do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])

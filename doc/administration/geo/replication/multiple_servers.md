@@ -148,8 +148,8 @@ You can run the Geo tracking database on a single node as follows:
 
    ```shell
    gitlab-ctl pg-password-md5 gitlab_geo
-   # Enter password: <your_password_here>
-   # Confirm password: <your_password_here>
+   # Enter password: <your_tracking_db_password_here>
+   # Confirm password: <your_tracking_db_password_here>
    # fca0b89a972d69f00eb3ec98a5838484
    ```
 

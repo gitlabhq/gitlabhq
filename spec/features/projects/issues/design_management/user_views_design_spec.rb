@@ -95,7 +95,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     click_link design.filename
 
     page.within(find('.image-notes')) do
-      find('.js-vue-discussion-reply').click
+      find_by_testid('discussion-reply-tab').click
       find('.note-textarea').send_keys('Reply to comment')
 
       find_by_testid('save-comment-button').click

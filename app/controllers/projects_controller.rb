@@ -469,6 +469,7 @@ class ProjectsController < Projects::ApplicationController
   def project_setting_attributes
     %i[
       show_default_award_emojis
+      show_diff_preview_in_email
       squash_option
       mr_default_target_self
       warn_about_potentially_unwanted_characters

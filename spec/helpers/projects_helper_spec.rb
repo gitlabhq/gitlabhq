@@ -118,6 +118,31 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#can_set_diff_preview_in_email?' do
+    stub_feature_flags(diff_preview_in_email: true)
+    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+
+    it 'returns true for the project owner' do
+      expect(helper.can_set_diff_preview_in_email?(project, project.owner)).to be_truthy
+    end
+
+    it 'returns false for anyone else' do
+      expect(helper.can_set_diff_preview_in_email?(project, user)).to be_falsey
+    end
+
+    context 'respects the settings of a parent group' do
+      context 'when a parent group has disabled diff previews ' do
+        it 'returns false for all users' do
+          new_project = create(:project, group: create(:group))
+          new_project.group.update_attribute(:show_diff_preview_in_email, false)
+
+          expect(helper.can_set_diff_preview_in_email?(new_project, new_project.owner)).to be_falsey
+          expect(helper.can_set_diff_preview_in_email?(new_project, user)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#load_pipeline_status' do
     it 'loads the pipeline status in batch' do
       helper.load_pipeline_status([project])

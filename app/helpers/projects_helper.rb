@@ -194,6 +194,13 @@ module ProjectsHelper
     can?(current_user, :set_emails_disabled, project)
   end
 
+  def can_set_diff_preview_in_email?(project, current_user)
+    return false unless Feature.enabled?(:diff_preview_in_email, project.group)
+    return false if project.group&.show_diff_preview_in_email?.equal?(false)
+
+    can?(current_user, :set_show_diff_preview_in_email, project)
+  end
+
   def last_push_event
     current_user&.recent_push(@project)
   end
@@ -387,6 +394,7 @@ module ProjectsHelper
       packagesHelpPath: help_page_path('user/packages/index'),
       currentSettings: project_permissions_settings(project),
       canAddCatalogResource: can_add_catalog_resource?(project),
+      canSetDiffPreviewInEmail: can_set_diff_preview_in_email?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       canDisableEmails: can_disable_emails?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
@@ -767,6 +775,7 @@ module ProjectsHelper
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsEnabled: project.emails_enabled?,
+      showDiffPreviewInEmail: project.show_diff_preview_in_email?,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,

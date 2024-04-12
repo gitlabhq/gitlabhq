@@ -1,12 +1,6 @@
 - page_title _("Users")
 
-.top-area.gl-display-flex.justify-content-between
-  = render 'tabs'
-  .nav-controls.gl-mt-3
-    = render_if_exists 'admin/users/admin_email_users'
-    = render_if_exists 'admin/users/admin_export_user_permissions'
-    = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
-      = s_('AdminUsers|New user')
+= render 'tabs'
 
 .tab-content
   .tab-pane.active

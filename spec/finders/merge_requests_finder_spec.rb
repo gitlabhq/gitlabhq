@@ -334,6 +334,20 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
       end
 
+      context 'filter by state event source' do
+        let(:params) { { merged_without_event_source: true } }
+
+        before do
+          create(:resource_state_event, merge_request: merge_request1, state: :merged)
+        end
+
+        it 'filters by resource_state_event' do
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request1)
+        end
+      end
+
       it 'filters by state' do
         params = { state: 'locked' }
 

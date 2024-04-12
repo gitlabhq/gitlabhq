@@ -6,16 +6,21 @@ module QA
       module Overview
         module Users
           class Index < QA::Page::Base
+            view 'app/views/admin/users/_users.html.haml' do
+              element 'user-search-field'
+              element 'pending-approval-tab'
+            end
+
             view 'app/assets/javascripts/vue_shared/components/users_table/users_table.vue' do
               element 'user-row-content'
             end
 
             def search_user(username)
-              submit_search_term(username)
+              find_element('user-search-field').set(username).send_keys(:return)
             end
 
-            def choose_pending_approval_filter
-              select_tokens('state', '=', 'Pending approval', submit: true)
+            def click_pending_approval_tab
+              click_element 'pending-approval-tab'
             end
 
             def click_user(username)

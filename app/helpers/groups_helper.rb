@@ -21,6 +21,13 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
+  def can_set_group_diff_preview_in_email?(group)
+    return false unless Feature.enabled?(:diff_preview_in_email, group)
+    return false if group.parent&.show_diff_preview_in_email?.equal?(false)
+
+    can?(current_user, :set_show_diff_preview_in_email, group)
+  end
+
   def can_admin_group_member?(group)
     Ability.allowed?(current_user, :admin_group_member, group)
   end

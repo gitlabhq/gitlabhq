@@ -92,6 +92,10 @@ Most secrets are pushed into HashiCorp Vault and various chunks of our infrastru
 
 **What will GitLab.com Cells do:**
 
+The provisioning secrets and shared infrastructure secrets will be managed in Hashicorp Vault, both to be used strictly for management of tenants (Amp, CI, ...).
+Each cell will have their own set of unique secrets which will be managed in Google Secret Manager.
+The Kubernetes secrets will be synced from Google Secret Manager by the [External Secrets operator](https://external-secrets.io/).
+
 [Being discussed](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25076).
 
 ### HAProxy

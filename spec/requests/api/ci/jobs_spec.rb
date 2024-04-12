@@ -821,6 +821,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user)
     end
 

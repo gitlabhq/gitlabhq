@@ -166,4 +166,19 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       end
     end
   end
+
+  context 'when event source is given' do
+    let(:source) { create(:merge_request, :simple, source_project: project) }
+
+    subject { described_class.new(project: project, current_user: user).execute(merge_request, source) }
+
+    it 'creates a resource_state_event as expected' do
+      expect { subject }.to change { ResourceStateEvent.count }.by 1
+
+      event = merge_request.resource_state_events.last
+
+      expect(event.state).to eq 'merged'
+      expect(event.source_merge_request).to eq source
+    end
+  end
 end

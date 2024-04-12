@@ -174,6 +174,16 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
 
+    context 'with releases preload' do
+      it 'does not cause N+1 problem' do
+        control = ActiveRecord::QueryRecorder.new do
+          get api(route, user)
+        end
+
+        expect(control.log).to include(/SELECT "releases"/).once
+      end
+    end
+
     context 'with keyset pagination option', :aggregate_failures do
       let(:base_params) { { pagination: 'keyset' } }
 

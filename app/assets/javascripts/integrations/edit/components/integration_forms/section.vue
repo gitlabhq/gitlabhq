@@ -77,7 +77,7 @@ export default {
 </script>
 <template>
   <section>
-    <h4 class="gl-mt-0">
+    <h4 v-if="section.title" class="gl-mt-0">
       {{ section.title
       }}<gl-badge
         v-if="section.plan"

@@ -180,7 +180,7 @@ To configure the connection to the external read-replica database and enable Log
 
    # note this is shared between both databases,
    # make sure you define the same password in both
-   gitlab_rails['db_password'] = '<your_password_here>'
+   gitlab_rails['db_password'] = '<your_primary_db_password_here>'
 
    gitlab_rails['db_username'] = 'gitlab'
    gitlab_rails['db_host'] = '<database_read_replica_host>'
@@ -257,7 +257,7 @@ Configure GitLab to use this database. These steps are for Linux package and Doc
 
    ```ruby
    geo_secondary['db_username'] = 'gitlab_geo'
-   geo_secondary['db_password'] = '<your_password_here>'
+   geo_secondary['db_password'] = '<your_tracking_db_password_here>'
 
    geo_secondary['db_host'] = '<tracking_database_host>'
    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port

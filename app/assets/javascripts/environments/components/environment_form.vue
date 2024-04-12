@@ -4,6 +4,7 @@ import {
   GlForm,
   GlFormGroup,
   GlFormInput,
+  GlFormText,
   GlCollapsibleListbox,
   GlLink,
   GlSprintf,
@@ -28,6 +29,7 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
+    GlFormText,
     GlCollapsibleListbox,
     GlLink,
     GlSprintf,
@@ -60,6 +62,10 @@ export default {
     },
   },
   i18n: {
+    agentSelectorHelp: s__(
+      'Environments|Select an agent with Kubernetes access to the project or group.',
+    ),
+    agentSelectorLinkText: s__('Environments|How do I grant Kubernetes access?'),
     header: __('Environments'),
     helpNewMessage: ENVIRONMENT_NEW_HELP_TEXT,
     helpEditMessage: ENVIRONMENT_EDIT_HELP_TEXT,
@@ -75,6 +81,7 @@ export default {
     cancel: __('Cancel'),
     reset: __('Reset'),
   },
+  agentSelectorHelpPagePath: helpPagePath('user/clusters/agent/user_access.md'),
   environmentsHelpPagePath: helpPagePath('ci/environments/index.md'),
   renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
     anchor: 'rename-an-environment',
@@ -283,6 +290,12 @@ export default {
             @select="onAgentChange"
             @reset="onChange({ ...environment, clusterAgentId: null })"
           />
+          <gl-form-text>
+            {{ $options.i18n.agentSelectorHelp }}
+            <gl-link :href="$options.agentSelectorHelpPagePath" target="_blank"
+              >{{ $options.i18n.agentSelectorLinkText }}
+            </gl-link>
+          </gl-form-text>
         </gl-form-group>
 
         <environment-namespace-selector

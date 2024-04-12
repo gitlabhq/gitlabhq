@@ -1,3 +1,10 @@
+- note = local_assigns.fetch(:note, @note)
+- show_no_diff_preview_message = true
+- unless note.nil?
+  - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
+  - project = local_assigns.fetch(:project, @project)
+  - show_no_diff_preview_message = discussion&.diff_discussion? && discussion.on_text? && !project.show_diff_preview_in_email?
+
 %html{ lang: I18n.locale }
   %head
     %meta{ content: "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
@@ -20,6 +27,9 @@
       %p
         &mdash;
         %br
+        - if show_no_diff_preview_message
+          = _('This project does not include diff previews in email notifications.')
+          %br
         - if @target_url
           - if @reply_by_email
             = _('Reply to this email directly or %{view_it_on_gitlab}.').html_safe % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }

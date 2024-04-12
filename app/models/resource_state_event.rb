@@ -13,6 +13,10 @@ class ResourceStateEvent < ResourceEvent
 
   after_create :issue_usage_metrics
 
+  scope :merged_with_no_event_source, -> do
+    where(state: :merged, source_merge_request: nil, source_commit: nil)
+  end
+
   def self.issuable_attrs
     %i[issue merge_request].freeze
   end

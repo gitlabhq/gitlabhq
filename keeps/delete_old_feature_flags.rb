@@ -40,7 +40,7 @@ module Keeps
 
     def prepare_change(feature_flag)
       if feature_flag.milestone.nil?
-        puts "#{feature_flag.name} has no milestone set!"
+        @logger.puts "#{feature_flag.name} has no milestone set!"
         return
       end
 

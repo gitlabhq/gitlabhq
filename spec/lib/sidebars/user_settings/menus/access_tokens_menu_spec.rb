@@ -14,7 +14,7 @@ RSpec.describe Sidebars::UserSettings::Menus::AccessTokensMenu, feature_category
 
     let_it_be(:user) { build(:user) }
 
-    context 'when personal access tokens are disabled' do
+    context 'when personal access tokens are disabled in the instance' do
       before do
         allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
       end

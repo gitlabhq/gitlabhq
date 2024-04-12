@@ -43,9 +43,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def personal_access_token
-    experiment(:default_to_import_tab, actor: current_user)
-      .track(:authentication, property: provider_name)
-
     session[access_token_key] = params[:personal_access_token]&.strip
     redirect_to status_import_url
   end

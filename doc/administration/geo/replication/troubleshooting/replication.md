@@ -13,7 +13,7 @@ DETAILS:
 ## Fixing PostgreSQL database replication errors
 
 The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
-[`geo:check` output](index.md#health-check-rake-task).
+[`geo:check` output](common.md#health-check-rake-task).
 The instructions present here mostly assume a single-node Geo Linux package deployment, and might need to be adapted to different environments.
 
 ### Removing an inactive replication slot
@@ -206,7 +206,7 @@ The workaround is to increase the memory available to the secondary site's Postg
 
 ## Fixing non-PostgreSQL replication failures
 
-If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](index.md#sync-status-rake-task), you can try to resolve the failures with the following general steps:
+If you notice replication failures in `Admin > Geo > Sites` or the [Sync status Rake task](common.md#sync-status-rake-task), you can try to resolve the failures with the following general steps:
 
 1. Geo automatically retries failures. If the failures are new and few in number, or if you suspect the root cause is already resolved, then you can wait to see if the failures go away.
 1. If failures were present for a long time, then many retries have already occurred, and the interval between automatic retries has increased to up to 4 hours depending on the type of failure. If you suspect the root cause is already resolved, you can [manually retry replication or verification](#manually-retry-replication-or-verification).

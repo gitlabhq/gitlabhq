@@ -66,7 +66,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-group-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
-                                  .skipping :'link-in-text-block', :'heading-order'
+                                  .skipping :'link-in-text-block'
     end
 
     it 'has a Duplicate packages section', :js do

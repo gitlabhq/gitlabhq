@@ -141,7 +141,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
         visit(merge_request_path(merge_request))
 
         page.within('.notes .discussion') do
-          find('.js-vue-discussion-reply').click
+          find_by_testid('discussion-reply-tab').click
           click_button "Switch to rich text editing"
           click_button "Insert suggestion"
         end

@@ -91,7 +91,7 @@ describe('DiscussionActions', () => {
     it('emits showReplyForm event when clicking on reply placeholder', () => {
       createComponent({}, { attachTo: document.body });
 
-      wrapper.findComponent(DiscussionReplyPlaceholder).find('textarea').trigger('focus');
+      wrapper.findComponent(DiscussionReplyPlaceholder).find('input').trigger('focus');
       expect(wrapper.emitted().showReplyForm).toHaveLength(1);
     });
 

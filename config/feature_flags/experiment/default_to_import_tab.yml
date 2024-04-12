@@ -1,8 +1,0 @@
----
-name: default_to_import_tab
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139681
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435211
-milestone: '16.8'
-type: experiment
-group: group::activation
-default_enabled: false

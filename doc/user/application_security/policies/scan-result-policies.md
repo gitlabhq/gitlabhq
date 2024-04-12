@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval policies (Previously: Scan result policies)
+# Merge request approval policies
 
 DETAILS:
 **Tier:** Ultimate

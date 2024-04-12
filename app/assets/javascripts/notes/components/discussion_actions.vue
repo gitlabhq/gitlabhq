@@ -48,10 +48,7 @@ export default {
 
 <template>
   <div class="discussion-with-resolve-btn clearfix">
-    <discussion-reply-placeholder
-      data-testid="discussion-reply-tab"
-      @focus="$emit('showReplyForm')"
-    />
+    <discussion-reply-placeholder @focus="$emit('showReplyForm')" />
 
     <div v-if="userCanResolveDiscussion" class="btn-group discussion-actions" role="group">
       <div class="btn-group">

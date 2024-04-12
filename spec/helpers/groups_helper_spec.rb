@@ -301,6 +301,57 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#can_set_group_diff_preview_in_email?' do
+    let_it_be(:group) { create(:group, name: 'group') }
+    let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:group_owner)  { create(:group_member, :owner, group: group, user: create(:user)).user }
+    let_it_be(:group_maintainer) { create(:group_member, :maintainer, group: group, user: create(:user)).user }
+
+    before do
+      group.update_attribute(:show_diff_preview_in_email, true)
+      stub_feature_flags(diff_preview_in_email: true)
+    end
+
+    it 'returns true for an owner of the group' do
+      allow(helper).to receive(:current_user) { group_owner }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_truthy
+    end
+
+    it 'returns false for a maintainer of the group' do
+      allow(helper).to receive(:current_user) { group_maintainer }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_falsey
+    end
+
+    it 'returns false for anyone else' do
+      allow(helper).to receive(:current_user) { current_user }
+
+      expect(helper.can_set_group_diff_preview_in_email?(group)).to be_falsey
+    end
+
+    context 'respects the settings of a parent group' do
+      context 'when a parent group has disabled diff previews ' do
+        before do
+          group.update_attribute(:show_diff_preview_in_email, false)
+        end
+
+        it 'returns false for all users' do
+          allow(helper).to receive(:current_user) { group_owner }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+
+          allow(helper).to receive(:current_user) { group_maintainer }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+
+          allow(helper).to receive(:current_user) { current_user }
+          expect(helper.can_set_group_diff_preview_in_email?(subgroup)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#can_update_default_branch_protection?' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group) }
