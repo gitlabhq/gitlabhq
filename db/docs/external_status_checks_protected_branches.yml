@@ -1,6 +1,7 @@
 ---
 table_name: external_status_checks_protected_branches
-classes: []
+classes:
+- MergeRequests::ExternalStatusChecksProtectedBranch
 feature_categories:
 - compliance_management
 description: Keeps relation between protected branches and external status checks

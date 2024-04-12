@@ -5,18 +5,13 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::LinkAlerts::DestroyService, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:another_incident) { create(:incident, project: project) }
   let_it_be(:internal_alert) { create(:alert_management_alert, project: project, issue: incident) }
   let_it_be(:external_alert) { create(:alert_management_alert, project: another_project, issue: incident) }
   let_it_be(:unrelated_alert) { create(:alert_management_alert, project: project, issue: another_incident) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_developer(developer)
-  end
 
   describe '#execute' do
     subject(:execute) { described_class.new(incident, current_user, alert).execute }

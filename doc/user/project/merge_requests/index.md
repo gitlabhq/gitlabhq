@@ -11,6 +11,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Sidebar actions menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Enabled by default.
+> - Sidebar actions menu [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127001) in GitLab 16.9. Feature flag `moved_mr_sidebar` removed.
+
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
 When you open a merge request, you can visualize and collaborate on the changes before merge.
@@ -171,8 +175,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
-
 GitLab enables multiple assignees for merge requests, if multiple people are
 accountable for it:
 
@@ -255,27 +257,6 @@ Merge requests with interconnected content updates are usually handled in one of
 This feature works only when a merge request is merged. Selecting **Remove source branch**
 after merging does not retarget open merge requests. This improvement is
 [proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
-
-## Move sidebar actions
-
-<!-- When the `moved_mr_sidebar` feature flag is removed, delete this topic and update the steps for these actions
-like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_id=522279685#5d9afba799c4af9920dab533571d7abb8b9e9163 -->
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Enabled by default.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
-
-When this feature flag is enabled, in the upper-right corner,
-**Merge request actions** (**{ellipsis_v}**) contains the following actions:
-
-- The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
-- Mark merge request as ready or [draft](../merge_requests/drafts.md)
-- Close merge request
-- [Lock discussion](../../discussions/index.md#prevent-comments-by-locking-the-discussion)
-- Copy reference
-
-In GitLab 16.0 and later, similar action menus are available on issues, incidents, and epics.
-
-When this feature flag is disabled, these actions are in the right sidebar.
 
 ## Merge request workflows
 

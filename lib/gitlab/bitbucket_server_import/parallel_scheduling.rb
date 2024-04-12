@@ -5,7 +5,8 @@ module Gitlab
     module ParallelScheduling
       include Loggable
 
-      attr_reader :project, :already_processed_cache_key, :job_waiter_cache_key
+      attr_reader :project, :page_counter, :already_processed_cache_key,
+        :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
       # The base cache key to use for tracking already processed objects.
       ALREADY_PROCESSED_CACHE_KEY =
@@ -15,14 +16,21 @@ module Gitlab
       JOB_WAITER_CACHE_KEY =
         'bitbucket-server-importer/job-waiter/%{project}/%{collection}'
 
+      # The base cache key to use for storing job waiter remaining jobs
+      JOB_WAITER_REMAINING_CACHE_KEY =
+        'bitbucket-server-importer/job-waiter-remaining/%{project}/%{collection}'
+
       # project - An instance of `Project`.
       def initialize(project)
         @project = project
 
+        @page_counter = Gitlab::Import::PageCounter.new(project, collection_method, 'bitbucket-server-importer')
         @already_processed_cache_key =
           format(ALREADY_PROCESSED_CACHE_KEY, project: project.id, collection: collection_method)
         @job_waiter_cache_key =
           format(JOB_WAITER_CACHE_KEY, project: project.id, collection: collection_method)
+        @job_waiter_remaining_cache_key = format(JOB_WAITER_REMAINING_CACHE_KEY, project: project.id,
+          collection: collection_method)
       end
 
       private
@@ -62,8 +70,9 @@ module Gitlab
         @job_waiter ||= begin
           key = Gitlab::Cache::Import::Caching.read(job_waiter_cache_key)
           key ||= Gitlab::Cache::Import::Caching.write(job_waiter_cache_key, JobWaiter.generate_key)
+          jobs_remaining = Gitlab::Cache::Import::Caching.read(job_waiter_remaining_cache_key).to_i || 0
 
-          JobWaiter.new(0, key)
+          JobWaiter.new(jobs_remaining, key)
         end
       end
 

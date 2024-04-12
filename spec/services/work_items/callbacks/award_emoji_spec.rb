@@ -5,14 +5,10 @@ require 'spec_helper'
 RSpec.describe WorkItems::Callbacks::AwardEmoji, feature_category: :team_planning do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:unauthorized_user) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter) }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
   let(:current_user) { reporter }
-
-  before_all do
-    project.add_reporter(reporter)
-  end
 
   describe '#before_update' do
     subject do

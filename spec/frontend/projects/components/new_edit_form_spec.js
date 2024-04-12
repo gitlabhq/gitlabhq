@@ -1,3 +1,5 @@
+import { GlFormFields } from '@gitlab/ui';
+
 import NewEditForm from '~/projects/components/new_edit_form.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +30,7 @@ describe('NewEditForm', () => {
     });
   };
 
+  const findGlFormFields = () => wrapper.findComponent(GlFormFields);
   const findNameField = () => wrapper.findByLabelText('Project name');
   const findIdField = () => wrapper.findByLabelText('Project ID');
   const findDescriptionField = () => wrapper.findByLabelText('Project description (optional)');
@@ -102,6 +105,24 @@ describe('NewEditForm', () => {
     });
   });
 
+  describe('when `serverValidations` prop is set', () => {
+    const serverValidations = {
+      [FORM_FIELD_DESCRIPTION]: 'Project description is too long (maximum is 2000 characters)',
+    };
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          serverValidations,
+        },
+      });
+    });
+
+    it('passes prop to `GlFormFields`', () => {
+      expect(findGlFormFields().props('serverValidations')).toEqual(serverValidations);
+    });
+  });
+
   it('renders `Project ID` field as disabled', () => {
     createComponent();
 
@@ -141,6 +162,42 @@ describe('NewEditForm', () => {
 
     it('uses it for submit button', () => {
       expect(wrapper.findByRole('button', { name: 'Create project' }).exists()).toBe(true);
+    });
+  });
+
+  describe('when `GlFormFields` emits `submit` event', () => {
+    const formValues = {
+      [FORM_FIELD_NAME]: 'Foo bar',
+      [FORM_FIELD_ID]: 1,
+      [FORM_FIELD_DESCRIPTION]: 'foo bar baz description',
+    };
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          initialFormValues: formValues,
+        },
+      });
+
+      findGlFormFields().vm.$emit('submit');
+    });
+
+    it('emits `submit` event with form values', () => {
+      expect(wrapper.emitted('submit')).toEqual([[formValues]]);
+    });
+  });
+
+  describe('when `GlFormFields` emits `input-field` event', () => {
+    const event = { name: FORM_FIELD_NAME, value: 'Foo bar' };
+
+    beforeEach(() => {
+      createComponent();
+
+      findGlFormFields().vm.$emit('input-field', event);
+    });
+
+    it('emits `input-field` event', () => {
+      expect(wrapper.emitted('input-field')).toEqual([[event]]);
     });
   });
 });

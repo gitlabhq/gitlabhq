@@ -66,7 +66,7 @@ module ClickHouse
       end
 
       def enabled?
-        Gitlab::ClickHouse.globally_enabled_for_analytics? && Feature.enabled?(:event_sync_worker_for_click_house)
+        Gitlab::ClickHouse.globally_enabled_for_analytics?
       end
 
       def runtime_limiter

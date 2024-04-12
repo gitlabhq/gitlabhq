@@ -159,7 +159,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             sha = project.repository.commit('master').id
             release = create(:release, project: project, tag: '2.6.0', sha: sha, released_at: Date.yesterday)
 
-            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, version: '2.6.0')
+            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '2.6.0')
           end
 
           let_it_be(:v1_1_2) do
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             )
             release = create(:release, project: project, tag: '1.1.2', sha: sha, released_at: Date.today)
 
-            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, version: '1.1.2')
+            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.1.2')
           end
 
           it 'returns the component content of the latest semantic version', :aggregate_failures do

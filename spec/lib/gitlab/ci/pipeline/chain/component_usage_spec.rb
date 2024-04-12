@@ -8,9 +8,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:resource) { create(:ci_catalog_resource) }
 
+  let_it_be(:release) { create(:release, project: resource.project, tag: '1.2.0', sha: 'my_component_sha') }
   let_it_be(:version) do
-    create(:release, :with_catalog_resource_version, project: resource.project, tag: '1.2.0', sha: 'my_component_sha')
-      .catalog_resource_version
+    create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: release.tag)
   end
 
   let_it_be(:component) { create(:ci_catalog_resource_component, version: version, name: 'my_component') }

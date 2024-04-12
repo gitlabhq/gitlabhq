@@ -235,15 +235,33 @@ module Gitlab
         raise Gitlab::Git::CommitError, e
       end
 
-      def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
-        response = call_cherry_pick_or_revert(:cherry_pick,
-                                              user: user,
-                                              commit: commit,
-                                              branch_name: branch_name,
-                                              message: message,
-                                              start_branch_name: start_branch_name,
-                                              start_repository: start_repository,
-                                              dry_run: dry_run)
+      # rubocop:disable Metrics/ParameterLists
+      def user_cherry_pick(
+        user:, commit:, branch_name:, message:,
+        start_branch_name:, start_repository:, author_name: nil, author_email: nil, dry_run: false)
+
+        request = Gitaly::UserCherryPickRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit: commit.to_gitaly_commit,
+          branch_name: encode_binary(branch_name),
+          message: encode_binary(message),
+          start_branch_name: encode_binary(start_branch_name.to_s),
+          start_repository: start_repository.gitaly_repository,
+          commit_author_name: encode_binary(author_name),
+          commit_author_email: encode_binary(author_email),
+          dry_run: dry_run,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        )
+
+        response = gitaly_client_call(
+          @repository.storage,
+          :operation_service,
+          :user_cherry_pick,
+          request,
+          remote_storage: start_repository.storage,
+          timeout: GitalyClient.long_timeout
+        )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       rescue GRPC::BadStatus => e
@@ -264,16 +282,29 @@ module Gitlab
           raise e
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
-        response = call_cherry_pick_or_revert(:revert,
-                                              user: user,
-                                              commit: commit,
-                                              branch_name: branch_name,
-                                              message: message,
-                                              start_branch_name: start_branch_name,
-                                              start_repository: start_repository,
-                                              dry_run: dry_run)
+        request = Gitaly::UserRevertRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit: commit.to_gitaly_commit,
+          branch_name: encode_binary(branch_name),
+          message: encode_binary(message),
+          start_branch_name: encode_binary(start_branch_name.to_s),
+          start_repository: start_repository.gitaly_repository,
+          dry_run: dry_run,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        )
+
+        response = gitaly_client_call(
+          @repository.storage,
+          :operation_service,
+          :user_revert,
+          request,
+          remote_storage: start_repository.storage,
+          timeout: GitalyClient.long_timeout
+        )
 
         if response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, response.pre_receive_error
@@ -540,31 +571,6 @@ module Gitlab
       end
 
       private
-
-      def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run:)
-        request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize
-
-        request = request_class.new(
-          repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
-          commit: commit.to_gitaly_commit,
-          branch_name: encode_binary(branch_name),
-          message: encode_binary(message),
-          start_branch_name: encode_binary(start_branch_name.to_s),
-          start_repository: start_repository.gitaly_repository,
-          dry_run: dry_run,
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
-        )
-
-        gitaly_client_call(
-          @repository.storage,
-          :operation_service,
-          :"user_#{rpc}",
-          request,
-          remote_storage: start_repository.storage,
-          timeout: GitalyClient.long_timeout
-        )
-      end
 
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(

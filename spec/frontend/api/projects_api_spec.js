@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import getTransferLocationsResponse from 'test_fixtures/api/projects/transfer_locations_page_1.json';
+import project from 'test_fixtures/api/projects/put.json';
 import * as projectsApi from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
@@ -77,6 +78,19 @@ describe('~/api/projects_api.js', () => {
 
       return projectsApi.createProject(body).then(({ data }) => {
         expect(data).toStrictEqual(expectedRes);
+      });
+    });
+  });
+
+  describe('updateProject', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const data = { name: 'Foo bar', description: 'Mock description' };
+      const expectedUrl = `/api/v7/projects/${projectId}`;
+
+      mock.onPut(expectedUrl, data).replyOnce(HTTP_STATUS_OK, project);
+
+      await expect(projectsApi.updateProject(projectId, data)).resolves.toMatchObject({
+        data: project,
       });
     });
   });

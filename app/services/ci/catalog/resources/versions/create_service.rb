@@ -36,7 +36,7 @@ module Ci
               release: release,
               catalog_resource: project.catalog_resource,
               project: project,
-              version: release.tag
+              semver: release.tag
             )
           end
 

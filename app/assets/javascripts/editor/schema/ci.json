@@ -1175,11 +1175,60 @@
       ]
     },
     "exists": {
-      "type": "array",
       "markdownDescription": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesexists).",
-      "items": {
-        "type": "string"
-      }
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "paths"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "description": "List of file paths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "project": {
+              "type": "string",
+              "description": "Path of the project to search in."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "paths",
+            "project"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "description": "List of file paths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "project": {
+              "type": "string",
+              "description": "Path of the project to search in."
+            },
+            "ref": {
+              "type": "string",
+              "description": "Ref of the project to search in."
+            }
+          }
+        }
+      ]
     },
     "timeout": {
       "type": "string",

@@ -6,7 +6,7 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, reporters: user) }
   let_it_be(:email) { create(:email, user: user) }
   let_it_be(:existing_achievement) { create(:achievement, namespace: group) }
 
@@ -16,10 +16,6 @@ RSpec.describe Users::SetNamespaceCommitEmailService, feature_category: :user_pr
   let(:email_id) { email.id }
   let(:params) { { user: target_user } }
   let(:service) { described_class.new(current_user, namespace, email_id, params) }
-
-  before_all do
-    group.add_reporter(user)
-  end
 
   shared_examples 'success' do
     it 'creates namespace commit email' do

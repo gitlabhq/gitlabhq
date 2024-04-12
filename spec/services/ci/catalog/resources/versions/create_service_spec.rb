@@ -48,6 +48,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         version = Ci::Catalog::Resources::Version.last
 
         expect(version.release).to eq(release)
+        expect(version.semver.to_s).to eq(release.tag)
         expect(version.catalog_resource).to eq(catalog_resource)
         expect(version.catalog_resource.project).to eq(project)
       end

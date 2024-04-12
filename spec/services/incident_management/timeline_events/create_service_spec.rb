@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe IncidentManagement::TimelineEvents::CreateService, feature_category: :incident_management do
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: user_with_permissions, reporters: user_without_permissions) }
   let_it_be_with_refind(:incident) { create(:incident, project: project) }
   let_it_be(:comment) { create(:note, project: project, noteable: incident) }
   let_it_be(:timeline_event_tag) do
@@ -24,11 +24,6 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService, feature_catego
   let(:editable) { false }
   let(:current_user) { user_with_permissions }
   let(:service) { described_class.new(incident, current_user, args) }
-
-  before_all do
-    project.add_developer(user_with_permissions)
-    project.add_reporter(user_without_permissions)
-  end
 
   describe '#execute' do
     shared_examples 'error response' do |message|

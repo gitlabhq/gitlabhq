@@ -45,6 +45,13 @@ export default {
         };
       },
     },
+    serverValidations: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
     submitButtonText: {
       type: String,
       required: false,
@@ -128,8 +135,10 @@ export default {
       v-model="formValues"
       :form-id="$options.formId"
       :fields="fields"
+      :server-validations="serverValidations"
       class="gl-display-flex gl-column-gap-5 gl-flex-wrap"
       @submit="$emit('submit', formValues)"
+      @input-field="$emit('input-field', $event)"
     >
       <template #input(description)="{ id, value, input, blur }">
         <div class="gl-md-form-input-xl">

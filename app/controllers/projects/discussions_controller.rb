@@ -33,26 +33,14 @@ class Projects::DiscussionsController < Projects::ApplicationController
   private
 
   def render_discussion
-    if serialize_notes?
-      prepare_notes_for_rendering(discussion.notes)
-      render_json_with_discussions_serializer
-    else
-      render_json_with_html
-    end
+    prepare_notes_for_rendering(discussion.notes)
+    render_json_with_discussions_serializer
   end
 
   def render_json_with_discussions_serializer
     render json:
       DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity: ProjectNoteEntity)
       .represent(discussion, context: self, render_truncated_diff_lines: true)
-  end
-
-  # Legacy method used to render discussions notes when not using Vue on views.
-  def render_json_with_html
-    render json: {
-      resolved_by: discussion.resolved_by.try(:name),
-      discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
-    }
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

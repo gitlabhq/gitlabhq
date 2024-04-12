@@ -6,9 +6,6 @@ module Ml
     include Sortable
     include SemanticVersionable
 
-    semver_method :semver
-    validate_semver
-
     validates :project, :model, presence: true
 
     validates :version,

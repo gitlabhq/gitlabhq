@@ -302,7 +302,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       release = create(:release, :with_catalog_resource_version, project: project, tag: 'v1',
         released_at: '2023-01-01T00:00:00Z')
 
-      release.catalog_resource_version.update!(version: '1.0.0')
+      release.catalog_resource_version.update!(semver: '1.0.0')
 
       release
     end
@@ -311,7 +311,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       release = create(:release, :with_catalog_resource_version, project: project, tag: 'v2',
         released_at: '2023-02-01T00:00:00Z')
 
-      release.catalog_resource_version.update!(version: '2.0.0')
+      release.catalog_resource_version.update!(semver: '2.0.0')
 
       release
     end
@@ -325,7 +325,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
         march_release = create(:release, :with_catalog_resource_version, project: project, tag: 'v3',
           released_at: '2023-03-01T00:00:00Z')
 
-        march_release.catalog_resource_version.update!(version: '3.0.0')
+        march_release.catalog_resource_version.update!(semver: '3.0.0')
 
         expect(resource.reload.latest_released_at).to eq(march_release.released_at)
       end
@@ -343,7 +343,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       it 'updates the latest_released_at value' do
         january_release.update!(released_at: '2024-03-01T00:00:00Z')
 
-        january_release.catalog_resource_version.update!(version: '4.0.0')
+        january_release.catalog_resource_version.update!(semver: '4.0.0')
 
         expect(resource.reload.latest_released_at).to eq(january_release.released_at)
       end

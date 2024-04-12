@@ -1929,8 +1929,10 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
           expect(json_response['title']).to eq(commit.title)
-          expect(json_response['message']).to eq(commit.cherry_pick_message(user))
-          expect(json_response['author_name']).to eq(commit.author_name)
+          expect(json_response['message']).to eq(
+            "#{commit.cherry_pick_message(user)}\n\nCo-authored-by: #{commit.author_name} <#{commit.author_email}>"
+          )
+          expect(json_response['author_name']).to eq(user.name)
           expect(json_response['committer_name']).to eq(user.name)
         end
 

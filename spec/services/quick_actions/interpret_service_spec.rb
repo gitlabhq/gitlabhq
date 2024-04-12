@@ -9,7 +9,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: [public_project, repository_project]) }
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -23,11 +23,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let(:container) { project }
 
   subject(:service) { described_class.new(container: container, current_user: current_user) }
-
-  before_all do
-    public_project.add_developer(developer)
-    repository_project.add_developer(developer)
-  end
 
   before do
     stub_licensed_features(

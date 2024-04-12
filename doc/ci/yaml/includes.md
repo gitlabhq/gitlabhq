@@ -468,27 +468,49 @@ test:
 
 In this example, GitLab checks for the existence of `file.md` in the current project.
 
-There is a known issue if you configure `include` with `rules:exists` to add a configuration file
+There is a known issue if you configure `include` with `rules:exists` in an include file
 from a different project. GitLab checks for the existence of the file in the _other_ project.
 For example:
 
 ```yaml
+# Pipeline configuration in my-group/my-project
 include:
-- project: my-group/my-project-2
-  ref: main
-  file: test-file.yml
-  rules:
-    - exists:
-        - file.md
+  - project: my-group/other-project
+    ref: other_branch
+    file: other-file.yml
 
 test:
-  stage: test
   script: exit 0
+
+# other-file.yml in my-group/other-project on ref other_branch
+include:
+  - project: my-group/my-project
+    ref: main
+    file: my-file.yml
+    rules:
+      - exists:
+          - file.md
 ```
 
-In this example, GitLab checks for the existence of `test-file.yml` in `my-group/my-project-2`,
-not the current project. Follow [issue 386040](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)
-for information about work to improve this behavior.
+In this example, GitLab searches for the existence of `file.md` in `my-group/other-project`
+on commit ref `other_branch`, not the project/ref in which the pipeline runs.
+
+To change the search context you can use [`rules:exists:paths`](index.md#rulesexistspaths)
+with [`rules:exists:project`](index.md#rulesexistsproject).
+For example:
+
+```yaml
+include:
+  - project: my-group/my-project
+    ref: main
+    file: my-file.yml
+    rules:
+      - exists:
+          paths:
+            - file.md
+          project: my-group/my-project
+          ref: main
+```
 
 ### `include` with `rules:changes`
 

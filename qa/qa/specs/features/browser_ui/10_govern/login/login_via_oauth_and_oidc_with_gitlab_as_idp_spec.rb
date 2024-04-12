@@ -77,10 +77,7 @@ module QA
       end
     end
 
-    describe 'OIDC', quarantine: {
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/429723',
-      type: :flaky
-    } do
+    describe 'OIDC', :orchestrated do
       let(:consumer_name) { 'gitlab-oidc-consumer' }
       let(:redirect_uri) { "#{consumer_host}/users/auth/openid_connect/callback" }
       let(:scopes) { %w[openid profile email] }
@@ -125,11 +122,7 @@ module QA
       it_behaves_like 'Instance OAuth Application', :oidc, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/405137'
     end
 
-    describe 'OAuth',
-      quarantine: {
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/415011',
-        type: :flaky
-      } do
+    describe 'OAuth', :orchestrated do
       let(:consumer_name) { 'gitlab-oauth-consumer' }
       let(:redirect_uri) { "#{consumer_host}/users/auth/gitlab/callback" }
       let(:scopes) { %w[read_user] }

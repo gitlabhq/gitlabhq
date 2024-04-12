@@ -9,9 +9,6 @@ module Ci
         include BulkInsertableAssociations
         include SemanticVersionable
 
-        semver_method :version
-        validate_semver
-
         self.table_name = 'catalog_resource_versions'
 
         belongs_to :release, inverse_of: :catalog_resource_version
@@ -53,7 +50,7 @@ module Ci
         end
 
         def name
-          release.tag
+          semver.to_s
         end
 
         def commit

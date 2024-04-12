@@ -8,13 +8,9 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, 
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:service) { described_class.new }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   describe '#execute' do
     subject { service.execute }

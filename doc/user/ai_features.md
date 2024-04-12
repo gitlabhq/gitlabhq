@@ -34,17 +34,35 @@ Some features are still in development. View details about [support for each sta
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
 
-## Enable AI/ML features
+## Controlling GitLab Duo features
 
-For features listed as Experiment and Beta:
+There are two different levels at which GitLab Duo features can be controlled. The user level and the content level.
 
-- These features are disabled by default.
-- To enable, a user with the Owner role for the group must [turn on this setting](group/manage.md#enable-experiment-and-beta-features).
-  On GitLab.com, this setting is available for Ultimate subscriptions only.
-- These features are subject to the
-  [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+GitLab Duo features that are generally available are always enabled for all users that have access to these features. Whether they have access depends on the tier or the add-on as stated in the previous table. [Experimental](../policy/experiment-beta-support.md#experiment) and [Beta](../policy/experiment-beta-support.md#beta) GitLab Duo features need to be enabled as follows.
 
-For all self-managed features:
+Owners of projects and groups as well as administrators of self-managed instances can control if GitLab Duo features can be used with their content such as code files.
+
+### Giving access to users
+
+If a feature is dependent on an add-on seat such as [Code Suggestions](project/repository/code_suggestions/index.md), access to the feature can be controlled through [GitLab Duo seat assignment](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+
+### Enabling Beta and Experimental AI-powered features
+
+Features listed as Experiment and Beta are disabled by default. These features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+#### GitLab.com
+
+Prerequisites
+
+- You must have the Owner role in the top-level group.
+
+To enable Beta and Experimental AI-powered features, use the [Experiment and Beta features checkbox](group/manage.md#enable-experiment-and-beta-features).
+
+#### GitLab self-managed
+
+To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed-and-gitlab-dedicated).
+
+### Enable outbound connections to enable GitLab Duo features on Self-managed instances
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
   to `gitlab.com` and `cloud.gitlab.com` on port `443`.
@@ -56,15 +74,7 @@ For all self-managed features:
   Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo
   chat services. Consider policy updates to allow these services.
 
-For other features:
-
-- [Code Suggestions](project/repository/code_suggestions/index.md) is enabled when you purchase the
-  GitLab Duo Pro add-on and assign seats to users.
-- [Chat](gitlab_duo_chat.md)
-  - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-and-gitlab-dedicated).
-  - View [how to enable for GitLab.com](gitlab_duo_chat.md#for-gitlabcom).
-
-### Disable GitLab Duo features
+### Disable GitLab Duo features for specific groups or projects or an entire instance
 
 DETAILS:
 **Tier:** Premium, Ultimate

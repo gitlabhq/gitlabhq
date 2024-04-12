@@ -7,7 +7,7 @@ module Gitlab
         include ParallelScheduling
 
         def execute
-          page = 1
+          page = page_counter.current
 
           loop do
             log_info(
@@ -21,21 +21,6 @@ module Gitlab
 
             break if pull_requests.empty?
 
-            commits_to_fetch = pull_requests.filter_map do |pull_request|
-              next if already_processed?(pull_request)
-              next unless pull_request.merged? || pull_request.closed?
-
-              [].tap do |commits|
-                source_sha = pull_request.source_branch_sha
-                target_sha = pull_request.target_branch_sha
-
-                existing_commits = repo.commits_by(oids: [source_sha, target_sha]).map(&:sha)
-
-                commits << source_branch_commit(source_sha, pull_request) unless existing_commits.include?(source_sha)
-                commits << target_branch_commit(target_sha) unless existing_commits.include?(target_sha)
-              end
-            end.flatten
-
             # Bitbucket Server keeps tracks of references for open pull requests in
             # refs/heads/pull-requests, but closed and merged requests get moved
             # into hidden internal refs under stash-refs/pull-requests. As a result,
@@ -43,12 +28,10 @@ module Gitlab
             #
             # This method call explicitly fetches head and start commits for affected pull requests.
             # That allows us to correctly assign diffs and commits to merge requests.
-            fetch_missing_commits(commits_to_fetch)
+            fetch_missing_commits(pull_requests)
 
             pull_requests.each do |pull_request|
-              # Needs to come before `already_processed?` as `jobs_remaining` resets to zero when the job restarts and
-              # jobs_remaining needs to be the total amount of enqueued jobs
-              job_waiter.jobs_remaining += 1
+              job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
 
               next if already_processed?(pull_request)
 
@@ -60,14 +43,32 @@ module Gitlab
             end
 
             page += 1
+            page_counter.set(page)
           end
+
+          page_counter.expire!
 
           job_waiter
         end
 
         private
 
-        def fetch_missing_commits(commits_to_fetch)
+        def fetch_missing_commits(pull_requests)
+          commits_to_fetch = pull_requests.filter_map do |pull_request|
+            next if already_processed?(pull_request)
+            next unless pull_request.merged? || pull_request.closed?
+
+            [].tap do |commits|
+              source_sha = pull_request.source_branch_sha
+              target_sha = pull_request.target_branch_sha
+
+              existing_commits = repo.commits_by(oids: [source_sha, target_sha]).map(&:sha)
+
+              commits << source_branch_commit(source_sha, pull_request) unless existing_commits.include?(source_sha)
+              commits << target_branch_commit(target_sha) unless existing_commits.include?(target_sha)
+            end
+          end.flatten
+
           return if commits_to_fetch.blank?
 
           project.repository.fetch_remote(project.import_url, refmap: commits_to_fetch, prune: false)

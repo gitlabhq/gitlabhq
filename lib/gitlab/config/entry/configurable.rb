@@ -34,6 +34,10 @@ module Gitlab
               # we can end with different config types like String
               next unless config.is_a?(Hash)
 
+              if key == :exists
+                next unless ::Feature.enabled?(:ci_support_rules_exists_paths_and_project, ::Feature.current_request)
+              end
+
               entry_create!(key, config[key])
             end
 

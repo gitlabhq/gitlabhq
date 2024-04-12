@@ -80,7 +80,7 @@ As such, we generally recommend the following order:
 In this section we'll go through the core process of upgrading a multi-node GitLab environment by
 sequentially going through each as per the [upgrade order](#upgrade-order) and load balancers / HA mechanisms handle each node going down accordingly.
 
-For the purposes of this guide we'll upgrade a [10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
+For the purposes of this guide we'll upgrade a [200 RPS or 10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
 
 ### Consul, PostgreSQL, PgBouncer and Redis
 

@@ -167,9 +167,9 @@ E --> F
 ### Configure Gitaly
 
 Gitaly comes pre-configured with a Linux package installation, which is a configuration
-[suitable for up to 1000 users](../reference_architectures/1k_users.md). For:
+[suitable for up to 20 RPS / 1,000 users](../reference_architectures/1k_users.md). For:
 
-- Linux package installations for up to 2000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
+- Linux package installations for up to 40 RPS / 2,000 users, see [specific Gitaly configuration instructions](../reference_architectures/2k_users.md#configure-gitaly).
 - Self-compiled installations or custom Gitaly installations, see [Configure Gitaly](configure_gitaly.md).
 
 GitLab installations for more than 2000 active users performing daily Git write operation may be

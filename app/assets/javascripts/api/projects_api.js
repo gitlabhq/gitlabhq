@@ -44,6 +44,12 @@ export function createProject(projectData) {
   });
 }
 
+export function updateProject(projectId, data) {
+  const url = buildApiUrl(PROJECT_PATH).replace(':id', projectId);
+
+  return axios.put(url, data);
+}
+
 export function deleteProject(projectId, params) {
   const url = buildApiUrl(PROJECT_PATH).replace(':id', projectId);
 

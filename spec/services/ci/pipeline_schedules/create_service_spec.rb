@@ -5,15 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuous_integration do
   let_it_be(:reporter) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository, maintainers: user, reporters: reporter) }
   let_it_be_with_reload(:repository) { project.repository }
 
   subject(:service) { described_class.new(project, user, params) }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_reporter(reporter)
-  end
 
   before do
     stub_feature_flags(enforce_full_refs_for_pipeline_schedules: false)

@@ -127,14 +127,14 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   describe 'versions' do
-    let!(:resource1_v1) { create(:ci_catalog_resource_version, version: '1.0.0', catalog_resource: resource1) }
-    let!(:resource1_v2) { create(:ci_catalog_resource_version, version: '2.0.0', catalog_resource: resource1) }
+    let!(:resource1_v1) { create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: resource1) }
+    let!(:resource1_v2) { create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource1) }
     let!(:public_resource_v1) do
-      create(:ci_catalog_resource_version, version: '1.0.0', catalog_resource: public_resource)
+      create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: public_resource)
     end
 
     let!(:public_resource_v2) do
-      create(:ci_catalog_resource_version, version: '2.0.0', catalog_resource: public_resource)
+      create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: public_resource)
     end
 
     let(:query) do

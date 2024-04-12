@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:related_work_item, refind: true) { create(:work_item, project: project) }
   let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
@@ -17,10 +17,6 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
       description: 'please fix',
       work_item_type_id: WorkItems::Type.default_by_type(:task).id
     }
-  end
-
-  before_all do
-    project.add_developer(user)
   end
 
   shared_examples 'successful work item and link creator' do

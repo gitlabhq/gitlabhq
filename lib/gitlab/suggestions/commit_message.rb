@@ -44,7 +44,7 @@ module Gitlab
         'suggestions_count' => ->(user, suggestion_set) { suggestion_set.suggestions.size },
         'co_authored_by' => ->(user, suggestions_set) {
           suggestions_set.authors.without(user).map do |author|
-            "Co-authored-by: #{author.name} <#{author.commit_email_or_default}>"
+            "#{Commit::CO_AUTHORED_TRAILER}: #{author.name} <#{author.commit_email_or_default}>"
           end.join("\n")
         }
       }.freeze

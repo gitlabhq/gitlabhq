@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 5,000 users
+# Reference architecture: 100 RPS or up to 5,000 users 
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 5,000 users
-with notable headroom.
+This page describes the GitLab reference architecture designed to target a peak load of 100 requests per second (RPS) - The typical peak load of up to 5,000 users, both manual and automated, based on real data with headroom added.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
@@ -152,7 +151,7 @@ Before starting, see the [requirements](index.md#requirements) for reference arc
 ## Testing methodology
 
 The 5k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 100 RPS
@@ -174,7 +173,7 @@ The load balancers used for testing were HAProxy for Linux package environments 
 
 ## Set up components
 
-To set up GitLab and its components to accommodate up to 5,000 users:
+To set up GitLab and its components to accommodate up to 100 RPS or 5,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
@@ -2356,7 +2355,7 @@ Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because four worker processes
 are created by default and each pod has other small processes running.
 
-For 5,000 users we recommend a total Puma worker count of around 40.
+For 100 RPS or 5,000 users we recommend a total Puma worker count of around 40.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 10
 Webservice pods with 4 workers per pod and 2 pods per node. Expand available resources using
 the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional

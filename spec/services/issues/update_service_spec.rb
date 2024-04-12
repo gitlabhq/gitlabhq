@@ -7,7 +7,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, maintainers: user, developers: [user2, user3], guests: guest) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, title: 'a', project: project) }
   let_it_be(:label2) { create(:label, title: 'b', project: project) }
@@ -25,13 +25,6 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       project: project,
       author: create(:user)
     )
-  end
-
-  before_all do
-    group.add_maintainer(user)
-    group.add_developer(user2)
-    group.add_developer(user3)
-    group.add_guest(guest)
   end
 
   describe 'execute' do

@@ -21,9 +21,9 @@
       .gl-display-flex.gl-flex-wrap.gl-mt-5.gl-gap-3{ class: button_wrapper_class }
 
         - if @primary_button_text.present?
-          = render Pajamas::ButtonComponent.new(variant: :confirm, href: @primary_button_link, button_options: { class: 'gl-ml-0!' }) do
+          = render Pajamas::ButtonComponent.new(variant: :confirm, href: @primary_button_link, button_options: { class: 'gl-ml-0!', **@primary_button_options }) do
             = @primary_button_text
 
         - if @secondary_button_text.present?
-          = render Pajamas::ButtonComponent.new(variant: :default, href: @secondary_button_link, button_options: { class: ('gl-ml-0!' unless @primary_button_text.present?) }) do
+          = render Pajamas::ButtonComponent.new(variant: :default, href: @secondary_button_link, button_options: { class: ('gl-ml-0!' unless @primary_button_text.present?), **@secondary_button_options }) do
             = @secondary_button_text

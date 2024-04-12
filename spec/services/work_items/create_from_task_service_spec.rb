@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:list_work_item, refind: true) { create(:work_item, project: project, description: "- [ ] Item to be converted\n    second line\n    third line") }
 
   let(:work_item_to_update) { list_work_item }
@@ -18,10 +18,6 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
       line_number_end: 3,
       lock_version: work_item_to_update.lock_version
     }
-  end
-
-  before_all do
-    project.add_developer(developer)
   end
 
   shared_examples 'CreateFromTask service with invalid params' do

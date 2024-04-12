@@ -39,4 +39,20 @@ RSpec.describe 'projects/notes/_more_actions_dropdown' do
 
     expect(rendered).to have_link('Delete comment')
   end
+
+  it 'shows Edit button if editable and current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: author_user, note_editable: true, note: note
+
+    expect(rendered).to have_selector('.js-note-edit')
+
+    expect(rendered).to have_button('Edit comment')
+  end
+
+  it 'does not show Edit button if not editable and not current users comment' do
+    render 'projects/notes/more_actions_dropdown', current_user: not_author_user, note_editable: false, note: note
+
+    expect(rendered).not_to have_selector('.js-note-edit')
+
+    expect(rendered).not_to have_button('Edit comment')
+  end
 end

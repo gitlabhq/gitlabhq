@@ -173,7 +173,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         released_at: Date.yesterday
       ).catalog_resource_version
 
-      version.update!(version: '1.0.0')
+      version.update!(semver: '1.0.0')
 
       version
     end
@@ -186,7 +186,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         released_at: Date.today
       ).catalog_resource_version
 
-      version.update!(version: '2.0.0')
+      version.update!(semver: '2.0.0')
 
       version
     end

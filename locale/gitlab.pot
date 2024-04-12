@@ -40671,10 +40671,19 @@ msgstr ""
 msgid "Projects with write access"
 msgstr ""
 
+msgid "ProjectsEdit|An error occurred updating this project. Please try again."
+msgstr ""
+
+msgid "ProjectsEdit|Project was successfully updated."
+msgstr ""
+
 msgid "ProjectsNewEdit|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
 msgstr ""
 
 msgid "ProjectsNewEdit|My awesome project"
+msgstr ""
+
+msgid "ProjectsNewEdit|Project description"
 msgstr ""
 
 msgid "ProjectsNewEdit|Project description (optional)"
@@ -61412,9 +61421,6 @@ msgid "must contain only a discord user ID."
 msgstr ""
 
 msgid "must contain only a mastodon username."
-msgstr ""
-
-msgid "must follow semantic version"
 msgstr ""
 
 msgid "must have a repository"

@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:service) { described_class.new(project, user) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   describe '.all_strategies_ordered_by_preference' do
     subject { described_class.all_strategies_ordered_by_preference }

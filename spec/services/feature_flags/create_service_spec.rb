@@ -4,15 +4,10 @@ require 'spec_helper'
 
 RSpec.describe FeatureFlags::CreateService, feature_category: :feature_flags do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:user) { developer }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe '#execute' do
     subject do

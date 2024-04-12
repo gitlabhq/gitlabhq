@@ -6,7 +6,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, developers: developer, reporters: reporter) }
   let_it_be(:pipeline) do
     create(:ci_pipeline, project: project, sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0')
   end
@@ -21,11 +21,6 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
   let(:user) { developer }
 
   let(:service) { described_class.new(project, user) }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   shared_context 'retryable bridge' do
     let_it_be(:downstream_project) { create(:project, :repository) }

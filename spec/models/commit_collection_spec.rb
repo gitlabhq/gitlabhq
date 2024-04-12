@@ -56,6 +56,33 @@ RSpec.describe CommitCollection, feature_category: :source_code_management do
         expect(collection.committers).to be_empty
       end
     end
+
+    context 'when a commit is signed by GitLab' do
+      let(:author_email) { 'author@gitlab.com' }
+      let(:committer_email) { 'committer@gitlab.com' }
+      let(:author) { create(:user, email: author_email.upcase) }
+      let(:committer) { create(:user, email: committer_email.upcase) }
+
+      before do
+        allow(commit).to receive_message_chain(:signature, :verified_system?).and_return(true)
+        allow(commit).to receive(:author_email).and_return(author_email)
+        allow(commit).to receive(:committer_email).and_return(committer_email)
+      end
+
+      it 'uses author email to identify committers' do
+        expect(collection.committers).to eq([author])
+      end
+
+      context 'when web_ui_commit_author_change feature flag is disabled' do
+        before do
+          stub_feature_flags(web_ui_commit_author_change: false)
+        end
+
+        it 'users committer email to identify committers' do
+          expect(collection.committers).to eq([committer])
+        end
+      end
+    end
   end
 
   describe '#committer_user_ids' do

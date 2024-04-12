@@ -24,7 +24,8 @@ cannot merge until the **Draft** flag is removed, even if all other merge criter
 
 You can flag a merge request as a draft in several ways:
 
-- **Viewing a merge request**: In the upper-right corner of the merge request, select **Mark as draft**.
+- **Viewing a merge request**: In the upper-right corner of the merge request,
+  select **Merge request actions** (**{ellipsis_v}**), then **Mark as draft**.
 - **Creating or editing a merge request**: Add `[Draft]`, `Draft:` or `(Draft)` to
   the beginning of the merge request's title, or select **Mark as draft**
   below the **Title** field.

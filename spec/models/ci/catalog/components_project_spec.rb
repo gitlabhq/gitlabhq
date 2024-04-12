@@ -113,7 +113,7 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
   describe '#find_catalog_component' do
     let_it_be(:version) do
       release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)
-      create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release, version: release.tag)
+      create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release, semver: release.tag)
     end
 
     let_it_be(:dast_component) { create(:ci_catalog_resource_component, version: version, name: 'dast') }
@@ -130,7 +130,7 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
         before_all do
           old_release = create(:release, project: project, tag: '1.0.0', sha: project.commit.sha)
           old_version = create(:ci_catalog_resource_version, catalog_resource: catalog_resource,
-            release: old_release, version: old_release.tag)
+            release: old_release, semver: old_release.tag)
 
           create(:ci_catalog_resource_component, version: old_version, name: 'dast')
         end

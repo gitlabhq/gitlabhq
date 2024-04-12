@@ -5,14 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
   feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:service) { described_class.new(project, user, ref: 'master') }
   let(:user) { developer }
-
-  before_all do
-    project.add_developer(developer)
-  end
 
   it_behaves_like 'creating a pipeline with environment keyword' do
     let!(:project) { create(:project, :repository) }

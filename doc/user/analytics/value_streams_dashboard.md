@@ -87,7 +87,7 @@ The sparkline color ranges from blue to green, where green indicates a positive 
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
 
 NOTE:
-The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md), and enable the [feature flags](../../administration/feature_flags.md) `clickhouse_data_collection` and `event_sync_worker_for_click_house`.
+The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 ### DORA Performers score panel
 

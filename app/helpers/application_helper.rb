@@ -207,11 +207,11 @@ module ApplicationHelper
   def edited_time_ago_with_tooltip(editable_object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return unless editable_object.edited?
 
-    content_tag :small, class: 'edited-text' do
+    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-font-sm' do
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by
-        author_link = link_to_member(editable_object.project, editable_object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline', author_class: nil)
+        author_link = link_to_member(editable_object.project, editable_object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline gl-text-gray-700', author_class: nil)
         output = safe_format(_("Edited %{timeago} by %{author}"), timeago: timeago, author: author_link)
       else
         output = safe_format(_("Edited %{timeago}"), timeago: timeago)

@@ -12,40 +12,41 @@ DETAILS:
 **Offering:** Self-managed
 
 The GitLab Reference Architectures have been designed and tested by the
-GitLab Quality Engineering and Support teams to provide recommended deployments at scale.
+GitLab Test Platform and Support teams to provide scalable recommended deployments for target loads.
 
 ## Available reference architectures
 
 The following Reference Architectures are available as recommended starting points for your environment.
 
-The architectures are named in terms of _total_ load, both manual and automated, correlated to user count and based on real data along with substantial headroom added to add additional coverage for most scenarios.
+The architectures are named in terms of peak load, based on user count or Requests per Second (RPS). Where the latter has been calculated based on average real data of the former with headroom added.
 
-However, it should be noted that in some cases, known heavy scenarios such as [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads) may require adjustments to be made.
+NOTE:
+Each architecture has been designed to be [scalable and can be adjusted accordingly if required](#scaling-an-environment) by your specific workload. This may be likely in known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
 
 For details about what each Reference Architecture has been tested against, see the "Testing Methodology" section of each page.
 
 ### GitLab package (Omnibus)
 
-Below is a list of Linux package based architectures:
+Below is the list of Linux package based reference architectures:
 
-- [Up to 1,000 users](1k_users.md) <span style="color: darkgrey;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
-- [Up to 2,000 users](2k_users.md) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 3,000 users](3k_users.md) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 5,000 users](5k_users.md) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 10,000 users](10k_users.md) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 25,000 users](25k_users.md) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 50,000 users](50k_users.md) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
+- [Up to 20 RPS or 1,000 users](1k_users.md) <span style="color: darkgrey;">_API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS_</span>
+- [Up to 40 RPS or 2,000 users](2k_users.md) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [Up to 60 RPS or 3,000 users](3k_users.md) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [Up to 100 RPS or 5,000 users](5k_users.md) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [Up to 200 RPS or 10,000 users](10k_users.md) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [Up to 500 RPS or 25,000 users](25k_users.md) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [Up to 1000 RPS or 50,000 users](50k_users.md) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ### Cloud native hybrid
 
 Below is a list of Cloud Native Hybrid reference architectures, where select recommended components can be run in Kubernetes:
 
-- [Up to 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
-- [Up to 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
-- [Up to 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
-- [Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
-- [Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
-- [Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
+- [40 RPS or Up to 2,000 users](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS_</span>
+- [60 RPS or Up to 3,000 users](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS_</span>
+- [100 RPS or Up to 5,000 users](5k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 100 RPS, Web: 10 RPS, Git (Pull): 10 RPS, Git (Push): 2 RPS_</span>
+- [200 RPS or Up to 10,000 users](10k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS_</span>
+- [500 RPS or Up to 25,000 users](25k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS_</span>
+- [1000 RPS or Up to 50,000 users](50k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) <span style="color: darkgrey;">_API: 1000 RPS, Web: 100 RPS, Git (Pull): 100 RPS, Git (Push): 20 RPS_</span>
 
 ## Before you start
 
@@ -67,18 +68,18 @@ As a general guide, **the more performant and/or resilient you want your environ
 
 This section explains the designs you can choose from. It begins with the least complexity, goes to the most, and ends with a decision tree.
 
-### Expected Load (RPS)
+### Expected Load (RPS or user count)
 
-The first thing to check is what the expected load is your environment would be expected to serve.
+The first thing to check is what the expected peak load is your environment would be expected to serve.
 
-The Reference Architectures have been designed with substantial headroom by default, but it's recommended to also check the
-load of what each architecture has been tested against under the "Testing Methodology" section found on each page,
-comparing those values with what load you are expecting against your existing GitLab environment to help select the right Reference Architecture
-size.
+Each architecture is described in terms of peak Requests per Second (RPS) or user count load. As detailed under the "Testing Methodology" section on each page, each architecture is tested
+against its listed RPS for each endpoint type (API, Web, Git), which is the typical peak load of the given user count, both manual and automated, with headroom.
 
-Load is given in terms of Requests per Second (RPS) for each endpoint type (API, Web, Git). This information on your existing infrastructure
-can typically be surfaced by most reputable monitoring solutions or in some other ways such as load balancer metrics. For example, on existing GitLab environments,
-[Prometheus metrics](../monitoring/prometheus/gitlab_metrics.md) such as `gitlab_transaction_duration_seconds` can be used to see this data.
+It's strongly recommended finding out what peak RPS your environment will be expected to handle across endpoint types, through existing metrics (such as [Prometheus](../monitoring/prometheus/gitlab_metrics.md))
+or estimates, and to select the corresponding architecture as this is the most objective.
+
+If it's not possible for you to find out the expected peak RPS then it's recommended to select based on user count to start and then monitor the environment
+closely to confirm the RPS, whether the architecture is performing and adjust accordingly is necessary.
 
 ### Standalone (non-HA)
 
@@ -170,10 +171,10 @@ graph TD
    L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)")
    L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
 
-   L4A><b>Recommendation</b><br><br>3K architecture with HA<br>and supported reductions]
+   L4A><b>Recommendation</b><br><br>60 RPS / 3K users architecture with HA<br>and supported reductions]
    L4B><b>Recommendation</b><br><br>Architecture closest to user<br>count with HA]
    L4C><b>Recommendation</b><br><br>Cloud Native Hybrid architecture<br>closest to user count]
-   L4D>"<b>Recommendation</b><br><br>Standalone 1K or 2K<br/>architecture with Backups"]
+   L4D>"<b>Recommendation</b><br><br>Standalone 20 RPS / 1K users or 40 RPS / 2K users<br/>architecture with Backups"]
 
    L0A --> L1A
    L1A --> L2A
@@ -412,7 +413,7 @@ If you choose to use a third party external service:
 
 [When selecting to use an external Redis service](../redis/replication_and_failover_external.md#redis-as-a-managed-service-in-a-cloud-provider), it should run a standard, performant, and supported version. Note that this specifically must not be run in [Cluster mode](../../install/requirements.md#redis) as this is unsupported by GitLab.
 
-Redis is primarily single threaded. For the 10,000 user and above Reference Architectures, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
+Redis is primarily single threaded. For environments targeting up to 200 RPS / 10,000 users or higher, separate out the instances as specified into Cache and Persistent data to achieve optimum performance at this scale.
 
 ### Recommendation notes for Object Storage
 
@@ -477,7 +478,7 @@ For deploying GitLab over multiple data centers or regions we offer [GitLab Geo]
 
 ## Validation and test results
 
-The [Quality Engineering team](https://handbook.gitlab.com/handbook/engineering/quality/)
+The [Test Platform team](https://handbook.gitlab.com/handbook/engineering/quality/)
 does regular smoke and performance tests for the reference architectures to ensure they
 remain compliant.
 
@@ -517,7 +518,7 @@ per 1,000 users:
 - Git (Pull): 2 RPS
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
 
-The above targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads along with additional substantial headroom added.
+The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads along with additional substantial headroom added.
 
 ### How to interpret the results
 

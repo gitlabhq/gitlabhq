@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: :portfolio_management do
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
-  let_it_be(:new_assignee) { create(:user) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter) }
+  let_it_be(:new_assignee) { create(:user, guest_of: project) }
 
   let(:work_item) do
     create(:work_item, project: project, updated_at: 1.day.ago)
@@ -13,11 +13,6 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
 
   let(:current_user) { reporter }
   let(:params) { { assignee_ids: [new_assignee.id] } }
-
-  before_all do
-    project.add_reporter(reporter)
-    project.add_guest(new_assignee)
-  end
 
   describe '#before_update' do
     let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }

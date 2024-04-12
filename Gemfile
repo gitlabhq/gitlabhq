@@ -277,7 +277,7 @@ gem 're2', '2.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 
-gem 'semver_dialects', '~> 2.0', feature_category: :static_application_security_testing
+gem 'semver_dialects', '~> 2.0', '>= 2.0.2', feature_category: :static_application_security_testing
 gem 'version_sorter', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'csv_builder', path: 'gems/csv_builder' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -418,7 +418,7 @@ group :development do
 
   gem 'ruby-lsp', "~> 0.14.6", require: false, feature_category: :tooling
 
-  gem 'ruby-lsp-rails', "~> 0.3.0", feature_category: :tooling
+  gem 'ruby-lsp-rails', "~> 0.3.3", feature_category: :tooling
 
   gem 'ruby-lsp-rspec', "~> 0.1.10", require: false, feature_category: :tooling
 
@@ -563,7 +563,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.10.1', feature_category: :gitaly
+gem 'gitaly', '~> 16.11.0.pre.rc1', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.4.0', feature_category: :deployment_management
@@ -645,7 +645,7 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite' # rubocop:todo Gemfile/Missi
 gem 'arr-pm', '~> 0.0.12' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Remote Development
-gem 'devfile', '~> 0.0.25.pre.alpha1', feature_category: :remote_development
+gem 'devfile', '~> 0.0.26.pre.alpha1', feature_category: :remote_development
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0' # rubocop:todo Gemfile/MissingFeatureCategory

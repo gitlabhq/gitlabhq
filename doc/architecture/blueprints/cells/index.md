@@ -371,7 +371,7 @@ Cluster-wide features are strongly discouraged because:
   Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation.
   No feature should be built to depend on such a service (like Elasticsearch).
 
-### Will Cells use the [reference architecture for 50,000 users](../../../administration/reference_architectures/50k_users.md)?
+### Will Cells use the [reference architecture for up to 1000 RPS or 50,000 users](../../../administration/reference_architectures/50k_users.md)?
 
 The infrastructure team will properly size Cells depending on the load.
 The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for Cells deployment.

@@ -124,3 +124,31 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller, feature_cate
     end
   end
 end
+
+RSpec.describe API::Projects, '(JavaScript fixtures)', type: :request, feature_category: :groups_and_projects do
+  include ApiHelpers
+  include JavaScriptFixturesHelpers
+
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+
+  before_all do
+    project.add_maintainer(user)
+  end
+
+  before do
+    sign_in(user)
+  end
+
+  it 'api/projects/put.json' do
+    put api("/projects/#{project.id}", user), params: { name: "#{project.name} updated" }
+
+    expect(response).to be_successful
+  end
+
+  it 'api/projects/put_validation_error.json' do
+    put api("/projects/#{project.id}", user), params: { name: ".", description: 'a' * 2001 }
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+  end
+end
