@@ -8,7 +8,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:reporter) { create(:user).tap { |reporter| project.add_reporter(reporter) } }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:milestone1) { create(:milestone, project: project) }

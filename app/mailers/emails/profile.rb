@@ -131,7 +131,7 @@ module Emails
 
       @user = user
       @fingerprints = fingerprints
-      @target_url = profile_keys_url
+      @target_url = user_settings_ssh_keys_url
 
       email_with_layout(to: @user.notification_email_or_default, subject: subject(_("Your SSH key has expired")))
     end
@@ -141,7 +141,7 @@ module Emails
 
       @user = user
       @fingerprints = fingerprints
-      @target_url = profile_keys_url
+      @target_url = user_settings_ssh_keys_url
 
       mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("Your SSH key is expiring soon.")))
     end

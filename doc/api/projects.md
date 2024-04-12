@@ -2898,6 +2898,22 @@ Note the JSON response differs if the hook is available or not. If the project
 hook is available before it's returned in the JSON response or an empty response
 is returned.
 
+### Trigger a test project hook
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
+
+Trigger a test hook for a specified project.
+
+```plaintext
+POST /projects/:id/hooks/:hook_id/test/:trigger
+```
+
+| Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
+|-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `hook_id` | integer           | Yes      | The ID of the project hook.                                                                                                                                                                                                                                |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                       |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
+
 ## Fork relationship
 
 Allows modification of the forked relationship between existing projects.

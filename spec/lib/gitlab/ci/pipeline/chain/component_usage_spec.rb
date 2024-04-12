@@ -51,21 +51,5 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
         expect { perform }.not_to change { Ci::Catalog::Resources::Components::Usage.count }
       end
     end
-
-    context 'when the FF `ci_track_catalog_component_usage` is disabled' do
-      before do
-        stub_feature_flags(ci_track_catalog_component_usage: false)
-      end
-
-      it 'does not track an internal event' do
-        expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-        perform
-      end
-
-      it 'does not create a component usage record' do
-        expect { perform }.not_to change { Ci::Catalog::Resources::Components::Usage.count }
-      end
-    end
   end
 end

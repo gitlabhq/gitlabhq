@@ -136,7 +136,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     # Because of the access level hierarchy, we can assume that
     # other access levels below developer role will also not be able to
     # create container registry protection rules.
-    let_it_be(:current_user) { create(:user).tap { |u| project.add_developer(u) } }
+    let_it_be(:current_user) { create(:user, developer_of: project) }
 
     it_behaves_like 'an erroneous service response'
 

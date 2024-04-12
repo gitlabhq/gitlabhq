@@ -94,33 +94,35 @@ You can combine the filter options. For example, to list only public projects wi
 
 ## Administering users
 
+> - Filtering users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 16.11.
+
 You can administer all users in the GitLab instance from the Admin Area's Users page:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
 
-To list users matching a specific criteria, select one of the following tabs on the **Users** page:
+You can use the user search box to search and filter users by:
 
-- **Active**
-- **Admins**
-- **2FA Enabled**
-- **2FA Disabled**
-- **External**
-- **[Blocked](../administration/moderate_users.md#block-a-user)**
-- **[Deactivated](../administration/moderate_users.md#deactivate-a-user)**
-- **Without projects**
+- User **access level**.
+- Whether **two-factor authentication** is enabled or disabled.
+- User **state**.
+
+You can also type text into the search box. For example, the name of a specific user.
+This text search is case insensitive, and applies partial matching to name and username.
+To search for an email address, you must provide the complete email address.
 
 For each user, the following are listed:
 
-1. Username
-1. Email address
-1. Project membership count
-1. Group membership count ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276215) in GitLab 13.12)
-1. Date of account creation
-1. Date of last activity
+- Username.
+- Email address.
+- Project membership count.
+- Group membership count.
+- Date of account creation.
+- Date of last activity.
 
-To edit a user, in the user's row, select **Edit**. To delete the user, or delete the user and their contributions, select the cog dropdown list in
-that user's row, and select the desired option.
+To edit a user, in the user's row, select **Edit**. To delete the user, or delete
+the user and their contributions, select the cog dropdown list in that user's row,
+and select the desired option.
 
 To change the sort order:
 
@@ -128,10 +130,6 @@ To change the sort order:
 1. Select the desired order.
 
 By default the sort dropdown list shows **Name**.
-
-To search for users, enter your criteria in the search field. The user search is case
-insensitive, and applies partial matching to name and username. To search for an email address,
-you must provide the complete email address.
 
 ### User impersonation
 

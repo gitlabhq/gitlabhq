@@ -7,8 +7,8 @@ RSpec.describe 'getting a single work item associated with a group', feature_cat
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:guest) { create(:user).tap { |user| group.add_guest(user) } }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
 
   let(:work_item_data) { graphql_data.dig('namespace', 'workItem') }
   let(:params) { { iid: query_work_item.iid.to_s } }

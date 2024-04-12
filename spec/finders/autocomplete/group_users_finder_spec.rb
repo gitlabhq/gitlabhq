@@ -15,12 +15,12 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
 
   describe '#execute' do
     context 'with group members' do
-      let_it_be(:parent_group_member) { create(:user).tap { |u| parent_group.add_developer(u) } }
-      let_it_be(:group_member) { create(:user).tap { |u| group.add_developer(u) } }
-      let_it_be(:subgroup_member) { create(:user).tap { |u| subgroup.add_developer(u) } }
+      let_it_be(:parent_group_member) { create(:user, developer_of: parent_group) }
+      let_it_be(:group_member) { create(:user, developer_of: group) }
+      let_it_be(:subgroup_member) { create(:user, developer_of: subgroup) }
 
       let_it_be(:other_group) { create(:group) }
-      let_it_be(:other_group_member) { create(:user).tap { |u| other_group.add_developer(u) } }
+      let_it_be(:other_group_member) { create(:user, developer_of: other_group) }
 
       it 'returns members of groups in the hierarchy' do
         expect(finder.execute).to contain_exactly(
@@ -32,9 +32,9 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
     end
 
     context 'with project members' do
-      let_it_be(:parent_group_project_member) { create(:user).tap { |u| parent_group_project.add_developer(u) } }
-      let_it_be(:group_project_member) { create(:user).tap { |u| group_project.add_developer(u) } }
-      let_it_be(:subgroup_project_member) { create(:user).tap { |u| subgroup_project.add_developer(u) } }
+      let_it_be(:parent_group_project_member) { create(:user, developer_of: parent_group_project) }
+      let_it_be(:group_project_member) { create(:user, developer_of: group_project) }
+      let_it_be(:subgroup_project_member) { create(:user, developer_of: subgroup_project) }
 
       it 'returns members of descendant projects' do
         expect(finder.execute).to contain_exactly(
@@ -46,7 +46,7 @@ RSpec.describe Autocomplete::GroupUsersFinder, feature_category: :team_planning 
 
     context 'with invited group members' do
       let_it_be(:invited_group) { create(:group) }
-      let_it_be(:invited_group_user) { create(:user).tap { |u| invited_group.add_developer(u) } }
+      let_it_be(:invited_group_user) { create(:user, developer_of: invited_group) }
 
       it 'returns members of groups invited to this group' do
         create(:group_group_link, shared_group: group, shared_with_group: invited_group)

@@ -27,6 +27,8 @@ PATH
   remote: gems/gitlab-backup-cli
   specs:
     gitlab-backup-cli (0.0.1)
+      activesupport (~> 7.0.8)
+      rainbow (~> 3.0)
       thor (~> 1.3)
 
 PATH
@@ -414,7 +416,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     colored2 (3.1.2)
     commonmarker (0.23.10)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     cork (0.3.0)
       colored2 (~> 3.1)
@@ -951,7 +953,7 @@ GEM
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.14.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
     icalendar (2.8.0)

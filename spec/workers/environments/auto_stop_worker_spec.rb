@@ -8,8 +8,8 @@ RSpec.describe Environments::AutoStopWorker, feature_category: :continuous_deliv
   subject { worker.perform(environment_id) }
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   before_all do
     project.repository.add_branch(developer, 'review/feature', 'master')

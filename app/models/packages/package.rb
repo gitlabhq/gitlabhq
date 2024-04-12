@@ -58,6 +58,7 @@ class Packages::Package < ApplicationRecord
   has_many :pipelines, through: :build_infos, disable_joins: true
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
   has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
+  has_many :matching_package_protection_rules, -> (package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
   accepts_nested_attributes_for :conan_metadatum
   accepts_nested_attributes_for :debian_publication

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
   shared_context 'note on noteable' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
     let_it_be(:assignee) { create(:user) }
 
     before do

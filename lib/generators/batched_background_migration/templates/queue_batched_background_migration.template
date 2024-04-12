@@ -8,12 +8,19 @@
 class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Database::Migration.current_version %>]
   milestone '<%= Gitlab.current_milestone %>'
 
+  # Select the applicable gitlab schema for your batched background migration
+  restrict_gitlab_migration # gitlab_schema: :gitlab_main / :gitlab_ci / :gitlab_main_clusterwide / ...
+
   MIGRATION = "<%= class_name %>"
   # DELAY_INTERVAL = 2.minutes
   # BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE %>
   # SUB_BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::SUB_BATCH_SIZE %>
 
   def up
+    # If you are requeueing an already executed migration, you need to delete the prior batched migration record
+    # for the new enqueue to be executed, else, you can delete this line.
+    # delete_batched_background_migration(MIGRATION, :<%= table_name.to_sym %>, :<%= column_name.to_sym %>, [])
+
     queue_batched_background_migration(
       MIGRATION,
       :<%= table_name %>,

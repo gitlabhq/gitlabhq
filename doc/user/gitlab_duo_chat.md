@@ -214,6 +214,14 @@ See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for mo
 
 For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=g6MS1JsRWgs">GitLab Duo Test generation</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/g6MS1JsRWgs" frameborder="0" allowfullscreen> </iframe>
+</figure>
+<!-- Video published on 2024-04-10 -->
+
 ### Ask follow up questions
 
 You can ask follow-up questions to delve deeper into the topic or task at hand.

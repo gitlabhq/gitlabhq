@@ -262,6 +262,9 @@
         "null"
       ]
     },
+    "packageProtectionRuleExists": {
+      "type": "boolean"
+    },
     "_links": {
       "type": "object",
       "additionalProperties": false,

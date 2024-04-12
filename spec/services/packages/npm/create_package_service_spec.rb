@@ -397,8 +397,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         create(:package_protection_rule, package_type: :npm, project: project)
       end
 
-      let_it_be(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
-      let_it_be(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let_it_be(:project_developer) { create(:user, developer_of: project) }
+      let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
 
       let(:project_owner) { project.owner }
       let(:package_name_pattern_no_match) { "#{package_name}_no_match" }

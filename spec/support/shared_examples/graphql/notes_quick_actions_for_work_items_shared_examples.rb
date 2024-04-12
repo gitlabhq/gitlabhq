@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work item supports assignee widget updates via quick actions' do
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   context 'when assigning a user' do
     let(:body) { "/assign @#{developer.username}" }
@@ -35,7 +35,7 @@ RSpec.shared_examples 'work item supports assignee widget updates via quick acti
 end
 
 RSpec.shared_examples 'work item does not support assignee widget updates via quick actions' do
-  let(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let(:developer) { create(:user, developer_of: project) }
   let(:body) { "Updating assignee.\n/assign @#{developer.username}" }
 
   before do

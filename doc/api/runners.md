@@ -73,11 +73,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
@@ -143,11 +143,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
@@ -229,11 +229,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320).
+The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320)
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 
 NOTE:
-The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
@@ -301,11 +301,11 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ```
 
 NOTE:
-The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10.
+The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
 
 NOTE:
-The `active` query parameter was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` query parameter was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
@@ -376,7 +376,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 ```
 
 NOTE:
-The `active` form attribute was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` form attribute was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 ## List jobs processed by a runner
@@ -500,11 +500,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:
@@ -617,11 +617,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 NOTE:
-The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` and `paused` values in the `status` query parameter were deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
 NOTE:
-The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211).
+The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
 Example response:

@@ -13,3 +13,4 @@ To instrument an application to send events to GitLab product analytics you can 
 - [Python SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-python)
 - [Node SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-node)
 - [.NET SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-dotnet)
+- [Snowplow SDK](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/) is compatible, but not supported by GitLab.

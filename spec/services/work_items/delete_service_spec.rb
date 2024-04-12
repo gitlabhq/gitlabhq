@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
-  let_it_be(:guest) { create(:user).tap { |u| group.add_guest(u) } }
-  let_it_be(:owner) { create(:user).tap { |u| group.add_owner(u) } }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:owner) { create(:user, owner_of: group) }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: guest) }
 
   let(:user) { guest }

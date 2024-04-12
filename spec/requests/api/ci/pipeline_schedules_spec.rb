@@ -479,7 +479,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     let(:project_maintainer) do
-      create(:user).tap { |u| project.add_maintainer(u) }
+      create(:user, maintainer_of: project)
     end
 
     context 'as an authenticated user with valid permissions' do

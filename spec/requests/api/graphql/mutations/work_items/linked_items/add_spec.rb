@@ -7,7 +7,7 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
   let_it_be(:project_work_item) { create(:work_item, :issue, project: project) }
   let_it_be(:related1) { create(:work_item, project: project) }
   let_it_be(:related2) { create(:work_item, project: project) }

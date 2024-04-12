@@ -7,6 +7,8 @@ import {
   GlSprintf,
   GlTruncate,
   GlLink,
+  GlBadge,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -23,6 +25,7 @@ import PackageTags from '~/packages_and_registries/shared/components/package_tag
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PackageListRow',
@@ -34,11 +37,16 @@ export default {
     GlSprintf,
     GlTruncate,
     GlLink,
+    GlBadge,
     PackageTags,
     PublishMethod,
     ListItem,
     TimeagoTooltip,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {
@@ -98,6 +106,12 @@ export default {
     showTags() {
       return Boolean(this.packageEntity.tags?.nodes?.length);
     },
+    showBadgeProtected() {
+      return (
+        Boolean(this.glFeatures.packagesProtectedPackages) &&
+        Boolean(this.packageEntity.packageProtectionRuleExists)
+      );
+    },
     nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
     },
@@ -114,6 +128,7 @@ export default {
     errorPublishing: ERROR_PUBLISHING,
     warning: WARNING_TEXT,
     moreActions: __('More actions'),
+    badgeProtectedTooltipText: s__('PackageRegistry|A protection rule exists for this package.'),
   },
 };
 </script>
@@ -148,6 +163,16 @@ export default {
           hide-label
           :tag-display-limit="1"
         />
+
+        <gl-badge
+          v-if="showBadgeProtected"
+          v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
+          class="gl-ml-3"
+          icon-size="sm"
+          size="sm"
+          variant="neutral"
+          >{{ __('protected') }}</gl-badge
+        >
       </div>
     </template>
     <template #left-secondary>

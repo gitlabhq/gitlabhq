@@ -85,5 +85,5 @@ tool. This tool automatically verifies the checksum of each file as it is downlo
 
 Any project member with at least the Developer role can access Project-level secure files.
 Interactions with Project-level secure files are not included in Audit Events, but
-[issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117).
+[issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117)
 proposes adding this functionality.

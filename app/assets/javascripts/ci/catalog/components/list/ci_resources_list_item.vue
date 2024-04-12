@@ -111,9 +111,6 @@ export default {
     },
   },
   methods: {
-    isNotLastComponentName(index, length) {
-      return index !== length - 1;
-    },
     getComponent(index) {
       return this.components[Number(index)];
     },
@@ -192,7 +189,7 @@ export default {
             class="gl-font-sm gl-mt-1 gl-display-inline-flex gl-flex-wrap gl-text-gray-900"
           >
             <span class="gl-font-weight-bold"> &#8226; {{ $options.i18n.components }} </span>
-            <gl-sprintf :message="componentNamesSprintfMessage" class="gl-text-gray-900">
+            <gl-sprintf :message="componentNamesSprintfMessage">
               <template #component="{ content }">
                 <gl-truncate
                   class="gl-max-w-30 gl-ml-2"

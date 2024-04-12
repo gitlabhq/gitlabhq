@@ -8,23 +8,23 @@ RSpec.describe 'autocomplete users for a project', feature_category: :team_plann
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
 
-  let_it_be(:direct_member) { create(:user).tap { |u| project.add_guest(u) } }
-  let_it_be(:indirect_member) { create(:user).tap { |u| group.add_guest(u) } }
+  let_it_be(:direct_member) { create(:user, guest_of: project) }
+  let_it_be(:indirect_member) { create(:user, guest_of: group) }
 
   let_it_be(:group_invited_to_project) do
     create(:group).tap { |g| create(:project_group_link, project: project, group: g) }
   end
 
-  let_it_be(:member_from_project_share) { create(:user).tap { |u| group_invited_to_project.add_guest(u) } }
+  let_it_be(:member_from_project_share) { create(:user, guest_of: group_invited_to_project) }
 
   let_it_be(:group_invited_to_parent_group) do
     create(:group).tap { |g| create(:group_group_link, shared_group: group, shared_with_group: g) }
   end
 
-  let_it_be(:member_from_parent_group_share) { create(:user).tap { |u| group_invited_to_parent_group.add_guest(u) } }
+  let_it_be(:member_from_parent_group_share) { create(:user, guest_of: group_invited_to_parent_group) }
 
   let_it_be(:sibling_project) { create(:project, :repository, :public, group: group) }
-  let_it_be(:sibling_member) { create(:user).tap { |u| sibling_project.add_guest(u) } }
+  let_it_be(:sibling_member) { create(:user, guest_of: sibling_project) }
 
   let(:params) { {} }
   let(:query) do

@@ -187,7 +187,7 @@ RSpec.describe UsersFinder do
         let_it_be(:not_group_member) { create(:user) }
 
         let_it_be(:indirect_group_member) do
-          create(:user).tap { |u| subgroup.add_developer(u) }
+          create(:user, developer_of: subgroup)
         end
 
         let_it_be(:direct_group_members) do

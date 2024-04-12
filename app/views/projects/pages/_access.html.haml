@@ -2,7 +2,7 @@
   - pages_url = build_pages_url(@project, with_unique_domain: true)
   - pages_url_text = pages_url
   - if Gitlab.config.pages.namespace_in_path
-    - pages_url_text = "#{pages_url} (Experimental)"
+    - pages_url_text = "#{pages_url} (Beta)"
 
   = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5', data: { testid: 'access-page-container' } }, footer_options: { class: 'gl-alert-warning' }) do |c|
     - c.with_header do

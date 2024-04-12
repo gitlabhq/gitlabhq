@@ -134,12 +134,12 @@ To move an issue:
 ### Moving tasks when the parent issue is moved
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
+On GitLab.com, this feature is available.
 
 When this feature is enabled, when you move an issue to another project, all its child tasks are also
 moved to the target project and remain associated as child tasks on the moved issue.
@@ -353,7 +353,7 @@ Prerequisites:
 
 - You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
-Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
+Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
 
 ## Change the issue type

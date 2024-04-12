@@ -100,9 +100,10 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 #### For namespace in URL path, without wildcard DNS
 
 DETAILS:
-**Status:** Experiment
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -112,28 +113,34 @@ This feature is not ready for production use.
 Prerequisites:
 
 - Your instance must use the Linux package installation method.
+- Your installation must use the default `auth_redirect_uri`.
 
 If you need support for namespace in the URL path to remove the requirement for wildcard DNS:
 
 1. Enable the GitLab Pages flag for this feature by adding
    `gitlab_pages["namespace_in_path"] = true` to `/etc/gitlab/gitlab.rb`.
-1. In your DNS provider, add entries for `example.com` and `projects.example.com`.
-   In both lines, replace `example.com` with your domain name, and `192.0.0.0` with
+1. In your DNS provider, add entries for `example.io` and `projects.example.io`.
+   In both lines, replace `example.io` with your domain name, and `192.0.0.0` with
    the IPv4 version of your IP address. The entries look like this:
 
    ```plaintext
-   example.com          1800 IN A    192.0.0.0
-   projects.example.com 1800 IN A    192.0.0.0
+   example.io          1800 IN A    192.0.0.0
+   projects.example.io 1800 IN A    192.0.0.0
    ```
 
 1. Optional. If your GitLab instance has an IPv6 address, add entries for it.
-   In both lines, replace `example.com` with your domain name, and `2001:db8::1` with
+   In both lines, replace `example.io` with your domain name, and `2001:db8::1` with
    the IPv6 version of your IP address. The entries look like this:
 
    ```plaintext
-   example.com          1800 IN AAAA 2001:db8::1
-   projects.example.com 1800 IN AAAA 2001:db8::1
+   example.io          1800 IN AAAA 2001:db8::1
+   projects.example.io 1800 IN AAAA 2001:db8::1
    ```
+
+This example contains the following:
+
+- `example.io`: The domain GitLab Pages is served from.
+- `projects.example.io`: An additional subdomain for GitLab Pages default authentication flow.
 
 #### DNS configuration for custom domains
 
@@ -194,9 +201,10 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 ### Pages domain without wildcard DNS
 
 DETAILS:
-**Status:** Experiment
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -283,9 +291,10 @@ then run `gitlab-ctl reconfigure`. For more information, read
 ### Pages domain with TLS support, without wildcard DNS
 
 DETAILS:
-**Status:** Experiment
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -297,8 +306,8 @@ Prerequisites:
 - Your instance must use the Linux package installation method.
 - You have configured DNS setup
   [without a wildcard](#for-namespace-in-url-path-without-wildcard-dns).
-- You have a single TLS certificate that covers your domain (like `example.com`)
-  and the `projects.*` version of your domain, like `projects.example.com`.
+- You have a single TLS certificate that covers your domain (like `example.io`)
+  and the `projects.*` version of your domain, like `projects.example.io`.
 
 In this configuration, NGINX proxies all requests to the daemon. The GitLab Pages
 daemon doesn't listen to the outside world:

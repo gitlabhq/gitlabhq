@@ -8,7 +8,7 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group).tap { |g| g.add_developer(developer) } }
   let_it_be_with_reload(:project) { create(:project, :repository, group: group) }
-  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
   let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
   let(:discussion) { nil }
   let(:head_sha) { nil }

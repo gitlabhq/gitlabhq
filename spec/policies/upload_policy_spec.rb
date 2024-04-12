@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe UploadPolicy do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:guest) { create(:user).tap { |user| group.add_guest(user) } }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
-  let_it_be(:maintainer) { create(:user).tap { |user| group.add_maintainer(user) } }
-  let_it_be(:owner) { create(:user).tap { |user| group.add_owner(user) } }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+  let_it_be(:owner) { create(:user, owner_of: group) }
   let_it_be(:admin) { create(:admin, :without_default_org) }
   let_it_be(:non_member_user) { create(:user) }
 

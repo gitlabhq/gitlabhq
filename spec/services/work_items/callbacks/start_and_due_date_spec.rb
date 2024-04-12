@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::Callbacks::StartAndDueDate, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user).tap { |user| project.add_reporter(user) } }
+  let_it_be(:user) { create(:user, reporter_of: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
 
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Callbacks::StartAndDueDate) } }

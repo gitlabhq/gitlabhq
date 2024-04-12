@@ -21,8 +21,8 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project) }
 
-      let_it_be(:author1) { create(:user).tap { |u| project.add_developer(u) } }
-      let_it_be(:author2) { create(:user).tap { |u| project.add_developer(u) } }
+      let_it_be(:author1) { create(:user, developer_of: project) }
+      let_it_be(:author2) { create(:user, developer_of: project) }
 
       let_it_be(:issue1) { create(:issue, project: project) }
       let_it_be(:issue2) { create(:issue, project: project) }

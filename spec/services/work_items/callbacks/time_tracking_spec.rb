@@ -6,11 +6,11 @@ RSpec.describe WorkItems::Callbacks::TimeTracking, feature_category: :team_plann
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:reporter) do
-    create(:user).tap { |u| group.add_reporter(u) }
+    create(:user, reporter_of: group)
   end
 
   let_it_be(:guest) do
-    create(:user).tap { |u| group.add_guest(u) }
+    create(:user, guest_of: group)
   end
 
   let(:current_user) { reporter }

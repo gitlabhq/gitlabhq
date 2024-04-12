@@ -138,6 +138,29 @@ When you submit your review, GitLab:
   - **Comment**: Leave general feedback without explicit approval.
   - **Approve**: Leave feedback and approve the changes.
   - **Request changes**: Leave feedback the author should address before merging.
+    You can use this status to block the merge request from merging, if the
+    `mr_reviewer_requests_changes` feature flag is enabled.
+
+### Prevent merge when you request changes
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430728) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `mr_reviewer_requests_changes`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it
+available, an administrator can [enable the feature flag](../../../../administration/feature_flags.md)
+named `mr_reviewer_requests_changes`.
+On GitLab.com, this feature is not available.
+On GitLab Dedicated, this feature is not available.
+
+When any reviewer [requests changes](#submit-a-review), the merge request is blocked.
+In the merge request reports area, it shows the message **The change requests must be completed or resolved.**
+
+Users with permission to merge the merge request can override this check in the
+merge request reports area by selecting **Bypass**.
 
 ### See how reviewers map to approval rules
 

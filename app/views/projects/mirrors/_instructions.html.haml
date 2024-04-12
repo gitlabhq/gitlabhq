@@ -9,7 +9,9 @@
     %li
       - minutes = Gitlab.config.gitlab_shell.git_timeout / 60
       = _("The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination.") % { number_of_minutes: minutes }
-    %li= mirror_lfs_sync_message
+    %li= pull_mirror_lfs_sync_message
+    %li= push_mirror_lfs_sync_message
+    %li= push_mirror_lfs_ssh_sync_message
     %li
       = _('In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update,
       like new branches being created or new commits being pushed to existing branches.')

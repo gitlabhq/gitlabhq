@@ -26,6 +26,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
+    it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
   end
 
   describe '.with_debian_codename' do
@@ -1200,6 +1201,26 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it { is_expected.to contain_exactly(pipeline, pipeline2) }
     end
+  end
+
+  describe '#matching_package_protection_rules' do
+    let_it_be(:package) do
+      create(:npm_package, name: 'npm-package')
+    end
+
+    let_it_be(:package_protection_rule) do
+      create(:package_protection_rule, project: package.project, package_name_pattern: package.name, package_type: :npm,
+        push_protected_up_to_access_level: :maintainer)
+    end
+
+    let_it_be(:package_protection_rule_no_match) do
+      create(:package_protection_rule, project: package.project, package_name_pattern: "other-#{package.name}", package_type: :npm,
+        push_protected_up_to_access_level: :maintainer)
+    end
+
+    subject { package.matching_package_protection_rules }
+
+    it { is_expected.to eq [package_protection_rule] }
   end
 
   describe '#tag_names' do

@@ -387,3 +387,11 @@ input[type='search'] {
   }
 }
 /* stylelint-enable property-no-vendor-prefix */
+
+.admin-users-search {
+  grid-template-columns: 1fr auto;
+
+  .gl-filtered-search-term-input {
+    width: 100%;
+  }
+}

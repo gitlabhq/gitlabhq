@@ -224,7 +224,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
     end
 
     context 'when a job with a dynamic environment is retried' do
-      let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+      let_it_be(:other_developer) { create(:user, developer_of: project) }
 
       let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
 

@@ -1437,8 +1437,8 @@ RSpec.shared_examples 'a container registry auth service' do
         repository_path_pattern: container_repository_path)
     end
 
-    let_it_be(:project_developer) { create(:user).tap { |u| current_project.add_developer(u) } }
-    let_it_be(:project_maintainer) { create(:user).tap { |u| current_project.add_maintainer(u) } }
+    let_it_be(:project_developer) { create(:user, developer_of: current_project) }
+    let_it_be(:project_maintainer) { create(:user, maintainer_of: current_project) }
     let_it_be(:project_owner) { current_project.owner }
 
     let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }

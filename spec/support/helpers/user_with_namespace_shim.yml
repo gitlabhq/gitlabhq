@@ -445,7 +445,6 @@
 - spec/features/profiles/chat_names_spec.rb
 - spec/features/profiles/emails_spec.rb
 - spec/features/profiles/gpg_keys_spec.rb
-- spec/features/profiles/keys_spec.rb
 - spec/features/profiles/list_users_comment_template_spec.rb
 - spec/features/profiles/oauth_applications_spec.rb
 - spec/features/profiles/password_spec.rb
@@ -599,6 +598,7 @@
 - spec/features/user_settings/active_sessions_spec.rb
 - spec/features/user_settings/password_spec.rb
 - spec/features/user_settings/personal_access_tokens_spec.rb
+- spec/features/user_settings/ssh_keys_spec.rb
 - spec/features/users/login_spec.rb
 - spec/features/users/overview_spec.rb
 - spec/features/users/rss_spec.rb

@@ -7,7 +7,7 @@ RSpec.describe 'getting a single work item associated with a group', feature_cat
 
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
 
   let_it_be(:group_work_item) do
     create(

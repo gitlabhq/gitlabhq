@@ -31,6 +31,10 @@ CodeReuse/ActiveRecord:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems
+RSpec/FactoriesInMigrationSpecs:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
 Cop/PutGroupRoutesUnderScope:
   Enabled: false
 

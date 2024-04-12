@@ -7,8 +7,8 @@ RSpec.describe Preloaders::Projects::NotesPreloader, :request_store, feature_cat
   let_it_be(:issue) { create(:issue, project: project) }
 
   it 'preloads author access level and contributor status' do
-    developer1 = create(:user).tap { |u| project.add_developer(u) }
-    developer2 = create(:user).tap { |u| project.add_developer(u) }
+    developer1 = create(:user, developer_of: project)
+    developer2 = create(:user, developer_of: project)
     contributor1 = create(:user)
     contributor2 = create(:user)
     contributor3 = create(:user)

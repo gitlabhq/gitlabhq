@@ -54,7 +54,7 @@ To create and enable a feature flag:
      and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
-To change these settings, select **Edit** (**{pencil}**).
+To change these settings, select **Edit** (**{pencil}**)
 next to any feature flag in the list.
 
 ## Maximum number of feature flags

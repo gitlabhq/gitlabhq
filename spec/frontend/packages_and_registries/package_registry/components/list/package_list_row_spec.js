@@ -1,8 +1,9 @@
-import { GlFormCheckbox, GlSprintf, GlTruncate } from '@gitlab/ui';
+import { GlFormCheckbox, GlSprintf, GlTruncate, GlBadge } from '@gitlab/ui';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { RouterLinkStub } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
@@ -59,10 +60,14 @@ describe('packages_list_row', () => {
         GlSprintf,
         TimeagoTooltip,
         RouterLink: RouterLinkStub,
+        GlBadge,
       },
       propsData: {
         packageEntity,
         selected,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -314,6 +319,58 @@ describe('packages_list_row', () => {
       expect(findRightSecondary().text()).toBe(
         `Published to ${packageWithoutTags.project.name}, 1 month ago`,
       );
+    });
+  });
+
+  describe('badge "protected"', () => {
+    const mountComponentForBadgeProtected = ({
+      packageEntityPackageProtectionRuleExists = true,
+      glFeaturesPackagesProtectedPackages = true,
+    } = {}) =>
+      mountComponent({
+        packageEntity: {
+          ...packageWithoutTags,
+          packageProtectionRuleExists: packageEntityPackageProtectionRuleExists,
+        },
+        provide: {
+          ...defaultProvide,
+          glFeatures: { packagesProtectedPackages: glFeaturesPackagesProtectedPackages },
+        },
+      });
+
+    const findBadgeProtected = () => wrapper.findComponent(GlBadge);
+
+    describe('when package is protected', () => {
+      it('shows badge', () => {
+        mountComponentForBadgeProtected();
+
+        expect(findBadgeProtected().text()).toBe('protected');
+      });
+
+      it('binds tooltip directive', () => {
+        mountComponentForBadgeProtected();
+
+        const badgeProtectedTooltipBinding = getBinding(findBadgeProtected().element, 'gl-tooltip');
+        expect(badgeProtectedTooltipBinding.value).toMatchObject({
+          title: 'A protection rule exists for this package.',
+        });
+      });
+    });
+
+    describe('when package is not protected', () => {
+      it('does not show badge', () => {
+        mountComponentForBadgeProtected({ packageEntityPackageProtectionRuleExists: false });
+
+        expect(findBadgeProtected().exists()).toBe(false);
+      });
+    });
+
+    describe('when feature flag ":packages_protected_packages" disabled', () => {
+      it('does not show badge', () => {
+        mountComponentForBadgeProtected({ glFeaturesPackagesProtectedPackages: false });
+
+        expect(findBadgeProtected().exists()).toBe(false);
+      });
     });
   });
 });

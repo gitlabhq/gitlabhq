@@ -9,15 +9,15 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, creator: user, path: 'my.project') }
-  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
   let(:project_id) { project.id }
   let(:current_user) { nil }
   let(:group) { create(:group, :public) }
-  let(:inherited_guest) { create(:user).tap { |u| group.add_guest(u) } }
+  let(:inherited_guest) { create(:user, guest_of: group) }
 
   before do
     project.add_maintainer(user)
@@ -719,7 +719,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         context 'when the API user is a guest' do
           let(:public_project) { create(:project, :public, :repository) }
           let(:url) { "/projects/#{public_project.id}/repository/commits" }
-          let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
+          let(:guest) { create(:user, guest_of: public_project) }
 
           it 'returns a 403' do
             post api(url, guest), params: valid_c_params

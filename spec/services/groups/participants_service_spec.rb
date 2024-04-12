@@ -80,8 +80,8 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
     context 'when search param is given' do
       let(:params) { { search: 'johnd' } }
 
-      let_it_be(:member_1) { create(:user, name: 'John Doe').tap { |u| group.add_guest(u) } }
-      let_it_be(:member_2) { create(:user, name: 'Jane Doe ').tap { |u| group.add_guest(u) } }
+      let_it_be(:member_1) { create(:user, name: 'John Doe', guest_of: group) }
+      let_it_be(:member_2) { create(:user, name: 'Jane Doe ', guest_of: group) }
 
       it 'only returns matching members' do
         users = service_result.select { |hash| hash[:type].eql?('User') }

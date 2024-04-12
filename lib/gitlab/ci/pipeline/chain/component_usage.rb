@@ -6,8 +6,6 @@ module Gitlab
       module Chain
         class ComponentUsage < Chain::Base
           def perform!
-            return unless Feature.enabled?(:ci_track_catalog_component_usage, project)
-
             included_catalog_components.each do |component|
               track_event(component)
             end

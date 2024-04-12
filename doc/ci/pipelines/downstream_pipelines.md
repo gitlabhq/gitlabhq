@@ -682,7 +682,7 @@ is available.
 
 ### Pass a predefined variable
 
-To pass information about the upstream pipeline using [predefined CI/CD variables](../variables/predefined_variables.md).
+To pass information about the upstream pipeline using [predefined CI/CD variables](../variables/predefined_variables.md)
 use interpolation. Save the predefined variable as a new job variable in the trigger
 job, which is passed to the downstream pipeline. For example:
 

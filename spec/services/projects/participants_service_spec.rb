@@ -246,8 +246,8 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
     context 'when search param is given' do
       let_it_be(:project) { create(:project, :public) }
-      let_it_be(:member_1) { create(:user, name: 'John Doe').tap { |u| project.add_guest(u) } }
-      let_it_be(:member_2) { create(:user, name: 'Jane Doe ').tap { |u| project.add_guest(u) } }
+      let_it_be(:member_1) { create(:user, name: 'John Doe', guest_of: project) }
+      let_it_be(:member_2) { create(:user, name: 'Jane Doe ', guest_of: project) }
 
       let(:service) { described_class.new(project, create(:user), search: 'johnd') }
 

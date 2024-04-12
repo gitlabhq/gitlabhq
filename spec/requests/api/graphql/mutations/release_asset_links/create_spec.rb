@@ -7,7 +7,7 @@ RSpec.describe 'Creation of a new release asset link', feature_category: :releas
 
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be(:release) { create(:release, project: project, tag: 'v13.10') }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }
 

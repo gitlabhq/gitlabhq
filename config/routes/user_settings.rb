@@ -17,6 +17,16 @@ namespace :user_settings do
       put :revoke
     end
   end
+  resources :gpg_keys, only: [:index, :create, :destroy] do
+    member do
+      put :revoke
+    end
+  end
+  resources :ssh_keys, only: [:index, :show, :create, :destroy] do
+    member do
+      delete :revoke
+    end
+  end
 end
 
 # Redirect routes till GitLab 17.0 release
@@ -38,4 +48,14 @@ resource :profile, only: [] do
   end
   get 'password/new', to: redirect(path: '-/user_settings/password/new')
   get "password/edit", to: redirect(path: '-/user_settings/password/edit')
+
+  get 'gpg_keys', to: redirect(path: '-/user_settings/gpg_keys#index')
+  post 'gpg_keys', to: redirect(path: '-/user_settings/gpg_keys#create')
+  get 'gpg_keys/:id', to: redirect(path: '-/user_settings/gpg_keys#show')
+  delete 'gpg_keys/:id', to: redirect(path: '-/user_settings/gpg_keys#destroy')
+
+  get 'keys', to: redirect(path: '-/user_settings/ssh_keys#index')
+  post 'keys', to: redirect(path: '-/user_settings/ssh_keys#create')
+  get 'keys/:id', to: redirect(path: '-/user_settings/ssh_keys#show')
+  delete 'keys/:id', to: redirect(path: '-/user_settings/ssh_keys#destroy')
 end

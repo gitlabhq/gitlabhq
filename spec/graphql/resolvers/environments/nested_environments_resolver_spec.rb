@@ -12,7 +12,7 @@ RSpec.describe Resolvers::Environments::NestedEnvironmentsResolver, feature_cate
   let_it_be(:environment3) { create(:environment, project: project, name: 'folder1/test2') }
   let_it_be(:environment4) { create(:environment, project: project, name: 'folder2/test') }
 
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }
 

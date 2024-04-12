@@ -12,6 +12,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   before_action only: [:show] do
     push_frontend_feature_flag(:k8s_watch_api, project)
+    push_frontend_feature_flag(:deployment_details_page, project)
   end
 
   before_action only: [:folder] do

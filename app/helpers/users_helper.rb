@@ -350,6 +350,12 @@ module UsersHelper
   def preload_project_associations(_)
     # Overridden in EE
   end
+
+  def admin_user_tab_classes
+    return 'js-users-tabs gl-w-full' unless request.path == admin_users_path
+
+    'js-users-tabs gl-w-full gl-border-0'
+  end
 end
 
 UsersHelper.prepend_mod_with('UsersHelper')

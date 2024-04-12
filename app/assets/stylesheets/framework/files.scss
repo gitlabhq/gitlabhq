@@ -247,7 +247,7 @@ span.idiff {
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);
-    border-radius: $border-radius-default $border-radius-default 0 0;
+    border-radius: ($border-radius-default - 1px) ($border-radius-default - 1px) 0 0;
 
     @include media-breakpoint-up(md) {
       flex-wrap: nowrap;

@@ -191,7 +191,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   context 'for a group board' do
     let_it_be(:board) { create(:board, group: group) }
 
-    let_it_be(:child_project_member) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:child_project_member) { create(:user, maintainer_of: project) }
 
     before do
       group.add_maintainer(user)

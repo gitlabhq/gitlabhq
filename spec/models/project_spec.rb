@@ -1056,7 +1056,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:personal_project) { create(:project, namespace: namespace_user.namespace) }
     let_it_be(:group_project) { create(:project, group: group) }
     let_it_be(:another_user) { create(:user) }
-    let_it_be(:group_owner_user) { create(:user).tap { |user| group.add_owner(user) } }
+    let_it_be(:group_owner_user) { create(:user, owner_of: group) }
 
     where(:project, :user, :result) do
       ref(:personal_project)      | ref(:namespace_user)   | true

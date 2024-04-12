@@ -6,4 +6,4 @@ rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17
 milestone: '16.9'
 group: group::project management
 type: beta
-default_enabled: false
+default_enabled: true

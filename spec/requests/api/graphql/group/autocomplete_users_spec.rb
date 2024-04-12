@@ -8,11 +8,11 @@ RSpec.describe 'autocomplete users for a group', feature_category: :team_plannin
   let_it_be(:parent_group) { create(:group) }
   let_it_be(:group) { create(:group, parent: parent_group) }
 
-  let_it_be(:parent_group_member) { create(:user).tap { |u| parent_group.add_guest(u) } }
-  let_it_be(:group_member) { create(:user).tap { |u| group.add_guest(u) } }
+  let_it_be(:parent_group_member) { create(:user, guest_of: parent_group) }
+  let_it_be(:group_member) { create(:user, guest_of: group) }
 
   let_it_be(:other_group) { create(:group) }
-  let_it_be(:other_group_member) { create(:user).tap { |u| other_group.add_guest(u) } }
+  let_it_be(:other_group_member) { create(:user, guest_of: other_group) }
 
   let(:params) { {} }
   let(:query) do

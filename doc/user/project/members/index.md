@@ -28,23 +28,23 @@ Indirect membership can be inherited, shared, or inherited shared.
 | Membership type                               | Membership process |
 | --------------------------------------------- | ------------------ |
 | [Direct](#add-users-to-a-project)             | The user is added directly to the current group or project. |
-| [Indirect](#indirect-membership)  | The user is not added directly to the current group or project. Instead, the user becomes a member through inheritance from a parent group or through sharing the current group or project with another group. |
+| [Indirect](#indirect-membership)  | The user is not added directly to the current group or project. Instead, the user becomes a member by inheriting from a parent group, or inviting the current group or project to another group. |
 | [Inherited](#inherited-membership)            | The user is a member of a parent group that contains the current group or project. |
-| [Shared](share_project_with_groups.md) | The user is a member of a group or project shared into the current group or project or one of its ancestors. |
-| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project shared into the current group or project. |
+| [Shared](share_project_with_groups.md) | The user is a member of a group or project invited to the current group or project or one of its ancestors. |
+| [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project invited to the current group or project. |
 
 ```mermaid
 flowchart RL
   subgraph Group A
     A(Direct member)
     B{{Shared member}}
-    subgraph Project A
-      H(1. Direct member)
-      C{{2. Inherited member}}
-      D{{4. Inherited member}}
-      E{{3. Shared member}}
+    subgraph Project X
+      H(Direct member)
+      C{{Inherited member}}
+      D{{Inherited shared member}}
+      E{{Shared member}}
     end
-    A-->|Direct membership of Group A\nInherited membership of Project A|C
+    A-->|Inherited membership in Project X\nDirect membership in Group A|C
   end
   subgraph Group C
     G(Direct member)
@@ -52,9 +52,9 @@ flowchart RL
   subgraph Group B
     F(Direct member)
   end
-  F-->|Group B\nshared with\nGroup A|B
-  B-->|Inherited membership of Project A|D
-  G-->|Group C shared with Project A|E
+  F-->|Group B\ninvited to\nGroup A|B
+  B-->|Inherited membership in Project X\nIndirect membership in Group A|D
+  G-->|Group C invited to Project X|E
 ```
 
 ## Add users to a project

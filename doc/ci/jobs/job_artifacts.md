@@ -181,7 +181,7 @@ artifacts:
 
 ## Prevent a job from fetching artifacts
 
-Jobs downloads all artifacts from the completed jobs in previous stages by default.
+Jobs download all artifacts from the completed jobs in previous stages by default.
 To prevent a job from downloading any artifacts, set [`dependencies`](../yaml/index.md#dependencies)
 to an empty array (`[]`):
 

@@ -805,7 +805,7 @@ subcategories based on their usage and purpose:
   - `output_spec`: Contains the `spec.txt` and `spec.html` [output specification files](#output-specification-files),
     which represent the [GLFM official specification](#official-specifications), and are automatically generated from the
     input files by running the [`update-specification.rb`](#update-specificationrb-script) script.
-  - `output_example_snapshots`: Contains [output example snapshot files](#output-example-snapshot-files).
+  - `output_example_snapshots`: Contains [output example snapshot files](#output-example-snapshot-files)
     which are used to drive [snapshot testing](#markdown-snapshot-testing), and are automatically generated from the
     input files by running the [`update-specification.rb`](#update-specificationrb-script)
     and [`scripts/glfm/update-example-snapshots.rb`](#update-example-snapshotsrb-script) scripts.

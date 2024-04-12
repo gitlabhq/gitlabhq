@@ -1102,7 +1102,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'project invitation' do
-      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:maintainer) { create(:user, maintainer_of: project) }
       let(:project_member) { invite_to_project(project, inviter: inviter) }
       let(:inviter) { maintainer }
 
@@ -1179,7 +1179,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user, maintainer_of: project) }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: recipient)
         invitee.accept_invite!(invited_user)
@@ -1205,7 +1205,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'project invitation declined' do
-      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user, maintainer_of: project) }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: recipient)
         invitee.decline_invite!
@@ -1768,7 +1768,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'invitations' do
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) { invite_to_group(group, inviter: inviter) }
       let(:inviter) { owner }
 
@@ -1804,7 +1804,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'group invitation reminders' do
-      let_it_be(:inviter) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let_it_be(:inviter) { create(:user, owner_of: group) }
 
       let(:group_member) { invite_to_group(group, inviter: inviter) }
 
@@ -1887,7 +1887,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
     describe 'group invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.accept_invite!(invited_user)
@@ -1913,7 +1913,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
 
     describe 'group invitation declined' do
-      let(:owner) { create(:user).tap { |u| group.add_member(u, Gitlab::Access::OWNER) } }
+      let(:owner) { create(:user, owner_of: group) }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
         invitee.decline_invite!

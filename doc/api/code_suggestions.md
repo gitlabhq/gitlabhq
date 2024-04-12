@@ -36,13 +36,12 @@ Requests to this endpoint are proxied to the
 
 Parameters:
 
-| Attribute         | Type    | Required | Description |
-|-------------------|---------|----------|-------------|
-| `current_file`    | hash    | yes      | Attributes of file for which code suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
-| `intent`          | string  | no       | The intent of the completion request. Options: `completion` or `generation`. |
-| `stream`          | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
-| `project_path`    | string  | no       | The path of the project. |
-| `generation_type` | string  | no       | The type of event for generation requests, can be one of `comment`, `empty_function`, `small_file` |
+| Attribute      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `current_file` | hash    | yes      | Attributes of file for which code suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
+| `intent`       | string  | no       | The intent of the completion request. Options: `completion` or `generation`. |
+| `stream`       | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
+| `project_path` | string  | no       | The path of the project. |
 
 ### File attributes
 
@@ -87,4 +86,43 @@ Example response:
     }
   ]
 }
+```
+
+## Validate that Code Suggestions is enabled
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138814) in GitLab 16.7.
+
+Use this endpoint to validate if either:
+
+- A project has `code_suggestions` enabled.
+- A project's group has `code_suggestions` enabled in its namespace settings.
+
+```plaintext
+POST code_suggestions/enabled
+```
+
+Supported attributes:
+
+| Attribute         | Type    | Required | Description |
+| ----------------- | ------- | -------- | ----------- |
+| `project_path`    | string  | yes      | The path of the project to be validated. |
+
+If successful, returns:
+
+- [`200`](rest/index.md#status-codes) if the feature is enabled.
+- [`403`](rest/index.md#status-codes) if the feature is disabled.
+
+Additionally, returns a [`404`](rest/index.md#status-codes) if the path is empty or the project does not exist.
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/enabled"
+  --header "Private-Token: <YOUR_ACCESS_TOKEN>" \
+  --header "Content-Type: application/json" \
+  --data '{
+      "project_path": "group/project_name"
+    }' \
+
 ```

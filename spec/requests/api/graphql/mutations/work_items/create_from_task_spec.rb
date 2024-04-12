@@ -6,7 +6,7 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:work_item, refind: true) { create(:work_item, :confidential, project: project, description: '- [ ] A task in a list', lock_version: 3) }
 
   let(:lock_version) { work_item.lock_version }

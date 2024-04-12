@@ -6,7 +6,7 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create :project }
-  let_it_be(:group_user) { create(:user).tap { |user| group.add_developer(user) } }
+  let_it_be(:group_user) { create(:user, developer_of: group) }
 
   let(:group_access) { Gitlab::Access::DEVELOPER }
 

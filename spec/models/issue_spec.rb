@@ -2148,8 +2148,8 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     context 'when issue belongs directly to a project' do
       let_it_be_with_reload(:project_issue) { create(:issue, project: reusable_project) }
-      let_it_be(:project_reporter) { create(:user).tap { |u| reusable_project.add_reporter(u) } }
-      let_it_be(:project_guest) { create(:user).tap { |u| reusable_project.add_guest(u) } }
+      let_it_be(:project_reporter) { create(:user, reporter_of: reusable_project) }
+      let_it_be(:project_guest) { create(:user, guest_of: reusable_project) }
 
       let(:issue_subject) { project_issue }
 
@@ -2205,8 +2205,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     context 'when issue belongs directly to the group' do
       let_it_be(:group) { create(:group) }
       let_it_be_with_reload(:group_issue) { create(:issue, :group_level, namespace: group) }
-      let_it_be(:group_reporter) { create(:user).tap { |u| group.add_reporter(u) } }
-      let_it_be(:group_guest) { create(:user).tap { |u| group.add_guest(u) } }
+      let_it_be(:group_reporter) { create(:user, reporter_of: group) }
+      let_it_be(:group_guest) { create(:user, guest_of: group) }
 
       let(:issue_subject) { group_issue }
 

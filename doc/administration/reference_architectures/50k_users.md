@@ -182,8 +182,8 @@ To set up GitLab and its components to accommodate up to 50,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
-1. [Configure the internal load balancer](#configure-the-internal-load-balancer).
-   to handle the load
+1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
+   to handle the load balancing of GitLab application internal connections.
 1. [Configure Consul](#configure-consul).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
 1. [Configure PgBouncer](#configure-pgbouncer).

@@ -7,10 +7,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:author) { create(:user).tap { |user| group.add_reporter(user) } }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
-  let_it_be(:guest) { create(:user).tap { |user| group.add_guest(user) } }
+  let_it_be(:author) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
 
   let(:input) { { 'stateEvent' => 'CLOSE', 'title' => 'updated title' } }

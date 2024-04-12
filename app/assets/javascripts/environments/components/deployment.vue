@@ -14,14 +14,14 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { createAlert } from '~/alert';
 import deploymentDetails from '../graphql/queries/deployment_details.query.graphql';
-import DeploymentStatusBadge from './deployment_status_badge.vue';
+import DeploymentStatusLink from './deployment_status_link.vue';
 import Commit from './commit.vue';
 
 export default {
   components: {
     ClipboardButton,
     Commit,
-    DeploymentStatusBadge,
+    DeploymentStatusLink,
     GlBadge,
     GlIcon,
     GlLink,
@@ -182,7 +182,12 @@ export default {
     <div :class="$options.headerClasses">
       <div :class="$options.headerDetailsClasses">
         <div :class="$options.deploymentStatusClasses">
-          <deployment-status-badge v-if="status" :status="status" />
+          <deployment-status-link
+            v-if="status"
+            :deployment="deployment"
+            :deployment-job="deployable"
+            :status="status"
+          />
           <gl-badge v-if="needsApproval" variant="warning">
             {{ $options.i18n.needsApproval }}
           </gl-badge>

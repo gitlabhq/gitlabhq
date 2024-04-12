@@ -6,9 +6,9 @@ RSpec.describe 'Delete a work item', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:owner) { create(:user).tap { |user| group.add_owner(user) } }
+  let_it_be(:owner) { create(:user, owner_of: group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:current_user) { developer }
   let(:mutation) { graphql_mutation(:workItemDelete, { 'id' => work_item.to_global_id.to_s }) }

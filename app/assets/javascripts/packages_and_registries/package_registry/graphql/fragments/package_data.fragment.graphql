@@ -30,6 +30,7 @@ fragment PackageData on Package {
     fullPath
     webUrl
   }
+  packageProtectionRuleExists
   _links {
     webPath
   }

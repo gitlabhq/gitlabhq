@@ -431,6 +431,7 @@ export const packagesListQuery = ({
         nodes: [
           {
             ...packageData(),
+            packageProtectionRuleExists: false,
             ...linksData,
             project: packageProject(),
             tags: { nodes: packageTags() },
@@ -440,6 +441,7 @@ export const packagesListQuery = ({
           },
           {
             ...packageData(),
+            packageProtectionRuleExists: false,
             project: packageProject(),
             tags: { nodes: [] },
             pipelines: { nodes: [] },

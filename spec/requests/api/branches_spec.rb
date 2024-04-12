@@ -6,7 +6,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
-  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  let(:guest) { create(:user, guest_of: project) }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
   let(:branch_with_dot) { 'ends-with.json' }

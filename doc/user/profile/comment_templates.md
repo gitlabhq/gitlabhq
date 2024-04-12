@@ -15,7 +15,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119468) in GitLab 16.0.
 > - [Feature flag `saved_replies` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123363) in GitLab 16.6.
 > - Group-level saved replies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `group_saved_replies_flag`. Disabled by default.
-> - Group-level saved replies [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/440817) on GitLab.com in GitLab 16.11.
+> - Group-level saved replies [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/440817) on GitLab.com and self-managed in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default group-level saved replies are not available.

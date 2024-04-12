@@ -178,7 +178,7 @@ To set up GitLab and its components to accommodate up to 5,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
-1. [Configure the internal load balancer](#configure-the-internal-load-balancer).
+1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).

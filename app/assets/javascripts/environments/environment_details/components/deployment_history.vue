@@ -4,6 +4,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import ConfirmRollbackModal from '~/environments/components/confirm_rollback_modal.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import environmentDetailsQuery from '../../graphql/queries/environment_details.query.graphql';
 import environmentToRollbackQuery from '../../graphql/queries/environment_to_rollback.query.graphql';
 import { convertToDeploymentTableRow } from '../../helpers/deployment_data_transformation_helper';
@@ -23,6 +24,7 @@ export default {
     EmptyState,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: { graphqlEtagKey: { default: '' } },
   props: {
     projectFullPath: {
@@ -55,6 +57,7 @@ export default {
           last: this.before ? ENVIRONMENT_DETAILS_PAGE_SIZE : null,
           after: this.after,
           before: this.before,
+          deploymentDetailsEnabled: this.glFeatures.deploymentDetailsPage,
         };
       },
       pollInterval() {

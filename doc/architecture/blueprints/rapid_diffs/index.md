@@ -268,6 +268,19 @@ sequenceDiagram
     Cache ->> Back end: Static template to render diff in scenario XYZ
 ```
 
+- Repeated render of a diff
+
+```mermaid
+sequenceDiagram
+    Back end ->> Cache: Give me the compiled UI for diff ABC123
+    alt Cache miss
+        Cache ->> Back end: ☹️
+        Back end ->> Cache: Cache the compiled UI for diff ABC123
+    else
+        Cache ->> Back end: Existing compiled diff UI
+    end
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

@@ -1,9 +1,0 @@
----
-name: ci_track_catalog_component_usage
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440382
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146834
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/446290
-milestone: '16.11'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

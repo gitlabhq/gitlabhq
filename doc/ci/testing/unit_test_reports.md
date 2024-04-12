@@ -175,7 +175,7 @@ You can upload your screenshots as [artifacts](../yaml/artifacts_reports.md#arti
 If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
 When uploading screenshot artifacts:
 
-- The `attachment` tag **must** contain the relative path to `$CI_PROJECT_DIR` of the screenshots you uploaded. For
+- The `attachment` tags **must** contain the paths of the screenshots you uploaded relative to `$CI_PROJECT_DIR`. For
   example:
 
   ```xml

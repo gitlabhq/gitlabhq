@@ -144,9 +144,9 @@ RSpec.describe 'Creating the packages protection rule', :aggregate_failures, fea
 
   context 'when user does not have permission' do
     let_it_be(:anonymous) { create(:user) }
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
 
     where(:user) do
       [ref(:developer), ref(:reporter), ref(:guest), ref(:anonymous)]

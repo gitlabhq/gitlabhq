@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          profile_keys_path
+          user_settings_ssh_keys_path
         end
 
         override :title
@@ -23,7 +23,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { controller: :keys }
+          { controller: :ssh_keys }
         end
 
         override :extra_container_html_options

@@ -881,7 +881,6 @@ Style/IfUnlessModifier:
     - 'spec/support/shared_examples/views/registration_features_prompt_shared_examples.rb'
     - 'spec/support/shared_examples/workers/batched_background_migration_worker_shared_examples.rb'
     - 'spec/support/webmock.rb'
-    - 'spec/views/profiles/keys/_key.html.haml_spec.rb'
     - 'spec/workers/analytics/usage_trends/counter_job_worker_spec.rb'
     - 'tooling/danger/analytics_instrumentation.rb'
     - 'tooling/lib/tooling/find_codeowners.rb'

@@ -3196,6 +3196,9 @@ msgstr ""
 msgid "AddContextCommits|Add/remove"
 msgstr ""
 
+msgid "AddMember|Ask a user with the Owner role to purchase more seats."
+msgstr ""
+
 msgid "AddMember|Invite email is invalid"
 msgstr ""
 
@@ -4015,12 +4018,6 @@ msgstr ""
 msgid "AdminUsers|(Pending approval)"
 msgstr ""
 
-msgid "AdminUsers|2FA Disabled"
-msgstr ""
-
-msgid "AdminUsers|2FA Enabled"
-msgstr ""
-
 msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on instance runners."
 msgstr ""
 
@@ -4042,9 +4039,6 @@ msgstr ""
 msgid "AdminUsers|Activate user %{username}?"
 msgstr ""
 
-msgid "AdminUsers|Active"
-msgstr ""
-
 msgid "AdminUsers|Adjust the user cap setting on your instance"
 msgstr ""
 
@@ -4052,9 +4046,6 @@ msgid "AdminUsers|Admin"
 msgstr ""
 
 msgid "AdminUsers|Administrator"
-msgstr ""
-
-msgid "AdminUsers|Admins"
 msgstr ""
 
 msgid "AdminUsers|An error occurred while fetching this user's contributions, and the request cannot return the number of issues, merge requests, groups, and projects linked to this user. If you proceed with deleting the user, all their contributions will still be deleted."
@@ -4261,9 +4252,6 @@ msgstr ""
 msgid "AdminUsers|Search by name, email, or username"
 msgstr ""
 
-msgid "AdminUsers|Search users"
-msgstr ""
-
 msgid "AdminUsers|Send email to users"
 msgstr ""
 
@@ -4316,6 +4304,9 @@ msgid "AdminUsers|Trust user"
 msgstr ""
 
 msgid "AdminUsers|Trusted"
+msgstr ""
+
+msgid "AdminUsers|Two-factor authentication"
 msgstr ""
 
 msgid "AdminUsers|Unban user"
@@ -20876,9 +20867,6 @@ msgstr ""
 msgid "Example: ssh\\:\\/\\/"
 msgstr ""
 
-msgid "Examples"
-msgstr ""
-
 msgid "Except policy:"
 msgstr ""
 
@@ -22923,9 +22911,6 @@ msgstr ""
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
-msgid "Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
-msgstr ""
-
 msgid "Git LFS rate limits"
 msgstr ""
 
@@ -23041,6 +23026,9 @@ msgid "GitLab Billing Team."
 msgstr ""
 
 msgid "GitLab Community Edition"
+msgstr ""
+
+msgid "GitLab Duo could not connect to the AI provider."
 msgstr ""
 
 msgid "GitLab Duo didn't respond. Try again? If it fails again, your request might be too large."
@@ -32257,7 +32245,7 @@ msgstr ""
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
-msgid "Milestones|Close Milestone"
+msgid "Milestones|Close"
 msgstr ""
 
 msgid "Milestones|Completed Issues (closed)"
@@ -32296,13 +32284,10 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
-msgid "Milestones|Promote to Group Milestone"
-msgstr ""
-
 msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged."
 msgstr ""
 
-msgid "Milestones|Reopen Milestone"
+msgid "Milestones|Reopen"
 msgstr ""
 
 msgid "Milestones|There are no closed milestones"
@@ -35939,6 +35924,9 @@ msgid "Package type must be Terraform Module"
 msgstr ""
 
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|A protection rule exists for this package."
 msgstr ""
 
 msgid "PackageRegistry|Add Conan Remote"
@@ -41493,6 +41481,9 @@ msgstr ""
 msgid "Pull mirroring updated %{time}."
 msgstr ""
 
+msgid "Pull mirrors will only create LFS objects if LFS is %{docs_link_start}enabled for the project%{docs_link_end}."
+msgstr ""
+
 msgid "Pull requests from fork are not supported"
 msgstr ""
 
@@ -41560,6 +41551,12 @@ msgid "Push commits to the source branch or add previously merged commits to rev
 msgstr ""
 
 msgid "Push events"
+msgstr ""
+
+msgid "Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH."
+msgstr ""
+
+msgid "Push mirrors will only sync LFS objects if LFS is %{docs_link_start}enabled for the project%{docs_link_end}."
 msgstr ""
 
 msgid "Push project from command line"
@@ -46218,13 +46215,10 @@ msgstr ""
 msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the following options:"
 msgstr ""
 
-msgid "SecurityOrchestration|Run a CI Yaml file from project: demo-project with ref: 123 File path: group-name/project-name/file-name"
-msgstr ""
-
 msgid "SecurityOrchestration|Run a DAST scan with Scan Profile A and Site Profile A when a pipeline run against the main branch."
 msgstr ""
 
-msgid "SecurityOrchestration|Run a customized CI Yaml file."
+msgid "SecurityOrchestration|Run customized Gitlab security templates across my projects."
 msgstr ""
 
 msgid "SecurityOrchestration|Save changes"
@@ -46405,6 +46399,9 @@ msgid "SecurityOrchestration|Updated policy name"
 msgstr ""
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
+msgstr ""
+
+msgid "SecurityOrchestration|Use a pipeline execution policy to enforce a custom CI/CD configuration to run in project pipelines."
 msgstr ""
 
 msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, SAST IaC, DAST, Secret detection, Container scanning, and Dependency scanning."
@@ -49435,6 +49432,9 @@ msgid "Starts on"
 msgstr ""
 
 msgid "Starts: %{startsAt}"
+msgstr ""
+
+msgid "State"
 msgstr ""
 
 msgid "State your message to activate"
@@ -56077,7 +56077,7 @@ msgstr ""
 msgid "ValueStreamAnalytics|Merge request analytics"
 msgstr ""
 
-msgid "ValueStreamAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique contributors."
+msgid "ValueStreamAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
 msgstr ""
 
 msgid "ValueStreamAnalytics|New Value Stream"

@@ -46,11 +46,15 @@ For features listed as Experiment and Beta:
 
 For all self-managed features:
 
-- Your firewalls and HTTP proxy servers must allow outbound connections to:
-  - `https://cloud.gitlab.com:443`. To use an HTTP/S proxy, set the `gitlab_workhorse` and `gitlab_rails`
-    [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
-  - `wss://gitlab.com/-/cable`. To use the conversational capabilities of most AI features,
-    clients must be able to connect to the WebSocket server.
+- Your firewalls and HTTP/S proxy servers must allow outbound connections
+  to `gitlab.com` and `cloud.gitlab.com` on port `443`.
+- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
+  uses both REST and WebSockets.
+- To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
+  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.com/-/cable` and other `.com` domains.
+  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo
+  chat services. Consider policy updates to allow these services.
 
 For other features:
 

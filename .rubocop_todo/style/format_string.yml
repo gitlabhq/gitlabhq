@@ -290,6 +290,5 @@ Style/FormatString:
     - 'spec/support/shared_examples/views/registration_features_prompt_shared_examples.rb'
     - 'spec/validators/any_field_validator_spec.rb'
     - 'spec/views/groups/edit.html.haml_spec.rb'
-    - 'spec/views/profiles/keys/_form.html.haml_spec.rb'
     - 'spec/views/profiles/notifications/show.html.haml_spec.rb'
     - 'tooling/lib/tooling/find_codeowners.rb'

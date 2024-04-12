@@ -10,8 +10,8 @@ RSpec.describe 'Project.ci_access_authorized_agents', feature_category: :deploym
   let_it_be(:agent) { create(:cluster_agent, project: agent_management_project) }
 
   let_it_be(:deployment_project) { create(:project, :private, group: organization) }
-  let_it_be(:deployment_developer) { create(:user).tap { |u| deployment_project.add_developer(u) } }
-  let_it_be(:deployment_reporter) { create(:user).tap { |u| deployment_project.add_reporter(u) } }
+  let_it_be(:deployment_developer) { create(:user, developer_of: deployment_project) }
+  let_it_be(:deployment_reporter) { create(:user, reporter_of: deployment_project) }
 
   let(:user) { deployment_developer }
 

@@ -9,10 +9,10 @@ import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Deployment from '~/environments/components/deployment.vue';
 import Commit from '~/environments/components/commit.vue';
-import DeploymentStatusBadge from '~/environments/components/deployment_status_badge.vue';
-import createMockApollo from '../__helpers__/mock_apollo_helper';
-import waitForPromises from '../__helpers__/wait_for_promises';
-import getDeploymentDetails from '../../../app/assets/javascripts/environments/graphql/queries/deployment_details.query.graphql';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import getDeploymentDetails from '~/environments/graphql/queries/deployment_details.query.graphql';
 import { resolvedEnvironment, resolvedDeploymentDetails } from './graphql/mock_data';
 
 describe('~/environments/components/deployment.vue', () => {
@@ -49,9 +49,13 @@ describe('~/environments/components/deployment.vue', () => {
   });
 
   describe('status', () => {
-    it('should pass the deployable status to the badge', () => {
+    it('should pass the deployable status to the link', () => {
       wrapper = createWrapper();
-      expect(wrapper.findComponent(DeploymentStatusBadge).props('status')).toBe(deployment.status);
+      expect(wrapper.findComponent(DeploymentStatusLink).props()).toEqual({
+        status: deployment.status,
+        deploymentJob: deployment.deployable,
+        deployment,
+      });
     });
   });
 

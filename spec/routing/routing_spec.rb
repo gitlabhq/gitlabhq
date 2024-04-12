@@ -159,27 +159,27 @@ RSpec.describe Profiles::PreferencesController, 'routing' do
   end
 end
 
-#     keys GET    /-/profile/keys(.:format)          keys#index
-#          POST   /-/profile/keys(.:format)          keys#create
-# edit_key GET    /-/profile/keys/:id/edit(.:format) keys#edit
-#      key GET    /-/profile/keys/:id(.:format)      keys#show
-#          PUT    /-/profile/keys/:id(.:format)      keys#update
-#          DELETE /-/profile/keys/:id(.:format)      keys#destroy
-RSpec.describe Profiles::KeysController, "routing" do
+#     keys GET    /-/user_settings/ssh_keys(.:format)          keys#index
+#          POST   /-/user_settings/ssh_keys(.:format)          keys#create
+# edit_key GET    /-/user_settings/ssh_keys/:id/edit(.:format) keys#edit
+#      key GET    /-/user_settings/ssh_keys/:id(.:format)      keys#show
+#          PUT    /-/user_settings/ssh_keys/:id(.:format)      keys#update
+#          DELETE /-/user_settings/ssh_keys/:id(.:format)      keys#destroy
+RSpec.describe UserSettings::SshKeysController, "routing", feature_category: :system_access do
   it "to #index" do
-    expect(get("/-/profile/keys")).to route_to('profiles/keys#index')
+    expect(get("/-/user_settings/ssh_keys")).to route_to('user_settings/ssh_keys#index')
   end
 
   it "to #create" do
-    expect(post("/-/profile/keys")).to route_to('profiles/keys#create')
+    expect(post("/-/user_settings/ssh_keys")).to route_to('user_settings/ssh_keys#create')
   end
 
   it "to #show" do
-    expect(get("/-/profile/keys/1")).to route_to('profiles/keys#show', id: '1')
+    expect(get("/-/user_settings/ssh_keys/1")).to route_to('user_settings/ssh_keys#show', id: '1')
   end
 
   it "to #destroy" do
-    expect(delete("/-/profile/keys/1")).to route_to('profiles/keys#destroy', id: '1')
+    expect(delete("/-/user_settings/ssh_keys/1")).to route_to('user_settings/ssh_keys#destroy', id: '1')
   end
 end
 
@@ -187,17 +187,17 @@ end
 #  key POST   /-/profile/gpg_keys      gpg_keys#create
 #      PUT    /-/profile/gpg_keys/:id  gpg_keys#revoke
 #      DELETE /-/profile/gpg_keys/:id  gpg_keys#desroy
-RSpec.describe Profiles::GpgKeysController, "routing" do
+RSpec.describe UserSettings::GpgKeysController, "routing", feature_category: :system_access do
   it "to #index" do
-    expect(get("/-/profile/gpg_keys")).to route_to('profiles/gpg_keys#index')
+    expect(get("/-/user_settings/gpg_keys")).to route_to('user_settings/gpg_keys#index')
   end
 
   it "to #create" do
-    expect(post("/-/profile/gpg_keys")).to route_to('profiles/gpg_keys#create')
+    expect(post("/-/user_settings/gpg_keys")).to route_to('user_settings/gpg_keys#create')
   end
 
   it "to #destroy" do
-    expect(delete("/-/profile/gpg_keys/1")).to route_to('profiles/gpg_keys#destroy', id: '1')
+    expect(delete("/-/user_settings/gpg_keys/1")).to route_to('user_settings/gpg_keys#destroy', id: '1')
   end
 end
 

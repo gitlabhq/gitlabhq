@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 <!-- some details borrowed from GitLab.com move from Azure to GCP detailed at https://gitlab.com/gitlab-com/migration/-/blob/master/.gitlab/issue_templates/failover.md -->
 
 You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
-If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md).
+If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
 WARNING:
 Avoid uncoordinated data processing by both the new and old servers, where multiple
