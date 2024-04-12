@@ -33,18 +33,8 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
     it { is_expected.to validate_presence_of(:version) }
     it { is_expected.to validate_presence_of(:name) }
 
-    context 'when `inputs` and `spec` are valid' do
+    context 'when `spec` is valid' do
       it 'returns no errors' do
-        component.inputs = {
-          website: nil,
-          environment: {
-            default: 'test'
-          },
-          tags: {
-            type: 'array',
-            default: ['tag1']
-          }
-        }
         component.spec = {
           inputs: {
             website: nil,
@@ -62,15 +52,14 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
       end
     end
 
-    context 'when `inputs` and `spec` are invalid' do
+    context 'when `spec` is invalid' do
       it 'returns errors' do
-        component.inputs = { boo: [] }
         component.spec = { not_inputs: { boo: '' } }
 
         aggregate_failures do
           expect(component).to be_invalid
           expect(component.errors.full_messages).to contain_exactly(
-            'Inputs must be a valid json schema'
+            'Spec must be a valid json schema'
           )
         end
       end

@@ -73,9 +73,6 @@ coverage in the tool's output:
 
 ### View history of project code coverage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209121) the ability to download a `.csv` in GitLab 12.10.
-> - Graph [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33743) in GitLab 13.1.
-
 To see the evolution of your project code coverage over time,
 you can view a graph or download a CSV file with this data.
 
@@ -108,9 +105,6 @@ test coverage of your projects. These badges are determined by the latest succes
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15765) in GitLab 14.0.
-> - [Made configurable in Project Settings](https://gitlab.com/gitlab-org/gitlab/-/issues/331001) in GitLab 14.1.
 
 When merging a request that would cause the project's test coverage to decline, you can stipulate that such merge requests require approval by selected users or a group.
 

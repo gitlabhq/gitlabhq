@@ -84,6 +84,12 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       }
     end
 
+    let_it_be(:components) do
+      create_list(
+        :ci_catalog_resource_component, 2, version: version, spec: { inputs: inputs }
+      )
+    end
+
     let(:query) do
       <<~GQL
         query {
@@ -111,85 +117,40 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       GQL
     end
 
-    context "when a component's `spec` field has data" do
-      let_it_be(:components) do
-        create_list(
-          :ci_catalog_resource_component, 2, version: version, spec: { inputs: inputs }
+    it 'returns the components' do
+      post_query
+
+      expect(graphql_data_at(:ciCatalogResource)).to match(a_graphql_entity_for(resource))
+
+      expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
+        a_graphql_entity_for(
+          components.first,
+          name: components.first.name,
+          include_path: components.first.include_path,
+          inputs: [
+            a_graphql_entity_for(
+              name: 'tags',
+              default: nil,
+              required: true
+            ),
+            a_graphql_entity_for(
+              name: 'website',
+              default: nil,
+              required: true
+            ),
+            a_graphql_entity_for(
+              name: 'environment',
+              default: 'test',
+              required: false
+            )
+          ]
+        ),
+        a_graphql_entity_for(
+          components.last,
+          name: components.last.name,
+          include_path: components.last.include_path
         )
-      end
-
-      it 'returns the components, fetching the inputs from `spec`' do
-        post_query
-
-        expect(graphql_data_at(:ciCatalogResource)).to match(a_graphql_entity_for(resource))
-
-        expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
-          a_graphql_entity_for(
-            components.first,
-            name: components.first.name,
-            include_path: components.first.include_path,
-            inputs: [
-              a_graphql_entity_for(
-                name: 'tags',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'website',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'environment',
-                default: 'test',
-                required: false
-              )
-            ]
-          ),
-          a_graphql_entity_for(
-            components.last,
-            name: components.last.name,
-            include_path: components.last.include_path
-          )
-        )
-      end
-    end
-
-    context "when a component's `spec` field is empty" do
-      let_it_be(:components) do
-        [
-          create(:ci_catalog_resource_component, version: version, inputs: inputs)
-        ]
-      end
-
-      it 'instead fetches inputs from the `inputs` field' do
-        post_query
-
-        expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
-          a_graphql_entity_for(
-            components.first,
-            name: components.first.name,
-            include_path: components.first.include_path,
-            inputs: [
-              a_graphql_entity_for(
-                name: 'tags',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'website',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'environment',
-                default: 'test',
-                required: false
-              )
-            ]
-          )
-        )
-      end
+      )
     end
   end
 

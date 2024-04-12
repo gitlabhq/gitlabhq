@@ -313,7 +313,7 @@ describe('View branch rules', () => {
   });
 
   describe('When add branch rules is FF disabled', () => {
-    beforeEach(() => createComponent({ editBranchRule: false }));
+    beforeEach(() => createComponent({ editBranchRules: false }));
     it('does not render delete rule button and modal when ff is disabled', () => {
       expect(findDeleteRuleButton().exists()).toBe(false);
       expect(findDeleteRuleModal().exists()).toBe(false);

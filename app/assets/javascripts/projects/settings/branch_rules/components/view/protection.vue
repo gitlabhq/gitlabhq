@@ -64,12 +64,14 @@ export default {
 </script>
 
 <template>
-  <gl-card class="gl-mb-5" body-class="gl-py-0">
+  <gl-card
+    class="gl-new-card gl-mb-5"
+    header-class="gl-new-card-header"
+    body-class="gl-new-card-body gl-px-5"
+  >
     <template #header>
-      <div class="gl-display-flex gl-justify-content-space-between">
-        <strong>{{ header }}</strong>
-        <gl-link :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
-      </div>
+      <strong>{{ header }}</strong>
+      <gl-link :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
     </template>
 
     <!-- Roles -->

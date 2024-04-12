@@ -26,7 +26,7 @@ module QA
 
         Page::Project::Settings::Repository.perform(&:expand_branch_rules)
 
-        Page::Project::Settings::BranchRules.perform(&:click_edit_branch_rules)
+        Page::Project::Settings::BranchRules.perform(&:click_add_branch_rule)
 
         Page::Project::Settings::ProtectedBranches.perform do |settings|
           settings.select_branch(branch_name)

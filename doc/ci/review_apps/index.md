@@ -67,8 +67,6 @@ The process of configuring review apps is as follows:
 
 ### Enable review apps button
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
-
 When configuring review apps for a project, you add a new job to the `.gitlab-ci.yml` file,
 as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
 **Enable review apps** and GitLab prompts you with a template code block that
@@ -201,8 +199,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), `anonymous_visual_review_feedback`, disabled by default.
 > - It's disabled on GitLab.com.
 
@@ -306,8 +302,6 @@ If the ID is missing from the `script`, the visual review tool prompts you to en
 merge request ID before you can provide feedback.
 
 ### Authentication for Visual Reviews
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
 
 To enable visual reviews for private and internal projects, set the
 [`data-require-auth` variable](#configure-review-apps-for-visual-reviews) to `true`. When enabled,

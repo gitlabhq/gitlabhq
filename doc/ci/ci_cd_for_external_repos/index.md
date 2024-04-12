@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
-
 GitLab CI/CD can be used with [GitHub](github_integration.md), [Bitbucket Cloud](bitbucket_integration.md),
 or any other Git server, though there are some [limitations](#limitations).
 
@@ -37,8 +35,6 @@ might not have any import sources configured. Ask an administrator for your inst
 the [import sources configuration](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## Pipelines for external pull requests
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.
 
 When using GitLab CI/CD with an [external repository on GitHub](github_integration.md),
 it's possible to run a pipeline in the context of a Pull Request.

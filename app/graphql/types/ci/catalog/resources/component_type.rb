@@ -25,7 +25,7 @@ module Types
             alpha: { milestone: '16.7' }
 
           def inputs
-            spec_inputs = object.spec.fetch('inputs', object.inputs)
+            spec_inputs = object.spec.fetch('inputs', {})
 
             spec_inputs.map do |key, value|
               {

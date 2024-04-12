@@ -25,8 +25,6 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
 
-> - Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
-
 To add a pipeline schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -45,8 +43,6 @@ If the project already has the [maximum number of pipeline schedules](../../admi
 you must delete unused schedules before you can add another.
 
 ## Edit a pipeline schedule
-
-> - Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.
 
 The owner of a pipeline schedule can edit it:
 

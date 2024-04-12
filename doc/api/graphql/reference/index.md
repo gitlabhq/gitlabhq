@@ -5061,6 +5061,33 @@ Input type: `InstanceAuditEventStreamingDestinationsDeleteInput`
 | <a id="mutationinstanceauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstanceauditeventstreamingdestinationsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.instanceAuditEventStreamingDestinationsUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `InstanceAuditEventStreamingDestinationsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateid"></a>`id` | [`AuditEventsInstanceExternalStreamingDestinationID!`](#auditeventsinstanceexternalstreamingdestinationid) | ID of external audit event destination to update. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | Updated destination. |
+
 ### `Mutation.instanceExternalAuditEventDestinationCreate`
 
 Input type: `InstanceExternalAuditEventDestinationCreateInput`

@@ -9037,6 +9037,9 @@ msgstr ""
 msgid "BranchRules|Roles"
 msgstr ""
 
+msgid "BranchRules|Rule target"
+msgstr ""
+
 msgid "BranchRules|Select Branch or create wildcard"
 msgstr ""
 
@@ -45989,6 +45992,9 @@ msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance framework has no projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."

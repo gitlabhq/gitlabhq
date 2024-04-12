@@ -9,6 +9,7 @@ module Ci
         self.table_name = 'catalog_resource_components'
 
         include IgnorableColumns
+        ignore_column :inputs, remove_with: '17.1', remove_after: '2024-05-16'
         ignore_column :path, remove_with: '17.1', remove_after: '2024-05-20'
 
         belongs_to :project, inverse_of: :ci_components
@@ -22,7 +23,6 @@ module Ci
 
         enum resource_type: { template: 1 }
 
-        validates :inputs, json_schema: { filename: 'catalog_resource_component_inputs' }
         validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true
 

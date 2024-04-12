@@ -152,8 +152,6 @@ artifacts, as described in the [troubleshooting documentation](../../administrat
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
-
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
 are locked against deletion and kept regardless of the expiry time.
@@ -237,8 +235,6 @@ The default is `0` (no restriction).
 
 ## Default CI/CD configuration file
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
-
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
@@ -251,7 +247,6 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 ## Set CI/CD limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
@@ -405,7 +400,6 @@ To set the maximum file size:
 
 ## Restrict runner registration by all users in an instance
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.

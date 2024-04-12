@@ -14,7 +14,7 @@ module QA
             element 'details-button'
           end
 
-          def click_edit_branch_rules
+          def click_add_branch_rule
             click_element('add-branch-rule-button')
             click_button('Create protected branch')
           end

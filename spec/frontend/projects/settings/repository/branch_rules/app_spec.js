@@ -157,9 +157,9 @@ describe('Branch rules app', () => {
     });
   });
 
-  describe('Add branch rule when editBranchRule FF disabled', () => {
+  describe('Add branch rule when editBranchRules FF disabled', () => {
     beforeEach(() => {
-      createComponent({ glFeatures: { editBranchRule: false } });
+      createComponent({ glFeatures: { editBranchRules: false } });
     });
     it('renders an Add branch rule button', () => {
       expect(findAddBranchRuleButton().exists()).toBe(true);

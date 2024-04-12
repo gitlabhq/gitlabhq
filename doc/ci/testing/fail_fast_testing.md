@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198550) in GitLab 13.1.
-
 For applications that use RSpec for running tests, we've introduced the `Verify/Failfast`
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),
 based on the changes in your merge request.

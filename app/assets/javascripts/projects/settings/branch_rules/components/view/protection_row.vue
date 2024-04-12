@@ -94,7 +94,12 @@ export default {
             :href="avatar.webUrl"
             :title="avatar.name"
           >
-            <gl-avatar :src="avatar.avatarUrl" :label="avatar.name" :size="$options.AVATAR_SIZE" />
+            <gl-avatar
+              :src="avatar.avatarUrl"
+              :label="avatar.name"
+              :alt="avatar.name"
+              :size="$options.AVATAR_SIZE"
+            />
           </gl-avatar-link>
         </template>
       </gl-avatars-inline>

@@ -81,6 +81,7 @@ Audit event types belong to the following product categories.
 | [`update_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) | Group |
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) | Instance |
 | [`updated_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148388) | Event triggered when an external audit event destination for a top-level group is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
+| [`updated_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149104) | Event triggered when an external audit event destination for a GitLab instance is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
 
 ### Build artifacts
 

@@ -112,8 +112,6 @@ GitLab can display the results of one or more reports in:
 DETAILS:
 **Tier:** Premium, Ultimate
 
-> [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
-
 The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
 as artifacts.
 
@@ -123,8 +121,6 @@ GitLab can display the results of one report in the merge request
 GitLab cannot display the combined results of multiple `browser_performance` reports.
 
 ## `artifacts:reports:coverage_report`
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.
 
 Use `coverage_report` to collect coverage report in Cobertura format.
 
@@ -257,10 +253,7 @@ The `dotenv` report collects a set of environment variables as artifacts.
 The collected variables are registered as runtime-created variables of the job,
 which you can use to [set dynamic environment URLs after a job finishes](../environments/index.md#set-a-dynamic-environment-url).
 
-If duplicate environment variables are present in a `dotenv` report:
-
-- In GitLab 14.6 and later, the last one specified is used.
-- In GitLab 14.5 and earlier, an error occurs.
+If duplicate environment variables are present in a `dotenv` report, the last one specified is used.
 
 You should avoid storing sensitive data like credentials in dotenv reports, as the
 reports can be downloaded from the pipeline details page. If necessary, you can use

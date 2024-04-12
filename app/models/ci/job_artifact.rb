@@ -21,6 +21,7 @@ module Ci
     self.sequence_name = :ci_job_artifacts_id_seq
 
     partitionable scope: :job, partitioned: true
+    query_constraints :id, :partition_id
 
     enum accessibility: { public: 0, private: 1, none: 2 }, _suffix: true
 

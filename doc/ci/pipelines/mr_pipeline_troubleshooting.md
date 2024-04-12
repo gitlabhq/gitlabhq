@@ -14,8 +14,7 @@ If you get duplicate pipelines in merge requests, your pipeline might be configu
 to run for both branches and merge requests at the same time. Adjust your pipeline
 configuration to [avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
 
-In [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/201845),
-you can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
+You can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.
 
 ## Two pipelines when pushing an invalid CI/CD configuration file

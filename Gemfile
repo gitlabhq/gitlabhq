@@ -531,7 +531,7 @@ group :test do
   gem 'gitlab_quality-test_tooling', '~> 1.21.1', require: false, feature_category: :tooling
 end
 
-gem 'octokit', '~> 8.0', feature_category: :importers
+gem 'octokit', '~> 8.1', feature_category: :importers
 
 gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :shared
 

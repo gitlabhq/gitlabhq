@@ -41,6 +41,28 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 The Value Streams Dashboard panels has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
 
+### Overview panel
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. On GitLab.com, this feature is available.
+
+The Overview panel provides a holistic view of the top-level namespace activity by visualizing key DevOps metrics.
+The panel displays metrics for:
+
+- Subgroups
+- Projects
+- Users
+- Issues
+- Merge requests
+- Pipelines
+
+Data displayed in the Overview panel is collected by batch processing. GitLab stores record counts for each subgroup in the database, then aggregates the record counts to provide metrics for the top-level group.
+Data is aggregated monthly, around the end of the month, on a best-effort basis depending on the load on GitLab systems.
+
+For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/epics/10417#iterations-path).
+
 ### DevSecOps metrics comparison panel
 
 > - Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
