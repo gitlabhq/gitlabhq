@@ -45,5 +45,6 @@
                                                                                       invited: @invited_members,
                                                                                       access_requests: @requesters,
                                                                                       include_relations: @include_relations,
-                                                                                      search: params[:search_groups]) } }
+                                                                                      search: params[:search_groups],
+                                                                                      pending_members: @pending_promotion_members) } }
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

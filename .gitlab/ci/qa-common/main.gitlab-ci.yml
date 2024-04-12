@@ -67,6 +67,7 @@ stages:
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_INTERCEPT_REQUESTS: "true"
+    QA_RETRY_FAILED_SPECS: "true"
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
   # Allow QA jobs to fail as they are flaky. The top level `package-and-e2e:ee`

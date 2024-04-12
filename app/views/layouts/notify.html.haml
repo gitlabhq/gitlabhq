@@ -1,5 +1,6 @@
 - note = local_assigns.fetch(:note, @note)
-- show_no_diff_preview_message = true
+-# Diff preview text should only appear when a note is available. Default value to be false
+- show_no_diff_preview_message = false
 - unless note.nil?
   - discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion?
   - project = local_assigns.fetch(:project, @project)

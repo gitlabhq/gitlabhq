@@ -4,10 +4,8 @@ import { __, s__ } from '~/locale';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 // Overridden in EE
-export const EE_APP_OPTIONS = {};
-
-// Overridden in EE
-export const EE_TABS = [];
+export const EE_GROUPS_APP_OPTIONS = {};
+export const EE_PROJECTS_APP_OPTIONS = {};
 
 export const EE_ACTION_BUTTONS = {};
 
@@ -163,12 +161,12 @@ export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
 
 export const AVATAR_SIZE = 48;
 
-export const MEMBER_TYPES = {
+export const MEMBER_TYPES = Object.freeze({
   user: 'user',
   group: 'group',
   invite: 'invite',
   accessRequest: 'accessRequest',
-};
+});
 
 // `app/models/members/group_member.rb`
 export const MEMBER_MODEL_TYPE_GROUP_MEMBER = 'GroupMember';
@@ -176,11 +174,37 @@ export const MEMBER_MODEL_TYPE_GROUP_MEMBER = 'GroupMember';
 // `app/models/members/project_member.rb`
 export const MEMBER_MODEL_TYPE_PROJECT_MEMBER = 'ProjectMember';
 
-export const TAB_QUERY_PARAM_VALUES = {
+export const TAB_QUERY_PARAM_VALUES = Object.freeze({
   group: 'groups',
   invite: 'invited',
   accessRequest: 'access_requests',
-};
+});
+
+// Overridden in EE
+export const TABS = [
+  {
+    namespace: MEMBER_TYPES.user,
+    title: __('Members'),
+  },
+  {
+    namespace: MEMBER_TYPES.group,
+    title: __('Groups'),
+    attrs: { 'data-testid': 'groups-list-tab' },
+    queryParamValue: TAB_QUERY_PARAM_VALUES.group,
+  },
+  {
+    namespace: MEMBER_TYPES.invite,
+    title: __('Invited'),
+    requiredPermissions: ['canManageMembers'],
+    queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
+  },
+  {
+    namespace: MEMBER_TYPES.accessRequest,
+    title: __('Access requests'),
+    requiredPermissions: ['canManageAccessRequests'],
+    queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
+  },
+];
 
 /**
  * This user state value comes from the User model

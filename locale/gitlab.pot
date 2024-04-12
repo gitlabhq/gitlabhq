@@ -40964,6 +40964,9 @@ msgstr ""
 msgid "Promotion is not supported."
 msgstr ""
 
+msgid "Promotions"
+msgstr ""
+
 msgid "Promotions|Add %{link_start} description templates %{link_end} to help your contributors to communicate effectively!"
 msgstr ""
 

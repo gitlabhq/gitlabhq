@@ -119,12 +119,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+### On GitLab.com
+
 Prerequisites:
 
 - You must have an active paid Premium or Ultimate subscription.
-- For GitLab self-managed and GitLab Dedicated customers, you must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
-
-### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
@@ -135,8 +134,19 @@ Prerequisites:
 1. Select **Activate my trial**.
 1. [Assign seats](#assign-gitlab-duo-pro-seats) to the users who need access.
 
-### For Self-managed & GitLab Dedicated
+### On Self-managed and GitLab Dedicated
 
+Prerequisites:
+
+- You must have an active paid Premium or Ultimate subscription.
+- You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
+- The user who registers for the trial must be listed as the [subscription contact](customers_portal.md#change-your-subscription-contact) for the customer account and use same email address associated with that role.
+
+1. Find your subscription ID:
+   - In the Customers Portal, on the **Subscriptions & purchases** page.
+   - In the email sent after you purchased your subscription.
+
+   The ID usually looks like `A-S00123456`.
 1. Go to the [GitLab Duo Pro trial page](http://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial).
 1. Complete the fields.
 1. Select **Submit**.

@@ -281,6 +281,14 @@ sequenceDiagram
     end
 ```
 
+###### Diff Storage
+
+```mermaid
+sequenceDiagram
+    Back end ->> Diff Storage: Give me the raw diff of this file
+    Diff Storage ->> Back end: Raw diff
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

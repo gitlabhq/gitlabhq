@@ -7825,6 +7825,28 @@ Input type: `SecurityTrainingUpdateInput`
 | <a id="mutationsecuritytrainingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecuritytrainingupdatetraining"></a>`training` | [`ProjectSecurityTraining`](#projectsecuritytraining) | Represents the training entity subject to mutation. |
 
+### `Mutation.setPreReceiveSecretDetection`
+
+Enable/disable pre-receive secret detection for the given project.
+
+Input type: `SetPreReceiveSecretDetectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetprereceivesecretdetectionenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for pre-receive secret detection feature. |
+| <a id="mutationsetprereceivesecretdetectionnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetprereceivesecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsetprereceivesecretdetectionprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
+
 ### `Mutation.starProject`
 
 DETAILS:

@@ -2,6 +2,8 @@
 
 module Members
   class MemberApproval < ApplicationRecord
+    include Presentable
+
     enum status: { pending: 0, approved: 1, denied: 2 }
 
     belongs_to :user
@@ -16,6 +18,10 @@ module Members
     validates :user, presence: true
     validates :member_namespace, presence: true
     validate :validate_unique_pending_approval, on: [:create, :update]
+
+    scope :pending_member_approvals, ->(member_namespace_id) do
+      where(member_namespace_id: member_namespace_id).where(status: statuses[:pending])
+    end
 
     private
 

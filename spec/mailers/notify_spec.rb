@@ -137,6 +137,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           aggregate_failures do
             is_expected.to have_referable_subject(issue)
             is_expected.to have_body_text(project_issue_path(project, issue))
+            is_expected.not_to have_body_text 'This project does not include diff previews in email notifications'
           end
         end
 
