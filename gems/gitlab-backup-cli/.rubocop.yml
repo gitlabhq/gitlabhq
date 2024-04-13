@@ -3,3 +3,6 @@ inherit_from:
 
 Gemfile/MissingFeatureCategory:
   Enabled: false
+
+Rails/Exit:
+  Enabled: false

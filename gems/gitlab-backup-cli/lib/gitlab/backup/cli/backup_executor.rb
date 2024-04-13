@@ -24,6 +24,7 @@ module Gitlab
         def execute
           execute_all_tasks
 
+          write_metadata!
           archive!
         end
 
@@ -53,6 +54,13 @@ module Gitlab
 
             Gitlab::Backup::Cli::Output.success("Finished Backup of #{task.human_name}! (#{duration.in_seconds}s)")
           end
+        end
+
+        # Write the backup_information.json data to disk
+        def write_metadata!
+          return if metadata.write!(workdir)
+
+          raise Gitlab::Backup::Cli::Error, 'Failed to write metadata to disk'
         end
 
         def archive!

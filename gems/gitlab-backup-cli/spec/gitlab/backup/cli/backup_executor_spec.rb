@@ -22,6 +22,14 @@ RSpec.describe Gitlab::Backup::Cli::BackupExecutor do
     end
   end
 
+  describe '#write_metadata!' do
+    it 'writes metadata to the workdir' do
+      metadata_file = executor.workdir.join(Gitlab::Backup::Cli::BackupMetadata::METADATA_FILENAME)
+
+      expect { executor.send(:write_metadata!) }.to change { metadata_file.exist? }.from(false).to(true)
+    end
+  end
+
   describe '#release!' do
     it 'removes the workdir' do
       expect { executor.release! }.to change { executor.workdir.exist? }.from(true).to(false)

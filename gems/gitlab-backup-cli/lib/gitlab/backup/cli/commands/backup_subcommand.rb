@@ -26,6 +26,10 @@ module Gitlab
               backup_executor.release!
             end
             Gitlab::Backup::Cli::Output.success("GitLab Backup finished: #{backup_id} (#{duration.in_seconds}s)")
+          rescue Gitlab::Backup::Cli::Error => e
+            Gitlab::Backup::Cli::Output.error("GitLab Backup failed: #{e.message} (#{backup_executor.workdir})")
+
+            exit 1
           end
 
           private
