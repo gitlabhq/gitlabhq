@@ -1,14 +1,12 @@
 <script>
-import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
+import { GlForm, GlFormFields, GlButton, GlLink, GlAlert } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { __, s__, sprintf } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
-import {
-  VISIBILITY_LEVEL_PRIVATE_INTEGER,
-  GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
-} from '~/visibility_level/constants';
+import { GROUP_VISIBILITY_LEVEL_DESCRIPTIONS } from '~/visibility_level/constants';
 import { restrictedVisibilityLevelsMessage } from '~/visibility_level/utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '../constants';
 import GroupPathField from './group_path_field.vue';
 
@@ -18,12 +16,17 @@ export default {
     GlForm,
     GlFormFields,
     GlButton,
+    GlLink,
+    GlAlert,
     GroupPathField,
     VisibilityLevelRadioButtons,
   },
   i18n: {
     cancel: __('Cancel'),
     submitButtonText: __('Create group'),
+    warningForUsingDotInName: s__(
+      'Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
+    ),
   },
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
   formId: 'organization-new-group-form',
@@ -56,16 +59,16 @@ export default {
       type: Array,
       required: true,
     },
+    initialFormValues: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       hasPathBeenManuallySet: false,
       isPathLoading: false,
-      formValues: {
-        [FORM_FIELD_NAME]: '',
-        [FORM_FIELD_PATH]: '',
-        [FORM_FIELD_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_INTEGER,
-      },
+      formValues: this.initialFormValues,
     };
   },
   computed: {
@@ -113,7 +116,14 @@ export default {
         },
         [FORM_FIELD_VISIBILITY_LEVEL]: {
           label: __('Visibility level'),
+          labelDescription: {
+            text: __('Who will be able to see this group?'),
+            linkText: __('Learn more'),
+            linkHref: helpPagePath('user/public_access'),
+          },
           groupAttrs: {
+            // eslint-disable-next-line @gitlab/require-i18n-strings
+            'data-testid': `${FORM_FIELD_VISIBILITY_LEVEL}-group`,
             description: restrictedVisibilityLevelsMessage({
               availableVisibilityLevels: this.availableVisibilityLevels,
               restrictedVisibilityLevels: this.restrictedVisibilityLevels,
@@ -152,6 +162,16 @@ export default {
       :fields="fields"
       @submit="$emit('submit', formValues)"
     >
+      <template #after(name)>
+        <gl-alert
+          class="gl-mb-5"
+          :dismissible="false"
+          variant="warning"
+          data-testid="dot-in-path-alert"
+        >
+          {{ $options.i18n.warningForUsingDotInName }}
+        </gl-alert>
+      </template>
       <template #input(path)="{ id, value, validation, input, blur }">
         <group-path-field
           :id="id"
@@ -171,6 +191,13 @@ export default {
           :visibility-level-descriptions="$options.GROUP_VISIBILITY_LEVEL_DESCRIPTIONS"
           @input="input"
         />
+      </template>
+      <template #group(visibilityLevel)-label-description>
+        {{ fields.visibilityLevel.labelDescription.text }}
+        <gl-link :href="fields.visibilityLevel.labelDescription.linkHref">{{
+          fields.visibilityLevel.labelDescription.linkText
+        }}</gl-link
+        >.
       </template>
     </gl-form-fields>
     <div class="gl-display-flex gl-gap-3">

@@ -58,6 +58,7 @@ module Organizations
         mattermost_enabled: Gitlab.config.mattermost.enabled,
         available_visibility_levels: available_visibility_levels(Group),
         restricted_visibility_levels: restricted_visibility_levels,
+        default_visibility_level: default_group_visibility,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,
         path_pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
       }.to_json

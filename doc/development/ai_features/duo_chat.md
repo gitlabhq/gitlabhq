@@ -322,8 +322,8 @@ The analysis can contain any of the attributes defined in the latest [iglu schem
 
 ## How `access_duo_chat` policy works
 
-In the table below I present what requirements must be fulfilled so the `access_duo_chat` policy would return `true` in different
-contexts.
+This table describes the requirements for the `access_duo_chat` policy to
+return `true` in different contexts.
 
 | | GitLab.com | Dedicated or Self-managed | All instances |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
@@ -338,8 +338,110 @@ Before being merged, all prompt or model changes for GitLab Duo Chat should both
 1. Be behind a feature flag *and*
 1. Be evaluated locally
 
-The type of local evaluation needed depends on the type of change. GitLab Duo Chat local evaluation using the Prompt Library is an effective way of measuring average correctness of responses to questions about issues and epics.
+The type of local evaluation needed depends on the type of change. GitLab Duo
+Chat local evaluation using the Prompt Library is an effective way of measuring
+average correctness of responses to questions about issues and epics.
 
-Follow [the Prompt Library guide](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md#seeding-the-local-gdk-instance-with-issue-and-epics-data) to evaluate GitLab Duo Chat changes locally. The prompt library docs are the single source of truth and should be the most up-to-date.
+Follow the
+[Prompt Library guide](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md#configuring-duo-chat-with-local-gdk)
+to evaluate GitLab Duo Chat changes locally. The prompt library documentation is
+the single source of truth and should be the most up-to-date.
 
 Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
+
+## How a Chat prompt is constructed
+
+All Chat requests are resolved with the GitLab GraphQL API. And, for now,
+prompts for 3rd party LLMs are hard-coded into the GitLab codebase.
+
+But if you want to make a change to a Chat prompt, it isn't as obvious as
+finding the string in a single file. Chat prompt construction is hard to follow
+because the prompt is put together over the course of many steps. Here is the
+flow of how we construct a Chat prompt:
+
+1. API request is made to the GraphQL AI Mutation; request contains user Chat
+   input.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/graphql/mutations/ai/action.rb#L6))
+1. GraphQL mutation calls `Llm::ExecuteMethodService#execute`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/graphql/mutations/ai/action.rb#L43))
+1. `Llm::ExecuteMethodService#execute` sees that the `chat` method was sent to
+   the GraphQL API and calls `Llm::ChatService#execute`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/services/llm/execute_method_service.rb#L36))
+1. `Llm::ChatService#execute` calls `schedule_completion_worker`, which is
+   defined in `Llm::BaseService` (the base class for `ChatService`)
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/services/llm/base_service.rb#L72-87))
+1. `schedule_completion_worker` calls `Llm::CompletionWorker.perform_for`, which
+   asynchronously enqueues the job
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/workers/llm/completion_worker.rb#L33))
+1. `Llm::CompletionWorker#perform` is called when the job runs. It deserializes
+   the user input and other message context and passes that over to
+   `Llm::Internal::CompletionService#execute`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/676cca2ea68d87bcfcca02a148c354b0e4eabc97/ee/app/workers/llm/completion_worker.rb#L44))
+1. `Llm::Internal::CompletionService#execute` calls
+   `Gitlab::Llm::CompletionsFactory#completion!`, which pulls the `ai_action`
+   from original GraphQL request and initializes a new instance of
+   `Gitlab::Llm::Completions::Chat` and calls `execute` on it
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/55b8eb6ff869e61500c839074f080979cc60f9de/ee/lib/gitlab/llm/completions_factory.rb#L89))
+1. `Gitlab::Llm::Completions::Chat#execute` calls `Gitlab::Llm::Chain::Agents::ZeroShot::Executor`.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/d539f64ce6c5bed72ab65294da3bcebdc43f68c6/ee/lib/gitlab/llm/completions/chat.rb#L128-134))
+1. `Gitlab::Llm::Chain::Agents::ZeroShot::Executor#execute` calls
+   `execute_streamed_request`, which calls `request`, a method defined in the
+   `AiDependent` concern
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/d539f64ce6c5bed72ab65294da3bcebdc43f68c6/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L85))
+1. (`*`) `AiDependent#request` pulls the base prompt from `provider_prompt_class.prompt`.
+   For Chat, the provider prompt class is `ZeroShot::Prompts::Anthropic`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/4eb4ce67ccc0fe331ddcce3fcc53e0ec0f47cd76/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L44-46))
+1. (`*`) `ZeroShot::Prompts::Anthropic.prompt` pulls a base prompt and formats
+   it in the way that Anthropic expects it for the
+   [Text Completions API](https://docs.anthropic.com/claude/reference/complete_post)
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/4eb4ce67ccc0fe331ddcce3fcc53e0ec0f47cd76/ee/lib/gitlab/llm/chain/agents/zero_shot/prompts/anthropic.rb#L13-24))
+1. (`*`) As part of constructing the prompt for Anthropic,
+   `ZeroShot::Prompts::Anthropic.prompt` makes a call to the `base_prompt` class
+   method, which is defined in `ZeroShot::Prompts::Base`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/4eb4ce67ccc0fe331ddcce3fcc53e0ec0f47cd76/ee/lib/gitlab/llm/chain/agents/zero_shot/prompts/base.rb#L10-19))
+1. (`*`) `ZeroShot::Prompts::Base.base_prompt` calls
+   `Utils::Prompt.no_role_text` and passes `prompt_version` to the method call.
+   The `prompt_version` option resolves to `PROMPT_TEMPLATE` from
+   `ZeroShot::Executor`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L143))
+1. (`*`) `PROMPT_TEMPLATE` is where the tools available and definitions for each
+   tool are interpolated into the zero shot prompt using the `format` method.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L200-237)
+1. (`*`) The `PROMPT_TEMPLATE` is interpolated into the `default_system_prompt`,
+   defined
+   [(here)](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/utils/prompt.rb#L54-73)
+   in the `ZeroShot::Prompts::Base.base_prompt` method call, and that whole big
+   prompt string is sent to `ai_request.request`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L19))
+1. `ai_request` is defined in `Llm::Completions::Chat` and evaluates to either
+   `AiGateway` or `Anthropic` depending on the presence of a feature flag. On
+   production, we use `AiGateway` so this documentation follows that codepath.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/3cd5e5bb3059d6aa9505d21a59cba57fec356473/ee/lib/gitlab/llm/completions/chat.rb#L42)
+1. `ai_request.request` routes to `Llm::Chain::Requests::AiGateway#request`,
+   which calls `ai_client.stream`
+  ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L20-27))
+1. `ai_client.stream` routes to `Gitlab::Llm::AiGateway::Client#stream`, which
+   makes an API request to the AI Gateway `/v1/chat/completion` endpoint
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/ai_gateway/client.rb#L64-82))
+1. We've now made our first request to the AI Gateway. If the LLM says that the
+   answer to the first request is a final answer, we
+   [parse the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/parsers/chain_of_thought_parser.rb)
+   and return it ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L47))
+1. (`*`) If the first answer is not final, the "thoughts" and "picked tools"
+   from the first LLM request are parsed and then the relevant tool class is
+   called.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb#L56-65))
+1. The tool executor classes also include `Concerns::AiDependent` and use the
+   included `request` method similar to how `ZeroShot::Executor` does
+  ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/identifier.rb#L8)).
+   The `request` method uses the same `ai_request` instance
+   that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
+   this is `Gitlab::Llm::Chain::Requests::AiGateway`. So, essentially the same
+   request to the AI Gateway is put together but with a different
+   `prompt` / `PROMPT_TEMPLATE` than for the first request
+   ([Example tool prompt template](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/issue_identifier/executor.rb#L39-104))
+1. If the tool answer is not final, the response is added to `agent_scratchpad`
+   and the loop in `ZeroShot::Executor` starts again, adding the additional
+   context to the request. It loops to up to 10 times until a final answer is reached.
+
+(`*`) indicates that this step is part of the actual construction of the prompt

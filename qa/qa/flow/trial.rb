@@ -10,7 +10,7 @@ module QA
         company_size: '500 - 1,999',
         phone_number: '555-555-5555',
         country: 'United States of America',
-        state: 'CA'
+        state: 'California'
       }.freeze
 
       def register_for_trial(group: nil)

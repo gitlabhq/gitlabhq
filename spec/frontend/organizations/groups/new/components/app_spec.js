@@ -9,6 +9,8 @@ import { createGroup } from '~/api/groups_api';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import {
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_INTERNAL_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
@@ -26,8 +28,13 @@ describe('OrganizationGroupsNewApp', () => {
     basePath: 'https://gitlab.com',
     groupsOrganizationPath: '/-/organizations/carrot/groups_and_projects?display=groups',
     mattermostEnabled: false,
-    availableVisibilityLevels: [0, 10, 20],
+    availableVisibilityLevels: [
+      VISIBILITY_LEVEL_PRIVATE_INTEGER,
+      VISIBILITY_LEVEL_INTERNAL_INTEGER,
+      VISIBILITY_LEVEL_PUBLIC_INTEGER,
+    ],
     restrictedVisibilityLevels: [],
+    defaultVisibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER,
     pathMaxlength: 10,
     pathPattern: 'mockPattern',
   };
@@ -83,6 +90,11 @@ describe('OrganizationGroupsNewApp', () => {
       pathPattern: 'mockPattern',
       availableVisibilityLevels: defaultProvide.availableVisibilityLevels,
       restrictedVisibilityLevels: defaultProvide.restrictedVisibilityLevels,
+      initialFormValues: {
+        name: '',
+        path: '',
+        visibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER,
+      },
     });
   });
 

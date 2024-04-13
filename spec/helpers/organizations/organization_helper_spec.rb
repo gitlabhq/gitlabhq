@@ -281,6 +281,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         .with(organization, { display: 'groups' })
         .and_return(groups_and_projects_organization_path)
       allow(helper).to receive(:restricted_visibility_levels).and_return([])
+      stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'returns expected json' do
@@ -296,6 +297,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             Gitlab::VisibilityLevel::PUBLIC
           ],
           'restricted_visibility_levels' => [],
+          'default_visibility_level' => Gitlab::VisibilityLevel::PUBLIC,
           'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
           'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }

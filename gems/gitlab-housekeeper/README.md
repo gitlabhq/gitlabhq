@@ -39,6 +39,25 @@ The object describes the files that should be commited and other metadata
 should be added to the merge request. Before yielding the `Change` the keep
 should also edit the files locally.
 
+### Setting up the `change` object
+
+You can set multiple properties on a `change` object so that it reflects on the created merge request. Some of these are
+mandatory, while others are optional.
+
+
+| Property                          | Type    | Required | Description                                                                                                     | Example usage                                                                                       |
+| ------------------------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `description`          | String  | Yes      | Sets the description of the MR                                                                                  | `change.description = 'Description for my awesome MR'`                                            |
+| `title`                | String  | Yes      | Sets the title of the MR                                                                                        | `change.title  = 'My awesome MR'`                                                                 |
+| `identifiers`          | Array   | Yes      | Decides the name of the source branch name of the  MR                                                    | `change.identifiers = [[self.class.name](http://self.class.name).demodulize, changed_files.last]` |
+| `changed_files`        | Array   | Yes      | Array containing the path to files that are changed and needs to be committed                                  | `change.changed_files = [file_1_path, file_2_path]`                                              |
+| `labels`               | Array   | No       | Default is `[]`. Array of labels that needs to be assigned to the MR upon creation                           | `change.labels = ['database', 'maintenance::scalability']`                                       |
+| `reviewers`            | Array   | No       | Default is `[]`. Array of usernames to which the MR should be assigned for review upon creation                | `change.reviewers = ['gitlab-bot', 'gitlab-qa']`                                                  |
+| `changelog_type`       | String  | No       | Default is `other`. Used to set a changelog type in the commit message                                       | `change.changelog_type = 'fixed'`                                                                 |
+| `push_options.ci_skip` | Boolean | No       | Default is `false`. Setting to `true` creates an MR without kicking off a new pipeline | `change.push_options.ci_skip = true ` |
+
+### Example
+
 Here is an example of a very simple keep that creates 3 new files called
 `new_file1.txt`, `new_file2.txt` and `new_file3.txt`:
 
@@ -92,7 +111,6 @@ variables described below.
 Note: By default all `.rb` files in the `./keeps/` directory (not recursively)
 will be loaded by the `gitlab-housekeeper` command. So it is assumed you place
 the keeps in there.
-
 
 ## Running for real
 

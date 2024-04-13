@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.3 (2024-04-12)
+
+No changes.
+
 ## 16.10.2 (2024-04-09)
 
 ### Fixed (1 change)
@@ -711,6 +715,10 @@ entry.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.5 (2024-04-12)
+
+No changes.
 
 ## 16.9.4 (2024-04-09)
 
@@ -1499,6 +1507,10 @@ entry.
 ### EE (1 change)
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
+
+## 16.8.7 (2024-04-12)
+
+No changes.
 
 ## 16.8.6 (2024-04-09)
 
