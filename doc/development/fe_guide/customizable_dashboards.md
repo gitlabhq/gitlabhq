@@ -221,7 +221,7 @@ export default {
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
 
 The dashboard designer provides a graphical interface for users to modify the
-panels and add new ones on user-defined dashboards. Is is not available on
+panels and add new ones on user-defined dashboards. It is not available on
 GitLab hardcoded dashboards.
 
 NOTE:

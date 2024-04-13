@@ -198,7 +198,7 @@ export default {
     },
     showLoadingIcon() {
       /*
-        Shows the icon only when the graph is empty, not when it is is
+        Shows the icon only when the graph is empty, not when it is
         being refetched, for instance, on action completion
       */
       return this.$apollo.queries.pipeline.loading && !this.pipeline;

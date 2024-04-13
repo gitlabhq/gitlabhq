@@ -200,7 +200,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_s
         end
       end
 
-      context 'when the number of artifacts is greater than than batch size' do
+      context 'when the number of artifacts is greater than batch size' do
         it 'destroys all expired artifacts' do
           expect { subject }.to change { Ci::JobArtifact.count }.by(-2)
         end

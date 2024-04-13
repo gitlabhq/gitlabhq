@@ -3,7 +3,7 @@
 module Gitlab
   module BackgroundMigration
     # Class that will create fill the project_repositories table
-    # for projects an entry is is missing in this table.
+    # for projects an entry is missing in this table.
     class BackfillProjectRepositories
       OrphanedNamespaceError = Class.new(StandardError)
 

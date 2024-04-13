@@ -31,7 +31,7 @@ RSpec.describe 'PipelineCancel', feature_category: :continuous_integration do
     expect(build).not_to be_canceled
   end
 
-  it 'returns a error if the pipline cannot be be canceled' do
+  it 'returns a error if the pipline cannot be canceled' do
     build = create(:ci_build, :success, pipeline: pipeline)
 
     post_graphql_mutation(mutation, current_user: user)

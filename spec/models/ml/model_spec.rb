@@ -46,7 +46,7 @@ RSpec.describe Ml::Model, feature_category: :mlops do
     end
 
     describe 'default_experiment' do
-      context 'when experiment name name is different than model name' do
+      context 'when experiment name is different than model name' do
         before do
           allow(default_experiment).to receive(:name).and_return("#{name}a")
         end
