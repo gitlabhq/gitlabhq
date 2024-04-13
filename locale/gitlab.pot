@@ -10861,6 +10861,9 @@ msgstr ""
 msgid "CiCatalog|Readme"
 msgstr ""
 
+msgid "CiCatalog|Released %{date}"
+msgstr ""
+
 msgid "CiCatalog|Released %{timeAgo}"
 msgstr ""
 

@@ -67,16 +67,8 @@ describe('CiResourceHeader', () => {
       });
     });
 
-    it('renders the catalog about section and passes props', () => {
-      expect(findAboutComponent().exists()).toBe(true);
-      expect(findAboutComponent().props()).toEqual({
-        isLoadingDetails: false,
-        isLoadingSharedData: false,
-        openIssuesCount: defaultProps.openIssuesCount,
-        openMergeRequestsCount: defaultProps.openMergeRequestsCount,
-        latestVersion: resource.versions.nodes[0],
-        webPath: resource.webPath,
-      });
+    it('does not render the catalog about section', () => {
+      expect(findAboutComponent().exists()).toBe(false);
     });
   });
 

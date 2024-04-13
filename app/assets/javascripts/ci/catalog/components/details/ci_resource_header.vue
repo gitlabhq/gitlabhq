@@ -5,11 +5,13 @@ import {
   GlBadge,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
+  GlLink,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import CiResourceAbout from './ci_resource_about.vue';
@@ -19,6 +21,8 @@ export default {
   i18n: {
     moreActionsLabel: __('More actions'),
     reportAbuse: __('Report abuse to administrator'),
+    lastRelease: s__('CiCatalog|Released %{date}'),
+    lastReleaseMissing: s__('CiCatalog|No release available'),
   },
   components: {
     AbuseCategorySelector,
@@ -27,9 +31,10 @@ export default {
     CiVerificationBadge,
     GlAvatar,
     GlAvatarLink,
+    GlBadge,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    GlBadge,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -79,6 +84,14 @@ export default {
     isVerified() {
       return this.resource?.verificationLevel !== 'UNVERIFIED';
     },
+    lastReleaseText() {
+      if (this.latestVersion?.createdAt) {
+        const date = formatDate(this.latestVersion.createdAt);
+        return sprintf(this.$options.i18n.lastRelease, { date });
+      }
+
+      return this.$options.i18n.lastReleaseMissing;
+    },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || {};
     },
@@ -124,12 +137,19 @@ export default {
             {{ webPath }}
           </div>
           <span class="gl-display-flex">
-            <div class="gl-font-lg gl-font-weight-bold">{{ resource.name }}</div>
+            <gl-link
+              class="gl-font-lg gl-font-weight-bold gl-text-gray-900 gl-hover-text-gray-900"
+              :href="resource.webPath"
+            >
+              {{ resource.name }}
+            </gl-link>
             <gl-badge
               v-if="hasLatestVersion"
+              v-gl-tooltip
               size="sm"
               class="gl-ml-3 gl-my-1"
               :href="latestVersion.path"
+              :title="lastReleaseText"
             >
               {{ versionBadgeText }}
             </gl-badge>
@@ -166,6 +186,7 @@ export default {
       </div>
     </div>
     <ci-resource-about
+      v-if="false"
       :is-loading-details="isLoadingDetails"
       :is-loading-shared-data="isLoadingSharedData"
       :open-issues-count="openIssuesCount"
@@ -177,7 +198,7 @@ export default {
       v-if="isLoadingSharedData"
       class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
     ></div>
-    <p v-else class="gl-mt-3">
+    <p v-else class="gl-mt-2">
       {{ resource.description }}
     </p>
     <abuse-category-selector
