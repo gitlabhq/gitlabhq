@@ -2,8 +2,7 @@
 
 # Set default values for object_store settings
 class ObjectStoreSettings
-  SUPPORTED_TYPES = %w[artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages
-    ci_secure_files].freeze
+  SUPPORTED_TYPES = %w[artifacts external_diffs lfs uploads packages dependency_proxy terraform_state pages].freeze
   ALLOWED_OBJECT_STORE_OVERRIDES = %w[bucket enabled proxy_download cdn].freeze
 
   # To ensure the one Workhorse credential matches the Rails config, we
@@ -13,9 +12,9 @@ class ObjectStoreSettings
   # the future.
   WORKHORSE_ACCELERATED_TYPES = SUPPORTED_TYPES - %w[pages]
 
-  # pages and ci_secure_files may be enabled but use legacy disk storage
+  # pages may be enabled but use legacy disk storage
   # we don't need to raise an error in that case
-  ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files].freeze
+  ALLOWED_INCOMPLETE_TYPES = %w[pages].freeze
 
   attr_accessor :settings
 
