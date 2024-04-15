@@ -39,11 +39,13 @@ merge request, authored by the user who suggested the changes.
    ````
 
 1. Edit the pre-populated code block to add your suggestion.
-1. Select whether you want your comment to appear immediately:
-
-   - **Start a review** or **Add to review** creates your comment in a pending state
-     as part of a [review](index.md).
-   - **Add comment now** adds your comment immediately.
+1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. To leave your comment unpublished until you finish a [review](index.md), select
+   **Start a review**, or use the keyboard shortcut:
+   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
 ### Multi-line suggestions
 

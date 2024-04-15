@@ -120,14 +120,16 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :team_plann
       expect(filter(act).to_html).to eq exp
     end
 
-    it 'allows `data-math-style` attribute on `code` and `pre` elements' do
+    it 'allows `data-math-style` attribute on `span`, code` and `pre` elements' do
       html = <<-HTML
+      <span class="code" data-math-style="inline">something</span>
       <pre class="code" data-math-style="inline">something</pre>
       <code class="code" data-math-style="inline">something</code>
       <div class="code" data-math-style="inline">something</div>
       HTML
 
       output = <<-HTML
+      <span data-math-style="inline">something</span>
       <pre data-math-style="inline">something</pre>
       <code data-math-style="inline">something</code>
       <div>something</div>

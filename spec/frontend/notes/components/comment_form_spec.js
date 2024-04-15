@@ -474,6 +474,50 @@ describe('issue_comment_form component', () => {
                 isDraft: true,
               });
             });
+
+            it('should add comment when shift+cmd+enter is pressed', async () => {
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
+              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              await findMarkdownEditorTextarea().trigger('keydown.enter', {
+                shiftKey: true,
+                metaKey: true,
+              });
+              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+                data: {
+                  merge_request_diff_head_sha: undefined,
+                  note: {
+                    internal: false,
+                    note: 'a',
+                    noteable_id: noteableDataMock.id,
+                    noteable_type: 'Issue',
+                  },
+                },
+                endpoint: noteableDataMock.create_note_path,
+                isDraft: false,
+              });
+            });
+
+            it('should add comment when shift+ctrl+enter is pressed', async () => {
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
+              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              await findMarkdownEditorTextarea().trigger('keydown.enter', {
+                shiftKey: true,
+                ctrlKey: true,
+              });
+              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+                data: {
+                  merge_request_diff_head_sha: undefined,
+                  note: {
+                    internal: false,
+                    note: 'a',
+                    noteable_id: noteableDataMock.id,
+                    noteable_type: 'Issue',
+                  },
+                },
+                endpoint: noteableDataMock.create_note_path,
+                isDraft: false,
+              });
+            });
           });
         });
       });

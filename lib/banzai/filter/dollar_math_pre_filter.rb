@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-# Generated HTML is transformed back to GFM by:
-# - app/assets/javascripts/behaviors/markdown/marks/math.js
-# - app/assets/javascripts/behaviors/markdown/nodes/code_block.js
+# TODO: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles math.
+# The Ruby parser is now only for benchmarking purposes.
+# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 module Banzai
   module Filter
     # HTML filter that implements our dollar math syntax, one of three filters:
@@ -31,6 +32,8 @@ module Banzai
         .freeze
 
       def call
+        return @text if MarkdownFilter.glfm_markdown?(context)
+
         regex = Gitlab::UntrustedRegexp.new(REGEX, multiline: true)
         return @text unless regex.match?(@text)
 

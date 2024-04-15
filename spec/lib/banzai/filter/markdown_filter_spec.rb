@@ -155,4 +155,33 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
 
     expect(result).to eq(expected.strip)
   end
+
+  describe 'math support' do
+    it 'recognizes math syntax' do
+      text = <<~MARKDOWN
+        $`2+2`$ + $3+3$ + $$4+4$$
+
+        $$
+        5+5
+        $$
+
+        ```math
+        6+6
+        ```
+      MARKDOWN
+
+      expected = <<~EXPECTED
+        <p><code data-math-style="inline">2+2</code> + <span data-math-style="inline">3+3</span> + <span data-math-style="display">4+4</span></p>
+        <p><span data-math-style="display">
+        5+5
+        </span></p>
+        <pre lang="math" data-math-style="display"><code>6+6
+        </code></pre>
+      EXPECTED
+
+      result = filter(text, no_sourcepos: true)
+
+      expect(result).to eq(expected.strip)
+    end
+  end
 end

@@ -1753,7 +1753,7 @@
 # These provide a manual way to trigger follow-up:e2e:package-and-test-ee
 # It is fine if they're overlapping with the automatic ones.
 # It'll not hurt and it can simplify the rules, decoupling them.
-# If any changes are made to this rule, `.qa:rules:manual-e2e` should also be updated.
+# If any changes are made to this rule, `.qa:rules:follow-up-e2e` should also be updated.
 .qa:rules:manual-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
@@ -1761,7 +1761,8 @@
       when: never
     - !reference [".qa:rules:code-merge-request-manual", rules]
 
-# These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic
+# These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic.
+# If any changes are made to this rule, `.qa:rules:manual-e2e` should also be updated.
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]

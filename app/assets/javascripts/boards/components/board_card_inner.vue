@@ -16,6 +16,7 @@ import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.quer
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
+import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import { ListType } from '../constants';
 import { setError } from '../graphql/cache_updates';
 import IssueDueDate from './issue_due_date.vue';
@@ -31,9 +32,11 @@ export default {
     IssueDueDate,
     IssueTimeEstimate,
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
     IssuableBlockedIcon,
     GlSprintf,
     WorkItemTypeIcon,
+    IssueMilestone,
     IssueHealthStatus: () =>
       import('ee_component/related_items_tree/components/issue_health_status.vue'),
   },
@@ -181,6 +184,9 @@ export default {
     avatarSize() {
       return { default: 16, lg: 24 };
     },
+    showBoardCardNumber() {
+      return this.item.referencePath && !this.isLoading;
+    },
   },
   methods: {
     setError,
@@ -293,29 +299,29 @@ export default {
       <div
         class="gl-display-flex align-items-start gl-flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
-        <span
-          v-if="item.referencePath && !isLoading"
-          class="board-card-number gl-overflow-hidden gl-display-flex gl-gap-2 gl-mr-3 gl-mt-3 gl-font-sm gl-text-secondary"
-          :class="{ 'gl-font-base': isEpicBoard }"
-        >
-          <work-item-type-icon
-            v-if="showWorkItemTypeIcon"
-            :work-item-type="item.type"
-            show-tooltip-on-hover
-          />
+        <span class="board-info-items gl-mt-3 gl-line-height-20 gl-display-inline-block">
+          <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
-            v-if="showReferencePath"
-            v-gl-tooltip
-            :title="itemReferencePath"
-            data-placement="bottom"
-            class="board-item-path gl-text-truncate gl-font-weight-bold gl-cursor-help"
+            v-if="showBoardCardNumber"
+            class="board-card-number gl-overflow-hidden gl-gap-2 gl-mr-3 gl-mt-3 gl-font-sm gl-text-secondary"
+            :class="{ 'gl-font-base': isEpicBoard }"
           >
-            {{ directNamespaceReference }}
+            <work-item-type-icon
+              v-if="showWorkItemTypeIcon"
+              :work-item-type="item.type"
+              show-tooltip-on-hover
+            />
+            <span
+              v-if="showReferencePath"
+              v-gl-tooltip
+              :title="itemReferencePath"
+              data-placement="bottom"
+              class="board-item-path gl-text-truncate gl-font-weight-bold gl-cursor-help"
+            >
+              {{ directNamespaceReference }}
+            </span>
+            {{ itemId }}
           </span>
-          {{ itemId }}
-        </span>
-        <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <span v-if="shouldRenderEpicCountables" data-testid="epic-countables">
             <gl-tooltip :target="() => $refs.countBadge">
               <p v-if="allowSubEpics" class="gl-font-weight-bold gl-m-0">
@@ -394,17 +400,29 @@ export default {
             </span>
           </span>
           <span v-if="!isEpicBoard">
+            <issue-card-weight
+              v-if="validIssueWeight(item)"
+              :weight="item.weight"
+              @click="filterByWeight(item.weight)"
+            />
+            <issue-milestone
+              v-if="item.milestone"
+              data-testid="issue-milestone"
+              :milestone="item.milestone"
+              class="gl-display-inline-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-text-gray-500! gl-cursor-help! gl-vertical-align-bottom gl-mr-3"
+            />
+            <issue-iteration
+              v-if="item.iteration"
+              data-testid="issue-iteration"
+              :iteration="item.iteration"
+              class="gl-vertical-align-bottom gl-white-space-nowrap"
+            />
             <issue-due-date
               v-if="item.dueDate"
               :date="item.dueDate"
               :closed="Boolean(item.closedAt)"
             />
             <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
-            <issue-card-weight
-              v-if="validIssueWeight(item)"
-              :weight="item.weight"
-              @click="filterByWeight(item.weight)"
-            />
             <issue-health-status v-if="item.healthStatus" :health-status="item.healthStatus" />
           </span>
         </span>

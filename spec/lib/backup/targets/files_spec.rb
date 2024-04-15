@@ -102,7 +102,7 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
         allow(files).to receive(:pipeline_succeeded?).and_return(true)
       end
 
-      it 'shows error message' do
+      it 'shows error message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446174' do
         expect(files).to receive(:access_denied_error).with(restore_target)
 
         files.restore('registry.tar.gz', 'backup_id')

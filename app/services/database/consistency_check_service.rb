@@ -21,7 +21,7 @@ module Database
     # It compares up to 25 batches (1000 records / batch), or up to 30 seconds
     # for all the batches in total.
     #
-    # It saves the cursor of the next start_id (cusror) in Redis. If the start_id
+    # It saves the cursor of the next start_id (cursor) in Redis. If the start_id
     # wasn't saved in Redis, for example, in the first run, it will choose some random start_id
     #
     # Example:

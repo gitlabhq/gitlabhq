@@ -457,8 +457,8 @@ module Gitlab
             stem:[2+2] is 4
           MD
 
-          expect(render(input, context)).to include('<pre data-math-style="display" class="code math js-render-math" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">eta_x gamma</span></code></pre>')
-          expect(render(input, context)).to include('<p><code data-math-style="inline" class="code math js-render-math">2+2</code> is 4</p>')
+          expect(render(input, context)).to include('<pre data-math-style="display" class="js-render-math" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">eta_x gamma</span></code></pre>')
+          expect(render(input, context)).to include('<p><code data-math-style="inline" class="js-render-math">2+2</code> is 4</p>')
         end
       end
 

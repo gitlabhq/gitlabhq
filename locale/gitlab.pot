@@ -3205,6 +3205,9 @@ msgstr ""
 msgid "Add webhook"
 msgstr ""
 
+msgid "Add your comment to a review"
+msgstr ""
+
 msgid "Add your team members and others to GitLab."
 msgstr ""
 
@@ -23133,6 +23136,9 @@ msgstr ""
 msgid "GitLab KAS"
 msgstr ""
 
+msgid "GitLab Logo"
+msgstr ""
+
 msgid "GitLab Pages"
 msgstr ""
 
@@ -41601,6 +41607,9 @@ msgstr ""
 msgid "Publish to status page"
 msgstr ""
 
+msgid "Publish your comment immediately"
+msgstr ""
+
 msgid "Published"
 msgstr ""
 
@@ -49846,6 +49855,9 @@ msgid "Submit search"
 msgstr ""
 
 msgid "Submit the current review."
+msgstr ""
+
+msgid "Submit/save changes"
 msgstr ""
 
 msgid "Submitted as ham"

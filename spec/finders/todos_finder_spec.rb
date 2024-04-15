@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe TodosFinder do
+RSpec.describe TodosFinder, feature_category: :team_planning do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
@@ -316,9 +316,14 @@ RSpec.describe TodosFinder do
 
         project_2.add_developer(user)
 
-        todos = finder.new(user, { sort: 'priority' }).execute
+        todos_asc_1 = finder.new(user, { sort: 'priority' }).execute
+        expect(todos_asc_1).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
 
-        expect(todos).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
+        todos_asc_2 = finder.new(user, { sort: 'label_priority_asc' }).execute
+        expect(todos_asc_2).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
+
+        todos_desc = finder.new(user, { sort: 'label_priority_desc' }).execute
+        expect(todos_desc).to eq([todo_1, todo_2, todo_4, todo_5, todo_3])
       end
     end
   end

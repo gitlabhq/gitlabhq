@@ -114,6 +114,51 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.lfs['object_store']['bucket_prefix']).to eq('lfs')
       end
 
+      context 'when the same section-specified connection is specified' do
+        before do
+          config['artifacts'] = GitlabSettings::Options.build(
+            {
+              'enabled' => true,
+              'object_store' => {
+                'enabled' => true,
+                'connection' => connection
+              }
+            }
+          )
+        end
+
+        it_behaves_like 'consolidated settings for objects accelerated by Workhorse'
+      end
+
+      context 'when a different section-specified connection is specified' do
+        let(:gcs_connection) { GitlabSettings::Options.build("provider" => "GCS") }
+
+        before do
+          config['artifacts'] = GitlabSettings::Options.build(
+            {
+              'enabled' => true,
+              'object_store' => {
+                'enabled' => true,
+                'connection' => gcs_connection
+              }
+            }
+          )
+        end
+
+        it 'disables consolidated object settings' do
+          expect(settings.artifacts['enabled']).to be true
+          expect(settings.artifacts['object_store']['connection']).to eq(gcs_connection)
+
+          described_class::WORKHORSE_ACCELERATED_TYPES.each do |object_type|
+            section = subject.try(object_type).to_h
+
+            next unless section.dig('object_store', 'enabled')
+
+            expect(section['object_store']['consolidated_settings']).to_be falsey
+          end
+        end
+      end
+
       context 'with Google CDN enabled' do
         let(:cdn_config) do
           {
@@ -201,7 +246,10 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
             'enabled' => true,
             'remote_directory' => 'some-bucket',
             'direct_upload' => false,
-            'proxy_download' => false
+            'proxy_download' => false,
+            'connection' => {
+              'provider' => 'GCS'
+            }
           }
         end
 

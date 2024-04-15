@@ -8408,7 +8408,7 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-sourcepos="1:23-1:33" data-math-style="inline" class="code math js-render-math">a^2+b^2=c^2</code>.</p>
+    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code data-math-style="inline" data-sourcepos="1:23-1:33" class="js-render-math">a^2+b^2=c^2</code>.</p>
     <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-math-style="display" data-sourcepos="5:1-7:3" data-canonical-lang="math" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>

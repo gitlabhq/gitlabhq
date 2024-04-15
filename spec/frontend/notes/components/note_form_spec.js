@@ -320,6 +320,17 @@ describe('issue_note_form component', () => {
       });
     });
 
+    describe('on shift cmd enter', () => {
+      it('should add comment now when shift-cmd+enter is pressed', async () => {
+        textarea.setValue('Foo');
+        textarea.trigger('keydown.enter', { metaKey: true, shiftKey: true });
+
+        await nextTick();
+
+        expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
+      });
+    });
+
     describe('when adding a draft comment', () => {
       beforeEach(() => {
         jest.spyOn(notesEventHub, '$emit');

@@ -108,9 +108,15 @@ To add a commit diff comment:
 1. Select the **Commits** tab, then select the commit message.
 1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
-1. Enter your comment and select **Start a review** or **Add comment now**.
+1. Enter your comment.
+1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
+   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
-The comment is displayed on the merge request's **Overview** tab.
+The comment displays on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Code > Commits** page.
 

@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-# NOTE: This is now a legacy filter, and is only used with the Ruby parser.
+# TODO: This is now a legacy filter, and is only used with the Ruby parser.
 # The current markdown parser now properly handles multiline block quotes.
 # The Ruby parser is now only for benchmarking purposes.
+# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 RSpec.describe Banzai::Filter::BlockquoteFenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
 

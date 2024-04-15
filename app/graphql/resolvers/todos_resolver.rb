@@ -30,6 +30,10 @@ module Resolvers
              required: false,
              description: 'Type of the todo.'
 
+    argument :sort, Types::TodoSortEnum,
+             required: false,
+             description: 'Sort todos by given criteria.'
+
     before_connection_authorization do |nodes, current_user|
       Preloaders::UserMaxAccessLevelInProjectsPreloader.new(
         nodes.map(&:project).compact,
@@ -53,7 +57,8 @@ module Resolvers
         group_id: args[:group_id],
         author_id: args[:author_id],
         action_id: args[:action],
-        project_id: args[:project_id]
+        project_id: args[:project_id],
+        sort: args[:sort]
       }.merge(target_params)
     end
 

@@ -75,7 +75,7 @@ describe('IntegrationsTable', () => {
 
   describe.each([true, false])('when integrations inactive property is %p', (inactive) => {
     beforeEach(() => {
-      createComponent({ integrations: [mockInactiveIntegrations], inactive });
+      createComponent({ integrations: mockInactiveIntegrations, inactive });
     });
 
     it(`${inactive ? 'does not render' : 'render'} updated_at field`, () => {

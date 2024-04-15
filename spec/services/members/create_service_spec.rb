@@ -142,21 +142,6 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
         execute_service
       end
 
-      context 'when feature flag "add_policy_approvers_to_rules" is disabled' do
-        before do
-          stub_feature_flags(add_policy_approvers_to_rules: false)
-        end
-
-        it 'triggers the authorizations changed event' do
-          expect(Gitlab::EventStore)
-            .to receive(:publish)
-                  .with(an_instance_of(ProjectAuthorizations::AuthorizationsChangedEvent))
-                  .and_call_original
-
-          execute_service
-        end
-      end
-
       it 'triggers the members added event' do
         expect(Gitlab::EventStore)
           .to receive(:publish)

@@ -237,7 +237,7 @@ export default {
 <template>
   <div>
     <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
-      <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
+      <img :src="$options.gitlabLogo" :alt="__('GitLab Logo')" class="gl-w-6 gl-h-6" />
       <span>{{ s__('BulkImport|Direct transfer history') }}</span>
     </h1>
 

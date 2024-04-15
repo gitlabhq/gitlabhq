@@ -15523,6 +15523,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="addonusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="addonusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="addonusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="addonusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="addonusertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -15717,6 +15718,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="alertmanagementalerttodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="alertmanagementalerttodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="alertmanagementalerttodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="alertmanagementalerttodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="alertmanagementalerttodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="alertmanagementalerttodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -16288,6 +16290,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompletedusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="autocompletedusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="autocompletedusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="autocompletedusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="autocompletedusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="autocompletedusertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -18461,6 +18464,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentusertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="currentusertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="currentusertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="currentusertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="currentusertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="currentusertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -23633,6 +23637,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneetodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestassigneetodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="mergerequestassigneetodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestassigneetodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestassigneetodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="mergerequestassigneetodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -23936,6 +23941,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthortodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestauthortodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="mergerequestauthortodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestauthortodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestauthortodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="mergerequestauthortodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -24286,6 +24292,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipanttodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestparticipanttodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="mergerequestparticipanttodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestparticipanttodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestparticipanttodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="mergerequestparticipanttodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -24625,6 +24632,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="mergerequestreviewertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="mergerequestreviewertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="mergerequestreviewertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="mergerequestreviewertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="mergerequestreviewertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -30140,6 +30148,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoretodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="usercoretodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="usercoretodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="usercoretodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="usercoretodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="usercoretodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 
@@ -33968,6 +33977,23 @@ Values for sorting timelogs.
 | <a id="todoactionenumreview_submitted"></a>`review_submitted` | Merge request authored by the user received a review. |
 | <a id="todoactionenumunmergeable"></a>`unmergeable` | Merge request authored by the user could not be merged. |
 
+### `TodoSort`
+
+Sort options for todos.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="todosortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="todosortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="todosortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | By label priority in ascending order. |
+| <a id="todosortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | By label priority in descending order. |
+| <a id="todosortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="todosortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="todosortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="todosortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="todosortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="todosortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
+
 ### `TodoStateEnum`
 
 | Value | Description |
@@ -36231,6 +36257,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usertodosauthorid"></a>`authorId` | [`[ID!]`](#id) | ID of an author. |
 | <a id="usertodosgroupid"></a>`groupId` | [`[ID!]`](#id) | ID of a group. |
 | <a id="usertodosprojectid"></a>`projectId` | [`[ID!]`](#id) | ID of a project. |
+| <a id="usertodossort"></a>`sort` | [`TodoSort`](#todosort) | Sort todos by given criteria. |
 | <a id="usertodosstate"></a>`state` | [`[TodoStateEnum!]`](#todostateenum) | State of the todo. |
 | <a id="usertodostype"></a>`type` | [`[TodoTargetEnum!]`](#todotargetenum) | Type of the todo. |
 

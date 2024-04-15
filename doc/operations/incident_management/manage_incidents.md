@@ -10,11 +10,29 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Ability to add an [incident](index.md) to an iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347153) in GitLab 16.11.
+
 This page collects instructions for all the things you can do with [incidents](incidents.md) or in relation to them.
 
 ## Create an incident
 
 You can create an incident manually or automatically.
+
+## Add an incident to an iteration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+To add an incident to an [iteration](../../user/group/iterations/index.md):
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues** or **Monitor > Incidents**, then select your incident to view it.
+1. On the right sidebar, in the **Iteration** section, select **Edit**.
+1. From the dropdown list, select the iteration to add this incident to.
+1. Select any area outside the dropdown list.
+
+Alternatively, you can use the `/iteration` [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics).
 
 ### From the incidents list
 

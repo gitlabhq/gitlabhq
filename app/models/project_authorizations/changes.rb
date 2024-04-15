@@ -141,22 +141,8 @@ module ProjectAuthorizations
     end
 
     def publish_events
-      publish_changed_event
       publish_removed_event
       publish_added_event
-    end
-
-    def publish_changed_event
-      # This event is used to add policy approvers to approval rules by re-syncing all project policies which is costly.
-      # If the feature flag below is enabled, the policies won't be re-synced and
-      # the approvers will be added via `AuthorizationsAddedEvent`.
-      return if ::Feature.enabled?(:add_policy_approvers_to_rules)
-
-      @affected_project_ids.each do |project_id|
-        ::Gitlab::EventStore.publish(
-          ::ProjectAuthorizations::AuthorizationsChangedEvent.new(data: { project_id: project_id })
-        )
-      end
     end
 
     def publish_removed_event
@@ -174,7 +160,6 @@ module ProjectAuthorizations
     end
 
     def publish_added_event
-      return if ::Feature.disabled?(:add_policy_approvers_to_rules)
       return if @added_user_ids.none?
 
       events = @affected_project_ids.flat_map do |project_id|

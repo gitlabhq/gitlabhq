@@ -194,16 +194,26 @@ class ObjectStoreSettings
   # 2. The legacy settings are not defined
   def use_consolidated_settings?
     return false unless settings.dig('object_store', 'enabled')
-    return false unless settings.dig('object_store', 'connection').present?
+
+    connection = settings.dig('object_store', 'connection')
+
+    return false unless connection.present?
 
     WORKHORSE_ACCELERATED_TYPES.each do |store|
       section = settings.try(store)
 
       next unless section
+      next unless section.dig('object_store', 'enabled')
 
-      return false if section.dig('object_store', 'enabled')
-      # Omnibus defaults to an empty hash
-      return false if section.dig('object_store', 'connection').present?
+      section_connection = section.dig('object_store', 'connection')
+
+      # We can use consolidated settings if the main object store
+      # connection matches the section-specific connection. This makes
+      # it possible to automatically use consolidated settings as new
+      # settings (such as ci_secure_files) get promoted to a supported
+      # type. Omnibus defaults to an empty hash for the
+      # section-specific connection.
+      return false if section_connection.present? && section_connection.to_h != connection.to_h
     end
 
     true

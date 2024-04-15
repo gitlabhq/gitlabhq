@@ -156,9 +156,12 @@ class Todo < ApplicationRecord
     def sort_by_attribute(method)
       sorted =
         case method.to_s
-        when 'priority', 'label_priority' then order_by_labels_priority
+        when 'priority', 'label_priority', 'label_priority_asc' then order_by_labels_priority(asc: true)
+        when 'label_priority_desc' then order_by_labels_priority(asc: false)
         else order_by(method)
         end
+
+      return sorted if Gitlab::Pagination::Keyset::Order.keyset_aware?(sorted)
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
@@ -167,16 +170,40 @@ class Todo < ApplicationRecord
     # Order by priority depending on which issue/merge request the Todo belongs to
     # Todos with highest priority first then oldest todos
     # Need to order by created_at last because of differences on Mysql and Postgres when joining by type "Merge_request/Issue"
-    def order_by_labels_priority
+    def order_by_labels_priority(asc: true)
       highest_priority = highest_label_priority(
         target_type_column: "todos.target_type",
         target_column: "todos.target_id",
         project_column: "todos.project_id"
       ).arel.as('highest_priority')
 
-      select(arel_table[Arel.star], highest_priority)
-        .order(Arel.sql('highest_priority').asc.nulls_last)
-        .order('todos.created_at')
+      highest_priority_arel = Arel.sql('highest_priority')
+
+      order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'highest_priority',
+          column_expression: highest_priority_arel,
+          order_expression: asc ? highest_priority_arel.asc.nulls_last : highest_priority_arel.desc.nulls_first,
+          reversed_order_expression: asc ? highest_priority_arel.desc.nulls_first : highest_priority_arel.asc.nulls_last,
+          nullable: asc ? :nulls_last : :nulls_first,
+          order_direction: asc ? :asc : :desc,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'created_at',
+          order_expression: asc ? Todo.arel_table[:created_at].asc : Todo.arel_table[:created_at].desc,
+          nullable: :not_nullable,
+          distinct: false
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: asc ? Todo.arel_table[:id].asc : Todo.arel_table[:id].desc,
+          nullable: :not_nullable,
+          distinct: true
+        )
+      ])
+
+      select(arel_table[Arel.star], highest_priority).order(order)
     end
 
     def distinct_user_ids

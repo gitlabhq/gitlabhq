@@ -130,6 +130,13 @@ planned for release in 16.9.1.
 
 ### Geo installations
 
+- Due to a [bug in container replication](https://gitlab.com/gitlab-org/gitlab/-/issues/431944), a misconfigured secondary could mark a failed container replication as successful. Subsequent verification would mark the container as failed due to a checksum mismatch. The workaround is to fix the secondary configuration. 
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | All                     |  All                    | 16.10.2  |
+
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
   See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 

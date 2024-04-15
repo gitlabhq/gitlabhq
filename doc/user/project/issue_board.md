@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Milestones and iterations shown on issue cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25758) in GitLab 16.11.
+
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 
@@ -217,6 +219,12 @@ card includes:
 - Associated labels
 - Issue number
 - Assignee
+- Weight
+- Milestone
+- Iteration (in the Premium and Ultimate tier)
+- Due date
+- Time tracking estimate
+- Health status
 
 ## Ordering issues in a list
 

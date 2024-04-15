@@ -63,10 +63,10 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
 
     describe 'backslash escapes are untouched in code blocks, code spans, autolinks, or raw HTML' do
       where(:markdown, :expected) do
-        %q(`` \@\! ``)       | %q(<code>\@\!</code>)
-        %q(    \@\!)         | %(<code>\\@\\!\n</code>)
-        %(~~~\n\\@\\!\n~~~) | %(<code>\\@\\!\n</code>)
-        %q($1+\$2$) | %q(<code data-math-style="inline">1+\\$2</code>)
+        %q(`` \@\! ``)                   | %q(<code>\@\!</code>)
+        %q(    \@\!)                     | %(<code>\\@\\!\n</code>)
+        %(~~~\n\\@\\!\n~~~)              | %(<code>\\@\\!\n</code>)
+        %q($1+\$2$)                      | %q(<span data-math-style="inline">1+\\$2</span>)
         %q(<http://example.com?find=\@>) | %q(<a href="http://example.com?find=%5C@">http://example.com?find=\@</a>)
         %q[<a href="/bar\@)">]           | %q[<a href="/bar\@)">]
       end

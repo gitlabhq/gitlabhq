@@ -3,8 +3,9 @@
 module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter
-      GLFM_ENGINE  = :glfm_markdown # glfm_markdown/comrak
-      CMARK_ENGINE = :cmark         # original commonmarker/cmark-gfm
+      GLFM_ENGINE    = :glfm_markdown # glfm_markdown/comrak
+      CMARK_ENGINE   = :cmark         # original commonmarker/cmark-gfm
+      DEFAULT_ENGINE = GLFM_ENGINE
 
       def initialize(text, context = nil, result = nil)
         super(text, context, result)
@@ -26,13 +27,9 @@ module Banzai
       private
 
       def engine
-        engine = context[:markdown_engine] || default_engine
+        engine = context[:markdown_engine] || DEFAULT_ENGINE
 
         engine.to_s.classify
-      end
-
-      def default_engine
-        GLFM_ENGINE
       end
 
       class << self
@@ -57,7 +54,7 @@ module Banzai
         end
 
         def glfm_markdown?(context)
-          (context[:markdown_engine] || GLFM_ENGINE) == GLFM_ENGINE
+          (context[:markdown_engine] || DEFAULT_ENGINE) == GLFM_ENGINE
         end
       end
     end

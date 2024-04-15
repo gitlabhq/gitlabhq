@@ -212,6 +212,9 @@ Include in the MR description:
 - Order columns based on the [Ordering Table Columns](database/ordering_table_columns.md) guidelines.
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
+- New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
+  to ensure that [upgrades complete successfully](database/dbmigrate:multi-version-upgrade-job.md),
+  so it's important that new tables are always populated.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
   difficult to scale. To identify these risky patterns in advance, we must document expectations for
   access and size. Include in the MR description answers to these questions:
@@ -278,6 +281,7 @@ to add the raw SQL query and query plan to the Merge Request description, and re
   - Are the stated access patterns and volume reasonable? Do the assumptions they're based on seem sound? Do these patterns pose risks to stability?
   - Are the columns [ordered to conserve space](database/ordering_table_columns.md)?
   - Are there foreign keys for references to other tables?
+  - Does the table have a fixture in `db/fixtures/development/`?
 - Check data migrations:
   - Establish a time estimate for execution on GitLab.com.
   - Depending on timing, data migrations can be placed on regular, post-deploy, or background migrations.

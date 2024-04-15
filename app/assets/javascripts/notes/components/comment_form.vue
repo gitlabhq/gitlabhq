@@ -374,8 +374,10 @@ export default {
                 :autocomplete-data-sources="autocompleteDataSources"
                 supports-quick-actions
                 @keydown.up="editCurrentUserLastNote()"
-                @keydown.meta.enter="handleEnter()"
-                @keydown.ctrl.enter="handleEnter()"
+                @keydown.shift.meta.enter="handleSave()"
+                @keydown.shift.ctrl.enter="handleSave()"
+                @keydown.meta.enter.exact="handleEnter()"
+                @keydown.ctrl.enter.exact="handleEnter()"
                 @input="onInput"
               />
             </comment-field-layout>

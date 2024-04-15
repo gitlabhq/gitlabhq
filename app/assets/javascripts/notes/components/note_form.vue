@@ -287,8 +287,8 @@ export default {
     onInput(value) {
       this.updatedNoteBody = value;
     },
-    handleKeySubmit() {
-      if (this.showBatchCommentsActions) {
+    handleKeySubmit(forceUpdate = false) {
+      if (this.showBatchCommentsActions && !forceUpdate) {
         this.handleAddToReview();
       } else {
         this.isSubmittingWithKeydown = true;
@@ -372,8 +372,10 @@ export default {
           :disabled="isSubmitting"
           supports-quick-actions
           :autofocus="autofocus"
-          @keydown.meta.enter="handleKeySubmit()"
-          @keydown.ctrl.enter="handleKeySubmit()"
+          @keydown.shift.meta.enter="handleKeySubmit((forceUpdate = true))"
+          @keydown.shift.ctrl.enter="handleKeySubmit((forceUpdate = true))"
+          @keydown.meta.enter.exact="handleKeySubmit()"
+          @keydown.ctrl.enter.exact="handleKeySubmit()"
           @keydown.exact.up="editMyLastNote()"
           @keydown.exact.esc="cancelHandler(true)"
           @input="onInput"
