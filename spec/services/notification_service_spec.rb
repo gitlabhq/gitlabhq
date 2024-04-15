@@ -384,7 +384,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:owner2) { create(:user) }
 
       subject(:notification_service) do
-        notification.resource_access_tokens_about_to_expire(project_bot, [expiring_token.name])
+        notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token.name])
       end
 
       context 'when the resource is a group' do
@@ -402,13 +402,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               owner1,
               project_bot.resource_bot_resource,
               [expiring_token.name],
-              mail: "resource_access_tokens_about_to_expire_email"
+              mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
                 [expiring_token.name],
-                mail: "resource_access_tokens_about_to_expire_email"
+                mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
@@ -430,13 +430,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               owner1,
               project_bot.resource_bot_resource,
               [expiring_token.name],
-              mail: "resource_access_tokens_about_to_expire_email"
+              mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
                 [expiring_token.name],
-                mail: "resource_access_tokens_about_to_expire_email"
+                mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )

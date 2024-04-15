@@ -4,7 +4,7 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Pages/Gatsby.gitlab-ci.yml
 
 default:
-  image: node:latest
+  image: node:21.7.3
 
   # This folder is cached between builds
   # https://docs.gitlab.com/ee/ci/yaml/index.html#cache

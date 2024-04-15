@@ -319,8 +319,7 @@ For example, users on GitLab Dedicated don't have to have a different and unique
 
 ### Can different Cells communicate with each other?
 
-Up until iteration 3, Cells communicate with each other only via a shared database that contains common data.
-In iteration 4 we are going to evaluate the option of Cells calling each other via API to provide more isolation and reliability.
+Not directly, our goal is to keep them isolated and only communicate using global services.
 
 ### How are Cells provisioned?
 

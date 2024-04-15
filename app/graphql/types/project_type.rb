@@ -618,8 +618,7 @@ module Types
       resolver: Resolvers::Projects::ForkDetailsResolver,
       description: 'Details of the fork project compared to its upstream project.'
 
-    field :branch_rules,
-      Types::Projects::BranchRuleType.connection_type,
+    field :branch_rules, Types::Projects::BranchRuleType.connection_type,
       null: true,
       description: "Branch rules configured for the project.",
       resolver: Resolvers::Projects::BranchRulesResolver

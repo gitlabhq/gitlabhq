@@ -10,6 +10,9 @@ RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
   let_it_be(:candidate) do
     model_version.candidate.tap do |c|
       c.update!(ci_build: create(:ci_build, pipeline: pipeline, user: current_user))
+      c.metrics = [create(:ml_candidate_metrics, candidate: c)]
+      c.params = [create(:ml_candidate_params, candidate: c)]
+      c.metadata = [create(:ml_candidate_metadata, candidate: c)]
     end
   end
 
@@ -32,6 +35,21 @@ RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
                 _links {
                   showPath
                   artifactPath
+                }
+                metrics {
+                  nodes {
+                    id
+                  }
+                }
+                params {
+                  nodes {
+                    id
+                  }
+                }
+                metadata {
+                  nodes {
+                    id
+                  }
                 }
               }
             }
@@ -59,6 +77,27 @@ RSpec.describe GitlabSchema.types['MlCandidate'], feature_category: :mlops do
       '_links' => {
         'showPath' => "/#{project.full_path}/-/ml/candidates/#{model_version.candidate.iid}",
         'artifactPath' => "/#{project.full_path}/-/packages/#{model_version.package_id}"
+      },
+      'metrics' => {
+        'nodes' => [
+          {
+            'id' => "gid://gitlab/Ml::CandidateMetric/#{candidate.metrics.first.id}"
+          }
+        ]
+      },
+      'params' => {
+        'nodes' => [
+          {
+            'id' => "gid://gitlab/Ml::CandidateParam/#{candidate.params.first.id}"
+          }
+        ]
+      },
+      'metadata' => {
+        'nodes' => [
+          {
+            'id' => "gid://gitlab/Ml::CandidateMetadata/#{candidate.metadata.first.id}"
+          }
+        ]
       }
     })
   end

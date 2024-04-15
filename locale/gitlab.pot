@@ -18948,6 +18948,33 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
+msgid "DuoChat|Ask a question about GitLab"
+msgstr ""
+
+msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
+msgstr ""
+
+msgid "DuoChat|GitLab Duo Chat"
+msgstr ""
+
+msgid "DuoChat|Give feedback"
+msgstr ""
+
+msgid "DuoChat|How to use GitLab"
+msgstr ""
+
+msgid "DuoChat|The issue, epic, or code you're viewing"
+msgstr ""
+
+msgid "DuoChat|There was an error communicating with GitLab Duo Chat. Please try again later."
+msgstr ""
+
+msgid "DuoChat|Use AI to answer questions about things like:"
+msgstr ""
+
+msgid "DuoChat|What is a fork?"
+msgstr ""
+
 msgid "DuoProTrialAlert|Dismiss Code Suggestions banner"
 msgstr ""
 
@@ -35347,9 +35374,6 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
-msgid "One or more of your resource access tokens will expire in %{days_to_expire} or less:"
-msgstr ""
-
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
 msgstr ""
 
@@ -50681,33 +50705,6 @@ msgstr ""
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
-msgid "TanukiBot|Ask a question about GitLab"
-msgstr ""
-
-msgid "TanukiBot|For example, %{linkStart}what is a fork%{linkEnd}?"
-msgstr ""
-
-msgid "TanukiBot|GitLab Duo Chat"
-msgstr ""
-
-msgid "TanukiBot|Give feedback"
-msgstr ""
-
-msgid "TanukiBot|How to use GitLab"
-msgstr ""
-
-msgid "TanukiBot|The issue, epic, or code you're viewing"
-msgstr ""
-
-msgid "TanukiBot|There was an error communicating with GitLab Duo Chat. Please try again later."
-msgstr ""
-
-msgid "TanukiBot|Use AI to answer questions about things like:"
-msgstr ""
-
-msgid "TanukiBot|What is a fork?"
-msgstr ""
-
 msgid "Target"
 msgstr ""
 
@@ -55881,6 +55878,9 @@ msgstr ""
 msgid "UserProfile|You can create a group for several dependent projects"
 msgstr ""
 
+msgid "UserProfile|You cannot create projects in your personal namespace. Contact your GitLab administrator."
+msgstr ""
+
 msgid "UserProfile|You do not have any followers"
 msgstr ""
 
@@ -58791,7 +58791,7 @@ msgstr ""
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr ""
 
-msgid "You can create a new one or check them in your %{link_start}access tokens%{link_end} settings."
+msgid "You can create a new one or check them in your %{link_start}Access Tokens%{link_end} settings."
 msgstr ""
 
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
@@ -59376,6 +59376,12 @@ msgid "Your %{plan_name} subscription will expire on %{expires_on}"
 msgstr ""
 
 msgid "Your %{plan} plan will be applied to your group."
+msgstr ""
+
+msgid "Your %{resource_type} access token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{resource_path}%{codeClose} will expire in %{days_to_expire} or less."
+msgstr ""
+
+msgid "Your %{resource_type} access token %{token_name} for %{resource_path} will expire in %{days_to_expire} or less."
 msgstr ""
 
 msgid "Your %{spammable_entity_type} has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."

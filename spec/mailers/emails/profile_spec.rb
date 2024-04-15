@@ -193,7 +193,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_developer(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -216,7 +216,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_reporter(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'

@@ -8,7 +8,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
   shared_examples 'sends notification about expiry of bot user tokens' do
     it 'uses notification service to send the email' do
       expect_next_instance_of(NotificationService) do |notification_service|
-        expect(notification_service).to receive(:resource_access_tokens_about_to_expire)
+        expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
                                           .with(project_bot, expiring_token.name)
       end
 

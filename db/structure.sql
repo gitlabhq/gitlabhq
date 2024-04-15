@@ -25902,6 +25902,8 @@ CREATE INDEX index_member_approval_on_requested_by_id ON member_approvals USING 
 
 CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING btree (reviewed_by_id);
 
+CREATE INDEX index_member_approvals_on_member_namespace_id_status ON member_approvals USING btree (member_namespace_id, status) WHERE (status = 0);
+
 CREATE INDEX index_member_approvals_on_member_role_id ON member_approvals USING btree (member_role_id);
 
 CREATE INDEX index_member_approvals_on_user_id ON member_approvals USING btree (user_id);

@@ -60,9 +60,10 @@ module Emails
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def resource_access_tokens_about_to_expire_email(recipient, resource, token_names)
+    # resource owners are sent mail about expiring access tokens which belong to a bot user
+    def bot_resource_access_token_about_to_expire_email(recipient, resource, token_name)
       @user = recipient
-      @token_names = token_names
+      @token_name = token_name
       @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
       @resource = resource
       if resource.is_a?(Group)

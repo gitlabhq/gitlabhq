@@ -7,16 +7,22 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
   let_it_be(:project) { model.project }
   let_it_be(:candidates) { Array.new(2) { create(:ml_candidates, experiment: model.default_experiment) } }
 
+  let_it_be(:model_id) { GitlabSchema.id_from_object(model).to_s }
+  let_it_be(:model_version_id) { GitlabSchema.id_from_object(model.latest_version).to_s }
+
   let(:query) do
     %(
         query {
-          mlModel(id: "gid://gitlab/Ml::Model/#{model.id}") {
+          mlModel(id: "#{model_id}") {
             id
             description
             name
             versionCount
             candidateCount
             latestVersion {
+              id
+            }
+            version(modelVersionId: "#{model_version_id}") {
               id
             }
             _links {
@@ -33,7 +39,7 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
 
   it 'includes all the fields' do
     expected_fields = %w[id name versions candidates version_count _links created_at latest_version description
-      candidate_count description]
+      candidate_count description version]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
@@ -42,11 +48,14 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
     model_data = data.dig('data', 'mlModel')
 
     expect(model_data).to eq({
-      'id' => "gid://gitlab/Ml::Model/#{model.id}",
+      'id' => model_id,
       'name' => model.name,
       'description' => 'A description',
       'latestVersion' => {
-        'id' => "gid://gitlab/Ml::ModelVersion/#{model.latest_version.id}"
+        'id' => model_version_id
+      },
+      'version' => {
+        'id' => model_version_id
       },
       'versionCount' => 1,
       'candidateCount' => 2,

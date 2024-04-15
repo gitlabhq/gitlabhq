@@ -57,3 +57,25 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
 
    Do not remove the metric's YAML definition altogether. Some self-managed instances might not immediately update to the latest version of GitLab, and
    therefore continue to report the removed metric. The Analytics Instrumentation team requires a record of all removed metrics to identify and filter them.
+
+## Group name changes
+
+When the name of a group that owns events or metrics is changed, the `product_group` property should be updated in all metric and event definitions belonging to that group.
+
+The `product_group_renamer` script can update all the definitions so you do not have to do it manually.
+
+For example, if the group 5-min-app was renamed to 2-min-app, you can update the relevant files like this:
+
+```shell
+$ ruby scripts/internal_events/product_group_renamer.rb 5-min-app 2-min-app
+Updated '5-min-app' to '2-min-app' in 3 files
+
+Updated files:
+  config/metrics/schema/product_groups.json
+  config/metrics/counts_28d/20210216184517_p_ci_templates_5_min_production_app_monthly.yml
+  config/metrics/counts_7d/20210216184515_p_ci_templates_5_min_production_app_weekly.yml
+```
+
+After running the script, you must commit all the modified files to Git and create a merge request.
+
+If a group is split into multiple groups, you need to manually update the product_group.

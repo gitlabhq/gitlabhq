@@ -50,7 +50,7 @@ module PersonalAccessTokens
             # We're limiting to 100 tokens so we avoid loading too many tokens into memory.
             # At the time of writing this would only affect 69 users on GitLab.com
 
-            deliver_user_notifications(token_names, user)
+            deliver_user_notifications(user, token_names)
 
             expiring_user_tokens.update_all(expire_notification_delivered: true)
           end
@@ -77,7 +77,7 @@ module PersonalAccessTokens
 
         bot_users.each do |user|
           with_context(user: user) do
-            expiring_user_token = user.personal_access_tokens.first
+            expiring_user_token = user.personal_access_tokens.first # bot user should not have more than 1 token
 
             execute_web_hooks(expiring_user_token, user)
             deliver_bot_notifications(expiring_user_token.name, user)
@@ -91,8 +91,8 @@ module PersonalAccessTokens
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
-    def deliver_bot_notifications(token_names, user)
-      notification_service.resource_access_tokens_about_to_expire(user, token_names)
+    def deliver_bot_notifications(token_name, user)
+      notification_service.bot_resource_access_token_about_to_expire(user, token_name)
 
       Gitlab::AppLogger.info(
         message: "Notifying Bot User resource owners about expiring tokens",
@@ -101,7 +101,7 @@ module PersonalAccessTokens
       )
     end
 
-    def deliver_user_notifications(token_names, user)
+    def deliver_user_notifications(user, token_names)
       notification_service.access_token_about_to_expire(user, token_names)
 
       Gitlab::AppLogger.info(

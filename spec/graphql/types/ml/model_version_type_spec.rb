@@ -15,6 +15,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
             latestVersion {
               id
               version
+              packageId
               candidate {
                 id
               }
@@ -33,7 +34,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
   subject(:data) { GitlabSchema.execute(query, context: { current_user: project.owner }).as_json }
 
   it 'includes all fields' do
-    expected_fields = %w[id version created_at _links candidate]
+    expected_fields = %w[id version created_at _links candidate package_id]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
@@ -44,6 +45,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
     expect(version_data).to eq({
       'id' => "gid://gitlab/Ml::ModelVersion/#{model_version.id}",
       'version' => model_version.version,
+      'packageId' => "gid://gitlab/Packages::Package/#{model_version.package_id}",
       'candidate' => {
         'id' => "gid://gitlab/Ml::Candidate/#{model_version.candidate.id}"
       },

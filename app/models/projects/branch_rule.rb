@@ -8,7 +8,7 @@ module Projects
     attr_reader :project, :protected_branch
     alias_method :branch_protection, :protected_branch
 
-    def_delegators(:protected_branch, :id, :name, :group, :default_branch?, :created_at, :updated_at)
+    def_delegators(:protected_branch, :id, :name, :group, :default_branch?, :created_at, :updated_at, :persisted?)
 
     def self.find(id)
       protected_branch = ProtectedBranch.find(id)

@@ -470,7 +470,7 @@ To delete only the custom HTTP headers for a streaming destination:
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Monitoring > Audit Events**.
 1. On the main area, select the **Streams** tab.
-1. To the right of the item, **Edit** (**{pencil}**).
+1. To the right of the item, select **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
 1. Locate the header that you wish to remove.
 1. To the right of the header, select **Delete** (**{remove}**).

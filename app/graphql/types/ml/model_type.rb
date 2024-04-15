@@ -38,6 +38,10 @@ module Types
 
       field :candidates, ::Types::Ml::CandidateType.connection_type, null: true,
         description: 'Version candidates of the model.'
+
+      field :version, ::Types::Ml::ModelVersionType, null: true,
+        description: 'Version of the model.',
+        resolver: ::Resolvers::Ml::FindModelVersionResolver
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

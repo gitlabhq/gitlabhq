@@ -31,6 +31,18 @@ module Types
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
 
+      field :params, ::Types::Ml::CandidateParamType.connection_type,
+        null: false,
+        description: 'Parameters for the candidate.'
+
+      field :metrics, ::Types::Ml::CandidateMetricType.connection_type,
+        null: false,
+        description: 'Metrics for the candidate.'
+
+      field :metadata, ::Types::Ml::CandidateMetadataType.connection_type,
+        null: false,
+        description: 'Metadata entries for the candidate.'
+
       field :ci_job, ::Types::Ci::JobType,
         null: true,
         description: 'CI information about the job that created the candidate.'
