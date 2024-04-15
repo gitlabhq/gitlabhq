@@ -34,7 +34,7 @@ module AutoMerge
 
     def available_for?(merge_request)
       super do
-        check_availability(merge_request)
+        merge_request.auto_merge_available_when_pipeline_succeeds?
       end
     end
 
@@ -42,10 +42,6 @@ module AutoMerge
 
     def add_system_note(merge_request)
       SystemNoteService.merge_when_pipeline_succeeds(merge_request, project, current_user, merge_request.diff_head_pipeline.sha) if merge_request.saved_change_to_auto_merge_enabled?
-    end
-
-    def check_availability(merge_request)
-      merge_request.auto_merge_available_when_pipeline_succeeds?
     end
 
     def notify(merge_request)

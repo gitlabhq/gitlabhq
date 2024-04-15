@@ -3660,14 +3660,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#skipped_mergeable_checks' do
     subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
 
+    let(:feature_flag) { true }
+
+    before do
+      stub_feature_flags(additional_merge_when_checks_ready: feature_flag)
+    end
+
     where(:options, :skip_ci_check) do
       {}                              | false
       { auto_merge_requested: false } | false
       { auto_merge_requested: true }  | true
     end
-
     with_them do
       it { is_expected.to include(skip_ci_check: skip_ci_check) }
+    end
+
+    context 'when auto_merge_requested is true' do
+      let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
+
+      where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
+        :skip_discussions_check, :skip_external_status_check, :feature_flag) do
+        ''                                                      | false | false | false | false | false | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | false | false | false | false | false
+      end
+
+      with_them do
+        it do
+          is_expected.to include(skip_approved_check: skip_approved_check, skip_draft_check: skip_draft_check,
+            skip_blocked_check: skip_blocked_check, skip_discussions_check: skip_discussions_check,
+            skip_external_status_check: skip_external_status_check)
+        end
+      end
     end
   end
 
@@ -6282,6 +6307,26 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       expect(merge_request.all_mergeability_checks_results).to eq(result.payload[:results])
+    end
+  end
+
+  describe '#mergeability_checks_pass?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:result) { instance_double(ServiceResponse, success?: { results: ['result'] }) }
+
+    it 'executes MergeRequests::Mergeability::RunChecksService with all mergeability checks and returns a boolean' do
+      expect_next_instance_of(
+        MergeRequests::Mergeability::RunChecksService,
+        merge_request: merge_request,
+        params: {}
+      ) do |svc|
+        expect(svc)
+          .to receive(:execute)
+          .with(described_class.all_mergeability_checks, execute_all: false)
+          .and_return(result)
+      end
+
+      expect(merge_request.mergeability_checks_pass?).to be_truthy
     end
   end
 

@@ -1235,8 +1235,18 @@ class MergeRequest < ApplicationRecord
   alias_method :wip_title, :draft_title
 
   def skipped_mergeable_checks(options = {})
+    merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+
+    skip_additional_checks = merge_when_checks_pass_strat &&
+      ::Feature.enabled?(:additional_merge_when_checks_ready, project)
+
     {
-      skip_ci_check: options.fetch(:auto_merge_requested, false)
+      skip_ci_check: options.fetch(:auto_merge_requested, false),
+      skip_approved_check: merge_when_checks_pass_strat,
+      skip_draft_check: skip_additional_checks,
+      skip_blocked_check: skip_additional_checks,
+      skip_discussions_check: skip_additional_checks,
+      skip_external_status_check: skip_additional_checks
     }
   end
 
@@ -1285,31 +1295,28 @@ class MergeRequest < ApplicationRecord
   # skip_approved_check
   # skip_blocked_check
   # skip_external_status_check
-  def mergeable_state?(**mergeable_state_check_params)
-    additional_checks = execute_merge_checks(
-      self.class.mergeable_state_checks,
-      params: mergeable_state_check_params
-    )
-    additional_checks.success?
+  def mergeable_state?(**params)
+    results = check_mergeability_states(checks: self.class.mergeable_state_checks, **params)
+
+    results.success?
   end
 
-  def mergeable_git_state?(skip_rebase_check: false)
-    checks = execute_merge_checks(
-      self.class.mergeable_git_state_checks,
-      params: {
-        skip_rebase_check: skip_rebase_check
-      }
-    )
+  # This runs only git related checks
+  def mergeable_git_state?(**params)
+    results = check_mergeability_states(checks: self.class.mergeable_git_state_checks, **params)
 
-    checks.success?
+    results.success?
+  end
+
+  # This runs all the checks
+  def mergeability_checks_pass?(**params)
+    results = check_mergeability_states(checks: self.class.all_mergeability_checks, **params)
+
+    results.success?
   end
 
   def all_mergeability_checks_results
-    execute_merge_checks(
-      self.class.all_mergeability_checks,
-      params: {},
-      execute_all: true
-    ).payload[:results]
+    check_mergeability_states(checks: self.class.all_mergeability_checks, execute_all: true).payload[:results]
   end
 
   def ff_merge_possible?
@@ -2238,6 +2245,14 @@ class MergeRequest < ApplicationRecord
       :auto_merge_when_incomplete_pipeline_succeeds,
       Project.actor_from_id(target_project_id),
       type: :gitlab_com_derisk
+    )
+  end
+
+  def check_mergeability_states(checks:, execute_all: false, **params)
+    execute_merge_checks(
+      checks,
+      params: params,
+      execute_all: execute_all
     )
   end
 

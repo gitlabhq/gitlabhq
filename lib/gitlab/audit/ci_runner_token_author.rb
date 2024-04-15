@@ -14,7 +14,7 @@ module Gitlab
           token = audit_event.details[:runner_registration_token]
           name = "Registration token: #{token}"
         else
-          raise ArgumentError, 'Runner token missing'
+          name = "Token not available"
         end
 
         super(id: -1, name: name)

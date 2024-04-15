@@ -71,8 +71,8 @@ To enable Beta and Experimental AI-powered features for GitLab versions where Gi
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.com/-/cable` and other `.com` domains.
-  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo
-  chat services. Consider policy updates to allow these services.
+  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
+  services. Consider policy updates to allow these services.
 
 ### Disable GitLab Duo features for specific groups or projects or an entire instance
 

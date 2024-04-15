@@ -1740,6 +1740,15 @@ For status, choose one:
 
 Generally available features should not have a status.
 
+##### GitLab Duo Pro add-on
+
+The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
+For example:
+
+```markdown
+**Tier:** Premium or Ultimate with GitLab Duo Pro
+```
+
 ##### Duplicating tier, offering, or status on subheadings
 
 If a subheading has the same tier, offering, or status as its parent
