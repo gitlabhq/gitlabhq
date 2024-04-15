@@ -1,8 +1,7 @@
-- button_class = 'btn btn-default gl-button'
-
-%label.label-bold.gl-mb-0
-  = s_('Profiles|Connected Accounts')
-  %p= s_('Profiles|Select a service to sign in with.')
+%div
+  %label.label-bold.gl-mb-0
+    = s_('Profiles|Connected Accounts')
+  %p.gl-text-secondary= s_('Profiles|Select a service to sign in with.')
   .gl-display-flex.gl-flex-wrap.gl-gap-3
     - providers.each do |provider|
       - unlink_allowed = unlink_provider_allowed?(provider)
@@ -11,19 +10,25 @@
       - if unlink_allowed || link_allowed
         - if auth_active?(provider)
           - if unlink_allowed
-            = link_to unlink_profile_account_path(provider: provider), method: :delete, class: button_class do
+            - button_text = s_('Profiles|Disconnect %{provider}') % { provider: label_for_provider(provider) }
+            = render Pajamas::ButtonComponent.new(href: unlink_profile_account_path(provider: provider),
+              method: :delete,
+              button_options: { 'aria-label': button_text }) do |c|
               - if has_icon
-                .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
-              .gl-button-text
-                = s_('Profiles|Disconnect %{provider}') % { provider: label_for_provider(provider) }
+                - c.with_icon_content do
+                  .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
+              = button_text
           - else
-            %a{ class: button_class }
-              .gl-button-text
-                = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
+            - button_text = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
+            = render Pajamas::ButtonComponent.new(button_options: { 'aria-label': button_text }) do
+              = button_text
         - elsif link_allowed
-          = link_to omniauth_authorize_path(:user, provider), method: :post, class: button_class do
+          - button_text = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }
+          = render Pajamas::ButtonComponent.new(href: omniauth_authorize_path(:user, provider),
+            method: :post,
+            button_options: { 'aria-label': button_text }) do |c|
             - if has_icon
-              .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
-            .gl-button-text
-              = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }
+              - c.with_icon_content do
+                .social-provider-btn-image.gl-button-icon= provider_image_tag(provider)
+            = button_text
     = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: group_saml_identities

@@ -80,7 +80,7 @@ module Keeps
         change.changed_files = [migration_file]
 
         add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
-        ::Gitlab::Housekeeper::Shell.execute('rubocop', '-a', migration_file)
+        ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
 
         digest = Digest::SHA256.hexdigest(generator.migration_number)
         digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s

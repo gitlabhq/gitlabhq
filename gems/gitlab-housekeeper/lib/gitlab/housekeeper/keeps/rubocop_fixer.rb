@@ -40,9 +40,7 @@ module Gitlab
               remove_first_exclusions(rule, rule_file_path, violating_files.count)
             end
 
-            begin
-              ::Gitlab::Housekeeper::Shell.execute('rubocop', '--autocorrect', *violating_files)
-            rescue ::Gitlab::Housekeeper::Shell::Error
+            unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files)
               @logger.warn "Failed to autocorrect files. Reverting"
               # Ignore when it cannot be automatically fixed. But we need to checkout any files we might have updated.
               ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', rule_file_path, *violating_files)

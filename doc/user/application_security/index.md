@@ -127,6 +127,9 @@ Although in a major analyzer version you automatically get the latest versions o
 tools, there are some [known issues](https://gitlab.com/gitlab-org/gitlab/-/issues/9725) with this
 approach.
 
+NOTE:
+To get the most updated vulnerability information on existing vulnerabilities you may need to re-run the default branch's pipeline.
+
 ## Security scanning with Auto DevOps
 
 To enable all GitLab Security scanning tools, with default settings, enable

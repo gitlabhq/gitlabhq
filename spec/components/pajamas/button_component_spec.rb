@@ -7,11 +7,13 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
   end
 
   let(:content) { "Button content" }
+  let(:icon_content) { nil }
   let(:options) { {} }
 
   RSpec.shared_examples 'basic button behavior' do
     before do
       render_inline(subject) do |c|
+        c.with_icon_content { icon_content } if icon_content.present?
         content
       end
     end
@@ -216,6 +218,14 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
           expect(page).not_to have_css "svg.gl-icon.gl-button-icon.custom-icon[data-testid='star-o-icon']"
           expect(page).to have_css ".gl-spinner[aria-label='Loading']"
         end
+      end
+    end
+
+    describe 'icon_content' do
+      let(:icon_content) { 'Custom icon' }
+
+      it 'renders custom icon content' do
+        expect(page).to have_text icon_content
       end
     end
   end

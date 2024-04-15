@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'tmpdir'
 require 'spec_helper'
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
@@ -49,7 +50,10 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
     it 'iterates over todo_dir_pattern files' do
       yielded_times = 0
 
+      # Stub out git
       allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+      # Spy on rubocop
+      allow(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect).and_call_original
 
       rubocop_fixer.each_change do |change|
         yielded_times += 1
@@ -66,8 +70,8 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
             *rule1_violating_files
           ])
 
-          expect(::Gitlab::Housekeeper::Shell).to have_received(:execute)
-            .with('rubocop', '--autocorrect', *rule1_violating_files)
+          expect(::Gitlab::Housekeeper::Shell).to have_received(:rubocop_autocorrect)
+            .with(rule1_violating_files)
         elsif change.identifiers.include?('RuboCop/FakeRule2')
           # rule2 contained 8 total exclusions and we fixed 5 of them so there should be 3 left
           expect(File).to exist(rule2_file)
@@ -79,8 +83,8 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
             *rule2_violating_files.first(5)
           ])
 
-          expect(::Gitlab::Housekeeper::Shell).to have_received(:execute)
-            .with('rubocop', '--autocorrect', *rule2_violating_files.first(5))
+          expect(::Gitlab::Housekeeper::Shell).to have_received(:rubocop_autocorrect)
+            .with(rule2_violating_files.first(5))
         else
           raise "Unexpected change: #{change.identifiers}"
         end
@@ -91,24 +95,21 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
 
     context 'when rubocop fails to fix the errors' do
       it 'checks out the files' do
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        expect(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
           .once
-          .ordered
-          .with('rubocop', '--autocorrect', *rule1_violating_files)
-          .and_raise(::Gitlab::Housekeeper::Shell::Error)
+          .with(rule1_violating_files)
+          .and_return(false)
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
           .once
           .ordered
           .with('git', 'checkout', rule1_file, *rule1_violating_files)
 
+        expect(::Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect)
+          .once
+          .with(rule2_violating_files.first(5))
+          .and_return(false)
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
           .once
-          .ordered
-          .with('rubocop', '--autocorrect', *rule2_violating_files.first(5))
-          .and_raise(::Gitlab::Housekeeper::Shell::Error)
-        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
-          .once
-          .ordered
           .with('git', 'checkout', rule2_file, *rule2_violating_files.first(5))
 
         rubocop_fixer.each_change
