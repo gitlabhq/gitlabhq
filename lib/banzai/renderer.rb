@@ -2,6 +2,8 @@
 
 module Banzai
   module Renderer
+    USER_CONTENT_ID_PREFIX = 'user-content-'
+
     # Convert a Markdown String into an HTML-safe String of HTML
     #
     # Note that while the returned HTML will have been sanitized of dangerous

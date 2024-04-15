@@ -5,8 +5,9 @@ require 'gitlab-http'
 require_relative 'helpers/groups'
 
 module Keeps
-  # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will fetch any `failure::flaky-test` issues
-  # with more than MINIMUM_FLAKINESS_OCCURENCES reports and quarantine these tests.
+  # This is an implementation of a ::Gitlab::Housekeeper::Keep.
+  # This keep will fetch any `test` + `failure::flaky-test` + `flakiness::1` issues,
+  # without the `QA` nor `quarantine` labels and open quarantine merge requests for them.
   #
   # You can run it individually with:
   #
@@ -15,9 +16,8 @@ module Keeps
   #   -k Keeps::QuarantineFlakyTests
   # ```
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
-    MINIMUM_FLAKINESS_OCCURENCES = 1000
-    FLAKY_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&not%5Blabels%5D%5B%5D=QA&not%5Blabel_name%5D%5B%5D=quarantine&per_page=100"
-    FLAKY_TEST_ISSUE_NOTES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%%2Fgitlab/issues/%<issue_iid>s/notes"
+    MINIMUM_REMAINING_RATE = 25
+    FLAKINESS_1_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&labels%5B%5D=flakiness%3A%3A1&not%5Blabels%5D%5B%5D=QA&not%5Blabels%5D%5B%5D=quarantine&per_page=20"
     EXAMPLE_LINE_REGEX = /([\w'",])? do$/
 
     def each_change
@@ -67,21 +67,76 @@ module Keeps
     end
 
     def each_very_flaky_issue
-      flaky_test_issues = Gitlab::HTTP.get(FLAKY_TEST_ISSUES_URL)
+      query_api(FLAKINESS_1_TEST_ISSUES_URL) do |flaky_test_issue|
+        yield(flaky_test_issue)
+      end
+    end
 
-      flaky_test_issues_above_threshold = flaky_test_issues.select do |flaky_test_issue|
-        Gitlab::HTTP.get(format(FLAKY_TEST_ISSUE_NOTES_URL, { issue_iid: flaky_test_issue['iid'] }),
-          headers: { 'PRIVATE-TOKEN': ENV['HOUSEKEEPER_GITLAB_API_TOKEN'] }).find do |note|
-          match = note['body'].match(/### Flakiness reports \((?<reports_count>\d+)\)/)
-          next unless match
+    def query_api(url)
+      get_result = {}
 
-          match[:reports_count].to_i >= MINIMUM_FLAKINESS_OCCURENCES
+      begin
+        print '.'
+        url = get_result.fetch(:next_page_url) { url }
+
+        puts "query_api: #{url}"
+        get_result = get(url)
+
+        results = get_result.delete(:results)
+
+        case results
+        when Array
+          results.each { |result| yield(result) }
+        else
+          raise "Unexpected response: #{results.inspect}"
         end
-      end
 
-      flaky_test_issues_above_threshold.map do |issue|
-        yield(issue)
+        rate_limit_wait(get_result)
+      end while get_result.delete(:more_pages)
+    end
+
+    def get(url)
+      http_response = Gitlab::HTTP.get(
+        url,
+        headers: {
+          'User-Agent' => "GitLab-Housekeeper/#{self.class.name}",
+          'Content-type' => 'application/json',
+          'PRIVATE-TOKEN': ENV['HOUSEKEEPER_GITLAB_API_TOKEN']
+        }
+      )
+
+      {
+        more_pages: (http_response.headers['x-next-page'].to_s != ""),
+        next_page_url: next_page_url(url, http_response),
+        results: http_response.parsed_response,
+        ratelimit_remaining: http_response.headers['ratelimit-remaining'],
+        ratelimit_reset_at: http_response.headers['ratelimit-reset']
+      }
+    end
+
+    def next_page_url(url, http_response)
+      return unless http_response.headers['x-next-page'].present?
+
+      next_page = "&page=#{http_response.headers['x-next-page']}"
+
+      if url.include?('&page')
+        url.gsub(/&page=\d+/, next_page)
+      else
+        url + next_page
       end
+    end
+
+    def rate_limit_wait(get_result)
+      ratelimit_remaining = get_result.fetch(:ratelimit_remaining)
+      ratelimit_reset_at = get_result.fetch(:ratelimit_reset_at)
+
+      return if ratelimit_remaining.nil? || ratelimit_reset_at.nil?
+      return if ratelimit_remaining.to_i >= MINIMUM_REMAINING_RATE
+
+      ratelimit_reset_at = Time.at(ratelimit_reset_at.to_i)
+
+      puts "Rate limit almost exceeded, sleeping for #{ratelimit_reset_at - Time.now} seconds"
+      sleep(1) until Time.now >= ratelimit_reset_at
     end
 
     def construct_change(filename, line_number, description, flaky_issue)
@@ -90,7 +145,7 @@ module Keeps
         change.identifiers = [self.class.name.demodulize, filename, line_number.to_s]
         change.changed_files = [filename]
         change.description = <<~MARKDOWN
-        The #{description} test has been reported as flaky more then #{MINIMUM_FLAKINESS_OCCURENCES} times.
+        The #{description} test has the `flakiness::1` label set, which means it has more than 1000 flakiness reports.
 
         This MR quarantines the test. This is a discussion starting point to let the responsible group know about the flakiness
         so that they can take action:

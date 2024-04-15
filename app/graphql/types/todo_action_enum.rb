@@ -14,5 +14,6 @@ module Types
     value 'member_access_requested', value: 10, description: 'Group or project access requested from the user.'
     value 'review_submitted', value: 11, description: 'Merge request authored by the user received a review.'
     value 'okr_checkin_requested', value: 12, description: 'An OKR assigned to the user requires an update.'
+    value 'added_approver', value: 13, description: 'User was added as an approver.'
   end
 end

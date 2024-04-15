@@ -390,6 +390,12 @@ Audit event types belong to the following product categories.
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Event triggered on successful assignment of associated projects to a CI runner| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | User |
 
+### Secret detection
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`skip_pre_receive_secret_detection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Triggered when pre-receive secret detection is skipped by the user| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
+
 ### Security policy management
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

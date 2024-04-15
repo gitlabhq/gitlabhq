@@ -15583,6 +15583,7 @@ CREATE TABLE scan_result_policies (
     rule_idx smallint,
     project_approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     commits smallint,
+    send_bot_message jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );

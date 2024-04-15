@@ -63,6 +63,9 @@ Data is aggregated monthly, around the end of the month, on a best-effort basis 
 
 For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/epics/10417#iterations-path).
 
+NOTE:
+To view metrics on the Overview panel, the [background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
+
 ### DevSecOps metrics comparison panel
 
 > - Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.

@@ -186,7 +186,9 @@ flowchart TD
 
 ### 3. Routing layer
 
-See [Cells: Routing Service](routing-service.md).
+See [Cells: Routing Service](routing-service.md) for HTTP Routing.
+
+See [Cells: SSH Routing Service](ssh_routing_service.md) for SSH Routing.
 
 ### 4. Infrastructure
 

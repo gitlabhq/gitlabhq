@@ -189,6 +189,24 @@ the defined policy.
 | `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
 | `role_approvers` | `array` of `string` | false | One or more [roles](../../../user/permissions.md#roles) (for example: `owner`, `maintainer`)  | The roles to consider as approvers that are eligible to approve. |
 
+## `send_bot_message` action type
+
+> - The `send_bot_message` action type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438269) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_disable_bot_comment`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `approval_policy_disable_bot_comment`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+This action enables configuration of the bot message in merge requests when policy violations are detected.
+If the action is not specified, the bot message is enabled by default. If there are multiple policies defined,
+the bot message is sent as long as at least one of those policies has the `send_bot_message` action is enabled.
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `type` | `string` | true | `send_bot_message` | The action's type. |
+| `enabled` | `boolean` | true | `true`, `false` | Whether a bot message should be created when policy violations are detected. Default: `true` |
+
 ## `approval_settings`
 
 > - The `block_group_branch_modification` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420724) in GitLab 16.8 [with flag](../../../administration/feature_flags.md) named `scan_result_policy_block_group_branch_modification`. Disabled by default.

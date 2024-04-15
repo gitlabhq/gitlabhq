@@ -142,7 +142,7 @@
               },
               {
                 "type": "array",
-                "minLength": 1,
+                "minItems": 1,
                 "items": {
                   "type": "string"
                 }
@@ -958,7 +958,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -1010,7 +1010,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -1090,8 +1090,7 @@
               "additionalProperties": false
             }
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "jobVariables": {
@@ -1121,8 +1120,7 @@
               "additionalProperties": false
             }
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "rulesVariables": {
@@ -1135,8 +1133,7 @@
             "number",
             "string"
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "if": {
@@ -1754,7 +1751,7 @@
             },
             {
               "type": "array",
-              "minLength": 1,
+              "minItems": 1,
               "items": {
                 "type": "string"
               }
@@ -2343,7 +2340,7 @@
     },
     "tags": {
       "type": "array",
-      "minLength": 1,
+      "minItems": 1,
       "markdownDescription": "Used to select runners from the list of available runners. A runner must have all tags listed here to run the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#tags).",
       "items": {
         "anyOf": [
@@ -2353,7 +2350,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }

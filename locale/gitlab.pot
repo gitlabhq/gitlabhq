@@ -38265,6 +38265,9 @@ msgstr ""
 msgid "Pre-defined push rules"
 msgstr ""
 
+msgid "Pre-receive secret detection skipped via"
+msgstr ""
+
 msgid "PreScanVerification|(optional)"
 msgstr ""
 
@@ -60389,6 +60392,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "commit %{commit_id}"
+msgstr ""
+
+msgid "commit message"
 msgstr ""
 
 msgid "committed"

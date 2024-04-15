@@ -184,7 +184,7 @@ RSpec.describe Ci::PipelinesFinder do
         is_expected.to match_array([pipeline1, pipeline3])
       end
 
-      it 'does not fitler out child pipelines' do
+      it 'does not filter out child pipelines' do
         is_expected.to include(pipeline3)
       end
     end

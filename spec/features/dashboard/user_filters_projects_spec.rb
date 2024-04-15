@@ -37,7 +37,7 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :groups_an
       visit dashboard_projects_path
     end
 
-    it 'returns message when starred projects fitler returns no results' do
+    it 'returns message when starred projects filter returns no results' do
       fill_in 'project-filter-form-field', with: 'Beta\n'
 
       expect(page).to have_content('There are no projects available to be displayed here')

@@ -55,7 +55,11 @@ module Banzai
 
       def anchor_tag(href)
         escaped_href = CGI.escape(href) # account for non-ASCII characters
-        %(<a id="user-content-#{href}" class="anchor" href="##{escaped_href}" aria-hidden="true"></a>)
+
+        <<~TAG.squish
+          <a id="#{Banzai::Renderer::USER_CONTENT_ID_PREFIX}#{href}"
+          class="anchor" href="##{escaped_href}" aria-hidden="true"></a>
+        TAG
       end
 
       def push_toc(children, root: false)

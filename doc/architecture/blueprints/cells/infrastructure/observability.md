@@ -53,7 +53,9 @@ the [Cells 1.0](../iterations/cells-1.0.md) iteration.
    1. Alerting is evaluated per cell.
    1. Capacity planning.
    1. Error budget metrics.
-   1. SIRT: Log delivery to Devo.
+   1. SIRT: Logs delivery to Devo (e.g. Application Logs, Syslogs, Cloud & Infrastructure Audit logs)
+   1. Osquery on VMs
+   1. Wiz Runtime Agent on all VMs & Kubernetes nodes
 
 1. Cell metrics configuration uses defaults based on the architecture
    and expected workload of the Cell. This is part of the
