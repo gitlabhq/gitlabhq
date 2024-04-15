@@ -27,6 +27,7 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
+import { useLocalStorageSpy } from '../../__helpers__/local_storage_helper';
 
 Vue.use(Vuex);
 
@@ -96,6 +97,34 @@ describe('noteable_discussion component', () => {
     await nextTick();
 
     expect(wrapper.vm.canShowReplyActions).toBe(false);
+  });
+
+  describe('drafts', () => {
+    useLocalStorageSpy();
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it.each`
+      show          | exists              | hasDraft
+      ${'show'}     | ${'exists'}         | ${true}
+      ${'not show'} | ${'does not exist'} | ${false}
+    `(
+      'should $show markdown editor on create if reply draft $exists in localStorage',
+      ({ hasDraft }) => {
+        if (hasDraft) {
+          localStorage.setItem(`autosave/Note/Issue/${discussionMock.id}/Reply`, 'draft');
+        }
+        window.gon.current_user_id = userDataMock.id;
+        store.dispatch('setUserData', userDataMock);
+        wrapper = mount(NoteableDiscussion, {
+          store,
+          propsData: { discussion: discussionMock },
+        });
+        expect(wrapper.find('.note-edit-form').exists()).toBe(hasDraft);
+      },
+    );
   });
 
   describe('actions', () => {

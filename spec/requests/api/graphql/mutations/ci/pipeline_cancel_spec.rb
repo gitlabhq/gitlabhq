@@ -6,7 +6,7 @@ RSpec.describe 'PipelineCancel', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
 
   let(:mutation) do
@@ -17,10 +17,6 @@ RSpec.describe 'PipelineCancel', feature_category: :continuous_integration do
   end
 
   let(:mutation_response) { graphql_mutation_response(:pipeline_cancel) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   it 'does not cancel any pipelines not owned by the current user' do
     build = create(:ci_build, :running, pipeline: pipeline)

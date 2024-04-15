@@ -7,7 +7,7 @@ RSpec.describe 'PipelineScheduleTakeOwnership', feature_category: :continuous_in
 
   let_it_be(:user) { create(:user) }
   let_it_be(:owner) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: owner) }
 
   let(:mutation) do
@@ -21,10 +21,6 @@ RSpec.describe 'PipelineScheduleTakeOwnership', feature_category: :continuous_in
   end
 
   let(:pipeline_schedule_id) { pipeline_schedule.to_global_id.to_s }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   it 'returns an error if the user is not allowed to take ownership of the schedule' do
     post_graphql_mutation(mutation, current_user: create(:user))

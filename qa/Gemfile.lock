@@ -86,7 +86,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.0)
-    faraday-retry (2.2.0)
+    faraday-retry (2.2.1)
       faraday (~> 2.0)
     ffi (1.16.3)
     ffi-compiler (1.0.1)
@@ -357,7 +357,7 @@ DEPENDENCIES
   deprecation_toolkit (~> 2.2.0)
   factory_bot (~> 6.3.0)
   faker (~> 3.3, >= 3.3.1)
-  faraday-retry (~> 2.2)
+  faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
   gitlab-qa (~> 14, >= 14.7.0)
@@ -386,4 +386,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.13)
 
 BUNDLED WITH
-   2.5.7
+   2.5.9

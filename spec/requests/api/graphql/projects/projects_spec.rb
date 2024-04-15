@@ -6,7 +6,7 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'public-group') }
+  let_it_be(:group) { create(:group, name: 'public-group', developers: current_user) }
   let_it_be(:projects) { create_list(:project, 5, :public, group: group) }
   let_it_be(:other_project) { create(:project, :public, group: group) }
 
@@ -18,10 +18,6 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       filters,
       "nodes {#{all_graphql_fields_for('Project', max_depth: 1, excluded: ['productAnalyticsState'])} }"
     )
-  end
-
-  before_all do
-    group.add_developer(current_user)
   end
 
   context 'when providing full_paths filter' do

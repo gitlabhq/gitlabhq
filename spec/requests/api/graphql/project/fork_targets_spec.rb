@@ -8,7 +8,7 @@ RSpec.describe 'getting a list of fork targets for a project', feature_category:
   let_it_be(:group) { create(:group) }
   let_it_be(:another_group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:user) { create(:user, developer_of: project, owner_of: [group, another_group]) }
 
   let(:current_user) { user }
   let(:fields) do
@@ -25,11 +25,6 @@ RSpec.describe 'getting a list of fork targets for a project', feature_category:
       { 'fullPath' => project.full_path },
       fields
     )
-  end
-
-  before_all do
-    group.add_owner(user)
-    another_group.add_owner(user)
   end
 
   context 'when user has access to the project' do

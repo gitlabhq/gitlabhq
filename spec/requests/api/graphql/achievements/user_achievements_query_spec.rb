@@ -6,7 +6,7 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, guests: user) }
   let_it_be(:achievement) { create(:achievement, namespace: group) }
   let_it_be(:non_revoked_achievement1) { create(:user_achievement, achievement: achievement, user: user) }
   let_it_be(:non_revoked_achievement2) { create(:user_achievement, :revoked, achievement: achievement, user: user) }
@@ -43,10 +43,6 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
 
   let(:query) do
     graphql_query_for('namespace', { full_path: group.full_path }, fields)
-  end
-
-  before_all do
-    group.add_guest(user)
   end
 
   before do

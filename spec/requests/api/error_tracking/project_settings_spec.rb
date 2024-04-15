@@ -6,17 +6,10 @@ RSpec.describe API::ErrorTracking::ProjectSettings, feature_category: :error_tra
   let_it_be(:project) { create(:project) }
   let_it_be(:setting) { create(:project_error_tracking_setting, project: project) }
   let_it_be(:project_without_setting) { create(:project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: [project, project_without_setting]) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: [project, project_without_setting]) }
   let_it_be(:non_member) { create(:user) }
   let(:user) { maintainer }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_maintainer(maintainer)
-    project_without_setting.add_developer(developer)
-    project_without_setting.add_maintainer(maintainer)
-  end
 
   shared_examples 'returns project settings' do
     it 'returns correct project settings' do

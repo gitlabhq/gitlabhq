@@ -25,9 +25,9 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   end
 
   let_it_be_with_refind(:user) { create(:user) }
-  let_it_be(:inherited_guest) { create(:user) }
-  let_it_be(:inherited_reporter) { create(:user) }
-  let_it_be(:inherited_developer) { create(:user) }
+  let_it_be(:inherited_guest) { create(:user, guest_of: group) }
+  let_it_be(:inherited_reporter) { create(:user, reporter_of: group) }
+  let_it_be(:inherited_developer) { create(:user, developer_of: group) }
 
   let_it_be_with_reload(:project) { create(:project, :repository, namespace: user.namespace) }
   let_it_be_with_reload(:public_project) { create(:project, :public, :repository) }
@@ -63,12 +63,6 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   shared_context 'with author parameters' do
     let(:author_email) { 'user@example.org' }
     let(:author_name) { 'John Doe' }
-  end
-
-  before_all do
-    group.add_guest(inherited_guest)
-    group.add_reporter(inherited_reporter)
-    group.add_developer(inherited_developer)
   end
 
   before do

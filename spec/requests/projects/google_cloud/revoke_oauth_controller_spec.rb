@@ -14,7 +14,7 @@ RSpec.describe Projects::GoogleCloud::RevokeOauthController, feature_category: :
     before do
       sign_in(user)
 
-      stub_session(GoogleApi::CloudPlatform::Client.session_key_for_token => 'token')
+      stub_session(session_data: { GoogleApi::CloudPlatform::Client.session_key_for_token => 'token' })
 
       allow_next_instance_of(GoogleApi::CloudPlatform::Client) do |client|
         allow(client).to receive(:validate_token).and_return(true)

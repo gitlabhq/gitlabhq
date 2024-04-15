@@ -6,13 +6,13 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-  let_it_be(:group_guest) { create(:user) }
-  let_it_be(:group_reporter) { create(:user) }
-  let_it_be(:group_developer) { create(:user) }
-  let_it_be(:group_maintainer) { create(:user) }
+  let_it_be(:group_guest) { create(:user, guest_of: group) }
+  let_it_be(:group_reporter) { create(:user, reporter_of: group) }
+  let_it_be(:group_developer) { create(:user, developer_of: group) }
+  let_it_be(:group_maintainer) { create(:user, maintainer_of: group) }
 
-  let_it_be(:project) { create(:project, creator_id: user.id) }
-  let_it_be(:project2) { create(:project, creator_id: user.id) }
+  let_it_be(:project) { create(:project, creator_id: user.id, maintainers: user, reporters: user2) }
+  let_it_be(:project2) { create(:project, creator_id: user.id, maintainers: user) }
 
   let_it_be(:group) { create(:group, owners: user) }
   let_it_be(:subgroup) { create(:group, parent: group) }
@@ -22,16 +22,6 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
   let_it_be(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
   let_it_be(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
-
-  before_all do
-    group.add_guest(group_guest)
-    group.add_reporter(group_reporter)
-    group.add_developer(group_developer)
-    group.add_maintainer(group_maintainer)
-    project.add_maintainer(user)
-    project2.add_maintainer(user)
-    project.add_reporter(user2)
-  end
 
   describe 'GET /runners' do
     context 'authorized user' do

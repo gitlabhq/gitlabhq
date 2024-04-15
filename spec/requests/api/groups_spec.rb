@@ -11,17 +11,12 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
-  let_it_be(:group2) { create(:group, :private) }
+  let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1) }
+  let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
-
-  before_all do
-    group1.add_owner(user1)
-    group2.add_owner(user2)
-  end
 
   shared_examples 'group avatar upload' do
     context 'when valid' do

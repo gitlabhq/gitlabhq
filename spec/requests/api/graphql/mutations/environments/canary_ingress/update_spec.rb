@@ -11,8 +11,8 @@ RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache, f
   let_it_be(:service) { create(:cluster_platform_kubernetes, :configured, cluster: cluster) }
   let_it_be(:environment) { create(:environment, project: project) }
   let_it_be(:deployment) { create(:deployment, :success, environment: environment, project: project) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:environment_id) { environment.to_global_id.to_s }
   let(:weight) { 25 }
@@ -20,11 +20,6 @@ RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache, f
 
   let(:mutation) do
     graphql_mutation(:environments_canary_ingress_update, id: environment_id, weight: weight)
-  end
-
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
   end
 
   before do

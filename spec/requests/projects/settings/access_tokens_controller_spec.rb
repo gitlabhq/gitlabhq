@@ -5,13 +5,8 @@ require 'spec_helper'
 RSpec.describe Projects::Settings::AccessTokensController, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:resource) { create(:project, group: group) }
-  let_it_be(:access_token_user) { create(:user, :project_bot) }
-
-  before_all do
-    resource.add_maintainer(user)
-    resource.add_maintainer(access_token_user)
-  end
+  let_it_be(:resource) { create(:project, group: group, maintainers: user) }
+  let_it_be(:access_token_user) { create(:user, :project_bot, maintainer_of: resource) }
 
   before do
     sign_in(user)

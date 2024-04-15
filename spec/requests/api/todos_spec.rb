@@ -11,7 +11,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
   let_it_be(:project_2) { create(:project) }
   let_it_be(:author_1) { create(:user) }
   let_it_be(:author_2) { create(:user) }
-  let_it_be(:john_doe) { create(:user, username: 'john_doe') }
+  let_it_be(:john_doe) { create(:user, username: 'john_doe', developer_of: [project_1, project_2]) }
   let_it_be(:issue) { create(:issue, project: project_1) }
   let_it_be(:work_item) { create(:work_item, :task, project: project_1) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_1) }
@@ -29,11 +29,6 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
   let_it_be(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: 'thumbsup') }
   let_it_be(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: 'thumbsup') }
   let_it_be(:award_emoji_3) { create(:award_emoji, awardable: pending_2.target, user: author_2, name: 'thumbsdown') }
-
-  before_all do
-    project_1.add_developer(john_doe)
-    project_2.add_developer(john_doe)
-  end
 
   describe 'GET /todos' do
     context 'when unauthenticated' do

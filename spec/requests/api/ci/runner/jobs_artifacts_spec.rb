@@ -13,13 +13,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:registration_token) { 'abcdefg123456' }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   before do
     stub_feature_flags(ci_enable_live_trace: true)

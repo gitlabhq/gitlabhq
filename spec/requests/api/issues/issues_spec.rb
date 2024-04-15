@@ -6,14 +6,14 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace) }
+  let_it_be(:project, reload: true) { create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, reporters: user) }
   let_it_be(:private_mrs_project) do
     create(:project, :public, :repository, creator_id: user.id, namespace: user.namespace, merge_requests_access_level: ProjectFeature::PRIVATE)
   end
 
   let_it_be(:user2) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:guest)       { create(:user) }
+  let_it_be(:guest)       { create(:user, guest_of: project) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
   let_it_be(:admin) { create(:user, :admin) }
@@ -73,8 +73,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let(:any_milestone_title) { 'Any' }
 
   before_all do
-    project.add_reporter(user)
-    project.add_guest(guest)
     private_mrs_project.add_reporter(user)
     private_mrs_project.add_guest(guest)
   end

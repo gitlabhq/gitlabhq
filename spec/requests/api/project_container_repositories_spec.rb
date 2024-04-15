@@ -7,10 +7,10 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:project2) { create(:project, :public) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: [project, project2]) }
+  let_it_be(:developer) { create(:user, developer_of: [project, project2]) }
+  let_it_be(:reporter) { create(:user, reporter_of: [project, project2]) }
+  let_it_be(:guest) { create(:user, guest_of: [project, project2]) }
 
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
@@ -36,18 +36,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
   let(:snowplow_gitlab_standard_context) do
     { user: api_user, project: project, namespace: project.namespace,
       property: 'i_package_container_user' }
-  end
-
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-    project.add_guest(guest)
-
-    project2.add_maintainer(maintainer)
-    project2.add_developer(developer)
-    project2.add_reporter(reporter)
-    project2.add_guest(guest)
   end
 
   before do

@@ -5,13 +5,8 @@ require 'spec_helper'
 RSpec.describe API::FeatureFlagsUserLists, feature_category: :feature_flags do
   let_it_be(:project, refind: true) { create(:project) }
   let_it_be(:client, refind: true) { create(:operations_feature_flags_client, project: project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   def create_list(name: 'mylist', user_xids: 'user1')
     create(:operations_feature_flag_user_list, project: project, name: name, user_xids: user_xids)

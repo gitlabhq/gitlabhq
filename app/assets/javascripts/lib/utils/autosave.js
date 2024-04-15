@@ -63,3 +63,6 @@ export const updateDraft = (autosaveKey, text, lockVersion) => {
 export const getDiscussionReplyKey = (noteableType, discussionId) =>
   /* eslint-disable-next-line @gitlab/require-i18n-strings */
   ['Note', capitalizeFirstCharacter(noteableType), discussionId, 'Reply'].join('/');
+
+export const getAutoSaveKeyFromDiscussion = (discussion) =>
+  getDiscussionReplyKey(discussion.notes.slice(0, 1)[0].noteable_type, discussion.id);

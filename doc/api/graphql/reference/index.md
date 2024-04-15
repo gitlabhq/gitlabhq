@@ -1493,6 +1493,31 @@ Input type: `AiAgentCreateInput`
 | <a id="mutationaiagentcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiagentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.aiAgentDestroy`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `AiAgentDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentdestroyagentid"></a>`agentId` | [`AiAgentID!`](#aiagentid) | Global ID of the AI Agent to be deleted. |
+| <a id="mutationaiagentdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentdestroyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to which the agent belongs. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiagentdestroyagent"></a>`agent` | [`AiAgent`](#aiagent) | Agent after mutation. |
+| <a id="mutationaiagentdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiagentdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationaiagentdestroymessage"></a>`message` | [`String`](#string) | AI Agent deletion result message. |
+
 ### `Mutation.aiAgentUpdate`
 
 DETAILS:

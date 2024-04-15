@@ -10,7 +10,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   let_it_be(:reporter) { create(:user) }
   let_it_be(:current_user) { developer }
   let_it_be(:group1) { create(:group, developers: developer) }
-  let_it_be(:group2) { create(:group, developers: developer) }
+  let_it_be(:group2) { create(:group, developers: developer, reporters: reporter) }
   let_it_be(:project_a) { create(:project, :repository, :public, group: group1) }
   let_it_be(:project_b) { create(:project, :repository, :private, group: group1) }
   let_it_be(:project_c) { create(:project, :repository, :public, group: group2) }
@@ -95,10 +95,6 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     <<~QUERY
       nodes { id }
     QUERY
-  end
-
-  before_all do
-    group2.add_reporter(reporter)
   end
 
   shared_examples 'query that requires at least one filter' do

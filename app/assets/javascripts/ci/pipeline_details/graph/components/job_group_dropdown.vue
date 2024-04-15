@@ -74,6 +74,7 @@ export default {
     :id="computedJobId"
     class="ci-job-group-dropdown"
     block
+    fluid-width
     placement="right-start"
     data-testid="job-dropdown-container"
   >

@@ -1987,6 +1987,9 @@ msgstr ""
 msgid "ACTION REQUIRED: Something went wrong while obtaining the Let's Encrypt certificate for GitLab Pages domain '%{domain}'"
 msgstr ""
 
+msgid "AI Agent was successfully deleted"
+msgstr ""
+
 msgid "AI actions"
 msgstr ""
 
@@ -1997,6 +2000,9 @@ msgid "AIAgents|AI Agents"
 msgstr ""
 
 msgid "AIAgents|Agent Settings"
+msgstr ""
+
+msgid "AIAgents|An error has occurred when deleting the agent."
 msgstr ""
 
 msgid "AIAgents|An error has occurred when saving the agent."
@@ -2014,6 +2020,9 @@ msgstr ""
 msgid "AIAgents|Update the name and prompt for this agent."
 msgstr ""
 
+msgid "AIAgent|AI Agent %{codeStart}%{agentName}%{codeEnd} will be permanently deleted. Are you sure?"
+msgstr ""
+
 msgid "AIAgent|Agent"
 msgstr ""
 
@@ -2026,6 +2035,15 @@ msgstr ""
 msgid "AIAgent|Create agent"
 msgstr ""
 
+msgid "AIAgent|Delete Agent"
+msgstr ""
+
+msgid "AIAgent|Delete agent?"
+msgstr ""
+
+msgid "AIAgent|Delete this agent"
+msgstr ""
+
 msgid "AIAgent|Edit Ai Agent"
 msgstr ""
 
@@ -2033,6 +2051,9 @@ msgid "AIAgent|Prompt"
 msgstr ""
 
 msgid "AIAgent|Settings"
+msgstr ""
+
+msgid "AIAgent|This action permanently deletes the %{codeStart}%{agentName}%{codeEnd} AI Agent."
 msgstr ""
 
 msgid "AIAgent|Try out your agent"
@@ -21333,6 +21354,9 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to create wiki"
+msgstr ""
+
+msgid "Failed to delete AI Agent: %{msg}"
 msgstr ""
 
 msgid "Failed to delete branch target"

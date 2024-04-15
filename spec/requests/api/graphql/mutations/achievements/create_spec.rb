@@ -8,7 +8,7 @@ RSpec.describe Mutations::Achievements::Create, feature_category: :user_profile 
 
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, developers: developer, maintainers: maintainer) }
 
   let(:mutation) { graphql_mutation(:achievements_create, params) }
   let(:name) { 'Name' }
@@ -27,11 +27,6 @@ RSpec.describe Mutations::Achievements::Create, feature_category: :user_profile 
 
   def mutation_response
     graphql_mutation_response(:achievements_create)
-  end
-
-  before_all do
-    group.add_developer(developer)
-    group.add_maintainer(maintainer)
   end
 
   context 'when the user does not have permission' do

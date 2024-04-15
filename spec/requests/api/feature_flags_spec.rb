@@ -5,16 +5,11 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:non_project_member) { create(:user) }
 
   let(:user) { developer }
-
-  before_all do
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   shared_examples_for 'check user permission' do
     context 'when user is reporter' do

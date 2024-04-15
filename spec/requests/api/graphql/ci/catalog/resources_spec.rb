@@ -6,7 +6,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:group) }
+  let_it_be(:namespace) { create(:group, developers: user) }
   let_it_be(:project2) { create(:project, namespace: namespace) }
 
   let_it_be(:project1) do
@@ -57,10 +57,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   end
 
   subject(:post_query) { post_graphql(query, current_user: user) }
-
-  before_all do
-    namespace.add_developer(user)
-  end
 
   shared_examples 'avoids N+1 queries' do
     it do

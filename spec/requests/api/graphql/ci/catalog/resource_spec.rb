@@ -6,7 +6,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace) { create(:group) }
+  let_it_be(:namespace) { create(:group, developers: user) }
 
   let_it_be(:project) do
     create(
@@ -35,10 +35,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   subject(:post_query) { post_graphql(query, current_user: user) }
-
-  before_all do
-    namespace.add_developer(user)
-  end
 
   context 'when the current user has permission to read the namespace catalog' do
     it 'returns the resource with the expected data' do

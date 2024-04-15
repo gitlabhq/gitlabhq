@@ -13,7 +13,7 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
   let_it_be(:guest) { create(:user) }
   let_it_be(:anonymous) { create(:user) }
   let_it_be(:unconfirmed) { create(:user, :unconfirmed) }
-  let_it_be(:project) { create(:project, creator_id: maintainer.id) }
+  let_it_be(:project) { create(:project, creator_id: maintainer.id, maintainers: maintainer, developers: developer, guests: guest) }
   let_it_be(:secure_file) { create(:ci_secure_file, project: project) }
 
   let(:file_params) do
@@ -21,12 +21,6 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :mobile_devops do
       file: fixture_file_upload('spec/fixtures/ci_secure_files/upload-keystore.jks'),
       name: 'upload-keystore.jks'
     }
-  end
-
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_guest(guest)
   end
 
   describe 'GET /projects/:id/secure_files' do

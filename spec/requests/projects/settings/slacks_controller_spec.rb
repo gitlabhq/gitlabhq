@@ -4,17 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Projects::Settings::SlacksController, feature_category: :integrations do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:redirect_url) do
     edit_project_settings_integration_path(
       project,
       Integrations::GitlabSlackApplication.to_param
     )
-  end
-
-  before_all do
-    project.add_maintainer(user)
   end
 
   before do

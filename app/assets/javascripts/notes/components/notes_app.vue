@@ -3,6 +3,7 @@
 import { mapGetters, mapActions } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
 import { InternalEvents } from '~/tracking';
+import { getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -197,7 +198,11 @@ export default {
       'fetchNotes',
     ]),
     discussionIsIndividualNoteAndNotConverted(discussion) {
-      return discussion.individual_note && !this.convertedDisscussionIds.includes(discussion.id);
+      return (
+        discussion.individual_note &&
+        !this.convertedDisscussionIds.includes(discussion.id) &&
+        !this.hasDraft(discussion)
+      );
     },
     handleHashChanged() {
       const noteId = this.checkLocationHash();
@@ -237,6 +242,10 @@ export default {
       if (this.shouldShow && window.mrTabs && types[event.name]) {
         this.trackEvent(types[event.name]);
       }
+    },
+    hasDraft(discussion) {
+      const autoSaveKey = getAutoSaveKeyFromDiscussion(discussion);
+      return Boolean(getDraft(autoSaveKey));
     },
   },
   systemNote: constants.SYSTEM_NOTE,

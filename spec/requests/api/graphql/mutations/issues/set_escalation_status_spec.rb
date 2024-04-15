@@ -8,7 +8,7 @@ RSpec.describe 'Setting the escalation status of an incident', feature_category:
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:incident, project: project) }
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:status) { 'ACKNOWLEDGED' }
   let(:input) { { project_path: project.full_path, iid: issue.iid.to_s, status: status } }
@@ -28,10 +28,6 @@ RSpec.describe 'Setting the escalation status of an incident', feature_category:
   end
 
   let(:mutation_response) { graphql_mutation_response(:issue_set_escalation_status) }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   context 'when user does not have permission to edit the escalation status' do
     let(:current_user) { create(:user) }

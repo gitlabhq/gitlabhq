@@ -683,7 +683,7 @@ RSpec.shared_examples 'rate-limited frontend API requests' do
       "#{throttle_setting_prefix}_deprecated_api_enabled" => true
     )
 
-    stub_session(**csrf_session)
+    stub_session(session_data: csrf_session)
   end
 
   context 'with a CSRF token' do
@@ -703,7 +703,7 @@ RSpec.shared_examples 'rate-limited frontend API requests' do
     end
 
     context 'without a CSRF session' do
-      let(:csrf_session) { {} }
+      let(:csrf_session) { nil }
 
       it 'always uses the rate limit for API requests' do
         requests_per_period.times { get_api csrf: true }

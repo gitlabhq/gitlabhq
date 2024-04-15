@@ -16,6 +16,11 @@ When [Squash TM](https://www.squashtest.com/squash-gitlab-platform?lang=en) (Tes
 integration is enabled and configured in GitLab, issues (typically user stories) created in GitLab
 are synchronized as requirements in Squash TM and test progress is reported in GitLab issues.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of optimizing your DevSecOps workflow with the Squash TM and GitLab integration,
+see [Leverage Requirements and Test management in your SDLC](https://www.youtube.com/watch?v=XAiNUmBiqm4).
+<!-- Video published on 2024-05-15 -->
+
 ## Configure Squash TM
 
 1. Optional. Ask your system administrator to [configure a token in the properties file](https://tm-en.doc.squashtest.com/latest/redirect/gitlab-integration-token.html).
