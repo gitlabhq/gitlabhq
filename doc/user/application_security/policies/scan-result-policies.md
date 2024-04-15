@@ -16,7 +16,7 @@ DETAILS:
 NOTE:
 Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
 
-You can use merge request approval policies to enforce project level settings and create approval rules based on scan results. For example, one type of scan
+Use merge request approval policies to enforce project-level settings and approval rules based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
 findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
 

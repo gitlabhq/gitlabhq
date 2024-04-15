@@ -12,21 +12,25 @@ DETAILS:
 
 > [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
 
-Policies in GitLab provide security and compliance teams with a way to enforce controls globally in
-their organization. Security teams can ensure:
+Policies provide security and compliance teams with a way to enforce controls globally in
+their organization.
+
+Security teams can ensure:
 
 - Security scanners are enforced in development team pipelines with proper configuration.
 - That all scan jobs execute without any changes or alterations.
 - That proper approvals are provided on merge requests based on results from those findings.
 
-Compliance teams can centrally enforce multiple approvers on all merge requests and ensure various
-settings are enabled on projects in scope of organizational requirements, such as enabling or
-locking merge request and repository settings.
+Compliance teams can:
 
-GitLab supports the following security policies:
+- Centrally enforce multiple approvers on all merge requests
+- Enforce various settings on projects in scope of organizational requirements, such as enabling or
+  locking merge request and repository settings.
 
-- [Scan Execution Policy](scan-execution-policies.md)
-- [Scan Result Policy](scan-result-policies.md)
+The following policy types are available:
+
+- [Scan execution policy](scan-execution-policies.md). Enforce security scans, either as part of the pipeline or on a specified schedule.
+- [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and approval rules based on scan results.
 
 ## Security policy project
 
@@ -93,7 +97,7 @@ Assuming no policies have already been enforced, consider the following examples
   Engineering, and all their projects and subgroups. If the "Secret Detection" policy is enforced
   also at subgroup "Accounts receiving", both policies apply to projects B and C. However, only the
   "SAST" policy applies to project A.
-- If the "SAST policy is enforced at subgroup "Accounts receiving", it applies only to projects B
+- If the "SAST" policy is enforced at subgroup "Accounts receiving", it applies only to projects B
   and C. No policy applies to project A.
 - If the "Secret Detection" is enforced at project K, it applies only to project K. No other
   subgroups or projects have a policy apply to them.

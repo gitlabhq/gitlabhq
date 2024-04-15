@@ -11339,7 +11339,8 @@ CREATE TABLE merge_requests_closing_issues (
     merge_request_id integer NOT NULL,
     issue_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    closes_work_item boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE merge_requests_closing_issues_id_seq

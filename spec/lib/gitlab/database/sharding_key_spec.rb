@@ -24,11 +24,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     [
       *tables_with_alternative_not_null_constraint,
       'analytics_devops_adoption_segments.namespace_id',
+      *['badges.project_id', 'badges.group_id'],
       *['boards.project_id', 'boards.group_id'],
       *['bulk_import_exports.project_id', 'bulk_import_exports.group_id'],
       'ci_pipeline_schedules.project_id',
       'ci_sources_pipelines.project_id',
       'ci_triggers.project_id',
+      'gpg_signatures.project_id',
       *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
       *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
@@ -51,8 +53,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   #   `CONSTRAINT example_constraint CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))`
   let(:tables_with_alternative_not_null_constraint) do
     [
+      *['protected_environments.project_id', 'protected_environments.group_id'],
       'security_orchestration_policy_configurations.project_id',
-      'security_orchestration_policy_configurations.namespace_id'
+      'security_orchestration_policy_configurations.namespace_id',
+      *['protected_branches.project_id', 'protected_branches.namespace_id']
     ]
   end
 
@@ -66,6 +70,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
       'ci_builds_metadata.project_id',
       'geo_repository_deleted_events.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439935
+      'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
       'p_catalog_resource_sync_events.project_id',

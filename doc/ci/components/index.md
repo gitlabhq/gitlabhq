@@ -158,37 +158,19 @@ To use GitLab.com components in a self-managed instance, you must
 
 In order of highest priority first, the component version can be:
 
-- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`. Use a commit SHA
-  to pin a component to a specific version that is not [published in the CI/CD catalog](#publish-a-new-release).
+- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
 - A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
-  the commit SHA takes precedence over the tag.
+  the commit SHA takes precedence over the tag. Components released to the CI/CD
+  should be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest`, which is a special version that always points to the latest
-  [semantic version published in the CI/CD Catalog](#semantic-versioning).
-  Use `~latest` only if you want to use the absolute latest version at all times,
-  which could include breaking changes.
+- `~latest`, which always points to the latest semantic version
+  published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
+  latest version at all times, which could include breaking changes.
 
-You can use any [version](#component-versions) supported by the component, but using a
-version published to the CI/CD catalog is recommended.
-
-#### Use semantic versioning
-
-When tagging and [releasing new versions](#publish-a-new-release) of components,
-you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
-for communicating that a change is a major, minor, patch, or other kind of change.
-
-For example, the following component versions are released in order:
-
-1. `1.0.0`
-1. `2.3.0`
-1. `1.0.0-alpha`
-1. `2.1.3`
-
-For catalog resources, you can use a shorthand to fetch the latest versions for major or minor releases:
-
-- `2` returns the latest version for a major release: `2.3.0`
-- `2.1` returns the latest version for a minor release: `2.1.3`
+You can use any version supported by the component, but using a version published
+to the CI/CD catalog is recommended. The version referenced with a commit SHA or branch name
+might not be published in the CI/CD catalog, but could be used for testing.
 
 ## CI/CD Catalog
 
@@ -296,14 +278,40 @@ When tagging and [releasing new versions](#publish-a-new-release) of components 
 you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
 for communicating that a change is a major, minor, patch, or other kind of change.
 
-For example:
+For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions.
 
-- `1.0.0`
-- `2.1.3`
-- `1.0.0-alpha`
-- `3.0.0-rc1`
+##### Semantic version ranges
 
-Use the [`~latest` component version](#component-versions) to always fetch the highest semantic version released.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
+
+When [referencing a CI/CD catalog component](#component-versions), you can use a
+special format to specify the latest version in a range.
+
+To specify the latest release of:
+
+- A minor version, use both the major and minor version numbers in the reference,
+  but not the patch version number. For example, use `1.1` to use the latest version
+  that starts with `1.1`, including `1.1.0` or `1.1.9`, but not `1.2.0`.
+- A major version, use only the major version number in the reference. For example,
+  use `1` to use the latest version that starts with `1.`, like `1.0.0` or `1.9.9`,
+  but not `2.0.0`.
+- All versions, use `~latest` to use the latest released version.
+
+For example, a component is released in this exact order:
+
+1. `1.0.0`
+1. `1.1.0`
+1. `2.0.0`
+1. `1.1.1`
+1. `1.2.0`
+1. `2.1.0`
+1. `2.0.1`
+
+In this example, referencing the component with:
+
+- `1` would use the `1.2.0` version.
+- `1.1` would use the `1.1.1` version.
+- `~latest` would use the `2.1.0` version.
 
 ### Unpublish a component project
 
