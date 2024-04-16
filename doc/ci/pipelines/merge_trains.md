@@ -195,6 +195,8 @@ You can allow merge requests to be merged without completely restarting a runnin
 Use this feature to quickly merge changes that can safely skip the pipeline, for example
 minor documentation updates.
 
+You cannot skip merge trains for fast-forward or semi-linear merge methods. For more information, see [issue 429009](https://gitlab.com/gitlab-org/gitlab/-/issues/429009).
+
 Skipping merge trains is an experimental feature. It may change or be removed completely in future releases.
 
 WARNING:

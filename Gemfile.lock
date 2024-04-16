@@ -1265,7 +1265,7 @@ GEM
       diff-lcs (~> 1.5)
       expgen (~> 0.1)
       rainbow (~> 3.1.1)
-    parallel (1.22.1)
+    parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc

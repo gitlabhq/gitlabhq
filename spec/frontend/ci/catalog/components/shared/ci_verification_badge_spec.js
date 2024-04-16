@@ -10,7 +10,7 @@ describe('Catalog Verification Badge', () => {
   const defaultProps = {
     resourceId: 'gid://gitlab/Ci::Catalog::Resource/36',
     showText: true,
-    verificationLevel: 'GITLAB',
+    verificationLevel: 'GITLAB_MAINTAINED',
   };
 
   const findVerificationIcon = () => wrapper.findComponent(GlIcon);
@@ -64,9 +64,9 @@ describe('Catalog Verification Badge', () => {
   });
 
   describe.each`
-    verificationLevel | describeText
-    ${'GITLAB'}       | ${'GitLab'}
-    ${'PARTNER'}      | ${'partner'}
+    verificationLevel              | describeText
+    ${'GITLAB_MAINTAINED'}         | ${'GitLab'}
+    ${'GITLAB_PARTNER_MAINTAINED'} | ${'partner'}
   `('when the resource is $describeText maintained', ({ verificationLevel }) => {
     beforeEach(() => {
       createComponent({ ...defaultProps, verificationLevel });

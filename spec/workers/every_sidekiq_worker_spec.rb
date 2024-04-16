@@ -342,9 +342,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'LdapGroupSyncWorker' => 3,
         'Licenses::ResetSubmitLicenseUsageDataBannerWorker' => 13,
         'Llm::Embedding::GitlabDocumentation::SetEmbeddingsOnTheRecordWorker' => 5,
-        # DEPRECATED: Remove this in favor for CreateEmbeddingsRecordsWorker
-        # see https://gitlab.com/gitlab-org/gitlab/-/issues/438337
-        'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker' => 3,
         'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker' => 3,
         'Llm::Embedding::GitlabDocumentation::CreateDbEmbeddingsPerDocFileWorker' => 5,
         'MailScheduler::IssueDueWorker' => 3,

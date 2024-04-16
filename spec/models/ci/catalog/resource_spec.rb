@@ -47,9 +47,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it { is_expected.to define_enum_for(:state).with_values({ unpublished: 0, published: 1 }) }
 
-  it do
+  it 'defines verification levels matching the source of truth in VerifiedNamespace' do
     is_expected.to define_enum_for(:verification_level)
-      .with_values({ unverified: 0, gitlab: 1 })
+      .with_values(::Ci::Catalog::VerifiedNamespace::VERIFICATION_LEVELS)
   end
 
   describe '.for_projects' do

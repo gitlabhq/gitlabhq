@@ -13,5 +13,5 @@
     current_user_data: UserSerializer.new.represent(current_user, {only_path: true}, CurrentUserEntity).to_json,
     can_add_timeline_events: "#{can?(current_user, :admin_incident_management_timeline_event, @issue)}",
     report_abuse_path: add_category_abuse_reports_path,
-    new_comment_template_paths: new_comment_template_paths(@project.group).to_json,
+    new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
     new_custom_emoji_path: new_custom_emoji_path(@project.group) } }

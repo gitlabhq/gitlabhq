@@ -9,12 +9,12 @@ export const SCOPE = {
 };
 
 export const VerificationLevel = {
-  GITLAB: {
+  GITLAB_MAINTAINED: {
     badgeText: s__('CiCatalog|GitLab-maintained'),
     icon: 'tanuki-verified',
     popoverText: s__('CiCatalog|Created and maintained by %{boldStart}GitLab%{boldEnd}'),
   },
-  PARTNER: {
+  GITLAB_PARTNER_MAINTAINED: {
     badgeText: s__('CiCatalog|Partner'),
     icon: 'partner-verified',
     popoverText: s__('CiCatalog|Created and maintained by a %{boldStart}GitLab Partner%{boldEnd}'),

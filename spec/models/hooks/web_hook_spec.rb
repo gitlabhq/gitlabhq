@@ -543,12 +543,6 @@ RSpec.describe WebHook, feature_category: :webhooks do
     end
   end
 
-  describe '#update_last_failure' do
-    it 'is a method of this class' do
-      expect { described_class.new(project: project).update_last_failure }.not_to raise_error
-    end
-  end
-
   describe '#masked_token' do
     it { expect(hook.masked_token).to be_nil }
 

@@ -1109,6 +1109,12 @@ msgid_plural "%{releases} releases"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{requester_name} tried to invite the following users to the %{project_or_group}, but your namespace has no available seats."
+msgstr ""
+
+msgid "%{requester_name} tried to invite the following users to the %{strong_start}%{project_or_group}%{strong_end} %{project_or_group_label}, but your namespace has no available seats."
+msgstr ""
+
 msgid "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
 msgid_plural "%{requireStart}Require%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
 msgstr[0] ""
@@ -4613,6 +4619,9 @@ msgid "After the export is complete, download the data file from a notification 
 msgstr ""
 
 msgid "After the report is generated, an email will be sent with the report attached."
+msgstr ""
+
+msgid "After you complete your purchase, you should ask %{requester_name} to make another request to add these users."
 msgstr ""
 
 msgid "After you enable the integration, the following protected variables are created for CI/CD use:"
@@ -9637,6 +9646,9 @@ msgstr ""
 msgid "Buy more Pipeline minutes"
 msgstr ""
 
+msgid "Buy more seats %{url}"
+msgstr ""
+
 msgid "By default, all projects and groups use the global notifications setting."
 msgstr ""
 
@@ -10189,6 +10201,9 @@ msgid "Change milestone"
 msgstr ""
 
 msgid "Change path"
+msgstr ""
+
+msgid "Change reviewer"
 msgstr ""
 
 msgid "Change reviewers"
@@ -25566,6 +25581,9 @@ msgstr ""
 msgid "Helps reduce request volume for protected paths."
 msgstr ""
 
+msgid "Hi %{recipient_name},"
+msgstr ""
+
 msgid "Hi %{user_name} (%{user_username})!"
 msgstr ""
 
@@ -29869,6 +29887,9 @@ msgstr ""
 msgid "Learn More."
 msgstr ""
 
+msgid "Learn about how your subscription works %{url}"
+msgstr ""
+
 msgid "Learn about signing commits"
 msgstr ""
 
@@ -30738,6 +30759,9 @@ msgid "Manage members"
 msgstr ""
 
 msgid "Manage milestones"
+msgstr ""
+
+msgid "Manage project comment templates"
 msgstr ""
 
 msgid "Manage project labels"
@@ -41659,6 +41683,12 @@ msgid "Purchase|Your card was declined due to insufficient funds. Make sure you 
 msgstr ""
 
 msgid "Purchase|Your card was declined. Contact your card issuer for more information or %{salesLinkStart}contact our sales team%{salesLinkEnd} to pay with an alternative payment method."
+msgstr ""
+
+msgid "Purchasing more seats does not automatically approve %{strong_start}requested%{strong_end} users."
+msgstr ""
+
+msgid "Purchasing more seats does not automatically approve requested users."
 msgstr ""
 
 msgid "Push"
@@ -59266,6 +59296,9 @@ msgid "You must provide at least one filter argument for this query"
 msgstr ""
 
 msgid "You must provide your current password in order to change it."
+msgstr ""
+
+msgid "You must purchase more seats for your subscription before these users can be added."
 msgstr ""
 
 msgid "You must save your recovery codes after you first register a two-factor authenticator, so you do not lose access to your account. %{linkStart}See the documentation on managing your WebAuthn device for more information.%{linkEnd}"

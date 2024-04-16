@@ -138,9 +138,7 @@ const hardCodedColors = ${JSON.stringify(hardcodedColors, null, 2)};
 async function toMinimalUtilities() {
   // We re-import the config with a `?minimal` query in order to cache-bust
   // the previously loaded config, which doesn't have the latest css_in_js
-  const { default: tailwindConfig } = await import(
-    '../../config/tailwind.all_the_way.config.js?minimal'
-  );
+  const { default: tailwindConfig } = await import('../../config/tailwind.config.js?minimal');
 
   const { css: tailwindClasses } = await postcss([
     tailwindcss({
@@ -209,9 +207,7 @@ export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
   );
 
   // Lazily import the tailwind config
-  const { default: tailwindConfig } = await import(
-    '../../config/tailwind.all_the_way.config.js?default'
-  );
+  const { default: tailwindConfig } = await import('../../config/tailwind.config.js?default');
 
   const { css: tailwindClasses } = await postcss([
     tailwindcss({
@@ -235,10 +231,7 @@ export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
     console.log(`Went from ${stats.safeToUseLegacyUtils} => ${minimalUtils} utility classes`);
   }
 
-  await buildTailwind({
-    tailWindAllTheWay: true,
-    content: buildOnlyUsed ? false : allUtilitiesFile,
-  });
+  await buildTailwind({ content: buildOnlyUsed ? false : allUtilitiesFile });
 
   return stats;
 }

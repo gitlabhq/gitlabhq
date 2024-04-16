@@ -52,6 +52,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           update_job(state: 'success')
 
           expect(job.reload).to be_success
+          expect(response.header).to have_key('Job-Status')
           expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
@@ -60,6 +61,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           expect(job.reload).to be_failed
           expect(job).to be_unknown_failure
+          expect(response.header).to have_key('Job-Status')
           expect(response.header).not_to have_key('X-GitLab-Trace-Update-Interval')
         end
 
@@ -155,6 +157,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(job.pending_state).to be_present
                 expect(response).to have_gitlab_http_status(:accepted)
+                expect(response.header).to have_key('Job-Status')
+                expect(response.header['Job-Status']).to eq('running')
                 expect(response.header['X-GitLab-Trace-Update-Interval']).to be > 0
               end
             end
@@ -224,6 +228,37 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.header['Job-Status']).to eq 'failed'
           expect(job).to be_failed
+        end
+      end
+
+      context 'when job is canceled' do
+        before do
+          job.cancel!
+        end
+
+        it 'returns :forbidden with the job status' do
+          update_job(state: 'running')
+
+          job.reload
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.header['Job-Status']).to eq 'canceled'
+          expect(job).to be_canceled
+        end
+      end
+
+      context 'when job is canceling' do
+        before do
+          job.set_cancel_gracefully
+          job.cancel!
+        end
+
+        it 'returns :ok with the job status' do
+          update_job(state: 'running')
+
+          job.reload
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.header['Job-Status']).to eq 'canceling'
+          expect(job).to be_canceling
         end
       end
 

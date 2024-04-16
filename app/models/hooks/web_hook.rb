@@ -129,10 +129,6 @@ class WebHook < ApplicationRecord
     raise InterpolationError, "Invalid URL template. Missing key #{e.key}"
   end
 
-  def update_last_failure
-    # Overridden in child classes.
-  end
-
   def masked_token
     token.present? ? SECRET_MASK : nil
   end

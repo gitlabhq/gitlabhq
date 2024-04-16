@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import { JOB_DROPDOWN, SINGLE_JOB } from '../constants';
 import JobItem from './job_item.vue';
@@ -15,6 +15,9 @@ export default {
     JobItem,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     group: {
@@ -45,12 +48,21 @@ export default {
     computedJobId() {
       return this.pipelineId > -1 ? `${this.group.name}-${this.pipelineId}` : '';
     },
-    tooltipText() {
-      const { name, status } = this.group;
-      return `${name} - ${status.label}`;
-    },
     jobGroupClasses() {
       return [this.cssClassJobName, `job-${this.group.status.group}`];
+    },
+    jobStatusText() {
+      const textBuilder = [];
+      const { tooltip: statusTooltip } = this.group.status;
+
+      if (statusTooltip) {
+        const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
+        textBuilder.push(statusText);
+      } else {
+        textBuilder.push(this.group.status?.text);
+      }
+
+      return textBuilder.join(' ');
     },
   },
   errorCaptured(err, _vm, info) {
@@ -72,6 +84,8 @@ export default {
 <template>
   <gl-disclosure-dropdown
     :id="computedJobId"
+    v-gl-tooltip.viewport.left
+    :title="jobStatusText"
     class="ci-job-group-dropdown"
     block
     fluid-width
@@ -83,9 +97,9 @@ export default {
         <div class="gl-display-flex gl-align-items-stretch gl-justify-content-space-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"
-            :group-tooltip="tooltipText"
             :job="group"
             :stage-name="stageName"
+            hide-tooltip
           />
 
           <div class="gl-font-weight-100 gl-font-size-lg gl-ml-n4 gl-align-self-center">

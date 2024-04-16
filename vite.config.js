@@ -263,6 +263,7 @@ export default defineConfig({
         : {
             ignored: [
               '**/*.stories.js',
+              '**/css_in_js.js',
               function ignoreRootFolder(x) {
                 /*
              `vite` watches the root folder of gitlab and all of its sub folders

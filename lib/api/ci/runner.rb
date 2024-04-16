@@ -250,6 +250,7 @@ module API
           service.execute.then do |result|
             track_ci_minutes_usage!(job, current_runner)
 
+            header 'Job-Status', job.status
             header 'X-GitLab-Trace-Update-Interval', result.backoff
             status result.status
             body result.status.to_s

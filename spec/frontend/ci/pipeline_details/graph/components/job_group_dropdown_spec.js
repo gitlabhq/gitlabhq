@@ -13,7 +13,7 @@ describe('job group dropdown component', () => {
       icon: 'status_success',
       text: 'passed',
       label: 'passed',
-      tooltip: 'passed',
+      tooltip: 'Passed',
       group: 'success',
       detailsPath: '/root/ci-mock/builds/4256',
       hasDetails: true,
@@ -104,7 +104,6 @@ describe('job group dropdown component', () => {
     expect(findJobItem().text().trim()).toBe(group.name);
     expect(findJobItem().props()).toMatchObject({
       type: 'job_dropdown',
-      groupTooltip: 'rspec:linux - passed',
       job: group,
     });
     expect(findTriggerButton().text()).toContain(group.size.toString());
@@ -150,6 +149,56 @@ describe('job group dropdown component', () => {
       job: group.jobs[1],
       type: SINGLE_JOB,
       cssClassJobName: 'gl-p-3',
+    });
+  });
+
+  describe('tooltip', () => {
+    it('renders the text as basic status', () => {
+      createComponent({ mountFn: mount });
+
+      expect(findDisclosureDropdown().attributes('title')).toBe(group.status.tooltip);
+    });
+
+    it('renders the detailed status tooltip if available', () => {
+      const groupWithExtendedTooltip = {
+        ...group,
+        status: {
+          tooltip: 'Failed - (stuck or timeout failure) (allowed to fail)',
+          text: 'Failed text',
+        },
+      };
+
+      createComponent({
+        props: {
+          group: groupWithExtendedTooltip,
+        },
+        mountFn: mount,
+      });
+
+      expect(findDisclosureDropdown().attributes('title')).toBe(
+        groupWithExtendedTooltip.status.tooltip,
+      );
+    });
+
+    it('renders the status text as fallback if tooltip is not available', () => {
+      const groupWithJustTextTooltip = {
+        ...group,
+        status: {
+          tooltip: '',
+          text: 'Passed text',
+        },
+      };
+
+      createComponent({
+        props: {
+          group: groupWithJustTextTooltip,
+        },
+        mountFn: mount,
+      });
+
+      expect(findDisclosureDropdown().attributes('title')).toBe(
+        groupWithJustTextTooltip.status.text,
+      );
     });
   });
 });

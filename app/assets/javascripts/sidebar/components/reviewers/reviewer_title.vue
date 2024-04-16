@@ -61,7 +61,7 @@ export default {
     <template v-if="editable">
       <gl-button
         v-tooltip.hover
-        :title="__('Quick assign')"
+        :title="glFeatures.reviewerAssignDrawer ? __('Quick assign') : __('Change reviewer')"
         class="js-sidebar-dropdown-toggle edit-link gl-ml-auto hide-collapsed gl-float-right"
         data-track-action="click_edit_button"
         data-track-label="right_sidebar"

@@ -299,7 +299,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         it 'includes the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
-            expect(build_link['title']).to eq('test - failed - (unknown failure)')
+            expect(build_link['title']).to eq('Failed - (unknown failure)')
           end
         end
       end

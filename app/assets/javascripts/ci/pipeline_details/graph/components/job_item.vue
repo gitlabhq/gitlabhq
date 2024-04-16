@@ -80,10 +80,10 @@ export default {
       required: false,
       default: '',
     },
-    groupTooltip: {
-      type: String,
+    hideTooltip: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: false,
     },
     jobHovered: {
       type: String,
@@ -182,10 +182,6 @@ export default {
       return this.hasDetails ? 'job-with-link' : 'job-without-link';
     },
     tooltipText() {
-      if (this.groupTooltip) {
-        return this.groupTooltip;
-      }
-
       const textBuilder = [];
       const { name: jobName } = this.job;
 
@@ -193,20 +189,29 @@ export default {
         textBuilder.push(jobName);
       }
 
-      const { tooltip: statusTooltip } = this.status;
-      if (jobName && statusTooltip) {
-        textBuilder.push('-');
-      }
-
-      if (statusTooltip) {
-        if (this.isDelayedJob) {
-          textBuilder.push(sprintf(statusTooltip, { remainingTime: this.remainingTime }));
-        } else {
-          textBuilder.push(statusTooltip);
-        }
-      }
-
       return textBuilder.join(' ');
+    },
+    jobStatusText() {
+      if (!this.hideTooltip) {
+        const textBuilder = [];
+        const { tooltip: statusTooltip } = this.status;
+
+        if (this.hasDetails && statusTooltip) {
+          const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
+
+          if (this.isDelayedJob) {
+            textBuilder.push(sprintf(statusText, { remainingTime: this.remainingTime }));
+          } else {
+            textBuilder.push(statusText);
+          }
+        } else {
+          textBuilder.push(this.status?.text);
+        }
+
+        return textBuilder.join(' ');
+      }
+
+      return null;
     },
     /**
      * Verifies if the provided job has an action path
@@ -318,12 +323,8 @@ export default {
   >
     <component
       :is="nameComponent"
-      v-gl-tooltip="{
-        boundary: 'viewport',
-        placement: 'bottom',
-        customClass: 'gl-pointer-events-none',
-      }"
-      :title="tooltipText"
+      v-gl-tooltip.viewport.left
+      :title="jobStatusText"
       :class="jobClasses"
       :href="detailsPath"
       class="js-pipeline-graph-job-link menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
@@ -332,9 +333,12 @@ export default {
       @mouseout="hideTooltips"
     >
       <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
-        <ci-icon :status="job.status" :use-link="false" />
+        <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
-          <div class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700">
+          <div
+            class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700"
+            :title="tooltipText"
+          >
             {{ job.name }}
           </div>
           <div

@@ -65,6 +65,8 @@ module Auth
       JSONWebToken::HMACToken.new(self.class.secret).tap do |token|
         token['user_id'] = current_user.id if current_user
         token['deploy_token'] = deploy_token.token if deploy_token
+        token['personal_access_token'] = raw_token if personal_access_token_user?
+        token['group_access_token'] = raw_token if group_access_token_user?
         token.expire_time = self.class.token_expire_at
       end
     end
@@ -75,6 +77,14 @@ module Auth
 
     def raw_token
       params[:raw_token]
+    end
+
+    def group_access_token_user?
+      raw_token && current_user&.project_bot? && current_user.resource_bot_resource.is_a?(Group)
+    end
+
+    def personal_access_token_user?
+      raw_token && current_user && (current_user.human? || current_user.service_account?)
     end
   end
 end

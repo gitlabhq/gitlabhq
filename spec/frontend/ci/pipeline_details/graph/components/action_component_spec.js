@@ -11,7 +11,6 @@ describe('pipeline graph action component', () => {
   let wrapper;
   let mock;
   const findButton = () => wrapper.findComponent(GlButton);
-  const findTooltipWrapper = () => wrapper.find('[data-testid="ci-action-icon-tooltip-wrapper"]');
 
   const defaultProps = {
     tooltipText: 'bar',
@@ -41,14 +40,14 @@ describe('pipeline graph action component', () => {
     });
 
     it('should render the provided title as a bootstrap tooltip', () => {
-      expect(findTooltipWrapper().attributes('title')).toBe('bar');
+      expect(findButton().attributes('title')).toBe('bar');
     });
 
     it('should update bootstrap tooltip when title changes', async () => {
       wrapper.setProps({ tooltipText: 'changed' });
 
       await nextTick();
-      expect(findTooltipWrapper().attributes('title')).toBe('changed');
+      expect(findButton().attributes('title')).toBe('changed');
     });
 
     it('should render an svg', () => {

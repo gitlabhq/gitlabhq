@@ -41,7 +41,7 @@ module Types
           resolver: Resolvers::Ci::Catalog::Resources::VersionsResolver,
           alpha: { milestone: '16.2' }
 
-        field :verification_level, Types::Ci::Catalog::Resources::Components::VerificationLevelEnum, null: true,
+        field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.',
           alpha: { milestone: '16.9' }
 

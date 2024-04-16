@@ -58,6 +58,23 @@ All users with access to view or edit your tenant in Switchboard will receive a 
 NOTE:
 You will only receive email notifications for changes made by a Switchboard tenant admin. Changes made by a GitLab Operator (e.g. a GitLab version update completed during a maintenance window) will not result in an email notification.
 
+#### View the configuration change log
+
+You can use the configuration change log to track the changes made to your GitLab Dedicated instance, including:
+
+- **Configuration change:** Name of the configuration setting that changed.
+- **User:** Email address of the user that made the configuration change.
+- **IP:** IP address of the user that made the configuration change.
+- **Status:** Whether the configuration change is initiated, in progress, completed, or deferred.
+- **Start time:** Start date and time when the configuration change is initiated, in UTC.
+- **End time:** End date and time when the configuration change is deployed, in UTC.
+
+To view the configuration change log:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Select your tenant.
+1. At the top of the page, select **Configuration change log**.
+
 ### Inbound Private Link
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.
@@ -126,7 +143,7 @@ In some cases, the GitLab Dedicated instance can't reach an internal service you
 
 #### Add a custom certificate with Switchboard
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Custom Certificate Authorities**.
 1. Select **+ Add Certificate**.
@@ -150,7 +167,7 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 
 #### Add an IP to the allowlist with Switchboard
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **Allowed Source List Config / IP allowlist**.
 1. Turn on the **Enable** toggle.
@@ -176,7 +193,7 @@ Prerequisites:
 
 To activate SAML for your GitLab Dedicated instance:
 
-1. Log in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
 1. Expand **SAML Config**.
 1. Turn on the **Enable** toggle.

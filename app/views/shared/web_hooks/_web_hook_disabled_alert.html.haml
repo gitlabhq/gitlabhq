@@ -10,4 +10,4 @@
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/project/integrations/webhooks', anchor: 'troubleshooting'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_actions do
-      = link_button_to s_('Webhooks|Go to webhooks'), project_hooks_path(@project, anchor: 'webhooks-index'), class: 'gl-alert-action', variant: :confirm
+      = link_button_to s_('Webhooks|Go to webhooks'), project_hooks_path(@project), class: 'gl-alert-action', variant: :confirm

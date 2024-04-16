@@ -46,7 +46,7 @@ module WebHooks
     # Perform this operation within an `Gitlab::ExclusiveLease` lock to make it
     # safe to be called concurrently from different workers.
     def update_hook_failure_state
-      in_lock(lock_name, ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRY) do |retried|
+      in_lock(lock_name, ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRY) do |_retried|
         hook.reset # Reload within the lock so properties are guaranteed to be current.
 
         case response_category
@@ -58,7 +58,7 @@ module WebHooks
           hook.failed!
         end
 
-        hook.update_last_failure
+        hook.parent.update_last_webhook_failure(hook) if hook.parent
       end
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
       raise if raise_lock_error?

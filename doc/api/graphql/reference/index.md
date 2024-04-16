@@ -16798,7 +16798,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourcestarrerspath"></a>`starrersPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. Relative path to the starrers page for the catalog resource project. |
-| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceComponentVerificationLevel`](#cicatalogresourcecomponentverificationlevel) | **Introduced** in GitLab 16.9. **Status**: Experiment. Verification level of the catalog resource. |
+| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | **Introduced** in GitLab 16.9. **Status**: Experiment. Verification level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
 
 #### Fields with arguments
@@ -31787,13 +31787,6 @@ Types of blob viewers.
 | <a id="blobviewerstyperich"></a>`rich` | Rich blob viewers type. |
 | <a id="blobviewerstypesimple"></a>`simple` | Simple blob viewers type. |
 
-### `CiCatalogResourceComponentVerificationLevel`
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="cicatalogresourcecomponentverificationlevelgitlab"></a>`GITLAB` | Component is maintained by GitLab. |
-| <a id="cicatalogresourcecomponentverificationlevelunverified"></a>`UNVERIFIED` | Component is unverified. |
-
 ### `CiCatalogResourceScope`
 
 Values for scoping catalog resources.
@@ -31817,6 +31810,15 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="cicatalogresourcesortstar_count_asc"></a>`STAR_COUNT_ASC` | Star count by ascending order. |
 | <a id="cicatalogresourcesortstar_count_desc"></a>`STAR_COUNT_DESC` | Star count by descending order. |
+
+### `CiCatalogResourceVerificationLevel`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cicatalogresourceverificationlevelgitlab_maintained"></a>`GITLAB_MAINTAINED` | The resource is Gitlab Maintained. |
+| <a id="cicatalogresourceverificationlevelgitlab_partner_maintained"></a>`GITLAB_PARTNER_MAINTAINED` | The resource is Gitlab Partner Maintained. |
+| <a id="cicatalogresourceverificationlevelunverified"></a>`UNVERIFIED` | The resource is Unverified. |
+| <a id="cicatalogresourceverificationlevelverified_creator_maintained"></a>`VERIFIED_CREATOR_MAINTAINED` | The resource is Verified Creator Maintained. |
 
 ### `CiConfigIncludeType`
 

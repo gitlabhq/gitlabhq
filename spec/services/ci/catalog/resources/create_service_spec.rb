@@ -25,6 +25,19 @@ RSpec.describe Ci::Catalog::Resources::CreateService, feature_category: :pipelin
           response = service.execute
 
           expect(response.payload.project).to eq(project)
+          expect(response.payload).to be_unverified
+        end
+
+        context 'when the project is in a verified namespace' do
+          let_it_be(:verified_namespace) do
+            create(:catalog_verified_namespace, :gitlab_partner_maintained, namespace: project.root_namespace)
+          end
+
+          it "saves the resource with the namespace's verification level" do
+            response = service.execute
+
+            expect(response.payload).to be_gitlab_partner_maintained
+          end
         end
       end
 

@@ -1,5 +1,5 @@
 <% note = local_assigns.fetch(:note, @note) -%>
-<% show_no_diff_preview_message = true -%>
+<% show_no_diff_preview_message = false -%>
 <% unless @note.nil? -%>
 <%   discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
 <%   project = local_assigns.fetch(:project, @project) -%>

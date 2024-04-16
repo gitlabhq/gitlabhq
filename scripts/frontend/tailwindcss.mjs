@@ -10,34 +10,16 @@ const exec = util.promisify(execCB);
 // Note, in node > 21.2 we could replace the below with import.meta.dirname
 const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../');
 
-export async function build({
-  shouldWatch = false,
-  tailWindAllTheWay = Boolean(process.env.TAILWIND_ALL_THE_WAY),
-  content = false,
-} = {}) {
+const cssInJsPath = path.join(ROOT_PATH, 'config/helpers/tailwind/css_in_js.js');
+
+export async function build({ shouldWatch = false, content = false } = {}) {
   const processorOptions = {
     '--watch': shouldWatch,
     '--output': path.join(ROOT_PATH, 'app/assets/builds', 'tailwind.css'),
     '--input': path.join(ROOT_PATH, 'app/assets/stylesheets', 'tailwind.css'),
   };
 
-  let config = path.join(ROOT_PATH, 'config/tailwind.config.js');
-  if (tailWindAllTheWay) {
-    console.log('# Building "all the way" tailwind');
-    config = path.join(ROOT_PATH, 'config/tailwind.all_the_way.config.js');
-    processorOptions['--output'] = path.join(
-      ROOT_PATH,
-      'app/assets/builds',
-      'tailwind_all_the_way.css',
-    );
-    processorOptions['--input'] = path.join(
-      ROOT_PATH,
-      'app/assets/stylesheets',
-      'tailwind_all_the_way.css',
-    );
-  } else {
-    console.log('# Building "normal" tailwind');
-  }
+  const config = path.join(ROOT_PATH, 'config/tailwind.config.js');
 
   if (content) {
     console.log(`Setting content to ${content}`);
@@ -66,8 +48,8 @@ function wasScriptCalledDirectly() {
 }
 
 async function ensureCSSinJS() {
-  const cmd = 'yarn run pretailwindcss:build';
-  console.log('Ensuring config/helpers/tailwind/css_in_js.js exists');
+  console.log(`Ensuring ${cssInJsPath} exists`);
+  const cmd = 'yarn run tailwindcss:build';
 
   const { stdout, error } = await exec(cmd, {
     env: { ...process.env, REDIRECT_TO_STDOUT: 'true' },

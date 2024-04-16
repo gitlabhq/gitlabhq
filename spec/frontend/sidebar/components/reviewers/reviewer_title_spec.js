@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,8 +8,10 @@ import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
 describe('ReviewerTitle component', () => {
   let wrapper;
 
+  const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
+
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
-    return mount(Component, {
+    return mountExtended(Component, {
       propsData: {
         numberOfReviewers: 0,
         editable: false,
@@ -99,6 +101,17 @@ describe('ReviewerTitle component', () => {
     });
   });
 
+  it('sets title for dropdown toggle as `Change reviewer`', () => {
+    wrapper = createComponent(
+      {
+        editable: true,
+      },
+      { reviewerAssignDrawer: false },
+    );
+
+    expect(findEditButton().attributes('title')).toBe('Change reviewer');
+  });
+
   describe('when reviewerAssignDrawer is enabled', () => {
     beforeEach(() => {
       setHTMLFixture('<div id="js-reviewer-drawer-portal"></div>');
@@ -106,6 +119,17 @@ describe('ReviewerTitle component', () => {
 
     afterEach(() => {
       resetHTMLFixture();
+    });
+
+    it('sets title for dropdown toggle as `Quick assign`', () => {
+      wrapper = createComponent(
+        {
+          editable: true,
+        },
+        { reviewerAssignDrawer: true },
+      );
+
+      expect(findEditButton().attributes('title')).toBe('Quick assign');
     });
 
     it('clicking toggle opens reviewer drawer', async () => {

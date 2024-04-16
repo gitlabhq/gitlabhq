@@ -24,7 +24,7 @@ module Ci
       has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
 
-      enum verification_level: { unverified: 0, gitlab: 1 }
+      enum verification_level: VerifiedNamespace::VERIFICATION_LEVELS
 
       scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
 

@@ -427,6 +427,7 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
+  - "lib/gitlab/redis/*"
   - "babel.config.js"
   - "config.ru"
   - "Dockerfile.assets"

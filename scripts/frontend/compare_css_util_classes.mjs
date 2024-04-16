@@ -73,7 +73,7 @@ const applicationUtilsDark = extractRules(
   loadCSSFromFile('app/assets/builds/application_utilities_to_be_replaced_dark.css'),
   { convertColors: true },
 );
-const tailwind = loadCSSFromFile('app/assets/builds/tailwind_all_the_way.css');
+const tailwind = loadCSSFromFile('app/assets/builds/tailwind.css');
 
 compareApplicationUtilsToTailwind(applicationUtilsLight, tailwind);
 compareApplicationUtilsToTailwind(applicationUtilsDark, tailwind, darkModeResolver);

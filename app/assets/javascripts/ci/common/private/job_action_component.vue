@@ -119,6 +119,8 @@ export default {
   <gl-button
     :id="`js-ci-action-${link}`"
     ref="button"
+    v-gl-tooltip.viewport.right
+    :title="tooltipText"
     :class="cssClass"
     :disabled="isDisabled"
     size="small"
@@ -126,12 +128,7 @@ export default {
     data-testid="ci-action-button"
     @click.stop="onClickAction"
   >
-    <div
-      v-gl-tooltip.viewport
-      :title="tooltipText"
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-h-full"
-      data-testid="ci-action-icon-tooltip-wrapper"
-    >
+    <div class="gl-display-flex gl-align-items-center gl-justify-content-center gl-h-full">
       <gl-loading-icon
         v-if="isLoading"
         size="sm"

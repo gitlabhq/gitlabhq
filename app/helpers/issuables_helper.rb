@@ -418,7 +418,7 @@ module IssuablesHelper
     }
   end
 
-  def new_comment_template_paths(group)
+  def new_comment_template_paths(group, project = nil)
     [{
       text: _('Manage your comment templates'),
       path: profile_comment_templates_path
