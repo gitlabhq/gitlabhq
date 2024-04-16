@@ -71,7 +71,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
 
     before do
-      insert_harbor_registry_nav(_('AWS'))
+      insert_harbor_registry_nav
 
       visit project_path(project)
     end

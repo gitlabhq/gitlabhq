@@ -10,12 +10,12 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
   let_it_be(:minor_release) { create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day) }
   let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
-  let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today, sha: 'patch_sha') }
+  let_it_be(:patch) { create(:release, project: project, tag: 'v1.1.3', created_at: Date.today, sha: 'patch_sha') }
   let!(:v1_1_0) do
     create(:ci_catalog_resource_version, semver: '1.1.0', catalog_resource: resource, release: minor_release)
   end
 
-  let!(:v1_1_3) { create(:ci_catalog_resource_version, semver: '1.1.3', catalog_resource: resource, release: patch) }
+  let!(:v1_1_3) { create(:ci_catalog_resource_version, semver: 'v1.1.3', catalog_resource: resource, release: patch) }
   let!(:v2_0_0) do
     create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: major_release)
   end

@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlSprintf, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlListboxItem, GlSprintf, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
 
@@ -28,17 +28,17 @@ describe('CommandsOverviewDropdown', () => {
         ],
       },
       stubs: {
-        GlDisclosureDropdown,
-        GlDisclosureDropdownItem,
+        GlCollapsibleListbox,
+        GlListboxItem,
         GlSprintf,
       },
     });
   };
 
-  const findDropdow = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findItems = () => wrapper.findAllComponents(GlListboxItem);
   const findItemTitles = () =>
-    findItems().wrappers.map((w) => w.find('[data-testid="disclosure-dropdown-item"]').text());
+    findItems().wrappers.map((w) => w.find('[data-testid="listbox-item-text"]').text());
 
   beforeEach(() => {
     createComponent();
@@ -46,7 +46,9 @@ describe('CommandsOverviewDropdown', () => {
 
   describe('template', () => {
     it('renders header', () => {
-      expect(findDropdow().find('span').text()).toBe('I’m looking for');
+      expect(findDropdown().find('[data-testid="listbox-header-text"]').text()).toBe(
+        'I’m looking for',
+      );
     });
 
     it('renders all items', () => {
@@ -60,7 +62,7 @@ describe('CommandsOverviewDropdown', () => {
 
   describe('events', () => {
     it('renders header', () => {
-      findDropdow().vm.$emit('action', { value: '@' });
+      findDropdown().vm.$emit('select', '@');
       expect(wrapper.emitted('selected')).toEqual([['@']]);
     });
   });

@@ -1864,7 +1864,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/llm/chain/tools/identifier.rb'
     - 'ee/lib/gitlab/llm/chain/tools/summarize_comments/executor.rb'
     - 'ee/lib/gitlab/llm/chat_storage.rb'
-    - 'ee/lib/gitlab/llm/open_ai/client.rb'
     - 'ee/lib/gitlab/llm/templates/explain_vulnerability.rb'
     - 'ee/lib/gitlab/llm/vertex_ai/completions/summarize_submitted_review.rb'
     - 'ee/lib/gitlab/middleware/ip_restrictor.rb'

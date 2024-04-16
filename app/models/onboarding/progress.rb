@@ -4,9 +4,6 @@ module Onboarding
   class Progress < ApplicationRecord
     self.table_name = 'onboarding_progresses'
 
-    include IgnorableColumns
-    ignore_column :promote_ultimate_features_at, remove_with: '17.0', remove_after: '2024-04-13'
-
     belongs_to :namespace, optional: false
 
     validate :namespace_is_root_namespace

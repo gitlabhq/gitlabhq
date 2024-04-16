@@ -120,14 +120,14 @@ export default {
     truncateLongDescription() {
       /* Truncate when description is > 40% viewport height or 512px.
          Update `.work-item-description .truncated` max height if value changes. */
-      const defaultMaxHeight = document.documentElement.clientHeight * 0.4;
+      const defaultMaxHeight = window.innerHeight * 0.4;
       let maxHeight = defaultMaxHeight;
       if (defaultMaxHeight > 512) {
         maxHeight = 512;
       } else if (defaultMaxHeight < 256) {
         maxHeight = 256;
       }
-      this.truncated = this.$refs['gfm-content'].clientHeight > maxHeight;
+      this.truncated = this.$refs['gfm-content']?.clientHeight > maxHeight;
     },
     showAll() {
       this.truncated = false;

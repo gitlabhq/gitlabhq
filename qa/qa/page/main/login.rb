@@ -112,7 +112,7 @@ module QA
         #
         def set_up_new_password_if_required(user:, skip_page_validation:)
           Support::WaitForRequests.wait_for_requests
-          return unless has_content?('Set up new password', wait: 1)
+          return unless has_content?('Update password for', wait: 1)
 
           Profile::Password.perform do |new_password_page|
             password = user&.password || Runtime::User.password
@@ -236,6 +236,10 @@ module QA
 
           # For debugging invalid login attempts
           has_notice?('Invalid login or password')
+
+          # Return if new password page is shown
+          # Happens on clean GDK installations when seeded root admin password is expired
+          return if has_content?('Update password for', wait: 1)
 
           Page::Main::Terms.perform do |terms|
             terms.accept_terms if terms.visible?

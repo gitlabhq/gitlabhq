@@ -112,7 +112,7 @@ RSpec.describe SemanticVersionable, feature_category: :mlops do
   describe 'scopes' do
     let(:first_release) { model_class.create!(semver: '1.0.1') }
     let(:second_release) { model_class.create!(semver: '3.0.1') }
-    let(:patch) { model_class.create!(semver: '2.0.1') }
+    let(:patch) { model_class.create!(semver: 'v2.0.1') }
 
     describe '.order_by_semantic_version_asc' do
       it 'orders the versions by semantic order ascending' do

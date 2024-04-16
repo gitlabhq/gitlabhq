@@ -1044,7 +1044,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         fill_in 'user_password', with: user.password
         fill_in 'user_new_password', with: new_password
         fill_in 'user_password_confirmation', with: new_password
-        click_button 'Set new password'
+        click_button 'Update password'
 
         expect(page).to have_content('Password successfully changed')
       end

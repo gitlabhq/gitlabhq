@@ -162,7 +162,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
   describe '.any_label' do
     let_it_be(:issue_with_label) { create(:labeled_issue, labels: [create(:label)]) }
-    let_it_be(:issue_with_multiple_labels) { create(:labeled_issue, labels: [create(:label), create(:label)]) }
+    let_it_be(:issue_with_multiple_labels) { create(:labeled_issue, labels: create_list(:label, 2)) }
     let_it_be(:issue_without_label) { create(:issue) }
 
     it 'returns an issuable with at least one label' do

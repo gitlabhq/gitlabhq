@@ -5764,6 +5764,7 @@ CREATE TABLE catalog_resource_versions (
     semver_minor integer,
     semver_patch integer,
     semver_prerelease text,
+    semver_prefixed boolean DEFAULT false,
     CONSTRAINT check_701bdce47b CHECK ((char_length(semver_prerelease) <= 255))
 );
 
@@ -8883,21 +8884,6 @@ CREATE SEQUENCE external_approval_rules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE external_approval_rules_id_seq OWNED BY external_approval_rules.id;
-
-CREATE TABLE external_approval_rules_protected_branches (
-    id bigint NOT NULL,
-    external_approval_rule_id bigint NOT NULL,
-    protected_branch_id bigint NOT NULL
-);
-
-CREATE SEQUENCE external_approval_rules_protected_branches_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE external_approval_rules_protected_branches_id_seq OWNED BY external_approval_rules_protected_branches.id;
 
 CREATE TABLE external_pull_requests (
     id bigint NOT NULL,
@@ -19153,8 +19139,6 @@ ALTER TABLE ONLY evidences ALTER COLUMN id SET DEFAULT nextval('evidences_id_seq
 
 ALTER TABLE ONLY external_approval_rules ALTER COLUMN id SET DEFAULT nextval('external_approval_rules_id_seq'::regclass);
 
-ALTER TABLE ONLY external_approval_rules_protected_branches ALTER COLUMN id SET DEFAULT nextval('external_approval_rules_protected_branches_id_seq'::regclass);
-
 ALTER TABLE ONLY external_pull_requests ALTER COLUMN id SET DEFAULT nextval('external_pull_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY external_status_checks ALTER COLUMN id SET DEFAULT nextval('external_status_checks_id_seq'::regclass);
@@ -21252,9 +21236,6 @@ ALTER TABLE ONLY evidences
 
 ALTER TABLE ONLY external_approval_rules
     ADD CONSTRAINT external_approval_rules_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT external_approval_rules_protected_branches_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY external_pull_requests
     ADD CONSTRAINT external_pull_requests_pkey PRIMARY KEY (id);
@@ -23934,8 +23915,6 @@ CREATE INDEX idx_devops_adoption_segments_namespace_recorded_at ON analytics_dev
 
 CREATE UNIQUE INDEX idx_devops_adoption_segments_namespaces_pair ON analytics_devops_adoption_segments USING btree (display_namespace_id, namespace_id);
 
-CREATE INDEX idx_eaprpb_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (external_approval_rule_id);
-
 CREATE INDEX idx_elastic_reindexing_slices_on_elastic_reindexing_subtask_id ON elastic_reindexing_slices USING btree (elastic_reindexing_subtask_id);
 
 CREATE INDEX idx_enabled_pkgs_cleanup_policies_on_next_run_at_project_id ON packages_cleanup_policies USING btree (next_run_at, project_id) WHERE (keep_n_duplicated_package_files <> 'all'::text);
@@ -24083,8 +24062,6 @@ CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_false ON pr
 CREATE INDEX idx_projects_id_created_at_disable_overriding_approvers_true ON projects USING btree (id, created_at) WHERE (disable_overriding_approvers_per_merge_request = true);
 
 CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON projects USING btree (id, repository_storage, last_repository_updated_at);
-
-CREATE UNIQUE INDEX idx_protected_branch_id_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (protected_branch_id, external_approval_rule_id);
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
 
@@ -30621,12 +30598,6 @@ ALTER TABLE ONLY personal_access_tokens
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT fk_c9a037a926 FOREIGN KEY (external_approval_rule_id) REFERENCES external_approval_rules(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY external_approval_rules_protected_branches
-    ADD CONSTRAINT fk_ca2ffb55e6 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT fk_cbe270434e FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;

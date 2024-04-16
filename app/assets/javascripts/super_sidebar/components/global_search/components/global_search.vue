@@ -32,6 +32,7 @@ import {
   SEARCH_MODAL_ID,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
+  KEY_K,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
@@ -74,6 +75,7 @@ export default {
     return {
       nextFocusedItemIndex: null,
       commandPaletteDropdownItems,
+      commandPaletteDropdownOpen: false,
     };
   },
   computed: {
@@ -195,6 +197,18 @@ export default {
         event.preventDefault();
       }
     },
+    onKeyComboDown(event) {
+      const { code, metaKey } = event;
+
+      if (code === KEY_K && metaKey) {
+        if (!this.commandPaletteDropdownOpen) {
+          this.$refs.commandDropdown.open();
+        } else {
+          this.$refs.commandDropdown.close();
+        }
+        this.commandPaletteDropdownOpen = !this.commandPaletteDropdownOpen;
+      }
+    },
     focusSearchInput() {
       this.$refs.searchInput.$el.querySelector('input')?.focus();
     },
@@ -225,10 +239,14 @@ export default {
     },
     onSearchModalShown() {
       this.$emit('shown');
+
+      window.addEventListener('keydown', this.onKeyComboDown);
     },
     onSearchModalHidden() {
       this.searchText = '';
       this.$emit('hidden');
+
+      window.removeEventListener('keydown', this.onKeyComboDown);
     },
     highlightFirstCommand() {
       if (this.isCommandMode) {
@@ -372,6 +390,7 @@ export default {
         /></span>
         <span
           ><commands-overview-dropdown
+            ref="commandDropdown"
             :items="commandPaletteDropdownItems"
             @selected="handleCommandSelection"
         /></span>

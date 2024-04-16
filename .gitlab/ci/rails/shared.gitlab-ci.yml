@@ -92,7 +92,7 @@ include:
     - source scripts/utils.sh
     - bundle exec gem list gitlab_quality-test_tooling
     - |
-      section_start "relate-failure-issue" "Report test failures"
+      section_start "failed-test-issues" "Report test failures"
       if [ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]; then
         input_file="rspec/rspec-${CI_JOB_ID}.json"
 
@@ -101,15 +101,14 @@ include:
           input_file="rspec/rspec-retry-${CI_JOB_ID}.json"
         fi
 
-        bundle exec relate-failure-issue \
+        bundle exec failed-test-issues \
           --token "${TEST_FAILURES_PROJECT_TOKEN}" \
           --project "gitlab-org/gitlab" \
           --input-files "${input_file}" \
-          --exclude-labels-for-search "QA,rspec:slow test,knapsack_report" \
-          --system-log-files "log" \
+          --exclude-labels-for-search "QA,knapsack_report" \
           --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
       fi
-      section_end "relate-failure-issue"
+      section_end "failed-test-issues"
     - |
       section_start "flaky-test-issues" "Report test flakiness"
       if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ] && [ -f "rspec/rspec-retry-${CI_JOB_ID}.json" ]; then

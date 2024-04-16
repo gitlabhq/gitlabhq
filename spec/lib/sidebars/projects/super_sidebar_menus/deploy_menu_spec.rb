@@ -20,6 +20,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::DeployMenu, feature_catego
       :packages_registry,
       :container_registry,
       :google_artifact_registry,
+      :harbor_registry,
       :model_registry,
       :ai_agents
     ])

@@ -1,10 +1,10 @@
 <script>
-import { GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 export default {
   name: 'CommandsOverviewDropdown',
-  components: { GlDisclosureDropdown, GlSprintf },
+  components: { GlCollapsibleListbox, GlSprintf },
   i18n: {
     header: s__('GlobalSearch|I’m looking for'),
     button: s__('GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}'),
@@ -17,7 +17,13 @@ export default {
   },
   methods: {
     emitSelected(selected) {
-      this.$emit('selected', selected.value);
+      this.$emit('selected', selected);
+    },
+    open() {
+      this.$refs.commandsDropdown.open();
+    },
+    close() {
+      this.$refs.commandsDropdown.close();
     },
   },
 };
@@ -25,11 +31,12 @@ export default {
 
 <template>
   <div>
-    <gl-disclosure-dropdown
+    <gl-collapsible-listbox
+      ref="commandsDropdown"
       :items="items"
       :header-text="$options.i18n.header"
       category="tertiary"
-      @action="emitSelected"
+      @select="emitSelected"
     >
       <template #toggle>
         <button class="gl-border-0 gl-rounded-base">
@@ -50,10 +57,10 @@ export default {
       </template>
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
-          <span>{{ item.text }}</span>
+          <span data-testid="listbox-item-text">{{ item.text }}</span>
           <kbd>{{ item.value }}</kbd>
         </span>
       </template>
-    </gl-disclosure-dropdown>
+    </gl-collapsible-listbox>
   </div>
 </template>

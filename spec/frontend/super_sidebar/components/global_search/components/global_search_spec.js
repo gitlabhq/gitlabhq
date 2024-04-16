@@ -19,6 +19,7 @@ import {
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
+  KEY_K,
 } from '~/super_sidebar/components/global_search/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -45,8 +46,20 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
 }));
 
+const triggerKeydownEvent = (target, code, metaKey = false) => {
+  const event = new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    code,
+    metaKey,
+  });
+  target.dispatchEvent(event);
+  return event;
+};
+
 describe('GlobalSearchModal', () => {
   let wrapper;
+  let store;
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -76,7 +89,7 @@ describe('GlobalSearchModal', () => {
     stubs,
     ...mountOptions
   } = {}) => {
-    const store = new Vuex.Store({
+    store = new Vuex.Store({
       state: {
         ...defaultMockState,
         ...initialState,
@@ -365,12 +378,48 @@ describe('GlobalSearchModal', () => {
     });
 
     describe('Modal events', () => {
+      const openSpy = jest.fn();
+      const closeSpy = jest.fn();
+
+      CommandsOverviewDropdown.methods = {
+        open: openSpy,
+        close: closeSpy,
+        emitSelected: jest.fn(),
+      };
+
       beforeEach(() => {
-        createComponent({ initialState: { search: 'searchQuery' } });
+        createComponent({
+          initialState: { search: '', commandChar: '' },
+          mockGetters: {
+            ...defaultMockGetters,
+            isCommandMode: () => Boolean(''),
+          },
+          stubs: {
+            GlModal,
+            GlSearchBoxByType,
+          },
+        });
+
+        wrapper.vm.$refs.commandDropdown.open = openSpy;
+        wrapper.vm.$refs.commandDropdown.close = closeSpy;
+
+        findGlobalSearchModal().vm.$emit('shown');
+      });
+
+      describe('when combination shortcut is pressed', () => {
+        it('Command+k opens commands dropdown', async () => {
+          await triggerKeydownEvent(window, KEY_K, true);
+
+          expect(openSpy).toHaveBeenCalledTimes(1);
+          expect(closeSpy).toHaveBeenCalledTimes(0);
+          await triggerKeydownEvent(window, KEY_K, true);
+
+          expect(openSpy).toHaveBeenCalledTimes(1);
+          expect(closeSpy).toHaveBeenCalledTimes(1);
+        });
       });
 
       it('should emit `shown` event when modal shown`', () => {
-        findGlobalSearchModal().vm.$emit('shown');
         expect(wrapper.emitted('shown')).toHaveLength(1);
       });
 
@@ -384,11 +433,6 @@ describe('GlobalSearchModal', () => {
 
   describe('Navigating results', () => {
     const findSearchInput = () => wrapper.findByRole('searchbox');
-    const triggerKeydownEvent = (target, code) => {
-      const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, code });
-      target.dispatchEvent(event);
-      return event;
-    };
 
     beforeEach(() => {
       createComponent({

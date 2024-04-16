@@ -52,7 +52,7 @@ class Repository
   # stores its data in the `commit_count` cache key.
   CACHED_METHODS = %i[size recent_objects_size commit_count readme_path contribution_guide
                       changelog license_blob license_gitaly gitignore
-                      gitlab_ci_yml branch_names tag_names branch_count
+                      branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names_hash merge_request_template_names_hash
                       xcode_project? has_ambiguous_refs?].freeze
@@ -66,7 +66,6 @@ class Repository
     license: %i[license_blob license_gitaly],
     contributing: :contribution_guide,
     gitignore: :gitignore,
-    gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names_hash,
     merge_request_template: :merge_request_template_names_hash,
@@ -678,12 +677,6 @@ class Repository
     file_on_head(:gitignore)
   end
   cache_method :gitignore
-
-  # Deprecated, use `project.has_ci_config_file?` instead.
-  def gitlab_ci_yml
-    file_on_head(:gitlab_ci)
-  end
-  cache_method :gitlab_ci_yml
 
   def jenkinsfile?
     file_on_head(:jenkinsfile).present?

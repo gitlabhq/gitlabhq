@@ -4606,9 +4606,6 @@ msgstr ""
 msgid "AdvancedSearch|You have pending obsolete migrations"
 msgstr ""
 
-msgid "After a successful password update you will be redirected to login screen."
-msgstr ""
-
 msgid "After it is removed, the fork relationship can only be restored by using the API. This project will no longer be able to receive or send merge requests to the upstream project or other forks."
 msgstr ""
 
@@ -13676,6 +13673,9 @@ msgid "Confirm destroy application"
 msgstr ""
 
 msgid "Confirm new password"
+msgstr ""
+
+msgid "Confirm password"
 msgstr ""
 
 msgid "Confirm user"
@@ -33489,9 +33489,6 @@ msgstr ""
 msgid "New Pages Domain"
 msgstr ""
 
-msgid "New Password"
-msgstr ""
-
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -38224,9 +38221,6 @@ msgid "Please select what should be included in each exported requirement."
 msgstr ""
 
 msgid "Please select..."
-msgstr ""
-
-msgid "Please set a new password before proceeding."
 msgstr ""
 
 msgid "Please solve the captcha"
@@ -47852,9 +47846,6 @@ msgstr ""
 msgid "Set milestone"
 msgstr ""
 
-msgid "Set new password"
-msgstr ""
-
 msgid "Set parent epic to an epic"
 msgstr ""
 
@@ -47964,9 +47955,6 @@ msgid "Set up assertions/attributes/claims (email, first_name, last_name) and Na
 msgstr ""
 
 msgid "Set up new device"
-msgstr ""
-
-msgid "Set up new password"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
@@ -48464,6 +48452,9 @@ msgid "SignUp|Username is too short (minimum is %{min_length} characters)."
 msgstr ""
 
 msgid "Signed in"
+msgstr ""
+
+msgid "Signed in as %{username}"
 msgstr ""
 
 msgid "Signed in to GitLab"
@@ -53353,6 +53344,9 @@ msgstr ""
 msgid "To continue using GitLab Enterprise Edition, upload the %{codeOpen}.gitlab-license%{codeClose} file or enter the license key you have received from GitLab Inc."
 msgstr ""
 
+msgid "To continue, please update your password. After you update, you'll be directed to sign in again."
+msgstr ""
+
 msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
 msgstr ""
 
@@ -54899,6 +54893,12 @@ msgid "Update it"
 msgstr ""
 
 msgid "Update now"
+msgstr ""
+
+msgid "Update password"
+msgstr ""
+
+msgid "Update password for %{current_name}"
 msgstr ""
 
 msgid "Update selected"

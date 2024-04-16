@@ -1,0 +1,9 @@
+---
+name: suspend_click_house_data_ingestion
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17823
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149668
+rollout_issue_url:
+milestone: '17.0'
+group: group::optimize
+type: worker
+default_enabled: false

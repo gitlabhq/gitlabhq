@@ -1597,27 +1597,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
-    let(:project) { create(:project, :repository) }
-
-    it 'returns valid file' do
-      files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
-      expect(repository.tree).to receive(:blobs).and_return(files)
-
-      expect(repository.gitlab_ci_yml.path).to eq('.gitlab-ci.yml')
-    end
-
-    it 'returns nil if not exists' do
-      expect(repository.tree).to receive(:blobs).and_return([])
-      expect(repository.gitlab_ci_yml).to be_nil
-    end
-
-    it 'returns nil for empty repository' do
-      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
-      expect(repository.gitlab_ci_yml).to be_nil
-    end
-  end
-
   describe "#jenkinsfile?" do
     let_it_be(:project) { create(:project, :repository) }
 
@@ -2515,7 +2494,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :license_blob,
           :license_gitaly,
           :gitignore,
-          :gitlab_ci_yml,
           :branch_names,
           :tag_names,
           :branch_count,

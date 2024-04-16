@@ -15,7 +15,7 @@ module Ci
 
           def execute
             build_catalog_resource_version
-            fetch_and_build_components if Feature.enabled?(:ci_catalog_create_metadata, project)
+            fetch_and_build_components
             publish_catalog_resource!
 
             if errors.empty?

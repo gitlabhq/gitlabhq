@@ -78,7 +78,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Harbor Registry'),
             link: group_harbor_repositories_path(context.group),
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
+            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/harbor/repositories' },
             item_id: :harbor_registry
           )

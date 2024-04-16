@@ -15,7 +15,7 @@ RSpec.describe RepositoryCheckMailer do
     end
 
     it 'email with I18n.default_locale' do
-      admins = [create(:admin, preferred_language: :zh_CN), create(:admin, preferred_language: :zh_CN)]
+      admins = create_list(:admin, 2, preferred_language: :zh_CN)
 
       mail = described_class.notify(3)
 

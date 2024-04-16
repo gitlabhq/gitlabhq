@@ -27,7 +27,7 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
           allow(File).to receive(:size).and_return(described_class::MAX_FILE_SIZE + 1)
         end
 
-        it 'raises an ExtractionError' do
+        it 'raises an ExtractionError', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446108' do
           expect do
             service.execute
           end.to raise_error(described_class::ExtractionError, /metadata file has the wrong entry size/)

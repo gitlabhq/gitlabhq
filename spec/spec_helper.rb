@@ -325,6 +325,9 @@ RSpec.configure do |config|
 
       # Work in progress reviewer sidebar that does not have most of the features yet
       stub_feature_flags(reviewer_assign_drawer: false)
+
+      # Disable suspending ClickHouse data ingestion workers
+      stub_feature_flags(suspend_click_house_data_ingestion: false)
     else
       unstub_all_feature_flags
     end

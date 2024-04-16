@@ -95,10 +95,10 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_harbor_registry_nav(within)
+  def insert_harbor_registry_nav
     insert_after_sub_nav_item(
-      within,
-      within: _('Operate'),
+      _('Package Registry'),
+      within: _('Deploy'),
       new_sub_nav_item_name: _('Harbor Registry')
     )
   end
