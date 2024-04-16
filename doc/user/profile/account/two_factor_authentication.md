@@ -375,7 +375,8 @@ To regenerate 2FA recovery codes, you need access to a desktop browser:
 1. Access your [**User settings**](../index.md#access-your-user-settings).
 1. Select **Account > Two-Factor Authentication (2FA)**.
 1. If you've already configured 2FA, select **Manage two-factor authentication**.
-1. In the **Register Two-Factor Authenticator** pane, enter your current password and select **Regenerate recovery codes**.
+1. In the **Disable two-factor authentication** section, enter your current password in the **Current password** text box
+   and select **Regenerate recovery codes**.
 
 NOTE:
 If you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
@@ -404,8 +405,8 @@ To disable 2FA:
 1. Access your [**User settings**](../index.md#access-your-user-settings).
 1. Select **Account**.
 1. Select **Manage two-factor authentication**.
-1. Under **Register Two-Factor Authenticator**, enter your current password and select **Disable two-factor
-   authentication**.
+1. In the **Disable two-factor authentication** section, enter your current password in the **Current password** text box
+   and select **Disable two-factor authentication**.
 
 This clears all your 2FA registrations, including mobile applications and WebAuthn devices.
 

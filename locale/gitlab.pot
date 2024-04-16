@@ -16089,6 +16089,9 @@ msgstr ""
 msgid "DORA4Metrics|Median time an incident was open in a production environment over the given time period."
 msgstr ""
 
+msgid "DORA4Metrics|Median time to merge"
+msgstr ""
+
 msgid "DORA4Metrics|Medium"
 msgstr ""
 
@@ -56201,6 +56204,9 @@ msgid "ValueStreamAnalytics|Lifecycle metrics"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time an incident was open on a production environment in the given time period."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Median time between merge request created and merge request merged."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time between merge request merge and deployment to a production environment for all MRs deployed in the given time period."

@@ -229,6 +229,9 @@ By default, projects in a group can be forked.
 In [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
 you can prevent the projects in a group from being forked outside of the current top-level group.
 
+NOTE:
+Whenever possible, you should prevent forking outside the top-level group. This setting reduces the number of avenues that bad actors can potentially use. However, if you expect a lot of collaboration from outside the top-level group, you might not want to prevent forking outside the top-level group.
+
 Prerequisites:
 
 - This setting is enabled on the top-level group only.

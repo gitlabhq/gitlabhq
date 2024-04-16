@@ -55,6 +55,7 @@ RSpec.shared_examples 'renders metrics comparison table' do
       ['issues-completed', _('Issues closed'), '- 10 50.0% 20 33.3%'],
       ['deploys', _('Deploys'), '- 5 50.0% 10 25.0%'],
       ['merge-request-throughput', _('Merge request throughput'), '- 5 28.6% 7 16.7%'],
+      ['median-time-to-merge', _('Median time to merge'), '- - -'],
       ['vulnerability-critical', _('Critical vulnerabilities over time'), '- 3 5'],
       ['vulnerability-high', _('High vulnerabilities over time'), '- 2 4'],
 

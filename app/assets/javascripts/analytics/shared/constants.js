@@ -91,6 +91,7 @@ export const FLOW_METRICS = {
   ISSUES_COMPLETED: ISSUES_COMPLETED_TYPE,
   COMMITS: 'commits',
   DEPLOYS: 'deploys',
+  MEDIAN_TIME_TO_MERGE: 'median_time_to_merge',
 };
 
 export const DORA_METRICS = {
@@ -231,6 +232,14 @@ export const METRIC_TOOLTIPS = {
     docsLink: helpPagePath('user/analytics/merge_request_analytics', {
       anchor: 'view-the-number-of-merge-requests-in-a-date-range',
     }),
+  },
+  [FLOW_METRICS.MEDIAN_TIME_TO_MERGE]: {
+    description: s__(
+      'ValueStreamAnalytics|Median time between merge request created and merge request merged.',
+    ),
+    groupLink: '-/analytics/productivity_analytics',
+    projectLink: '-/analytics/merge_request_analytics',
+    docsLink: helpPagePath('user/analytics/merge_request_analytics'),
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
     description: s__(

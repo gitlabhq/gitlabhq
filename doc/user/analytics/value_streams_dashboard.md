@@ -364,7 +364,7 @@ Filters for the `dora_chart` visualization.
 
 |Filter|Description|Supported values|
 |---|---|---|
-|`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
+|`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
 | `labels` | Filters data by labels | Any available group label |
 
 ##### DORA Performers score panel filters
@@ -410,6 +410,7 @@ If the comparison panel from the configuration file is enabled with `filter_labe
 | Issues closed | Number of issues closed by month. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../../user/group/issues_analytics/index.md) | `issues_completed` |
 | Number of deploys | Total number of deploys to production. | [Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Merge request analytics](merge_request_analytics.md) | `deploys` |
 | Merge request throughput | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `merge_request_throughput` |
+| Median time to merge | Median time between merge request created and merge request merged. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `median_time_to_merge` |
 | Contributor count | Number of monthly unique users with contributions in the group.| [Contribution Analytics](https://gitlab.com/groups/gitlab-org/-/contribution_analytics) | [User contribution events](../profile/contributions_calendar.md#user-contribution-events) | `contributor_count` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_high` |
@@ -422,4 +423,5 @@ The following metrics do not depend on using Jira:
 - DORA Lead time for changes
 - Number of deploys
 - Merge request throughput
+- Median time to merge
 - Vulnerabilities
