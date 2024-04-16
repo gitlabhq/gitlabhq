@@ -20,9 +20,6 @@ module Gitlab
           review_requested
           unassigned
           unlabeled
-        ].freeze
-
-        EXTENDED_SUPPORTED_EVENTS = SUPPORTED_EVENTS + %w[
           commented
           reviewed
         ].freeze

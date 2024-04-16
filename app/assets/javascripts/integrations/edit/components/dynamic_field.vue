@@ -140,6 +140,11 @@ export default {
       return !this.propsSource.editable;
     },
   },
+  watch: {
+    model(newValue) {
+      this.$emit('update', newValue);
+    },
+  },
   created() {
     if (this.isNonEmptyPassword) {
       this.model = null;

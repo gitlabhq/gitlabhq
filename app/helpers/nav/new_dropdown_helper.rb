@@ -132,7 +132,9 @@ module Nav
         )
       end
 
-      if Feature.enabled?(:ui_for_organizations, current_user) && current_user.can?(:create_organization)
+      if Feature.enabled?(:ui_for_organizations, current_user) &&
+          Feature.enabled?(:allow_organization_creation, current_user) &&
+          current_user.can?(:create_organization)
         menu_items.push(
           ::Gitlab::Nav::TopNavMenuItem.build(
             id: 'general_new_organization',

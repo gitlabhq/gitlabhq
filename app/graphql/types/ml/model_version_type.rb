@@ -14,6 +14,14 @@ module Types
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
       field :version, ::GraphQL::Types::String, null: false, description: 'Name of the version.'
 
+      field :package_id, ::Types::GlobalIDType[::Packages::Package],
+        null: false,
+        description: 'Package for model version artifacts.'
+
+      field :candidate, ::Types::Ml::CandidateType,
+        null: false,
+        description: 'Metrics, params and metadata for the model version.'
+
       field :_links, ::Types::Ml::ModelVersionLinksType, null: false, method: :itself,
         description: 'Map of links to perform actions on the model version.'
     end

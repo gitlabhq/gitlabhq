@@ -136,6 +136,22 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
     subject(:execute) { service.execute(artifacts_file, params, metadata_file: metadata_file) }
 
+    context 'when artifacts have none access setting' do
+      let(:artifacts_file) do
+        file_to_upload('spec/fixtures/ci_build_artifacts.zip', sha256: artifacts_sha256)
+      end
+
+      let(:access_job) { create(:ci_build, :no_access_artifacts, project: project) }
+      let(:access_service) { described_class.new(access_job) }
+
+      it 'sets accessibility to none' do
+        access_service.execute(artifacts_file, params, metadata_file: metadata_file)
+
+        expect(access_job.job_artifacts).not_to be_empty
+        expect(access_job.job_artifacts).to all be_none_accessibility
+      end
+    end
+
     shared_examples_for 'handling accessibility' do
       shared_examples 'public accessibility' do
         it 'sets accessibility to public level' do

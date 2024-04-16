@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_category: :package_registry do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
 
   let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
   let(:current_user) { maintainer }
@@ -128,7 +128,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
     # Because of the access level hierarchy, we can assume that
     # other access levels below developer role will also not be able to
     # create package protection rules.
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
 
     let(:current_user) { developer }
 

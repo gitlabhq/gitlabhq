@@ -43,12 +43,12 @@ module Types
 
       field :created_at,
             Types::TimeType,
-            null: false,
+            null: true,
             description: 'Timestamp of when the branch rule was created.'
 
       field :updated_at,
             Types::TimeType,
-            null: false,
+            null: true,
             description: 'Timestamp of when the branch rule was last updated.'
     end
   end

@@ -20,13 +20,15 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     FIELDS
   end
 
-  let_it_be(:organization_user) { create(:organization_user) }
-  let_it_be(:organization) { organization_user.organization }
-  let_it_be(:user) { organization_user.user }
+  let_it_be(:organization_owner) { create(:organization_owner) }
+  let_it_be(:organization) { organization_owner.organization }
+  let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
     create(:group, name: 'other-group', organization: organization) { |g| g.add_developer(user) }
   end
+
+  let_it_be(:organization_group) { create(:group, organization: organization) }
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 
@@ -64,11 +66,16 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         <<~FIELDS
           organizationUsers {
             nodes {
+              accessLevel {
+                integerValue
+                stringValue
+              }
               badges {
                 text
                 variant
               }
               id
+              isLastOwner
               user {
                 id
               }
@@ -82,8 +89,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
+          "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
           "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
-          "id" => organization_user.to_global_id.to_s,
+          "id" => organization_owner.to_global_id.to_s,
+          "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }
         }
         expect(organization_user_nodes).to include(expected_attributes)
@@ -110,6 +119,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
     context 'when requesting groups' do
       let(:groups) { graphql_data_at(:organization, :groups, :nodes) }
       let_it_be(:parent_group) { create(:group, name: 'parent-group', organization: organization) }
+      let_it_be(:parent_group_global_id) { parent_group.to_global_id.to_s }
       let_it_be(:public_group) do
         create(:group, name: 'public-group', parent: parent_group, organization: organization)
       end
@@ -125,10 +135,38 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         create(:group) { |g| g.add_developer(user) } # outside organization
       end
 
-      it 'does not return ancestors of authorized groups' do
+      it 'returns ancestors of authorized groups' do
         request_organization
 
-        expect(groups.pluck('id')).not_to include(parent_group.to_global_id.to_s)
+        expect(groups.pluck('id')).to include(parent_group_global_id)
+      end
+
+      it 'returns all visible groups' do
+        request_organization
+
+        expected_groups = [parent_group, public_group, private_group, other_group, organization_group]
+          .map { |group| group.to_global_id.to_s }
+        expect(groups.pluck('id')).to match_array(expected_groups)
+      end
+
+      context 'when resolve_all_organization_groups feature flag is disabled' do
+        before do
+          stub_feature_flags(resolve_all_organization_groups: false)
+        end
+
+        it 'does not return ancestors of authorized groups' do
+          request_organization
+
+          expect(groups.pluck('id')).not_to include(parent_group_global_id)
+        end
+
+        it 'does not return all visible groups' do
+          request_organization
+
+          visible_groups = [parent_group, organization_group]
+            .map { |group| group.to_global_id.to_s }
+          expect(groups.pluck('id')).not_to include(*visible_groups)
+        end
       end
 
       context 'with `search` argument' do
@@ -154,7 +192,7 @@ RSpec.describe 'getting organization information', feature_category: :cell do
       end
 
       describe 'group sorting' do
-        let_it_be(:authorized_groups) { [public_group, private_group, other_group] }
+        let_it_be(:authorized_groups) { [parent_group, public_group, private_group, other_group, organization_group] }
         let_it_be(:first_param) { 2 }
         let_it_be(:data_path) { [:organization, :groups] }
 

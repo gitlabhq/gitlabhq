@@ -17,7 +17,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, this feature is not available.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Many teams receive alerts and collaborate in real time during incidents in Slack.
 Use the GitLab for Slack app to:

@@ -1,0 +1,99 @@
+/* stylelint-disable scss/at-rule-no-unknown */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+Components layer:
+https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes
+
+The components layer will be rendered _before_ the utilities,
+so that utilities can overwrite values
+*/
+@layer components {
+    /*
+    our gl-border shorthands do a little more than tailwinds.
+    in order not to conflict with other border related properties
+    (color, width), we need to define them _before_ the tailwind utils.
+     */
+    .gl-border {
+        @apply gl-border-gray-100;
+        @apply gl-border-solid;
+    }
+
+    .gl-border\! {
+        @apply gl-border !important;
+        @apply gl-border-gray-100 !important;
+        @apply gl-border-solid !important;
+    }
+
+    .gl-border-b {
+        @apply gl-border-b-gray-100;
+        @apply gl-border-b-solid;
+    }
+
+    .gl-border-b\! {
+        @apply gl-border-b !important;
+        @apply gl-border-b-gray-100 !important;
+        @apply gl-border-b-solid !important;
+    }
+
+    .gl-border-l {
+        @apply gl-border-l-gray-100;
+        @apply gl-border-l-solid;
+    }
+
+    .gl-border-l\! {
+        @apply gl-border-l !important;
+        @apply gl-border-l-gray-100 !important;
+        @apply gl-border-l-solid !important;
+    }
+
+    .gl-border-r {
+        @apply gl-border-r-gray-100;
+        @apply gl-border-r-solid;
+    }
+
+    .gl-border-r\! {
+        @apply gl-border-r !important;
+        @apply gl-border-r-gray-100 !important;
+        @apply gl-border-r-solid !important;
+    }
+
+    .gl-border-t {
+        @apply gl-border-t-gray-100;
+        @apply gl-border-t-solid;
+    }
+
+    .gl-border-t\! {
+        @apply gl-border-t !important;
+        @apply gl-border-t-gray-100 !important;
+        @apply gl-border-t-solid !important;
+    }
+
+}
+
+/*
+Utilities layer:
+https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities
+*/
+@layer utilities {
+    /* the border-style utils in tailwind do not allow for top, bottom, right, left specific values */
+    .gl-border-b-solid {
+        border-bottom-style: solid;
+    }
+
+    .gl-border-l-solid {
+        border-left-style: solid;
+    }
+
+    .gl-border-r-solid {
+        border-right-style: solid;
+    }
+
+    .gl-border-t-solid {
+        border-top-style: solid;
+    }
+}
+

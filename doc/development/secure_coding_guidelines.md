@@ -11,7 +11,7 @@ vulnerabilities commonly identified in the GitLab codebase. They are intended
 to help developers identify potential security vulnerabilities early, with the
 goal of reducing the number of vulnerabilities released over time.
 
-**Contributing**
+## Contributing
 
 If you would like to contribute to one of the existing documents, or add
 guidelines for a new vulnerability type, open an MR! Try to
@@ -35,7 +35,7 @@ A common vulnerability when permission checks are missing is called [IDOR](https
 
 ### When to Consider
 
-Each time you implement a new feature/endpoint, whether it is at UI, API or GraphQL level.
+Each time you implement a new feature or endpoint at the UI, API, or GraphQL level.
 
 ### Mitigations
 
@@ -47,7 +47,7 @@ Each time you implement a new feature/endpoint, whether it is at UI, API or Grap
 - Do not forget **abuse cases**: write specs that **make sure certain things can't happen**
   - A lot of specs are making sure things do happen and coverage percentage doesn't take into account permissions as same piece of code is used.
   - Make assertions that certain actors cannot perform actions
-- Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests or a `#permissions` block
+- Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests, or a `#permissions` block
 
 Be careful to **also test [visibility levels](https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/permissions.md#feature-specific-permissions)** and not only project access rights.
 
@@ -155,6 +155,8 @@ Hardcoded regular expressions with backtracking issues:
 Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
 
 ```ruby
+# For ruby versions < 3.2.0
+# Press ctrl+c to terminate a hung process
 class Email < ApplicationRecord
   DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
 
@@ -170,7 +172,17 @@ end
 
 ### Mitigation
 
-#### Ruby
+#### Ruby from 3.2.0
+
+Ruby released [Regexp improvements against ReDoS in 3.2.0](https://www.ruby-lang.org/en/news/2022/12/25/ruby-3-2-0-released/). ReDoS will no longer be an issue, with the exception of _"some kind of regular expressions, such as those including advanced features (e.g., back-references or look-around), or with a huge fixed number of repetitions"_.
+
+[Until GitLab enforces a global Regexp timeout](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145679) you should pass an explicit timeout parameter, particularly when using advanced features or a large number of repetitions. For example:
+
+```ruby
+Regexp.new('^a*b?a*()\1$', timeout: 1) # timeout in seconds
+```
+
+#### Ruby before 3.2.0
 
 GitLab has [`Gitlab::UntrustedRegexp`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/untrusted_regexp.rb)
  which internally uses the [`re2`](https://github.com/google/re2/wiki/Syntax) library.
@@ -248,7 +260,7 @@ The preferred SSRF mitigations within GitLab are:
 
 The [`Gitlab::HTTP`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/http.rb) wrapper library has grown to include mitigations for all of the GitLab-known SSRF vectors. It is also configured to respect the
 `Outbound requests` options that allow instance administrators to block all internal connections, or limit the networks to which connections can be made.
-The `Gitlab::HTTP` wrapper library deletages the requests to the [`gitlab-http`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-http) gem.
+The `Gitlab::HTTP` wrapper library delegates the requests to the [`gitlab-http`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-http) gem.
 
 In some cases, it has been possible to configure `Gitlab::HTTP` as the HTTP
 connection library for 3rd-party gems. This is preferable over re-implementing
@@ -375,7 +387,7 @@ Note that denylists should be avoided, as it is near impossible to block all [va
 
 #### Output encoding
 
-Once you've [determined when and where](#setting-expectations) the user submitted data will be output, it's important to encode it based on the appropriate context. For example:
+After you've [determined when and where](#setting-expectations) the user submitted data will be output, it's important to encode it based on the appropriate context. For example:
 
 - Content placed inside HTML elements need to be [HTML entity encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-1---html-escape-before-inserting-untrusted-data-into-html-element-content).
 - Content placed into a JSON response needs to be [JSON encoded](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-31---html-escape-json-values-in-an-html-context-and-read-the-data-with-jsonparse).
@@ -472,7 +484,7 @@ Traversal can occur when a path includes directories. A typical malicious exampl
 
 ### Impact
 
-Path Traversal attacks can lead to multiple critical and high severity issues, like arbitrary file read, remote code execution or information disclosure.
+Path Traversal attacks can lead to multiple critical and high severity issues, like arbitrary file read, remote code execution, or information disclosure.
 
 ### When to consider
 
@@ -703,7 +715,7 @@ tls.Config{
 }
 ```
 
-This example was taken [from the GitLab Agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
+This example was taken [from the GitLab agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
 
 For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 
@@ -1241,7 +1253,7 @@ GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-o
 
 **Example 2:** you have a feature which schedules jobs. When the user schedules the job, they have permission to do so. But imagine if, between the time they schedule the job and the time it is run, their permissions are restricted. Unless you re-check permissions at time of use, you could inadvertently allow unauthorized activity.
 
-**Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, though, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
+**Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
 
 **Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly selecting upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
 
@@ -1496,6 +1508,13 @@ Logging helps track events for debugging. Logging also allows the application to
 - An audit trail for log edits must be available.
 - To avoid data loss, logs must be saved on different storage.
 
+### Related topics
+
+- [Log system in GitLab](../administration/logs/index.md)
+- [Audit event development guidelines](../development/audit_event_guide/index.md))
+- [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
+- [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+
 ## URL Spoofing
 
 We want to protect our users from bad actors who might try to use GitLab
@@ -1528,13 +1547,37 @@ end
 
 Also see this [real-life usage](https://gitlab.com/gitlab-org/gitlab/-/blob/bdba5446903ff634fb12ba695b2de99b6d6881b5/app/helpers/application_helper.rb#L378) as an example.
 
+## Email and notifications
+
+Ensure that only intended recipients get emails and notifications. Even if your
+code is secure when it merges, it's better practice to use the defense-in-depth
+"single recipient" check just before sending the email. This prevents a vulnerability
+if otherwise-vulnerable code is committed at a later date. For example:
+
+### Example: Ruby
+
+```ruby
+# Insecure if email is user-controlled
+def insecure_email(email)
+  mail(to: email, subject: 'Password reset email')
+end
+
+# A single recipient, just as a developer expects
+insecure_email("person@example.com")
+
+# Multiple emails sent when an array is passed
+insecure_email(["person@example.com", "attacker@evil.com"])
+
+# Multiple emails sent even when a single string is passed
+insecure_email("person@example.com, attacker@evil.com")
+```
+
+### Prevention and defense
+
+- Use `Gitlab::Email::SingleRecipientValidator` when adding new emails intended for a single recipient
+- Strongly type your code by calling `.to_s` on values, or check its class with `value.kind_of?(String)`
+
 ## Who to contact if you have questions
 
-For general guidance, contact the [Application Security](https://handbook.gitlab.com/handbook/security/product-security/application-security/) team.
-
-## Related topics
-
-- [Log system in GitLab](../administration/logs/index.md)
-- [Audit event development guidelines](../development/audit_event_guide/index.md))
-- [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
-- [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+For general guidance, contact the
+[Application Security](https://handbook.gitlab.com/handbook/security/product-security/application-security/) team.

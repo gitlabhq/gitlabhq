@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Partial clone
+# Use partial clones to reduce clone size
 
 As Git repositories grow in size, they can become cumbersome to work with
 because of:
@@ -12,16 +12,14 @@ because of:
 - The large amount of history that must be downloaded.
 - The large amount of disk space they require.
 
-[Partial clone](https://github.com/git/git/blob/master/Documentation/technical/partial-clone.txt)
-is a performance optimization that "allows Git to function without having a
+[Partial clone](https://git-scm.com/docs/partial-clone)
+is a performance optimization that allows Git to function without having a
 complete copy of the repository. The goal of this work is to allow Git better
-handle extremely large repositories."
+handle extremely large repositories.
 
 Git 2.22.0 or later is required.
 
 ## Filter by file size
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
 Storing large binary files in Git is usually discouraged, because every large
 file added is downloaded by everyone who clones or fetches changes
@@ -41,7 +39,7 @@ git clone --filter=blob:limit=1m git@gitlab.com:gitlab-com/www-gitlab-com.git
 
 This would produce the following output:
 
-```plaintext
+```shell
 Cloning into 'www-gitlab-com'...
 remote: Enumerating objects: 832467, done.
 remote: Counting objects: 100% (832467/832467), done.
@@ -68,13 +66,11 @@ When changing branches, Git may download more missing files.
 
 ## Filter by object type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
-
 For repositories with millions of files and a long history, you can exclude all files and use
 [`git sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) to reduce the size of
 your working copy.
 
-```plaintext
+```shell
 # Clone the repo excluding all files
 $ git clone --filter=blob:none --sparse git@gitlab.com:gitlab-com/www-gitlab-com.git
 Cloning into 'www-gitlab-com'...
@@ -147,7 +143,6 @@ For more details, see the Git documentation for
    clone command is not fully integrated with sparse checkout.
 
    ```shell
-
    # Clone the filtered set of objects using the filterspec stored on the
    # server. WARNING: this step may be very slow!
    git clone --sparse --filter=sparse:oid=master:shiny-app/.gitfilterspec <url>

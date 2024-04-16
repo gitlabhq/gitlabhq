@@ -23,7 +23,7 @@ RSpec.describe Ci::UserCancelPipelineWorker, :aggregate_failures, feature_catego
             pipeline: pipeline,
             current_user: nil,
             auto_canceled_by_pipeline: pipeline,
-            cascade_to_children: false)
+            cascade_to_children: true)
           .and_return(cancel_service)
 
         expect(cancel_service).to receive(:execute)
@@ -44,7 +44,7 @@ RSpec.describe Ci::UserCancelPipelineWorker, :aggregate_failures, feature_catego
               pipeline: pipeline,
               current_user: nil,
               auto_canceled_by_pipeline: pipeline,
-              cascade_to_children: false)
+              cascade_to_children: true)
             .and_return(cancel_service)
 
           expect(cancel_service).to receive(:execute)
@@ -62,7 +62,7 @@ RSpec.describe Ci::UserCancelPipelineWorker, :aggregate_failures, feature_catego
               pipeline: pipeline,
               current_user: current_user,
               auto_canceled_by_pipeline: pipeline,
-              cascade_to_children: false)
+              cascade_to_children: true)
             .and_return(cancel_service)
 
           expect(cancel_service).to receive(:execute)
@@ -92,7 +92,7 @@ RSpec.describe Ci::UserCancelPipelineWorker, :aggregate_failures, feature_catego
             pipeline: an_instance_of(::Ci::Pipeline),
             current_user: current_user,
             auto_canceled_by_pipeline: nil,
-            cascade_to_children: false)
+            cascade_to_children: true)
           .and_call_original
 
         perform

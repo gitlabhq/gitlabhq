@@ -23,8 +23,8 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-branch-rules-info-callout',
   '.js-new-nav-for-everyone-callout',
   '.js-namespace-over-storage-users-combined-alert',
-  '.js-code-suggestions-ga-alert',
   '.js-joining-a-project-alert',
+  '.js-duo-pro-trial-alert',
 ];
 
 const initCallouts = () => {

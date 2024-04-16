@@ -66,7 +66,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Full code quality reports in the code quality tab](../ci/testing/code_quality.md#pipeline-details-view)
   - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
   - [Multiple assignees](../user/project/merge_requests/index.md#assign-multiple-users)
-  - [Approval Rule information for Reviewers](../user/project/merge_requests/reviews/index.md#approval-rule-information-for-reviewers)
+  - [Approval rule information for reviewers](../user/project/merge_requests/reviews/index.md#see-how-reviewers-map-to-approval-rules)
   - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
@@ -76,7 +76,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)
   - [Code Review Analytics](../user/analytics/code_review_analytics.md)
-  - [Audit Events](../administration/audit_events.md)
+  - [Audit Events](../administration/audit_event_reports.md)
 - Rake tasks:
   - [Displaying GitLab license information](../administration/raketasks/maintenance.md#show-gitlab-license-information)
 - Reference Architecture information:

@@ -3,6 +3,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import GroupFolder from '~/groups/components/group_folder.vue';
 import GroupItem from 'jh_else_ce/groups/components/group_item.vue';
 import ItemActions from '~/groups/components/item_actions.vue';
+import VisibilityIcon from '~/vue_shared/components/visibility_icon.vue';
 import eventHub from '~/groups/event_hub';
 import { getGroupItemMicrodata } from '~/groups/store/utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
@@ -11,8 +12,6 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
-  GROUP_VISIBILITY_TYPE,
-  PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -117,49 +116,39 @@ describe('GroupItemComponent', () => {
         wrapper.destroy();
       });
     });
+  });
 
-    describe('visibilityTooltip', () => {
-      describe('if item represents group', () => {
-        it.each`
-          visibilityLevel                     | visibilityTooltip
-          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
-          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
-          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
-        `(
-          'should return corresponding text when visibility level is $visibilityLevel',
-          ({ visibilityLevel, visibilityTooltip }) => {
-            const group = { ...mockParentGroupItem };
+  describe('visibilityIcon', () => {
+    describe('if item represents a group', () => {
+      it('should display the visibility icon with appropriate props', () => {
+        const group = { ...mockParentGroupItem };
 
-            group.type = 'group';
-            group.visibility = visibilityLevel;
-            wrapper = createComponent({ group });
+        group.type = 'group';
+        group.visibility = VISIBILITY_LEVEL_PRIVATE_STRING;
+        wrapper = createComponent({ group });
 
-            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
-            wrapper.destroy();
-          },
-        );
+        expect(wrapper.findComponent(VisibilityIcon).props()).toEqual({
+          isGroup: true,
+          tooltipPlacement: 'bottom',
+          visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
+        });
       });
+    });
 
-      describe('if item represents project', () => {
-        it.each`
-          visibilityLevel                     | visibilityTooltip
-          ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]}
-          ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_INTERNAL_STRING]}
-          ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]}
-        `(
-          'should return corresponding text when visibility level is $visibilityLevel',
-          ({ visibilityLevel, visibilityTooltip }) => {
-            const group = { ...mockParentGroupItem };
+    describe('if item represents a project', () => {
+      it('should display the visibility icon with appropriate props', () => {
+        const group = { ...mockParentGroupItem };
 
-            group.type = 'project';
-            group.lastActivityAt = '2017-04-09T18:40:39.101Z';
-            group.visibility = visibilityLevel;
-            wrapper = createComponent({ group });
+        group.type = 'project';
+        group.lastActivityAt = '2017-04-09T18:40:39.101Z';
+        group.visibility = VISIBILITY_LEVEL_PRIVATE_STRING;
+        wrapper = createComponent({ group });
 
-            expect(wrapper.vm.visibilityTooltip).toBe(visibilityTooltip);
-            wrapper.destroy();
-          },
-        );
+        expect(wrapper.findComponent(VisibilityIcon).props()).toEqual({
+          isGroup: false,
+          tooltipPlacement: 'bottom',
+          visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
+        });
       });
     });
   });
@@ -279,7 +268,6 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.title a.no-expand')).toBeDefined();
 
       expect(visibilityIconEl).not.toBe(null);
-      expect(visibilityIconEl.getAttribute('title')).toBe(vm.visibilityTooltip);
 
       expect(vm.$el.querySelector('.access-type')).toBeDefined();
       expect(vm.$el.querySelector('.description')).toBeDefined();

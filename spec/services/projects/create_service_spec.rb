@@ -461,10 +461,6 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     let(:imported_project) { create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data }) }
 
     it 'does not write repository config' do
-      expect_next_instance_of(Project) do |project|
-        expect(project).not_to receive(:set_full_path)
-      end
-
       imported_project
       expect(imported_project.project_namespace).to be_in_sync_with_project(imported_project)
     end

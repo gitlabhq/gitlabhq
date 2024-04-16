@@ -551,11 +551,11 @@ describe('Ref selector component', () => {
         });
 
         it("updates the v-model binding with the branch's name", async () => {
-          expect(wrapper.vm.value).toEqual('');
+          expect(findListbox().props('selected')).toBe('');
 
           await selectFirstBranch();
 
-          expect(wrapper.vm.value).toEqual(fixtures.branches[0].name);
+          expect(findListbox().props('selected')).toBe(fixtures.branches[0].name);
         });
       });
 
@@ -569,11 +569,11 @@ describe('Ref selector component', () => {
         });
 
         it("updates the v-model binding with the tag's name", async () => {
-          expect(wrapper.vm.value).toEqual('');
+          expect(findListbox().props('selected')).toBe('');
 
           await selectFirstTag();
 
-          expect(wrapper.vm.value).toEqual(fixtures.tags[0].name);
+          expect(findListbox().props('selected')).toBe(fixtures.tags[0].name);
         });
       });
 
@@ -587,11 +587,11 @@ describe('Ref selector component', () => {
         });
 
         it("updates the v-model binding with the commit's full SHA", async () => {
-          expect(wrapper.vm.value).toEqual('');
+          expect(findListbox().props('selected')).toBe('');
 
           await selectFirstCommit();
 
-          expect(wrapper.vm.value).toEqual(fixtures.commit.id);
+          expect(findListbox().props('selected')).toBe(fixtures.commit.id);
         });
       });
     });

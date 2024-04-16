@@ -103,6 +103,18 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 - It is explicitly disabled.
 - It is disabled automatically after six hours.
 
+### Check if your session has Admin Mode enabled
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
+
+Go to your list of active sessions:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Active Sessions**.
+
+Sessions which have Admin Mode turned on display the text **Signed in on <date of session> with Admin Mode**.
+
 ### Turn off Admin Mode for your session
 
 To turn off Admin Mode for your current session:
@@ -189,7 +201,7 @@ To access this text box:
 1. Expand the **Sign-in restrictions** section.
 ```
 
-Your users see the **Custom sign-in text** when they navigate to the sign-in screen for your
+Your users see the **Custom sign-in text** when they go to the sign-in screen for your
 GitLab instance.
 
 ## Troubleshooting

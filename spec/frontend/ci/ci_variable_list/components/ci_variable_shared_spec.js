@@ -11,15 +11,14 @@ import { resolvers } from '~/ci/ci_variable_list/graphql/settings';
 import ciVariableShared from '~/ci/ci_variable_list/components/ci_variable_shared.vue';
 import ciVariableSettings from '~/ci/ci_variable_list/components/ci_variable_settings.vue';
 import ciVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
-import { getProjectEnvironments } from '~/ci/common/private/ci_environments_dropdown';
+import {
+  getProjectEnvironments,
+  ENVIRONMENT_FETCH_ERROR,
+} from '~/ci/common/private/ci_environments_dropdown';
 import getAdminVariables from '~/ci/ci_variable_list/graphql/queries/variables.query.graphql';
 import getGroupVariables from '~/ci/ci_variable_list/graphql/queries/group_variables.query.graphql';
 import getProjectVariables from '~/ci/ci_variable_list/graphql/queries/project_variables.query.graphql';
-import {
-  environmentFetchErrorText,
-  genericMutationErrorText,
-  variableFetchErrorText,
-} from '~/ci/ci_variable_list/constants';
+import { genericMutationErrorText, variableFetchErrorText } from '~/ci/ci_variable_list/constants';
 
 import {
   createGroupProps,
@@ -194,7 +193,7 @@ describe('Ci Variable Shared Component', () => {
         });
 
         it('calls createAlert with the expected error message', () => {
-          expect(createAlert).toHaveBeenCalledWith({ message: environmentFetchErrorText });
+          expect(createAlert).toHaveBeenCalledWith({ message: ENVIRONMENT_FETCH_ERROR });
         });
       });
     });

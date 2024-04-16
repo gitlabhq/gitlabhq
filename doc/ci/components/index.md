@@ -158,31 +158,19 @@ To use GitLab.com components in a self-managed instance, you must
 
 In order of highest priority first, the component version can be:
 
-- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`. Use a commit SHA
-  to pin a component to a specific version that is not [published in the CI/CD catalog](#publish-a-new-release).
+- A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
 - A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
-  the commit SHA takes precedence over the tag.
+  the commit SHA takes precedence over the tag. Components released to the CI/CD
+  should be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest`, which is a special version that always points to the latest semantic version
-  published in the CI/CD Catalog. Use `~latest` only if you want to use
-  the absolute latest version at all times, which could include breaking changes.
+- `~latest`, which always points to the latest semantic version
+  published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
+  latest version at all times, which could include breaking changes.
 
-You can use any [version](#component-versions) supported by the component, but using a
-version published to the CI/CD catalog is recommended.
-
-#### Use semantic versioning
-
-When tagging and [releasing new versions](#publish-a-new-release) of components,
-you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
-for communicating that a change is a major, minor, patch, or other kind of change.
-
-For example:
-
-- `1.0.0`
-- `2.1.3`
-- `1.0.0-alpha`
-- `3.0.0-rc1`
+You can use any version supported by the component, but using a version published
+to the CI/CD catalog is recommended. The version referenced with a commit SHA or branch name
+might not be published in the CI/CD catalog, but could be used for testing.
 
 ## CI/CD Catalog
 
@@ -277,9 +265,53 @@ To publish a new version of the component to the catalog:
 
 1. Create a [new tag](../../user/project/repository/tags/index.md#create-a-tag) for the release,
    which should trigger a tag pipeline that contains the job responsible for creating the release.
+   The tag must use [semantic versioning](#semantic-versioning).
 
 After the release job completes successfully, the release is created and the new version
 is published to the CI/CD catalog.
+
+#### Semantic versioning
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) in GitLab 16.10.
+
+When tagging and [releasing new versions](#publish-a-new-release) of components to the Catalog,
+you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
+for communicating that a change is a major, minor, patch, or other kind of change.
+
+For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions.
+
+##### Semantic version ranges
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
+
+When [referencing a CI/CD catalog component](#component-versions), you can use a
+special format to specify the latest version in a range.
+
+To specify the latest release of:
+
+- A minor version, use both the major and minor version numbers in the reference,
+  but not the patch version number. For example, use `1.1` to use the latest version
+  that starts with `1.1`, including `1.1.0` or `1.1.9`, but not `1.2.0`.
+- A major version, use only the major version number in the reference. For example,
+  use `1` to use the latest version that starts with `1.`, like `1.0.0` or `1.9.9`,
+  but not `2.0.0`.
+- All versions, use `~latest` to use the latest released version.
+
+For example, a component is released in this exact order:
+
+1. `1.0.0`
+1. `1.1.0`
+1. `2.0.0`
+1. `1.1.1`
+1. `1.2.0`
+1. `2.1.0`
+1. `2.0.1`
+
+In this example, referencing the component with:
+
+- `1` would use the `1.2.0` version.
+- `1.1` would use the `1.1.1` version.
+- `~latest` would use the `2.1.0` version.
 
 ### Unpublish a component project
 
@@ -291,6 +323,17 @@ This action destroys the metadata about the component project and its versions p
 in the catalog. The project and its repository still exist, but are not visible in the catalog.
 
 To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
+
+### Verified component creators
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+
+Some CI/CD components are badged with an icon to show that the component was created
+and is maintained by users verified by GitLab:
+
+- GitLab-maintained (**{tanuki-verified}**): Components that are created and maintained by GitLab.
+- GitLab Partner (**{partner-verified}**): Components that are created and maintained by
+  a GitLab-verified partner.
 
 ## Best practices
 
@@ -371,7 +414,7 @@ ensure-job-added:
   script:
     - |
       route="${CI_API_V4_URL}/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
-      count=`curl --silent --header "JOB-TOKEN: $CI_JOB_TOKEN" $route | jq 'map(select(.name | contains("component job of my-component"))) | length'`
+      count=`curl --silent --header $route | jq 'map(select(.name | contains("component job of my-component"))) | length'`
       if [ "$count" != "1" ]; then
         exit 1; else
         echo "Component Job present"
@@ -392,6 +435,9 @@ create-release:
 
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
+
+NOTE:
+Authentication is necessary if the project is private.
 
 #### Test a component against sample files
 
@@ -513,7 +559,7 @@ When using CI/CD variables in a component, evaluate if the `inputs` keyword
 should be used instead. Avoid asking users to define custom variables to configure
 components when `inputs` is a better solution.
 
-Inputs are explicitly defined in the component's specs, and have better validation than variables.
+Inputs are explicitly defined in the component's `spec` section, and have better validation than variables.
 For example, if a required input is not passed to the component, GitLab returns a pipeline error.
 By contrast, if a variable is not defined, its value is empty, and there is no error.
 
@@ -566,17 +612,22 @@ You can learn more by following a practical example for [migrating the Go CI/CD 
 
 ## Use a GitLab.com component in a self-managed instance
 
-To use a component from GitLab.com in a self-managed instance, you can mirror the GitLab.com
-component in your self-managed instance:
+The CI/CD catalog of a fresh install of a GitLab instance starts with no published CI/CD components.
+To populate your instance's catalog, you can:
+
+- [Publish your own components](#publish-a-component-project).
+- Mirror components from GitLab.com in your self-managed instance.
+
+To mirror a GitLab.com component in your self-managed instance:
 
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
 1. [Create a group](../../user/group/index.md#create-a-group) to host the component projects (recommended group: `components`).
 1. [Create a mirror of the component project](../../user/project/repository/mirror/index.md) in the new group.
 1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description)
-for the component project mirror because mirroring repositories does not copy the description.
+   for the component project mirror because mirroring repositories does not copy the description.
 1. [Set the self-hosted component project as a catalog resource](#set-a-component-project-as-a-catalog-project).
 1. Publish [a new release](../../user/project/releases/index.md) in the self-hosted component project by
-[running a pipeline](../pipelines/index.md#run-a-pipeline-manually) for a tag (usually the latest tag).
+   [running a pipeline](../pipelines/index.md#run-a-pipeline-manually) for a tag (usually the latest tag).
 
 ## Troubleshooting
 
@@ -586,8 +637,8 @@ You might receive an error message similar to the following when using the `~lat
 version qualifier to reference a component hosted by a [catalog project](#set-a-component-project-as-a-catalog-project):
 
 ```plaintext
-This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found`
+This GitLab CI configuration is invalid: component 'gitlab.com/my-namespace/my-project/my-component@~latest' - content not found
 ```
 
 The `~latest` behavior [was updated](https://gitlab.com/gitlab-org/gitlab/-/issues/442238)
-in GitLab 16.11. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).
+in GitLab 16.10. It now refers to the latest semantic version of the catalog resource. To resolve this issue, [create a new release](#publish-a-new-release).

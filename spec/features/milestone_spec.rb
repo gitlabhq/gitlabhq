@@ -125,7 +125,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
       it 'reopens the milestone' do
         visit group_milestones_path(group, { state: 'closed' })
 
-        click_link 'Reopen Milestone'
+        click_link 'Reopen'
 
         expect(page).not_to have_selector('.badge-danger')
         expect(page).to have_selector('.badge-success')
@@ -136,7 +136,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
       it 'reopens the milestone' do
         visit project_milestones_path(project, { state: 'closed' })
 
-        click_link 'Reopen Milestone'
+        click_link 'Reopen'
 
         expect(page).not_to have_selector('.badge-danger')
         expect(page).to have_selector('.badge-success')

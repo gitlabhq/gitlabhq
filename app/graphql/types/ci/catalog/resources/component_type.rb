@@ -17,7 +17,6 @@ module Types
             alpha: { milestone: '16.7' }
 
           field :include_path, GraphQL::Types::String, null: true,
-            method: :path,
             description: 'Path used to include the component.',
             alpha: { milestone: '16.7' }
 
@@ -26,7 +25,9 @@ module Types
             alpha: { milestone: '16.7' }
 
           def inputs
-            object.inputs.map do |key, value|
+            spec_inputs = object.spec.fetch('inputs', {})
+
+            spec_inputs.map do |key, value|
               {
                 name: key,
                 required: !value&.key?('default'),

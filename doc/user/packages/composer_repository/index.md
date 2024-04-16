@@ -351,8 +351,8 @@ When you install from source, the `composer` configures an
 access to the project's Git repository.
 Depending on the project visibility, the access type is different:
 
-- On public projects, the `https` Git URL is used. Make sure you can [clone the repository with HTTPS](../../../gitlab-basics/start-using-git.md#clone-with-https).
-- On internal or private projects, the `ssh` Git URL is used. Make sure you can [clone the repository with SSH](../../../gitlab-basics/start-using-git.md#clone-with-ssh).
+- On public projects, the `https` Git URL is used. Make sure you can [clone the repository with HTTPS](../../../topics/git/get_started.md#clone-with-https).
+- On internal or private projects, the `ssh` Git URL is used. Make sure you can [clone the repository with SSH](../../../topics/git/get_started.md#clone-with-ssh).
 
 You can access the `ssh` Git URL from a CI/CD job using [SSH keys with GitLab CI/CD](../../../ci/ssh_keys/index.md).
 

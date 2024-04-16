@@ -159,13 +159,11 @@ describe('CiResourceDetailsPage', () => {
       });
 
       it('passes expected props', () => {
-        expect(findHeaderComponent().props()).toEqual({
+        expect(findHeaderComponent().props()).toMatchObject({
           isLoadingDetails: false,
           isLoadingSharedData: false,
           openIssuesCount: defaultAdditionalData.openIssuesCount,
           openMergeRequestsCount: defaultAdditionalData.openMergeRequestsCount,
-          pipelineStatus:
-            defaultAdditionalData.versions.nodes[0].commit.pipelines.nodes[0].detailedStatus,
           resource: defaultSharedData,
         });
       });
@@ -179,7 +177,7 @@ describe('CiResourceDetailsPage', () => {
       it('passes expected props', () => {
         expect(findDetailsComponent().props()).toEqual({
           resourcePath: cleanLeadingSeparator(defaultSharedData.webPath),
-          version: defaultAdditionalData.versions.nodes[0].name,
+          version: defaultSharedData.versions.nodes[0].name,
         });
       });
     });

@@ -62,9 +62,7 @@ module API
       def create_group
         # This is a separate method so that EE can extend its behaviour, without
         # having to modify this code directly.
-        ::Groups::CreateService
-          .new(current_user, declared_params(include_missing: false))
-          .execute
+        ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
       end
 
       def update_group(group)
@@ -244,10 +242,11 @@ module API
           authorize_group_creation!
         end
 
-        group = create_group
+        response = create_group
+        group = response[:group]
         group.preload_shared_group_links
 
-        if group.persisted?
+        if response.success?
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)

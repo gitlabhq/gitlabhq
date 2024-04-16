@@ -25,7 +25,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     hasIterationsFeature,
     hasOkrsFeature,
     hasIssuableHealthStatusFeature,
-    newCommentTemplatePath,
+    newCommentTemplatePaths,
     reportAbusePath,
   } = el.dataset;
 
@@ -46,7 +46,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       signInPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
-      newCommentTemplatePath,
+      newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
       reportAbusePath,
     },
     render(createElement) {

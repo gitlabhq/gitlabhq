@@ -111,6 +111,12 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
           .with(current_user_id: user.id, merge_request_id: merge_request.id)
       end
 
+      it 'changes reviewers state to unapproved' do
+        expect { service.execute(merge_request) }.to change {
+          merge_request.merge_request_reviewers.reload.all?(&:approved?)
+        }.from(false).to(true)
+      end
+
       it_behaves_like 'triggers GraphQL subscription mergeRequestMergeStatusUpdated' do
         let(:action) { service.execute(merge_request) }
       end

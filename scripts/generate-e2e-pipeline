@@ -15,7 +15,6 @@ declare -A qa_pipelines
 # key/value pairs for qa pipeline yml definitions
 qa_pipelines["package-and-test-pipeline.yml"]="package-and-test/main.gitlab-ci.yml"
 qa_pipelines["package-and-test-nightly-pipeline.yml"]="package-and-test-nightly/main.gitlab-ci.yml"
-qa_pipelines["review-app-pipeline.yml"]="review-apps/main.gitlab-ci.yml"
 qa_pipelines["test-on-gdk-pipeline.yml"]="test-on-gdk/main.gitlab-ci.yml"
 qa_pipelines["test-on-cng-pipeline.yml"]="test-on-cng/main.gitlab-ci.yml"
 

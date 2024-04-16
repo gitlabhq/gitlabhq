@@ -21,9 +21,17 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
   describe '#execute', :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
     let(:commit_sha) { 'aaaa1' }
 
+    let(:page_hash_1) do
+      { limit: 50, page_offset: 1 }
+    end
+
+    let(:page_hash_2) do
+      { limit: 50, page_offset: 2 }
+    end
+
     before do
       allow_next_instance_of(BitbucketServer::Client) do |client|
-        allow(client).to receive(:pull_requests).with('key', 'slug', a_hash_including(limit: 50)).and_return(
+        allow(client).to receive(:pull_requests).with('key', 'slug', page_hash_1).and_return(
           [
             BitbucketServer::Representation::PullRequest.new(
               {
@@ -49,7 +57,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
                 'toRef' => { 'latestCommit' => 'cccc2' }
               }
             )
-          ],
+          ]
+        )
+        allow(client).to receive(:pull_requests).with('key', 'slug', page_hash_2).and_return(
           []
         )
       end
@@ -62,8 +72,39 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
 
       expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
       expect(waiter.jobs_remaining).to eq(3)
+      expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('3')
       expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
         .to match_array(%w[1 2 3])
+    end
+
+    context 'when page counter has been set' do
+      let(:page_hash_1) do
+        { limit: 50, page_offset: 2 }
+      end
+
+      let(:page_hash_2) do
+        { limit: 50, page_offset: 3 }
+      end
+
+      before do
+        expect_next_instance_of(Gitlab::Import::PageCounter) do |page_counter|
+          allow(page_counter).to receive(:current).and_return(2)
+          allow(page_counter).to receive(:set).with(3).and_call_original.once
+          allow(page_counter).to receive(:expire!).and_call_original.once
+        end
+      end
+
+      it 'resumes from the last page' do
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestWorker).to receive(:perform_in).thrice
+
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(3)
+        expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('3')
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
+          .to match_array(%w[1 2 3])
+      end
     end
 
     context 'when pull request was already processed' do
@@ -78,6 +119,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
 
         expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
         expect(waiter.jobs_remaining).to eq(3)
+        expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('3')
       end
     end
 
@@ -115,17 +157,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
             prune: false
           )
 
-          importer.execute
-        end
-      end
-
-      context 'when feature flag "fetch_commits_for_bitbucket_server" is disabled' do
-        before do
-          stub_feature_flags(fetch_commits_for_bitbucket_server: false)
-        end
-
-        it 'does not fetch anything' do
-          expect(repository).not_to receive(:fetch_remote)
           importer.execute
         end
       end

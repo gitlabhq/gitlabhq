@@ -6,8 +6,6 @@ module Gitlab
       module Events
         class Reviewed < BaseImporter
           def execute(issue_event)
-            return true unless import_settings.extended_events?
-
             review = Representation::PullRequestReview.from_json_hash(
               merge_request_iid: issue_event.issuable_id,
               author: issue_event.actor&.to_hash,

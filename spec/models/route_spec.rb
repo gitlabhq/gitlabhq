@@ -59,11 +59,35 @@ RSpec.describe Route do
   end
 
   describe '.for_routable_type' do
-    let!(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
-    let!(:project) { create(:project, path: 'other-project') }
+    let_it_be(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
+    let_it_be(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
+    let_it_be(:project) { create(:project, path: 'other-project') }
 
     it 'returns correct routes' do
       expect(described_class.for_routable_type(Project.name)).to match_array([project.route])
+    end
+  end
+
+  describe '.by_paths' do
+    let!(:nested_group) { create(:group, path: 'foo', name: 'foo', parent: group) }
+    let!(:project) { create(:project, path: 'other-project', namespace: group) }
+
+    it 'returns correct routes' do
+      expect(described_class.by_paths(%w[git_lab/foo git_lab/other-project])).to match_array(
+        [nested_group.route, project.route]
+      )
+    end
+
+    context 'with all mismatched paths' do
+      it 'returns no routes' do
+        expect(described_class.by_paths(%w[foo other-project])).to be_empty
+      end
+    end
+
+    context 'with some mismatched paths' do
+      it 'returns no routes' do
+        expect(described_class.by_paths(%w[foo git_lab/other-project])).to match_array([project.route])
+      end
     end
   end
 

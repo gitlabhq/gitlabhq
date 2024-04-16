@@ -9,8 +9,11 @@ import KubernetesServices from '~/environments/environment_details/components/ku
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
-import { mockKasTunnelUrl } from '../../../mock_data';
-import { k8sServicesMock } from '../../../graphql/mock_data';
+import { mockKasTunnelUrl } from 'jest/environments/mock_data';
+import {
+  k8sServicesMock,
+  mockServicesTableItems,
+} from 'jest/kubernetes_dashboard/graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -64,7 +67,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_se
   });
 
   describe('when gets services data', () => {
-    useFakeDate(2020, 6, 6);
+    useFakeDate(2023, 10, 23, 10, 10);
 
     it('hides the loading icon when the list of services loaded', async () => {
       createWrapper();
@@ -79,26 +82,27 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_se
 
       expect(findWorkloadTable().props('pageSize')).toBe(SERVICES_LIMIT_PER_PAGE);
       expect(findWorkloadTable().props('fields')).toBe(SERVICES_TABLE_FIELDS);
-      expect(findWorkloadTable().props('items')).toMatchObject([
-        {
-          name: 'my-first-service',
-          namespace: 'default',
-          type: 'ClusterIP',
-          clusterIP: '10.96.0.1',
-          externalIP: '-',
-          ports: '443/TCP',
-          age: '0s',
-        },
-        {
-          name: 'my-second-service',
-          namespace: 'default',
-          type: 'NodePort',
-          clusterIP: '10.105.219.238',
-          externalIP: '-',
-          ports: '80:31989/TCP, 443:32679/TCP',
-          age: '2d',
-        },
-      ]);
+      expect(findWorkloadTable().props('items')).toMatchObject(mockServicesTableItems);
+    });
+
+    it('emits show-resource-details event on item select', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-resource-details')).toBeUndefined();
+
+      findWorkloadTable().vm.$emit('select-item', mockServicesTableItems[0]);
+      expect(wrapper.emitted('show-resource-details')).toEqual([[mockServicesTableItems[0]]]);
+    });
+
+    it('emits remove-selection event when receives it from the WorkloadTable component', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(wrapper.emitted('remove-selection')).toBeUndefined();
+
+      findWorkloadTable().vm.$emit('remove-selection');
+      expect(wrapper.emitted('remove-selection')).toHaveLength(1);
     });
 
     it('emits an error message when gets an error from the cluster_client API', async () => {

@@ -315,13 +315,13 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
     const params = new URLSearchParams();
 
     if (Array.isArray(filters.search)) {
-      const searchPrefix = filters.search
+      const search = filters.search
         .map((f) => f.value)
         .join(' ')
         .trim();
 
-      if (searchPrefix) {
-        params.append('starts_with', searchPrefix);
+      if (search) {
+        params.append('search', search);
         if (limit) {
           params.append('limit', limit);
         }
@@ -340,21 +340,23 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   }
 }
 
-const SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS = ['=', '!=', '=~', '!~'];
-
+const SUPPORTED_METRICS_DIMENSIONS_OPERATORS = {
+  '!=': 'neq',
+  '=': 'eq',
+  '=~': 're',
+  '!~': 'nre',
+};
 function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   if (!dimensionFilter || !params) return;
 
   Object.entries(dimensionFilter).forEach(([filterName, values]) => {
     const filterValues = Array.isArray(values) ? values : [];
     const validFilters = filterValues.filter((f) =>
-      SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS.includes(f.operator),
+      Object.keys(SUPPORTED_METRICS_DIMENSIONS_OPERATORS).includes(f.operator),
     );
     validFilters.forEach(({ operator, value }) => {
-      const paramName = getFilterParamName(filterName, operator);
-      if (paramName && value) {
-        params.append(paramName, value);
-      }
+      const operatorName = SUPPORTED_METRICS_DIMENSIONS_OPERATORS[operator];
+      params.append('attrs', `${filterName},${operatorName},${value}`);
     });
   });
 }
@@ -398,6 +400,10 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
       mname: name,
       mtype: type,
     });
+
+    if (options.visual) {
+      params.append('mvisual', options.visual);
+    }
 
     const { attributes, dateRange, groupBy } = options.filters ?? {};
 

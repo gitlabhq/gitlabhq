@@ -6,6 +6,7 @@ export const mockAssignees = [
     id: 'gid://gitlab/User/1',
     avatarUrl: '',
     webUrl: '',
+    webPath: '/doe_I',
     name: 'John Doe',
     username: 'doe_I',
   },
@@ -14,6 +15,7 @@ export const mockAssignees = [
     id: 'gid://gitlab/User/2',
     avatarUrl: '',
     webUrl: '',
+    webPath: '/ruthfull',
     name: 'Marcus Rutherford',
     username: 'ruthfull',
   },
@@ -134,6 +136,7 @@ export const workItemQueryResponse = {
         name: 'Administrator',
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
+        webPath: '/root',
         __typename: 'UserCore',
       },
       namespace: {
@@ -635,6 +638,7 @@ export const workItemResponseFactory = ({
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
+  rolledupDatesWidgetPresent = false,
   weightWidgetPresent = true,
   timeTrackingWidgetPresent = true,
   participantsWidgetPresent = true,
@@ -738,6 +742,18 @@ export const workItemResponseFactory = ({
               startDate: '2022-01-01',
             }
           : { type: 'MOCK TYPE' },
+        rolledupDatesWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetRolledupDates',
+              type: 'ROLLEDUP_DATES',
+              dueDate: null,
+              dueDateFixed: null,
+              dueDateIsFixed: false,
+              startDate: null,
+              startDateFixed: null,
+              startDateIsFixed: false,
+            }
+          : { type: 'MOCK TYPE' },
         weightWidgetPresent
           ? {
               __typename: 'WorkItemWidgetWeight',
@@ -787,6 +803,7 @@ export const workItemResponseFactory = ({
                     name: 'rookie',
                     username: 'rookie',
                     webUrl: 'rookie',
+                    webPath: '/rookie',
                   },
                 ],
               },
@@ -1906,6 +1923,7 @@ export const projectMembersResponseWithCurrentUser = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: '/rookie',
               status: null,
             },
           },
@@ -1919,6 +1937,7 @@ export const projectMembersResponseWithCurrentUser = {
               name: 'Administrator',
               username: 'root',
               webUrl: '/root',
+              webPath: '/root',
               status: null,
             },
           },
@@ -1946,6 +1965,7 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           name: 'rookie',
           username: 'rookie',
           webUrl: 'rookie',
+          webPath: '/rookie',
           status: null,
         },
         {
@@ -1956,6 +1976,7 @@ export const projectMembersAutocompleteResponseWithCurrentUser = {
           name: 'Administrator',
           username: 'root',
           webUrl: '/root',
+          webPath: '/root',
           status: null,
         },
       ],
@@ -1979,6 +2000,7 @@ export const projectMembersResponseWithDuplicates = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: 'rookie',
               status: null,
             },
           },
@@ -1991,6 +2013,7 @@ export const projectMembersResponseWithDuplicates = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: 'rookie',
               status: null,
             },
           },
@@ -2004,6 +2027,7 @@ export const projectMembersResponseWithDuplicates = {
               name: 'Administrator',
               username: 'root',
               webUrl: '/root',
+              webPath: '/root',
               status: null,
             },
           },
@@ -2017,6 +2041,7 @@ export const projectMembersResponseWithDuplicates = {
               name: 'Administrator',
               username: 'root',
               webUrl: '/root',
+              webPath: '/root',
               status: null,
             },
           },
@@ -2047,6 +2072,7 @@ export const projectMembersResponseWithCurrentUserWithNextPage = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: '/root',
               status: null,
             },
           },
@@ -2060,6 +2086,7 @@ export const projectMembersResponseWithCurrentUserWithNextPage = {
               name: 'Administrator',
               username: 'root',
               webUrl: '/root',
+              webPath: '/root',
               status: null,
             },
           },
@@ -2117,6 +2144,7 @@ export const projectMembersResponseWithoutCurrentUser = {
               name: 'rookie',
               username: 'rookie',
               webUrl: 'rookie',
+              webPath: 'rookie',
               status: null,
             },
           },
@@ -2136,6 +2164,7 @@ export const currentUserResponse = {
       name: 'Administrator',
       username: 'root',
       webUrl: '/root',
+      webPath: '/root',
     },
   },
 };
@@ -2410,6 +2439,7 @@ export const mockWorkItemNotesResponse = {
                         name: 'Administrator',
                         username: 'root',
                         webUrl: 'http://127.0.0.1:3000/root',
+                        webPath: '/root',
                         __typename: 'UserCore',
                       },
                       __typename: 'Note',
@@ -2428,7 +2458,7 @@ export const mockWorkItemNotesResponse = {
                       body: 'changed milestone to %v4.0',
                       bodyHtml:
                         '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
-                      systemNoteIconName: 'clock',
+                      systemNoteIconName: 'milestone',
                       createdAt: '2022-11-14T04:18:59Z',
                       lastEditedAt: null,
                       url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_201',
@@ -2460,6 +2490,7 @@ export const mockWorkItemNotesResponse = {
                         name: 'Administrator',
                         username: 'root',
                         webUrl: 'http://127.0.0.1:3000/root',
+                        webPath: '/root',
                         __typename: 'UserCore',
                       },
                       __typename: 'Note',
@@ -2509,6 +2540,7 @@ export const mockWorkItemNotesResponse = {
                         name: 'Administrator',
                         username: 'root',
                         webUrl: 'http://127.0.0.1:3000/root',
+                        webPath: '/root',
                         __typename: 'UserCore',
                       },
                       awardEmoji: {
@@ -2622,6 +2654,7 @@ export const mockWorkItemNotesByIidResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -2644,7 +2677,7 @@ export const mockWorkItemNotesByIidResponse = {
                             body: 'changed milestone to %v4.0',
                             bodyHtml:
                               '\u003cp data-sourcepos="1:1-1:23" dir="auto"\u003echanged milestone to \u003ca href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container="body" data-placement="top" title="" class="gfm gfm-milestone has-tooltip"\u003e%v4.0\u003c/a\u003e\u003c/p\u003e',
-                            systemNoteIconName: 'clock',
+                            systemNoteIconName: 'milestone',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
                             url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_191',
@@ -2677,6 +2710,7 @@ export const mockWorkItemNotesByIidResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -2733,6 +2767,7 @@ export const mockWorkItemNotesByIidResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -2847,6 +2882,7 @@ export const mockMoreWorkItemNotesResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -2869,7 +2905,7 @@ export const mockMoreWorkItemNotesResponse = {
                             body: 'changed milestone to %v4.0',
                             bodyHtml:
                               '<p data-sourcepos="1:1-1:23" dir="auto">changed milestone to <a href="/flightjs/Flight/-/milestones/5" data-reference-type="milestone" data-original="%5" data-link="false" data-link-reference="false" data-project="6" data-milestone="30" data-container=body data-placement="top" title="" class="gfm gfm-milestone has-tooltip">%v4.0</a></p>',
-                            systemNoteIconName: 'clock',
+                            systemNoteIconName: 'milestone',
                             createdAt: '2022-11-14T04:18:59Z',
                             lastEditedAt: null,
                             url: 'http://127.0.0.1:3000/flightjs/Flight/-/work_items/37#note_191',
@@ -2902,6 +2938,7 @@ export const mockMoreWorkItemNotesResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -2955,6 +2992,7 @@ export const mockMoreWorkItemNotesResponse = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -3015,6 +3053,7 @@ export const createWorkItemNoteResponse = {
                   name: 'Administrator',
                   username: 'root',
                   webUrl: 'http://127.0.0.1:3000/root',
+                  webPath: '/root',
                   __typename: 'UserCore',
                 },
                 systemNoteMetadata: null,
@@ -3079,6 +3118,7 @@ export const mockWorkItemCommentNote = {
     name: 'Administrator',
     username: 'root',
     webUrl: 'http://127.0.0.1:3000/root',
+    webPath: '/root',
     __typename: 'UserCore',
   },
   awardEmoji: {
@@ -3170,6 +3210,7 @@ export const mockWorkItemNotesResponseWithComments = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             systemNoteMetadata: null,
@@ -3212,6 +3253,7 @@ export const mockWorkItemNotesResponseWithComments = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             systemNoteMetadata: null,
@@ -3272,6 +3314,7 @@ export const mockWorkItemNotesResponseWithComments = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'http://127.0.0.1:3000/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             awardEmoji: {
@@ -3351,6 +3394,7 @@ export const workItemNotesCreateSubscriptionResponse = {
                 name: 'Administrator',
                 username: 'root',
                 webUrl: 'http://127.0.0.1:3000/root',
+                webPath: '/root',
                 __typename: 'UserCore',
               },
               awardEmoji: {
@@ -3381,6 +3425,7 @@ export const workItemNotesCreateSubscriptionResponse = {
         name: 'Administrator',
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
+        webPath: '/root',
         __typename: 'UserCore',
       },
       awardEmoji: {
@@ -3429,6 +3474,7 @@ export const workItemNotesUpdateSubscriptionResponse = {
         name: 'Administrator',
         username: 'root',
         webUrl: 'http://127.0.0.1:3000/root',
+        webPath: '/root',
         __typename: 'UserCore',
       },
       awardEmoji: {
@@ -3473,6 +3519,7 @@ export const workItemSystemNoteWithMetadata = {
     name: 'Administrator',
     username: 'root',
     webUrl: 'https://gdk.test:3443/root',
+    webPath: '/root',
     __typename: 'UserCore',
   },
   userPermissions: {
@@ -3568,6 +3615,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'https://gdk.test:3443/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             userPermissions: {
@@ -3633,6 +3681,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'https://gdk.test:3443/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             userPermissions: {
@@ -3699,6 +3748,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                               name: 'Administrator',
                               username: 'root',
                               webUrl: 'https://gdk.test:3443/root',
+                              webPath: '/root',
                               __typename: 'UserCore',
                             },
                             userPermissions: {
@@ -3831,6 +3881,7 @@ export const groupWorkItemsQueryResponse = {
               name: 'Arthur',
               username: 'arthur',
               webUrl: 'author/web/url',
+              webPath: 'author/web/url',
             },
             closedAt: '',
             confidential: true,

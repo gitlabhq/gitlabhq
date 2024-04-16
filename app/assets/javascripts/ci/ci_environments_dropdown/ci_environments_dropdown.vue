@@ -10,6 +10,19 @@ import {
   NO_ENVIRONMENT_OPTION,
 } from './constants';
 
+/**
+ * This is a shared component used in the CI Variables settings and the Secrets Management form.
+ * See ~/ci/common/private/ci_environments_dropdown.js
+ *
+ * Use the following props to set certain behaviors:
+ *
+ * isEnvironmentRequired: If false, adds a "Not Applicable" option
+ *
+ * canCreateWildcard: Allows user to create wildcard environment scopes.
+ * e.g. `review/*` means jobs with environment names starting with
+ * `review/`
+ */
+
 export default {
   name: 'CiEnvironmentsDropdown',
   components: {
@@ -56,6 +69,9 @@ export default {
     composedCreateButtonLabel() {
       return sprintf(__('Create wildcard: %{searchTerm}'), { searchTerm: this.searchTerm });
     },
+    environmentScopeLabel() {
+      return convertEnvironmentScope(this.selectedEnvironmentScope);
+    },
     isDropdownLoading() {
       return this.areEnvironmentsLoading && !this.isDropdownShown;
     },
@@ -63,24 +79,24 @@ export default {
       return this.areEnvironmentsLoading && this.isDropdownShown;
     },
     searchedEnvironments() {
-      let filtered = this.environments;
+      let filtered = this.sortedEnvironments;
 
       // add custom env scope if it matches the search term
       if (this.customEnvScope && this.customEnvScope.startsWith(this.searchTerm)) {
-        filtered = uniq([...filtered, this.customEnvScope]);
+        filtered = uniq([this.customEnvScope, ...filtered]);
       }
 
-      // If there is no search term, make sure to include *
       if (!this.searchTerm) {
-        filtered = uniq([...filtered, ALL_ENVIRONMENTS_OPTION.type]);
-
-        // lastly, add Not Applicable (None) as the first option if isEnvironmentRequired is true
+        // Add Not Applicable (None) as the first option if isEnvironmentRequired is true
         if (!this.isEnvironmentRequired) {
           filtered = [NO_ENVIRONMENT_OPTION.type, ...filtered];
         }
+
+        // If there is no search term, make sure to include *
+        filtered = uniq([ALL_ENVIRONMENTS_OPTION.type, ...filtered]);
       }
 
-      return filtered.sort().map((environment) => ({
+      return filtered.map((environment) => ({
         value: environment,
         text: environment,
       }));
@@ -97,8 +113,8 @@ export default {
     shouldRenderDivider() {
       return !this.areEnvironmentsLoading;
     },
-    environmentScopeLabel() {
-      return convertEnvironmentScope(this.selectedEnvironmentScope);
+    sortedEnvironments() {
+      return [...this.environments].sort();
     },
   },
   methods: {

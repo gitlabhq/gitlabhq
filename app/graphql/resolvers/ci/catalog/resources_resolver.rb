@@ -33,6 +33,7 @@ module Resolvers
 
         def preloads
           {
+            full_path: { project: [:route, { namespace: :route }] },
             web_path: { project: { namespace: :route } },
             readme_html: { project: :route }
           }

@@ -278,9 +278,15 @@ module MergeRequests
       # Implemented in EE
     end
 
-    def remove_approval(merge_request)
-      MergeRequests::RemoveApprovalService.new(project: project, current_user: current_user)
-        .execute(merge_request)
+    def remove_approval(merge_request, user)
+      MergeRequests::RemoveApprovalService.new(project: project, current_user: user)
+        .execute(merge_request, skip_system_note: true, skip_notification: true, skip_updating_state: true)
+    end
+
+    def update_reviewer_state(merge_request, user, state)
+      ::MergeRequests::UpdateReviewerStateService
+            .new(project: merge_request.project, current_user: user)
+            .execute(merge_request, state)
     end
   end
 end

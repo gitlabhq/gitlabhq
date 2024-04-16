@@ -156,8 +156,22 @@ class CommitCollection
   private
 
   def committers_emails(with_merge_commits: false)
-    return commits.filter_map(&:committer_email).uniq if with_merge_commits
+    return committer_emails_for(commits) if with_merge_commits
 
-    without_merge_commits.filter_map(&:committer_email).uniq
+    committer_emails_for(without_merge_commits)
+  end
+
+  def committer_emails_for(commits)
+    if ::Feature.enabled?(:web_ui_commit_author_change, project)
+      commits.each(&:signature) # preload signatures
+    end
+
+    commits.filter_map do |commit|
+      if ::Feature.enabled?(:web_ui_commit_author_change, project) && commit.signature&.verified_system?
+        commit.author_email
+      else
+        commit.committer_email
+      end
+    end.uniq
   end
 end

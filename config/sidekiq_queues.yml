@@ -111,6 +111,8 @@
   - 1
 - - bitbucket_import_stage_import_repository
   - 1
+- - bitbucket_import_stage_import_users
+  - 1
 - - bitbucket_server_import_advance_stage
   - 1
 - - bitbucket_server_import_import_lfs_object
@@ -177,6 +179,8 @@
   - 1
 - - ci_unlock_pipelines_in_queue
   - 1
+- - ci_update_build_names
+  - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - ci_user_cancel_pipeline
@@ -188,6 +192,8 @@
 - - cluster_agent
   - 1
 - - compliance_management_chain_of_custody_report
+  - 1
+- - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
   - 1
@@ -222,6 +228,12 @@
 - - compliance_management_update_default_framework
   - 1
 - - compliance_management_violation_export_mailer
+  - 1
+- - container_registry_migration_enqueuer
+  - 1
+- - container_registry_migration_guard
+  - 1
+- - container_registry_migration_observer
   - 1
 - - container_repository
   - 1
@@ -567,6 +579,8 @@
   - 1
 - - product_analytics_post_push
   - 1
+- - product_analytics_sync_funnels
+  - 1
 - - project_cache
   - 1
 - - project_destroy
@@ -596,6 +610,8 @@
 - - projects_import_export_parallel_project_export
   - 1
 - - projects_import_export_relation_export
+  - 1
+- - projects_import_export_relation_import
   - 1
 - - projects_import_export_wait_relation_exports
   - 1
@@ -685,6 +701,8 @@
   - 1
 - - search_zoekt_project_transfer
   - 1
+- - security_delete_orchestration_configuration
+  - 1
 - - security_generate_policy_violation_comment
   - 1
 - - security_orchestration_configuration_create_bot
@@ -693,11 +711,15 @@
   - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
+- - security_persist_security_policies
+  - 1
 - - security_process_scan_result_policy
   - 1
 - - security_refresh_compliance_framework_security_policies
   - 1
 - - security_refresh_project_policies
+  - 1
+- - security_scan_execution_policies_create_pipeline
   - 1
 - - security_scan_execution_policies_rule_schedule
   - 1
@@ -716,6 +738,8 @@
 - - security_sync_policy_violation_comment
   - 1
 - - security_sync_scan_policies
+  - 1
+- - security_unassign_redundant_policy_configurations
   - 1
 - - security_unenforceable_policy_rules_notification
   - 1
@@ -771,6 +795,8 @@
   - 1
 - - vulnerabilities_statistics_adjustment
   - 1
+- - vulnerabilities_update_archived_attribute_of_vulnerability_reads
+  - 1
 - - vulnerabilities_update_namespace_ids_of_vulnerability_reads
   - 1
 - - vulnerability_exports_export
@@ -792,6 +818,8 @@
 - - work_items_rolledup_dates_update_parent_rolledup_dates_event_handler
   - 1
 - - work_items_rolledup_dates_update_rolledup_dates
+  - 1
+- - work_items_rolledup_dates_update_rolledup_dates_event_handler
   - 1
 - - work_items_update_parent_objectives_progress
   - 1

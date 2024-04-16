@@ -74,7 +74,7 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
       it 'creates a sytem note' do
         expect(SystemNoteService)
           .to receive(:request_review)
-          .with(merge_request, project, current_user, user)
+          .with(merge_request, project, current_user, user, false)
 
         service.execute(merge_request, user)
       end
@@ -86,9 +86,9 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
       it 'calls MergeRequests::RemoveApprovalService' do
         expect_next_instance_of(
           MergeRequests::RemoveApprovalService,
-          project: project, current_user: current_user
+          project: project, current_user: user
         ) do |service|
-          expect(service).to receive(:execute).with(merge_request).and_return({ success: true })
+          expect(service).to receive(:execute).with(merge_request, skip_system_note: true, skip_notification: true, skip_updating_state: true).and_return({ success: true })
         end
 
         service.execute(merge_request, user)

@@ -140,7 +140,7 @@ module Users
           email: email,
           &creation_block
         )
-        user.assign_personal_namespace
+        user.assign_personal_namespace(Organizations::Organization.default_organization)
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

@@ -198,4 +198,53 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       end
     end
   end
+
+  describe "POST /application/:id/renew-secret" do
+    let(:path) { "/applications/#{application.id}/renew-secret" }
+
+    context 'user authorization' do
+      it_behaves_like 'POST request permissions for admin mode' do
+        let(:params) { {} }
+      end
+    end
+
+    context 'authenticated and authorized user' do
+      it 'can renew a secret token' do
+        application = Doorkeeper::Application.last
+        post api(path, admin, admin_mode: true), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['secret']).not_to be nil
+        expect(application.secret_matches?(json_response['secret'])).not_to eq(true)
+      end
+
+      it 'return 404 when application_id not found' do
+        post api("/applications/#{non_existing_record_id}/renew-secret", admin, admin_mode: true)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'return 400 when the operation is failed' do
+        allow_next_instance_of(ApplicationsFinder) do |finder|
+          allow(finder).to receive(:execute).and_return(application)
+        end
+        allow(application).to receive(:renew_secret).and_return(true)
+        allow(application).to receive(:valid?).and_return(false)
+        errors = ActiveModel::Errors.new(application)
+        errors.add(:name, 'Error 1')
+        allow(application).to receive(:errors).and_return(errors)
+
+        post api(path, admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'non-authenticated user' do
+      it 'cannot renew a secret token' do
+        post api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
 end

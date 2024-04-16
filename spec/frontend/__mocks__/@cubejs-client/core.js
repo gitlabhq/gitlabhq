@@ -1,7 +1,7 @@
 let mockLoad = jest.fn();
 let mockMetadata = jest.fn();
 
-export const CubejsApi = jest.fn().mockImplementation(() => ({
+export const CubeApi = jest.fn().mockImplementation(() => ({
   load: mockLoad,
   meta: mockMetadata,
 }));

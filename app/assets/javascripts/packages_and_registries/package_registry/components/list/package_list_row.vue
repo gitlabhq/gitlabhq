@@ -5,9 +5,10 @@ import {
   GlFormCheckbox,
   GlIcon,
   GlSprintf,
-  GlTooltipDirective,
   GlTruncate,
   GlLink,
+  GlBadge,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -24,6 +25,7 @@ import PackageTags from '~/packages_and_registries/shared/components/package_tag
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'PackageListRow',
@@ -35,6 +37,7 @@ export default {
     GlSprintf,
     GlTruncate,
     GlLink,
+    GlBadge,
     PackageTags,
     PublishMethod,
     ListItem,
@@ -43,6 +46,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isGroupPage', 'canDeletePackages'],
   props: {
     packageEntity: {
@@ -94,8 +98,19 @@ export default {
     errorStatusRow() {
       return this.packageEntity.status === PACKAGE_ERROR_STATUS;
     },
+    errorStatusMessage() {
+      return this.packageEntity.statusMessage
+        ? this.packageEntity.statusMessage
+        : ERRORED_PACKAGE_TEXT;
+    },
     showTags() {
       return Boolean(this.packageEntity.tags?.nodes?.length);
+    },
+    showBadgeProtected() {
+      return (
+        Boolean(this.glFeatures.packagesProtectedPackages) &&
+        Boolean(this.packageEntity.packageProtectionRuleExists)
+      );
     },
     nonDefaultRow() {
       return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
@@ -108,12 +123,12 @@ export default {
     },
   },
   i18n: {
-    erroredPackageText: ERRORED_PACKAGE_TEXT,
     createdAt: __('Created %{timestamp}'),
     deletePackage: DELETE_PACKAGE_TEXT,
     errorPublishing: ERROR_PUBLISHING,
     warning: WARNING_TEXT,
     moreActions: __('More actions'),
+    badgeProtectedTooltipText: s__('PackageRegistry|A protection rule exists for this package.'),
   },
 };
 </script>
@@ -139,7 +154,7 @@ export default {
         >
           <gl-truncate :text="packageEntity.name" />
         </router-link>
-        <gl-truncate v-else :text="packageEntity.name" />
+        <gl-truncate v-else :class="errorPackageStyle" :text="packageEntity.name" />
 
         <package-tags
           v-if="showTags"
@@ -148,6 +163,16 @@ export default {
           hide-label
           :tag-display-limit="1"
         />
+
+        <gl-badge
+          v-if="showBadgeProtected"
+          v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
+          class="gl-ml-3"
+          icon-size="sm"
+          size="sm"
+          variant="neutral"
+          >{{ __('protected') }}</gl-badge
+        >
       </div>
     </template>
     <template #left-secondary>
@@ -163,15 +188,11 @@ export default {
         />
         <span class="gl-ml-2" data-testid="package-type">&middot; {{ packageType }}</span>
       </div>
-      <div v-else>
-        <gl-icon
-          v-gl-tooltip="{ title: $options.i18n.erroredPackageText }"
-          name="warning"
-          class="gl-text-red-500"
-          :aria-label="$options.i18n.warning"
-          data-testid="warning-icon"
-        />
-        <span class="gl-text-red-500">{{ $options.i18n.errorPublishing }}</span>
+      <div v-else class="gl-text-red-500">
+        <gl-icon name="warning" :aria-label="$options.i18n.warning" data-testid="warning-icon" />
+        <span data-testid="error-message"
+          >{{ $options.i18n.errorPublishing }} &middot; {{ errorStatusMessage }}</span
+        >
       </div>
     </template>
 

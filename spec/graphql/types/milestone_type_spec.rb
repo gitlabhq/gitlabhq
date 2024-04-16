@@ -9,9 +9,9 @@ RSpec.describe GitlabSchema.types['Milestone'] do
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id iid title description state expired web_path
+      id iid title description state expired upcoming web_path
       due_date start_date created_at updated_at
-      project_milestone group_milestone subgroup_milestone
+      project project_milestone group group_milestone subgroup_milestone
       stats
     ]
 

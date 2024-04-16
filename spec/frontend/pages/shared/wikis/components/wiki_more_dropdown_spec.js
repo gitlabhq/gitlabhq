@@ -1,5 +1,6 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WikiMoreDropdown from '~/pages/shared/wikis/components/wiki_more_dropdown.vue';
 import printMarkdownDom from '~/lib/print_markdown_dom';
 import { mockLocation, restoreLocation } from '../test_utils';
@@ -11,6 +12,9 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
 
   const createComponent = (provide) => {
     wrapper = shallowMountExtended(WikiMoreDropdown, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       provide: {
         history: 'https://history.url/path',
         print: {
@@ -27,6 +31,8 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
     });
   };
 
+  const findMoreDropdown = () => wrapper.findByTestId('wiki-more-dropdown');
+  const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
   const findHistoryItem = () => wrapper.findByTestId('page-history-button');
   const findPrintItem = () => wrapper.findByTestId('page-print-button');
 
@@ -95,6 +101,22 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
         title: 'test title',
         stylesheet: [],
       });
+    });
+  });
+
+  describe('More actions menu', () => {
+    createComponent();
+
+    it('renders the dropdown button', () => {
+      createComponent();
+
+      expect(findMoreDropdown().exists()).toBe(true);
+    });
+
+    it('renders tooltip', () => {
+      createComponent();
+
+      expect(findMoreDropdownTooltip().value).toBe('Wiki actions');
     });
   });
 });

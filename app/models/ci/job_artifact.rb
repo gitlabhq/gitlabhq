@@ -14,19 +14,27 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
-    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_job_artifacts_routing_table
+    PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
+    self.table_name = :p_ci_job_artifacts
     self.primary_key = :id
     self.sequence_name = :ci_job_artifacts_id_seq
 
-    enum accessibility: { public: 0, private: 1 }, _suffix: true
+    partitionable scope: :job, partitioned: true
+    query_constraints :id, :partition_id
 
-    PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
+    enum accessibility: { public: 0, private: 1, none: 2 }, _suffix: true
 
     belongs_to :project
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id, inverse_of: :job_artifacts
+    belongs_to :job,
+      ->(artifact) { in_partition(artifact) },
+      class_name: "Ci::Build",
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job_artifacts
 
     mount_file_store_uploader JobArtifactUploader, skip_store_file: true
+    update_project_statistics project_statistics_name: :build_artifacts_size
 
     before_save :set_size, if: :file_changed?
     after_save :store_file_in_transaction!, unless: :store_after_commit?
@@ -40,12 +48,6 @@ module Ci
     validates :job, presence: true
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :validate_file_format!, unless: :trace?, on: :create
-
-    update_project_statistics project_statistics_name: :build_artifacts_size
-    partitionable scope: :job, through: {
-      table: :p_ci_job_artifacts,
-      flag: ROUTING_FEATURE_FLAG
-    }
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }
@@ -154,6 +156,10 @@ module Ci
       service.update_statistics
     end
 
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
+    end
+
     def local_store?
       [nil, ::JobArtifactUploader::Store::LOCAL].include?(self.file_store)
     end
@@ -225,6 +231,10 @@ module Ci
 
     def public_access?
       public_accessibility?
+    end
+
+    def none_access?
+      none_accessibility?
     end
 
     private

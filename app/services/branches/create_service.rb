@@ -9,6 +9,9 @@ module Branches
     end
 
     def execute(branch_name, ref, create_default_branch_if_empty: true)
+      result = validate_ref(ref)
+      return result if result[:status] == :error
+
       create_default_branch if create_default_branch_if_empty && project.empty_repo?
 
       result = branch_validation_service.execute(branch_name)
@@ -85,6 +88,12 @@ module Branches
     rescue Gitlab::Git::PreReceiveError => e
       Gitlab::ErrorTracking.log_exception(e, pre_receive_message: e.raw_message, branch_name: branch_name, ref: ref)
       error(e.message)
+    end
+
+    def validate_ref(ref)
+      return error('Ref is missing') if ref.blank?
+
+      success
     end
 
     def create_default_branch

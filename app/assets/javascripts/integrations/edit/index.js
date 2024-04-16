@@ -22,6 +22,7 @@ function parseDatasetToProps(data) {
     projectId,
     commentDetail,
     projectKey,
+    projectKeys,
     learnMorePath,
     aboutPricingUrl,
     triggerEvents,
@@ -88,8 +89,9 @@ function parseDatasetToProps(data) {
       initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
+      initialProjectKeys: projectKeys,
     },
-    googleCloudArtifactRegistryProps: {
+    googleArtifactManagementProps: {
       artifactRegistryPath,
       workloadIdentityFederationPath,
     },

@@ -13,7 +13,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
-  ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
   ignore_column :instance_level_code_suggestions_enabled, remove_with: '17.0', remove_after: '2024-04-22' # See https://gitlab.com/gitlab-org/gitlab/-/issues/440636
 
   INSTANCE_REVIEW_MIN_USERS = 50
@@ -522,6 +521,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
     validates :bulk_import_concurrent_pipeline_batch_limit,
+      :concurrent_github_import_jobs_limit,
+      :concurrent_bitbucket_import_jobs_limit,
+      :concurrent_bitbucket_server_import_jobs_limit,
       :container_registry_token_expire_delay,
       :housekeeping_optimize_repository_period,
       :inactive_projects_delete_after_months,
@@ -603,7 +605,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   jsonb_accessor :rate_limits,
     members_delete_limit: [:integer, { default: 60 }],
-    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }]
+    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
+    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
+    concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
+    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 

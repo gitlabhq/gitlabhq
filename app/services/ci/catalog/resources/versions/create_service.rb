@@ -36,7 +36,7 @@ module Ci
               release: release,
               catalog_resource: project.catalog_resource,
               project: project,
-              version: release.tag
+              semver: release.tag
             )
           end
 
@@ -70,8 +70,7 @@ module Ci
 
             {
               name: component_name,
-              inputs: components_project.extract_inputs(blob.data),
-              path: "#{Settings.gitlab.host}/#{project.full_path}/#{component_name}@#{release.tag}"
+              spec: components_project.extract_spec(blob.data)
             }
           end
 
@@ -81,9 +80,8 @@ module Ci
             component = @version.components.build(
               name: metadata[:name],
               project: @version.project,
-              inputs: metadata[:inputs],
+              spec: metadata[:spec],
               catalog_resource: @version.catalog_resource,
-              path: metadata[:path],
               created_at: Time.current
             )
 

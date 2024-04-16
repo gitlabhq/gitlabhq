@@ -101,7 +101,9 @@
         = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
       .form-group.gl-form-group
         = f.label :linkedin
-        = f.text_field :linkedin, class: 'gl-form-input form-control gl-md-form-input-lg'
+        = f.text_field :linkedin,
+          class: 'gl-form-input form-control gl-md-form-input-lg',
+          placeholder: "profilename"
         %small.form-text.text-gl-muted
           = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       .form-group.gl-form-group

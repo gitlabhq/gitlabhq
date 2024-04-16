@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { stat, mkdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { defineConfig } from 'vite';
@@ -6,13 +7,16 @@ import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
 import RubyPlugin from 'vite-plugin-ruby';
 import chokidar from 'chokidar';
+import globby from 'globby';
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
+import { generateEntries } from './config/webpack.helpers';
 import {
   IS_EE,
   IS_JH,
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
+  copyFilesPatterns,
 } from './config/webpack.constants';
 /* eslint-disable import/extensions */
 import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
@@ -39,6 +43,15 @@ const javascriptsPath = path.resolve(assetsPath, 'javascripts');
 const emptyComponent = path.resolve(javascriptsPath, 'vue_shared/components/empty_component.js');
 
 const [rubyPlugin, ...rest] = RubyPlugin();
+
+const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
+
+const virtualEntrypoints = Object.entries(generateEntries()).reduce((acc, [entryName, imports]) => {
+  const modulePath = imports[imports.length - 1];
+  const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+  acc[`${entryName}.js`] = `${comment}/* ${modulePath} */ import '${importPath}';\n`;
+  return acc;
+}, {});
 
 // We can't use regular 'resolve' which points to sourceCodeDir in vite.json
 // Because we need for '~' alias to resolve to app/assets/javascripts
@@ -75,18 +88,119 @@ const JH_ALIAS_FALLBACK = [
 
 const autoRestartPlugin = {
   configureServer(server) {
-    const watcher = chokidar.watch(['node_modules/.yarn-integrity'], {
+    const nodeModulesWatcher = chokidar.watch(['node_modules/.yarn-integrity'], {
       ignoreInitial: true,
     });
+    const pageEntrypointsWatcher = chokidar.watch(
+      [
+        'app/assets/javascripts/pages/**/*.js',
+        'ee/app/assets/javascripts/pages/**/*.js',
+        'jh/app/assets/javascripts/pages/**/*.js',
+      ],
+      {
+        ignoreInitial: true,
+      },
+    );
 
     // GDK will restart Vite server for us
-    const stop = () => server.stop();
+    const stop = () => process.kill(process.pid);
 
-    watcher.on('add', stop);
-    watcher.on('change', stop);
-    watcher.on('unlink', stop);
+    pageEntrypointsWatcher.on('add', stop);
+    pageEntrypointsWatcher.on('unlink', stop);
+    nodeModulesWatcher.on('add', stop);
+    nodeModulesWatcher.on('change', stop);
+    nodeModulesWatcher.on('unlink', stop);
 
-    server.httpServer?.addListener?.('close', () => watcher.close());
+    server.httpServer?.addListener?.('close', () => {
+      pageEntrypointsWatcher.close();
+      nodeModulesWatcher.close();
+    });
+  },
+};
+
+/**
+ * This is a simple-reimplementation of the copy-webpack-plugin
+ *
+ * it also uses the `globby` package under the hood, and _only_ allows for copying
+ * 1. absolute paths
+ * 2. files and directories.
+ */
+function viteCopyPlugin({ patterns }) {
+  return {
+    name: 'viteCopyPlugin',
+    async configureServer() {
+      console.warn('Start copying files...');
+      let count = 0;
+
+      const allTheFiles = patterns.map(async (patternEntry) => {
+        const { from, to, globOptions = {} } = patternEntry;
+
+        // By only supporting absolute paths we simplify
+        // the implementation a lot
+        if (!path.isAbsolute(from)) {
+          throw new Error(`'from' path is not absolute: ${path}`);
+        }
+        if (!path.isAbsolute(to)) {
+          throw new Error(`'to' path is not absolute: ${path}`);
+        }
+
+        let pattern = '';
+        let sourceRoot = '';
+        const fromStat = await stat(from);
+        if (fromStat.isDirectory()) {
+          sourceRoot = from;
+          pattern = path.join(from, '**/*');
+        } else if (fromStat.isFile()) {
+          sourceRoot = path.dirname(from);
+          pattern = from;
+        } else {
+          // No need to support globs, because we do not
+          // use them yet...
+          throw new Error('Our implementation does not support globs.');
+        }
+
+        globOptions.dot = globOptions.dot ?? true;
+
+        const paths = await globby(pattern, globOptions);
+
+        return paths.map((srcPath) => {
+          const targetPath = path.join(to, path.relative(sourceRoot, srcPath));
+          return { srcPath, targetPath };
+        });
+      });
+
+      const srcTargetMap = (await Promise.all(allTheFiles)).flat();
+
+      await Promise.all(
+        srcTargetMap.map(async ({ srcPath, targetPath }) => {
+          try {
+            await mkdir(path.dirname(targetPath), { recursive: true });
+            await copyFile(srcPath, targetPath);
+            count += 1;
+          } catch (e) {
+            console.warn(`Could not copy ${srcPath} => ${targetPath}`);
+          }
+        }),
+      );
+
+      console.warn(`Done copying ${count} files...`);
+    },
+  };
+}
+
+const entrypointsDir = '/javascripts/entrypoints/';
+const pageEntrypointsPlugin = {
+  name: 'page-entrypoints',
+  load(id) {
+    if (!id.startsWith('pages.')) {
+      return undefined;
+    }
+    return virtualEntrypoints[id] ?? `/* doesn't exist */`;
+  },
+  resolveId(source) {
+    const fixedSource = source.replace(entrypointsDir, '');
+    if (fixedSource.startsWith('pages.')) return { id: fixedSource };
+    return undefined;
   },
 };
 
@@ -108,8 +222,12 @@ export default defineConfig({
     ],
   },
   plugins: [
+    pageEntrypointsPlugin,
     viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    viteCopyPlugin({
+      patterns: copyFilesPatterns,
+    }),
     viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
@@ -137,17 +255,7 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
-    hmr:
-      viteGDKConfig.hmr === undefined
-        ? /*
-        This is a legacy behavior for older GDKs. They will fallback to:
-          ws://localhost:3038/vite-dev/
-        TODO: Remove this after 2024-01-18 */
-          {
-            host: 'localhost',
-            protocol: 'ws',
-          }
-        : viteGDKConfig.hmr,
+    hmr: viteGDKConfig.hmr,
     https: false,
     watch:
       viteGDKConfig.hmr === null
@@ -171,5 +279,13 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+  },
+  build: {
+    rollupOptions: {
+      input: Object.keys(virtualEntrypoints).reduce((acc, value) => {
+        acc[value] = value;
+        return acc;
+      }, {}),
+    },
   },
 });

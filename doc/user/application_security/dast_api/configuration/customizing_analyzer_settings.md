@@ -646,7 +646,7 @@ variables:
   DAST_API_REQUEST_HEADERS_BASE64: $SECRET_REQUEST_HEADERS_BASE64
 ```
 
-Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
+Consider using `DAST_API_REQUEST_HEADERS_BASE64` when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
 
 ## Exclude Paths
 

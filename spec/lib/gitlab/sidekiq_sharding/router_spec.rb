@@ -74,7 +74,8 @@ RSpec.describe Gitlab::SidekiqSharding::Router, feature_category: :scalability d
       before do
         # stubbing feature flag is ineffective since this feature flag definition does not exist
         allow(Feature).to receive(:enabled?)
-          .with(:sidekiq_route_to_queues_shard_test, default_enabled_if_undefined: nil, type: :ops).and_return(false)
+          .with(:sidekiq_route_to_queues_shard_test, default_enabled_if_undefined: false, type: :worker)
+          .and_return(false)
 
         allow(main_instance).to receive(:sidekiq_redis).and_return(main_sidekiq_redis)
         allow(shard_instance).to receive(:sidekiq_redis).and_return(shard_sidekiq_redis)
@@ -108,7 +109,8 @@ RSpec.describe Gitlab::SidekiqSharding::Router, feature_category: :scalability d
       context 'when feature flag is enabled' do
         before do
           allow(Feature).to receive(:enabled?)
-            .with(:sidekiq_route_to_queues_shard_test, default_enabled_if_undefined: nil, type: :ops).and_return(true)
+            .with(:sidekiq_route_to_queues_shard_test, default_enabled_if_undefined: false, type: :worker)
+            .and_return(true)
         end
 
         it 'returns the test shard info' do

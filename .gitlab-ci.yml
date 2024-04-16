@@ -64,11 +64,11 @@ workflow:
     - if: '$FORCE_GITLAB_CI'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION forced pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION forced'
     - if: '$START_AS_IF_FOSS'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION as-if-foss pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION as-if-foss'
     # As part of the process of creating RCs automatically, we update stable
     # branches with the changes of the most recent production deployment. The
     # merge requests used for this merge a branch release-tools/X into a stable
@@ -79,23 +79,23 @@ workflow:
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_0/'
       variables:
         <<: *old-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_1/'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3_2/'
       variables:
         <<: *next-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         NO_SOURCEMAPS: 'true'
     - if: '$CI_MERGE_REQUEST_LABELS =~ /Community contribution/'
       variables:
         <<: *default-ruby-variables
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (community contribution)'
         NO_SOURCEMAPS: 'true'
     - <<: *if-merge-request-security-canonical-sync
       variables:
@@ -106,29 +106,29 @@ workflow:
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
         <<: [*default-ruby-variables, *default-merge-request-variables]
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
         NO_SOURCEMAPS: 'true'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         CRYSTALBALL: "true"
-        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH == "ruby3_0" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *old-ruby-variables
-        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH == "ruby3_2" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
-        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline (triggered by a project token)'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch (triggered by a project token)'
     # For `$CI_DEFAULT_BRANCH` from wider community contributors, we don't want to run any pipelines on pushes,
     # because normally we want to run merge request pipelines and scheduled pipelines, not for repository synchronization.
     # This can avoid accidentally using up pipeline minutes quota while synchronizing the repository for wider community contributors.
@@ -138,12 +138,12 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_TAG tag pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_TAG tag'
     # If `$GITLAB_INTERNAL` isn't set, don't create a pipeline.
     - if: '$GITLAB_INTERNAL == null'
       when: never
@@ -151,15 +151,15 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^[\d-]+-stable(-ee)?$/'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH =~ /^security\//'
       variables:
         <<: *default-ruby-variables
-        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
+        PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
 
 variables:
   PG_VERSION: "14"
@@ -184,7 +184,7 @@ variables:
   BUILD_OS: "debian"
   OS_VERSION: "bookworm"
   UBI_VERSION: "8.6"
-  CHROME_VERSION: "120"
+  CHROME_VERSION: "123"
   DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
   BUNDLER_VERSION: "2.5"

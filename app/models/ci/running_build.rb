@@ -2,12 +2,6 @@
 
 module Ci
   # This model represents metadata for a running build.
-  # Despite the generic RunningBuild name, in this first iteration it applies only to shared runners
-  #   (see Ci::RunningBuild.upsert_shared_runner_build!).
-  # The decision to insert all of the running builds here was deferred to avoid the pressure on the database as
-  # at this time that was not necessary.
-  # We can reconsider the decision to limit this only to shared runners when there is more evidence that inserting all
-  # of the running builds there is worth the additional pressure.
   class RunningBuild < Ci::ApplicationRecord
     include Ci::Partitionable
 
@@ -22,9 +16,13 @@ module Ci
 
     enum runner_type: ::Ci::Runner.runner_types
 
-    def self.upsert_shared_runner_build!(build)
-      unless build.shared_runner_build?
+    def self.upsert_build!(build)
+      unless add_ci_running_build?(build)
         raise ArgumentError, 'build has not been picked by a shared runner'
+      end
+
+      if build.runner.nil?
+        raise ArgumentError, 'build has not been picked by a runner'
       end
 
       entry = self.new(
@@ -37,6 +35,12 @@ module Ci
       entry.validate!
 
       self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
+    end
+
+    private_class_method def self.add_ci_running_build?(build)
+      return true if Feature.enabled?(:add_all_ci_running_builds, Project.actor_from_id(build.project_id))
+
+      build.shared_runner_build?
     end
   end
 end

@@ -193,9 +193,9 @@ security dashboard.
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `available_from_access_level` | no | The access level from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. |
 
-#### Step 2: Create a migration file
+#### Step 2: Create a spec file and update validation schema
 
-- Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will generate a migration file to add the ability as a boolean column to the `member_roles` table.
+- Run `bundle exec rails generate gitlab:custom_roles:code --ability <ABILITY_NAME>` which will update the permissions validation schema file and create an empty spec file.
 
 #### Step 3: Update policies
 
@@ -240,9 +240,9 @@ end
 #### Step 4: Verify
 
 - Ensure SaaS mode is enabled with `GITLAB_SIMULATE_SAAS=1`.
-- Navigate to any Group that you are an owner of, then go to `Settings -> Roles and Permissions`.
-- Click on `Add new role` and create a custom role with the permission you have just created.
-- Navigate to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
+- Go to any Group that you are an owner of, then go to `Settings -> Roles and Permissions`.
+- Select `New role` and create a custom role with the permission you have just created.
+- Go to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
 - Next, log-in as that member and ensure that you are able to access the page that the custom ability is intended for.
 
 #### Step 5: Add specs

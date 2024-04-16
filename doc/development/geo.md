@@ -689,7 +689,7 @@ After triggering a successful [e2e:package-and-test-ee](testing_guide/end_to_end
 1. The `GET:Geo` job can be found and triggered under the `trigger-qa` stage.
 
 This pipeline uses [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to spin up a
-[1k](../administration/reference_architectures/1k_users.md) Geo installation,
+[20 RPS / 1k users](../administration/reference_architectures/1k_users.md) Geo installation,
 and run the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa) Geo scenario against the instance.
 When working on Geo features, it is a good idea to ensure the `qa-geo` job passes in a triggered `GET:Geo pipeline`.
 

@@ -62,7 +62,7 @@ module API
 
           members = paginate(retrieve_members(source, params: params, deep: true))
 
-          present_members members
+          present_members_with_invited_private_group_accessibility(members, source)
         end
 
         desc 'Gets a member of a group or project.' do
@@ -101,7 +101,7 @@ module API
           members = find_all_members(source).order(access_level: :desc)
           member = members.find_by!(user_id: params[:user_id])
 
-          present_members member
+          present_members_with_invited_private_group_accessibility(member, source)
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

@@ -9,7 +9,7 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
   let_it_be(:sub_group) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:reporter) { create(:user).tap { |user| group.add_reporter(user) } }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
 
   let_it_be(:project_work_item) { create(:work_item, project: project) }
   let_it_be(:sub_group_work_item) do

@@ -176,6 +176,7 @@ RSpec.shared_examples 'User creates wiki page' do
     end
 
     it_behaves_like 'wiki file attachments'
+    it_behaves_like 'autocompletes items'
   end
 
   context "when wiki is not empty", :js do

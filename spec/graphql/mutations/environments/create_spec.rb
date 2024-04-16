@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Environments::Create, feature_category: :environment_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:user) { maintainer }
 

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -32,6 +34,14 @@ type entryParams struct {
 	Header                http.Header
 	Method                string
 }
+
+type cacheKey struct {
+	requestTimeout  time.Duration
+	responseTimeout time.Duration
+	allowRedirects  bool
+}
+
+var httpClients sync.Map
 
 var SendURL = &entry{"send-url:"}
 
@@ -129,9 +139,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 
 	// execute new request
-	var resp *http.Response
-	resp, err = newClient(params).Do(newReq)
-
+	resp, err := cachedClient(params).Do(newReq)
 	if err != nil {
 		status := http.StatusInternalServerError
 
@@ -174,7 +182,17 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	sendURLRequestsSucceeded.Inc()
 }
 
-func newClient(params entryParams) *http.Client {
+func cachedClient(params entryParams) *http.Client {
+	key := cacheKey{
+		requestTimeout:  params.DialTimeout.Duration,
+		responseTimeout: params.ResponseHeaderTimeout.Duration,
+		allowRedirects:  params.AllowRedirects,
+	}
+	cachedClient, found := httpClients.Load(key)
+	if found {
+		return cachedClient.(*http.Client)
+	}
+
 	var options []transport.Option
 
 	if params.DialTimeout.Duration != 0 {
@@ -187,10 +205,11 @@ func newClient(params entryParams) *http.Client {
 	client := &http.Client{
 		Transport: transport.NewRestrictedTransport(options...),
 	}
-
 	if !params.AllowRedirects {
 		client.CheckRedirect = httpClientNoRedirect
 	}
+
+	httpClients.Store(key, client)
 
 	return client
 }

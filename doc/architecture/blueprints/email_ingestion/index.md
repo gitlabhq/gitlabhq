@@ -158,7 +158,7 @@ We should then schedule `mail_room` for removal (GitLab 17.0 or later). This wil
 
 ### Do nothing
 
-The current setup limits us and only allows to fetch two email addresses. To publish Service Desk custom email addresses with IMAP or API integration we would need to deliver the same architecture as described above. Because of that we should act now and include general email ingestion for `incoming_email` and  `service_desk_email` first and remove the infrastructure overhead.
+The current setup limits us and only allows to fetch two email addresses. To publish Service Desk custom email addresses with IMAP or API integration we would need to deliver the same architecture as described above. Because of that we should act now and include general email ingestion for `incoming_email` and `service_desk_email` first and remove the infrastructure overhead.
 
 ## Additional resources
 

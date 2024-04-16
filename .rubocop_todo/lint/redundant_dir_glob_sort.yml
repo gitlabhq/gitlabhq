@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/RedundantDirGlobSort:
-  Exclude:
-    - 'app/models/release_highlight.rb'
-    - 'config/application.rb'
-    - 'ee/spec/spec_helper.rb'
-    - 'qa/qa/specs/spec_helper.rb'
-    - 'spec/spec_helper.rb'

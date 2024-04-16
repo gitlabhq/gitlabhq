@@ -55,6 +55,10 @@
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
   ],
+  "AuditEventStreamingDestinationInterface": [
+    "GroupAuditEventStreamingDestination",
+    "InstanceAuditEventStreamingDestination"
+  ],
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"
   ],
@@ -201,6 +205,7 @@
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",
+    "WorkItemWidgetDevelopment",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

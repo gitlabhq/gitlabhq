@@ -4,6 +4,7 @@ class Import::GithubController < Import::BaseController
   extend ::Gitlab::Utils::Override
 
   include ImportHelper
+  include SafeFormatHelper
   include ActionView::Helpers::SanitizeHelper
   include Import::GithubOauth
 
@@ -15,7 +16,7 @@ class Import::GithubController < Import::BaseController
 
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
-  rescue_from Octokit::Forbidden, with: :provider_scope_validation_error
+  rescue_from Octokit::Forbidden, with: :provider_forbidden
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
 
   delegate :client, to: :client_proxy, private: true
@@ -42,16 +43,11 @@ class Import::GithubController < Import::BaseController
   end
 
   def personal_access_token
-    experiment(:default_to_import_tab, actor: current_user)
-      .track(:authentication, property: provider_name)
-
     session[access_token_key] = params[:personal_access_token]&.strip
     redirect_to status_import_url
   end
 
   def status
-    @fine_grained = Gitlab::GithubImport.fine_grained_personal_token?(session[access_token_key])
-
     client_repos
 
     respond_to do |format|
@@ -253,15 +249,24 @@ class Import::GithubController < Import::BaseController
       alert: _("GitHub API rate limit exceeded. Try again after %{reset_time}") % { reset_time: reset_time }
   end
 
-  def provider_scope_validation_error
+  def provider_forbidden
     session[access_token_key] = nil
-    redirect_to new_import_url,
-      alert: format(
-        s_("GithubImport|Your GitHub access token does not have the correct scope to import. " \
-           "Please use a token with the '%{repo}' scope, and with the '%{read_org}' scope " \
-           "if importing collaborators."),
-        repo: 'repo', read_org: 'read:org'
-      )
+    docs_link = helpers.link_to(
+      '',
+      help_page_url('user/project/import/github', anchor: 'use-a-github-personal-access-token'),
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    )
+    tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+    alert_message = safe_format(
+      s_(
+        "GithubImport|Your GitHub personal access token does not have the required scope to import. " \
+        "%{link_start}Learn More%{link_end}."
+      ),
+      tag_pair_docs_link
+    )
+
+    redirect_to new_import_url, alert: alert_message
   end
 
   def auth_state_key

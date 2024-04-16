@@ -14,7 +14,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:project) { create(:project, creator_id: user.id) }
   let_it_be(:project2) { create(:project, creator_id: user.id) }
 
-  let_it_be(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let_it_be(:group) { create(:group, owners: user) }
   let_it_be(:subgroup) { create(:group, parent: group) }
 
   let_it_be(:shared_runner, reload: true) { create(:ci_runner, :instance, description: 'Shared runner') }

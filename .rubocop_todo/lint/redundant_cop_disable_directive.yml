@@ -236,7 +236,6 @@ Lint/RedundantCopDisableDirective:
     - 'spec/lib/gitlab/background_migration/backfill_cluster_agents_has_vulnerabilities_spec.rb'
     - 'spec/lib/gitlab/background_migration/backfill_vulnerability_reads_cluster_agent_spec.rb'
     - 'spec/lib/gitlab/background_migration/batching_strategies/backfill_project_statistics_with_container_registry_size_batching_strategy_spec.rb'
-    - 'spec/lib/gitlab/background_migration/batching_strategies/remove_backfilled_job_artifacts_expire_at_batching_strategy_spec.rb'
     - 'spec/lib/gitlab/ci/reports/security/scanner_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing/transaction_leaking_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/restrict_gitlab_schema_spec.rb'

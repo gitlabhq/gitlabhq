@@ -30,7 +30,7 @@ describe('InternalEvents', () => {
     const category = 'TestCategory';
 
     it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
-      InternalEvents.trackEvent(event, category);
+      InternalEvents.trackEvent(event, {}, category);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
       expect(API.trackInternalEvent).toHaveBeenCalledWith(event, {});
@@ -39,7 +39,7 @@ describe('InternalEvents', () => {
     it('trackEvent calls Tracking.event with correct arguments including category', () => {
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
-      InternalEvents.trackEvent(event, category);
+      InternalEvents.trackEvent(event, {}, category);
 
       expect(Tracking.event).toHaveBeenCalledWith(category, event, expect.any(Object));
     });
@@ -47,7 +47,7 @@ describe('InternalEvents', () => {
     it('trackEvent calls Tracking.event with event name, category and additional properties', () => {
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
-      InternalEvents.trackEvent(event, category, allowedAdditionalProps);
+      InternalEvents.trackEvent(event, allowedAdditionalProps, category);
 
       expect(Tracking.event).toHaveBeenCalledWith(
         category,
@@ -73,7 +73,7 @@ describe('InternalEvents', () => {
     it('trackEvent calls trackBrowserSDK with event name and additional Properties', () => {
       jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
 
-      InternalEvents.trackEvent(event, undefined, allowedAdditionalProps);
+      InternalEvents.trackEvent(event, allowedAdditionalProps);
 
       expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
       expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event, {
@@ -93,7 +93,7 @@ describe('InternalEvents', () => {
       };
 
       expect(() => {
-        InternalEvents.trackEvent(event, category, additionalProps);
+        InternalEvents.trackEvent(event, additionalProps, category);
       }).toThrow(/Disallowed additional properties were provided:/);
 
       expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('InternalEvents', () => {
           this.trackEvent(event);
         },
         handleButton2Click() {
-          this.trackEvent(event, undefined, {
+          this.trackEvent(event, {
             property: 'value',
             label: 'value',
             value: 2,
@@ -136,7 +136,7 @@ describe('InternalEvents', () => {
       await wrapper.findByTestId('button').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined, {});
+      expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
     });
 
     it('this.trackEvent function calls InternalEvent`s track function with an event and additional Properties', async () => {
@@ -145,11 +145,15 @@ describe('InternalEvents', () => {
       await wrapper.findByTestId('button2').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined, {
-        property: 'value',
-        label: 'value',
-        value: 2,
-      });
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        event,
+        {
+          property: 'value',
+          label: 'value',
+          value: 2,
+        },
+        undefined,
+      );
     });
   });
 
@@ -209,7 +213,32 @@ describe('InternalEvents', () => {
         querySelectorAllMock.mockReturnValue(mockElements);
 
         const result = InternalEvents.trackInternalLoadEvents();
-        expect(trackEventSpy).toHaveBeenCalledWith(action);
+        expect(trackEventSpy).toHaveBeenCalledWith(action, {});
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(querySelectorAllMock).toHaveBeenCalledWith(LOAD_INTERNAL_EVENTS_SELECTOR);
+        expect(result).toEqual(mockElements);
+      });
+
+      it('should track event along with additional Properties if action exists', () => {
+        mockElements = [
+          {
+            dataset: {
+              eventTracking: action,
+              eventTrackingLoad: true,
+              eventProperty: 'test-property',
+              eventLabel: 'test-label',
+              eventValue: 2,
+            },
+          },
+        ];
+        querySelectorAllMock.mockReturnValue(mockElements);
+
+        const result = InternalEvents.trackInternalLoadEvents();
+        expect(trackEventSpy).toHaveBeenCalledWith(action, {
+          label: 'test-label',
+          property: 'test-property',
+          value: 2,
+        });
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
         expect(querySelectorAllMock).toHaveBeenCalledWith(LOAD_INTERNAL_EVENTS_SELECTOR);
         expect(result).toEqual(mockElements);

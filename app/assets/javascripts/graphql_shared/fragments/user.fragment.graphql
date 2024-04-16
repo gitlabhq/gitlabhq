@@ -4,4 +4,5 @@ fragment User on User {
   name
   username
   webUrl
+  webPath
 }

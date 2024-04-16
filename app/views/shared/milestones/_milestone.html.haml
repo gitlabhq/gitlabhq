@@ -1,10 +1,12 @@
 - dashboard = local_assigns[:dashboard]
 - custom_dom_id = dom_id(milestone.try(:milestone) ? milestone.milestone : milestone)
 - milestone_type = milestone.group_milestone? ? s_('Milestones|Group Milestone') : s_('Milestones|Project Milestone')
+- can_admin_milestone = can?(current_user, :admin_milestone, milestone)
+- can_promote = @project && can_admin_group_milestones? && milestone.project
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
-    .col-md-6
+    .col-md-7.order-1{ class: can_admin_milestone ? 'col-11' : 'col-12' }
       .gl-mb-2
         %strong{ data: { testid: "milestone-link", qa_milestone_title: milestone.title } }
           = link_to truncate(milestone.title, length: 100), milestone_path(milestone)
@@ -37,7 +39,7 @@
         - if milestone.project_milestone?
           = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
 
-    .col-md-4.milestone-progress
+    .order-3.order-md-2.mt-2.mt-md-0.milestone-progress{ class: can_admin_milestone ? 'col-md-4' : 'col-md-5' }
       = milestone_progress_bar(milestone)
       = link_to pluralize(milestone.total_issues_count, _('Issue')), issues_path
       - if milestone.merge_requests_enabled?
@@ -45,13 +47,40 @@
         = link_to pluralize(milestone.total_merge_requests_count, _('Merge request')), merge_requests_path
       .float-lg-right.light
         = format(s_('Milestone|%{percentage}%{percent} complete'), percentage: milestone.percent_complete, percent: '%')
-    .col-md-2
-      .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
-        - if @project # if in milestones list on project level
-          - if can_admin_group_milestones?
-            = render Pajamas::ButtonComponent.new(icon: 'level-up', category: :tertiary, size: :small, button_options: { class: 'js-promote-project-milestone-button', title: s_('Milestones|Promote to Group Milestone'), disabled: true, data: { toggle: 'tooltip', container: 'body', url: promote_project_milestone_path(milestone.project, milestone), milestone_title: milestone.title, group_name: @project.group.name } })
-        - if can?(current_user, :admin_milestone, milestone)
-          - if milestone.closed?
-            = link_button_to s_('Milestones|Reopen Milestone'), milestone_path(milestone, milestone: { state_event: :activate }), method: :put, class: 'gl-ml-3', size: :small
-          - else
-            = link_button_to s_('Milestones|Close Milestone'), milestone_path(milestone, milestone: { state_event: :close }), method: :put, class: 'gl-ml-3', category: :secondary, size: :small
+    - if can_admin_milestone
+      .col-1.order-2.order-md-3
+        .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            size: :small,
+            icon: 'ellipsis_v',
+            button_options: { class: 'gl-ml-3 has-tooltip', 'aria_label': _('Milestone actions'), title: _('Milestone actions'), data: { toggle: 'dropdown' } })
+          .dropdown-menu.dropdown-menu-right
+            .gl-dropdown-inner
+              .gl-dropdown-contents
+                %ul
+                  %li.gl-dropdown-item
+                    - if milestone.closed?
+                      = render Pajamas::ButtonComponent.new(category: :tertiary,
+                        href: milestone_path(milestone, milestone: { state_event: :activate }),
+                        method: :put,
+                        variant: :link) do
+                        = s_('Milestones|Reopen')
+                    - else
+                      = render Pajamas::ButtonComponent.new(category: :tertiary,
+                        href: milestone_path(milestone, milestone: { state_event: :close }),
+                        method: :put,
+                        variant: :link) do
+                        = s_('Milestones|Close')
+                  %li.gl-dropdown-item
+                    = render Pajamas::ButtonComponent.new(category: :tertiary,
+                      href: edit_milestone_path(milestone),
+                      variant: :link) do
+                      = _('Edit')
+                  - if can_promote
+                    %li.gl-dropdown-item
+                      = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
+                        button_options: { class: 'js-promote-project-milestone-button', disabled: true, data: { toggle: 'tooltip', container: 'body', url: promote_project_milestone_path(milestone.project, milestone), milestone_title: milestone.title, group_name: @project.group.name } }) do
+                        = s_('Promote')
+                  - if @project || @group
+                    %li.gl-dropdown-item
+                      = render 'shared/milestones/delete_button', milestone: milestone

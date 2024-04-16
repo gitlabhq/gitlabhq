@@ -16,7 +16,8 @@ import {
   connectionStatus,
   k8sResourceType,
 } from '~/environments/graphql/resolvers/kubernetes/constants';
-import { k8sPodsMock, k8sServicesMock, k8sNamespacesMock } from '../mock_data';
+import { k8sPodsMock, k8sServicesMock } from 'jest/kubernetes_dashboard/graphql/mock_data';
+import { k8sNamespacesMock } from '../mock_data';
 
 jest.mock('~/environments/graphql/resolvers/kubernetes/k8s_connection_status');
 
@@ -342,7 +343,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         });
       });
 
-      it('should not watch pods from the cluster_client library when the services data is not present', async () => {
+      it('should not watch services from the cluster_client library when the services data is not present', async () => {
         jest.spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedService').mockImplementation(
           jest.fn().mockImplementation(() => {
             return Promise.resolve({

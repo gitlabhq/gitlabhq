@@ -42,3 +42,16 @@ RSpec.shared_examples 'deprecated repository hook data' do
     expect(data[:repository][:homepage]).to eq(project.web_url)
   end
 end
+
+RSpec.shared_examples 'push hook data' do
+  it 'contains commit data' do
+    expect(data).to be_a(Hash)
+    expect(data[:before]).to eq('1b12f15a11fc6e62177bef08f47bc7b5ce50b141')
+    expect(data[:after]).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
+    expect(data[:commits].size).to eq(3)
+    expect(data[:total_commits_count]).to eq(3)
+    expect(data[:commits].first[:added]).to eq(['bar/branch-test.txt'])
+    expect(data[:commits].first[:modified]).to eq([])
+    expect(data[:commits].first[:removed]).to eq([])
+  end
+end

@@ -5,8 +5,8 @@ require_relative "lib/gitlab/secret_detection/version"
 Gem::Specification.new do |spec|
   spec.name = "gitlab-secret_detection"
   spec.version = Gitlab::SecretDetection::VERSION
-  spec.authors = ["group::static analysis"]
-  spec.email = ["eng-dev-secure-static-analysis@gitlab.com"]
+  spec.authors = ["group::secret detection"]
+  spec.email = ["eng-dev-secure-secret-detection@gitlab.com"]
 
   spec.summary = "The gitlab-secret_detection gem performs regex matching on git blobs that may include secrets."
   spec.description = "The gitlab-secret_detection gem accepts one or more git blobs,

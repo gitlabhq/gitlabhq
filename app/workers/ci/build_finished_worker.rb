@@ -43,22 +43,6 @@ module Ci
       build.remove_token!
 
       if build.failed? && !build.auto_retry_expected?
-        if Feature.enabled?(:auto_cancel_pipeline_on_job_failure, build.pipeline.project)
-          case build.pipeline.auto_cancel_on_job_failure
-          when 'none'
-            # no-op
-          when 'all'
-            ::Ci::UserCancelPipelineWorker.perform_async(
-              build.pipeline_id,
-              build.pipeline_id,
-              build.user.id
-            )
-          else
-            raise ArgumentError,
-              "Unknown auto_cancel_on_job_failure value: #{build.pipeline.auto_cancel_on_job_failure}"
-          end
-        end
-
         ::Ci::MergeRequests::AddTodoWhenBuildFailsWorker.perform_async(build.id)
       end
 

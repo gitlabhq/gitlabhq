@@ -29,7 +29,7 @@ module IconsHelper
     ActionController::Base.helpers.image_path('file_icons/file_icons.svg', host: sprite_base_url)
   end
 
-  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil, file_icon: false)
+  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil, file_icon: false, aria_label: nil)
     memoized_icon("#{icon_name}_#{size}_#{css_class}") do
       unknown_icon = file_icon ? unknown_file_icon_sprite(icon_name) : unknown_icon_sprite(icon_name)
       if unknown_icon
@@ -46,7 +46,8 @@ module IconsHelper
         :svg,
         content_tag(:use, '', { 'href' => "#{sprite_path}##{icon_name}" }),
         class: css_classes.empty? ? nil : css_classes.join(' '),
-        data: { testid: "#{icon_name}-icon" }
+        data: { testid: "#{icon_name}-icon" },
+        'aria-label': aria_label
       )
     end
   end
@@ -183,13 +184,24 @@ module IconsHelper
   def known_sprites
     return if Rails.env.production?
 
-    @known_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
+    @known_sprites ||= parse_sprite_definition('icons.json')['icons']
   end
 
   def known_file_icon_sprites
     return if Rails.env.production?
 
-    @known_file_icon_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/file_icons/file_icons.json')))['icons']
+    @known_file_icon_sprites ||= parse_sprite_definition('file_icons/file_icons.json')['icons']
+  end
+
+  def parse_sprite_definition(sprite_definition)
+    Gitlab::Json.parse(
+      Rails.application
+           .assets_manifest
+           .find_sources(sprite_definition)
+           .first
+           .to_s
+           .force_encoding('UTF-8')
+    )
   end
 
   def memoized_icon(key)

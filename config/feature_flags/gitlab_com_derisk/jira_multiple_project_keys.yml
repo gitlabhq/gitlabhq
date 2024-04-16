@@ -1,0 +1,9 @@
+---
+name: jira_multiple_project_keys
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/440430
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146087
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455259
+milestone: '16.10'
+group: group::import and integrate
+type: gitlab_com_derisk
+default_enabled: false

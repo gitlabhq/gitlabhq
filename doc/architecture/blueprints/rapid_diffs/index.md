@@ -235,6 +235,60 @@ flowchart LR
 
 <sup>*</sup>: Front end obscures many unexplored phases. It is likely that the front end will need caches, databases, API abstractions (over sub-modules like network connectivity, etc.), and more. While these have not been expanded on, "Front end" stands in for all of that complexity here.
 
+###### Gitaly
+
+For fetching Diffs, Gitaly provides two basic utilities:
+
+1. Retrieve a list of modified files with associated pre- and post-image blob IDs for a set of revisions.
+1. Retrieve a set of Git diffs for an arbitrary set of specified files using pre- and post-image blob IDs.
+
+```mermaid
+sequenceDiagram
+    Back end ->> Gitaly: "What files were modified between<br />this pair of/in this single revision?"
+    Gitaly ->> Back end: List of paths
+    Back end ->> Gitaly: "What are the diffs for this set of paths<br /> between this pair of/in this single revision?"
+    Gitaly ->> Back end: List of diffs
+```
+
+###### Database
+
+```mermaid
+sequenceDiagram
+    Back end ->> Database: What are the file paths for a known MR version?
+    Database ->> Back end: List of paths
+```
+
+###### Cache
+
+- Fresh render of a diff
+
+```mermaid
+sequenceDiagram
+    Back end ->> Cache: Give me the diff template for scenario XYZ
+    Cache ->> Back end: Static template to render diff in scenario XYZ
+```
+
+- Repeated render of a diff
+
+```mermaid
+sequenceDiagram
+    Back end ->> Cache: Give me the compiled UI for diff ABC123
+    alt Cache miss
+        Cache ->> Back end: ☹️
+        Back end ->> Cache: Cache the compiled UI for diff ABC123
+    else
+        Cache ->> Back end: Existing compiled diff UI
+    end
+```
+
+###### Diff Storage
+
+```mermaid
+sequenceDiagram
+    Back end ->> Diff Storage: Give me the raw diff of this file
+    Diff Storage ->> Back end: Raw diff
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

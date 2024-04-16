@@ -1258,6 +1258,87 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         end
       end
     end
+
+    context 'when the project is a catalog resource' do
+      let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
+      let_it_be(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
+
+      let(:params) do
+        {
+          name: 'New release',
+          tag_name: '6.0.0',
+          description: 'Super nice release'
+        }
+      end
+
+      it 'creates a new release without publishing the catalog resource' do
+        expect do
+          post api("/projects/#{project.id}/releases", maintainer), params: params
+        end.to change { Release.count }.by(1)
+
+        release = project.releases.last
+        expect(release.name).to eq('New release')
+        expect(release.catalog_resource_version).to be_nil
+      end
+
+      context 'when legacy_catalog_publish is true' do
+        let(:params) do
+          {
+            name: 'New release',
+            tag_name: '6.0.0',
+            description: 'Super nice release',
+            legacy_catalog_publish: true
+          }
+        end
+
+        it 'creates a new release and publishes the catalog resource' do
+          expect do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+          end.to change { Release.count }.by(1)
+
+          release = project.releases.last
+          expect(release.name).to eq('New release')
+          expect(release.catalog_resource_version.catalog_resource).to eq(ci_catalog_resource)
+        end
+      end
+
+      context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
+        before do
+          stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+        end
+
+        it 'creates a new release and publishes the catalog resource' do
+          expect do
+            post api("/projects/#{project.id}/releases", maintainer), params: params
+          end.to change { Release.count }.by(1)
+
+          release = project.releases.last
+          expect(release.name).to eq('New release')
+          expect(release.catalog_resource_version.catalog_resource).to eq(ci_catalog_resource)
+        end
+
+        context 'when legacy_catalog_publish is true' do
+          let(:params) do
+            {
+              name: 'New release',
+              tag_name: '6.0.0',
+              description: 'Super nice release',
+              legacy_catalog_publish: true
+            }
+          end
+
+          it 'creates a new release and publishes the catalog resource' do
+            expect do
+              post api("/projects/#{project.id}/releases", maintainer), params: params
+            end.to change { Release.count }.by(1)
+
+            release = project.releases.last
+            expect(release.name).to eq('New release')
+            expect(release.catalog_resource_version.catalog_resource).to eq(ci_catalog_resource)
+          end
+        end
+      end
+    end
   end
 
   describe 'PUT /projects/:id/releases/:tag_name' do

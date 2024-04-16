@@ -53,6 +53,24 @@ describe('HelpPopover', () => {
     });
   });
 
+  describe('aria label', () => {
+    it('renders default "Help" label', () => {
+      createComponent();
+
+      expect(findQuestionButton().attributes('aria-label')).toBe('Help');
+    });
+
+    it('renders custom label', () => {
+      createComponent({
+        props: {
+          ariaLabel: 'Learn more',
+        },
+      });
+
+      expect(findQuestionButton().attributes('aria-label')).toBe('Learn more');
+    });
+  });
+
   describe('without title', () => {
     beforeEach(() => {
       createComponent({
@@ -109,6 +127,20 @@ describe('HelpPopover', () => {
   });
 
   describe('with alternative icon', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          icon: 'information-o',
+        },
+      });
+    });
+
+    it('uses the given icon', () => {
+      expect(findQuestionButton().props('icon')).toBe('information-o');
+    });
+  });
+
+  describe('with alternative aria label', () => {
     beforeEach(() => {
       createComponent({
         props: {

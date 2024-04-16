@@ -18,6 +18,10 @@ module Types
             null: true,
             description: 'Indicates whether the variable is protected.'
 
+      field :hidden, GraphQL::Types::Boolean,
+            null: true,
+            description: 'Indicates whether the variable is hidden.'
+
       field :masked, GraphQL::Types::Boolean,
             null: true,
             description: 'Indicates whether the variable is masked.'
@@ -25,6 +29,10 @@ module Types
       field :description, GraphQL::Types::String,
             null: true,
             description: 'Description of the variable.'
+
+      def value
+        ::Ci::VariableValue.new(object).evaluate
+      end
     end
   end
 end

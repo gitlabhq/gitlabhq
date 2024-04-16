@@ -1,4 +1,4 @@
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -9,7 +9,7 @@ import PackageTags from '~/packages_and_registries/shared/components/package_tag
 import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/shared/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import { packageList } from '../mock_data';
+import { packageList, npmPackage } from '../mock_data';
 
 describe('packages_list_row', () => {
   let wrapper;
@@ -40,6 +40,7 @@ describe('packages_list_row', () => {
       stubs: {
         ListItem,
         InfrastructureIconAndName,
+        GlSprintf,
       },
       propsData: {
         packageLink: 'foo',
@@ -93,6 +94,24 @@ describe('packages_list_row', () => {
       mountComponent({ showPackageType: false });
 
       expect(findInfrastructureIconAndName().exists()).toBe(false);
+    });
+  });
+
+  describe('published by author', () => {
+    it('shows the text when user is set', () => {
+      mountComponent({
+        packageEntity: { ...npmPackage },
+      });
+
+      expect(wrapper.text()).toContain('published by foo');
+    });
+
+    it('is hidden when user is null', () => {
+      mountComponent({
+        packageEntity: { ...npmPackage, pipeline: { ...npmPackage.pipeline, user: null } },
+      });
+
+      expect(wrapper.text()).not.toContain('published by');
     });
   });
 

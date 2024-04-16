@@ -135,7 +135,7 @@ The examples in this document all use the project-level prefix.
 ### Instance-level
 
 ```plaintext
- /packages/npm`
+/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |
@@ -145,7 +145,7 @@ The examples in this document all use the project-level prefix.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/npm`
+/projects/:id/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |
@@ -158,7 +158,7 @@ The examples in this document all use the project-level prefix.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
 
 ```plaintext
- /groups/:id/-/packages/npm`
+/groups/:id/-/packages/npm
 ```
 
 | Attribute | Type   | Required | Description |

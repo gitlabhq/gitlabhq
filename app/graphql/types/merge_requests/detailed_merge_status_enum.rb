@@ -15,9 +15,6 @@ module Types
       value 'MERGEABLE',
             value: :mergeable,
             description: 'Branch can be merged.'
-      value 'BROKEN_STATUS',
-            value: :broken_status,
-            description: 'Can not merge the source into the target branch, potential conflict.'
       value 'COMMITS_STATUS',
             value: :commits_status,
             description: 'Source branch exists and contains commits.'
@@ -60,3 +57,5 @@ module Types
     end
   end
 end
+
+Types::MergeRequests::DetailedMergeStatusEnum.prepend_mod_with('Types::MergeRequests::DetailedMergeStatusEnum')

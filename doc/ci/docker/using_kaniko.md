@@ -160,9 +160,9 @@ If you receive this error, it might be due to an outside proxy. Setting the `htt
 and `https_proxy` [environment variables](../../administration/packages/container_registry.md#running-the-docker-daemon-with-a-proxy)
 can fix the problem.
 
-### Error: `kaniko should only be run inside of a container, run with the --force flag if you are sure you want to continue`
+### Error: kaniko should only be run inside of a container
 
-There is a known incompatibility introduced by Docker Engine 20.10.
+There is a known incompatibility introduced by Docker Engine 20.10
 
 When the host uses Docker Engine 20.10 or newer, then the `gcr.io/kaniko-project/executor:debug` image in a version
 older than v1.9.0 does not work as expected.

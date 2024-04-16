@@ -6,8 +6,7 @@ module Gitlab
       module Events
         class Merged < BaseImporter
           def execute(issue_event)
-            create_note(issue_event) if import_settings.extended_events?
-
+            create_note(issue_event)
             create_event(issue_event)
             create_state_event(issue_event)
           end

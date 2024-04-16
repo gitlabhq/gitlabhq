@@ -397,6 +397,7 @@ module API
               desc: 'The server'
             }
           ],
+          'phorge' => ::Integrations::Phorge.api_fields,
           'pipelines-email' => [
             {
               required: true,
@@ -575,6 +576,18 @@ module API
               type: String,
               desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
             },
+            {
+              required: false,
+              name: :thread,
+              type: Integer,
+              desc: 'Unique identifier for the target message thread (topic in a forum supergroup)'
+            },
+            {
+              required: false,
+              name: :branches_to_be_notified,
+              type: String,
+              desc: 'Branches for which notifications are to be sent.'
+            },
             chat_notification_flags
           ].flatten,
           'unify-circuit' => [
@@ -585,14 +598,7 @@ module API
               desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
             }
           ].flatten,
-          'webex-teams' => [
-            {
-              required: true,
-              name: :webhook,
-              type: String,
-              desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
-            }
-          ].flatten,
+          'webex-teams' => ::Integrations::WebexTeams.api_fields,
           'zentao' => [
             {
               required: true,
@@ -653,6 +659,7 @@ module API
           ::Integrations::MattermostSlashCommands,
           ::Integrations::MicrosoftTeams,
           ::Integrations::Packagist,
+          ::Integrations::Phorge,
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
           ::Integrations::Prometheus,

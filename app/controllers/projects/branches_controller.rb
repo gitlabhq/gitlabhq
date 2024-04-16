@@ -77,7 +77,10 @@ class Projects::BranchesController < Projects::ApplicationController
     if params[:issue_iid] && success
       target_project = confidential_issue_project || @project
       issue = IssuesFinder.new(current_user, project_id: target_project.id).find_by(iid: params[:issue_iid])
-      SystemNoteService.new_issue_branch(issue, target_project, current_user, branch_name, branch_project: @project) if issue
+
+      if issue
+        SystemNoteService.new_issue_branch(issue, target_project, current_user, branch_name, branch_project: @project)
+      end
     end
 
     respond_to do |format|

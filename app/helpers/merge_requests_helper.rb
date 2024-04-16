@@ -188,7 +188,7 @@ module MergeRequestsHelper
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
       project_path: project_path(merge_request.project),
-      changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
+      changes_empty_state_illustration: image_path('illustrations/empty-state/empty-commit-md.svg'),
       is_fluid_layout: fluid_layout.to_s,
       dismiss_endpoint: callouts_path,
       show_suggest_popover: show_suggest_popover?.to_s,
@@ -198,7 +198,7 @@ module MergeRequestsHelper
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
       source_project_full_path: merge_request.source_project&.full_path,
       is_forked: project.forked?.to_s,
-      new_comment_template_path: profile_comment_templates_path,
+      new_comment_template_paths: new_comment_template_paths(project.group).to_json,
       iid: merge_request.iid,
       per_page: DIFF_BATCH_ENDPOINT_PER_PAGE,
       pinned_file_url: @pinned_file_url
@@ -315,7 +315,7 @@ module MergeRequestsHelper
   end
 
   def review_bar_data(_merge_request, _user)
-    { new_comment_template_path: profile_comment_templates_path }
+    { new_comment_template_paths: new_comment_template_paths(@project.group).to_json }
   end
 
   def project_merge_requests_list_data(project, current_user)

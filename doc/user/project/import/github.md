@@ -76,6 +76,9 @@ If the above requirements are not met, the importer can't map the particular use
   repositories on GitHub Enterprise Server instances aren't imported.
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/418800), when importing projects that used
   [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled "unverified" if the commit was signed with GitHub's internal GPG key.
+- GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that
+  were uploaded to private repositories before 2023-05-09. If you encounter this problem, would like to help us resolve the problem, and are willing to provide a sample repository
+  for us, please add a comment to [issue 424046](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) and we'll contact you.
 
 ## Import your GitHub repository into GitLab
 
@@ -115,12 +118,12 @@ these steps, sign out of your GitLab account and sign in again.
 
 To import your GitHub repository using a GitHub Personal Access Token:
 
-1. Generate a GitHub Personal Access Token:
-    1. Go to <https://github.com/settings/tokens/new>.
-    1. In the **Note** field, enter a token description.
-    1. Select the `repo` scope.
-    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-    1. Select **Generate token**.
+1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+   1. Go to <https://github.com/settings/tokens/new>.
+   1. In the **Note** field, enter a token description.
+   1. Select the `repo` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Select **Generate token**.
 1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
 1. Select **Authorize with GitHub**.
@@ -144,12 +147,12 @@ The REST API is limited to authenticating with GitLab Personal Access Tokens.
 
 To import your GitHub repository using the GitLab REST API:
 
-1. Generate a GitHub Personal Access Token:
-    1. Go to <https://github.com/settings/tokens/new>.
-    1. In the **Note** field, enter a token description.
-    1. Select the `repo` scope.
-    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-    1. Select **Generate token**.
+1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+   1. Go to <https://github.com/settings/tokens/new>.
+   1. In the **Note** field, enter a token description.
+   1. Select the `repo` scope.
+   1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+   1. Select **Generate token**.
 1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list
@@ -173,17 +176,16 @@ When the **Organization** tab is selected, you can further narrow down your sear
 > - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
 > - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
 > - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
+> - Improved import performance made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.11. Feature flag `github_import_extended_events` removed.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
-- Issue and pull request events. For example, _opened_ or _closed_, _renamed_, and _labeled_ or _unlabeled_.
 - More than approximately 30,000 comments because of a [limitation of the GitHub API](#missing-comments).
 - Markdown attachments from repository comments, release posts, issue descriptions, and pull request descriptions. These can include
   images, text, or binary attachments. If not imported, links in Markdown to attachments break after you remove the attachments from GitHub.
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Import issue and pull request events**. If the `github_import_extended_events` feature flag is enabled, this option is unavailable.
 - **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
   [limitation of the GitHub API](#missing-comments).
 - **Import Markdown attachments**.

@@ -95,8 +95,8 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
    sudo gitlab-ctl patroni reinitialize-replica --member gitlab-database-2.example.com
    ```
 
-   This can be run on any Patroni node, but be aware that `sudo gitlab-ctl patroni
-   reinitialize-replica` without `--member` restarts the server it is run on.
+   This can be run on any Patroni node, but be aware that `sudo gitlab-ctl patroni reinitialize-replica`
+   without `--member` restarts the server it is run on.
    You should run it locally on the broken server to reduce the risk of
    unintended data loss.
 1. Monitor the logs:

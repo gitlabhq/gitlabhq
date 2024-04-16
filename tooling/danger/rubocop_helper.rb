@@ -22,8 +22,16 @@ module Tooling
         # we'll assume a todo file modification only means regeneration/gem update/etc
         return if contains_rubocop_update_files? || only_rubocop_todo_files?
 
-        modified_rubocop_todo_files.each do |filename|
+        rubocop_todo_files(helper.modified_files).each do |filename|
           add_todo_suggestion_for(filename)
+        end
+      end
+
+      def execute_new_todo_reminder
+        return if helper.draft_mr?
+
+        rubocop_todo_files(helper.added_files).each do |filename|
+          add_new_rubocop_reminder(filename)
         end
       end
 
@@ -39,10 +47,8 @@ module Tooling
         helper.all_changed_files.none? { |path| path !~ %r{\A\.rubocop_todo/.*/\w+.yml\b} }
       end
 
-      def modified_rubocop_todo_files
-        files = helper.modified_files
-
-        files.select { |path| path =~ %r{\A\.rubocop_todo/.*/\w+.yml\b} }
+      def rubocop_todo_files(files)
+        files.grep(%r{\A\.rubocop_todo/.*/\w+.yml\b})
       end
 
       def add_todo_suggestion_for(filename)
@@ -51,6 +57,10 @@ module Tooling
 
       def add_inline_disable_suggestions_for(filename)
         Tooling::Danger::RubocopInlineDisableSuggestion.new(filename, context: self).suggest
+      end
+
+      def add_new_rubocop_reminder(filename)
+        Tooling::Danger::RubocopNewTodo.new(filename, context: self).suggest
       end
     end
   end

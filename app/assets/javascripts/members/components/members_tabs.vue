@@ -2,43 +2,11 @@
 import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { __ } from '~/locale';
 import { queryToObject } from '~/lib/utils/url_utility';
-import {
-  MEMBER_TYPES,
-  ACTIVE_TAB_QUERY_PARAM_NAME,
-  TAB_QUERY_PARAM_VALUES,
-  EE_TABS,
-} from 'ee_else_ce/members/constants';
+import { MEMBER_TYPES, TABS, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
 import MembersApp from './app.vue';
 
 const countComputed = (state, namespace) => state[namespace]?.pagination?.totalItems || 0;
-
-export const TABS = [
-  {
-    namespace: MEMBER_TYPES.user,
-    title: __('Members'),
-  },
-  {
-    namespace: MEMBER_TYPES.group,
-    title: __('Groups'),
-    attrs: { 'data-testid': 'groups-list-tab' },
-    queryParamValue: TAB_QUERY_PARAM_VALUES.group,
-  },
-  {
-    namespace: MEMBER_TYPES.invite,
-    title: __('Invited'),
-    requiredPermissions: ['canManageMembers'],
-    queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
-  },
-  {
-    namespace: MEMBER_TYPES.accessRequest,
-    title: __('Access requests'),
-    requiredPermissions: ['canManageAccessRequests'],
-    queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
-  },
-  ...EE_TABS,
-];
 
 export default {
   name: 'MembersTabs',
@@ -127,7 +95,12 @@ export default {
           <span>{{ tab.title }}</span>
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
         </template>
-        <members-app :namespace="tab.namespace" :tab-query-param-value="tab.queryParamValue" />
+        <component :is="tab.component" v-if="tab.component" :namespace="tab.namespace" />
+        <members-app
+          v-else
+          :namespace="tab.namespace"
+          :tab-query-param-value="tab.queryParamValue"
+        />
       </gl-tab>
     </template>
     <template #tabs-end>

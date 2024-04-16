@@ -308,9 +308,9 @@ export default {
     <gl-tabs v-model="currentTabIndex" content-class="pt-0">
       <gl-tab>
         <template #title>
-          <gl-sprintf :message="__(`Commits in %{codeStart}${targetBranch}%{codeEnd}`)">
-            <template #code="{ content }">
-              <code class="gl-ml-2">{{ content }}</code>
+          <gl-sprintf :message="__('Commits in %{branchName}')">
+            <template #branchName>
+              <code class="gl-ml-2">{{ targetBranch }}</code>
             </template>
           </gl-sprintf>
         </template>

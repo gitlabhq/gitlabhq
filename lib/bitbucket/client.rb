@@ -14,22 +14,22 @@ module Bitbucket
     end
 
     def issues(repo)
-      path = "/repositories/#{repo}/issues"
+      path = "/repositories/#{repo}/issues?sort=created_on"
       get_collection(path, :issue)
     end
 
     def issue_comments(repo, issue_id)
-      path = "/repositories/#{repo}/issues/#{issue_id}/comments"
+      path = "/repositories/#{repo}/issues/#{issue_id}/comments?sort=created_on"
       get_collection(path, :comment)
     end
 
     def pull_requests(repo)
-      path = "/repositories/#{repo}/pullrequests?state=ALL"
+      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on"
       get_collection(path, :pull_request)
     end
 
     def pull_request_comments(repo, pull_request)
-      path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
+      path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments?sort=created_on"
       get_collection(path, :pull_request_comment)
     end
 
@@ -44,7 +44,7 @@ module Bitbucket
     end
 
     def repos(filter: nil)
-      path = "/repositories?role=member"
+      path = "/repositories?role=member&sort=created_on"
       path += "&q=name~\"#{filter}\"" if filter
 
       get_collection(path, :repo)
@@ -57,10 +57,15 @@ module Bitbucket
       end
     end
 
+    def users(workspace_key, page_number: nil, limit: nil)
+      path = "/workspaces/#{workspace_key}/members"
+      get_collection(path, :user, page_number: page_number, limit: limit)
+    end
+
     private
 
-    def get_collection(path, type)
-      paginator = Paginator.new(connection, path, type)
+    def get_collection(path, type, page_number: nil, limit: nil)
+      paginator = Paginator.new(connection, path, type, page_number: page_number, limit: limit)
       Collection.new(paginator)
     end
   end

@@ -1035,7 +1035,7 @@ Supported attributes:
 | `epic_iid`                                | integer | No | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5). Premium and Ultimate only. |
 | `iid`                                     | integer/string | No       | The internal ID of the project's issue (requires administrator or project owner rights). |
 | `issue_type`                              | string         | No       | The type of issue. One of `issue`, `incident`, `test_case` or `task`. Default is `issue`. |
-| `labels`                                  | string         | No       | Comma-separated label names for an issue.  |
+| `labels`                                  | string         | No       | Comma-separated label names to assign to the new issue. If a label does not already exist, this API request creates a new project label and assigns it to the issue.  |
 | `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#single-project-issue) to retrieve the issue's details. |
 | `title`                                   | string         | Yes      | The title of an issue. |

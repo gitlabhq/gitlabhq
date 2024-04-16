@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_qualys_iac_security_wee
 description: ""
 product_section: ""
 product_stage: ""
-product_group: ""
+product_group: static_analysis
 value_type: number
 status: active
 milestone: "14.7"

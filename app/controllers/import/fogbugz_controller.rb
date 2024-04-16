@@ -22,9 +22,6 @@ class Import::FogbugzController < Import::BaseController
     session[:fogbugz_token] = res.get_token.to_s
     session[:fogbugz_uri] = params[:uri]
 
-    experiment(:default_to_import_tab, actor: current_user)
-      .track(:successfully_authenticated, property: provider_name)
-
     redirect_to new_user_map_import_fogbugz_path(namespace_id: params[:namespace_id])
   end
 
@@ -48,9 +45,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def status
-    unless client.valid?
-      return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id])
-    end
+    return redirect_to new_import_fogbugz_path(namespace_id: params[:namespace_id]) unless client.valid?
 
     super
   end

@@ -4,4 +4,5 @@ fragment Author on User {
   name
   username
   webUrl
+  webPath
 }

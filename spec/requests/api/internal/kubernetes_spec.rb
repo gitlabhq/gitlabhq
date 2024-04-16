@@ -124,14 +124,16 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         }
         users = create_list(:user, 3)
         user_ids = users.map(&:id) << users[0].id
-        unique_counters = {
-          k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
+        unique_value_counters = {
           k8s_api_proxy_requests_unique_agents_via_ci_access: user_ids,
-          k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
           k8s_api_proxy_requests_unique_agents_via_user_access: user_ids,
-          k8s_api_proxy_requests_unique_users_via_pat_access: user_ids,
           k8s_api_proxy_requests_unique_agents_via_pat_access: user_ids,
           flux_git_push_notified_unique_projects: user_ids
+        }
+        unique_user_counters = {
+          k8s_api_proxy_requests_unique_users_via_ci_access: user_ids,
+          k8s_api_proxy_requests_unique_users_via_user_access: user_ids,
+          k8s_api_proxy_requests_unique_users_via_pat_access: user_ids
         }
         expected_counters = {
           kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
@@ -143,17 +145,33 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         }
 
         request_count.times do
-          send_request(params: { counters: counters, unique_counters: unique_counters })
+          send_request(
+            params: {
+              counters: counters,
+              unique_counters: { **unique_value_counters, **unique_user_counters }
+            }
+          )
         end
 
         expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
 
-        unique_counters.each do |c, xs|
+        unique_value_counters.each do |c, xs|
           expect(
             Gitlab::UsageDataCounters::HLLRedisCounter
               .unique_events(
                 event_names: c.to_s,
                 start_date: Date.current, end_date: Date.current + 10
+              )
+          ).to eq(xs.uniq.count)
+        end
+
+        unique_user_counters.each do |c, xs|
+          expect(
+            Gitlab::UsageDataCounters::HLLRedisCounter
+              .unique_events(
+                event_names: c.to_s,
+                start_date: Date.current, end_date: Date.current + 10,
+                property_name: :user
               )
           ).to eq(xs.uniq.count)
         end
@@ -515,19 +533,15 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     def stub_user_session(user, csrf_token)
       stub_session(
-        {
-          'warden.user.user.key' => [[user.id], user.authenticatable_salt],
-          '_csrf_token' => csrf_token
-        }
+        'warden.user.user.key' => [[user.id], user.authenticatable_salt],
+        '_csrf_token' => csrf_token
       )
     end
 
     def stub_user_session_with_no_user_id(user, csrf_token)
       stub_session(
-        {
-          'warden.user.user.key' => [[nil], user.authenticatable_salt],
-          '_csrf_token' => csrf_token
-        }
+        'warden.user.user.key' => [[nil], user.authenticatable_salt],
+        '_csrf_token' => csrf_token
       )
     end
 

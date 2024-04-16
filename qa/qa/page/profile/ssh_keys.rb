@@ -4,7 +4,7 @@ module QA
   module Page
     module Profile
       class SSHKeys < Page::Base
-        view 'app/views/profiles/keys/_form.html.haml' do
+        view 'app/views/user_settings/ssh_keys/_form.html.haml' do
           element 'key-title-field'
           element 'key-public-key-field'
           element 'add-key-button'
@@ -19,7 +19,7 @@ module QA
           element 'ssh-key-delete-modal'
         end
 
-        view 'app/views/profiles/keys/_key_table.html.haml' do
+        view 'app/views/user_settings/ssh_keys/_key_table.html.haml' do
           element 'ssh-keys-list'
         end
 

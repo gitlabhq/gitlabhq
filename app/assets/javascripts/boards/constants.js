@@ -123,7 +123,7 @@ export const listIssuablesQueries = {
       confidential: false,
       closedAt: null,
       dueDate: null,
-      emailsDisabled: false,
+      emailsEnabled: true,
       hidden: false,
       humanTimeEstimate: null,
       humanTotalTimeSpent: null,

@@ -18,14 +18,11 @@ nodes:
     extraPortMappings:
         # containerPort below must match the values file:
         #   nginx-ingress.controller.service.nodePorts.http
-        # Change hostPort if port 80 is already in use.
       - containerPort: 32080
         hostPort: 80
         listenAddress: "0.0.0.0"
         # containerPort below must match the values file:
-        #   nginx-ingress.controller.service.nodePorts.ssh
-        # Using high-numbered hostPort assuming port 22 is
-        #   already in use.
+        #   nginx-ingress.controller.service.nodePorts.gitlab-shell
       - containerPort: 32022
-        hostPort: 32022
+        hostPort: 22
         listenAddress: "0.0.0.0"

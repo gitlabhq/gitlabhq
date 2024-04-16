@@ -19,7 +19,8 @@ module QA
           project.visit!
 
           Page::Project::Show.perform do |project|
-            Support::Waiter.wait_until(reload_page: project, message: 'Waiting for licence') do
+            Support::Waiter.wait_until(reload_page: project, retry_on_exception: true,
+              message: 'Waiting for licence') do
               project.has_license?(rendered_license_name)
             end
           end

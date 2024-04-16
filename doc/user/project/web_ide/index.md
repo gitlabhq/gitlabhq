@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Use the Web IDE to edit multiple files in the GitLab UI, stage commits, and create merge requests."
 ---
 
 # Web IDE

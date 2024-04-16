@@ -238,6 +238,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    describe '.merged_without_state_event_source' do
+      let(:source_merge_request) { nil }
+      let(:source_commit) { nil }
+
+      subject { described_class.merged_without_state_event_source }
+
+      before do
+        create(:resource_state_event, merge_request: merge_request1, state: :merged, source_merge_request: source_merge_request, source_commit: source_commit)
+      end
+
+      context 'when the state matches and event source is empty' do
+        it 'filters by resource_state_event' do
+          expect(subject).to contain_exactly(merge_request1)
+        end
+      end
+
+      context 'when source_merge_request is not empty' do
+        let(:source_merge_request) { merge_request2 }
+
+        it 'filters by resource_state_event' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'when source_commit is not empty' do
+        let(:source_commit) { 'abcd1234' }
+
+        it 'filters by resource_state_event' do
+          expect(subject).to be_empty
+        end
+      end
+    end
   end
 
   describe '#squash?' do
@@ -665,34 +698,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_head_commit_sha' do
-    subject(:by_head_commit_sha) { described_class.by_head_commit_sha(sha) }
-
-    let(:head_commit_sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
-
-    let!(:merge_request) do
-      create(:merge_request, merge_commit_sha: nil).tap do |mr|
-        create(:merge_request_diff, merge_request: mr, head_commit_sha: head_commit_sha)
-      end
-    end
-
-    context "with given sha equal to the merge_request_diff's head_commit_sha" do
-      let(:sha) { head_commit_sha }
-
-      it 'returns merge request' do
-        expect(by_head_commit_sha).to eq([merge_request])
-      end
-    end
-
-    context "with given sha not equal to any latest_merge_request_diff's head_commit_sha" do
-      let(:sha) { Digest::SHA1.hexdigest(SecureRandom.hex) } # generate a different sha
-
-      it 'returns empty merge requests' do
-        expect(by_head_commit_sha).to be_empty
-      end
-    end
-  end
-
   describe '.by_merged_commit_sha' do
     it 'returns merge requests that match the given merged commit' do
       mr = create(:merge_request, :merged, merged_commit_sha: '123abc')
@@ -739,36 +744,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '.by_merge_commit_sha_or_head_commit_sha' do
-    subject(:by_merge_commit_sha_or_head_commit_sha) do
-      described_class.by_merge_commit_sha_or_head_commit_sha(sha)
-    end
+  describe '.by_latest_merge_request_diffs' do
+    let!(:merge_request) { create(:merge_request, merge_commit_sha: nil) }
+    let!(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
 
-    let(:sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+    subject(:by_latest_merge_request_diffs) { described_class.by_latest_merge_request_diffs(merge_request_diff_id) }
 
-    context "when given sha is equal to the merge_request's merge_commit_sha" do
-      let!(:merge_request) { create(:merge_request, merge_commit_sha: sha) }
+    context "when given merge_request_diff is the latest diff for the merge_request" do
+      let(:merge_request_diff_id) { merge_request_diff.id }
 
-      it 'returns the merge request' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to eq([merge_request])
+      it 'returns merge request' do
+        expect(by_latest_merge_request_diffs).to eq([merge_request])
       end
     end
 
-    context "when given sha is equal to the merge_request_diff's head_commit_sha" do
-      let!(:merge_request_with_diff) do
-        create(:merge_request, merge_commit_sha: nil).tap do |mr|
-          create(:merge_request_diff, merge_request: mr, head_commit_sha: sha)
-        end
-      end
+    context "when given merge_request_diff is not the latest diff for the merge request" do
+      let(:merge_request_diff_id) { merge_request_diff.id + 1 }
 
-      it 'returns the merge request' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to eq([merge_request_with_diff])
-      end
-    end
-
-    context "when given sha is not equal to any merge_commit_sha or latest diff's head_commit_sha" do
-      it 'returns an empty result' do
-        expect(by_merge_commit_sha_or_head_commit_sha).to be_empty
+      it 'returns empty merge requests' do
+        expect(by_latest_merge_request_diffs).to be_empty
       end
     end
   end
@@ -2365,34 +2359,34 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    describe '#actual_head_pipeline' do
+    describe '#diff_head_pipeline' do
       it 'returns nil for MR with old pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to be_nil
+        expect(subject.diff_head_pipeline).to be_nil
       end
 
       it 'returns the pipeline for MR with recent pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
-        expect(subject.actual_head_pipeline).to eq(pipeline)
+        expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.diff_head_pipeline).to eq(pipeline)
       end
 
       it 'returns the pipeline for MR with recent merge request pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'merge-sha', source_sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
-        expect(subject.actual_head_pipeline).to eq(pipeline)
+        expect(subject.diff_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.diff_head_pipeline).to eq(pipeline)
       end
 
       it 'returns nil when source project does not exist' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.actual_head_pipeline).to be_nil
+        expect(subject.diff_head_pipeline).to be_nil
       end
     end
   end
@@ -2523,7 +2517,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         context 'when failed to find an actual head pipeline' do
           before do
-            allow(merge_request).to receive(:find_actual_head_pipeline) {}
+            allow(merge_request).to receive(:find_diff_head_pipeline) {}
           end
 
           it 'does not update the current head pipeline' do
@@ -2681,7 +2675,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns true' do
         merge_request = create(:merge_request, :with_terraform_reports)
-        merge_request.actual_head_pipeline.update!(status: :running)
+        merge_request.diff_head_pipeline.update!(status: :running)
 
         expect(merge_request.has_terraform_reports?).to be_truthy
       end
@@ -2704,7 +2698,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when head pipeline is blocked by manual jobs' do
         before do
-          merge_request.actual_head_pipeline.block!
+          merge_request.diff_head_pipeline.block!
         end
 
         it { is_expected.to be_truthy }
@@ -2734,7 +2728,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       context 'when head pipeline is blocked by manual jobs' do
         before do
-          merge_request.actual_head_pipeline.block!
+          merge_request.diff_head_pipeline.block!
         end
 
         it { is_expected.to be_truthy }
@@ -3666,14 +3660,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#skipped_mergeable_checks' do
     subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
 
+    let(:feature_flag) { true }
+
+    before do
+      stub_feature_flags(additional_merge_when_checks_ready: feature_flag)
+    end
+
     where(:options, :skip_ci_check) do
       {}                              | false
       { auto_merge_requested: false } | false
       { auto_merge_requested: true }  | true
     end
-
     with_them do
       it { is_expected.to include(skip_ci_check: skip_ci_check) }
+    end
+
+    context 'when auto_merge_requested is true' do
+      let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
+
+      where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
+        :skip_discussions_check, :skip_external_status_check, :feature_flag) do
+        ''                                                      | false | false | false | false | false | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | false | false | false | false | false
+      end
+
+      with_them do
+        it do
+          is_expected.to include(skip_approved_check: skip_approved_check, skip_draft_check: skip_draft_check,
+            skip_blocked_check: skip_blocked_check, skip_discussions_check: skip_discussions_check,
+            skip_external_status_check: skip_external_status_check)
+        end
+      end
     end
   end
 
@@ -3861,56 +3880,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe "#actual_head_pipeline_success? " do
-    context 'when project lacks an actual_head_pipeline relation' do
+  describe "#diff_head_pipeline_success? " do
+    context 'when project lacks an diff_head_pipeline relation' do
       before do
-        allow(subject).to receive(:actual_head_pipeline) { nil }
+        allow(subject).to receive(:diff_head_pipeline) { nil }
       end
 
       it 'returns false' do
-        expect(subject.actual_head_pipeline_success?).to be false
+        expect(subject.diff_head_pipeline_success?).to be false
       end
     end
 
-    context 'when project has a actual_head_pipeline relation' do
+    context 'when project has a diff_head_pipeline relation' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+        allow(subject).to receive(:diff_head_pipeline) { pipeline }
       end
 
-      it 'accesses the value from the actual_head_pipeline' do
-        expect(subject.actual_head_pipeline)
+      it 'accesses the value from the diff_head_pipeline' do
+        expect(subject.diff_head_pipeline)
           .to receive(:success?)
 
-        subject.actual_head_pipeline_success?
+        subject.diff_head_pipeline_success?
       end
     end
   end
 
-  describe "#actual_head_pipeline_active? " do
-    context 'when project lacks an actual_head_pipeline relation' do
+  describe "#diff_head_pipeline_active? " do
+    context 'when project lacks an diff_head_pipeline relation' do
       before do
-        allow(subject).to receive(:actual_head_pipeline) { nil }
+        allow(subject).to receive(:diff_head_pipeline) { nil }
       end
 
       it 'returns false' do
-        expect(subject.actual_head_pipeline_active?).to be false
+        expect(subject.diff_head_pipeline_active?).to be false
       end
     end
 
-    context 'when project has a actual_head_pipeline relation' do
+    context 'when project has a diff_head_pipeline relation' do
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        allow(subject).to receive(:actual_head_pipeline) { pipeline }
+        allow(subject).to receive(:diff_head_pipeline) { pipeline }
       end
 
-      it 'accesses the value from the actual_head_pipeline' do
-        expect(subject.actual_head_pipeline)
+      it 'accesses the value from the diff_head_pipeline' do
+        expect(subject.diff_head_pipeline)
           .to receive(:active?)
 
-        subject.actual_head_pipeline_active?
+        subject.diff_head_pipeline_active?
       end
     end
   end
@@ -6291,6 +6310,26 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#mergeability_checks_pass?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:result) { instance_double(ServiceResponse, success?: { results: ['result'] }) }
+
+    it 'executes MergeRequests::Mergeability::RunChecksService with all mergeability checks and returns a boolean' do
+      expect_next_instance_of(
+        MergeRequests::Mergeability::RunChecksService,
+        merge_request: merge_request,
+        params: {}
+      ) do |svc|
+        expect(svc)
+          .to receive(:execute)
+          .with(described_class.all_mergeability_checks, execute_all: false)
+          .and_return(result)
+      end
+
+      expect(merge_request.mergeability_checks_pass?).to be_truthy
+    end
+  end
+
   describe '#only_allow_merge_if_pipeline_succeeds?' do
     let(:merge_request) { build_stubbed(:merge_request) }
 
@@ -6421,6 +6460,86 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq(second_to_last_merge_request_diff) }
+    end
+  end
+
+  describe '#has_changes_requested?' do
+    let_it_be(:merge_request) { create(:merge_request, reviewers: [create(:user)]) }
+
+    context 'reviews have requested changed' do
+      before_all do
+        merge_request.merge_request_reviewers.first.update!(state: :requested_changes)
+      end
+
+      it { expect(merge_request.has_changes_requested?).to be_truthy }
+    end
+
+    context 'reviews have not requested changed' do
+      it { expect(merge_request.has_changes_requested?).to be_falsey }
+    end
+  end
+
+  describe '#batch_update_reviewer_state' do
+    let_it_be(:merge_request) { create(:merge_request, reviewers: create_list(:user, 2)) }
+
+    it 'updates all reviewers' do
+      user_ids = merge_request.reviewers.map(&:id)
+
+      expect { merge_request.batch_update_reviewer_state(user_ids, :reviewed) }.to change { merge_request.merge_request_reviewers.reload.all?(&:reviewed?) }.from(false).to(true)
+    end
+  end
+
+  describe '#auto_merge_available_when_pipeline_succeeds?' do
+    let(:merge_request) { build(:merge_request, project: project) }
+
+    subject { merge_request.auto_merge_available_when_pipeline_succeeds? }
+
+    context 'when there is no pipeline' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when there is a pipeline' do
+      before do
+        merge_request.head_pipeline = build(:ci_pipeline, sha: merge_request.diff_head_sha, status: pipeline_status)
+      end
+
+      where(:pipeline_status, :expected) do
+        'success'   | false
+        'failed'    | false
+        'canceled'  | false
+        'skipped'   | false
+        'created'   | true
+        'pending'   | true
+        'running'   | true
+        'scheduled' | true
+        'manual'    | true
+      end
+
+      with_them do
+        it { is_expected.to be expected }
+      end
+
+      context 'when FF auto_merge_when_incomplete_pipeline_succeeds is disabled' do
+        before do
+          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
+        end
+
+        where(:pipeline_status, :expected) do
+          'success'   | false
+          'failed'    | false
+          'canceled'  | false
+          'skipped'   | false
+          'created'   | false
+          'pending'   | true
+          'running'   | true
+          'scheduled' | false
+          'manual'    | false
+        end
+
+        with_them do
+          it { is_expected.to be expected }
+        end
+      end
     end
   end
 end

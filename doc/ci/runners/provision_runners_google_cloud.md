@@ -19,7 +19,6 @@ FLAG:
 On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
 
 This feature is in [Beta](../../policy/experiment-beta-support.md).
-To join the list of users testing this feature, join the [waitlist](https://forms.gle/XdxdTxC7DXj4NSaz9).
 
 ## Creating a runner provisioned in Google Cloud
 

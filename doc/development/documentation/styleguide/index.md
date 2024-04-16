@@ -721,7 +721,7 @@ For example, use footnotes when you must:
 #### Footnote format
 
 In the table, use the HTML superscript tag `<sup>` for each footnote.
-Put the tag at the end after any punctuation mark.
+Put the tag at the end of the sentence. Leave one space between the sentence and the tag.
 
 For example:
 
@@ -757,7 +757,7 @@ The table and footnotes would render as follows:
 1. This is the first footnote.
 1. This is the second footnote.
 
-##### More than five footnotes
+##### Five or more footnotes
 
 If you have five or more footnotes that you cannot include in the table itself,
 you can use consecutive numbers for the list items.
@@ -1255,7 +1255,7 @@ include a visual representation to help readers understand it, you can:
 You can use an automatic screenshot generator to take and compress screenshots.
 
 1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
-1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Go to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
 1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
 1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
 1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
@@ -1313,8 +1313,6 @@ Use of emoji in Markdown requires GitLab Flavored Markdown, which is not support
 the Markdown rendering engine used for GitLab documentation.
 
 ## GitLab SVG icons
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
 directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
@@ -1741,6 +1739,40 @@ For status, choose one:
 - Experiment
 
 Generally available features should not have a status.
+
+##### GitLab Duo Pro add-on
+
+The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
+For example:
+
+```markdown
+**Tier:** Premium or Ultimate with GitLab Duo Pro
+```
+
+##### Duplicating tier, offering, or status on subheadings
+
+If a subheading has the same tier, offering, or status as its parent
+topic, you don't need to repeat the information in the subheading's
+badge.
+
+For example, if the heading 1 is:
+
+```markdown
+# My title
+
+DETAILS:
+**Offering:** GitLab.com
+**Tier:** Premium, Ultimate
+```
+
+Any lower-level heading that applies to a different tier but same offering would be:
+
+```markdown
+## My title
+
+DETAILS:
+**Tier:** Ultimate
+```
 
 ##### Inline tier badges
 

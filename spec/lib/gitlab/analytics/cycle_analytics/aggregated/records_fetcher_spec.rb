@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher, fe
 
   let_it_be(:merge_request) { create(:merge_request, :unique_branches, source_project: project, target_project: project) }
 
-  let_it_be(:user) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let_it_be(:stage) { create(:cycle_analytics_stage, start_event_identifier: :issue_created, end_event_identifier: :issue_deployed_to_production, namespace: project.reload.project_namespace) }
 

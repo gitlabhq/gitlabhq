@@ -237,7 +237,7 @@ Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md)
 1. At T+6 calendar days: Tenant instances in the `APAC` maintenance window are upgraded.
 1. At T+10 calendar days: Tenant instances in the `AMER Option 2` maintenance window are upgraded.
 
-For example, GitLab 16.9 released on 2024-02-15. Therefore, tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded on 2024-04-20.
+For example, GitLab 16.9 released on 2024-02-15. Therefore, tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded to 16.8 on 2024-02-20.
 
 #### Emergency maintenance
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffsMetadataEntity do
+RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:request) { EntityRequest.new(project: project, current_user: user) }

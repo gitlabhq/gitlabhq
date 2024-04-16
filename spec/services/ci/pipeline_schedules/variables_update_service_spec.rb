@@ -6,17 +6,14 @@ RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: 
   let_it_be(:reporter) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:developer) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) do
+    create(:project, :public, :repository, maintainers: user, developers: developer, reporters: reporter)
+  end
+
   let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
   let(:pipeline_schedule_variable) { create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule) }
 
   subject(:service) { described_class.new(pipeline_schedule_variable, user, params) }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe 'execute' do
     context 'when user does not have permission' do

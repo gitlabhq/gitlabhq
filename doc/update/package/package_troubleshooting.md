@@ -103,13 +103,20 @@ To fix this issue:
    sudo gitlab-ctl restart
    ```
 
-## Error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server
+## Error: Failed to connect to the internal GitLab API
 
-See [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
+If you receive the error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server,
+see the [GitLab Pages administration troubleshooting](../../administration/pages/troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api)
 
-## Error `An error occurred during the signature verification` when running `apt-get update`
+## An error occurred during the signature verification
 
-To update the GPG key of the GitLab packages server run:
+If you receive this error when running `apt-get update`:
+
+```plaintext
+An error occurred during the signature verification
+```
+
+Update the GPG key of the GitLab packages server with this command:
 
 ```shell
 curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe QuickActions::TargetService, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
-  let_it_be(:user) { create(:user).tap { |u| project.add_maintainer(u) } }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
   let(:container) { project }
   let(:service) { described_class.new(container: container, current_user: user) }
 

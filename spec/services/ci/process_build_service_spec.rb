@@ -4,14 +4,10 @@ require 'spec_helper'
 RSpec.describe Ci::ProcessBuildService, '#execute', feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, maintainers: user) }
   let_it_be(:pipeline) { create(:ci_pipeline, ref: 'master', project: project) }
 
   subject { described_class.new(project, user).execute(build, current_status) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   shared_context 'with enqueue_immediately set' do
     before do

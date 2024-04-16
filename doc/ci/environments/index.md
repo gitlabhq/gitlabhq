@@ -904,56 +904,42 @@ so that deployed commits are not garbage collected, even if it's not referenced 
 
 ### Limit the environment scope of a CI/CD variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2112) in GitLab Premium 9.4.
-> - Environment scoping for CI/CD variables was [moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30779) from GitLab Premium to GitLab Free in 12.2.
-> - Environment scoping for Group CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/2874) to GitLab Premium in 13.11.
+By default, all [CI/CD variables](../variables/index.md) are available to all jobs in a pipeline.
+If a test tool in a job becomes compromised, the tool could attempt to retrieve all
+CI/CD variables available to the job. To help mitigate this kind of supply chain attack,
+you should limit the environment scope of sensitive variables to only the jobs that require them.
 
-By default, all [CI/CD variables](../variables/index.md) are available to any job in a pipeline. Therefore, if a project uses a
-compromised tool in a test job, it could expose all CI/CD variables that a deployment job used. This is
-a common scenario in supply chain attacks. GitLab helps mitigate supply chain attacks by limiting
-the environment scope of a variable.
+Limit the environment scope of a CI/CD variable by defining which environments it
+can be available for. The default environment scope is the `*` wildcard, so any job
+can access the variable.
 
-You can limit the environment scope of a CI/CD variable by
-defining which environments it can be available for.
-For example, if the environment scope is `production`, then only the jobs
-with the environment `production` defined would have this specific variable.
+You can use specific matching to select a particular environment. For example, set
+the variable's environment scope to `production` to only allow jobs with an [environment](../yaml/index.md#environment)
+of `production` to access the variable.
 
-The default environment scope is a wildcard (`*`), which means that
-any job can have this variable, regardless of whether an environment is defined.
+You can also use wildcard matching (`*`) to select a particular environment group,
+like all [review apps](../review_apps/index.md) with `review/*`.
 
-If the environment scope is `review/*`, then jobs with environment names starting
-with `review/` would have that variable available.
-Using environment-scoped variables with [`rules` and `include`](../yaml/includes.md#use-rules-with-include)
-might not work as expected in a pipeline.
-Because the environment-scoped variable is set only in a matching job,
-the variable might not be defined when GitLab validates the pipeline configuration at pipeline creation.
-
-In most cases, these features use the _environment specs_ mechanism, which offers
-an efficient way to implement scoping in each environment group.
-
-For example, if there are four environments:
+For example, with these four environments:
 
 - `production`
 - `staging`
 - `review/feature-1`
 - `review/feature-2`
 
-Each environment can be matched with the following environment spec:
+These environment scopes match as follows:
 
-| Environment Spec | `production` | `staging` | `review/feature-1` | `review/feature-2` |
-|:-----------------|:-------------|:----------|:-------------------|:-------------------|
-| *                | Matched      | Matched   | Matched            | Matched            |
-| production       | Matched      |           |                    |                    |
-| staging          |              | Matched   |                    |                    |
-| review/*         |              |           | Matched            | Matched            |
-| review/feature-1 |              |           | Matched            |                    |
+| ↓ Scope / Environment → | `production` | `staging` | `review/feature-1` | `review/feature-2` |
+|:------------------------|:-------------|:----------|:-------------------|:-------------------|
+| `*`                     | Match        | Match     | Match              | Match              |
+| `production`            | Match        |           |                    |                    |
+| `staging`               |              | Match     |                    |                    |
+| `review/*`              |              |           | Match              | Match              |
+| `review/feature-1`      |              |           | Match              |                    |
 
-You can use specific matching to select a particular environment.
-You can also use wildcard matching (`*`) to select a particular environment group,
-like [Review Apps](../review_apps/index.md) (`review/*`).
-
-The most specific spec takes precedence over the other wildcard matching. In this case,
-the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
+You should not use environment-scoped variables with [`rules`](../yaml/index.md#rules)
+or [`include`](../yaml/index.md#include). The variables might not be defined when
+GitLab validates the pipeline configuration at pipeline creation.
 
 ## Environment permissions
 

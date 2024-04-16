@@ -1,5 +1,4 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-
 import {
   addClassIfElementExists,
   canScrollUp,
@@ -11,6 +10,7 @@ import {
   getParentByTagName,
   setAttributes,
   replaceCommentsWith,
+  waitForElement,
 } from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
@@ -283,6 +283,61 @@ describe('DOM Utils', () => {
       expect(div.innerHTML).toBe(
         '<h1> hi there <comment> some comment </comment> <p> <comment> another comment </comment></p></h1>',
       );
+    });
+  });
+
+  describe('waitForElement', () => {
+    const fixture = '<div class="wrapper"></div>';
+    const mockElementSelector = 'some-selector';
+    const mockElement = document.createElement('div');
+    mockElement.classList.add(mockElementSelector);
+
+    beforeEach(() => setHTMLFixture(fixture));
+
+    afterEach(() => resetHTMLFixture());
+
+    it('resolves immediately if element is already in the DOM', async () => {
+      document.querySelector('.wrapper').appendChild(mockElement);
+      const result = await waitForElement(`.${mockElementSelector}`);
+
+      expect(result).toBe(mockElement);
+    });
+
+    it('resolves after element is added to the DOM', async () => {
+      const waitForElementPromise = waitForElement(`.${mockElementSelector}`);
+      document.querySelector('.wrapper').appendChild(mockElement);
+      const result = await waitForElementPromise;
+
+      expect(result).toBe(mockElement);
+    });
+
+    describe('if no element found', () => {
+      const mockDisconnect = jest.fn();
+      let OriginalMutationObserver;
+      const timeoutDelay = 100;
+      class MutationObserverMock {
+        constructor() {
+          this.observe = jest.fn();
+          this.disconnect = mockDisconnect;
+        }
+      }
+
+      beforeEach(() => {
+        OriginalMutationObserver = global.MutationObserver;
+        global.MutationObserver = MutationObserverMock;
+      });
+
+      afterEach(() => {
+        global.MutationObserver = OriginalMutationObserver;
+      });
+
+      it('disconnects the observer and rejects the promise after the timeout delay', async () => {
+        const waitForElementPromise = waitForElement('.some-unavailable-element', timeoutDelay);
+        jest.advanceTimersByTime(timeoutDelay);
+
+        expect(mockDisconnect).toHaveBeenCalled();
+        await expect(waitForElementPromise).rejects.toMatch('Timeout: Element not found');
+      });
     });
   });
 });

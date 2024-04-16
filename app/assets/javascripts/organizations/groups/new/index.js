@@ -20,6 +20,7 @@ export const initOrganizationsGroupsNew = () => {
     mattermostEnabled,
     availableVisibilityLevels,
     restrictedVisibilityLevels,
+    defaultVisibilityLevel,
     pathMaxlength,
     pathPattern,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
@@ -39,6 +40,7 @@ export const initOrganizationsGroupsNew = () => {
       mattermostEnabled,
       availableVisibilityLevels,
       restrictedVisibilityLevels,
+      defaultVisibilityLevel,
       pathMaxlength,
       pathPattern,
     },

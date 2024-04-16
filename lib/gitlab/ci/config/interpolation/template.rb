@@ -5,8 +5,6 @@ module Gitlab
     class Config
       module Interpolation
         class Template
-          include Gitlab::Utils::StrongMemoize
-
           attr_reader :blocks, :ctx
 
           MAX_BLOCKS = 10_000
@@ -43,36 +41,15 @@ module Gitlab
           def interpolate!
             @result = @config.replace! do |node|
               break if @errors.any?
+              next node unless node_might_contain_interpolation_block?(node)
 
-              if Feature.enabled?(:ci_fix_input_types, Feature.current_request, type: :gitlab_com_derisk)
-                interpolate_with_fixed_types!(node)
-              else
-                legacy_interpolate!(node)
-              end
-            end
-          end
-          strong_memoize_attr :interpolate!
+              matches = node.scan(BLOCK_PATTERN)
+              next node if matches.empty?
 
-          def interpolate_with_fixed_types!(node)
-            return node unless node_might_contain_interpolation_block?(node)
+              blocks = interpolate_blocks(matches)
+              break unless @errors.none? && blocks.present?
 
-            matches = node.scan(BLOCK_PATTERN)
-            return node if matches.empty?
-
-            blocks = interpolate_blocks(matches)
-            return unless @errors.none? && blocks.present?
-
-            get_interpolated_node_content!(node, blocks)
-          end
-
-          def legacy_interpolate!(node)
-            Interpolation::Block.match(node) do |block, data|
-              block = (@blocks[block] ||= Interpolation::Block.new(block, data, ctx))
-
-              break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
-              break unless block.valid?
-
-              block.value
+              get_interpolated_node_content!(node, blocks)
             end
           end
 

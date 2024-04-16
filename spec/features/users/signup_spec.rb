@@ -53,7 +53,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
   end
 
   before do
-    stub_feature_flags(arkose_labs_signup_challenge: false)
     stub_application_setting(require_admin_approval_after_user_signup: false)
   end
 
@@ -188,10 +187,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_management do
       end
 
       context 'when email confirmation setting is not `soft`' do
-        before do
-          stub_feature_flags(identity_verification: false)
-        end
-
         it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
           visit new_user_registration_path
 

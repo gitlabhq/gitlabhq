@@ -626,8 +626,8 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
             expect(result.message)
               .to eq(
                 "Import failed. Destination URL " \
-                "must not start or end with a special character and must " \
-                "not contain consecutive special characters."
+                "can only include non-accented letters, digits, '_', '-' and '.'. " \
+                "It must not start with '-', end in '.', '.git', or '.atom'."
               )
           end
         end

@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     value: {
       type: String,
@@ -54,6 +56,7 @@ export default {
     switchToViewer(viewer) {
       if (viewer === BLAME_VIEWER) {
         this.$emit('blame');
+        this.trackEvent('open_blame_viewer_on_blob_page');
       }
 
       if (viewer !== this.value) {

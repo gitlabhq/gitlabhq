@@ -16,6 +16,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
       - second_stage
 
     first_stage_job_name:
+      tags:
+        - TAG_1
+        - TAG_2
       stage: first_stage
       image: hello_world
       script:
@@ -56,7 +59,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
     let(:validation_service_url) { 'https://validation-service.external/' }
 
     before do
-      stub_feature_flags(external_pipeline_validation_migration: false)
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
     end
@@ -82,42 +84,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
         end
 
         perform!
-      end
-    end
-
-    context 'when :external_pipeline_validation_migration feature flag is enabled' do
-      let(:migrated_validation_service_url) { 'https://runway.validation-service.external/' }
-
-      before do
-        stub_feature_flags(external_pipeline_validation_migration: project)
-      end
-
-      context 'when EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL is NOT present' do
-        before do
-          stub_env('EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL', nil)
-        end
-
-        it 'fallbacks to existing validation service URL' do
-          expect(::Gitlab::HTTP).to receive(:post) do |url, _params|
-            expect(url).to eq(validation_service_url)
-          end
-
-          perform!
-        end
-      end
-
-      context 'when EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL is present' do
-        before do
-          stub_env('EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL', migrated_validation_service_url)
-        end
-
-        it 'uses migrated validation service URL' do
-          expect(::Gitlab::HTTP).to receive(:post) do |url, _params|
-            expect(url).to eq(migrated_validation_service_url)
-          end
-
-          perform!
-        end
       end
     end
 
@@ -189,12 +155,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
 
           builds = payload['builds']
           expect(builds.count).to eq(2)
+
+          expect(builds[0]['name']).to eq('first_stage_job_name')
           expect(builds[0]['services']).to be_nil
           expect(builds[0]['stage']).to eq('first_stage')
+          expect(builds[0]['tag_list']).to match_array(%w[TAG_1 TAG_2])
+          expect(builds[0]['script']).to match_array(["echo 'hello'"])
           expect(builds[0]['image']).to eq('hello_world')
+          expect(builds[1]['name']).to eq('second_stage_job_name')
           expect(builds[1]['services']).to eq(['postgres'])
           expect(builds[1]['stage']).to eq('second_stage')
           expect(builds[1]['image']).to be_nil
+          expect(builds[1]['tag_list']).to be_nil
+          expect(builds[1]['script']).to match_array(["echo 'first hello'", "echo 'second hello'"])
         end
 
         perform!

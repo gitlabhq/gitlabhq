@@ -379,10 +379,22 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
-            <div
-              class="note-form-actions gl-font-size-0"
-              :class="{ 'gl-display-flex gl-gap-3': hasDrafts }"
-            >
+            <div class="note-form-actions gl-font-size-0">
+              <gl-form-checkbox
+                v-if="canSetInternalNote"
+                v-model="noteIsInternal"
+                class="gl-mb-2 gl-flex-basis-full"
+                data-testid="internal-note-checkbox"
+              >
+                {{ $options.i18n.internal }}
+                <gl-icon
+                  v-gl-tooltip:tooltipcontainer.bottom
+                  name="question-o"
+                  :size="16"
+                  :title="$options.i18n.internalVisibility"
+                  class="gl-text-blue-500"
+                />
+              </gl-form-checkbox>
               <template v-if="hasDrafts">
                 <gl-button
                   :disabled="disableSubmitButton"
@@ -390,6 +402,7 @@ export default {
                   type="submit"
                   category="primary"
                   variant="confirm"
+                  class="gl-mr-3"
                   @click.prevent="handleSaveDraft()"
                   >{{ __('Add to review') }}</gl-button
                 >
@@ -397,26 +410,12 @@ export default {
                   :disabled="disableSubmitButton"
                   data-testid="add-comment-now-button"
                   category="secondary"
+                  class="gl-mr-3"
                   @click.prevent="handleSave()"
                   >{{ __('Add comment now') }}</gl-button
                 >
               </template>
               <template v-else>
-                <gl-form-checkbox
-                  v-if="canSetInternalNote"
-                  v-model="noteIsInternal"
-                  class="gl-mb-2 gl-flex-basis-full"
-                  data-testid="internal-note-checkbox"
-                >
-                  {{ $options.i18n.internal }}
-                  <gl-icon
-                    v-gl-tooltip:tooltipcontainer.bottom
-                    name="question-o"
-                    :size="16"
-                    :title="$options.i18n.internalVisibility"
-                    class="gl-text-blue-500"
-                  />
-                </gl-form-checkbox>
                 <comment-type-dropdown
                   v-model="noteType"
                   class="gl-mr-3"

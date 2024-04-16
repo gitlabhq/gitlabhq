@@ -48,7 +48,8 @@ func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 	defer o.bucket.Close()
 
 	writerOptions := &blob.WriterOptions{
-		BufferSize: ChunkSize,
+		BufferSize:                  ChunkSize,
+		DisableContentTypeDetection: true,
 	}
 	writer, err := o.bucket.NewWriter(ctx, o.objectName, writerOptions)
 	if err != nil {

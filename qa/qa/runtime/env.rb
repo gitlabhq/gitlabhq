@@ -86,6 +86,10 @@ module QA
         ENV['CI_PROJECT_NAME']
       end
 
+      def ci_project_path
+        ENV['CI_PROJECT_PATH']
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end
@@ -689,6 +693,13 @@ module QA
       # @return [String]
       def docker_network
         ENV["QA_DOCKER_NETWORK"]
+      end
+
+      # Test run is in rspec retried process
+      #
+      # @return [Boolean]
+      def rspec_retried?
+        enabled?(ENV['QA_RSPEC_RETRIED'], default: false)
       end
 
       private

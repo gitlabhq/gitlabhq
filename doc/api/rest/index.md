@@ -826,6 +826,7 @@ For questions about these integrations, use the [GitLab community forum](https:/
 
 - [`gitlab-yaac`](https://www.npmjs.com/package/gitlab-yaac)
 - [`backbone-gitlab`](https://github.com/oreillymedia/backbone-gitlab)
+- [`@gitbeaker/rest`](https://www.npmjs.com/package/@gitbeaker/rest)
 
 ### Perl
 

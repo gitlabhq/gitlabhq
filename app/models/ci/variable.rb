@@ -5,6 +5,7 @@ module Ci
     include Ci::HasVariable
     include Ci::Maskable
     include Ci::RawVariable
+    include Ci::HidableVariable
     include Limitable
     include Presentable
 

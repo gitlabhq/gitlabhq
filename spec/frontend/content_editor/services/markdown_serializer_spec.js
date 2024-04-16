@@ -272,6 +272,31 @@ describe('markdownSerializer', () => {
     ).toBe('[GitLab][gitlab-url]');
   });
 
+  it.each`
+    title          | canonicalSrc        | serialized
+    ${'Usage'}     | ${'usage'}          | ${'[[Usage]]'}
+    ${'Changelog'} | ${'docs/changelog'} | ${'[[Changelog|docs/changelog]]'}
+  `(
+    'correctly serializes a gollum (wiki) link: $serialized',
+    ({ title, canonicalSrc, serialized }) => {
+      expect(
+        serialize(
+          paragraph(
+            link(
+              {
+                isGollumLink: true,
+                isWikiPage: true,
+                href: '/gitlab-org/gitlab-test/-/wikis/link/to/some/wiki/page',
+                canonicalSrc,
+              },
+              title,
+            ),
+          ),
+        ),
+      ).toBe(serialized);
+    },
+  );
+
   it('correctly serializes image references', () => {
     expect(
       serialize(

@@ -214,9 +214,13 @@ export default {
         return this.$options.i18n.unknown;
       }
       if (this.hasBehindAheadMessage) {
-        return sprintf(this.$options.i18n.behindAhead, {
-          messages: this.behindAheadMessage,
-        });
+        return sprintf(
+          this.$options.i18n.behindAhead,
+          {
+            messages: this.behindAheadMessage,
+          },
+          false,
+        );
       }
       return this.$options.i18n.upToDate;
     },

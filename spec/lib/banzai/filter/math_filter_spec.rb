@@ -18,7 +18,7 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
   end
 
   shared_examples 'display math' do
-    let_it_be(:template_prefix_with_pre) { '<pre data-canonical-lang="math" data-math-style="display" class="js-render-math"><code>' }
+    let_it_be(:template_prefix_with_pre) { '<pre data-math-style="display" data-canonical-lang="math" class="js-render-math"><code>' }
     let_it_be(:template_prefix_with_code) { '<code data-math-style="display" class="code math js-render-math">' }
     let(:use_pre_tags) { false }
 

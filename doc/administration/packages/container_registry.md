@@ -839,7 +839,7 @@ In the examples below we set the Registry's port to `5010`.
 ## Disable container registry per project
 
 If Registry is enabled in your GitLab instance, but you don't need it for your
-project, you can [disable it from your project's settings](../../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions).
+project, you can [disable it from your project's settings](../../user/project/settings/index.md#configure-project-features-and-permissions).
 
 ## Use an external container registry with GitLab as an auth endpoint
 
@@ -1019,7 +1019,7 @@ For more information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
-administrators can setup cleanup policies
+administrators can set up cleanup policies
 and [run garbage collection](#container-registry-garbage-collection).
 
 ### Registry Disk Space Usage by Project
@@ -1914,7 +1914,7 @@ and then run Docker by hand. As root, run:
 
 ```shell
 export HTTP_PROXY="http://localhost:9000"
-export HTTPS_PROXY="https://localhost:9000"
+export HTTPS_PROXY="http://localhost:9000"
 docker daemon --debug
 ```
 

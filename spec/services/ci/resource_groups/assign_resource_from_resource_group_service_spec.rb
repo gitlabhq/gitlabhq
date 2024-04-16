@@ -10,6 +10,10 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
 
   let(:service) { described_class.new(project, user) }
 
+  before do
+    allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_in)
+  end
+
   describe '#execute' do
     subject { service.execute(resource_group) }
 
@@ -164,6 +168,50 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
         subject
 
         expect(build.reload).to be_waiting_for_resource
+      end
+
+      it 're-spawns the worker for assigning a resource' do
+        expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_in).with(1.minute, resource_group.id)
+
+        subject
+      end
+
+      context 'when there are no upcoming processables' do
+        before do
+          build.update!(status: :success)
+        end
+
+        it 'does not re-spawn the worker for assigning a resource' do
+          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).not_to receive(:perform_in)
+
+          subject
+        end
+      end
+
+      context 'when there are no waiting processables and process_mode is ordered' do
+        let(:resource_group) { create(:ci_resource_group, process_mode: :oldest_first, project: project) }
+
+        before do
+          build.update!(status: :created)
+        end
+
+        it 'does not re-spawn the worker for assigning a resource' do
+          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).not_to receive(:perform_in)
+
+          subject
+        end
+      end
+
+      context 'when :respawn_assign_resource_worker FF is disabled' do
+        before do
+          stub_feature_flags(respawn_assign_resource_worker: false)
+        end
+
+        it 'does not re-spawn the worker for assigning a resource' do
+          expect(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).not_to receive(:perform_in)
+
+          subject
+        end
       end
 
       context 'when there is a stale build assigned to a resource' do

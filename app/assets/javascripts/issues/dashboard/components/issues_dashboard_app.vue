@@ -258,7 +258,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           token: MilestoneToken,
           fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-milestone',
@@ -529,7 +529,6 @@ export default {
       <gl-empty-state
         :description="emptyStateDescription"
         :svg-path="emptyStateSvgPath"
-        :svg-height="150"
         :title="emptyStateTitle"
       />
     </template>

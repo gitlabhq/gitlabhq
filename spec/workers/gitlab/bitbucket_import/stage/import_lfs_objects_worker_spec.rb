@@ -7,16 +7,16 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportLfsObjectsWorker, feature_c
 
   subject(:worker) { described_class.new }
 
+  before do
+    allow_next_instance_of(Gitlab::BitbucketImport::Importers::LfsObjectsImporter) do |importer|
+      allow(importer).to receive(:execute).and_return(Gitlab::JobWaiter.new(2, '123'))
+    end
+  end
+
   it_behaves_like Gitlab::BitbucketImport::StageMethods
 
   describe '#perform' do
     context 'when the import succeeds' do
-      before do
-        allow_next_instance_of(Gitlab::BitbucketImport::Importers::LfsObjectsImporter) do |importer|
-          allow(importer).to receive(:execute).and_return(Gitlab::JobWaiter.new(2, '123'))
-        end
-      end
-
       it 'schedules the next stage' do
         expect(Gitlab::BitbucketImport::AdvanceStageWorker).to receive(:perform_async)
           .with(project.id, { '123' => 2 }, :finish)

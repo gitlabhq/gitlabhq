@@ -7,17 +7,15 @@ description: "Use Git LFS to manage binary assets, like images and video, withou
 
 # Git Large File Storage (LFS)
 
-Managing large files such as audio, video and graphics files has always been one
-of the shortcomings of Git. The general recommendation is to not have Git repositories
-larger than 1 GB to preserve performance.
+Git Large File Storage (LFS) can manage large binary files efficiently in Git repositories.
+It addresses challenges, such as repository performance and capacity limits.
+For best performance, keep your repositories as small as possible.
+Git LFS creates pointers to the actual file, stored elsewhere.
 
-Your Git LFS client communicates with the GitLab server over HTTPS. It uses HTTP Basic authentication
-to authorize client requests. After the request is authorized, Git LFS client receives
-instructions on where to fetch or where to push the large file.
+For GitLab.com repository size limits, see [account and limit settings](../../../administration/settings/account_and_limit_settings.md).
 
-In the repository view, files tracked by Git LFS display an **LFS** badge next to the filename:
-
-![Git LFS tracking status](img/lfs_badge_v16_0.png)
+Git LFS clients communicate with server over HTTPS, with HTTP Basic authentication.
+After the request is authorized, Git LFS client gets instructions on where to fetch or where to push the large file.
 
 ## Configure your GitLab server for Git LFS
 
@@ -47,13 +45,19 @@ To do this:
 Install the [Git LFS client](https://github.com/git-lfs/git-lfs) appropriate for
 your operating system. GitLab requires version 1.0.1 or later of the Git LFS client.
 
+After Git LFS is installed on the server and client, you can see the **LFS** badge
+next to the filename:
+
+![Git LFS tracking status](img/lfs_badge_v16_0.png)
+
 ## Known limitations
 
 - Git LFS v1 original API is not supported, because it was deprecated early in LFS
   development.
-- When SSH is set as a remote, Git LFS objects still go through HTTPS.
-- Any Git LFS request asks for HTTPS credentials, so we recommend a good Git
-  credentials store.
+- Even when Git communicates with the repository over SSH, Git LFS objects still
+  go through HTTPS.
+- Because Git LFS requests require HTTPS credentials, you should use a good Git
+  [credentials store](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you must
   [add the URL to Git configuration manually](troubleshooting.md#getsockopt-connection-refused).
 - [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
@@ -65,16 +69,16 @@ When you add an LFS object to a repository, GitLab:
 1. Creates an LFS object.
 1. Associates the LFS object with the repository.
 1. Queues a job to recalculate your project's statistics, including storage size and
-   LFS object storage. Your LFS object storage is the sum of the size of all LFS objects
-   associated with the repository.
+   LFS object storage. Your LFS object storage is the sum of the size of all LFS
+   objects associated with the repository.
 
-When your repository is forked, LFS objects from the upstream project are associated
-with the fork. When the fork is created, the LFS object storage for the fork is equal
-to the storage used by the upstream project. If new LFS objects are added to the fork,
-the total object storage changes for the fork, but not the upstream project.
+When your repository is forked, the fork includes LFS objects from the upstream project.
+The LFS object storage for the fork, at first, is the same size as the storage used by the upstream
+project.
+If new LFS objects are added to the fork, the total object storage increases only for the fork.
 
 If you create a merge request from the fork back to the upstream project,
-any new LFS objects in the fork become associated with the upstream project.
+new LFS objects get associated with the upstream project.
 
 ## Using Git LFS
 
@@ -89,27 +93,23 @@ git lfs install                       # initialize the Git LFS project
 git lfs track "*.iso"                 # select the file extensions that you want to treat as large files
 ```
 
-After you mark a file extension for tracking as a LFS object you can use
-Git as usual without redoing the command to track a file with the same extension:
+These commands create a `.gitattributes` file with the file types that you want to track.
+In this case, Git LFS is now tracking `*.iso` files.
+You can now use these commands to push a large `*.iso` file (and the new `.gitattributes` file) to
+your repository:
 
 ```shell
 cp ~/tmp/debian.iso ./                # copy a large file into the current directory
 git add .                             # add the large file to the project
-git commit -am "Added Debian iso"     # commit the file meta data
+git commit -am "Add Debian iso and .gitattributes"     # commit the file meta data
 git push origin main                # sync the git repo and large file to the GitLab server
 ```
 
-**Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
-LFS doesn't work properly for people cloning the project:
-
-```shell
-git add .gitattributes
-git commit -am "Added .gitattributes to capture LFS tracking"
-git push origin main
-```
+**Make sure** you've committed `.gitattributes` to your repository. Otherwise Git
+LFS doesn't work properly for those who clone it:
 
 Cloning the repository works the same as before. Git automatically detects the
-LFS-tracked files and clones them via HTTP. If you performed the `git clone`
+LFS-tracked files and clones them over HTTP. If you performed the `git clone`
 command with a SSH URL, you have to enter your GitLab credentials for HTTP
 authentication.
 
@@ -117,8 +117,8 @@ authentication.
 git clone git@gitlab.example.com:group/my-sample-project.git
 ```
 
-If you already cloned the repository and you want to get the latest LFS object
-that are on the remote repository, such as for a branch from origin:
+If you already cloned the repository and want the latest LFS objects
+that are on the remote repository:
 
 ```shell
 git lfs fetch origin main
@@ -137,10 +137,6 @@ To remove objects from LFS:
 
 1. Use [`git filter-repo`](../../../user/project/repository/reducing_the_repo_size_using_git.md) to remove the objects from the repository.
 1. Delete the relevant LFS lines for the objects you have removed from your `.gitattributes` file and commit those changes.
-
-## File Locking
-
-See the documentation on [File Locking](../../../user/project/file_lock.md).
 
 ## LFS objects in project archives
 
@@ -165,6 +161,7 @@ Technical details about how this works can be found in the [development document
 
 ## Related topics
 
+- Use Git LFS to set up [exclusive file locks](../../../user/project/file_lock.md#exclusive-file-locks).
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Git LFS developer information](../../../development/lfs.md)
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances

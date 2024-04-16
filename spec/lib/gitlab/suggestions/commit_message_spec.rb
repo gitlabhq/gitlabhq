@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Suggestions::CommitMessage do
+RSpec.describe Gitlab::Suggestions::CommitMessage, feature_category: :code_review_workflow do
   include ProjectForksHelper
   using RSpec::Parameterized::TableSyntax
 
-  def create_suggestion(merge_request, file_path, new_line, to_content)
+  def create_suggestion(merge_request, file_path, new_line, to_content, author)
     position = Gitlab::Diff::Position.new(old_path: file_path,
                                           new_path: file_path,
                                           old_line: nil,
@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
 
     diff_note = create(:diff_note_on_merge_request,
                        noteable: merge_request,
+                       author: author,
                        position: position,
                        project: project)
 
@@ -42,18 +43,38 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
     create(:merge_request, source_project: forked_project, target_project: project)
   end
 
+  let_it_be(:first_author) { merge_request_same_project.author }
+
+  let_it_be(:second_author) do
+    merge_request_from_fork.author.tap do |author|
+      author.commit_email = author.verified_emails.last
+    end
+  end
+
   let_it_be(:suggestion_set_same_project) do
-    suggestion1 = create_suggestion(merge_request_same_project, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***')
-    suggestion2 = create_suggestion(merge_request_same_project, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***')
-    suggestion3 = create_suggestion(merge_request_same_project, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***')
+    suggestion1 = create_suggestion(
+      merge_request_same_project, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***', user
+    )
+    suggestion2 = create_suggestion(
+      merge_request_same_project, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***', first_author
+    )
+    suggestion3 = create_suggestion(
+      merge_request_same_project, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***', second_author
+    )
 
     Gitlab::Suggestions::SuggestionSet.new([suggestion1, suggestion2, suggestion3])
   end
 
   let_it_be(:suggestion_set_forked_project) do
-    suggestion1 = create_suggestion(merge_request_from_fork, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***')
-    suggestion2 = create_suggestion(merge_request_from_fork, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***')
-    suggestion3 = create_suggestion(merge_request_from_fork, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***')
+    suggestion1 = create_suggestion(
+      merge_request_from_fork, 'files/ruby/popen.rb', 9, '*** SUGGESTION 1 ***', user
+    )
+    suggestion2 = create_suggestion(
+      merge_request_from_fork, 'files/ruby/popen.rb', 13, '*** SUGGESTION 2 ***', first_author
+    )
+    suggestion3 = create_suggestion(
+      merge_request_from_fork, 'files/ruby/regex.rb', 22, '*** SUGGESTION 3 ***', second_author
+    )
 
     Gitlab::Suggestions::SuggestionSet.new([suggestion1, suggestion2, suggestion3])
   end
@@ -72,7 +93,11 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
       let(:fork_message) { nil }
 
       context 'when a custom commit message is not specified' do
-        let(:expected_message) { 'Apply 3 suggestion(s) to 2 file(s)' }
+        let(:expected_message) do
+          "Apply 3 suggestion(s) to 2 file(s)\n\n" \
+            "Co-authored-by: #{first_author.name} <#{first_author.email}>\n" \
+            "Co-authored-by: #{second_author.name} <#{second_author.commit_email}>"
+        end
 
         context 'and is nil' do
           let(:message) { nil }
@@ -118,14 +143,34 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
       end
 
       context 'is specified and includes all placeholders' do
+        let(:suggestion_author) { suggestion_set.authors.first }
         let(:message) do
-          '*** %{branch_name} %{files_count} %{file_paths} %{project_name} %{project_path} %{user_full_name} %{username} %{suggestions_count} ***'
+          <<~MESSAGE
+          ***
+          %{branch_name} %{files_count} %{file_paths}
+          %{project_name} %{project_path} %{user_full_name}
+          %{username} %{suggestions_count}
+
+          %{co_authored_by}
+          ***
+          MESSAGE
         end
 
         it 'generates a custom commit message' do
           expect(Gitlab::Suggestions::CommitMessage
                   .new(user, suggestion_set)
-                  .message).to eq('*** master 2 files/ruby/popen.rb, files/ruby/regex.rb Project_1 project-1 Test User test.user 3 ***')
+                  .message).to eq(
+                    <<~MESSAGE
+                  ***
+                  master 2 files/ruby/popen.rb, files/ruby/regex.rb
+                  Project_1 project-1 Test User
+                  test.user 3
+
+                  Co-authored-by: #{first_author.name} <#{first_author.email}>
+                  Co-authored-by: #{second_author.name} <#{second_author.commit_email}>
+                  ***
+                    MESSAGE
+                  )
         end
 
         context 'when a custom commit message is specified for forked project' do
@@ -134,7 +179,18 @@ RSpec.describe Gitlab::Suggestions::CommitMessage do
           it 'uses the target project commit message' do
             expect(Gitlab::Suggestions::CommitMessage
                     .new(user, suggestion_set)
-                    .message).to eq('*** master 2 files/ruby/popen.rb, files/ruby/regex.rb Project_1 project-1 Test User test.user 3 ***')
+                    .message).to eq(
+                      <<~MESSAGE
+                      ***
+                      master 2 files/ruby/popen.rb, files/ruby/regex.rb
+                      Project_1 project-1 Test User
+                      test.user 3
+
+                      Co-authored-by: #{first_author.name} <#{first_author.email}>
+                      Co-authored-by: #{second_author.name} <#{second_author.commit_email}>
+                      ***
+                      MESSAGE
+                    )
           end
         end
       end

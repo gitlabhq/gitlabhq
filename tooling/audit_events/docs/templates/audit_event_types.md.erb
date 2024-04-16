@@ -56,10 +56,6 @@ or instance and user audit events. You can see the audit events in [audit event 
 ## Available audit event types
 
 Audit event types belong to the following product categories.
-
-NOTE:
-Audit event types with the `-` scope are limited to either project, group, or instance and user audit events, but the
-[information on the scope](https://gitlab.com/gitlab-org/gitlab/-/issues/438620) is still being added to the documentation.
 <% audit_event_types_by_feature_category.sort.each do |category, audit_event_types| %>
 
 ### <%= "#{humanize(category)}" %>

@@ -10,12 +10,19 @@ workflow:
   rules:
     - when: always
 
+.set-suite-status:
+  after_script:
+    - |
+      if [ "$CI_JOB_STATUS" == "failed" ]; then
+        echo "SUITE_FAILED=true" >> "$QA_SUITE_STATUS_ENV_FILE"
+      fi
+
 .cng-base:
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-kubectl-1.23-helm-3.14-kind-0.20
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-kubectl-1.23-helm-3.14-kind-0.20
   stage: test
   extends: .qa-cache
   needs: [build-cng]
-  tags: [saas-linux-2xlarge-amd64]
+  tags: [e2e]
   services:
     - docker:${DOCKER_VERSION}-dind
   variables:
@@ -29,27 +36,35 @@ workflow:
     GITLAB_ADMIN_USERNAME: root
     GITLAB_ADMIN_PASSWORD: 5iveL!fe
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    KNAPSACK_TEST_FILE_PATTERN: ""
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
+    QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
+    QA_DISABLE_RSPEC_RETRY: "true"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - export GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
+    - source scripts/utils.sh
     - source scripts/qa/cng_deploy/cng-kind.sh
-    - setup_cluster "scripts/qa/cng_deploy/config/kind-config.yml"
-    - deploy "${GITLAB_DOMAIN}"
+    - run_timed_command "setup_cluster scripts/qa/cng_deploy/config/kind-config.yml"
+    - run_timed_command "deploy ${GITLAB_DOMAIN}"
     - cd qa && bundle install
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- $QA_TESTS --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.xml"
     - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
-  after_script:
     - |
-      if [ "$CI_JOB_STATUS" == "failed" ]; then
-        echo "SUITE_FAILED=true" >> "$QA_SUITE_STATUS_ENV_FILE"
+      if eval "$QA_COMMAND"; then
+        echo "Test run finished successfully"
+      else
+        export QA_RSPEC_RETRIED=true
+        export NO_KNAPSACK=true
+        echo "Initial test run failed, triggering retry of failed rspec tests"
+        eval "$QA_COMMAND --only-failures"
       fi
+  after_script:
     - source scripts/qa/cng_deploy/cng-kind.sh
     - echo -e "\e[0Ksection_start:`date +%s`:log_deploy[collapsed=true]\r\e[0KDeployment info"
     - save_install_logs
@@ -61,9 +76,8 @@ workflow:
       junit: qa/tmp/rspec-*.xml
       dotenv: $QA_SUITE_STATUS_ENV_FILE
     paths:
-      - "*.log"
-      - qa/tmp/test-metrics-*.json
-      - qa/tmp/allure-results
+      - qa/tmp
+      - ${CI_PROJECT_DIR}/*.log
 
 # ==========================================
 # Pre stage
@@ -77,20 +91,38 @@ build-cng:
   extends: .build-cng
   needs: [build-cng-env]
 
+download-knapsack-report:
+  extends:
+    - .download-knapsack-report
+    - .ruby-image
+    - .qa-cache
+    - .rules:download-knapsack
+  variables:
+    GIT_STRATEGY: clone
+  before_script:
+    - cd qa && bundle install
+  after_script: []
+
 # ==========================================
 # Test stage
 # ==========================================
-cng-qa-smoke:
-  extends:
-    - .cng-base
+# Test suite against cng is still MVP, while we gather metrics, do not report failures
+cng-instance:
+  extends: .cng-base
   variables:
-    QA_SCENARIO: Test::Instance::Smoke
+    QA_SCENARIO: Test::Instance::All
+  parallel: 5
+  allow_failure: true
 
 # Test run against environment with minimum supported redis version defined in lib/system_check/app/redis_version_check.rb
 cng-qa-min-redis-version:
-  extends: cng-qa-smoke
+  extends: .cng-base
   variables:
+    QA_SCENARIO: Test::Instance::Smoke
     REDIS_VERSION_TYPE: MIN_REDIS_VERSION
+  after_script:
+    - !reference [.set-suite-status, after_script]
+    - !reference [.cng-base, after_script]
 
 # ==========================================
 # Post test stage
@@ -113,3 +145,10 @@ notify-slack:
     - .rules:report:process-results
   variables:
     QA_RSPEC_XML_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.xml
+
+upload-knapsack-report:
+  extends:
+    - .upload-knapsack-report
+    - .rules:report:process-results
+  variables:
+    QA_KNAPSACK_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/knapsack/*/*.json

@@ -80,18 +80,6 @@ table.pipeline-project-metrics tr td {
   }
 }
 
-.user-access-role {
-  padding-left: $gl-spacing-scale-3;
-  padding-right: $gl-spacing-scale-3;
-  display: inline-block;
-  color: $gl-text-color-secondary;
-  font-size: 12px;
-  line-height: 20px;
-  border: 1px solid $border-color;
-  border-radius: $label-border-radius;
-  font-weight: $gl-font-weight-normal;
-}
-
 .groups-list-tree-container {
   > .group-list-tree > .group-row.has-children:first-child {
     border-top: 0;

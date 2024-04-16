@@ -1,9 +1,0 @@
----
-name: ci_rule_exists_extension_optimization
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/227632
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143056
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17531
-milestone: '16.9'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

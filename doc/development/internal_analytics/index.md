@@ -113,7 +113,7 @@ The following example query returns the number of daily event occurrences for th
 SELECT
   behavior_date,
   COUNT(*) as event_occurences
-FROM common_mart.mart_behavior_structured_event
+FROM prod.common_mart.mart_behavior_structured_event
 WHERE event_action = 'feature_used'
 AND behavior_date > '2023-08-01' --restricted minimum date for performance
 AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
@@ -131,7 +131,7 @@ SELECT
   date_trunc('week', ping_created_at),
   dim_instance_id,
   metric_value
-FROM common.fct_ping_instance_metric_rolling_6_months --model limited to last 6 months for performance
+FROM prod.common.fct_ping_instance_metric_rolling_6_months --model limited to last 6 months for performance
 WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of interest
 ORDER BY ping_created_at DESC
 ```

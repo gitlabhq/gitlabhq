@@ -7,6 +7,7 @@ require 'yaml'
 require 'fileutils'
 require 'uri'
 require 'readline'
+require 'active_support'
 require 'active_support/core_ext/string'
 
 class ElasticMigrationCreator

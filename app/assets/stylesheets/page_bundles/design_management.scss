@@ -3,6 +3,7 @@
 $design-pin-diameter: 28px;
 $design-pin-diameter-sm: 24px;
 $t-gray-a-16-design-pin: rgba($black, 0.16);
+$zindex-design-detail: 1061;
 
 .design-card-header {
   background: transparent;
@@ -14,6 +15,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .design-detail {
   bottom: $calc-application-footer-height;
+  z-index: $zindex-design-detail;
 
   .comment-indicator {
     border-radius: 50%;

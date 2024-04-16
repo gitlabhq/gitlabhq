@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Agent server [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300960) on GitLab.com under `wss://kas.gitlab.com` through an Early Adopter Program in GitLab 13.10.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.11, the GitLab agent became available on GitLab.com.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
-> - [Renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) from "GitLab Kubernetes Agent" to "GitLab agent for Kubernetes" in GitLab 14.6.
+> - `GitLab Kubernetes agent` [renamed](https://gitlab.com/groups/gitlab-org/-/epics/7167) to `GitLab agent for Kubernetes` in GitLab 14.6.
 > - Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,

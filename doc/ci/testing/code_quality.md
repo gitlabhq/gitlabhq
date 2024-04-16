@@ -107,6 +107,7 @@ Prerequisites:
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 - If you're using instance runners, the Code Quality job must be configured for the
   [Docker-in-Docker workflow](../docker/using_docker_build.md#use-docker-in-docker).
+  When using this workflow, the `/builds` volume must be mapped to allow reports to be saved.
 - If you're using private runners, you should use an
   [alternative configuration](#improve-code-quality-performance-with-private-runners)
   recommended for running Code Quality analysis more efficiently.
@@ -217,13 +218,13 @@ Code Quality now runs in standard Docker mode.
 
 ### Run Code Quality rootless with private runners
 
-If you are using private runners and would like to run the Code Quality scans [in rootless Docker mode](https://docs.docker.com/engine/security/rootless/) code quality requires some special changes to allow it to run properly. This may require having a runner dedicated to running only code quality jobs because changes in socket binding may cause problems in other jobs. 
+If you are using private runners and would like to run the Code Quality scans [in rootless Docker mode](https://docs.docker.com/engine/security/rootless/) code quality requires some special changes to allow it to run properly. This may require having a runner dedicated to running only code quality jobs because changes in socket binding may cause problems in other jobs.
 
 To use a rootless private runner:
 
 1. Register a new runner:
 
-   Replace `/run/user/<gitlab-runner-user>/docker.sock` with the path to the local `docker.sock` for the `gitlab-runner` user. 
+   Replace `/run/user/<gitlab-runner-user>/docker.sock` with the path to the local `docker.sock` for the `gitlab-runner` user.
 
    ```shell
    $ gitlab-runner register --executor "docker" \
@@ -599,3 +600,150 @@ Changes to the `plugins:` section do not affect the `exclude_patterns` section o
 `.codeclimate.yml`. See the Code Climate documentation on
 [excluding files and folders](https://docs.codeclimate.com/docs/excluding-files-and-folders)
 for more details.
+
+## Using Code Quality in Kubernetes and OpenShift
+
+You must set up Docker in a Docker container (Docker-in-Docker) to use Code Quality. The Kubernetes executor [supports Docker-in-Docker](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind).
+
+To ensure Code Quality jobs can run on a Kubernetes executor:
+
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
+the [Kubernetes executor for GitLab Runner](https://docs.gitlab.com/runner/executors/kubernetes.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running) troubleshooting section. The daemon can be manually waited to start, that is shown in the `before_script` sections of the code blocks below.
+
+### Kubernetes
+
+To run Code Quality in Kubernetes:
+
+- The Docker in Docker service must be added as a service container in the `config.toml` file.
+- The Docker daemon in the service container must listen on a TCP and UNIX socket, as both sockets are required by Code Quality.
+- The Docker socket must be shared with a volume.
+
+Due to a [Docker requirement](https://docs.docker.com/engine/reference/commandline/run/#privileged), the privileged flag
+must be enabled for the service container.
+
+```toml
+[runners.kubernetes]
+
+[runners.kubernetes.service_container_security_context]
+privileged = true
+allow_privilege_escalation = true
+
+[runners.kubernetes.volumes]
+
+[[runners.kubernetes.volumes.empty_dir]]
+mount_path = "/var/run/"
+name = "docker-sock"
+
+[[runners.kubernetes.services]]
+alias = "dind"
+command = [
+    "--host=tcp://0.0.0.0:2375",
+    "--host=unix://var/run/docker.sock",
+    "--storage-driver=overlay2"
+]
+entrypoint = ["dockerd"]
+name = "docker:20.10.12-dind"
+```
+
+NOTE:
+If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
+the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes.html#additional-configuration)
+in the `values.yaml` file.
+
+To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
+
+- Specify the `DOCKER_HOST` that the Docker CLI communicates with.
+- Set the `DOCKER_DRIVER` variable to empty.
+
+Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/index.html#define-a-list-of-services).
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+code_quality:
+  services: []
+  variables:
+    DOCKER_HOST: tcp://dind:2375
+    DOCKER_DRIVER: ""
+  before_script:
+    - while ! docker info > /dev/null 2>&1; do sleep 1; done
+```
+
+### OpenShift
+
+For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.com/runner/install/operator.html).
+To give the Docker daemon in the service container permissions to initialize its storage,
+you must mount the `/var/lib` directory as a volume mount.
+
+NOTE:
+If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
+If you opt for the `vfs` value, it might have a negative
+impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
+
+To configure permissions for the Docker daemon,
+
+1. Create a file called `config.toml` with the configuration provided below. This configuration will be used to customized GitLab Runner generated `config.toml`:
+
+```toml
+[[runners]]
+
+[runners.kubernetes]
+
+[runners.kubernetes.service_container_security_context]
+privileged = true
+allow_privilege_escalation = true
+
+[runners.kubernetes.volumes]
+
+[[runners.kubernetes.volumes.empty_dir]]
+mount_path = "/var/run/"
+name = "docker-sock"
+
+[[runners.kubernetes.volumes.empty_dir]]
+mount_path = "/var/lib/"
+name = "docker-data"
+
+[[runners.kubernetes.services]]
+alias = "dind"
+command = [
+    "--host=tcp://0.0.0.0:2375",
+    "--host=unix://var/run/docker.sock",
+    "--storage-driver=overlay2"
+]
+entrypoint = ["dockerd"]
+name = "docker:20.10.12-dind"
+```
+
+1. [Set the custom configuration to your runner](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template).
+
+1. Optional. Attach a [`privileged` service account](https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html)
+to the build Pod. This depends on your OpenShift cluster setup:
+
+```shell
+  oc create sa dind-sa
+  oc adm policy add-scc-to-user anyuid -z dind-sa
+  oc adm policy add-scc-to-user -z dind-sa privileged
+```
+
+1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings).
+1. Set the job definition stays the same as in Kubernetes case:
+
+  ```yaml
+  include:
+  - template: Code-Quality.gitlab-ci.yml
+
+  code_quality:
+  services: []
+  variables:
+    DOCKER_HOST: tcp://dind:2375
+    DOCKER_DRIVER: ""
+  before_script:
+    - while ! docker info > /dev/null 2>&1; do sleep 1; done
+  ```
+
+#### Volumes and Docker storage
+
+Docker stores all of its data in the `/var/lib` volume, which could result in a large volume. To reuse Docker-in-Docker storage across the cluster,
+you can use [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) as an alternative.

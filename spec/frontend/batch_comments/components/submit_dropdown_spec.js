@@ -9,8 +9,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
 import { mockTracking } from 'helpers/tracking_helper';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 
 jest.mock('~/autosave');
+jest.mock('~/vue_shared/components/markdown/eventhub');
 
 Vue.use(VueApollo);
 Vue.use(Vuex);
@@ -20,7 +23,7 @@ let publishReview;
 let trackingSpy;
 
 function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
-  publishReview = jest.fn();
+  publishReview = jest.fn().mockResolvedValue();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
   const requestHandlers = [
     [
@@ -103,6 +106,33 @@ describe('Batch comments submit dropdown', () => {
       approval_password: '',
       reviewer_state: 'reviewed',
     });
+  });
+
+  it('emits CLEAR_AUTOSAVE_ENTRY_EVENT with autosave key', async () => {
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    await waitForPromises();
+
+    expect(markdownEditorEventHub.$emit).toHaveBeenCalledWith(
+      CLEAR_AUTOSAVE_ENTRY_EVENT,
+      'submit_review_dropdown/1',
+    );
+  });
+
+  it('clears textarea value', async () => {
+    factory();
+
+    findCommentTextarea().setValue('Hello world');
+
+    findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+
+    await waitForPromises();
+
+    expect(findCommentTextarea().element.value).toBe('');
   });
 
   it('tracks submit action', () => {
@@ -206,6 +236,8 @@ describe('Batch comments submit dropdown', () => {
     await waitForPromises();
 
     await wrapper.find(`.custom-control-input[value="${value}"]`).trigger('change');
+
+    findCommentTextarea().setValue('Hello world');
 
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 

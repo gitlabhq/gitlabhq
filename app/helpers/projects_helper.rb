@@ -107,9 +107,21 @@ module ProjectsHelper
       { project_full_name: project.full_name }
   end
 
+  def link_to_namespace_change_doc
+    link_to _('project\'s path'), help_page_path('user/group/manage.html', anchor: 'change-a-groups-path'), target: '_blank', rel: 'noopener'
+  end
+
+  def link_to_data_loss_doc
+    link_to _('data loss'), help_page_path('user/project/repository/index.html', anchor: 'what-happens-when-a-repository-path-changes'), target: '_blank', rel: 'noopener'
+  end
+
   def transfer_project_message(project)
-    _("You are going to transfer %{project_full_name} to another namespace. Are you ABSOLUTELY sure?") %
-      { project_full_name: project.full_name }
+    _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") %
+      { project_full_name: project.full_name, code_start: '<code>', code_end: '</code>', link_to_namespace_change_doc: link_to_namespace_change_doc, link_to_data_loss_doc: link_to_data_loss_doc }
+  end
+
+  def transfer_project_confirm_button
+    _("Transfer project")
   end
 
   def remove_fork_project_description_message(project)
@@ -182,6 +194,13 @@ module ProjectsHelper
     can?(current_user, :set_emails_disabled, project)
   end
 
+  def can_set_diff_preview_in_email?(project, current_user)
+    return false unless Feature.enabled?(:diff_preview_in_email, project.group)
+    return false if project.group&.show_diff_preview_in_email?.equal?(false)
+
+    can?(current_user, :set_show_diff_preview_in_email, project)
+  end
+
   def last_push_event
     current_user&.recent_push(@project)
   end
@@ -221,6 +240,12 @@ module ProjectsHelper
       cookies[:hide_no_ssh_message].blank? &&
       !current_user.hide_no_ssh_key &&
       current_user.require_ssh_key?
+  end
+
+  def show_invalid_gpg_key_message?
+    return false unless Integrations::BeyondIdentity.activated_for_instance?
+
+    current_user.gpg_keys.externally_invalid.exists?
   end
 
   def show_no_password_message?
@@ -375,6 +400,7 @@ module ProjectsHelper
       packagesHelpPath: help_page_path('user/packages/index'),
       currentSettings: project_permissions_settings(project),
       canAddCatalogResource: can_add_catalog_resource?(project),
+      canSetDiffPreviewInEmail: can_set_diff_preview_in_email?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       canDisableEmails: can_disable_emails?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
@@ -478,8 +504,10 @@ module ProjectsHelper
     fork_button_attributes = fork_button_data_attributes(project) || {}
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
+    admin_path = admin_project_path(project) if current_user&.can_admin_all_resources?
 
     {
+      admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
       is_project_empty: project.empty_repo?.to_s,
       project_id: project.id
@@ -753,6 +781,7 @@ module ProjectsHelper
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
       emailsEnabled: project.emails_enabled?,
+      showDiffPreviewInEmail: project.show_diff_preview_in_email?,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,

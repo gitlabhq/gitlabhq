@@ -17,9 +17,11 @@ module Gitlab
         def find
           BatchLoader::GraphQL.for(full_path).batch(key: model_class) do |full_paths, loader, args|
             scope = args[:key]
-            # this logic cannot be placed in the NamespaceResolver due to N+1
-            scope = scope.without_project_namespaces if scope == Namespace
-            scope = scope.where_full_path_in(full_paths)
+            scope = if scope == Namespace
+                      scope.id_in(Route.by_paths(full_paths).select(:namespace_id)).with_route
+                    else
+                      scope.where_full_path_in(full_paths)
+                    end
 
             scope.each do |model_instance|
               loader.call(model_instance.full_path.downcase, model_instance)

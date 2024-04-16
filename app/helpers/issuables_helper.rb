@@ -417,6 +417,13 @@ module IssuablesHelper
       }
     }
   end
+
+  def new_comment_template_paths(group)
+    [{
+      text: _('Manage your comment templates'),
+      path: profile_comment_templates_path
+    }]
+  end
 end
 
 IssuablesHelper.prepend_mod_with('IssuablesHelper')

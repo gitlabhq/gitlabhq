@@ -6,7 +6,7 @@ RSpec.describe 'Groups > Permission and group features > Enable caching of hiera
   include ListboxHelpers
 
   let_it_be_with_reload(:group) { create(:group) }
-  let_it_be(:user) { create(:user).tap { |u| group.add_owner(u) } }
+  let_it_be(:user) { create(:user, owner_of: group) }
 
   before do
     sign_in(user)

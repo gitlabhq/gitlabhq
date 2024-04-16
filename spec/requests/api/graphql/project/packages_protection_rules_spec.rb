@@ -53,7 +53,7 @@ RSpec.describe 'getting the packages protection rules linked to a project', :agg
   end
 
   context 'with unauthorized user' do
-    let_it_be(:user) { create(:user).tap { |u| project.add_developer(u) } }
+    let_it_be(:user) { create(:user, developer_of: project) }
 
     before do
       subject

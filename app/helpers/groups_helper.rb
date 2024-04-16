@@ -21,12 +21,23 @@ module GroupsHelper
     can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
+  def can_set_group_diff_preview_in_email?(group)
+    return false unless Feature.enabled?(:diff_preview_in_email, group)
+    return false if group.parent&.show_diff_preview_in_email?.equal?(false)
+
+    can?(current_user, :set_show_diff_preview_in_email, group)
+  end
+
   def can_admin_group_member?(group)
     Ability.allowed?(current_user, :admin_group_member, group)
   end
 
   def can_admin_service_accounts?(group)
     false
+  end
+
+  def show_prevent_inviting_groups_outside_hierarchy_setting?(group)
+    group.root?
   end
 
   def group_icon_url(group, options = {})
@@ -86,8 +97,45 @@ module GroupsHelper
 
   # Overridden in EE
   def remove_group_message(group)
-    _("You are going to remove %{group_name}. This will also delete all of its subgroups and projects. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
-      { group_name: group.name }
+    content_tag :div do
+      content = ''.html_safe
+      content << content_tag(:span, _("You are about to remove the group %{group_name}.") % { group_name: group.name })
+
+      additional_content = additional_removed_items(group)
+      content << additional_content if additional_content.present?
+
+      content << remove_group_warning
+    end
+  end
+
+  def additional_removed_items(group)
+    relations = {
+      _('subgroup') => group.children,
+      _('active project') => group.all_projects.non_archived,
+      _('archived project') => group.all_projects.archived
+    }
+
+    counts = relations.filter_map do |singular, relation|
+      count = limited_counter_with_delimiter(relation, limit: 100, include_zero: false)
+      content_tag(:li, pluralize(count, singular)) if count
+    end.join.html_safe
+
+    if counts.present?
+      content_tag(:span, _(" This action will also remove:")) +
+        content_tag(:ul, counts)
+    else
+      ''.html_safe
+    end
+  end
+
+  def remove_group_warning
+    message = _('After you remove a group, you %{strongOpen}cannot%{strongClose} restore it or its components.')
+    content_tag(:p, class: 'gl-mb-0') do
+      ERB::Util.html_escape(message) % {
+        strongOpen: '<strong>'.html_safe,
+        strongClose: '</strong>'.html_safe
+      }
+    end
   end
 
   def share_with_group_lock_help_text(group)
@@ -145,7 +193,7 @@ module GroupsHelper
       group_id: group.id,
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      inactive_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
       current_group_visibility: group.visibility,
       initial_sort: project_list_sort_by,
       show_schema_markup: 'true',

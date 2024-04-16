@@ -18,7 +18,8 @@ RSpec.describe 'Query.merge_request(id)', feature_category: :code_review_workflo
   end
 
   context 'when the user does not have access to the merge request' do
-    it_behaves_like 'a working graphql query that returns no data' do
+    it_behaves_like 'a working graphql query that returns no data',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455407' do
       before do
         post_graphql(query, current_user: current_user)
       end
@@ -40,7 +41,8 @@ RSpec.describe 'Query.merge_request(id)', feature_category: :code_review_workflo
       end
     end
 
-    it 'returns the merge request' do
+    it 'returns the merge request',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455407' do
       post_graphql(query, current_user: current_user)
 
       expect(merge_request_data).to include(

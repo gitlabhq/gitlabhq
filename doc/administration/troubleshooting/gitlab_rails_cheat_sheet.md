@@ -44,7 +44,7 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ### Transfer mirror users and tokens to a single service account
 
-This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/troubleshooting.md#transfer-mirror-users-and-tokens-to-a-single-service-account-in-rails-console).
+This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/troubleshooting.md#transfer-mirror-users-and-tokens-to-a-single-service-account).
 
 ## Merge requests
 
@@ -74,25 +74,25 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#find-repository-verification-failures).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization.md#find-repository-verification-failures).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
-Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting.md#resync-project-and-project-wiki-repositories).
+Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization.md#resync-project-and-project-wiki-repositories).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/replication.md#resync-and-reverify-individual-components).
 
 ## Generate Service Ping
 

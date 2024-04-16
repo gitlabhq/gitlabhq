@@ -40,8 +40,6 @@ module WebpackHelper
   end
 
   def webpack_controller_bundle_tags
-    return if vite_enabled?
-
     chunks = []
 
     action = case controller.action_name

@@ -67,8 +67,8 @@ export default {
     // This method is for backward compat
     // since Graph query would return camelCase
     // props while Rails would return snake_case
-    webUrl(assignee) {
-      return assignee.web_url || assignee.webUrl;
+    assigneeHref(assignee) {
+      return assignee.web_path || assignee.webPath;
     },
     avatarUrl(assignee) {
       return assignee.avatar_url || assignee.avatarUrl;
@@ -81,7 +81,7 @@ export default {
     <user-avatar-link
       v-for="assignee in assigneesToShow"
       :key="assignee.id"
-      :link-href="webUrl(assignee)"
+      :link-href="assigneeHref(assignee)"
       :img-alt="avatarUrlTitle(assignee)"
       :img-css-classes="imgCssClasses"
       img-css-wrapper-classes="gl-display-inline-flex"

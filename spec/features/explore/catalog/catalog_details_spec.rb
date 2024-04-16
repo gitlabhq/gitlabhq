@@ -16,7 +16,7 @@ RSpec.describe 'CI/CD Catalog details page', :js, feature_category: :pipeline_co
       end
 
       it 'navigates to the details page' do
-        expect(page).to have_content('Go to the project')
+        expect(page).to have_content('Readme')
       end
     end
 

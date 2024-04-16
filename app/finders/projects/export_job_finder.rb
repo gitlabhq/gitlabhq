@@ -19,7 +19,10 @@ module Projects
 
     def by_status(export_jobs)
       return export_jobs unless params[:status]
-      raise InvalidExportJobStatusError, 'Invalid export job status' unless ProjectExportJob.state_machines[:status].states.map(&:name).include?(params[:status])
+
+      unless ProjectExportJob.state_machines[:status].states.map(&:name).include?(params[:status])
+        raise InvalidExportJobStatusError, 'Invalid export job status'
+      end
 
       export_jobs.with_status(params[:status])
     end

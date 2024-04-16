@@ -9,9 +9,6 @@ module Ci
         include BulkInsertableAssociations
         include SemanticVersionable
 
-        semver_method :version
-        validate_semver
-
         self.table_name = 'catalog_resource_versions'
 
         belongs_to :release, inverse_of: :catalog_resource_version
@@ -24,6 +21,7 @@ module Ci
         scope :for_catalog_resources, ->(catalog_resources) { where(catalog_resource_id: catalog_resources) }
         scope :preloaded, -> { includes(:catalog_resource, project: [:route, { namespace: :route }], release: :author) }
         scope :by_name, ->(name) { joins(:release).merge(Release.where(tag: name)) }
+        scope :by_sha, ->(sha) { joins(:release).merge(Release.where(sha: sha)) }
         scope :with_semver, -> { where.not(semver_major: nil) }
 
         delegate :sha, :author_id, to: :release
@@ -33,8 +31,15 @@ module Ci
         after_save :update_catalog_resource
 
         class << self
-          def latest
-            with_semver.order_by_semantic_version_desc.first
+          def latest(major = nil, minor = nil)
+            raise ArgumentError, 'semver minor version used without major version' if minor.present? &&
+              major.blank?
+
+            relation = with_semver
+            relation = relation.where(semver_major: major) if major
+            relation = relation.where(semver_minor: minor) if minor
+
+            relation.order_by_semantic_version_desc.first
           end
 
           def versions_for_catalog_resources(catalog_resources)
@@ -45,7 +50,7 @@ module Ci
         end
 
         def name
-          release.tag
+          semver.to_s
         end
 
         def commit

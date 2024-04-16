@@ -688,8 +688,18 @@ describe('buildClient', () => {
     it('fetches metrics from the metrics URL', async () => {
       const mockResponse = {
         metrics: [
-          { name: 'metric A', description: 'a counter metric called A', type: 'COUNTER' },
-          { name: 'metric B', description: 'a gauge metric called B', type: 'GAUGE' },
+          {
+            name: 'metric A',
+            description: 'a counter metric called A',
+            type: 'COUNTER',
+            attributes: [],
+          },
+          {
+            name: 'metric B',
+            description: 'a gauge metric called B',
+            type: 'GAUGE',
+            attributes: [],
+          },
         ],
       };
 
@@ -722,7 +732,7 @@ describe('buildClient', () => {
         await client.fetchMetrics({
           filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
         });
-        expect(getQueryParam()).toBe('starts_with=foo+bar');
+        expect(getQueryParam()).toBe('search=foo+bar');
       });
 
       it('ignores empty search', async () => {
@@ -759,7 +769,7 @@ describe('buildClient', () => {
           filters: { search: [{ value: 'foo' }] },
           limit: 50,
         });
-        expect(getQueryParam()).toBe('starts_with=foo&limit=50');
+        expect(getQueryParam()).toBe('search=foo&limit=50');
       });
 
       it('does not add the search limit param if the search filter is missing', async () => {
@@ -821,6 +831,18 @@ describe('buildClient', () => {
       });
     });
 
+    it('sets the visual param when specified', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      await client.fetchMetric('name', 'type', { visual: 'heatmap' });
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type', mvisual: 'heatmap' }),
+      });
+    });
+
     describe('query filter params', () => {
       beforeEach(() => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
@@ -844,23 +866,11 @@ describe('buildClient', () => {
           });
           expect(getQueryParam()).toBe(
             'mname=name&mtype=type' +
-              '&attr_1=foo&not[attr_1]=bar' +
-              '&like[attr_2]=foo&not_like[attr_2]=bar',
+              '&attrs=attr_1,eq,foo' +
+              '&attrs=attr_1,neq,bar' +
+              '&attrs=attr_2,re,foo' +
+              '&attrs=attr_2,nre,bar',
           );
-        });
-
-        it('handles repeated params', async () => {
-          await client.fetchMetric('name', 'type', {
-            filters: {
-              attributes: {
-                attr_1: [
-                  { operator: '=', value: 'v1' },
-                  { operator: '=', value: 'v2' },
-                ],
-              },
-            },
-          });
-          expect(getQueryParam()).toContain('attr_1=v1&attr_1=v2');
         });
 
         it('ignores empty filters', async () => {

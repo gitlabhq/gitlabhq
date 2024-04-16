@@ -77,6 +77,25 @@ This page shows groups that you are a member of through:
 - Membership of a subgroup's parent group.
 - Direct or inherited membership of a project in the group or subgroup.
 
+## View a group
+
+The group overview page displays information about the group and its members, subgroups, and projects, such as:
+
+- Group description
+- Recent activity
+- Number of merge requests and issues created
+- Number of members added
+- Subgroups and projects
+- Shared projects
+- Archived projects
+
+To view a group:
+
+- On the left sidebar, select **Search or go to** and find your group.
+
+You can search for the subgroups and projects of the group
+and sort them in ascending or descending order.
+
 ## View group activity
 
 To view the activity of a group:
@@ -231,7 +250,7 @@ If you change your mind before your request is approved, select
 
 ## View group members
 
-To view a group's members:
+To view the direct and inherited members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -252,6 +271,8 @@ A table displays the member's:
 NOTE:
 The display of group members' **Source** might be inconsistent.
 For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
+
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/index.md#view-seat-usage).
 
 ## Filter and sort members in a group
 

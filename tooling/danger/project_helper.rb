@@ -5,9 +5,9 @@ module Tooling
     module ProjectHelper
       CI_ONLY_RULES ||= %w[
         ce_ee_vue_templates
-        ci_templates
         datateam
         feature_flag
+        master_pipeline_status
         roulette
         sidekiq_queues
         specialization_labels

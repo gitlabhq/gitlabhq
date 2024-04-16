@@ -461,6 +461,8 @@ The table below is a comparison between the existing GitLab.com features, and no
 | GitLab Duo Pro license works across all projects on instance | GitLab Duo Pro licenses, once granted, [should allow users to use GitLab Duo Pro on all projects on the instance](https://gitlab.com/gitlab-org/gitlab/-/issues/441244). With Cells 1.0, this will only work within their own cell.                                                          |
 | Shared user accounts across Cells                            | Users needs to have new user accounts on each Cell for now                                                                                                                                                                                                                                   |
 | User removal                                                 | Users can only be part of one Organization. A removal would equal a deletion in this case, so only user deletions will be offered in Organizations on Cells 1.0. Upon removal, there would be no way for a User to discover another Organization to join, as they are private for Cells 1.0. |
+| Windows and Mac OS Runners    |  Mac and Windows runners are still in beta and there are some more complex technical considerations related to cost. See the discussion: [#434982 (comment 1789275416)](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1789275416) on sharing resources. |
+| Multiple Sizes for Linux Runners | We will only support [small linux runners on Cells 1.0](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1806447839). |
 
 ## Questions
 
@@ -605,7 +607,7 @@ The table below is a comparison between the existing GitLab.com features, and no
 
 1. How would we synchronize `users` across Cells?
 
-   We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define
+   We build out-of-band replication of tables marked as `main_clusterwide`. We have yet to define
    if this would be better to do with an `API` that is part of Rails, or using the Dedicated service.
    However, using Rails would likely be the simplest and most reliable solution, because the
    application knows the expected data structure.
@@ -702,3 +704,27 @@ The table below is a comparison between the existing GitLab.com features, and no
    - Geo is per-Cell.
    - Routing Service can direct to Geo replica of the Cell (if it knows it).
    - We might have many routing services in many regions.
+
+1. Are cluster-wide tables available to all cells?
+
+   No, cluster-wide tables are stored in a Cell-local database. However, we will
+   determine synchronization of cluster-wide tables on a case by case basis.
+
+1. How can I adapt a feature to be compatible with Cells?
+
+   Many groups have questions about how to adapt a feature for Cell.
+   This especially applies if a feature is available at the instance level, or
+   can be used across groups.
+
+   Here are some strategies for evolving a thing for Cells 1.0:
+
+   - Leave the feature unchanged.
+     For example, admins / users will have to create an account per cell.
+   - Disable the feature for Cells 1.0.
+   - For critical cases, move the feature to cluster-wide level.
+     For example, users can sign in at a single location, `https://gitlab.com/users/sign_in`.
+
+   In many cases, it is not yet necessary to re-implement an instance-wide feature
+   to work on a cluster-wide level. This is because for Cells 1.0, the net
+   effect of only allowing private visibility and new users mean that we can
+   defer this until Cells 1.5.

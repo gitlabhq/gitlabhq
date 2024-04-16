@@ -124,7 +124,8 @@ module Types
 
       field :can_play_job, GraphQL::Types::Boolean,
             null: false, resolver_method: :can_play_job?,
-            description: 'Indicates whether the current user can play the job.'
+            description: 'Indicates whether the current user can play the job.',
+            calls_gitaly: true
 
       field :failure_message, GraphQL::Types::String, null: true,
                                                      description: 'Message on why the job failed.'
@@ -160,9 +161,7 @@ module Types
       end
 
       def artifacts
-        if object.is_a?(::Ci::Build)
-          object.job_artifacts
-        end
+        object.job_artifacts if object.is_a?(::Ci::Build)
       end
 
       def trace

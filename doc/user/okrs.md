@@ -19,7 +19,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project, an administrator can [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
 On GitLab.com, by default this feature is not available, but can be configured by GitLab.com administrators.
 On GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 [Objectives and key results](https://en.wikipedia.org/wiki/OKR) (OKRs) are a framework for setting
 and tracking goals that are aligned with your organization's overall strategy and vision.
@@ -354,7 +354,7 @@ To reorder them, drag them around.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 Schedule check-in reminders to remind your team to provide status updates on the key results you care
 about.

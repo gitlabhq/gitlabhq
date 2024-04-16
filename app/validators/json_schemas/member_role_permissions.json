@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Permissions on custom roles",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "admin_cicd_variables": {
+      "type": "boolean"
+    },
+    "admin_group_member": {
+      "type": "boolean"
+    },
+    "admin_merge_request": {
+      "type": "boolean"
+    },
+    "admin_push_rules": {
+      "type": "boolean"
+    },
+    "manage_security_policy_link": {
+      "type": "boolean"
+    },
+    "admin_terraform_state": {
+      "type": "boolean"
+    },
+    "admin_vulnerability": {
+      "type": "boolean"
+    },
+    "archive_project": {
+      "type": "boolean"
+    },
+    "manage_group_access_tokens": {
+      "type": "boolean"
+    },
+    "manage_project_access_tokens": {
+      "type": "boolean"
+    },
+    "read_code": {
+      "type": "boolean"
+    },
+    "read_dependency": {
+      "type": "boolean"
+    },
+    "read_vulnerability": {
+      "type": "boolean"
+    },
+    "remove_group": {
+      "type": "boolean"
+    },
+    "remove_project": {
+      "type": "boolean"
+    }
+  }
+}

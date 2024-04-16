@@ -43,6 +43,11 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations do
         name: :token,
         type: String,
         desc: 'API Token. User must have access to `git-commit-signing` endpoint.'
+      }, {
+        required: false,
+        name: :exclude_service_accounts,
+        type: Grape::API::Boolean,
+        desc: "If enabled, Beyond Identity will not check commits from service accounts."
       }])
     end
   end
@@ -57,6 +62,26 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations do
       end
 
       expect(integration.execute(params)).to eq(response)
+    end
+  end
+
+  describe '.activated_for_instance?' do
+    let!(:integration) { create(:beyond_identity_integration, instance: instance, active: active, group: group) }
+    let_it_be(:group_for_integration) { create(:group) }
+
+    subject { described_class.activated_for_instance? }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:instance, :group, :active, :expected) do
+      true  | nil | true | true
+      false | lazy { group_for_integration } | true | false
+      true  | nil | false | false
+      false | lazy { group_for_integration } | false | false
+    end
+
+    with_them do
+      it { is_expected.to eq(expected) }
     end
   end
 end

@@ -8,7 +8,7 @@ RSpec.describe 'getting a list of fork targets for a project', feature_category:
   let_it_be(:group) { create(:group) }
   let_it_be(:another_group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
-  let_it_be(:user) { create(:user, developer_projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:current_user) { user }
   let(:fields) do

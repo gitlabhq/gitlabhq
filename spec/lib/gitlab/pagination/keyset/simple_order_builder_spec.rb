@@ -78,6 +78,44 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder do
     end
   end
 
+  context 'when column with null check constraint is given' do
+    let(:scope) { Project.where(id: [1, 2, 3]).order(name: :asc, id: :asc) }
+
+    before do
+      Project.clear_constraints_cache!
+    end
+
+    context 'when the check constraint is not valid' do
+      before do
+        Project.connection.execute(<<~SQL)
+          ALTER TABLE projects
+          ADD CONSTRAINT test_constraint CHECK (name is not null) not valid;
+        SQL
+      end
+
+      it 'sets the column definition for name non-distinct and nullable' do
+        expect(column_definition.attribute_name).to eq('name')
+        expect(column_definition.nullable?).to be_truthy
+        expect(column_definition).not_to be_distinct
+      end
+    end
+
+    context 'when the check constraint is valid' do
+      before do
+        Project.connection.execute(<<~SQL)
+          ALTER TABLE projects
+          ADD CONSTRAINT test_constraint CHECK (name is not null);
+        SQL
+      end
+
+      it 'sets the column definition for name non-distinct and non-nullable' do
+        expect(column_definition.attribute_name).to eq('name')
+        expect(column_definition).to be_not_nullable
+        expect(column_definition).not_to be_distinct
+      end
+    end
+  end
+
   context 'when ordering by a column with the lower named function' do
     let(:scope) { Project.where(id: [1, 2, 3]).order(Project.arel_table[:name].lower.desc) }
 

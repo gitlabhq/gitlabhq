@@ -266,7 +266,7 @@ Settings['gitlab_ci'] ||= {}
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
-Settings.gitlab_ci['component_fqdn']      ||= Settings.__send__(:build_ci_component_fqdn)
+Settings.gitlab_ci['server_fqdn']         ||= Settings.__send__(:build_ci_server_fqdn)
 
 #
 # CI Secure Files
@@ -580,15 +580,6 @@ Settings.cron_jobs['namespaces_prune_aggregation_schedules_worker']['job_class']
 Settings.cron_jobs['container_expiration_policy_worker'] ||= {}
 Settings.cron_jobs['container_expiration_policy_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['container_expiration_policy_worker']['job_class'] = 'ContainerExpirationPolicyWorker'
-Settings.cron_jobs['container_registry_migration_guard_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_guard_worker']['cron'] ||= '*/10 * * * *'
-Settings.cron_jobs['container_registry_migration_guard_worker']['job_class'] = 'ContainerRegistry::Migration::GuardWorker'
-Settings.cron_jobs['container_registry_migration_observer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_observer_worker']['cron'] ||= '*/30 * * * *'
-Settings.cron_jobs['container_registry_migration_observer_worker']['job_class'] = 'ContainerRegistry::Migration::ObserverWorker'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker'] ||= {}
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['cron'] ||= '15,45 */1 * * *'
-Settings.cron_jobs['container_registry_migration_enqueuer_worker']['job_class'] = 'ContainerRegistry::Migration::EnqueuerWorker'
 Settings.cron_jobs['cleanup_container_registry_worker'] ||= {}
 Settings.cron_jobs['cleanup_container_registry_worker']['cron'] ||= '*/5 * * * *'
 Settings.cron_jobs['cleanup_container_registry_worker']['job_class'] = 'ContainerRegistry::CleanupWorker'
@@ -724,7 +715,7 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_consistency_worker']['job_class'] = 'Analytics::CycleAnalytics::ConsistencyWorker'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
-  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
+  Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '*/25 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
   Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'
@@ -924,6 +915,9 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker'] ||= {}
     Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['cron'] ||= "*/10 * * * *"
     Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['job_class'] = 'ClickHouse::RebuildMaterializedViewCronWorker'
+    Settings.cron_jobs['click_house_code_suggestion_events_cron_worker'] ||= {}
+    Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['cron'] ||= "*/5 * * * *"
+    Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['job_class'] = 'ClickHouse::CodeSuggestionEventsCronWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'

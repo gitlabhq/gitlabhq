@@ -19,7 +19,7 @@ module Features
     end
 
     def snippet_description_view_selector
-      '.snippet-header .snippet-description'
+      '[data-testid=snippet-description-content]'
     end
 
     def snippet_description_field_collapsed

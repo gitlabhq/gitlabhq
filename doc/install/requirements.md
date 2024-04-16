@@ -132,7 +132,7 @@ It is recommended to review the [full requirements for running Geo](../administr
 Changes to locale data in `glibc` means that PostgreSQL database files are not fully compatible
 between different OS releases.
 
-To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting.md#check-os-locale-data-compatibility)
+To avoid index corruption, [check for locale compatibility](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)
 when:
 
 - Moving binary PostgreSQL data between servers.

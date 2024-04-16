@@ -81,7 +81,7 @@ The `[_TOC_]` function is not supported on docs.gitlab.com.
 This section is very important, because very often it is the only section that
 will be read by team members. We sometimes call it an "Executive summary",
 because executives usually don't have time to read entire document like this.
-Focus on writing this section in a way that anyone can understand what is says,
+Focus on writing this section in a way that anyone can understand what it says,
 the audience here is everyone: executives, product managers, engineers, wider
 community members.
 

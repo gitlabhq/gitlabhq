@@ -19,6 +19,7 @@ swap:
   at least the Owner role: the Owner role
   can login: can log in
   can log-in: can log in
+  can setup: can set up
   can signin: can sign in
   can sign-in: can sign in
   codequality: code quality
@@ -61,6 +62,7 @@ swap:
   the administrator access level: administrator access
   to login: to log in
   to log-in: to log in
+  to setup: to set up
   to signin: to sign in
   to sign-in: to sign in
   x509: X.509

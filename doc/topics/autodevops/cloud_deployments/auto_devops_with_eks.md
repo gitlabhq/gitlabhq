@@ -63,7 +63,7 @@ Now you have an application project you are going to deploy to the EKS cluster.
 Next, we'll configure the GitLab agent for Kubernetes so we can use it to deploy the application project.
 
 1. Go to the project [we created to manage the cluster](#create-a-kubernetes-cluster).
-1. Navigate to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/eks-agent/config.yaml`) and edit it.
+1. Go to the [agent configuration file](../../../user/clusters/agent/install/index.md#create-an-agent-configuration-file) (`.gitlab/agents/eks-agent/config.yaml`) and edit it.
 1. Configure `ci_access:projects` attribute. Use the application project path as `id`:
 
 ```yaml

@@ -62,6 +62,16 @@ If a `project` but no `namespace` is provided, the `project.namespace` is used a
 
 In some cases you might want to specify the `category` manually or provide none at all. To do that, you can call the `InternalEvents.track_event` method directly instead of using the module.
 
+In case when a feature is enabled through multiple namespaces and its required to track why the feature is enabled, it is
+possible to pass an optional `feature_enabled_by_namespace_ids` parameter with an array of namespace ids.
+
+```ruby
+Gitlab::InternalEvents.track_event(
+  ...
+  feature_enabled_by_namespace_ids: [namespace_one.id, namespace_two.id]
+)
+```
+
 #### Additional properties
 
 Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
@@ -189,31 +199,7 @@ import { InternalEvents } from '~/tracking';
 InternalEvents.trackEvent('i_code_review_user_apply_suggestion');
 ```
 
-#### Additional properties
-
-Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
-
-For Vue Mixin:
-
-```javascript
-   this.trackEvent('i_code_review_user_apply_suggestion', undefined, {
-    label: 'push_event',
-    property: 'golang',
-    value: 20
-   });
-```
-
-For raw JavaScript:
-
-```javascript
-   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', undefined, {
-    label: 'admin',
-    property: 'system',
-    value: 20
-   });
-```
-
-#### Data-track attribute
+#### Data-event attribute
 
 This attribute ensures that if we want to track GitLab internal events for a button, we do not need to write JavaScript code on Click handler. Instead, we can just add a data-event-tracking attribute with event value and it should work. This can also be used with HAML views.
 
@@ -238,4 +224,46 @@ Sometimes we want to send internal events when the component is rendered or load
 ```haml
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
+```
+
+#### Additional properties
+
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+
+For Vue Mixin:
+
+```javascript
+   this.trackEvent('i_code_review_user_apply_suggestion', {
+    label: 'push_event',
+    property: 'golang',
+    value: 20
+   });
+```
+
+For raw JavaScript:
+
+```javascript
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', {
+    label: 'admin',
+    property: 'system',
+    value: 20
+   });
+```
+
+For data-event attributes:
+
+```javascript
+ <gl-button
+    data-event-tracking="i_analytics_dev_ops_adoption"
+    data-event-label="gitlab_devops_button_label"
+    data-event-property="nav_core_menu"
+  >
+   Click Me
+  </gl-button>
+```
+
+For Haml:
+
+```haml
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'gitlab_settings_button_label', event_property: 'settings_menu', event_value: 2 }}) do
 ```

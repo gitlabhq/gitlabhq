@@ -58,6 +58,13 @@ compile-production-assets as-if-foss:
     - .as-if-foss
     - .frontend:rules:compile-production-assets-as-if-foss
 
+follow-up:compile-production-assets:
+  extends:
+    - compile-production-assets
+    - .qa:rules:follow-up-e2e
+  needs:
+    - manual:e2e-test-pipeline-generate
+
 compile-test-assets:
   extends:
     - .compile-assets-base
@@ -66,8 +73,7 @@ compile-test-assets:
     expire_in: 7d
     paths:
       - public/assets/
-      - node_modules/@gitlab/svgs/dist/icons.json  # app/helpers/icons_helper.rb uses this file
-      - node_modules/@gitlab/svgs/dist/file_icons/file_icons.json  # app/helpers/icons_helper.rb uses this file
+      - config/helpers/tailwind/ # Assets created during tailwind compilation
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
@@ -181,7 +187,8 @@ rspec-all frontend_fixture as-if-foss:
     - .frontend:rules:frontend_fixture-as-if-foss
     - .as-if-foss
   variables:
-    # We explicitely disable Crystalball here so as even in scheduled pipelines we don't need it since it's already enabled for `rspec-all frontend_fixture` there.
+    # We explicitly disable Crystalball here so as even in scheduled pipelines we don't need it
+    # since it's already enabled for `rspec-all frontend_fixture` there.
     CRYSTALBALL: "false"
     WEBPACK_VENDOR_DLL: "true"
     KNAPSACK_GENERATE_REPORT: ""
@@ -241,6 +248,11 @@ graphql-schema-dump:
     - yarn_install_script
   stage: test
 
+.vue3:
+  variables:
+    VUE_VERSION: 3
+  allow_failure: true
+
 .jest-base:
   extends: .frontend-test-base
   script:
@@ -262,6 +274,12 @@ jest:
     reports:
       junit: junit_jest.xml
   parallel: 12
+
+jest vue3:
+  extends:
+    - jest
+    - .frontend:rules:jest-vue3
+    - .vue3
 
 jest predictive:
   extends:

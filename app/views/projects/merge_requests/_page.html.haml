@@ -62,7 +62,6 @@
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         .merge-request-overview
           %section
-            = render_if_exists "projects/merge_requests/diff_summary"
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description.gl-pb-0
@@ -84,7 +83,7 @@
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
-                new_comment_template_path: profile_comment_templates_path,
+                new_comment_template_paths: new_comment_template_paths(@project.group).to_json,
                 new_custom_emoji_path: new_custom_emoji_path(@project.group) } }
           = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
@@ -106,6 +105,9 @@
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.commit_to_cherry_pick
 
 #js-review-bar{ data: review_bar_data(@merge_request, current_user) }
+
+- if Feature.enabled?(:reviewer_assign_drawer, current_user, type: :wip)
+  #js-reviewer-drawer-portal
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

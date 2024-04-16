@@ -1,0 +1,8 @@
+---
+name: tailwind_all_the_way
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148202
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452445
+milestone: '16.11'
+type: development
+group: group::foundations
+default_enabled: false

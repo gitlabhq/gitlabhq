@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Environments::CreateService, feature_category: :environment_management do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:service) { described_class.new(project, current_user, params) }
   let(:current_user) { developer }

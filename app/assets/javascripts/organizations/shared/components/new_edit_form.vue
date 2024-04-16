@@ -5,6 +5,7 @@ import { n__, s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   FORM_FIELD_NAME,
@@ -37,17 +38,7 @@ export default {
   markdownDocsPath: helpPagePath('user/organization/index', {
     anchor: 'organization-description-supported-markdown',
   }),
-  restrictedToolBarItems: [
-    'code',
-    'quote',
-    'bullet-list',
-    'numbered-list',
-    'task-list',
-    'collapsible-section',
-    'table',
-    'attach-file',
-    'full-screen',
-  ],
+  restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
   inject: ['organizationsPath', 'previewMarkdownPath'],
   props: {
     loading: {
@@ -209,7 +200,7 @@ export default {
       <template #input(description)="{ id, value, input, blur }">
         <div class="gl-md-form-input-xl">
           <markdown-field
-            class="organization-description gl-mb-2"
+            class="gl-mb-2"
             :can-attach-file="false"
             :markdown-preview-path="previewMarkdownPath"
             :markdown-docs-path="$options.markdownDocsPath"

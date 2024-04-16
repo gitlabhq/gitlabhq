@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
@@ -12,6 +12,7 @@ export default {
     GlLoadingIcon,
     GlTabs,
     GlTab,
+    GlBadge,
     DeploymentHistory,
     KubernetesOverview,
   },
@@ -113,11 +114,14 @@ export default {
       />
     </gl-tab>
 
-    <gl-tab
-      :title="$options.i18n.deploymentHistory"
-      :query-param-value="$options.params.deployments"
-      :title-link-class="linkClass(1)"
-    >
+    <gl-tab :query-param-value="$options.params.deployments" :title-link-class="linkClass(1)">
+      <template #title>
+        {{ $options.i18n.deploymentHistory }}
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{
+          environment.deploymentsDisplayCount
+        }}</gl-badge>
+      </template>
+
       <deployment-history
         :project-full-path="projectFullPath"
         :environment-name="environmentName"

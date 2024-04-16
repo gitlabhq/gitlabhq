@@ -54,4 +54,55 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
       end
     end
   end
+
+  describe 'status transitions' do
+    let(:queued)   { ProjectExportJob::STATUS[:queued] }
+    let(:started)  { ProjectExportJob::STATUS[:started] }
+    let(:failed)   { ProjectExportJob::STATUS[:failed] }
+    let(:finished) { ProjectExportJob::STATUS[:finished] }
+
+    context 'when a new ProjectExportJob is created' do
+      let(:project_export_job) { create(:project_export_job) }
+
+      it 'is initialized in the queued state' do
+        expect(project_export_job).to be_queued
+      end
+    end
+
+    context 'when the ProjectExportJob is in queued state' do
+      let(:project_export_job) { create(:project_export_job) }
+
+      it 'can transition to started state' do
+        expect { project_export_job.start }.to change { project_export_job.status }.from(queued).to(started)
+      end
+
+      it 'can transition to failed state' do
+        expect { project_export_job.fail_op }.to change { project_export_job.status }.from(queued).to(failed)
+      end
+
+      it 'cannnot transition to finished state' do
+        expect { project_export_job.finish }.not_to change { project_export_job.status }
+      end
+    end
+
+    context 'when the ProjectExportJob is in started state' do
+      let(:project_export_job) { create(:project_export_job, status: started) }
+
+      it 'can transition to finished state' do
+        expect { project_export_job.finish }.to change { project_export_job.status }.from(started).to(finished)
+      end
+
+      it 'can transition to failed state' do
+        expect { project_export_job.fail_op }.to change { project_export_job.status }.from(started).to(failed)
+      end
+    end
+
+    context 'when the ProjectExportJob is in finished state' do
+      let(:project_export_job) { create(:project_export_job, status: finished) }
+
+      it 'does not transition further' do
+        expect { project_export_job.fail_op }.not_to change { project_export_job.status }
+      end
+    end
+  end
 end

@@ -71,13 +71,14 @@ Nevertheless, it is highly recommended to maintain a full up-to-date
 ## Upgrade using the official repositories
 
 All GitLab packages are posted to the GitLab [package server](https://packages.gitlab.com/gitlab/).
-Five repositories are maintained:
+Six repositories are maintained:
 
 - [`gitlab/gitlab-ee`](https://packages.gitlab.com/gitlab/gitlab-ee): The full
   GitLab package that contains all the Community Edition features plus the
   [Enterprise Edition](https://about.gitlab.com/pricing/) ones.
 - [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce): A stripped
   down package that contains only the Community Edition features.
+- [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips): [FIPS-compliant](../../development/fips_compliance.md) builds.
 - [`gitlab/unstable`](https://packages.gitlab.com/gitlab/unstable): Release candidates and other unstable versions.
 - [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): Nightly builds.
 - [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): Official Community Edition releases built for [Raspberry Pi](https://www.raspberrypi.org) packages.

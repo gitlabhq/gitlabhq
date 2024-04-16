@@ -1,0 +1,6 @@
+- if show_invalid_gpg_key_message?
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
+    - c.with_body do
+      = s_('GpgKeys|There is an unverified GPG key associated with your profile. Please review your GPG keys.')
+    - c.with_actions do
+      = link_button_to s_('GpgKeys|Manage GPG keys'), user_settings_gpg_keys_path, variant: :confirm

@@ -7,29 +7,20 @@ RSpec.describe TodoService, feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:author) { create(:user) }
-  let_it_be(:assignee) { create(:user) }
+  let_it_be(:author) { create(:user, developer_of: project) }
+  let_it_be(:assignee) { create(:user, developer_of: project) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:member) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:member) { create(:user, developer_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:john_doe) { create(:user) }
-  let_it_be(:skipped) { create(:user) }
+  let_it_be(:john_doe) { create(:user, developer_of: project) }
+  let_it_be(:skipped) { create(:user, developer_of: project) }
 
   let(:skip_users) { [skipped] }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
   let(:service) { described_class.new }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_developer(author)
-    project.add_developer(assignee)
-    project.add_developer(member)
-    project.add_developer(john_doe)
-    project.add_developer(skipped)
-  end
 
   shared_examples 'reassigned target' do
     let(:additional_todo_attributes) { {} }

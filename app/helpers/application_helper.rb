@@ -145,6 +145,7 @@ module ApplicationHelper
     {
       project_id: @project.id,
       project: @project.path,
+      project_full_path: @project.full_path,
       group: @project.group&.path,
       group_full_path: @project.group&.full_path,
       namespace_id: @project.namespace&.id
@@ -206,11 +207,11 @@ module ApplicationHelper
   def edited_time_ago_with_tooltip(editable_object, placement: 'top', html_class: 'time_ago', exclude_author: false)
     return unless editable_object.edited?
 
-    content_tag :small, class: 'edited-text' do
+    content_tag :div, class: 'edited-text gl-mt-4 gl-text-gray-500 gl-font-sm' do
       timeago = time_ago_with_tooltip(editable_object.last_edited_at, placement: placement, html_class: html_class)
 
       if !exclude_author && editable_object.last_edited_by
-        author_link = link_to_member(editable_object.project, editable_object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline', author_class: nil)
+        author_link = link_to_member(editable_object.project, editable_object.last_edited_by, avatar: false, extra_class: 'gl-hover-text-decoration-underline gl-text-gray-700', author_class: nil)
         output = safe_format(_("Edited %{timeago} by %{author}"), timeago: timeago, author: author_link)
       else
         output = safe_format(_("Edited %{timeago}"), timeago: timeago)
@@ -301,7 +302,7 @@ module ApplicationHelper
     if admin
       admin_user_key_path(@user, key)
     else
-      profile_key_path(key)
+      user_settings_ssh_key_path(key)
     end
   end
 
@@ -352,13 +353,13 @@ module ApplicationHelper
     cookies[name] != 'true'
   end
 
+  def linkedin_name(user)
+    user.linkedin.chomp('/').gsub(%r{.*/}, '')
+  end
+
   def linkedin_url(user)
-    name = user.linkedin
-    if %r{\Ahttps?://(www\.)?linkedin\.com/in/}.match?(name)
-      name
-    else
-      "https://www.linkedin.com/in/#{name}"
-    end
+    name = linkedin_name(user)
+    "https://www.linkedin.com/in/#{name}"
   end
 
   def twitter_url(user)
@@ -456,7 +457,8 @@ module ApplicationHelper
         milestones: milestones_project_autocomplete_sources_path(object),
         commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         snippets: snippets_project_autocomplete_sources_path(object),
-        contacts: contacts_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+        contacts: contacts_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+        wikis: object.feature_available?(:wiki, current_user) ? wikis_project_autocomplete_sources_path(object) : nil
       }
     end
   end
@@ -497,15 +499,6 @@ module ApplicationHelper
     content_tag(:span, class: 'has-tooltip', title: title) do
       sprite_icon('spam', css_class: ['gl-vertical-align-text-bottom', css_class].compact_blank.join(' '))
     end
-  end
-
-  def controller_full_path
-    action = case controller.action_name
-             when 'create' then 'new'
-             when 'update' then 'edit'
-             else controller.action_name
-             end
-    "#{controller.controller_path}/#{action}"
   end
 
   private

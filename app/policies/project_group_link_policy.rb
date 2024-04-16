@@ -4,7 +4,6 @@ class ProjectGroupLinkPolicy < BasePolicy # rubocop:disable Gitlab/NamespacedCla
   condition(:group_owner) { group_owner? }
   condition(:group_owner_or_project_admin) { group_owner? || project_admin? }
   condition(:can_read_group) { can?(:read_group, @subject.group) }
-  condition(:project_member) { @subject.project.member?(@user) }
   condition(:can_manage_owners) { can_manage_owners? }
   condition(:can_manage_group_link_with_owner_access) do
     next true unless @subject.owner_access?
@@ -26,7 +25,7 @@ class ProjectGroupLinkPolicy < BasePolicy # rubocop:disable Gitlab/NamespacedCla
     enable :destroy_project_group_link
   end
 
-  rule { can_read_group | project_member }.enable :read_shared_with_group
+  rule { can_read_group | group_owner_or_project_admin }.enable :read_shared_with_group
 
   private
 

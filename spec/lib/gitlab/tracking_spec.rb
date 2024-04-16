@@ -220,51 +220,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
     end
   end
 
-  describe '.definition' do
-    let(:namespace) { create(:namespace) }
-
-    let_it_be(:definition_action) { 'definition_action' }
-    let_it_be(:definition_category) { 'definition_category' }
-    let_it_be(:label_description) { 'definition label description' }
-    let_it_be(:test_definition) { { 'category': definition_category, 'action': definition_action } }
-
-    before do
-      allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:event)
-      end
-      allow_next_instance_of(Gitlab::Tracking::Destinations::Snowplow) do |instance|
-        allow(instance).to receive(:event)
-      end
-      allow(YAML).to receive(:load_file).with(Rails.root.join('config/events/filename.yml')).and_return(test_definition)
-    end
-
-    it 'dispatches the data to .event' do
-      project = build_stubbed(:project)
-      user = build_stubbed(:user)
-
-      expect(described_class).to receive(:event) do |category, action, args|
-        expect(category).to eq(definition_category)
-        expect(action).to eq(definition_action)
-        expect(args[:label]).to eq('label')
-        expect(args[:property]).to eq('...')
-        expect(args[:project]).to eq(project)
-        expect(args[:user]).to eq(user)
-        expect(args[:namespace]).to eq(namespace)
-        expect(args[:extra_key_1]).to eq('extra value 1')
-      end
-
-      described_class.definition('filename',
-        category: nil,
-        action: nil,
-        label: 'label',
-        property: '...',
-        project: project,
-        user: user,
-        namespace: namespace,
-        extra_key_1: 'extra value 1')
-    end
-  end
-
   describe 'snowplow_micro_enabled?' do
     where(:development?, :micro_verification_enabled?, :snowplow_micro_enabled, :result) do
       true  | true  | true  | true

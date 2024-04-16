@@ -12,7 +12,7 @@ DETAILS:
 
 In this tutorial you will learn how to install and securely configure a single
 node GitLab instance that can accommodate up to
-[1,000 users](../../administration/reference_architectures/1k_users.md).
+[20 RPS or 1,000 users](../../administration/reference_architectures/1k_users.md).
 
 To install a single node GitLab instance and configure it to be secure:
 

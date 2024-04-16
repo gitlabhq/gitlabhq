@@ -46,7 +46,11 @@ class Groups::MilestonesController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to milestone_path(@milestone)
+        if @milestone.valid?
+          redirect_to milestone_path(@milestone)
+        else
+          render :edit
+        end
       end
 
       format.json do

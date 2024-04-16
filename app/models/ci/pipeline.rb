@@ -69,7 +69,8 @@ module Ci
         end
       end
 
-    has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
+    has_many :stages, -> (pipeline) { in_partition(pipeline).order(position: :asc) },
+      partition_foreign_key: :partition_id, inverse_of: :pipeline
 
     #
     # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
@@ -625,7 +626,7 @@ module Ci
 
     def valid_commit_sha
       if Gitlab::Git.blank_ref?(self.sha)
-        self.errors.add(:sha, " cant be 00000000 (branch removal)")
+        self.errors.add(:sha, "can't be 00000000 (branch removal)")
       end
     end
 
@@ -1363,17 +1364,6 @@ module Ci
       false
     end
 
-    def security_reports(report_types: [])
-      reports_scope = report_types.empty? ? ::Ci::JobArtifact.security_reports : ::Ci::JobArtifact.security_reports(file_types: report_types)
-      types_to_collect = report_types.empty? ? ::EE::Enums::Ci::JobArtifact.security_report_file_types : report_types
-
-      ::Gitlab::Ci::Reports::Security::Reports.new(self).tap do |security_reports|
-        latest_report_builds_in_self_and_project_descendants(reports_scope).includes(pipeline: { project: :route }).each do |build| # rubocop:disable Rails/FindEach
-          build.collect_security_reports!(security_reports, report_types: types_to_collect)
-        end
-      end
-    end
-
     def build_matchers
       self.builds.latest.build_matchers(project)
     end
@@ -1419,6 +1409,18 @@ module Ci
     def include_manual_to_pipeline_completion_enabled?
       strong_memoize(:include_manual_to_pipeline_completion_enabled) do
         ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :beta)
+      end
+    end
+
+    def cancel_async_on_job_failure
+      case auto_cancel_on_job_failure
+      when 'none'
+        # no-op
+      when 'all'
+        ::Ci::UserCancelPipelineWorker.perform_async(id, id, user.id)
+      else
+        raise ArgumentError,
+          "Unknown auto_cancel_on_job_failure value: #{auto_cancel_on_job_failure}"
       end
     end
 

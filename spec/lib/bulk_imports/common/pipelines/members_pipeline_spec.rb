@@ -128,7 +128,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
           end
         end
 
-        context 'when membership with higher access level exists in parent group' do
+        context 'when membership has higher access level than membership in parent group' do
           it 'creates new direct membership' do
             data = member_data.merge(access_level: Gitlab::Access::MAINTAINER)
 
@@ -140,7 +140,7 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
           end
         end
 
-        context 'when membership with lower access level exists in parent group' do
+        context 'when membership has lower access level than membership in parent group' do
           it 'does not create new membership' do
             data = member_data.merge(access_level: Gitlab::Access::GUEST)
 
@@ -152,20 +152,96 @@ RSpec.describe BulkImports::Common::Pipelines::MembersPipeline, feature_category
   end
 
   context 'when importing to group' do
-    let(:portable) { create(:group) }
+    let_it_be(:portable) { create(:group) }
+
     let(:portable_with_parent) { create(:group, parent: parent) }
     let(:entity) { create(:bulk_import_entity, :group_entity, group: portable, bulk_import: bulk_import) }
     let(:entity_with_parent) { create(:bulk_import_entity, :group_entity, group: portable_with_parent, bulk_import: bulk_import) }
 
     include_examples 'members import'
+
+    context 'when user is a member of group through group sharing' do
+      before_all do
+        group = create(:group)
+        group.add_developer(member_user1)
+        create(:group_group_link, shared_group: portable, shared_with_group: group)
+      end
+
+      it 'does not create new membership' do
+        expect { pipeline.load(context, member_data) }.not_to change(Member, :count)
+      end
+
+      context 'when membership is a higher access level' do
+        it 'creates new direct membership' do
+          data = member_data.merge(access_level: Gitlab::Access::MAINTAINER)
+
+          expect { pipeline.load(context, data) }.to change(portable.members, :count).by(1)
+
+          member = portable.members.find_by_user_id(member_user1.id)
+
+          expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
+        end
+      end
+    end
   end
 
   context 'when importing to project' do
-    let(:portable) { create(:project) }
+    let_it_be(:portable) { create(:project) }
+
     let(:portable_with_parent) { create(:project, namespace: parent) }
     let(:entity) { create(:bulk_import_entity, :project_entity, project: portable, bulk_import: bulk_import) }
     let(:entity_with_parent) { create(:bulk_import_entity, :project_entity, project: portable_with_parent, bulk_import: bulk_import) }
 
     include_examples 'members import'
+
+    context 'when project is shared with a group, and user is a direct member of the group' do
+      before_all do
+        group = create(:group)
+        group.add_developer(member_user1)
+        create(:project_group_link, project: portable, group: group)
+      end
+
+      it 'does not create new membership' do
+        expect { pipeline.load(context, member_data) }.not_to change(Member, :count)
+      end
+
+      context 'when membership is a higher access level' do
+        it 'creates new direct membership' do
+          data = member_data.merge(access_level: Gitlab::Access::MAINTAINER)
+
+          expect { pipeline.load(context, data) }.to change(portable.members, :count).by(1)
+
+          member = portable.members.find_by_user_id(member_user1.id)
+
+          expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
+        end
+      end
+    end
+
+    context 'when parent group is shared with other group, and user is a member of other group' do
+      let(:tracker) { create(:bulk_import_tracker, entity: entity_with_parent) }
+
+      before do
+        group = create(:group)
+        group.add_developer(member_user1)
+        create(:group_group_link, shared_group: parent, shared_with_group: group)
+      end
+
+      it 'does not create new membership' do
+        expect { pipeline.load(context, member_data) }.not_to change(Member, :count)
+      end
+
+      context 'when membership is a higher access level' do
+        it 'creates new direct membership' do
+          data = member_data.merge(access_level: Gitlab::Access::MAINTAINER)
+
+          expect { pipeline.load(context, data) }.to change(portable_with_parent.members, :count).by(1)
+
+          member = portable_with_parent.members.find_by_user_id(member_user1.id)
+
+          expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
+        end
+      end
+    end
   end
 end

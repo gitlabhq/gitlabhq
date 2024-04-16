@@ -468,6 +468,10 @@ module QA
         api_post_to(api_releases_path, tag_name: tag, ref: ref, **params)
       end
 
+      def has_release?(tag)
+        releases.any? { |release| release[:tag_name] == tag }
+      end
+
       def protected_branches
         response = api_get_from(api_protected_branches_path)
         parse_body(response)

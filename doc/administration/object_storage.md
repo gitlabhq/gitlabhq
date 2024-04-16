@@ -316,7 +316,7 @@ The service account must have permission to access the bucket. For more informat
 see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
 NOTE:
-Bucket encryption with the [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in [ETag mismatch errors](#etag-mismatch).
+To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 #### GCS example
 
@@ -826,8 +826,8 @@ Prerequisites:
    ```
 
 1. After the first sync completes, use the web UI or command-line interface of your new object storage provider to
-   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running `rclone
-   sync`, check your Rclone configuration and try again.
+   verify that there are objects in the new bucket. If there are none, or if you encounter an error while running
+   `rclone sync`, check your Rclone configuration and try again.
 
 After you have done at least one successful Rclone copy from the old location to the new location, schedule maintenance and take your GitLab server offline. During your maintenance window you must do two things:
 
@@ -945,6 +945,8 @@ Using the default GitLab settings, some object storage back-ends such as
 and [Alibaba](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564)
 might generate `ETag mismatch` errors.
 
+#### Amazon S3 encryption
+
 If you are seeing this ETag mismatch error with Amazon Web Services S3,
 it's likely this is due to [encryption settings on your bucket](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTCommonResponseHeaders.html).
 To fix this issue, you have two options:
@@ -961,8 +963,8 @@ GitLab Workhorse uploads files to S3 using pre-signed URLs that do
 not have a `Content-MD5` HTTP header computed for them. To ensure data
 is not corrupted, Workhorse checks that the MD5 hash of the data sent
 equals the ETag header returned from the S3 server. When encryption is
-enabled, this is not the case, which causes Workhorse to report an `ETag
-mismatch` error during an upload.
+enabled, this is not the case, which causes Workhorse to report an `ETag mismatch`
+error during an upload.
 
 When the consolidated form is:
 
@@ -973,7 +975,13 @@ When the consolidated form is:
 - Not used with an S3-compatible object storage, Workhorse falls back to using
   pre-signed URLs.
 
-Encrypting buckets with the GCS [Cloud Key Management Service (KMS)](https://cloud.google.com/kms/docs) is not supported and results in ETag mismatch errors.
+#### Google Cloud Storage encryption
+
+> - [Introduced in GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441782).
+
+ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
+
+To use CMEK, use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 ### Multi-threaded copying
 

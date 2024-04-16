@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'gitlab/middleware/strip_cookies'
 require 'gitlab/testing/request_blocker_middleware'
 require 'gitlab/testing/robots_blocker_middleware'
 require 'gitlab/testing/request_inspector_middleware'
@@ -13,6 +14,8 @@ Rails.application.configure do
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RobotsBlockerMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestInspectorMiddleware)
   config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::ClearProcessMemoryCacheMiddleware)
+
+  config.middleware.insert_before(ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}])
 
   Gitlab::Testing::ActionCableBlocker.install
 

@@ -10,12 +10,15 @@ This is a list of terms that may have a general meaning but also may have a
 specific meaning at GitLab. If you encounter a piece of technical jargon related
 to AI that you think could benefit from being in this list, add it!
 
+- **Adapters**: A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
 - **AI Gateway**: standalone service used to give access to AI features to
   non-SaaS GitLab users. This logic will be moved to Cloud Connector when that
   service is ready. Eventually, the AI Gateway will be used to host endpoints that
   proxy requests to AI providers, removing the need for the GitLab Rails monolith
-  to integrate and communicate directly with third-party LLMs.
+  to integrate and communicate directly with third-party Large Language Models (LLMs).
   [Blueprint](../../architecture/blueprints/ai_gateway/index.md).
+- **Air-Gapped Model**: A hosted model that is internal to an organisations intranet only. In the context of GitLab AI features, this could be connected to an air-gapped GitLab instance.
+- **Bring Your Own Model (BYOM)**: A third-party model to be connected to one or more GitLab Duo features. Could be an off-the-shelf Open Source (OS) model, a fine-tuned model, or a closed source model. GitLab is planning to support specific, validated BYOMs for GitLab Duo features, but does not currently support or plan to support general BYOM use for GitLab Duo features.
 - **Chat Evaluation**: automated mechanism for determining the helpfulness and
   accuracy of GitLab Duo Chat to various user questions. The MVC is an RSpec test
   run via GitLab CI that asks a set of questions to Chat and then has a
@@ -26,15 +29,15 @@ to AI that you think could benefit from being in this list, add it!
 multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
   set of technical solutions and APIs used to make such services available to all GitLab customers.
   For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
-- **Consensus Filtering**: method for LLM evaluation where you instruct an LLM
-  to evaluate the output of another LLM based on the question and context that
-  resulted in the output. This is the method of evaluation being used for the Chat
+- **Closed Source Model**: A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.
+- **Consensus Filtering**: Consensus filtering is a method of LLM evaluation. An LLM judge is asked to rate and compare the output of multiple LLMs to sets of prompts. This is the method of evaluation being used for the Chat
   Evaluation MVC.
   [Issue from Model Validation team](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library/-/issues/91#metric-2-consensus-filtering-with-llm-based-evaluation).
 - **Context**: relevant information that surrounds a data point, an event, or a
   piece of information, which helps to clarify its meaning and implications.
   For GitLab Duo Chat, context is the attributes of the Issue or Epic being
   referenced in a user question.
+- **Custom Model**: Any implementation of a GitLab Duo feature using a self-hosted model, BYOM, fine-tuned model, RAG-enhanced model, or adapter-based model.
 - **Embeddings**: In the context of machine learning and large language models,
   embeddings refer to a technique used to represent words, phrases, or even
   entire documents as dense numerical vectors in a continuous vector space.
@@ -44,29 +47,39 @@ multiple GitLab deployments, instances, and cells. We use it as an umbrella term
   `embeddings` database. The embeddings search is done in Postgres using the
   `vector` extension. The vertex embeddings database is updated based on the
   latest version of GitLab documentation on a daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker` as a cronjob.
+- **Fine Tuning**: Altering an existing model using a supervised learning process that utilizes a dataset of labeled examples to update the weights of the LLM, improving its output for specific tasks such as code completion or chat.
+- **Frozen Model**: A LLM which cannot be fine-tuned (also Frozen LLM).
+- **GitLab Duo**: AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/ai_features.md) features page.
+- **GitLab Managed Model**: A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://gitlab.com/gitlab-com/g**l-infra/scalability/-/issues/2864#note_1787040242) are hosted externally and accessed through the AI Gateway. GitLab-owned API keys are used to access the models.
 - **Golden Questions**: a small subset of the types of questions we think a user
   should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation.
   [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).
 - **Ground Truth**: data that is determined to be the true
   output for a given input, representing the reality that the AI model aims to
-  learn and predict. Ground truth data is usually human-annotated.
+  learn and predict. Ground truth data are often human-annotated, but may also be produced from a trusted source such as an LLM that has known good output for a given use case.
+- **Local Model**: A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/epics/12907).
+- **LLM**: A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/ai_features.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
 - **Model Validation**: group within the AI-powered Stage working on the Prompt
-  Library and researching AI/ML models to support other use-cases for AI at GitLab.
-  [Team handbook section](https://handbook.gitlab.com/handbook/product/categories/features/#ai-powered-ai-model-validation-group).
+  Library, supporting AI Validation of GitLab Duo features, and researching AI/ML models to support other use-cases for AI at GitLab.
+  [Team handbook section](https://handbook.gitlab.com/handbook/product/categories/features/index.html#ai-powered-ai-model-validation-group)
+- **Offline Model**: A model that runs without internet or intranet connection (for example, you are running a model on your laptop on a plane).
+- **Open Source Model**: Models that are published with their source code and weights and are available for modifications and re-distribution. Examples: Llama / Llama 2, BLOOM, Falcon, Mistral, Gemma.
 - **Prompt library**: The ["Prompt Library"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for testing different prompting techniques with LLMs. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. Key features include the ability to manage and run dataflow pipelines using Apache Beam, and the execution of multiple evaluation experiments in a single pipeline run.
   on prompts with various third-party AI Services.
   [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 - **Prompt Registry**: stored, versioned prompts used to interact with third-party
   AI Services. [Blueprint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135872).
-- **Prompt**: instructions sent to an LLM to perform certain tasks. [Prompt guidelines](prompts.md).
-- **RAG Pipeline**: (Retrieval-Augmented Generation) is a mechanism used to take
+- **Prompt**: Natural language instructions sent to an LLM to perform certain tasks. [Prompt guidelines](prompts.md).
+- **RAG (Retrieval Augmented Generation)**: RAG provide contextual data to an LLM as part of a query to personalise results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
+- **RAG Pipeline**: A mechanism used to take
   an input (such as a user question) into a system, retrieve any relevant data
   for that input, augment the input with additional context, and then
   synthesize the information to generate a coherent, contextualy-relevant answer.
   This design pattern is helpful in open-domain question answering with LLMs,
   which is why we use this design pattern for answering questions to GitLab Duo Chat.
-- **Similarity Score**: method to determine the likeness between answers produced by an LLM and the reference ground truth answers.
-  [Issue from Model Validation team](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library/-/issues/91#metric-1-similarity-score-as-comparisons-for-llms).
+- **Self-Hosted Model**: A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features.
+- **Similarity Score**: A mathematical method to determine the likeness between answers produced by an LLM and the reference ground truth answers.
+  See also the [Model Validation direction page](https://about.gitlab.com/direction/ai-powered/ai_model_validation/ai_evaluation/metrics/#similarity-scores)
 - **Tool**: logic that performs a specific LLM-related task; each tool has a
   description and its own prompt. [How to add a new tool](duo_chat.md#adding-a-new-tool).
 - **Word-Level Metrics**: method for LLM evaluation that compares aspects of

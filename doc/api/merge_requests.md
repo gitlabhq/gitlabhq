@@ -58,7 +58,7 @@ Supported attributes:
 | ------------------------------- | -------------- | -------- | ----------- |
 | `approved_by_ids`               | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`. Maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
 | `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
-| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
+| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11 with the flag `mr_approved_filter`. Disabled by default. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
 | `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. |
@@ -828,7 +828,6 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
 
 - The `detailed_merge_status` field can contain one of the following values related to the merge request:
   - `blocked_status`: Blocked by another merge request.
-  - `broken_status`: Can't merge into the target branch due to a potential conflict.
   - `checking`: Git is testing if a valid merge is possible.
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `ci_must_pass`: A CI/CD pipeline must succeed before merge.
@@ -840,6 +839,9 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `not_approved`: Approval is required before merge.
   - `not_open`: The merge request must be open before merge.
   - `jira_association_missing`: The title or description must reference a Jira issue.
+  - `need_rebase`: The merge request must be rebased.
+  - `conflict`: There are conflicts between the source and target branches.
+  - `requested_changes`: The merge request has reviewers who have requested changes.
 
 ### Preparation steps
 
@@ -1118,6 +1120,7 @@ Example response:
 
 > - `generated_file` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
+> - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
 List diffs of the files changed in a merge request.
 
@@ -2674,15 +2677,57 @@ Get a single merge request diff version.
 GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 ```
 
+Supported attributes:
+
 | Attribute           | Type    | Required | Description                               |
 |---------------------|---------|----------|-------------------------------------------|
-| `id`                | String  | Yes      | The ID of the project.                    |
-| `merge_request_iid` | integer | Yes      | The internal ID of the merge request.     |
-| `version_id`        | integer | Yes      | The ID of the merge request diff version. |
+| `id`                | String  | Yes      | ID of the project.                    |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request.     |
+| `version_id`        | integer | Yes      | ID of the merge request diff version. |
 | `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5.      |
 
-For an explanation of the SHAs in the response,
-see [SHAs in the API response](#shas-in-the-api-response).
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+response attributes:
+
+| Attribute                     | Type         | Description |
+|-------------------------------|--------------|-------------|
+| `id`                          | integer      | ID of the merge request diff version. |
+| `base_commit_sha`             | string       | Merge-base commit SHA between the source branch and the target branches. |
+| `commits`                     | object array | Commits in the merge request diff. |
+| `commits[].id`                | string       | ID of the commit. |
+| `commits[].short_id`          | string       | Short ID of the commit. |
+| `commits[].created_at`        | datetime     | Identical to the `committed_date` field. |
+| `commits[].parent_ids`        | array        | IDs of the parent commits. |
+| `commits[].title`             | string       | Commit title. |
+| `commits[].message`           | string       | Commit message. |
+| `commits[].author_name`       | string       | Commit author's name. |
+| `commits[].author_email`      | string       | Commit author's email address. |
+| `commits[].authored_date`     | datetime     | Commit authored date. |
+| `commits[].committer_name`    | string       | Committer's name. |
+| `commits[].committer_email`   | string       | Committer's email address. |
+| `commits[].committed_date`    | datetime     | Commit date. |
+| `commits[].trailers`          | object       | Git trailers that were parsed for the commit. Duplicate keys include the last value only. |
+| `commits[].extended_trailers` | object       | Git trailers that were parsed for the commit. |
+| `commits[].web_url`           | string       | Web URL of the merge request. |
+| `created_at`                  | datetime     | Timestamp of when the merge request was created. |
+| `diffs`                       | object array | Diffs in the merge request diff version. |
+| `diffs[].diff`                | string       | Content of the diff. |
+| `diffs[].new_path`            | string       | New path of the file. |
+| `diffs[].old_path`            | string       | Old path of the file. |
+| `diffs[].a_mode`              | string       | Old file mode of the file. |
+| `diffs[].b_mode`              | string       | New file mode of the file. |
+| `diffs[].new_file`            | boolean      | Indicates if the file has just been added. |
+| `diffs[].renamed_file`        | boolean      | Indicates if the file has been renamed. |
+| `diffs[].deleted_file`        | boolean      | Indicates if the file has been removed. |
+| `diffs[].generated_file`      | boolean      | Indicates if the file is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9. |
+| `head_commit_sha`             | string       | HEAD commit of the source branch. |
+| `merge_request_id`            | integer      | ID of the merge request. |
+| `patch_id_sha`                | string       | [Patch ID](https://git-scm.com/docs/git-patch-id) for the merge request diff. |
+| `real_size`                   | string       | Number of changes in the merge request diff. |
+| `start_commit_sha`            | string       | HEAD commit SHA of the target branch when this version of the diff was created. |
+| `state`                       | string       | State of the merge request diff. Can be `collected`, `overflow`, `without_files`. Deprecated values: `timeout`, `overflow_commits_safe_size`, `overflow_diff_files_limit`, `overflow_diff_lines_limit`. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -2705,27 +2750,51 @@ Example response:
   "commits": [{
     "id": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
     "short_id": "33e2ee85",
+    "parent_ids": [],
     "title": "Change year to 2018",
     "author_name": "Administrator",
     "author_email": "admin@example.com",
+    "authored_date": "2016-07-26T17:44:29.000+03:00",
+    "committer_name": "Administrator",
+    "committer_email": "admin@example.com",
+    "committed_date": "2016-07-26T17:44:29.000+03:00",
     "created_at": "2016-07-26T17:44:29.000+03:00",
-    "message": "Change year to 2018"
+    "message": "Change year to 2018",
+    "trailers": {},
+    "extended_trailers": {},
+    "web_url": "https://gitlab.example.com/project/-/commit/33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30"
   }, {
     "id": "aa24655de48b36335556ac8a3cd8bb521f977cbd",
     "short_id": "aa24655d",
+    "parent_ids": [],
     "title": "Update LICENSE",
     "author_name": "Administrator",
     "author_email": "admin@example.com",
+    "authored_date": "2016-07-25T17:21:53.000+03:00",
+    "committer_name": "Administrator",
+    "committer_email": "admin@example.com",
+    "committed_date": "2016-07-25T17:21:53.000+03:00",
     "created_at": "2016-07-25T17:21:53.000+03:00",
-    "message": "Update LICENSE"
+    "message": "Update LICENSE",
+    "trailers": {},
+    "extended_trailers": {},
+    "web_url": "https://gitlab.example.com/project/-/commit/aa24655de48b36335556ac8a3cd8bb521f977cbd"
   }, {
     "id": "3eed087b29835c48015768f839d76e5ea8f07a24",
     "short_id": "3eed087b",
+    "parent_ids": [],
     "title": "Add license",
     "author_name": "Administrator",
     "author_email": "admin@example.com",
+    "authored_date": "2016-07-25T17:21:20.000+03:00",
+    "committer_name": "Administrator",
+    "committer_email": "admin@example.com",
+    "committed_date": "2016-07-25T17:21:20.000+03:00",
     "created_at": "2016-07-25T17:21:20.000+03:00",
-    "message": "Add license"
+    "message": "Add license",
+    "trailers": {},
+    "extended_trailers": {},
+    "web_url": "https://gitlab.example.com/project/-/commit/3eed087b29835c48015768f839d76e5ea8f07a24"
   }],
   "diffs": [{
     "old_path": "LICENSE",
@@ -2735,7 +2804,8 @@ Example response:
     "diff": "@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
     "new_file": true,
     "renamed_file": false,
-    "deleted_file": false
+    "deleted_file": false,
+    "generated_file": false
   }]
 }
 ```

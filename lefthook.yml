@@ -25,7 +25,7 @@ pre-push:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: "doc/api/graphql/reference/index.md"
+      exclude: 'doc/api/graphql/reference/index.md'
       glob: 'doc/*.md'
       run: yarn markdownlint {files}
     yamllint:
@@ -61,15 +61,15 @@ pre-push:
     vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: "doc/api/graphql/reference/index.md"
+      exclude: 'doc/api/graphql/reference/index.md'
       glob: 'doc/*.md'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
       tags: backend frontend view haml
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
-      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running bin/rake gettext:regenerate" && exit 1 )
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/#metadata
+      run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot || ( echo "\nPO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot" && exit 1 )
+    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
@@ -112,7 +112,8 @@ pre-push:
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style
@@ -121,10 +122,10 @@ pre-push:
       run: scripts/verify-tff-mapping
 
   scripts:
-    "merge_conflicts":
+    'merge_conflicts':
       skip: true # This is disabled by default. You can enable this check by adding skip: false in lefthook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       runner: bash
-    "security_harness":
+    'security_harness':
       tags: security
       runner: bash
 
@@ -134,7 +135,8 @@ pre-commit:
     rubocop:
       tags: backend style
       files: git diff --name-only --diff-filter=d --staged
-      glob: '*.{rb,rake}'
+      # foo.rb, foo.rake or Foofile
+      glob: '{*.{rb,rake},[A-Z]*file}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion --no-server {files}
     verify-tff-mapping:
       tags: backend style

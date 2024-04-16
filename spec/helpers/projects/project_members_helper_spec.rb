@@ -28,7 +28,8 @@ RSpec.describe Projects::ProjectMembersHelper do
             invited: present_members(invited),
             access_requests: present_members(access_requests),
             include_relations: [:inherited, :direct],
-            search: nil
+            search: nil,
+            pending_members: []
           )
         )
       end
@@ -134,7 +135,8 @@ RSpec.describe Projects::ProjectMembersHelper do
                 invited: present_members(invited),
                 access_requests: present_members(access_requests),
                 include_relations: include_relations,
-                search: nil
+                search: nil,
+                pending_members: []
               )
             )
           end

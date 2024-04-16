@@ -46,7 +46,7 @@ describe('DropdownContent', () => {
         labelsCreateTitle: 'test',
         selectedLabels: mockLabels,
         allowMultiselect: true,
-        labelsListTitle: 'Assign labels',
+        labelsListTitle: 'Select labels',
         footerCreateLabelTitle: 'create',
         footerManageLabelTitle: 'manage',
         dropdownButtonText: 'Labels',

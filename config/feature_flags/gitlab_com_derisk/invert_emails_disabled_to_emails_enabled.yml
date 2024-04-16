@@ -1,0 +1,9 @@
+---
+name: invert_emails_disabled_to_emails_enabled
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148577
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454371
+milestone: '16.11'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

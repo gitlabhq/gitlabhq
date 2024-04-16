@@ -186,6 +186,19 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       expect(milestone.title).to eq milestone_params[:title]
     end
 
+    it "handles validation error" do
+      group = create(:group)
+      group_milestone = create(:milestone, group: group)
+      project.update!(namespace: group)
+
+      milestone_params[:title] = group_milestone.title
+
+      subject
+
+      expect(response).not_to redirect_to(project_milestone_path(project, milestone.iid))
+      expect(response).to render_template(:edit)
+    end
+
     it "handles ActiveRecord::StaleObjectError" do
       # Purposely reduce the lock_version to trigger an ActiveRecord::StaleObjectError
       milestone_params[:lock_version] = milestone.lock_version - 1

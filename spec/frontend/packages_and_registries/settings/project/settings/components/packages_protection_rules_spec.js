@@ -31,14 +31,16 @@ describe('Packages protection rules project settings', () => {
   const $toast = { show: jest.fn() };
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
-  const findTable = () => extendedWrapper(wrapper.findByRole('table', /protected packages/i));
+  const findTable = () =>
+    extendedWrapper(wrapper.findByRole('table', { name: /protected packages/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
-  const findTableRowButtonDelete = (i) => findTableRow(i).findByRole('button', { name: /delete/i });
+  const findTableRowButtonDelete = (i) =>
+    findTableRow(i).findByRole('button', { name: /delete rule/i });
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
   const findAddProtectionRuleButton = () =>
-    wrapper.findByRole('button', { name: /add package protection rule/i });
+    wrapper.findByRole('button', { name: /add protection rule/i });
   const findAlert = () => wrapper.findByRole('alert');
   const findModal = () => wrapper.findComponent(GlModal);
 
@@ -197,7 +199,7 @@ describe('Packages protection rules project settings', () => {
           .mockResolvedValueOnce(packagesProtectionRuleQueryPayload());
 
         const findPaginationButtonPrev = () =>
-          extendedWrapper(findPagination()).findByRole('button', { name: 'Previous' });
+          extendedWrapper(findPagination()).findByRole('button', { name: /previous/i });
 
         beforeEach(async () => {
           createComponent({ packagesProtectionRuleQueryResolver });
@@ -236,7 +238,7 @@ describe('Packages protection rules project settings', () => {
           );
 
         const findPaginationButtonNext = () =>
-          extendedWrapper(findPagination()).findByRole('button', { name: 'Next' });
+          extendedWrapper(findPagination()).findByRole('button', { name: /next/i });
 
         beforeEach(async () => {
           createComponent({ packagesProtectionRuleQueryResolver });

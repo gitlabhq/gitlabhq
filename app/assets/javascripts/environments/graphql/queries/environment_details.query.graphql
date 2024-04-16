@@ -9,6 +9,7 @@ query getEnvironmentDetails(
   $last: Int
   $after: String
   $before: String
+  $deploymentDetailsEnabled: Boolean!
 ) {
   project(fullPath: $projectFullPath) {
     id
@@ -44,6 +45,7 @@ query getEnvironmentDetails(
           status
           ref
           tag
+          webPath @include(if: $deploymentDetailsEnabled)
           job {
             ...DeploymentJob
             deploymentPipeline: pipeline {

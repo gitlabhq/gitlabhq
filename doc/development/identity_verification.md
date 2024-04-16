@@ -16,10 +16,8 @@ Before you enable these features, ensure [hard email confirmation](../security/u
 
 | Feature flag name | Description |
 |---------|-------------|
-| `identity_verification` | Turns on email verification for all registration paths |
-| `identity_verification_phone_number` | Turns on phone verification for medium risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
-| `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows (the Arkose challenge flag for the specific flow and the `identity_verification` flag must be enabled for this to have effect) |
-| `arkose_labs_signup_challenge` | Enables Arkose challenge for all flows |
+| `identity_verification_phone_number` | Turns on phone verification for medium risk users for all flows. |
+| `identity_verification_credit_card` | Turns on credit card verification for high risk users for all flows. |
 
 ## Logging
 
@@ -32,7 +30,7 @@ To view logs associated to the [email stage](../security/identity_verification.m
 - Query the GitLab production logs with the following KQL:
 
   ```plaintext
-  KQL: json.controller:"IdentityVerificationController" AND json.username:replace_username_here
+  KQL: json.controller:"RegistrationsIdentityVerificationController" AND json.username:replace_username_here
   ```
 
 Valuable debugging information can be found in the `json.action` and `json.location` columns.
@@ -60,9 +58,9 @@ On rows where `json.event` is `Failed Attempt`, you can find valuable debugging 
 
 To view Telesign status updates logs for SMS sent to a user, query the GitLab production logs with:
 
-   ```plaintext
-   json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.username:<username>`
-   ```
+```plaintext
+json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.username:<username>
+```
 
 Status update logs include the following fields:
 

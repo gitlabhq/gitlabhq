@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardJS from 'clipboard';
 import { uniqueId } from 'lodash';
+import { __ } from '~/locale';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 export default {
@@ -44,7 +45,8 @@ export default {
     },
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Copy'),
     },
     tooltipPlacement: {
       type: String,

@@ -16,6 +16,14 @@ module Types
           resolver: Resolvers::ContainerRepositoryTagsResolver,
           connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
+    field :manifest, GraphQL::Types::String,
+          null: true,
+          description: 'An image manifest from the container repository.' do
+            argument :reference, GraphQL::Types::String,
+              required: true,
+              description: 'Tag name or digest of the manifest.'
+          end
+
     field :size,
           GraphQL::Types::Float,
           null: true,
@@ -26,7 +34,17 @@ module Types
     end
 
     def size
-      object.size
+      handling_errors { object.size }
+    end
+
+    def manifest(reference:)
+      handling_errors { object.image_manifest(reference) }
+    end
+
+    private
+
+    def handling_errors
+      yield
     rescue Faraday::Error
       raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, "Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation."
     end

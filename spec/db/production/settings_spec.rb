@@ -13,6 +13,7 @@ RSpec.describe 'seed production settings' do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
+  # NOTE: Will be removed in 18.0, see https://gitlab.com/gitlab-org/gitlab/-/issues/453949
   context 'GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN is set in the environment' do
     before do
       stub_env('GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN', '013456789')

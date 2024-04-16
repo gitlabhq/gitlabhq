@@ -1,9 +1,0 @@
----
-name: rebuild_contributions_mv
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431453
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144478
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441620
-milestone: '16.10'
-group: group::optimize
-type: gitlab_com_derisk
-default_enabled: false

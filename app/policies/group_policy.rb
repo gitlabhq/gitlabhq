@@ -32,6 +32,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     group_projects_for(user: @user, group: @subject).any?
   end
 
+  desc "User owns the group's organization"
+  condition(:organization_owner) do
+    if @user.is_a?(User)
+      @user.owns_organization?(@subject.organization_id)
+    else
+      false
+    end
+  end
+
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
@@ -50,6 +59,24 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     end
 
     @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS || allowed_visibility_levels.empty?
+  end
+
+  condition(:create_subgroup_disabled, scope: :subject) do
+    next true if @user.nil?
+
+    visibility_levels = if @user.can_admin_all_resources?
+                          # admin can create groups even with restricted visibility levels
+                          Gitlab::VisibilityLevel.values
+                        else
+                          Gitlab::VisibilityLevel.allowed_levels
+                        end
+
+    # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy sub-group.
+    subgroup = Group.new(parent_id: @subject.id)
+
+    # if a subgroup with none of the remaining visibility levels can be allowed by the group,
+    # then it means that the `Create subgroup` button must be disabled.
+    visibility_levels.none? { |level| subgroup.visibility_level_allowed?(level) }
   end
 
   condition(:developer_maintainer_access, scope: :subject) do
@@ -101,6 +128,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     @subject.runner_registration_enabled?
   end
 
+  condition(:runner_registration_token_enabled, scope: :subject) do
+    @subject.allow_runner_registration_token?
+  end
+
   condition(:raise_admin_package_to_owner_enabled) do
     Feature.enabled?(:raise_group_admin_package_permission_to_owner, @subject)
   end
@@ -124,8 +155,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_emoji
   end
 
-  rule { admin }.policy do
+  rule { admin | organization_owner }.policy do
     enable :read_group
+  end
+
+  rule { admin }.policy do
     enable :update_max_artifacts_size
   end
 
@@ -149,16 +183,23 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_namespace
   end
 
-  rule { achievements_enabled }.policy do
+  rule { ~achievements_enabled }.policy do
+    prevent :read_achievement
+    prevent :admin_achievement
+    prevent :award_achievement
+    prevent :destroy_user_achievement
+  end
+
+  rule { can?(:read_group) }.policy do
     enable :read_achievement
   end
 
-  rule { can?(:maintainer_access) & achievements_enabled }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :admin_achievement
     enable :award_achievement
   end
 
-  rule { can?(:owner_access) & achievements_enabled }.policy do
+  rule { can?(:owner_access) }.policy do
     enable :destroy_user_achievement
   end
 
@@ -289,7 +330,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :import_projects
   end
 
-  rule { owner | admin }.policy do
+  rule { create_subgroup_disabled }.policy do
+    prevent :create_subgroup
+  end
+
+  rule { owner | admin | organization_owner }.policy do
     enable :owner_access
     enable :read_statistics
   end
@@ -361,6 +406,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
     prevent :create_runner
+  end
+
+  rule { ~runner_registration_token_enabled }.policy do
+    prevent :register_group_runners
   end
 
   rule { migration_bot }.policy do

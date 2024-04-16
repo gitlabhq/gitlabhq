@@ -205,9 +205,9 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    shared_examples 'queueing the next import' do
-      it 'starts the worker' do
-        expect(::ContainerRegistry::Migration::EnqueuerWorker).to receive(:perform_async)
+    shared_examples 'not queueing the next import' do
+      it 'does not start the worker' do
+        expect(::ContainerRegistry::Migration::EnqueuerWorker).not_to receive(:perform_async)
 
         subject
       end
@@ -287,7 +287,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.finish_import }
 
       it_behaves_like 'transitioning from allowed states', %w[default pre_importing importing import_aborted]
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_import_done_at and queues the next import' do
         expect { subject }.to change { repository.reload.migration_import_done_at }
@@ -316,7 +316,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.abort_import }
 
       it_behaves_like 'transitioning from allowed states', ContainerRepository::ABORTABLE_MIGRATION_STATES
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_aborted_at and migration_aborted_at, increments the retry count, and queues the next import' do
         expect { subject }.to change { repository.migration_aborted_at }
@@ -346,7 +346,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       subject { repository.skip_import(reason: :too_many_retries) }
 
       it_behaves_like 'transitioning from allowed states', ContainerRepository::SKIPPABLE_MIGRATION_STATES
-      it_behaves_like 'queueing the next import'
+      it_behaves_like 'not queueing the next import'
 
       it 'sets migration_skipped_at and migration_skipped_reason' do
         expect { subject }.to change { repository.reload.migration_skipped_at }
@@ -497,17 +497,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
           allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
         end
 
-        context 'when the Gitlab API returns a tag' do
-          let_it_be(:tags_response) do
-            [
-              {
-                name: 'test',
-                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
-                size_bytes: 1234567892
-              }
-            ]
-          end
-
+        shared_examples 'returning an instantiated tag from the API response' do
           let_it_be(:response_body) do
             {
               pagination: {},
@@ -528,11 +518,50 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             expect(tag).to be_a ContainerRegistry::Tag
             expect(tag).to have_attributes(
               repository: repository,
-              name: tags_response[0][:name],
+              name: 'test',
               digest: tags_response[0][:digest],
               total_size: tags_response[0][:size_bytes]
             )
           end
+        end
+
+        context 'when the Gitlab API returns a tag' do
+          let_it_be(:tags_response) do
+            [
+              {
+                name: 'test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              }
+            ]
+          end
+
+          it_behaves_like 'returning an instantiated tag from the API response'
+        end
+
+        context 'when the Gitlab API returns multiple tags' do
+          let_it_be(:tags_response) do
+            [
+              {
+                name: 'a-test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              },
+              {
+                name: 'test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              },
+
+              {
+                name: 'test-a',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              }
+            ]
+          end
+
+          it_behaves_like 'returning an instantiated tag from the API response'
         end
 
         context 'when the Gitlab API does not return a tag' do
@@ -579,6 +608,21 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#manifest' do
     it 'returns non-empty manifest' do
       expect(repository.manifest).not_to be_nil
+    end
+  end
+
+  describe '#image_manifest' do
+    let(:ref) { 'latest' }
+    let(:manifest_content) { '{"data":"example"}' }
+
+    it 'returns an image manifest from the registry' do
+      allow_next_instance_of(ContainerRegistry::Client) do |client|
+        allow(client).to receive(:repository_manifest)
+          .with(repository.path, ref)
+          .and_return(manifest_content)
+      end
+
+      expect(repository.image_manifest(ref)).to eq(manifest_content)
     end
   end
 
@@ -638,14 +682,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
           it 'returns an empty array' do
             expect(repository.tags).to be_empty
           end
-        end
-
-        context 'when the feature fetch_tags_from_registry_api is disabled' do
-          before do
-            stub_feature_flags(fetch_tags_from_registry_api: false)
-          end
-
-          it_behaves_like 'returning the non-empty tags list'
         end
       end
 
@@ -829,9 +865,12 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     let_it_be(:last) { 'last' }
     let_it_be(:sort) { '-name' }
     let_it_be(:name) { 'repo' }
+    let_it_be(:referrers) { true }
+    let_it_be(:referrer_type) { 'application/example' }
 
     subject do
-      repository.tags_page(before: before, last: last, sort: sort, name: name, page_size: page_size)
+      repository.tags_page(before: before, last: last, sort: sort, name: name, page_size: page_size,
+        referrers: referrers, referrer_type: referrer_type)
     end
 
     before do
@@ -841,7 +880,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     it 'calls GitlabApiClient#tags and passes parameters' do
       allow(repository.gitlab_api_client).to receive(:tags).and_return({})
       expect(repository.gitlab_api_client).to receive(:tags).with(
-        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name, referrers: nil)
+        repository.path, page_size: page_size, before: before, last: last, sort: sort, name: name,
+        referrers: referrers, referrer_type: referrer_type)
 
       subject
     end

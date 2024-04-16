@@ -8,7 +8,7 @@ module Ml
 
     enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
-    validates :eid, :experiment, presence: true
+    validates :eid, :experiment, :project, presence: true
     validates :status, inclusion: { in: statuses.keys }
     validates :model_version_id, uniqueness: { allow_nil: true }
 

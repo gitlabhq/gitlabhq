@@ -5,6 +5,13 @@ FactoryBot.define do
     runner factory: :ci_runner
     system_xid { "r_#{SecureRandom.hex.slice(0, 10)}" }
 
+    creation_state { :finished }
+
+    trait :unregistered do
+      contacted_at { nil }
+      creation_state { :started }
+    end
+
     trait :stale do
       created_at { 1.year.ago }
       contacted_at { Ci::RunnerManager::STALE_TIMEOUT.ago }

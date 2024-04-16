@@ -220,7 +220,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/rubocop/cop/usage_data/large_table_spec.rb'
     - 'spec/services/ci/pipeline_artifacts/coverage_report_service_spec.rb'
     - 'spec/services/clusters/update_service_spec.rb'
-    - 'spec/services/google_cloud/get_cloudsql_instances_service_spec.rb'
     - 'spec/services/notes/render_service_spec.rb'
     - 'spec/services/packages/debian/parse_debian822_service_spec.rb'
     - 'spec/services/projects/container_repository/delete_tags_service_spec.rb'

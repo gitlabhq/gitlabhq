@@ -1,15 +1,7 @@
+#import "~/kubernetes_dashboard/graphql/queries/workload_item.fragment.graphql"
+
 query getK8sServices($configuration: LocalConfiguration, $namespace: String) {
   k8sServices(configuration: $configuration, namespace: $namespace) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-    }
-    spec {
-      type
-      clusterIP
-      externalIP
-      ports
-    }
+    ...WorkloadItem
   }
 }

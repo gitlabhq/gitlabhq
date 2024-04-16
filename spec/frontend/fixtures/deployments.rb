@@ -14,7 +14,7 @@ RSpec.describe 'Deployments (JavaScript fixtures)', feature_category: :continuou
   end
 
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:build) { create(:ci_build, :success, pipeline: pipeline) }
+  let_it_be(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
   let_it_be(:deployment) do
     create(:deployment,
@@ -31,7 +31,7 @@ RSpec.describe 'Deployments (JavaScript fixtures)', feature_category: :continuou
     deployment_query_path = 'deployments/graphql/queries/deployment.query.graphql'
 
     it "graphql/#{deployment_query_path}.json" do
-      project.repository.add_tag(admin, 'v1.3.0', project.repository.commit.id)
+      project.repository.add_tag(admin, SecureRandom.uuid, project.repository.commit.id)
 
       query = get_graphql_query_as_string(deployment_query_path)
 

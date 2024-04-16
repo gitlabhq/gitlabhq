@@ -12,6 +12,7 @@ RSpec.describe Ci::GroupVariable, feature_category: :secrets_management do
 
   it { is_expected.to include_module(Presentable) }
   it { is_expected.to include_module(Ci::Maskable) }
+  it { is_expected.to include_module(Ci::HidableVariable) }
   it { is_expected.to include_module(HasEnvironmentScope) }
 
   describe 'validations' do

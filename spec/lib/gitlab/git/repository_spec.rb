@@ -2242,52 +2242,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
-  describe '#set_full_path' do
-    let(:full_path) { 'some/path' }
-
-    before do
-      repository.set_full_path(full_path: full_path)
-    end
-
-    it 'writes full_path to gitaly' do
-      repository.set_full_path(full_path: "not-the/real-path.git")
-
-      expect(repository.full_path).to eq('not-the/real-path.git')
-    end
-
-    context 'it is given an empty path' do
-      it 'does not write it to disk' do
-        repository.set_full_path(full_path: "")
-
-        expect(repository.full_path).to eq(full_path)
-      end
-    end
-
-    context 'repository does not exist' do
-      it 'raises NoRepository and does not call SetFullPath' do
-        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '', 'group/project')
-
-        expect(repository.gitaly_repository_client).not_to receive(:set_full_path)
-
-        expect do
-          repository.set_full_path(full_path: 'foo/bar.git')
-        end.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
-    end
-  end
-
-  describe '#full_path' do
-    let(:full_path) { 'some/path' }
-
-    before do
-      repository.set_full_path(full_path: full_path)
-    end
-
-    it 'returns the full path' do
-      expect(repository.full_path).to eq(full_path)
-    end
-  end
-
   describe '#merge_to_ref' do
     let(:repository) { mutable_repository }
     let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }

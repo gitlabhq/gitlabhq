@@ -142,7 +142,7 @@
               },
               {
                 "type": "array",
-                "minLength": 1,
+                "minItems": 1,
                 "items": {
                   "type": "string"
                 }
@@ -237,6 +237,16 @@
             "on_success",
             "on_failure",
             "always"
+          ]
+        },
+        "access": {
+          "markdownDescription": "Configure who can access the artifacts. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactsaccess).",
+          "default": "all",
+          "type": "string",
+          "enum": [
+            "none",
+            "developer",
+            "all"
           ]
         },
         "expire_in": {
@@ -948,7 +958,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -1000,7 +1010,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }
@@ -1080,8 +1090,7 @@
               "additionalProperties": false
             }
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "jobVariables": {
@@ -1111,8 +1120,7 @@
               "additionalProperties": false
             }
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "rulesVariables": {
@@ -1125,8 +1133,7 @@
             "number",
             "string"
           ]
-        },
-        "additionalProperties": false
+        }
       }
     },
     "if": {
@@ -1165,11 +1172,60 @@
       ]
     },
     "exists": {
-      "type": "array",
       "markdownDescription": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesexists).",
-      "items": {
-        "type": "string"
-      }
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "paths"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "description": "List of file paths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "project": {
+              "type": "string",
+              "description": "Path of the project to search in."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "paths",
+            "project"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "description": "List of file paths.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "project": {
+              "type": "string",
+              "description": "Path of the project to search in."
+            },
+            "ref": {
+              "type": "string",
+              "description": "Ref of the project to search in."
+            }
+          }
+        }
+      ]
     },
     "timeout": {
       "type": "string",
@@ -1695,7 +1751,7 @@
             },
             {
               "type": "array",
-              "minLength": 1,
+              "minItems": 1,
               "items": {
                 "type": "string"
               }
@@ -2284,7 +2340,7 @@
     },
     "tags": {
       "type": "array",
-      "minLength": 1,
+      "minItems": 1,
       "markdownDescription": "Used to select runners from the list of available runners. A runner must have all tags listed here to run the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#tags).",
       "items": {
         "anyOf": [
@@ -2294,7 +2350,7 @@
           },
           {
             "type": "array",
-            "minLength": 1,
+            "minItems": 1,
             "items": {
               "type": "string"
             }

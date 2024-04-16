@@ -6,8 +6,8 @@ RSpec.describe 'Create Environment', feature_category: :environment_management d
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_maintainer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:developer) { create(:user, maintainer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:current_user) { developer }
 

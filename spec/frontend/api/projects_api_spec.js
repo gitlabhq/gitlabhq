@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import getTransferLocationsResponse from 'test_fixtures/api/projects/transfer_locations_page_1.json';
+import project from 'test_fixtures/api/projects/put.json';
 import * as projectsApi from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
@@ -81,18 +82,45 @@ describe('~/api/projects_api.js', () => {
     });
   });
 
+  describe('updateProject', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const data = { name: 'Foo bar', description: 'Mock description' };
+      const expectedUrl = `/api/v7/projects/${projectId}`;
+
+      mock.onPut(expectedUrl, data).replyOnce(HTTP_STATUS_OK, project);
+
+      await expect(projectsApi.updateProject(projectId, data)).resolves.toMatchObject({
+        data: project,
+      });
+    });
+  });
+
   describe('deleteProject', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'delete');
     });
 
-    it('deletes to the correct URL', () => {
-      const expectedUrl = `/api/v7/projects/${projectId}`;
+    describe('without params', () => {
+      it('deletes to the correct URL', () => {
+        const expectedUrl = `/api/v7/projects/${projectId}`;
 
-      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
-      return projectsApi.deleteProject(projectId).then(() => {
-        expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+        return projectsApi.deleteProject(projectId).then(() => {
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { params: undefined });
+        });
+      });
+    });
+
+    describe('with params', () => {
+      it('deletes to the correct URL with params', () => {
+        const expectedUrl = `/api/v7/projects/${projectId}`;
+
+        mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+        return projectsApi.deleteProject(projectId, { testParam: true }).then(() => {
+          expect(axios.delete).toHaveBeenCalledWith(expectedUrl, { params: { testParam: true } });
+        });
       });
     });
   });

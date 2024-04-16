@@ -2,21 +2,21 @@
 
 source 'https://rubygems.org'
 
-gem 'gitlab-qa', '~> 14', '>= 14.4.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 1.19.1', require: false
+gem 'gitlab-qa', '~> 14', '>= 14.7.0', require: 'gitlab/qa'
+gem 'gitlab_quality-test_tooling', '~> 1.22.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8.1' # This should stay in sync with the root's Gemfile
-gem 'allure-rspec', '~> 2.24.1'
+gem 'allure-rspec', '~> 2.24.2'
 gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
-gem 'rake', '~> 13', '>= 13.1.0'
+gem 'rake', '~> 13', '>= 13.2.1'
 gem 'rspec', '~> 3.13'
-gem 'selenium-webdriver', '= 4.18.1'
+gem 'selenium-webdriver', '= 4.19.0'
 gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec-retry', '~> 0.6.2', require: 'rspec/retry'
 gem 'rspec_junit_formatter', '~> 0.6.0'
-gem 'faker', '~> 3.2', '>= 3.2.3'
+gem 'faker', '~> 3.3', '>= 3.3.1'
 gem 'knapsack', '~> 4.0'
 gem 'parallel_tests', '~> 4.4'
 gem 'rotp', '~> 6.3.0'
@@ -37,7 +37,7 @@ gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.16', '>= 1.16.3'
+gem 'nokogiri', '~> 1.16', '>= 1.16.4'
 
 gem 'deprecation_toolkit', '~> 2.2.0', require: false
 

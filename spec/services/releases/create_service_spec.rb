@@ -10,9 +10,15 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
   let(:tag_sha) { project.repository.find_tag(tag_name).dereferenced_target.sha }
   let(:name) { 'Bionic Beaver' }
   let(:description) { 'Awesome release!' }
-  let(:params) { { tag: tag_name, name: name, description: description, ref: ref, tag_message: tag_message } }
   let(:ref) { nil }
-  let(:service) { described_class.new(project, user, params) }
+  let(:legacy_catalog_publish) { nil }
+
+  let(:params) do
+    { tag: tag_name, name: name, description: description, ref: ref,
+      tag_message: tag_message, legacy_catalog_publish: legacy_catalog_publish }
+  end
+
+  subject(:service) { described_class.new(project, user, params) }
 
   before do
     project.add_maintainer(user)
@@ -56,17 +62,31 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
     end
 
     context 'when project is a catalog resource' do
-      let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
+      let(:project) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
       let!(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
       let(:ref) { 'master' }
 
-      context 'and it is valid' do
+      shared_examples 'a successful release creation with catalog publish' do
         it_behaves_like 'a successful release creation'
+
+        it 'publishes the release to the catalog' do
+          expect do
+            service.execute
+          end.to change { project.catalog_resource_versions.count }.by(1)
+        end
       end
 
-      context 'and it is an invalid resource' do
-        let_it_be(:project) { create(:project, :repository) }
+      shared_examples 'a successful release creation without catalog publish' do
+        it_behaves_like 'a successful release creation'
 
+        it 'does not publish the release to the catalog' do
+          expect do
+            service.execute
+          end.not_to change { project.catalog_resource_versions.count }
+        end
+      end
+
+      shared_examples 'an unsuccessful release creation with catalog publish errors' do
         it 'raises an error and does not update the release' do
           result = service.execute
 
@@ -75,6 +95,50 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           expect(result[:message]).to eq(
             'Project must have a description, ' \
             'Project must contain components. Ensure you are using the correct directory structure')
+        end
+      end
+
+      context 'when legacy_catalog_publish is false or nil' do
+        let(:legacy_catalog_publish) { false }
+
+        context 'the release is valid' do
+          it_behaves_like 'a successful release creation without catalog publish'
+        end
+
+        context 'the project does not have components' do
+          let(:project) { create(:project, :repository) }
+
+          it_behaves_like 'a successful release creation without catalog publish'
+        end
+      end
+
+      context 'when legacy_catalog_publish is true' do
+        let(:legacy_catalog_publish) { true }
+
+        context 'the release is valid' do
+          it_behaves_like 'a successful release creation with catalog publish'
+        end
+
+        context 'the project does not have components' do
+          let(:project) { create(:project, :repository) }
+
+          it_behaves_like 'an unsuccessful release creation with catalog publish errors'
+        end
+      end
+
+      context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
+        before do
+          stub_feature_flags(ci_release_cli_catalog_publish_option: false)
+        end
+
+        context 'the release is valid' do
+          it_behaves_like 'a successful release creation with catalog publish'
+        end
+
+        context 'the project does not have components' do
+          let(:project) { create(:project, :repository) }
+
+          it_behaves_like 'an unsuccessful release creation with catalog publish errors'
         end
       end
     end

@@ -27,7 +27,8 @@ This process is different than [importing from Bitbucket Cloud](bitbucket.md).
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
-- Bitbucket Server authentication token with administrator access.
+- Bitbucket Server authentication token with administrator access. Without administrator access, some data is
+  [not imported](https://gitlab.com/gitlab-org/gitlab/-/issues/446218).
 
 ## Import repositories
 

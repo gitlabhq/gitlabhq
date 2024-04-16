@@ -87,3 +87,42 @@ Example response:
   ]
 }
 ```
+
+## Validate that Code Suggestions is enabled
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138814) in GitLab 16.7.
+
+Use this endpoint to validate if either:
+
+- A project has `code_suggestions` enabled.
+- A project's group has `code_suggestions` enabled in its namespace settings.
+
+```plaintext
+POST code_suggestions/enabled
+```
+
+Supported attributes:
+
+| Attribute         | Type    | Required | Description |
+| ----------------- | ------- | -------- | ----------- |
+| `project_path`    | string  | yes      | The path of the project to be validated. |
+
+If successful, returns:
+
+- [`200`](rest/index.md#status-codes) if the feature is enabled.
+- [`403`](rest/index.md#status-codes) if the feature is disabled.
+
+Additionally, returns a [`404`](rest/index.md#status-codes) if the path is empty or the project does not exist.
+
+Example request:
+
+```shell
+curl --request POST \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/enabled"
+  --header "Private-Token: <YOUR_ACCESS_TOKEN>" \
+  --header "Content-Type: application/json" \
+  --data '{
+      "project_path": "group/project_name"
+    }' \
+
+```

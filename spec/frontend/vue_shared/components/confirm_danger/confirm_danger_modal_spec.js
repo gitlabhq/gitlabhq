@@ -1,7 +1,6 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import {
-  CONFIRM_DANGER_WARNING,
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_ID,
   CONFIRM_DANGER_MODAL_CANCEL,
@@ -21,7 +20,6 @@ describe('Confirm Danger Modal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfirmationPhrase = () => wrapper.findByTestId('confirm-danger-phrase');
   const findConfirmationInput = () => wrapper.findByTestId('confirm-danger-field');
-  const findDefaultWarning = () => wrapper.findByTestId('confirm-danger-warning');
   const findAdditionalMessage = () => wrapper.findByTestId('confirm-danger-message');
   const findPrimaryAction = () => findModal().props('actionPrimary');
   const findCancelAction = () => findModal().props('actionCancel');
@@ -47,8 +45,8 @@ describe('Confirm Danger Modal', () => {
       });
     });
 
-    it('renders the default warning message', () => {
-      expect(findDefaultWarning().text()).toBe(CONFIRM_DANGER_WARNING);
+    it('renders the correct confirmation phrase', () => {
+      expect(findConfirmationPhrase().text()).toBe(`To proceed with the transfer, type ${phrase}:`);
     });
 
     it('renders any additional messages', () => {
@@ -62,10 +60,6 @@ describe('Confirm Danger Modal', () => {
 
     it('renders the cancel button', () => {
       expect(findCancelAction().text).toBe(cancelButtonText);
-    });
-
-    it('renders the correct confirmation phrase', () => {
-      expect(findConfirmationPhrase().text()).toBe(`Please type ${phrase} to proceed.`);
     });
   });
 

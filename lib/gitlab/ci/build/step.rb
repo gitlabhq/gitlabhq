@@ -21,11 +21,10 @@ module Gitlab
           end
 
           def from_release(job)
-            release = job.options[:release]
-            return unless release
+            return unless job.options[:release]
 
             self.new(:release).tap do |step|
-              step.script = Gitlab::Ci::Build::Releaser.new(config: job.options[:release]).script
+              step.script = Gitlab::Ci::Build::Releaser.new(job: job).script
               step.timeout = job.metadata_timeout
               step.when = WHEN_ON_SUCCESS
             end

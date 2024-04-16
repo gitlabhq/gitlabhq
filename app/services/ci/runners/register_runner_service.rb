@@ -64,6 +64,8 @@ module Ci
       end
 
       def runner_registration_token_valid?(registration_token)
+        return false if registration_token.nil?
+
         ActiveSupport::SecurityUtils.secure_compare(registration_token, Gitlab::CurrentSettings.runners_registration_token)
       end
 

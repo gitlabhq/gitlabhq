@@ -1,6 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
-import { GlAlert, GlSkeletonLoader, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
+import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -46,6 +46,7 @@ import WorkItemRelationships from './work_item_relationships/work_item_relations
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitleWithEdit from './work_item_title_with_edit.vue';
+import WorkItemLoading from './work_item_loading.vue';
 
 export default {
   i18n,
@@ -56,7 +57,6 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlSkeletonLoader,
     GlEmptyState,
     WorkItemActions,
     WorkItemTodos,
@@ -74,6 +74,7 @@ export default {
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitleWithEdit,
+    WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'isGroup', 'reportAbusePath'],
@@ -428,11 +429,8 @@ export default {
       </gl-alert>
     </section>
     <section :class="workItemBodyClass">
-      <div v-if="workItemLoading" class="gl-max-w-26 gl-py-5">
-        <gl-skeleton-loader :height="65" :width="240">
-          <rect width="240" height="20" x="5" y="0" rx="4" />
-          <rect width="100" height="20" x="5" y="45" rx="4" />
-        </gl-skeleton-loader>
+      <div v-if="workItemLoading">
+        <work-item-loading :two-column-view="workItemsBetaEnabled" />
       </div>
       <template v-else>
         <div class="gl-sm-display-none! gl-display-flex">

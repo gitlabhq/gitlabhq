@@ -75,7 +75,7 @@ integration-elasticsearch-compatibility-version-8:
     - .qa
     - .ee
   variables:
-    ELASTIC_VERSION: "8.6.2"
+    ELASTIC_VERSION: "8.11.4"
     QA_SCENARIO: "Test::Integration::Elasticsearch"
 
 # ------------------------------------------

@@ -12,7 +12,7 @@ RSpec.describe EnvironmentPresenter, feature_category: :continuous_delivery do
 
     before do
       stub_const("#{described_class}::MAX_DEPLOYMENTS_COUNT", 5)
-      allow(environment).to receive_message_chain(:deployments,
+      allow(environment).to receive_message_chain(:all_deployments,
         :limit).with(described_class::MAX_DEPLOYMENTS_COUNT).and_return(deployments_list)
     end
 

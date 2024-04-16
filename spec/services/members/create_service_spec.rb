@@ -207,6 +207,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to eq(s_('AddMember|No users specified.'))
+      expect(execute_service[:reason]).to eq(:blank_invites_error)
       expect(source.users).not_to include member
       expect(Onboarding::Progress.completed?(source.namespace, :user_added)).to be(false)
     end
@@ -222,6 +223,7 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
 
       expect(execute_service[:status]).to eq(:error)
       expect(execute_service[:message]).to be_present
+      expect(execute_service[:reason]).to eq(:too_many_invites_error)
       expect(source.users).not_to include member
       expect(Onboarding::Progress.completed?(source.namespace, :user_added)).to be(false)
     end
@@ -333,6 +335,29 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
           property: 'net_new_user',
           user: user
         )
+      end
+    end
+  end
+
+  context 'with raised errors' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:error, :stubbed_method, :reason) do
+      described_class::BlankInvitesError      | :validate_invite_source! | :blank_invites_error
+      described_class::TooManyInvitesError    | :validate_invitable!     | :too_many_invites_error
+      described_class::MembershipLockedError  | :add_members             | :membership_locked_error
+      described_class::SeatLimitExceededError | :add_members             | :seat_limit_exceeded_error
+    end
+
+    with_them do
+      before do
+        allow_next_instance_of(described_class) do |service|
+          allow(service).to receive(stubbed_method).and_raise(error)
+        end
+      end
+
+      it 'returns the correct reason' do
+        expect(execute_service[:reason]).to eq(reason)
       end
     end
   end

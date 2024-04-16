@@ -20,25 +20,17 @@ Sign in to DingTalk Open Platform and create an application on it. DingTalk gene
 
 1. On the top bar, select **Application development > Enterprise internal development** and then select **Create Application**.
 
-   ![DingTalk menu](img/ding_talk_menu.png)
-
 1. Fill in the application details:
 
    - **Application Name**: This can be anything. Consider something like `<Organization>'s GitLab`, `<Your Name>'s GitLab`, or something else descriptive.
    - **Application Description**: Create a description.
    - **Application icon**: Upload qualified icons if needed.
 
-   ![DingTalk create application](img/ding_talk_create_application.png)
-
 1. Select **Confirm and create**.
 
 1. On the left sidebar, select **DingTalk Application** and find your application. Select it and go to the application information page.
 
-   ![DingTalk your application](img/ding_talk_your_application.png)
-
 1. In the **Application Credentials** section, note the **AppKey** and **AppSecret** as you use these values later.
-
-   ![DingTalk credentials](img/ding_talk_credentials.png)
 
 1. On your GitLab server, open the configuration file.
 

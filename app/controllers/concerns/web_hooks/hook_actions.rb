@@ -10,6 +10,14 @@ module WebHooks
 
       before_action :hook_logs, only: :edit
       feature_category :webhooks
+
+      before_action only: %i[edit update] do
+        push_frontend_feature_flag(:custom_webhook_headers, hook.parent, type: :beta)
+      end
+
+      before_action only: :index do
+        push_frontend_feature_flag(:custom_webhook_headers, @project || @group, type: :beta)
+      end
     end
 
     def index
@@ -54,13 +62,14 @@ module WebHooks
 
     def hook_params
       permitted = hook_param_names + trigger_values
-      permitted << { url_variables: [:key, :value] }
+      permitted << { url_variables: [:key, :value], custom_headers: [:key, :value] }
 
       ps = params.require(:hook).permit(*permitted).to_h
 
       ps.delete(:token) if action_name == 'update' && ps[:token] == WebHook::SECRET_MASK
 
       ps[:url_variables] = ps[:url_variables].to_h { [_1[:key], _1[:value].presence] } if ps.key?(:url_variables)
+      ps[:custom_headers] = ps[:custom_headers].to_h { [_1[:key], hook_value_from_param_or_db(_1[:key], _1[:value])] }
 
       if action_name == 'update' && ps.key?(:url_variables)
         supplied = ps[:url_variables]
@@ -87,6 +96,14 @@ module WebHooks
 
     def hook_logs
       @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
+    end
+
+    def hook_value_from_param_or_db(key, value)
+      if value == WebHook::SECRET_MASK && hook.custom_headers.key?(key)
+        hook.custom_headers[key]
+      else
+        value
+      end
     end
   end
 end

@@ -32,6 +32,16 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
+  describe '#owner_runner_namespace' do
+    it 'considers the first group' do
+      runner = create(:ci_runner, :group)
+
+      with_cross_joins_prevented do
+        expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
+      end
+    end
+  end
+
   describe 'projects association' do
     let(:runner) { create(:ci_runner, :project) }
 
@@ -483,7 +493,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     let!(:runner3) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 2.months.ago) }
     let!(:runner4) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 3.months.ago) }
 
-    it { is_expected.to eq([runner1, runner3, runner4]) }
+    it { is_expected.to contain_exactly(runner1, runner3, runner4) }
   end
 
   describe '.active' do
@@ -877,55 +887,40 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#status', :freeze_time do
-    let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago) }
-
     subject { runner.status }
 
     context 'never connected' do
-      before do
-        runner.contacted_at = nil
-      end
+      let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 3.months.ago) }
 
       it { is_expected.to eq(:stale) }
 
       context 'created recently' do
-        before do
-          runner.created_at = 1.day.ago
-        end
+        let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 1.day.ago) }
 
         it { is_expected.to eq(:never_contacted) }
       end
     end
 
     context 'inactive but online' do
-      before do
-        runner.contacted_at = 1.second.ago
-        runner.active = false
-      end
+      let(:runner) { build(:ci_runner, :instance, active: false, contacted_at: 1.second.ago) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted 1s ago' do
-      before do
-        runner.contacted_at = 1.second.ago
-      end
+      let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted recently' do
-      before do
-        runner.contacted_at = (3.months - 1.second).ago
-      end
+      let(:runner) { build(:ci_runner, :instance, contacted_at: (3.months - 1.second).ago) }
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'contacted long time ago' do
-      before do
-        runner.contacted_at = 3.months.ago
-      end
+      let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago, contacted_at: 3.months.ago) }
 
       it { is_expected.to eq(:stale) }
     end
@@ -1090,7 +1085,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
         end
 
         it 'updates only ip_address' do
-          expect_redis_update(values.merge(contacted_at: Time.current))
+          expect_redis_update(values.merge(contacted_at: Time.current, creation_state: :finished))
 
           heartbeat
         end
@@ -2140,7 +2135,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe 'status scopes' do
     let_it_be(:online_runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
     let_it_be(:offline_runner) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
-    let_it_be(:never_contacted_runner) { create(:ci_runner, :instance, contacted_at: nil) }
+    let_it_be(:never_contacted_runner) { create(:ci_runner, :instance, :unregistered) }
 
     describe '.online' do
       subject(:runners) { described_class.online }

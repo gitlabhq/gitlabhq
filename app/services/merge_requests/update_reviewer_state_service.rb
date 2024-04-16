@@ -14,7 +14,7 @@ module MergeRequests
 
         return success if state != 'requested_changes'
 
-        if merge_request.approved_by?(current_user) && !remove_approval(merge_request)
+        if merge_request.approved_by?(current_user) && !remove_approval(merge_request, current_user)
           return error("Failed to remove approval")
         end
 

@@ -21,6 +21,7 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     merged_without_event_source: boolean
 #     my_reaction_emoji: string
 #     source_branch: string
 #     target_branch: string
@@ -78,6 +79,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_deployments(items)
     items = by_reviewer(items)
     items = by_source_project_id(items)
+    items = by_resource_event_state(items)
 
     by_approved(items)
   end
@@ -163,6 +165,12 @@ class MergeRequestsFinder < IssuableFinder
     items.where(source_project_id: source_project_id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_resource_event_state(items)
+    return items unless params[:merged_without_event_source].present?
+
+    items.merged_without_state_event_source
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_draft(items)

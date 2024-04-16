@@ -821,6 +821,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                             "uploading": false,
                             "href": "/uploads/groups-test-file",
                             "title": null,
+                            "isGollumLink": false,
+                            "isWikiPage": false,
                             "canonicalSrc": "/uploads/groups-test-file",
                             "isReference": false
                           }
@@ -848,6 +850,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                             "uploading": false,
                             "href": "projects-test-file",
                             "title": null,
+                            "isGollumLink": false,
+                            "isWikiPage": false,
                             "canonicalSrc": "projects-test-file",
                             "isReference": false
                           }
@@ -905,6 +909,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
                             "uploading": false,
                             "href": "project-wikis-test-file",
                             "title": null,
+                            "isGollumLink": false,
+                            "isWikiPage": false,
                             "canonicalSrc": "project-wikis-test-file",
                             "isReference": false
                           }

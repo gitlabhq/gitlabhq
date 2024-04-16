@@ -2,13 +2,13 @@
 import { GlDisclosureDropdown, GlDisclosureDropdownGroup, GlTooltipDirective } from '@gitlab/ui';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import CloneDropdownItem from '~/vue_shared/components/clone_dropdown/clone_dropdown_item.vue';
+import CodeDropdownItem from './code_dropdown_item.vue';
 
 export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
-    CloneDropdownItem,
+    CodeDropdownItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -147,7 +147,7 @@ export default {
     :auto-close="false"
   >
     <gl-disclosure-dropdown-group v-if="sshUrl">
-      <clone-dropdown-item
+      <code-dropdown-item
         :label="$options.i18n.cloneWithSsh"
         label-class="gl-font-sm! gl-pt-2!"
         :link="sshUrl"
@@ -157,7 +157,7 @@ export default {
       />
     </gl-disclosure-dropdown-group>
     <gl-disclosure-dropdown-group v-if="httpUrl">
-      <clone-dropdown-item
+      <code-dropdown-item
         :label="httpLabel"
         label-class="gl-font-sm! gl-pt-2!"
         :link="httpUrl"
@@ -167,7 +167,7 @@ export default {
       />
     </gl-disclosure-dropdown-group>
     <gl-disclosure-dropdown-group v-if="kerberosUrl">
-      <clone-dropdown-item
+      <code-dropdown-item
         :label="$options.i18n.cloneWithKerberos"
         label-class="gl-font-sm! gl-pt-2!"
         :link="kerberosUrl"

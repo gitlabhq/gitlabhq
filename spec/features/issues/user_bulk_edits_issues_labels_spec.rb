@@ -455,7 +455,7 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
   end
 
   def update_issues
-    click_button 'Update all'
+    click_button 'Update selected'
     wait_for_requests
   end
 

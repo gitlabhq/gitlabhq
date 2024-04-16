@@ -98,9 +98,24 @@ module MergeRequests
         merge_request.merge_commit_sha = sha
         merge_request.merged_commit_sha = sha
 
+        # Look for a merged MR that includes the SHA to associate it with
+        # the MR we're about to mark as merged.
+        # Only the merged MRs without the event source would be considered
+        # to avoid associating it with other MRs that we may have marked as merged here.
+        source_merge_request = MergeRequestsFinder.new(
+          @current_user,
+          project_id: @project.id,
+          merged_without_event_source: true,
+          state: 'merged',
+          sort: 'merged_at',
+          commit_sha: sha
+        ).execute.first
+
+        source = source_merge_request || @project.commit(sha)
+
         MergeRequests::PostMergeService
           .new(project: merge_request.target_project, current_user: @current_user)
-          .execute(merge_request)
+          .execute(merge_request, source)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

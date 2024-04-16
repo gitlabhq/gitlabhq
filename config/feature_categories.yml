@@ -11,6 +11,7 @@
 - activation
 - advisory_database
 - ai_abstraction_layer
+- ai_agents
 - ai_evaluation
 - ai_research
 - api
@@ -38,6 +39,7 @@
 - container_scanning
 - continuous_delivery
 - continuous_integration
+- custom_models
 - customersdot_application
 - database
 - dataops
@@ -71,6 +73,7 @@
 - global_search
 - groups_and_projects
 - helm_chart_registry
+- hosted_runners
 - importers
 - incident_management
 - infrastructure_as_code
@@ -109,7 +112,6 @@
 - requirements_management
 - review_apps
 - runner
-- runner_saas
 - saas_provisioning
 - sbom
 - scalability

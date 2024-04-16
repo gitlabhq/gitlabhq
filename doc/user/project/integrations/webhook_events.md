@@ -21,7 +21,7 @@ Event type                                   | Trigger
 [Push event](#push-events)                   | A push is made to the repository.
 [Tag event](#tag-events)                     | Tags are created or deleted in the repository.
 [Issue event](#issue-events)                 | A new issue is created or an existing issue is updated, closed, or reopened.
-[Comment event](#comment-events)             | A new comment is made on commits, merge requests, issues, and code snippets.
+[Comment event](#comment-events)             | A new comment is made or edited on commits, merge requests, issues, and code snippets. <sup>1</sup>
 [Merge request event](#merge-request-events) | A merge request is created, updated, merged, or closed, or a commit is added in the source branch.
 [Wiki page event](#wiki-page-events)         | A wiki page is created, updated, or deleted.
 [Pipeline event](#pipeline-events)           | A pipeline status changes.
@@ -31,6 +31,10 @@ Event type                                   | Trigger
 [Release event](#release-events)             | A release is created, updated, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
+
+**Footnotes:**
+
+1. Comment events triggered when the comment is edited [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127169) in GitLab 16.11.
 
 **Events triggered for group webhooks only:**
 
@@ -380,19 +384,26 @@ Payload example:
 
 ## Comment events
 
-Comment events are triggered when a new comment is made on commits,
+> - `object_attributes.action` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147856) in GitLab 16.11.
+
+Comment events are triggered when a new comment is made or edited on commits,
 merge requests, issues, and code snippets.
 
 The note data is stored in `object_attributes` (for example, `note` or `noteable_type`).
 The payload includes information about the target of the comment. For example,
 a comment on an issue includes specific issue information under the `issue` key.
 
-The valid target types are:
+The available target types are:
 
 - `commit`
 - `merge_request`
 - `issue`
 - `snippet`
+
+The available values for `object_attributes.action` in the payload are:
+
+- `create`
+- `update`
 
 ### Comment on a commit
 
@@ -462,6 +473,7 @@ Payload example:
       "renamed_file": false,
       "deleted_file": false
     },
+    "action": "create",
     "url": "http://example.com/gitlab-org/gitlab-test/commit/cfe32cf61b73a0d5e9f13e774abde7ff789b1660#note_1243"
   },
   "commit": {
@@ -536,6 +548,7 @@ Payload example:
     "noteable_id": 7,
     "system": false,
     "st_diff": null,
+    "action": "create",
     "url": "http://example.com/gitlab-org/gitlab-test/merge_requests/1#note_1244"
   },
   "merge_request": {
@@ -697,6 +710,7 @@ Payload example:
     "noteable_id": 92,
     "system": false,
     "st_diff": null,
+    "action": "create",
     "url": "http://example.com/gitlab-org/gitlab-test/issues/17#note_1241"
   },
   "issue": {
@@ -803,6 +817,7 @@ Payload example:
     "noteable_id": 53,
     "system": false,
     "st_diff": null,
+    "action": "create",
     "url": "http://example.com/gitlab-org/gitlab-test/-/snippets/53#note_1245"
   },
   "snippet": {
@@ -1118,7 +1133,8 @@ Payload example:
     "slug": "awesome",
     "url": "http://example.com/root/awesome-project/-/wikis/awesome",
     "action": "create",
-    "diff_url": "http://example.com/root/awesome-project/-/wikis/home/diff?version_id=78ee4a6705abfbff4f4132c6646dbaae9c8fb6ec"
+    "diff_url": "http://example.com/root/awesome-project/-/wikis/home/diff?version_id=78ee4a6705abfbff4f4132c6646dbaae9c8fb6ec",
+    "version_id": "3ad67c972065298d226dd80b2b03e0fc2421e731"
   }
 }
 ```
@@ -2052,7 +2068,9 @@ Payload example:
 
 ## Project and group access token events
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141907) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `access_token_webhooks`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
 
 An access token event is triggered when a [project or group access token](../../../security/token_overview.md) will expire in seven days or less.
 

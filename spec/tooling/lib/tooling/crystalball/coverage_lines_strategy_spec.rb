@@ -2,7 +2,7 @@
 
 require_relative '../../../../../tooling/lib/tooling/crystalball/coverage_lines_strategy'
 
-RSpec.describe Tooling::Crystalball::CoverageLinesStrategy do
+RSpec.describe Tooling::Crystalball::CoverageLinesStrategy, feature_category: :tooling do
   subject { described_class.new(execution_detector) }
 
   let(:execution_detector) { instance_double('Tooling::Crystalball::CoverageLinesExecutionDetector') }

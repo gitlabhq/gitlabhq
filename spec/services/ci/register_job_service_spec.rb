@@ -533,6 +533,33 @@ module Ci
           end
         end
 
+        describe 'persisting runtime features' do
+          let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+          let(:params) do
+            { info: { features: { cancel_gracefully: true } } }
+          end
+
+          subject { build_on(project_runner, params: params) }
+
+          it 'persists the feature to build metadata' do
+            subject
+
+            expect(pending_job.reload.cancel_gracefully?).to be true
+          end
+
+          context 'when ci_canceling_status is disabled' do
+            before do
+              stub_feature_flags(ci_canceling_status: false)
+            end
+
+            it 'does not persist the feature to build metadata' do
+              subject
+
+              expect(pending_job.reload.cancel_gracefully?).to be false
+            end
+          end
+        end
+
         context 'runner feature set is verified' do
           let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
@@ -921,8 +948,8 @@ module Ci
           let(:build3) { create(:ci_build, :running, pipeline: pipeline, runner: shared_runner) }
 
           before do
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build2)
-            ::Ci::RunningBuild.upsert_shared_runner_build!(build3)
+            ::Ci::RunningBuild.upsert_build!(build2)
+            ::Ci::RunningBuild.upsert_build!(build3)
           end
 
           it 'counts job queuing time histogram with expected labels' do

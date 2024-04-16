@@ -267,9 +267,12 @@ module Gitlab
     config.assets.paths << "#{config.root}/vendor/assets/fonts"
 
     config.assets.precompile << "application_utilities.css"
+    config.assets.precompile << "application_utilities_to_be_replaced.css"
     config.assets.precompile << "application_utilities_dark.css"
+    config.assets.precompile << "application_utilities_to_be_replaced_dark.css"
     config.assets.precompile << "application_dark.css"
     config.assets.precompile << "tailwind.css"
+    config.assets.precompile << "tailwind_all_the_way.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailer.css"
@@ -395,6 +398,7 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "file_icons/file_icons.svg"
+    config.assets.precompile << "file_icons/file_icons.json"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
 
@@ -590,7 +594,7 @@ module Gitlab
 
     # We need this for initializers that need to be run before Zeitwerk is loaded
     initializer :before_zeitwerk, before: :setup_main_autoloader, after: :prepend_helpers_path do
-      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].sort.each do |initializer|
+      Dir[Rails.root.join('config/initializers_before_autoloader/*.rb')].each do |initializer|
         load_config_initializer(initializer)
       end
     end

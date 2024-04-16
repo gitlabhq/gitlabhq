@@ -51,7 +51,7 @@ describe('issue_comment_form component', () => {
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
 
-  const createStore = ({ actions = { saveNote: jest.fn() }, state = {} } = {}) => {
+  const createStore = ({ actions = { saveNote: jest.fn() }, state = {}, getters = {} } = {}) => {
     const baseModule = notesModule();
 
     return new Vuex.Store({
@@ -63,6 +63,10 @@ describe('issue_comment_form component', () => {
       state: {
         ...baseModule.state,
         ...state,
+      },
+      getters: {
+        ...baseModule.getters,
+        ...getters,
       },
     });
   };
@@ -642,6 +646,14 @@ describe('issue_comment_form component', () => {
         const checkbox = findConfidentialNoteCheckbox();
         expect(checkbox.exists()).toBe(true);
         expect(checkbox.element.checked).toBe(false);
+      });
+
+      it('renders checkbox when hasDrafts is true', () => {
+        const store = createStore({ getters: { hasDrafts: () => true } });
+
+        mountComponent({ store });
+
+        expect(findConfidentialNoteCheckbox().exists()).toBe(true);
       });
 
       it('should not render checkbox if user is not at least a reporter', () => {

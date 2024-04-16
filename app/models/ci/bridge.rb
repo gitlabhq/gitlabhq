@@ -162,6 +162,10 @@ module Ci
       %w[manual].include?(self.when)
     end
 
+    def can_auto_cancel_pipeline_on_job_failure?
+      true
+    end
+
     # rubocop: disable CodeReuse/ServiceClass
     # We don't need it but we are taking `job_variables_attributes` parameter
     # to make it consistent with `Ci::Build#play` method.

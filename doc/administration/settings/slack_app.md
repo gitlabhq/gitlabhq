@@ -73,12 +73,12 @@ To use Slash commands for a project, configure the [GitLab for Slack app](../../
 ## Install the GitLab for Slack app
 
 > - Installation at the instance level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391526) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`. Disabled by default.
+> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147820) in GitLab 16.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`.
-On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-On GitLab Dedicated, this feature is not available.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `gitlab_for_slack_app_instance_and_group_level`.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 Prerequisites:
 

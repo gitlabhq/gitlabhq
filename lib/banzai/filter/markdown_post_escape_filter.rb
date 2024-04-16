@@ -71,7 +71,7 @@ module Banzai
         end
 
         doc.xpath(XPATH_LANG_TAG).each do |node|
-          node.attributes['lang'].value  = node.attributes['lang'].value.gsub(SPAN_REGEX, '\1') if node.attributes['lang']
+          node.attributes['lang'].value = node.attributes['lang'].value.gsub(SPAN_REGEX, '\1') if node.attributes['lang']
         end
       end
 

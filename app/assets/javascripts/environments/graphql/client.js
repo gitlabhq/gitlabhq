@@ -21,6 +21,15 @@ export const apolloProvider = (endpoint) => {
   });
   const { cache } = defaultClient;
 
+  const k8sMetadata = {
+    name: null,
+    namespace: null,
+    creationTimestamp: null,
+    labels: null,
+    annotations: null,
+  };
+  const k8sData = { nodes: { metadata: k8sMetadata, status: {}, spec: {} } };
+
   cache.writeQuery({
     query: environmentApp,
     data: {
@@ -91,16 +100,7 @@ export const apolloProvider = (endpoint) => {
   });
   cache.writeQuery({
     query: k8sPodsQuery,
-    data: {
-      metadata: {
-        name: null,
-        namespace: null,
-        creationTimestamp: null,
-      },
-      status: {
-        phase: null,
-      },
-    },
+    data: k8sData,
   });
   cache.writeQuery({
     query: k8sConnectionStatusQuery,
@@ -117,19 +117,7 @@ export const apolloProvider = (endpoint) => {
   });
   cache.writeQuery({
     query: k8sServicesQuery,
-    data: {
-      metadata: {
-        name: null,
-        namespace: null,
-        creationTimestamp: null,
-      },
-      spec: {
-        type: null,
-        clusterIP: null,
-        externalIP: null,
-        ports: [],
-      },
-    },
+    data: k8sData,
   });
   cache.writeQuery({
     query: k8sNamespacesQuery,

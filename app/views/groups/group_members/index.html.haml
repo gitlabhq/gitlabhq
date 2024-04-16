@@ -31,5 +31,7 @@
                                                                              access_requests: @requesters,
                                                                              banned: @banned || [],
                                                                              include_relations: @include_relations,
-                                                                             search: params[:search_groups]).to_json } }
+                                                                             search: params[:search_groups],
+                                                                             pending_members: @pending_promotion_members
+                                                                            ).to_json } }
       = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

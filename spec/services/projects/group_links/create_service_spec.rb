@@ -6,7 +6,7 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
   let_it_be(:project) { create(:project, namespace: create(:namespace, :with_namespace_settings)) }
-  let_it_be(:group_user) { create(:user).tap { |user| group.add_guest(user) } }
+  let_it_be(:group_user) { create(:user, guest_of: group) }
 
   let(:opts) do
     {

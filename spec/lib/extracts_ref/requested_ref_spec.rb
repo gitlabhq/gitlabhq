@@ -16,6 +16,7 @@ RSpec.describe ExtractsRef::RequestedRef, feature_category: :source_code_managem
     shared_context 'when a branch exists' do
       before do
         project.repository.create_branch(branch_name, branch_sha)
+        project.repository.expire_branches_cache
       end
 
       after do
@@ -26,6 +27,7 @@ RSpec.describe ExtractsRef::RequestedRef, feature_category: :source_code_managem
     shared_context 'when a tag exists' do
       before do
         project.repository.add_tag(project.owner, tag_name, tag_sha)
+        project.repository.expire_tags_cache
       end
 
       after do
@@ -88,6 +90,15 @@ RSpec.describe ExtractsRef::RequestedRef, feature_category: :source_code_managem
         expect(subject[:commit].id).to eq(tag_sha)
       end
 
+      context 'when branch is missing' do
+        it 'does not call FindBranch for performance reasons' do
+          expect(project.repository).not_to receive(:find_branch)
+
+          expect(subject[:ref_type]).to eq('tags')
+          expect(subject[:commit].id).to eq(tag_sha)
+        end
+      end
+
       context 'and there is a branch with the same name' do
         include_context 'when a branch exists' do
           let(:branch_name) { ref }
@@ -115,6 +126,15 @@ RSpec.describe ExtractsRef::RequestedRef, feature_category: :source_code_managem
       it 'returns the branch commit' do
         expect(subject[:ref_type]).to eq('heads')
         expect(subject[:commit].id).to eq(branch_sha)
+      end
+
+      context 'when tag is missing' do
+        it 'does not call FindTag for performance reasons' do
+          expect(project.repository).not_to receive(:find_tag)
+
+          expect(subject[:ref_type]).to eq('heads')
+          expect(subject[:commit].id).to eq(branch_sha)
+        end
       end
     end
 

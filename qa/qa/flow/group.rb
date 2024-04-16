@@ -24,10 +24,10 @@ module QA
         end
       end
 
-      def enable_product_analytics(group)
+      def enable_experimental_and_beta_features(group)
         group.visit!
         Page::Group::Menu.perform(&:go_to_general_settings)
-        Page::Group::Settings::General.perform(&:set_use_product_analytics_enabled)
+        Page::Group::Settings::General.perform(&:set_use_experimental_features_enabled)
       end
     end
   end

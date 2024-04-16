@@ -224,7 +224,6 @@ templates-shellcheck:
   needs:
     - setup-test-env
   script:
-    - apt update && apt install -y shellcheck=0.9.0-1
     - bundle exec scripts/lint_templates_bash.rb
 
 ping-appsec-for-sast-findings:

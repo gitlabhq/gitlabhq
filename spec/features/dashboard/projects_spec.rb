@@ -30,7 +30,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
     it 'shows role badge' do
       visit dashboard_projects_path
 
-      page.within '.user-access-role' do
+      within_testid('user-access-role') do
         expect(page).to have_content('Developer')
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
       it 'displays the right role' do
         visit dashboard_projects_path
 
-        page.within '.user-access-role' do
+        within_testid('user-access-role') do
           expect(page).to have_content('Developer')
         end
 
@@ -47,7 +47,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
 
         visit dashboard_projects_path
 
-        page.within '.user-access-role' do
+        within_testid('user-access-role') do
           expect(page).to have_content('Maintainer')
         end
       end

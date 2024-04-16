@@ -29,9 +29,24 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
           ],
           allow_failure: false
         },
+        'my-job-test-2': {
+          stage: 'build',
+          script: [
+            'array item script 1',
+            'array item script 2'
+          ],
+          rules: [
+            { if: '$CI_PIPELINE_SOURCE == "merge_request_event"', changes: ['.gitlab-ci.yml'] },
+            { if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/', when: 'never' },
+            { if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH', when: 'manual' }
+          ]
+        },
         'my-job-deploy': {
           stage: 'build',
-          script: ['echo "Deploying to production using blue-green strategy"']
+          script: ['echo "Deploying to production using blue-green strategy"'],
+          rules: [
+            { if: '$CI_PIPELINE_SOURCE != "merge_request_event"' }
+          ]
         }
       }
     end
@@ -44,7 +59,15 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
         coverage_enabled: true,
         environment: 'production',
         deploy_strategy: 'blue-green',
-        job_stage: 'build'
+        job_stage: 'build',
+        test_script: [
+          'array item script 1',
+          'array item script 2'
+        ],
+        test_rules: [
+          { if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/', when: 'never' },
+          { if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME != $CI_DEFAULT_BRANCH', when: 'manual' }
+        ]
       }
     end
 

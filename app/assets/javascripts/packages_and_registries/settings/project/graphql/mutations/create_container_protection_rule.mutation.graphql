@@ -1,0 +1,11 @@
+mutation createContainerProtectionRule($input: CreateContainerRegistryProtectionRuleInput!) {
+  createContainerRegistryProtectionRule(input: $input) {
+    containerRegistryProtectionRule {
+      id
+      repositoryPathPattern
+      pushProtectedUpToAccessLevel
+      deleteProtectedUpToAccessLevel
+    }
+    errors
+  }
+}

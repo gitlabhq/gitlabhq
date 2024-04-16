@@ -10,7 +10,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     create(:container_registry_protection_rule, project: project, push_protected_up_to_access_level: :developer)
   end
 
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
   let(:container_registry_protection_rule_attributes) do
     build_stubbed(:container_registry_protection_rule, project: project)
@@ -113,9 +113,9 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
   end
 
   context 'when current_user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:current_user) do

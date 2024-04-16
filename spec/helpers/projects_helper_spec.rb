@@ -118,6 +118,31 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#can_set_diff_preview_in_email?' do
+    stub_feature_flags(diff_preview_in_email: true)
+    let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
+
+    it 'returns true for the project owner' do
+      expect(helper.can_set_diff_preview_in_email?(project, project.owner)).to be_truthy
+    end
+
+    it 'returns false for anyone else' do
+      expect(helper.can_set_diff_preview_in_email?(project, user)).to be_falsey
+    end
+
+    context 'respects the settings of a parent group' do
+      context 'when a parent group has disabled diff previews ' do
+        it 'returns false for all users' do
+          new_project = create(:project, group: create(:group))
+          new_project.group.update_attribute(:show_diff_preview_in_email, false)
+
+          expect(helper.can_set_diff_preview_in_email?(new_project, new_project.owner)).to be_falsey
+          expect(helper.can_set_diff_preview_in_email?(new_project, user)).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#load_pipeline_status' do
     it 'loads the pipeline status in batch' do
       helper.load_pipeline_status([project])
@@ -1169,9 +1194,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       allow(helper).to receive(:star_count_data_attributes).and_return({})
     end
 
-    where(:can_read_project, :is_empty_repo) do
-      true  | true
-      false | false
+    where(:can_read_project, :is_empty_repo, :is_admin, :has_admin_path) do
+      true  | true  | true  | true
+      false | false | true  | true
+      true  | true  | false | false
+      false | false | false | false
     end
 
     with_them do
@@ -1179,10 +1206,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         before do
           allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
           allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+          allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
         end
 
         let(:expected) do
           {
+            admin_path: (admin_project_path(project) if has_admin_path),
             can_read_project: can_read_project.to_s,
             is_project_empty: is_empty_repo.to_s,
             project_id: project.id
@@ -1788,6 +1817,32 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
         it 'returns nil' do
           expect(helper.issue_manual_ordering_class).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe '#show_invalid_gpg_key_message?' do
+    subject { helper.show_invalid_gpg_key_message? }
+
+    it { is_expected.to be_falsey }
+
+    context 'when external verification is required for gpg keys' do
+      let!(:integration) { create(:beyond_identity_integration) }
+
+      context 'and user has a gpg key' do
+        let!(:gpg_key) { create :gpg_key, externally_verified: externally_verified, user: user }
+
+        context 'and the gpg key is not verified' do
+          let(:externally_verified) { false }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'and the gpg key is verified' do
+          let(:externally_verified) { true }
+
+          it { is_expected.to be_falsy }
         end
       end
     end

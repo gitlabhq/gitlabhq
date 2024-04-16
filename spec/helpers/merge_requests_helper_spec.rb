@@ -9,6 +9,7 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   include ProjectsHelper
   include ProjectForksHelper
   include IconsHelper
+  include IssuablesHelper
 
   let_it_be(:current_user) { create(:user) }
 

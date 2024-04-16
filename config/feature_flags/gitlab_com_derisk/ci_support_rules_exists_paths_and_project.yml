@@ -1,0 +1,9 @@
+---
+name: ci_support_rules_exists_paths_and_project
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/386040
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149326
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/453983
+milestone: '16.11'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

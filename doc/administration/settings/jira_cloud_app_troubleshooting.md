@@ -207,8 +207,27 @@ For the second log, you might have one of the following scenarios:
   - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
   - `json.message` is `Proxy lifecycle event received error response` or similar.
   - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
-  - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is empty,
-    [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
+  - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is empty:
+    - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
+    - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your self-managed instance,
+      the `Host` header sent to the self-managed instance might not match the reverse proxy FQDN.
+      Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the self-managed instance:
+
+      ```shell
+      grep /-/jira_connect/events/installed /var/log/gitlab/gitlab-workhorse/current
+      ```
+
+      The output might contain the following:
+
+      ```json
+      {
+        "host":"gitlab.mycompany.com:443", // The host should match the reverse proxy FQDN entered into the GitLab for Jira Cloud app
+        "remote_ip":"34.74.226.3", // This IP should be within the GitLab.com IP range https://docs.gitlab.com/ee/user/gitlab_com/#ip-range
+        "status":401,
+        "uri":"/-/jira_connect/events/installed"
+      }
+      ```
+
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.

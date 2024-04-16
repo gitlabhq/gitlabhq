@@ -365,6 +365,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
             expect { run_rake_task(rake_task) }.to raise_error(SystemExit)
           end.to output(Regexp.new(error.message)).to_stdout_from_any_process
         end
+
+        it "raises an error with message when subtask fails" do
+          expect do
+            run_rake_task('gitlab:backup:create')
+          end.to raise_error(Backup::Error)
+        end
       end
     end
 

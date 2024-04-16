@@ -55,7 +55,7 @@ exports[`Alert integration settings form default state should match the default 
         id="reference-1"
         items="[object Object]"
         noresultstext="No results found"
-        placement="left"
+        placement="bottom-start"
         positioningstrategy="absolute"
         resetbuttonlabel=""
         searchplaceholder="Search"

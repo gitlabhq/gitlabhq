@@ -1052,7 +1052,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1188,7 +1188,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1309,7 +1309,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1413,7 +1413,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(report)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1554,7 +1554,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(comparison_status)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(merge_request.all_pipelines.take)
     end
 
@@ -1653,7 +1653,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(accessibility_comparison)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 
@@ -1764,7 +1764,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         .and_return(codequality_comparison)
 
       allow_any_instance_of(MergeRequest)
-        .to receive(:actual_head_pipeline)
+        .to receive(:diff_head_pipeline)
         .and_return(pipeline)
     end
 

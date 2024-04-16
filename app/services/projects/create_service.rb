@@ -112,11 +112,6 @@ module Projects
 
       if @project.import?
         Gitlab::Tracking.event(self.class.name, 'import_project', user: current_user)
-      else
-        # Skip writing the config for project imports/forks because it
-        # will always fail since the Git directory doesn't exist until
-        # a background job creates it (see Project#add_import_job).
-        @project.set_full_path
       end
 
       unless @project.gitlab_project_import?

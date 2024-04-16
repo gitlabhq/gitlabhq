@@ -6,8 +6,8 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
   include KubernetesHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:maintainer) { create(:user, name: 'main-dos').tap { |u| project.add_maintainer(u) } }
-  let_it_be(:reporter) { create(:user, name: 'repo-dos').tap { |u| project.add_reporter(u) } }
+  let_it_be(:maintainer) { create(:user, name: 'main-dos', maintainer_of: project) }
+  let_it_be(:reporter) { create(:user, name: 'repo-dos', reporter_of: project) }
 
   let(:user) { maintainer }
 

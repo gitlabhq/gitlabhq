@@ -95,7 +95,7 @@ Every user is included in seat usage, with the following exceptions:
 
 Seat usage is reviewed [quarterly or annually](../quarterly_reconciliation.md).
 
-If a user navigates to a different top-level group (one they have created themselves, for example)
+If a user goes to a different top-level group (one they have created themselves, for example)
 and that group does not have a paid subscription, they would not see any of the paid features.
 
 It is also possible for users to belong to two different top-level groups with different subscriptions.

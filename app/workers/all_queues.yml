@@ -363,42 +363,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-- :name: cronjob:click_house_event_authors_consistency_cron
-  :worker_name: ClickHouse::EventAuthorsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_event_paths_consistency_cron
-  :worker_name: ClickHouse::EventPathsConsistencyCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_events_sync
-  :worker_name: ClickHouse::EventsSyncWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:click_house_rebuild_materialized_view_cron
-  :worker_name: ClickHouse::RebuildMaterializedViewCronWorker
-  :feature_category: :value_stream_management
-  :has_external_dependencies: true
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
   :feature_category: :global_search
@@ -419,33 +383,6 @@
   :tags: []
 - :name: cronjob:container_registry_cleanup
   :worker_name: ContainerRegistry::CleanupWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_enqueuer
-  :worker_name: ContainerRegistry::Migration::EnqueuerWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_guard
-  :worker_name: ContainerRegistry::Migration::GuardWorker
-  :feature_category: :container_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-- :name: cronjob:container_registry_migration_observer
-  :worker_name: ContainerRegistry::Migration::ObserverWorker
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -1920,6 +1857,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: package_repositories:packages_npm_process_package_file
+  :worker_name: Packages::Npm::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: package_repositories:packages_nuget_extraction
   :worker_name: Packages::Nuget::ExtractionWorker
   :feature_category: :package_registry
@@ -1937,6 +1883,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: package_repositories:packages_terraform_module_process_package_file
+  :worker_name: Packages::TerraformModule::ProcessPackageFileWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
@@ -2586,6 +2541,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_stage_import_users
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportUsersWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2865,6 +2829,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_update_build_names
+  :worker_name: Ci::UpdateBuildNamesWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_user_cancel_pipeline
   :worker_name: Ci::UserCancelPipelineWorker
   :feature_category: :continuous_integration
@@ -2878,6 +2851,33 @@
   :worker_name: ClickHouse::AuditEventPartitionSyncWorker
   :feature_category: :compliance_management
   :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: container_registry_migration_enqueuer
+  :worker_name: ContainerRegistry::Migration::EnqueuerWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: container_registry_migration_guard
+  :worker_name: ContainerRegistry::Migration::GuardWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: container_registry_migration_observer
+  :worker_name: ContainerRegistry::Migration::ObserverWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -3758,6 +3758,15 @@
   :tags: []
 - :name: projects_import_export_relation_export
   :worker_name: Projects::ImportExport::RelationExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: projects_import_export_relation_import
+  :worker_name: Projects::ImportExport::RelationImportWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low

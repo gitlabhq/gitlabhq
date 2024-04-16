@@ -10,12 +10,9 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-NOTE:
-In 14.4, Requirements was moved under **Issues**.
-
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2703) in GitLab 12.10.
 > - The ability to add and edit a requirement's long description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/224622) in GitLab 13.5.
-> - [Moved under Issues](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70748) in 14.4
+> - [Moved under Issues](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70748) in 14.4.
 
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
@@ -72,13 +69,13 @@ next to the requirement title.
 
 ## Edit a requirement
 
-> - The ability to mark a requirement as Satisfied [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) in GitLab 13.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don’t have the Reporter role.
 
 You can edit a requirement from the requirements list page.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Reporter role or be the author or assignee of the requirement.
 
 To edit a requirement:
 
@@ -89,12 +86,14 @@ To edit a requirement:
 
 ## Archive a requirement
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don’t have the Reporter role.
+
 You can archive an open requirement while
 you're in the **Open** tab.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Reporter role or be the author or assignee of the requirement.
 
 To archive a requirement, select **Archive** (**{archive}**).
 
@@ -102,11 +101,13 @@ As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 ## Reopen a requirement
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don’t have the Reporter role.
+
 You can view the list of archived requirements in the **Archived** tab.
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have at least the Reporter role or be the author or assignee of the requirement.
 
 ![archived requirements list](img/requirements_archived_list_view_v13_1.png)
 

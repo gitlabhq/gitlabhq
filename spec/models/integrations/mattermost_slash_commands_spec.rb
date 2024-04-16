@@ -160,4 +160,12 @@ RSpec.describe Integrations::MattermostSlashCommands, feature_category: :integra
       it { is_expected.to be_present }
     end
   end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(
+        ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/mattermost.svg')
+      )
+    end
+  end
 end

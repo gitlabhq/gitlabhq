@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10683) in GitLab 13.2.
-
 With Load Performance Testing, you can test the impact of any pending code changes
 to your application's backend in [GitLab CI/CD](../index.md).
 

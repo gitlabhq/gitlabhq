@@ -23,22 +23,20 @@ For an overview, see [Jira development panel integration](https://www.youtube.co
 
 This table shows the features available with the Jira DVCS connector and the GitLab for Jira Cloud app:
 
-| Feature             | Jira DVCS connector    | GitLab for Jira Cloud app |
-|---------------------|------------------------|---------------------------|
-| Smart Commits       | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync merge requests | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync branches       | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync commits        | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes (partial) <sup>1</sup>|
-| Sync builds         | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync deployments    | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync feature flags  | **{dotted-circle}** No | **{check-circle}** Yes |
-| Sync interval       | Up to 60 minutes       | Real time              |
-| Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab.com only) |
-| Create merge request from branch | **{check-circle}** Yes | **{check-circle}** Yes |
-| Create branch from Jira issue | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2) |
-
-1. See [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira).
+| Feature                              | Jira DVCS connector    | GitLab for Jira Cloud app |
+|--------------------------------------|------------------------|---------------------------|
+| Smart Commits                        | **{check-circle}** Yes | **{check-circle}** Yes    |
+| Sync merge requests                  | **{check-circle}** Yes | **{check-circle}** Yes    |
+| Sync branches                        | **{check-circle}** Yes | **{check-circle}** Yes    |
+| Sync commits                         | **{check-circle}** Yes | **{check-circle}** Yes    |
+| Sync existing data                   | **{check-circle}** Yes | **{check-circle}** Yes (see [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira)) |
+| Sync builds                          | **{dotted-circle}** No | **{check-circle}** Yes    |
+| Sync deployments                     | **{dotted-circle}** No | **{check-circle}** Yes    |
+| Sync feature flags                   | **{dotted-circle}** No | **{check-circle}** Yes    |
+| Sync interval                        | Up to 60 minutes       | Real time                 |
+| Create branches                      | **{dotted-circle}** No | **{check-circle}** Yes (GitLab.com only) |
+| Create a merge request from a branch | **{check-circle}** Yes | **{check-circle}** Yes    |
+| Create a branch from a Jira issue    | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2) |
 
 ## Connected projects in GitLab
 
@@ -55,16 +53,15 @@ depends on where you mention the Jira issue ID in GitLab.
 
 For the [GitLab for Jira Cloud app](connect-app.md), the following information is displayed.
 
-| GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
-|------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through merge request title<br>Link to the pipeline through merge request description <sup>1</sup><br>Link to the branch <sup>2</sup><br>Reviewer information and approval status <sup>3</sup> |
-| Branch name                                    | Link to the branch<br>Link to the deployment                                    |
-| Commit message                                 | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment <sup>4</sup> <sup>5</sup> |
-| [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |
+| GitLab: where you mention the Jira issue ID | Jira development panel: what information is displayed |
+|---------------------------------------------|-------------------------------------------------------|
+| Merge request title or description          | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through the merge request title<br>Link to the pipeline through the merge request description ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10)<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11)<br>Reviewer information and approval status ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364273) in GitLab 16.5) |
+| Branch name                                 | Link to the branch<br>Link to the deployment          |
+| Commit message                              | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment <sup>1</sup> <sup>2</sup> |
+| [Jira Smart Commit](#jira-smart-commits)    | Custom comment, logged time, or workflow transition   |
 
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10.
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11.
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364273) in GitLab 16.5.
+**Footnotes:**
+
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default.
 1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.
 

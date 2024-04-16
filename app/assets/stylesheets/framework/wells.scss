@@ -8,7 +8,7 @@
     padding: $gl-padding;
 
     &:not(:last-of-type) {
-      border-bottom: 1px solid $well-inner-border;
+      border-bottom: 1px solid $gray-100;
     }
 
     &.borderless {

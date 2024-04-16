@@ -41,7 +41,7 @@ GET /projects/:id/pipelines
 | `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `sha`            | string         | No       | The SHA of pipelines |
 | `sort`           | string         | No       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
-| `source`         | string         | No       | In [GitLab 14.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325439), how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
+| `source`         | string         | No       | Returns how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
 | `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `updated_after`  | datetime       | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -228,8 +228,6 @@ Sample response:
 ```
 
 ### Get a pipeline's test report summary
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65471) in GitLab 14.2.
 
 NOTE:
 This API route is part of the [Unit test report](../ci/testing/unit_test_reports.md) feature.

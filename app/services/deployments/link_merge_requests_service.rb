@@ -61,9 +61,8 @@ module Deployments
       # deployment we may end up running a handful of queries to get and insert
       # the data.
       commits.each_slice(COMMITS_PER_QUERY) do |slice|
-        merge_requests = merge_requests_with_commits(slice)
-
-        deployment.link_merge_requests(merge_requests)
+        link_merge_requests_by_merge_commits(slice)
+        link_fast_forward_merge_requests(slice)
 
         # The cherry picked commits are tracked via `notes.commit_id`
         # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22209
@@ -79,14 +78,6 @@ module Deployments
       end
     end
 
-    def merge_requests_with_commits(commits)
-      if Feature.enabled?(:link_fast_forward_merge_requests_to_deployment, project, type: :gitlab_com_derisk)
-        project.merge_requests.merged.by_merge_commit_sha_or_head_commit_sha(commits)
-      else
-        project.merge_requests.merged.by_merge_commit_sha(commits)
-      end
-    end
-
     def link_all_merged_merge_requests
       merge_requests =
         project.merge_requests.merged.by_target_branch(deployment.ref)
@@ -95,6 +86,26 @@ module Deployments
     end
 
     private
+
+    def link_merge_requests_by_merge_commits(commits)
+      deployment.link_merge_requests(merge_requests_by_merge_commit_sha(commits))
+    end
+
+    def link_fast_forward_merge_requests(commits)
+      return if Feature.disabled?(:link_fast_forward_merge_requests_to_deployment, project, type: :gitlab_com_derisk)
+
+      deployment.link_merge_requests(merge_requests_by_head_commit_sha(commits))
+    end
+
+    def merge_requests_by_merge_commit_sha(commits)
+      project.merge_requests.merged.by_merge_commit_sha(commits)
+    end
+
+    def merge_requests_by_head_commit_sha(commits)
+      merge_request_diffs = MergeRequestDiff.by_head_commit_sha(commits)
+
+      project.merge_requests.merged.by_latest_merge_request_diffs(merge_request_diffs)
+    end
 
     def project
       deployment.project

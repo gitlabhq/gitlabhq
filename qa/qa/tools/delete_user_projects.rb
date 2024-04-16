@@ -6,11 +6,7 @@
 
 module QA
   module Tools
-    class DeleteUserProjects
-      include Support::API
-      include Lib::Project
-      include Ci::Helpers
-
+    class DeleteUserProjects < DeleteResourceBase
       # We cannot pass ids because they are different on each live environment
       QA_USERNAMES = %w[gitlab-qa
         gitlab-qa-admin
@@ -22,17 +18,11 @@ module QA
         gitlab-qa-user6].freeze
 
       def initialize(delete_before: (Date.today - 3).to_s, dry_run: false)
-        %w[GITLAB_ADDRESS GITLAB_QA_ACCESS_TOKEN].each do |var|
-          raise ArgumentError, "Please provide #{var} environment variable" unless ENV[var]
-        end
-
         unless ENV['USER_ID'] || ENV['CLEANUP_ALL_QA_USER_PROJECTS']
           raise ArgumentError, "Please provide USER_ID or CLEANUP_ALL_QA_USER_PROJECTS environment variable"
         end
 
-        @delete_before = Date.parse(delete_before)
-        @dry_run = dry_run
-        @api_client = set_api_client(ENV['GITLAB_QA_ACCESS_TOKEN'])
+        super(delete_before: delete_before, dry_run: dry_run)
       end
 
       # @example
@@ -57,9 +47,9 @@ module QA
           qa_username = fetch_qa_username(user_id)
 
           api_client = if qa_username == "gitlab-qa-user1" && ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
-                         set_api_client(ENV['GITLAB_QA_USER1_ACCESS_TOKEN'])
+                         user_api_client(ENV['GITLAB_QA_USER1_ACCESS_TOKEN'])
                        elsif qa_username == "gitlab-qa-user2" && ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
-                         set_api_client(ENV['GITLAB_QA_USER2_ACCESS_TOKEN'])
+                         user_api_client(ENV['GITLAB_QA_USER2_ACCESS_TOKEN'])
                        else
                          @api_client
                        end
@@ -142,11 +132,6 @@ module QA
         response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
         parsed_response = parse_body(response)
         parsed_response[:username]
-      end
-
-      def set_api_client(token)
-        Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
-          personal_access_token: token)
       end
     end
   end

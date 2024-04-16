@@ -1,7 +1,7 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
@@ -236,6 +236,15 @@ describe('DynamicField', () => {
           '[<code>1</code>  <a>3</a> <a href="foo" target="_blank" rel="noopener noreferrer">4</a>',
         );
       });
+    });
+
+    it('emits update event when model is changed', async () => {
+      createComponent();
+      findGlFormInput().vm.$emit('input', 'example');
+
+      await nextTick();
+
+      expect(wrapper.emitted('update')).toEqual([['example']]);
     });
 
     describe('label text', () => {

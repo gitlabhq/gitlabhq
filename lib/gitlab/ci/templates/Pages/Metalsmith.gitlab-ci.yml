@@ -12,7 +12,9 @@ pages:
     paths:
       - node_modules/
   script:
-    - npm install -g metalsmith
+    # Below config fixes the git port restriction: https://github.com/npm/npm/issues/6285#issuecomment-56640354
+    - git config --global url.https://github.com/.insteadOf git://github.com/
+    - npm install -g metalsmith@2.3.0
     - npm install
     - make build
   artifacts:

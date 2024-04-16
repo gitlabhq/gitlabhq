@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::DevOpsReportController do
+RSpec.describe Admin::DevOpsReportController, feature_category: :devops_reports do
   describe 'show_adoption?' do
     it 'is always false' do
       expect(controller.show_adoption?).to be_falsey
@@ -23,20 +23,11 @@ RSpec.describe Admin::DevOpsReportController do
         expect(response).to have_gitlab_http_status(:success)
       end
 
-      it_behaves_like 'tracking unique visits', :show do
-        let(:target_id) { 'i_analytics_dev_ops_score' }
-
-        let(:request_params) { { tab: 'devops-score' } }
-      end
-
-      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        subject { get :show, format: :html }
-
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'i_analytics_dev_ops_score' }
         let(:category) { described_class.name }
-        let(:action) { 'perform_analytics_usage_action' }
-        let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }
-        let(:property) { 'i_analytics_dev_ops_score' }
-        let(:namespace) { nil }
+
+        subject { get :show, format: :html }
       end
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition do
+RSpec.describe 'CI/CD Catalog settings', :js, feature_category: :pipeline_composition, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/455829' do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:group) }
   let_it_be_with_reload(:project_with_ci_components) do

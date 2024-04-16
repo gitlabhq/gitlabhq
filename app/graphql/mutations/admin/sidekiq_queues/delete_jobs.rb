@@ -31,9 +31,7 @@ module Mutations
               description: 'Information about the status of the deletion request.'
 
         def ready?(**args)
-          unless current_user&.admin?
-            raise Gitlab::Graphql::Errors::ResourceNotAvailable, ADMIN_MESSAGE
-          end
+          raise Gitlab::Graphql::Errors::ResourceNotAvailable, ADMIN_MESSAGE unless current_user&.admin?
 
           super
         end

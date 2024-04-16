@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
-
 With the help of [GitLab CI/CD](../index.md), you can collect the test
 coverage information of your favorite testing or coverage-analysis tool, and visualize
 this information inside the file diff view of your merge requests (MRs). This allows you
@@ -98,9 +95,6 @@ child_test_pipeline:
 ```
 
 ### Automatic class path correction
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217664) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284822) in GitLab 13.9.
 
 The coverage report properly matches changed files only if the `filename` of a `class` element
 contains the full path relative to the project root. However, in some coverage analysis frameworks,
@@ -287,7 +281,6 @@ run tests:
   script:
     - pip install pytest pytest-cov
     - pytest --cov --cov-report term --cov-report xml:coverage.xml
-  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     reports:
       coverage_report:
@@ -354,7 +347,6 @@ run tests:
     - cd build
     - make test
     - gcovr --xml-pretty --exclude-unreachable-branches --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
-  coverage: /^\s*lines:\s*\d+.\d+\%/
   artifacts:
     name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     expire_in: 2 days

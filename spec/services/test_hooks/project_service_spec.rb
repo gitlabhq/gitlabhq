@@ -47,7 +47,10 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
       let(:trigger_key) { :tag_push_hooks }
 
       it 'executes hook' do
-        allow(Gitlab::DataBuilder::Push).to receive(:build_sample).and_return(sample_data)
+        allow(Gitlab::DataBuilder::Push)
+          .to receive(:build_sample)
+          .with(project, current_user, is_tag: true)
+          .and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)

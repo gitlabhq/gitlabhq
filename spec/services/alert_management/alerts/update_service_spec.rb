@@ -6,18 +6,13 @@ RSpec.describe AlertManagement::Alerts::UpdateService, feature_category: :incide
   let_it_be(:user_with_permissions) { create(:user) }
   let_it_be(:other_user_with_permissions) { create(:user) }
   let_it_be(:user_without_permissions) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: [user_with_permissions, other_user_with_permissions]) }
   let_it_be(:alert, reload: true) { create(:alert_management_alert, :triggered, project: project) }
 
   let(:current_user) { user_with_permissions }
   let(:params) { {} }
 
   let(:service) { described_class.new(alert, current_user, params) }
-
-  before_all do
-    project.add_developer(user_with_permissions)
-    project.add_developer(other_user_with_permissions)
-  end
 
   describe '#execute' do
     shared_examples 'does not add a todo' do

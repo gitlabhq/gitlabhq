@@ -89,7 +89,7 @@ because that is needed in all configurations.
 
 ### Wildcard domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 
@@ -192,7 +192,7 @@ The Pages daemon doesn't listen to the outside world.
 
 ### Wildcard domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Wildcard TLS certificate
@@ -256,7 +256,7 @@ that without TLS certificates.
 
 ### Custom domains
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Secondary IP
@@ -319,7 +319,7 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
-**Requirements:**
+Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
 - Wildcard TLS certificate

@@ -48,7 +48,7 @@ module Resolvers
 
       return super if args.values.compact.blank?
 
-      if args[:usernames]&.present? && args[:ids]&.present?
+      if args[:usernames].present? && args[:ids].present?
         raise Gitlab::Graphql::Errors::ArgumentError, 'Provide either a list of usernames or ids'
       end
 

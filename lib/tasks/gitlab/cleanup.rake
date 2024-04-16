@@ -103,6 +103,22 @@ Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       processor.run!
     end
 
+    desc 'GitLab | Cleanup | Rollback deleted final orphan job artifact objects (GCP only)'
+    task rollback_deleted_orphan_job_artifact_final_objects: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      force_restart = ENV['FORCE_RESTART'].present?
+      filename = ENV['FILENAME']
+
+      processor = Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects.new(
+        force_restart: force_restart,
+        filename: filename,
+        logger: logger
+      )
+
+      processor.run!
+    end
+
     desc 'GitLab | Cleanup | Clean orphan LFS file references'
     task orphan_lfs_file_references: :gitlab_environment do
       warn_user_is_not_gitlab

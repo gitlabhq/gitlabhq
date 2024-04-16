@@ -421,8 +421,9 @@ scope.
 | GitLab Rails app | `%16.0`   | Adapt `register_{group|project}_runner` permissions to take [application setting](https://gitlab.com/gitlab-org/gitlab/-/issues/386712) in consideration. |
 | GitLab Rails app | `%16.1`   | Make [`POST /api/v4/runners` endpoint](../../../api/runners.md#create-an-instance-runner) permanently return `HTTP 410 Gone` if either `allow_runner_registration_token` setting disables registration tokens.<br/>A future v5 version of the API should return `HTTP 404 Not Found`. |
 | GitLab Rails app | `%16.1`   | Add runner group metadata to the runner list. |
-| GitLab Rails app |           | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
-| GitLab Rails app |           | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
+| GitLab Rails app | `%16.11`  | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
+| GitLab Rails app | `%16.11`  | Add UI to allow disabling use of registration tokens in admin panel. |
+| GitLab Rails app | `%16.11`  | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -432,7 +433,6 @@ scope.
 |------------------|----------:|---------|
 | GitLab Rails app |   `%17.0` | Disable registration tokens for all groups by running database migration (only on GitLab.com) |
 | GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level by running database migration (except GitLab.com) |
-| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level for GitLab.com |
 | GitLab Rails app |   `%16.3` | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope. |
 | GitLab Rails app |           | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens) with multiple machines. |
 
@@ -440,11 +440,12 @@ scope.
 
 | Component        | Milestone | Changes                                                                                                                                                                                                                                                                                            |
 |------------------|----------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitLab Rails app | `18.0`    | Remove UI enabling registration tokens on the group and instance levels.                                                                                                                                                                                                                           |
-| GitLab Rails app | `18.0`    | Remove legacy UI showing registration with a registration token.                                                                                                                                                                                                                                   |
-| GitLab Runner    | `18.0`    | Remove runner model arguments from `register` command (for example `--run-untagged`, `--tag-list`, etc.)                                                                                                                                                                                           |
-| GitLab Rails app | `18.0`    | Create database migrations to drop `allow_runner_registration_token` setting columns from `application_settings` and `namespace_settings` tables.                                                                                                                                                  |
-| GitLab Rails app | `18.0`    | Create database migrations to drop:<br/>- `runners_registration_token`/`runners_registration_token_encrypted` columns from `application_settings`;<br/>- `runners_token`/`runners_token_encrypted` from `namespaces` table;<br/>- `runners_token`/`runners_token_encrypted` from `projects` table. |
+| GitLab Rails app |    `18.0` | Remove UI enabling registration tokens on the group and instance levels.                                                                                                                                                                                                                           |
+| GitLab Rails app |    `18.0` | Remove legacy UI showing registration with a registration token.                                                                                                                                                                                                                                   |
+| GitLab Runner    |    `18.0` | Remove runner model arguments from `register` command (for example `--run-untagged`, `--tag-list`, etc.)                                                                                                                                                                                           |
+| GitLab Rails app |    `18.0` | Create database migrations to drop `allow_runner_registration_token` setting columns from `application_settings` and `namespace_settings` tables.                                                                                                                                                  |
+| GitLab Rails app |    `18.0` | Create database migrations to drop:<br/>- `runners_registration_token`/`runners_registration_token_encrypted` columns from `application_settings`;<br/>- `runners_token`/`runners_token_encrypted` from `namespaces` table;<br/>- `runners_token`/`runners_token_encrypted` from `projects` table. |
+| GitLab Rails app |    `18.0` | Remove `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`.                                                                                                                                                                                                                                                 |
 
 ## FAQ
 

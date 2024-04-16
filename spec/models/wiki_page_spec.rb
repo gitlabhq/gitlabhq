@@ -1065,10 +1065,23 @@ RSpec.describe WikiPage, feature_category: :wiki do
   describe '#hook_attrs' do
     subject { build_wiki_page(container) }
 
-    it 'adds absolute urls for images in the content' do
-      subject.attributes[:content] = 'test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)'
+    context 'when `wiki_content_background_job` flag disabled' do
+      before do
+        stub_feature_flags(wiki_content_background_job: false)
+      end
 
-      expect(subject.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+      it 'adds absolute urls for images in the content' do
+        subject.attributes[:content] = 'test![WikiPage_Image](uploads/abc/WikiPage_Image.png)'
+
+        expected_path = "#{Settings.gitlab.url}/#{container.full_path}/-/wikis/uploads/abc/WikiPage_Image.png)"
+        expect(subject.hook_attrs['content']).to eq("test![WikiPage_Image](#{expected_path}")
+      end
+    end
+
+    it 'includes specific attributes' do
+      keys = subject.hook_attrs.keys
+      expect(keys).not_to include(:content)
+      expect(keys).to include(:version_id)
     end
   end
 

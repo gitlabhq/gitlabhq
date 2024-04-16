@@ -21,7 +21,6 @@ module Types
 
     field :url, GraphQL::Types::String,
           null: false,
-          method: :file,
           description: 'Link to file of the emoji.'
 
     field :external, GraphQL::Types::Boolean,

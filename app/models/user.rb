@@ -72,6 +72,8 @@ class User < MainClusterwide::ApplicationRecord
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
 
+  FIRST_GROUP_PATHS_LIMIT = 200
+
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
@@ -620,9 +622,8 @@ class User < MainClusterwide::ApplicationRecord
         .expiring_soon_and_not_notified)
   end
 
-  scope :with_personal_access_tokens_expiring_soon_and_ids, ->(ids) do
-    where(id: ids)
-    .includes(:expiring_soon_and_unnotified_personal_access_tokens)
+  scope :with_personal_access_tokens_expiring_soon, -> do
+    includes(:expiring_soon_and_unnotified_personal_access_tokens)
   end
 
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
@@ -903,8 +904,8 @@ class User < MainClusterwide::ApplicationRecord
       ).order(
         Arel.sql(sanitize_sql(
           [
-            "CASE WHEN starts_with(REPLACE(users.name, ' ', ''), :pattern) OR starts_with(users.username, :pattern) THEN 1 ELSE 2 END",
-            { pattern: query }
+            "CASE WHEN REPLACE(users.name, ' ', '') ILIKE :prefix_pattern OR users.username ILIKE :prefix_pattern THEN 1 ELSE 2 END",
+            { prefix_pattern: "#{sanitize_sql_like(query)}%" }
           ]
         )),
         :username,
@@ -1058,6 +1059,7 @@ class User < MainClusterwide::ApplicationRecord
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
+    return false unless allow_password_authentication?
 
     super
   end
@@ -1248,6 +1250,18 @@ class User < MainClusterwide::ApplicationRecord
     Gitlab::ObjectHierarchy.new(expanded_groups_requiring_two_factor_authentication)
       .all_objects
       .where(id: groups)
+  end
+
+  def direct_groups_with_route
+    groups.with_route.order_id_asc
+  end
+
+  def first_group_paths
+    first_groups = direct_groups_with_route.take(FIRST_GROUP_PATHS_LIMIT + 1)
+
+    return if first_groups.count > FIRST_GROUP_PATHS_LIMIT
+
+    first_groups.map(&:full_path).sort!
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1676,10 +1690,12 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def assign_personal_namespace(organization = nil)
+  def assign_personal_namespace(organization)
     return namespace if namespace
 
     namespace_attributes = { path: username, name: name }
+
+    # Do not explicitly assign if organization is `nil`
     namespace_attributes[:organization] = organization if organization
 
     build_namespace(namespace_attributes)
@@ -1790,14 +1806,6 @@ class User < MainClusterwide::ApplicationRecord
       followee
     rescue ActiveRecord::RecordNotUnique
       nil
-    end
-  end
-
-  def unfollow(user)
-    if Users::UserFollowUser.where(follower_id: self.id, followee_id: user.id).delete_all > 0
-      self.followees.reset
-    else
-      false
     end
   end
 
@@ -2056,6 +2064,20 @@ class User < MainClusterwide::ApplicationRecord
 
   def can_admin_all_resources?
     can?(:admin_all_resources)
+  end
+
+  def owns_organization?(organization)
+    return false unless organization
+
+    organization_id = organization.is_a?(Integer) ? organization : organization.id
+
+    organization_users.where(organization_id: organization_id).owner.exists?
+  end
+
+  def can_admin_organization?(organization)
+    strong_memoize_with(:can_admin_organization, organization) do
+      owns_organization?(organization)
+    end
   end
 
   def update_two_factor_requirement

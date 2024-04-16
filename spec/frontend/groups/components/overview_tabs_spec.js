@@ -7,16 +7,16 @@ import GroupsApp from '~/groups/components/app.vue';
 import GroupFolderComponent from '~/groups/components/group_folder.vue';
 import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
 import SharedProjectsEmptyState from '~/groups/components/empty_states/shared_projects_empty_state.vue';
-import ArchivedProjectsEmptyState from '~/groups/components/empty_states/archived_projects_empty_state.vue';
+import InactiveProjectsEmptyState from '~/groups/components/empty_states/inactive_projects_empty_state.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
-import ArchivedProjectsService from '~/groups/service/archived_projects_service';
+import InactiveProjectsService from '~/groups/service/inactive_projects_service';
 import { createRouter } from '~/groups/init_overview_tabs';
 import eventHub from '~/groups/event_hub';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
   ACTIVE_TAB_SHARED,
-  ACTIVE_TAB_ARCHIVED,
+  ACTIVE_TAB_INACTIVE,
   OVERVIEW_TABS_SORTING_ITEMS,
   SORTING_ITEM_NAME,
   SORTING_ITEM_UPDATED,
@@ -137,29 +137,29 @@ describe('OverviewTabs', () => {
     expect(wrapper.findComponent(SharedProjectsEmptyState).exists()).toBe(true);
   });
 
-  it('renders `Archived projects` tab and renders `GroupsApp` component with correct empty state after clicking tab', async () => {
+  it('renders `Inactive projects` tab and renders `GroupsApp` component with correct empty state after clicking tab', async () => {
     await createComponent();
 
     const tabPanel = findTabPanels().at(2);
 
     expect(tabPanel.vm.$attrs).toMatchObject({
-      title: OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED],
+      title: OverviewTabs.i18n[ACTIVE_TAB_INACTIVE],
       lazy: true,
     });
 
-    await findTab(OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED]).trigger('click');
+    await findTab(OverviewTabs.i18n[ACTIVE_TAB_INACTIVE]).trigger('click');
 
     expect(tabPanel.findComponent(GroupsApp).props()).toMatchObject({
-      action: ACTIVE_TAB_ARCHIVED,
+      action: ACTIVE_TAB_INACTIVE,
       store: new GroupsStore(),
-      service: new ArchivedProjectsService(defaultProvide.groupId, defaultProvide.initialSort),
+      service: new InactiveProjectsService(defaultProvide.groupId, defaultProvide.initialSort),
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
 
     await waitForPromises();
 
-    expect(wrapper.findComponent(ArchivedProjectsEmptyState).exists()).toBe(true);
+    expect(wrapper.findComponent(InactiveProjectsEmptyState).exists()).toBe(true);
   });
 
   it('sets `lazy` prop to `false` for initially active tab and `true` for all other tabs', async () => {
@@ -197,9 +197,9 @@ describe('OverviewTabs', () => {
     ],
     [
       { name: ACTIVE_TAB_SHARED, params: { group: 'foo/bar' } },
-      OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED],
+      OverviewTabs.i18n[ACTIVE_TAB_INACTIVE],
       {
-        name: ACTIVE_TAB_ARCHIVED,
+        name: ACTIVE_TAB_INACTIVE,
         params: { group: ['foo', 'bar'] },
       },
     ],
@@ -212,7 +212,7 @@ describe('OverviewTabs', () => {
       },
     ],
     [
-      { name: ACTIVE_TAB_ARCHIVED, params: { group: ['foo'] } },
+      { name: ACTIVE_TAB_INACTIVE, params: { group: ['foo'] } },
       OverviewTabs.i18n[ACTIVE_TAB_SHARED],
       {
         name: ACTIVE_TAB_SHARED,
@@ -242,7 +242,7 @@ describe('OverviewTabs', () => {
 
       // Click through tabs so they are all loaded
       await findTab(OverviewTabs.i18n[ACTIVE_TAB_SHARED]).trigger('click');
-      await findTab(OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED]).trigger('click');
+      await findTab(OverviewTabs.i18n[ACTIVE_TAB_INACTIVE]).trigger('click');
       await findTab(OverviewTabs.i18n[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]).trigger('click');
     };
 
@@ -329,7 +329,7 @@ describe('OverviewTabs', () => {
         });
 
         it('adds sort query string', async () => {
-          await findTab(OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED]).trigger('click');
+          await findTab(OverviewTabs.i18n[ACTIVE_TAB_INACTIVE]).trigger('click');
 
           expect(routerMock.push).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -351,7 +351,7 @@ describe('OverviewTabs', () => {
         });
 
         it('defaults to sorting by name', async () => {
-          await findTab(OverviewTabs.i18n[ACTIVE_TAB_ARCHIVED]).trigger('click');
+          await findTab(OverviewTabs.i18n[ACTIVE_TAB_INACTIVE]).trigger('click');
 
           expect(routerMock.push).toHaveBeenCalledWith(
             expect.objectContaining({

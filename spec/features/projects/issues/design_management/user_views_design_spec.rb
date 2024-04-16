@@ -10,6 +10,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design) { create(:design, :with_file, issue: issue) }
+  let_it_be(:design_without_notes) { create(:design, :with_file, issue: issue) }
   let_it_be(:note) { create(:diff_note_on_design, noteable: design, author: user) }
 
   def add_diff_note_emoji(diff_note, emoji_name)
@@ -76,6 +77,14 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     expect(page).to have_selector('.js-design-image')
   end
 
+  it 'shows a design without notes' do
+    empty_discussion_message = "Click on the image where you'd like to add a new comment."
+    click_link design_without_notes.filename
+
+    expect(page).not_to have_selector('.image-notes .design-note .note-text')
+    expect(find_by_testid('new-discussion-disclaimer')).to have_content(empty_discussion_message)
+  end
+
   it 'shows a comment within design' do
     click_link design.filename
 
@@ -86,7 +95,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     click_link design.filename
 
     page.within(find('.image-notes')) do
-      find('.js-vue-discussion-reply').click
+      find_by_testid('discussion-reply-tab').click
       find('.note-textarea').send_keys('Reply to comment')
 
       find_by_testid('save-comment-button').click

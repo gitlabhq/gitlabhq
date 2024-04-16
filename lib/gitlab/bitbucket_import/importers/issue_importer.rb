@@ -11,15 +11,12 @@ module Gitlab
           @project = project
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket', project)
           @object = hash.with_indifferent_access
         end
 
         def execute
           log_info(import_stage: 'import_issue', message: 'starting', iid: object[:iid])
-
-          description = ''
-          description += author_line
-          description += object[:description] if object[:description]
 
           milestone = object[:milestone] ? project.milestones.find_or_create_by(title: object[:milestone]) : nil # rubocop: disable CodeReuse/ActiveRecord
 
@@ -49,7 +46,15 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder
+        attr_reader :object, :project, :formatter, :user_finder, :mentions_converter
+
+        def description
+          description = ''
+          description += author_line
+          description += object[:description] if object[:description]
+
+          mentions_converter.convert(description)
+        end
 
         def author_line
           return '' if find_user_id

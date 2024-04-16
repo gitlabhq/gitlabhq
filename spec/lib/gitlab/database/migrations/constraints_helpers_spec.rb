@@ -638,6 +638,101 @@ RSpec.describe Gitlab::Database::Migrations::ConstraintsHelpers do
     end
   end
 
+  describe '#add_multi_column_not_null_constraint' do
+    context 'when it is called with the default options' do
+      it 'calls add_check_constraint with an infered constraint name and validate: true' do
+        constraint_name = model.check_constraint_name(:test_table, 'email_name', 'num_nonnulls')
+        check = 'num_nonnulls(email, name) = 1'
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: true)
+
+        model.add_multi_column_not_null_constraint(:test_table, :name, :email)
+      end
+    end
+
+    context 'when all parameters are provided' do
+      it 'calls add_check_constraint with the correct parameters' do
+        constraint_name = 'check_test_table_num_nonnulls'
+        check = 'num_nonnulls(email, name) >= 2'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:add_check_constraint)
+                     .with(:test_table, check, constraint_name, validate: false)
+
+        model.add_multi_column_not_null_constraint(
+          :test_table,
+          :name, :email,
+          limit: 2,
+          operator: '>=',
+          constraint_name: constraint_name,
+          validate: false
+        )
+      end
+    end
+
+    context 'when only one column is supplied' do
+      it 'raises an error' do
+        expect do
+          model.add_multi_column_not_null_constraint(:test_table, :name)
+        end.to raise_error('Expected multiple columns, use add_not_null_constraint for a single column')
+      end
+    end
+  end
+
+  describe '#validate_multi_column_not_null_constraint' do
+    context 'when constraint_name is not provided' do
+      it 'calls validate_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table, 'email_name', 'num_nonnulls')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_multi_column_not_null_constraint(:test_table, :name, :email)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls validate_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_email_num_nonnulls'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:validate_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.validate_multi_column_not_null_constraint(:test_table, :name, :email, constraint_name: constraint_name)
+      end
+    end
+  end
+
+  describe '#remove_multi_column_not_null_constraint' do
+    context 'when constraint_name is not provided' do
+      it 'calls remove_check_constraint with an infered constraint name' do
+        constraint_name = model.check_constraint_name(:test_table, 'email_name', 'num_nonnulls')
+
+        expect(model).to receive(:check_constraint_name).and_call_original
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_multi_column_not_null_constraint(:test_table, :name, :email)
+      end
+    end
+
+    context 'when constraint_name is provided' do
+      it 'calls remove_check_constraint with the correct parameters' do
+        constraint_name = 'check_name_email_num_nonnulls'
+
+        expect(model).not_to receive(:check_constraint_name)
+        expect(model).to receive(:remove_check_constraint)
+                     .with(:test_table, constraint_name)
+
+        model.remove_multi_column_not_null_constraint(:test_table, :name, :email, constraint_name: constraint_name)
+      end
+    end
+  end
+
   describe '#rename_constraint' do
     it "executes the statement to rename constraint" do
       expect(model).to receive(:execute).with(

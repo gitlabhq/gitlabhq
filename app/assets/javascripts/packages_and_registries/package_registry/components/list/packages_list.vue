@@ -89,6 +89,12 @@ export default {
         { packageName: this.errorPackages[0].name },
       );
     },
+    errorMessageBodyAlert() {
+      if (this.errorPackages[0]?.statusMessage) {
+        return this.errorPackages[0].statusMessage;
+      }
+      return this.$options.i18n.errorMessageBodyAlert;
+    },
     showErrorPackageAlert() {
       return this.errorPackages.length > 0;
     },
@@ -168,7 +174,7 @@ export default {
         :title="errorTitleAlert"
         :primary-button-text="$options.i18n.deleteThisPackage"
         @primaryAction="showConfirmationModal"
-        >{{ $options.i18n.errorMessageBodyAlert }}</gl-alert
+        >{{ errorMessageBodyAlert }}</gl-alert
       >
       <registry-list
         data-testid="packages-table"

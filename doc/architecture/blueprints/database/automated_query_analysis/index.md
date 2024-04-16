@@ -46,7 +46,7 @@ standard for database related code contributions.
 ## Opportunity
 
 - Automated test suites already generate a large number of SQL queries, for
-  instance  `rspec` test suites, that can be captured and used to perform
+  instance `rspec` test suites, that can be captured and used to perform
   automated analysis.
 - We already utilize `postgres.ai` to analyze query performance, and it has an
   API that will allow us to automate the creation of database clones with

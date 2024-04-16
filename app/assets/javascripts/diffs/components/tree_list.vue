@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlTooltipDirective, GlIcon, GlBadge, GlButtonGroup, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import micromatch from 'micromatch';
@@ -16,6 +16,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlBadge,
+    GlButtonGroup,
+    GlButton,
     TreeListHeight,
     GlIcon,
     DiffFileRow,
@@ -33,7 +36,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['tree', 'renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds']),
+    ...mapState('diffs', [
+      'tree',
+      'renderTreeList',
+      'currentDiffFileId',
+      'viewedDiffFileIds',
+      'realSize',
+    ]),
     ...mapGetters('diffs', ['allBlobs', 'pinnedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
@@ -126,7 +135,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile']),
+    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList']),
     clearSearch() {
       this.search = '';
     },
@@ -139,6 +148,30 @@ export default {
 
 <template>
   <div class="tree-list-holder d-flex flex-column" data-testid="file-tree-container">
+    <div class="gl-display-flex gl-align-items-center gl-mb-3">
+      <h5 class="gl-display-inline-block gl-my-0">{{ __('Files') }}</h5>
+      <gl-badge size="sm" class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
+      <gl-button-group class="gl-ml-auto">
+        <gl-button
+          v-gl-tooltip.hover
+          icon="list-bulleted"
+          :selected="!renderTreeList"
+          :title="__('List view')"
+          :aria-label="__('List view')"
+          data-testid="list-view-toggle"
+          @click="setRenderTreeList({ renderTreeList: false })"
+        />
+        <gl-button
+          v-gl-tooltip.hover
+          icon="file-tree"
+          :selected="renderTreeList"
+          :title="__('Tree view')"
+          :aria-label="__('Tree view')"
+          data-testid="tree-view-toggle"
+          @click="setRenderTreeList({ renderTreeList: true })"
+        />
+      </gl-button-group>
+    </div>
     <div class="gl-pb-3 position-relative tree-list-search d-flex">
       <div class="flex-fill d-flex">
         <gl-icon name="search" class="gl-absolute gl-top-3 gl-left-3 tree-list-icon" />

@@ -41,9 +41,6 @@ Child pipelines:
 
 ### Nested child pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29651) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/243747) in GitLab 13.5.
-
 Parent and child pipelines have a maximum depth of two levels of child pipelines.
 
 A parent pipeline can trigger many child pipelines, and these child pipelines can trigger
@@ -147,8 +144,6 @@ job3:
 ```
 
 ### Use a child pipeline configuration file in a different project
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
 You can use [`include:project`](../yaml/index.md#includeproject) in a trigger job
 to trigger child pipelines with a configuration file in a different project:
@@ -314,9 +309,7 @@ trigger_pipeline:
 
 ## View a downstream pipeline
 
-> - Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
-
-In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
+In the [pipeline details page](index.md#pipeline-details), downstream pipelines display
 as a list of cards on the right of the graph. From this view, you can:
 
 - Select a trigger job to see the triggered downstream pipeline's jobs.
@@ -440,7 +433,7 @@ trigger_job:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
-to the right of the [pipeline graph](index.md#visualize-pipelines).
+to the right of the [pipeline graph](index.md#view-pipelines).
 
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
@@ -689,7 +682,7 @@ is available.
 
 ### Pass a predefined variable
 
-To pass information about the upstream pipeline using [predefined CI/CD variables](../variables/predefined_variables.md).
+To pass information about the upstream pipeline using [predefined CI/CD variables](../variables/predefined_variables.md)
 use interpolation. Save the predefined variable as a new job variable in the trigger
 job, which is passed to the downstream pipeline. For example:
 

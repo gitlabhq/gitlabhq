@@ -17,6 +17,7 @@ import { pagination } from '../mock_data';
 describe('MembersTabs', () => {
   Vue.use(Vuex);
 
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const createComponent = ({ totalItems = 10, provide = {} } = {}) => {

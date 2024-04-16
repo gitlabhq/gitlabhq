@@ -2,6 +2,7 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Suggest improvements to the code in a merge request, and commit those improvements to the merge request directly from your browser."
 ---
 
 # Suggest changes
@@ -24,7 +25,8 @@ merge request, authored by the user who suggested the changes.
    - To select a single line, hover over the line number and
      select **Add a comment to this line** (**{comment}**).
    - To select multiple lines:
-     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**).
+     1. Hover over the line number, and select **Add a comment to this line** (**{comment}**):
+        ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
      1. Select and drag your selection until all desired lines are included. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
 1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
@@ -72,6 +74,10 @@ When applied, the suggestion replaces from 2 lines above to 2 lines below the co
 Suggestions for multiple lines are limited to 100 lines _above_ and 100
 lines _below_ the commented diff line. This allows for up to 200 changed lines per
 suggestion.
+
+Multiline comments display the comment's line numbers above the body of the comment:
+
+![Multiline comment selection displayed above comment](img/multiline-comment-saved.png)
 
 #### Using the rich text editor
 
@@ -168,6 +174,7 @@ The template for commit messages for applied suggestions supports these variable
 | `%{suggestions_count}` | The number of suggestions applied.| `3` |
 | `%{username}`          | The username of the user applying suggestions. | `user_1` |
 | `%{user_full_name}`    | The full name of the user applying suggestions. | `User 1` |
+| `%{co_authored_by}`    | Names and emails of suggestion authors in a `Co-authored-by` Git commit trailer format. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 
 For example, to customize the commit message to output
 `Addresses user_1's review`, set the custom text to

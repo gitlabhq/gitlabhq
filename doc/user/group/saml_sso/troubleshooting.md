@@ -14,6 +14,7 @@ This page contains possible solutions for problems you might encounter when usin
 
 - [SAML SSO for GitLab.com groups](index.md).
 - The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
+- [Switchboard](../../../administration/dedicated/configure_instance.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
 ## SAML debugging tools
 
@@ -107,8 +108,7 @@ in case the customer has [configured SAML Group Sync](group_sync.md):
 
 In the relevant log entry, the:
 
-- `json.args` are in the form `<userID>, <group ID>,
-  [group link ID 1, group link ID 2, ..., group link ID N]`.
+- `json.args` are in the form `<userID>, <group ID>, [group link ID 1, group link ID 2, ..., group link ID N]`.
 - `json.extra.group_saml_group_sync_worker.stats.*` fields show how many times
   this run of group sync `added`, `removed` or `changed` the user's membership.
 
@@ -256,7 +256,7 @@ this may be a generated unique ID, an email address, or other value.
 
 ### Message: "Certificate element missing in response (ds:x509certificate) and not cert provided at settings"
 
-This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response. The X.509 certificate must be included in the response. 
+This error suggests that the IdP is not configured to include the X.509 certificate in the SAML response. The X.509 certificate must be included in the response.
 
 To resolve this problem, configure your IdP to include the X.509 certificate in the SAML response.
 
@@ -304,7 +304,7 @@ As outlined in the [user access section](index.md#link-saml-to-your-existing-git
 If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
 
 - That the top-level group has restricted membership by email domain.
-- That, in [Audit Events](../../../administration/audit_events.md) for the top-level group:
+- That, in [Audit Events](../../../administration/audit_event_reports.md) for the top-level group:
   - You can see **Signed in with GROUP_SAML authentication** action for that user.
   - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
     - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](index.md#unlink-accounts) from their personal account.

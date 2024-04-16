@@ -195,14 +195,11 @@ export default {
       :issuable-id="issuableId"
       :is-todo="hasTodo"
       :disabled="isLoading"
-      class="hide-collapsed btn-icon"
+      :is-icon-button="true"
+      class="hide-collapsed"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-icon
-        v-if="isNotificationsTodosButtons"
-        :class="{ 'todo-undone gl-fill-blue-500': hasTodo }"
-        :name="collapsedButtonIcon"
-      />
+      <gl-icon :class="{ 'todo-undone gl-fill-blue-500': hasTodo }" :name="collapsedButtonIcon" />
     </todo-button>
     <todo-button
       v-else

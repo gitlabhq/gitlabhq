@@ -1,0 +1,34 @@
+{
+  "description": "Catalog Resource Component Spec",
+  "type": "object",
+  "properties": {
+    "inputs": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "patternProperties": {
+            "default": {
+              "type": [
+                "array",
+                "boolean",
+                "integer",
+                "string"
+              ]
+            },
+            "regex": {
+              "type": "string"
+            },
+            "^type$": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -20,43 +20,46 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-Group, subgroup, or project owners can use scan execution policies to require that security scans
-run on a specified schedule or with the project pipeline. The security scan runs with multiple
-project pipelines if you define the policy at a group or subgroup level. GitLab injects the required
-scans into the CI/CD pipeline as new jobs.
 
-Scan execution policies are enforced for all applicable projects, even those without a GitLab
-CI/CD configuration file or where AutoDevOps is disabled. Security policies create the file
-implicitly so that the policies can be enforced. This ensures policies enabling execution of
-secret detection, static analysis, or other scanners that do not require a build in the
-project, are still able to execute and be enforced.
+Use scan execution policies to enforce security scans, either as part of the pipeline or on a
+specified schedule. The security scans run with multiple project pipelines if you define the policy
+at a group or subgroup level.
 
-GitLab appends a hyphen and a number to the job name. The number is unique per policy action to avoid name conflicts.
-policy at the group level, it applies to every child project or subgroup. You cannot edit a
-group-level policy from a child project or subgroup.
+Scan execution policies are enforced for all applicable projects. For projects without a
+`.gitlab-ci.yml` file, or where AutoDevOps is disabled, security policies create the
+`.gitlab-ci.yml` file implicitly. This ensures policies enabling execution of secret detection,
+static analysis, or other scanners that do not require a build in the project, are still able to
+run and be enforced.
 
 This feature has some overlap with [compliance framework pipelines](../../group/compliance_pipelines.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
 
-NOTE:
-Policy jobs for scans other than DAST scans are created in the `test` stage of the pipeline. If you modify the default pipeline
-[`stages`](../../../ci/yaml/index.md#stages),
-to remove the `test` stage, jobs will run in the `scan-policies` stage instead. This stage is injected into the CI pipeline at evaluation time if it doesn't exist. If the `build` stage exists, it is injected just after the `build` stage. If the `build` stage does not exist, it is injected at the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not exist, then a `dast` stage is injected at the end of the pipeline.
-
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Security Scan Policies in GitLab](https://youtu.be/ZBcqGmEwORA?si=aeT4EXtmHjosgjBY).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an overview, see [Enforcing scan execution policies on projects with no GitLab CI/CD configuration](https://www.youtube.com/watch?v=sUfwQQ4-qHs).
 
-## Requirements and limitations
+## Jobs
 
-- The maximum number of scan execution policies is five per security policy project.
+Policy jobs for scans, other than DAST scans, are created in the `test` stage of the pipeline. If
+you remove the `test` stage from the default pipeline, jobs run in the `scan-policies` stage
+instead. This stage is injected into the CI/CD pipeline at evaluation time if it doesn't exist. If
+the `build` stage exists, it is injected just after the `build` stage, otherwise it is injected at
+the beginning of the pipeline. DAST scans always run in the `dast` stage. If this stage does not
+exist, then a `dast` stage is injected at the end of the pipeline.
+
+To avoid job name conflicts, a hyphen and a number is appended to the job name. The number is unique
+per policy action.
 
 ## Scan execution policy editor
 
-NOTE:
-Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
-to select Security Policy Project.
+Use the scan execution policy editor to create or edit a scan execution policy.
+
+Prerequisites:
+
+- Only group, subgroup, or project Owners have the [permissions](../../permissions.md#project-members-permissions)
+  to select Security Policy Project.
+- The maximum number of scan execution policies is five per security policy project.
 
 Once your policy is complete, save it by selecting **Configure with a merge request**
 at the bottom of the editor. You are redirected to the merge request on the project's
@@ -143,7 +146,7 @@ This rule schedules a scan pipeline, enforcing the defined actions on the schedu
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
 | `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
+| `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
@@ -160,10 +163,13 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 
 NOTE:
 Other elements of the [CRON syntax](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+The comma (,), hyphens (-), or step operators (/) are not supported for minutes and hours.
+An error is displayed if the cadence is invalid when creating or editing a policy.
+The scheduled pipelines for a previously created policy using comma (,), hyphen(-), or step operator (/) in minutes or hours fields is skipped.
 
 When using the `schedule` rule type in conjunction with the `agents` field, note the following:
 
-- The GitLab Agent for Kubernetes checks every 30 seconds to see if there is an applicable policy. When a policy is found, the scans are executed according to the `cadence` defined.
+- The GitLab agent for Kubernetes checks every 30 seconds to see if there is an applicable policy. When a policy is found, the scans are executed according to the `cadence` defined.
 - The CRON expression is evaluated using the system-time of the Kubernetes-agent pod.
 
 When using the `schedule` rule type in conjunction with the `branches` field, note the following:
@@ -256,7 +262,75 @@ Note the following:
   - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
     be overridden by group or project CI/CD variables.
   - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
-    ignored, regardless of where they were defined: policy, group, or project.  
+    ignored, regardless of where they were defined: policy, group, or project.
+
+## Security policy scopes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+#### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+
+#### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+scan_execution_policy:
+- name: Enforce DAST in every release pipeline
+  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - release/*
+  actions:
+  - scan: dast
+    scanner_profile: Scanner Profile A
+    site_profile: Site Profile B
+  policy_scope:
+    compliance_frameworks:
+      - id: 2
+      - id: 11
+- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
+  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
+  - scan: sast
+    variables:
+      SAST_EXCLUDED_ANALYZERS: brakeman
+  policy_scope:
+    projects:
+      excluding:
+        - id: 24
+        - id: 27
+```
 
 ## Example security policies project
 
@@ -407,11 +481,12 @@ Note the following:
 - `custom` scans are being executed for triggered rules only.
 - Jobs variables from `custom` scans take precedence over the project's CI/CD configuration.
 - Users triggering a pipeline must have at least read access to CI files specified in the `ci_configuration_path` or included in the CI/CD configuration.
-- It is not possible to define custom stages using the `stages` keyword in a custom scan action. Instead three default stages will be added to the pipeline:
+- It is not possible to define custom stages using the `stages` keyword in a custom scan action. Instead three reserved stages will be added to the pipeline:
   - `.pipeline-policy-pre`at the beginning of the pipeline, before the `.pre` stage.
   - `.pipeline-policy-test` after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
   - `.pipeline-policy-post` at the very end of the pipeline, after the .post stage.
 - Jobs without a stage are assigned to the `.pipeline-policy-test` stage by default.
+- It is not possible to assign jobs to reserved stages outside of a custom scan action.
 
 #### Example security policies project
 
@@ -438,83 +513,3 @@ scan_execution_policy:
 ```
 
 In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
-
-### Security policy scopes
-
-Prerequisites:
-
-- To enable the pipeline execution policy action feature, a group owner or administrator must enable
-  the experimental feature:
-
-  1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
-  1. Expand **Permissions and group features**.
-  1. Select the **Security Policy Scopes** checkbox.
-  1. Optional. Select **Enforce for all subgroups**.
-
-     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
-
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You can refine a security policy's scope to:
-
-- _Include_ only projects containing a compliance framework label.
-- _Include_ or _exclude_ selected projects from enforcement.
-
-#### Policy scope schema
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
-
-#### `policy_scope` scope type
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `object` |  `ids` | List of IDs of the compliance frameworks in scope of enforcement, in an `ids` array. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an `ids` array. |
-
-#### Example `policy.yml` with security policy scopes
-
-```yaml
----
-scan_execution_policy:
-- name: Enforce DAST in every release pipeline
-  description: This policy enforces pipeline configuration to have a job with DAST scan for release branches
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - release/*
-  actions:
-  - scan: dast
-    scanner_profile: Scanner Profile A
-    site_profile: Site Profile B
-  policy_scope:
-    compliance_frameworks:
-      ids:
-      - 2
-      - 11
-- name: Enforce Secret Detection and Container Scanning in every default branch pipeline
-  description: This policy enforces pipeline configuration to have a job with Secret Detection and Container Scanning scans for the default branch
-  enabled: true
-  rules:
-  - type: pipeline
-    branches:
-    - main
-  actions:
-  - scan: secret_detection
-  - scan: sast
-    variables:
-      SAST_EXCLUDED_ANALYZERS: brakeman
-  policy_scope:
-    projects:
-      excluding:
-        ids:
-        - 24
-        - 27
-```

@@ -124,7 +124,7 @@ FLAG:
 On self-managed GitLab, by default the rich text feature is not available. To make it available per group, ask an
 administrator
 to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`. On GitLab.com, this feature
-is not available. The feature is not ready for production use.
+is not available. This feature is not ready for production use.
 
 Use a rich text editor to edit a task's description.
 

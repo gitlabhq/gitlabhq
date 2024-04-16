@@ -267,18 +267,15 @@ function rspec_parallelized_job() {
   export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./tooling/quality/test_level.rb -e "puts Quality::TestLevel.new(${spec_folder_prefixes}).pattern(:${test_level})")
   export FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}all_${report_name}_report.json"
   export NEW_FLAKY_RSPEC_REPORT_PATH="${rspec_flaky_folder_path}new_${report_name}_report.json"
+  export KNAPSACK_GENERATE_REPORT="true"
+  export FLAKY_RSPEC_GENERATE_REPORT="true"
 
-  if [[ -d "ee/" ]]; then
-    export KNAPSACK_GENERATE_REPORT="true"
-    export FLAKY_RSPEC_GENERATE_REPORT="true"
+  if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
+    echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
+  fi
 
-    if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
-      echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"
-    fi
-
-    if [[ ! -f $NEW_FLAKY_RSPEC_REPORT_PATH ]]; then
-      echo "{}" > "${NEW_FLAKY_RSPEC_REPORT_PATH}"
-    fi
+  if [[ ! -f $NEW_FLAKY_RSPEC_REPORT_PATH ]]; then
+    echo "{}" > "${NEW_FLAKY_RSPEC_REPORT_PATH}"
   fi
 
   debug_rspec_variables

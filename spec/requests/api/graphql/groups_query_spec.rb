@@ -14,7 +14,7 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
   let(:fields) do
     <<~FIELDS
       nodes {
-        #{all_graphql_fields_for('Group', excluded: %w[runners])}
+        #{all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory])}
       }
     FIELDS
   end

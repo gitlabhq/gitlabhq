@@ -995,6 +995,12 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe '#can_auto_cancel_pipeline_on_job_failure?' do
+    subject { bridge.can_auto_cancel_pipeline_on_job_failure? }
+
+    it { is_expected.to be true }
+  end
+
   describe '#dependency_variables' do
     subject { bridge.dependency_variables }
 

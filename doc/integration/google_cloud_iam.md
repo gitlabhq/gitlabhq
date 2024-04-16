@@ -16,12 +16,10 @@ DETAILS:
 FLAG:
 On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
 
-This feature is in [Beta](../policy/experiment-beta-support.md). To join the
-list of users testing this feature, join the
-[waitlist](https://forms.gle/XdxdTxC7DXj4NSaz9).
+This feature is in [Beta](../policy/experiment-beta-support.md).
 
 To use Google Cloud integrations like the
-[Google Artifact Registry](../user/project/integrations/google_artifact_registry.md),
+[Google Artifact Management integration](../user/project/integrations/google_artifact_management.md),
 you must create and configure a
 [workload identity pool and provider](https://cloud.google.com/iam/docs/workload-identity-federation).
 The Google Cloud integration uses the workload identity federation to
@@ -30,10 +28,10 @@ grant GitLab workloads access to Google Cloud resources through OpenID Connect
 
 ## Create and configure a workload identity federation
 
-To setup the workload identity federation you can either:
+To set up the workload identity federation you can either:
 
 - Use the GitLab UI for a guided setup.
-- Use the Google Cloud CLI to setup the workload identity federation manually.
+- Use the Google Cloud CLI to set up the workload identity federation manually.
 
 ### With the GitLab UI
 

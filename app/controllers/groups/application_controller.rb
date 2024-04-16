@@ -36,27 +36,19 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def authorize_admin_group!
-    unless can?(current_user, :admin_group, group)
-      render_404
-    end
+    render_404 unless can?(current_user, :admin_group, group)
   end
 
   def authorize_create_deploy_token!
-    unless can?(current_user, :create_deploy_token, group)
-      render_404
-    end
+    render_404 unless can?(current_user, :create_deploy_token, group)
   end
 
   def authorize_destroy_deploy_token!
-    unless can?(current_user, :destroy_deploy_token, group)
-      render_404
-    end
+    render_404 unless can?(current_user, :destroy_deploy_token, group)
   end
 
   def authorize_admin_group_member!
-    unless can?(current_user, :admin_group_member, group)
-      render_403
-    end
+    render_403 unless can?(current_user, :admin_group_member, group)
   end
 
   def authorize_billings_page!
@@ -64,9 +56,7 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def authorize_read_group_member!
-    unless can?(current_user, :read_group_member, group)
-      render_403
-    end
+    render_403 unless can?(current_user, :read_group_member, group)
   end
 
   def build_canonical_path(group)
@@ -76,9 +66,7 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def set_sorting
-    if has_project_list?
-      @group_projects_sort = set_sort_order(Project::SORTING_PREFERENCE_FIELD, sort_value_name)
-    end
+    @group_projects_sort = set_sort_order(Project::SORTING_PREFERENCE_FIELD, sort_value_name) if has_project_list?
   end
 
   def has_project_list?

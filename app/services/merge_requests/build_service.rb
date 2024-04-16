@@ -256,7 +256,7 @@ module MergeRequests
     def append_closes_description
       return unless issue&.to_reference.present?
 
-      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference}"
+      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference(target_project)}"
 
       if description.present?
         descr_parts = [merge_request.description, closes_issue]
@@ -348,7 +348,8 @@ module MergeRequests
 
     def issue
       strong_memoize(:issue) do
-        target_project.get_issue(issue_iid, current_user)
+        issue_project = same_source_and_target_project? ? target_project : source_project
+        issue_project.get_issue(issue_iid, current_user)
       end
     end
   end

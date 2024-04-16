@@ -735,7 +735,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.dns_rebinding_protection_enabled).to be false
       end
 
-      it 'changes User and IP Rate Limits settings' do
+      it 'changes User and IP rate limits settings' do
         visit network_admin_application_settings_path
 
         page.within('.as-ip-limits') do

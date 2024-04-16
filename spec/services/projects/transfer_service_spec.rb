@@ -84,11 +84,11 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
     context 'EventStore' do
       let(:group) do
-        create(:group, :nested).tap { |g| g.add_owner(user) }
+        create(:group, :nested, owners: user)
       end
 
       let(:target) do
-        create(:group, :nested).tap { |g| g.add_owner(user) }
+        create(:group, :nested, owners: user)
       end
 
       let(:project) { create(:project, namespace: group) }

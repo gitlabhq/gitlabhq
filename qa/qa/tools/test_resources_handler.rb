@@ -25,9 +25,12 @@ module QA
   module Tools
     class TestResourcesHandler
       include Support::API
+      include Support::Waiter
+      include Support::Repeater
       include Ci::Helpers
 
       IGNORED_RESOURCES = %w[
+        QA::Resource::CICDSettings
         QA::Resource::CiVariable
         QA::Resource::Repository::Commit
         QA::Resource::Design
@@ -38,11 +41,16 @@ module QA
         QA::EE::Resource::VulnerabilityItem
         QA::EE::Resource::SecurityScanPolicyProject
         QA::EE::Resource::ScanResultPolicyCommit
+        QA::EE::Resource::ScanResultPolicyProject
         QA::EE::Resource::InstanceAuditEventExternalDestination
       ].freeze
 
+      PERSONAL_RESOURCES = %w[QA::Resource::Snippet].freeze
+
       PROJECT = 'gitlab-qa-resources'
       BUCKET  = 'failed-test-resources'
+
+      SUCCESS_CODES = [200, 202, 204].freeze
 
       def initialize(file_pattern = nil)
         @file_pattern = file_pattern
@@ -63,14 +71,11 @@ module QA
             next
           end
 
-          failures << delete_resources(filtered_resources)
-
-          filtered_groups = filtered_resources['QA::Resource::Group']
-          failures << delete_resources_permanently(filtered_groups, 'group') unless filtered_groups.nil?
-
-          filtered_projects = filtered_resources['QA::Resource::Project']
-          failures << delete_resources_permanently(filtered_projects, 'project') unless filtered_projects.nil?
+          resource_list = organize_resources(filtered_resources)
+          failures << delete_resources(resource_list)
         end
+
+        failures.flatten!
 
         return puts "\nDone" if failures.empty?
 
@@ -125,6 +130,97 @@ module QA
 
       private
 
+      def api_client
+        abort("\nPlease provide GITLAB_ADDRESS") unless ENV['GITLAB_ADDRESS']
+
+        @api_client ||= Runtime::API::Client.new(
+          ENV['GITLAB_ADDRESS'],
+          personal_access_token: personal_access_token
+        )
+      end
+
+      def delete_group_or_project(resource, key, failures)
+        resource_info = resource_info(resource, key)
+        delete_response = delete_resource(resource['api_path'])
+
+        if success?(delete_response.code) || delete_response.include?('has been already marked for deletion')
+          if !resource_not_found?(resource['api_path'])
+            logger.info("Successfully marked #{resource_info} for deletion...")
+
+            failures << resource_info unless delete_resource_permanently(resource, key)
+          else
+            logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
+          end
+        else
+          logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
+          failures << resource_info
+        end
+      end
+
+      def delete_personal_resource(resource)
+        response = get(Runtime::API::Request.new(api_client, resource['api_path']).url)
+        parsed_body = parse_body(response)
+        username = parsed_body[:author][:username]
+        user_api_client = set_api_client_by_username(username)
+
+        delete_resource(resource['api_path'], user_api_client)
+      end
+
+      def delete_resource(api_path, client = api_client)
+        delete(Runtime::API::Request.new(client, api_path).url)
+      end
+
+      def delete_resource_permanently(resource, key)
+        resource_info = resource_info(resource, key)
+        type = key.split('::').last.downcase
+        full_path = get_full_path(resource, type)
+
+        response = delete_resource("#{resource['api_path']}?permanently_remove=true&full_path=#{full_path}")
+
+        if success?(response.code)
+          wait_for_resource_deletion(resource['api_path'])
+
+          unless resource_not_found?(resource['api_path'])
+            logger.info("Permanently deleting #{resource_info}..."\
+                        "\e[31mFAILED - #{response} - Resource still exists\e[0m")
+            return false
+          end
+
+          logger.info("Permanently deleting #{resource_info}... \e[32mSUCCESS\e[0m")
+          true
+        else
+          logger.info("Permanently deleting #{resource_info}... \e[31mFAILED - #{response}\e[0m")
+          false
+        end
+      end
+
+      def delete_resources(resources)
+        resources.each_with_object([]) do |(key, value), failures|
+          value.each do |resource|
+            next if resource_not_found?(resource['api_path'])
+
+            resource_info = resource_info(resource, key)
+            logger.info("Processing #{resource_info}...")
+
+            if group_or_project_resource?(key)
+              delete_group_or_project(resource, key, failures)
+              next
+            elsif personal_resource?(key)
+              delete_response = delete_personal_resource(resource)
+            else
+              delete_response = delete_resource(resource['api_path'])
+            end
+
+            if success?(delete_response.code)
+              logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
+            else
+              logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
+              failures << resource_info
+            end
+          end
+        end
+      end
+
       def files
         logger.info('Gathering JSON files...')
         files = Dir.glob(@file_pattern)
@@ -144,14 +240,6 @@ module QA
         files
       end
 
-      def read_file(file)
-        logger.info("Reading and processing #{file}...")
-        JSON.parse(File.read(file))
-      rescue JSON::ParserError
-        logger.error("Failed to read #{file} - Invalid format")
-        nil
-      end
-
       def filter_resources(resources)
         logger.info('Filtering resources - Only keep deletable resources...')
 
@@ -166,79 +254,19 @@ module QA
         transformed_values.reject! { |k, v| v.empty? || IGNORED_RESOURCES.include?(k) }
       end
 
-      def delete_resources(resources)
-        resources.each_with_object([]) do |(key, value), failures|
-          value.each do |resource|
-            resource_info = resource['info'] ? "#{key} - #{resource['info']}" : "#{key} at #{resource['api_path']}"
-            logger.info("Processing #{resource_info}...")
-
-            if resource_not_found?(resource['api_path'])
-              logger.info("#{resource['api_path']} returns 404, next...")
-              next
-            end
-
-            delete_response = delete(Runtime::API::Request.new(api_client, resource['api_path']).url)
-
-            if delete_response.code == 202 || delete_response.code == 204
-              if key == 'QA::Resource::Group' || key == 'QA::Resource::Project' &&
-                  !resource_not_found?(resource['api_path'])
-                logger.info("Successfully marked #{resource_info} for deletion...")
-              else
-                logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
-              end
-            else
-              logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
-              # We might try to delete some groups or projects already marked for deletion
-              # It's fine to ignore these failures
-              failures << resource_info unless key == 'QA::Resource::Group' || key == 'QA::Resource::Project'
-            end
-          end
+      def get_full_path(resource, type)
+        # We need to get the full path of the project again since marking it for deletion changes the name
+        if type == 'project'
+          response = get_resource(resource['api_path'])
+          project = parse_body(response)
+          project[:path_with_namespace]
+        else
+          resource['info'].split("'").last
         end
       end
 
-      def delete_resources_permanently(resources, type)
-        resources.each_with_object([]) do |resource, failures|
-          logger.info("Processing QA::Resource::#{type.capitalize} #{resource['info']}...")
-
-          if resource_not_found?(resource['api_path'])
-            logger.info("#{resource['api_path']} returns 404, next...")
-            next
-          end
-
-          full_path = resource['info'].split("'").last
-
-          if type == 'project'
-            # We need to get the full path of the project again since marking it for deletion changes the name
-            project_response = get(Runtime::API::Request.new(api_client, resource['api_path'].to_s).url)
-            project = parse_body(project_response)
-            full_path = project[:path_with_namespace]
-          end
-
-          permanent_delete_path = "#{resource['api_path']}?permanently_remove=true"\
-                                  "&full_path=#{full_path}"
-          response = delete(Runtime::API::Request.new(api_client, permanent_delete_path).url)
-
-          if response.code == 202
-            logger.info("Permanently deleting #{type} #{resource['info']}... \e[32mSUCCESS\e[0m")
-          else
-            logger.info("Permanently deleting #{type} #{resource['info']}... \e[31mFAILED - #{response}\e[0m")
-            failures << "QA::Resource::#{type.capitalize} #{resource['info']}"
-          end
-        end
-      end
-
-      def resource_not_found?(api_path)
-        # if api path contains param "?hard_delete=<boolean>", remove it
-        get(Runtime::API::Request.new(api_client, api_path.split('?').first).url).code.eql? 404
-      end
-
-      def api_client
-        abort("\nPlease provide GITLAB_ADDRESS") unless ENV['GITLAB_ADDRESS']
-
-        @api_client ||= Runtime::API::Client.new(
-          ENV['GITLAB_ADDRESS'],
-          personal_access_token: personal_access_token
-        )
+      def get_resource(api_path)
+        get(Runtime::API::Request.new(api_client, api_path).url)
       end
 
       def gcs_storage
@@ -248,6 +276,10 @@ module QA
         )
       rescue StandardError => e
         abort("\nThere might be something wrong with the JSON key file - [ERROR] #{e}")
+      end
+
+      def group_or_project_resource?(key)
+        key == 'QA::Resource::Group' || key == 'QA::Resource::Project'
       end
 
       # Path to GCS service account json key file
@@ -260,6 +292,22 @@ module QA
         @json_key ||= ENV["QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS"]
       end
 
+      # It is more efficient to delete resources in hierarchical order
+      # Groups first, then projects, then other resources, then users
+      def organize_resources(filtered_resources)
+        organized_resources = {}
+        groups = filtered_resources.delete('QA::Resource::Group')
+        projects = filtered_resources.delete('QA::Resource::Project')
+        users = filtered_resources.delete('QA::Resource::User')
+
+        organized_resources['QA::Resource::Group'] = groups if groups
+        organized_resources['QA::Resource::Project'] = projects if projects
+        organized_resources.merge!(filtered_resources) unless filtered_resources.empty?
+        organized_resources['QA::Resource::User'] = users if users
+
+        organized_resources
+      end
+
       # In environments that we can run tests with admin scope,
       # we should use GITLAB_QA_ADMIN_ACCESS_TOKEN to clean up resources.
       # This is necessary for cleaning up User resources.
@@ -269,6 +317,51 @@ module QA
         end
 
         @personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'] || ENV['GITLAB_QA_ACCESS_TOKEN']
+      end
+
+      def personal_resource?(key)
+        PERSONAL_RESOURCES.include?(key)
+      end
+
+      def read_file(file)
+        logger.info("Reading and processing #{file}...")
+        JSON.parse(File.read(file))
+      rescue JSON::ParserError
+        logger.error("Failed to read #{file} - Invalid format")
+        nil
+      end
+
+      def resource_info(resource, key)
+        resource['info'] ? "#{key} - #{resource['info']}" : "#{key} at #{resource['api_path']}"
+      end
+
+      def resource_not_found?(api_path)
+        # if api path contains param "?hard_delete=<boolean>", remove it
+        get_resource(api_path.split('?').first).code.eql? 404
+      end
+
+      def set_api_client_by_username(username)
+        user_pat = if username == "gitlab-qa" && ENV['GITLAB_QA_ACCESS_TOKEN']
+                     ENV['GITLAB_QA_ACCESS_TOKEN']
+                   elsif username == "gitlab-qa-user1" && ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
+                     ENV['GITLAB_QA_USER1_ACCESS_TOKEN']
+                   elsif username == "gitlab-qa-user2" && ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
+                     ENV['GITLAB_QA_USER2_ACCESS_TOKEN']
+                   else
+                     personal_access_token
+                   end
+
+        Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: user_pat)
+      end
+
+      def success?(code)
+        SUCCESS_CODES.include?(code)
+      end
+
+      def wait_for_resource_deletion(api_path)
+        wait_until(max_duration: 20, sleep_interval: 1, raise_on_failure: false) do
+          resource_not_found?(api_path)
+        end
       end
     end
   end

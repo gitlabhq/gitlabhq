@@ -25,7 +25,7 @@ module Users
 
     private
 
-    attr_reader :identity_params, :user_params, :user
+    attr_reader :identity_params, :user_params, :user, :organization_id
 
     def identity_attributes
       [:extern_uid, :provider]
@@ -38,9 +38,9 @@ module Users
         standard_build_user
       end
 
-      user.assign_personal_namespace(
-        Organizations::Organization.find_by_id(@organization_id)
-      )
+      organization = Organizations::Organization.find_by_id(organization_id) if organization_id
+
+      user.assign_personal_namespace(organization)
     end
 
     def admin?

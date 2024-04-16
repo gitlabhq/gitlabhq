@@ -4,12 +4,8 @@ module QA
   module Tools
     module Lib
       module Group
-        def fetch_group_id(api_client, group_number = nil)
-          group_name = if group_number
-                         "gitlab-qa-sandbox-group-#{group_number}"
-                       else
-                         ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
-                       end
+        def fetch_group_id(api_client, name = ENV['TOP_LEVEL_GROUP_NAME'])
+          group_name = name || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
 
           logger.info("Fetching group #{group_name}...")
 

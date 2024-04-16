@@ -33,6 +33,7 @@ export const getQueryResponse = {
                   name: 'Marge Simpson',
                   username: 'msimpson',
                   webUrl: 'url/msimpson',
+                  webPath: '/msimpson',
                 },
               ],
             },
@@ -43,6 +44,7 @@ export const getQueryResponse = {
               name: 'Homer Simpson',
               username: 'hsimpson',
               webUrl: 'url/hsimpson',
+              webPath: '/hsimpson',
             },
             labels: {
               nodes: [

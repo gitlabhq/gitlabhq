@@ -965,3 +965,21 @@ export const MOCK_COMMANDS = [
     params: ['\u003c#issue | group/project#issue | issue URL\u003e'],
   },
 ];
+
+export const MOCK_WIKIS = [
+  {
+    title: 'Home',
+    slug: 'home',
+    path: '/gitlab-org/gitlab-test/-/wikis/home',
+  },
+  {
+    title: 'How to use GitLab',
+    slug: 'how-to-use-gitlab',
+    path: '/gitlab-org/gitlab-test/-/wikis/how-to-use-gitlab',
+  },
+  {
+    title: 'Changelog',
+    slug: 'changelog',
+    path: '/gitlab-org/gitlab-test/-/wikis/changelog',
+  },
+];

@@ -205,16 +205,6 @@ RSpec.describe ObjectStorage::DirectUpload, feature_category: :shared do
           expect(subject[:ObjectStorage][:GoCloudConfig]).to eq({ URL: gocloud_url })
         end
       end
-
-      context 'with workhorse_google_client disabled' do
-        before do
-          stub_feature_flags(workhorse_google_client: false)
-        end
-
-        it 'does not set Workhorse client data' do
-          expect(subject.keys).not_to include(:UseWorkhorseClient, :RemoteTempObjectID, :ObjectStorage)
-        end
-      end
     end
 
     shared_examples 'a valid AzureRM upload' do

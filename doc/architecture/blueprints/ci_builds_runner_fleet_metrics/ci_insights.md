@@ -92,7 +92,7 @@ Make sure that we can get information on how often this page is viewed. If we do
 
 ### Routing
 
-We are planning to have new routes for the page and some redicts to setup. To read more about the routing proposal, see the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437556)
+We are planning to have new routes for the page and some redicts to set up. To read more about the routing proposal, see the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/437556)
 
 ### Pipelines duration graph
 

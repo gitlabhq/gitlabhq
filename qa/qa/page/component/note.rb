@@ -23,7 +23,6 @@ module QA
           end
 
           base.view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
-            element 'discussion-reply-tab'
             element 'resolve-discussion-button'
           end
 
@@ -34,6 +33,10 @@ module QA
 
           base.view 'app/assets/javascripts/notes/components/discussion_filter_note.vue' do
             element 'discussion-filter-container'
+          end
+
+          base.view 'app/assets/javascripts/notes/components/discussion_reply_placeholder.vue' do
+            element 'discussion-reply-tab'
           end
 
           base.view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do

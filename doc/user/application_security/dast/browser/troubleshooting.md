@@ -29,7 +29,7 @@ Many users who encounter issues with a DAST scan have a good high-level idea of 
 it's not scanning particular pages, or it's not selecting a button on the page.
 
 As much as possible, try to isolate the problem to help narrow the search for a solution. For example, take the situation where DAST isn't scanning a particular page.
-From where should DAST have found the page? What path did it take to navigate there? Were there elements on the referring page that DAST should have selected, but did not?
+From where should DAST have found the page? What path did it take to get there? Were there elements on the referring page that DAST should have selected, but did not?
 
 ### Is the outcome achievable by a human?
 
@@ -42,11 +42,11 @@ Knowing the outcome you expect, try to replicate it manually using a browser on 
   - In Chrome: `View -> Developer -> Developer Tools`.
   - In Firefox: `Tools -> Browser Tools -> Web Developer Tools`.
 - If authenticating:
-  - Navigate to the `DAST_AUTH_URL`.
+  - Go to the `DAST_AUTH_URL`.
   - Type in the `DAST_USERNAME` in the `DAST_USERNAME_FIELD`.
   - Type in the `DAST_PASSWORD` in the `DAST_PASSWORD_FIELD`.
   - Select the `DAST_SUBMIT_FIELD`.
-- Select links and fill in forms. Navigate to the pages that aren't scanning correctly.
+- Select links and fill in forms. Go to the pages that aren't scanning correctly.
 - Observe how your application behaves. Notice if there is anything that might cause problems for an automated scanner.
 
 ### Any reason why DAST would not work?

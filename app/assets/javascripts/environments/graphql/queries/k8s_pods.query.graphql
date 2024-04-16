@@ -1,12 +1,7 @@
+#import "~/kubernetes_dashboard/graphql/queries/workload_item.fragment.graphql"
+
 query getK8sPods($configuration: LocalConfiguration, $namespace: String) {
   k8sPods(configuration: $configuration, namespace: $namespace) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-    }
-    status {
-      phase
-    }
+    ...WorkloadItem
   }
 }

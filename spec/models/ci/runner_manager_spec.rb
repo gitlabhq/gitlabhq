@@ -46,7 +46,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
     let_it_be(:offline_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 2.hours.ago) }
     let_it_be(:online_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: 1.second.ago) }
-    let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, runner: runner, contacted_at: nil) }
+    let_it_be(:never_contacted_runner_manager) { create(:ci_runner_machine, :unregistered, runner: runner) }
 
     describe '.online' do
       subject(:runner_managers) { described_class.online }
@@ -329,46 +329,34 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
   end
 
   describe '#status', :freeze_time do
-    let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago) }
-
     subject { runner_manager.status }
 
     context 'if never connected' do
-      before do
-        runner_manager.contacted_at = nil
-      end
+      let(:runner_manager) { build(:ci_runner_machine, :unregistered, created_at: 8.days.ago) }
 
       it { is_expected.to eq(:stale) }
 
       context 'if created recently' do
-        before do
-          runner_manager.created_at = 1.day.ago
-        end
+        let(:runner_manager) { build(:ci_runner_machine, :unregistered, created_at: 1.day.ago) }
 
         it { is_expected.to eq(:never_contacted) }
       end
     end
 
     context 'if contacted 1s ago' do
-      before do
-        runner_manager.contacted_at = 1.second.ago
-      end
+      let(:runner_manager) { build(:ci_runner_machine, contacted_at: 1.second.ago) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'if contacted recently' do
-      before do
-        runner_manager.contacted_at = 2.hours.ago
-      end
+      let(:runner_manager) { build(:ci_runner_machine, contacted_at: 2.hours.ago) }
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'if contacted long time ago' do
-      before do
-        runner_manager.contacted_at = 7.days.ago
-      end
+      let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago, contacted_at: 7.days.ago) }
 
       it { is_expected.to eq(:stale) }
     end
@@ -436,7 +424,7 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         end
 
         it 'updates only ip_address' do
-          expect_redis_update(values.merge(contacted_at: Time.current))
+          expect_redis_update(values.merge(contacted_at: Time.current, creation_state: :finished))
 
           heartbeat
         end

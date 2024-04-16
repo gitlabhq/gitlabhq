@@ -48,9 +48,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def authorize_action!(action)
-    unless can?(current_user, action, project)
-      access_denied!
-    end
+    access_denied! unless can?(current_user, action, project)
   end
 
   def check_project_feature_available!(feature)

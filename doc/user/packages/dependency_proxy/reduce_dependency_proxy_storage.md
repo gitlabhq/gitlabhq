@@ -37,7 +37,7 @@ image or tag from Docker Hub.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340777) in GitLab 14.6
 
 You can enable an automatic time-to-live (TTL) policy for the Dependency Proxy from the user
-interface. To do this, navigate to your group's **Settings > Packages and registries > Dependency Proxy**
+interface. To do this, go to your group's **Settings > Packages and registries > Dependency Proxy**
 and enable the setting to automatically clear items from the cache after 90 days.
 
 ### Enable cleanup policies with GraphQL

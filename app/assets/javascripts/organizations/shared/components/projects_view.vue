@@ -6,9 +6,13 @@ import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
+import {
+  renderProjectDeleteSuccessToast,
+  deleteProjectParams,
+  formatProjects,
+} from 'ee_else_ce/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
-import { formatProjects } from '../utils';
 import NewProjectButton from './new_project_button.vue';
 
 export default {
@@ -174,8 +178,9 @@ export default {
 
       try {
         this.setProjectIsDeleting(nodeIndex, true);
-        await deleteProject(project.id);
+        await deleteProject(project.id, deleteProjectParams(project));
         this.$apollo.queries.projects.refetch();
+        renderProjectDeleteSuccessToast(project);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {

@@ -35,7 +35,7 @@ RSpec.describe Mutations::Discussions::ToggleResolve do
       end
 
       context 'when the user has permission' do
-        let_it_be(:user) { create(:user, developer_projects: [project]) }
+        let_it_be(:user) { create(:user, developer_of: project) }
 
         context 'when discussion cannot be found' do
           let(:id_arg) { global_id_of(id: non_existing_record_id, model_name: discussion.class.name) }

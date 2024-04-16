@@ -682,6 +682,8 @@ The selected diagram is replaced with an updated version.
 
 ## GitLab-specific references
 
+> - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
+
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
 that reference into a link so you can navigate between them. All references to projects should use the
@@ -692,35 +694,37 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-| References                                                     | Input                          | Cross-project reference                 | Shortcut inside the same namespace |
-| -------------------------------------------------------------- | ------------------------------ | --------------------------------------- | ---------------------------------- |
-| Specific user                                                  | `@user_name`                   |                                         |                                    |
-| Specific group                                                 | `@group_name`                  |                                         |                                    |
-| Entire team                                                    | [`@all`](discussions/index.md#mentioning-all-members) |                  |                                    |
-| Project                                                        | `namespace/project>`           |                                         |                                    |
-| Issue                                                          | ``#123``                       | `namespace/project#123`                 | `project#123`                      |
-| Merge request                                                  | `!123`                         | `namespace/project!123`                 | `project!123`                      |
-| Snippet                                                        | `$123`                         | `namespace/project$123`                 | `project$123`                      |
-| [Epic](group/epics/index.md)                                   | `&123`                         | `group1/subgroup&123`                   |                                    |
-| [Iteration](group/iterations/index.md)                         | `*iteration:"iteration title"` |                                         |                                    |
-| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`      |                             |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`     |                             |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]` |                             |                                    |
-| [Vulnerability](application_security/vulnerabilities/index.md) | `[vulnerability:123]`          | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
-| Feature flag                                                   | `[feature_flag:123]`           | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
-| Label by ID                                                    | `~123`                         | `namespace/project~123`                 | `project~123`                      |
-| Label by name (one word)                                       | `~bug`                         | `namespace/project~bug`                 | `project~bug`                      |
-| Label by name (multiple words)                                 | `~"feature request"`           | `namespace/project~"feature request"`   | `project~"feature request"`        |
-| Label by name (scoped)                                         | `~"priority::high"`            | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
-| Project milestone by ID <sup>2</sup> | `%123`                         | `namespace/project%123`                 | `project%123`                      |
-| Milestone by name (one word) <sup>2</sup> | `%v1.23`                       | `namespace/project%v1.23`               | `project%v1.23`                    |
-| Milestone by name (multiple words) <sup>2</sup> | `%"release candidate"`         | `namespace/project%"release candidate"` | `project%"release candidate"`      |
-| Commit (specific)                                              | `9ba12248`                     | `namespace/project@9ba12248`            | `project@9ba12248`                 |
-| Commit range comparison                                        | `9ba12248...b19a04f5`          | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
-| Repository file reference                                      | `[README](doc/README.md)`      |                                         |                                    |
-| Repository file reference (specific line)                      | `[README](doc/README.md#L13)`  |                                         |                                    |
-| [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
-| [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
+| References                                                                           | Input                                                 | Cross-project reference                 | Shortcut inside the same namespace |
+|--------------------------------------------------------------------------------------|-------------------------------------------------------|-----------------------------------------|------------------------------------|
+| Specific user                                                                        | `@user_name`                                          |                                         |                                    |
+| Specific group                                                                       | `@group_name`                                         |                                         |                                    |
+| Entire team                                                                          | [`@all`](discussions/index.md#mentioning-all-members) |                                         |                                    |
+| Project                                                                              | `namespace/project>`                                  |                                         |                                    |
+| Issue                                                                                | ``#123``                                              | `namespace/project#123`                 | `project#123`                      |
+| Merge request                                                                        | `!123`                                                | `namespace/project!123`                 | `project!123`                      |
+| Snippet                                                                              | `$123`                                                | `namespace/project$123`                 | `project$123`                      |
+| [Epic](group/epics/index.md)                                                         | `&123`                                                | `group1/subgroup&123`                   |                                    |
+| [Iteration](group/iterations/index.md)                                               | `*iteration:"iteration title"`                        |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`                                       |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`                                      |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                         |                                    |
+| [Vulnerability](application_security/vulnerabilities/index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
+| Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
+| Label by ID                                                                          | `~123`                                                | `namespace/project~123`                 | `project~123`                      |
+| Label by name (one word)                                                             | `~bug`                                                | `namespace/project~bug`                 | `project~bug`                      |
+| Label by name (multiple words)                                                       | `~"feature request"`                                  | `namespace/project~"feature request"`   | `project~"feature request"`        |
+| Label by name (scoped)                                                               | `~"priority::high"`                                   | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
+| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                 | `project%123`                      |
+| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`               | `project%v1.23`                    |
+| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"` | `project%"release candidate"`      |
+| Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`            | `project@9ba12248`                 |
+| Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5` | `project@9ba12248...b19a04f5`      |
+| Repository file reference                                                            | `[README](doc/README.md)`                             |                                         |                                    |
+| Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                         |                                    |
+| [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`           | `project^alert#123`                |
+| [Contact](crm/index.md#contacts)                                                     | `[contact:test@example.com]`                          |                                         |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is the same as the title)        | `[[Home]]`                                            |                                         |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is different from the title)     | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                         |                                    |
 
 **Footnotes:**
 

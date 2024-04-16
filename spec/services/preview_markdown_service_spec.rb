@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
   let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let(:user) { developer }
   let(:service) { described_class.new(container: project, current_user: user, params: params) }
 
@@ -67,7 +67,7 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       end
 
       context 'when user is not authorized' do
-        let(:user) { create(:user).tap { |u| project.add_guest(u) } }
+        let(:user) { create(:user, guest_of: project) }
 
         it 'returns no suggestions' do
           result = service.execute

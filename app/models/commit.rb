@@ -31,6 +31,7 @@ class Commit
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   MAX_SHA_LENGTH = Gitlab::Git::Commit::MAX_SHA_LENGTH
   COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN
+  WHOLE_WORD_COMMIT_SHA_PATTERN = /\b#{COMMIT_SHA_PATTERN}\b/
   EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/
@@ -40,6 +41,8 @@ class Commit
   MAX_DIFF_LINES_SETTING_UPPER_BOUND = 100_000
   MAX_DIFF_FILES_SETTING_UPPER_BOUND = 3_000
   DIFF_SAFE_LIMIT_FACTOR = 10
+
+  CO_AUTHORED_TRAILER = "Co-authored-by"
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :full_title, pipeline: :single_line, limit: 1.kilobyte
@@ -205,7 +208,7 @@ class Commit
   def self.reference_pattern
     @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>#{COMMIT_SHA_PATTERN})
+      (?<commit>#{WHOLE_WORD_COMMIT_SHA_PATTERN})
     }x
   end
 

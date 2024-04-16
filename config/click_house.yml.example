@@ -1,6 +1,15 @@
+development:
+  main:
+    database: gitlab_clickhouse_development
+    url: 'http://localhost:8123'
+    username: default
+    password:
 test:
   main:
     database: gitlab_clickhouse_test
     url: 'http://localhost:8123'
     username: clickhouse
     password: clickhouse
+    variables:
+      # execute mutations (updates, deletes) synchronously to avoid flaky tests
+      mutations_sync: 1

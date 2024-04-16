@@ -32,7 +32,7 @@ module Ci
 
     def status
       return :stale if stale?
-      return :never_contacted unless contacted_at
+      return :never_contacted unless finished_creation_state?
 
       online? ? :online : :offline
     end

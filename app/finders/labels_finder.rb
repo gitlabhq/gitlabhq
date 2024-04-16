@@ -54,9 +54,7 @@ class LabelsFinder < UnionFinder
         end
       end
     else
-      if group?
-        item_ids << Label.where(group_id: group_ids_for(group))
-      end
+      item_ids << Label.where(group_id: group_ids_for(group)) if group?
 
       item_ids << Label.where(group_id: projects.group_ids)
       item_ids << Label.where(project_id: ids_user_can_read_labels(projects)) unless only_group_labels?

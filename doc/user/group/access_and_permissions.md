@@ -106,6 +106,7 @@ Keep in mind that restricting group access by IP address has the following impli
   restricted IP address, the IP restriction prevents code from being cloned.
 - Users might still see some events from the IP-restricted groups and projects on their dashboard. Activity might include
   push, merge, issue, or comment events.
+- IP access restrictions do not stop users from using the [reply by email feature](../../administration/reply_by_email.md) to create or edit comments on issues or merge requests.
 - IP access restrictions for Git operations via SSH are supported on GitLab SaaS.
   IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
   with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
@@ -253,7 +254,7 @@ DETAILS:
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
+For example, if you want to lock the group for an [Audit Event](../../administration/audit_event_reports.md),
 you can guarantee that project membership cannot be modified during the audit.
 
 If group membership lock is enabled, the group Owner can still:

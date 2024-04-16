@@ -139,7 +139,7 @@ It is possible to host LFS objects externally by setting a custom LFS URL with `
 You might choose to do this if you are using an appliance like a Nexus Repository to store LFS data. If you choose to use an external LFS store,
 GitLab can't verify LFS objects. Pushes then fail if you have GitLab LFS support enabled.
 
-To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).
+To stop push failure, LFS support can be disabled in the [Project settings](index.md#enable-git-lfs-for-a-project), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).
 
 ## I/O timeout when pushing LFS objects
 

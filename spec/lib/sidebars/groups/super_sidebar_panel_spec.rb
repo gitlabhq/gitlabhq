@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigation do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let_it_be(:group) { create(:group, owners: user) }
 
   let(:context) do
     Sidebars::Groups::Context.new(

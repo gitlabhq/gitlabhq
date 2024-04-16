@@ -23,14 +23,24 @@ function createSuggestionPlugin({
     pluginKey: new PluginKey(uniqueId('suggestions')),
 
     command: ({ editor: tiptapEditor, range, props }) => {
-      tiptapEditor
-        .chain()
-        .focus()
-        .insertContentAt(range, [
+      let content;
+
+      if (nodeType === 'link') {
+        content = [
+          {
+            type: 'text',
+            text: props.text,
+            marks: [{ type: 'link', attrs: props }],
+          },
+        ];
+      } else {
+        content = [
           { type: nodeType, attrs: props },
           { type: 'text', text: ` ${insertionMap[props.text] || ''}` },
-        ])
-        .run();
+        ];
+      }
+
+      tiptapEditor.chain().focus().insertContentAt(range, content).run();
     },
 
     async items({ query, editor: tiptapEditor }) {
@@ -153,6 +163,7 @@ export default Node.create({
       createPlugin('[vulnerability:', 'reference', 'vulnerability'),
       createPlugin('%', 'reference', 'milestone'),
       createPlugin(':', 'emoji', 'emoji'),
+      createPlugin('[[', 'link', 'wiki'),
       createPlugin('/', 'reference', 'command', {
         cache: false,
         limit: 100,

@@ -41,27 +41,16 @@ describe('pipeline graph job item', () => {
   const myCustomClass1 = 'my-class-1';
   const myCustomClass2 = 'my-class-2';
 
-  const defaultProps = {
-    job: mockJob,
-  };
-
-  const createWrapper = ({ props, data, mountFn = mountExtended, mocks = {} } = {}) => {
+  const createWrapper = ({ mountFn = mountExtended, props, ...options } = {}) => {
     wrapper = mountFn(JobItem, {
-      data() {
-        return {
-          ...data,
-        };
-      },
       propsData: {
-        ...defaultProps,
+        job: mockJob,
         ...props,
-      },
-      mocks: {
-        ...mocks,
       },
       stubs: {
         CiIcon,
       },
+      ...options,
     });
   };
 
@@ -118,6 +107,25 @@ describe('pipeline graph job item', () => {
 
     it('should apply hover class and provided class name', () => {
       expect(findJobWithoutLink().classes()).toContain('css-class-job-name');
+    });
+  });
+
+  describe('name when is-link is false', () => {
+    beforeEach(() => {
+      createWrapper({
+        props: {
+          isLink: false,
+        },
+      });
+    });
+
+    it('should render status and name', () => {
+      expect(findJobCiIcon().exists()).toBe(true);
+      expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
+        true,
+      );
+
+      expect(wrapper.text()).toBe(mockJob.name);
     });
   });
 
@@ -492,8 +500,10 @@ describe('pipeline graph job item', () => {
           // or emit an event directly. We therefore set the data property
           // as it would be if the box was checked.
           createWrapper({
-            data: {
-              currentSkipModalValue: true,
+            data() {
+              return {
+                currentSkipModalValue: true,
+              };
             },
             props: {
               skipRetryModal: false,

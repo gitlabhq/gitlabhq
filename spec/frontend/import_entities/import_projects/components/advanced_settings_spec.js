@@ -33,21 +33,9 @@ describe('Import Advanced Settings', () => {
     createComponent();
   });
 
-  it('renders fine grained token message', () => {
-    createComponent({
-      provide: {
-        isFineGrainedToken: true,
-      },
-    });
-
+  it('renders a warning message', () => {
     expect(findAlert().text()).toMatchInterpolatedText(
-      'The more information you select, the longer it will take to import Your fine-grained personal access token may not support collaborator import. Please use a classic token with read:org scope to import collaborators. See the documentation for further details.',
-    );
-  });
-
-  it('does not render fine grained token message', () => {
-    expect(findAlert().text()).toMatchInterpolatedText(
-      'The more information you select, the longer it will take to import',
+      'The more information you select, the longer it will take to import To import collaborators, you must use a classic personal access token with read:org scope. Learn more.',
     );
   });
 

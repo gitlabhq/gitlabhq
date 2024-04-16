@@ -41,7 +41,7 @@ module Groups
         )
 
         last_group = namespace_or_group(partial_path) ||
-          Groups::CreateService.new(current_user, new_params).execute
+          Groups::CreateService.new(current_user, new_params).execute[:group]
       end
 
       last_group

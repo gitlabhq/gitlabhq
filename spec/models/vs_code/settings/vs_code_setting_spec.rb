@@ -10,6 +10,7 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
     it { is_expected.to validate_presence_of(:setting_type) }
     it { is_expected.to validate_presence_of(:content) }
     it { is_expected.to validate_presence_of(:uuid) }
+    it { is_expected.to validate_presence_of(:version) }
   end
 
   describe 'validates the uniqueness of attributes' do

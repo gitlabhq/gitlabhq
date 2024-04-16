@@ -133,6 +133,20 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.auditEventsInstanceStreamingDestinations`
+
+Instance-level external audit event streaming destinations.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`InstanceAuditEventStreamingDestinationConnection`](#instanceauditeventstreamingdestinationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.boardList`
 
 Find an issue board list.
@@ -239,7 +253,7 @@ Returns [`CiStage`](#cistage).
 
 ### `Query.ciQueueingHistory`
 
-Time it took for ci job to be picked up by runner in percentiles.
+Time taken for CI jobs to be picked up by runner by percentile.
 
 DETAILS:
 **Introduced** in GitLab 16.4.
@@ -251,9 +265,9 @@ Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time frame. Defaults to 3 hours ago. |
+| <a id="queryciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time frame. Defaults to three hours ago. |
 | <a id="queryciqueueinghistoryrunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter jobs by the type of runner that executed them. |
-| <a id="queryciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time frame. Defaults to current time. |
+| <a id="queryciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time frame. Defaults to the current time. |
 
 ### `Query.ciVariables`
 
@@ -769,6 +783,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="queryprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="queryprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
@@ -1550,6 +1565,29 @@ Input type: `AlertTodoCreateInput`
 | <a id="mutationalerttodocreateissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
 | <a id="mutationalerttodocreatetodo"></a>`todo` | [`Todo`](#todo) | To-do item after mutation. |
 
+### `Mutation.approvalProjectRuleDelete`
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Input type: `approvalProjectRuleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruledeleteid"></a>`id` | [`ApprovalProjectRuleID!`](#approvalprojectruleid) | Global ID of the approval project rule to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationapprovalprojectruledeleteapprovalrule"></a>`approvalRule` | [`ApprovalProjectRule`](#approvalprojectrule) | Deleted approval rule. |
+| <a id="mutationapprovalprojectruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationapprovalprojectruledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.approvalProjectRuleUpdate`
 
 DETAILS:
@@ -2192,6 +2230,33 @@ Input type: `BranchRuleDeleteInput`
 | <a id="mutationbranchruledeletebranchrule"></a>`branchRule` | [`BranchRule`](#branchrule) | Branch rule after mutation. |
 | <a id="mutationbranchruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchruledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.branchRuleExternalStatusCheckCreate`
+
+Create a new external status check from a branch rule.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `BranchRuleExternalStatusCheckCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckcreatebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to update. |
+| <a id="mutationbranchruleexternalstatuscheckcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateexternalurl"></a>`externalUrl` | [`String!`](#string) | URL of external status check resource. |
+| <a id="mutationbranchruleexternalstatuscheckcreatename"></a>`name` | [`String!`](#string) | Name of the external status check. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruleexternalstatuscheckcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationbranchruleexternalstatuscheckcreateexternalstatuscheck"></a>`externalStatusCheck` | [`ExternalStatusCheck`](#externalstatuscheck) | New status check after mutation. |
 
 ### `Mutation.branchRuleUpdate`
 
@@ -4669,6 +4734,82 @@ Input type: `GoogleCloudLoggingConfigurationUpdateInput`
 | <a id="mutationgooglecloudloggingconfigurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationgooglecloudloggingconfigurationupdategooglecloudloggingconfiguration"></a>`googleCloudLoggingConfiguration` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | configuration updated. |
 
+### `Mutation.groupAuditEventStreamingDestinationsCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `GroupAuditEventStreamingDestinationsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationscreatecategory"></a>`category` | [`String!`](#string) | Destination category. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
+| <a id="mutationgroupauditeventstreamingdestinationscreategrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+| <a id="mutationgroupauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationgroupauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationscreateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | Destination created. |
+
+### `Mutation.groupAuditEventStreamingDestinationsDelete`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `GroupAuditEventStreamingDestinationsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsdeleteid"></a>`id` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | ID of the audit events external streaming destination to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.groupAuditEventStreamingDestinationsUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `GroupAuditEventStreamingDestinationsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateid"></a>`id` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | ID of external audit event destination to update. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | Updated destination. |
+
 ### `Mutation.groupMemberBulkUpdate`
 
 Input type: `GroupMemberBulkUpdateInput`
@@ -4871,6 +5012,81 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
+
+### `Mutation.instanceAuditEventStreamingDestinationsCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `InstanceAuditEventStreamingDestinationsCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatecategory"></a>`category` | [`String!`](#string) | Destination category. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateconfig"></a>`config` | [`JSON!`](#json) | Destination config. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreatesecrettoken"></a>`secretToken` | [`String!`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationscreateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | Destination created. |
+
+### `Mutation.instanceAuditEventStreamingDestinationsDelete`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `InstanceAuditEventStreamingDestinationsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsdeleteid"></a>`id` | [`AuditEventsInstanceExternalStreamingDestinationID!`](#auditeventsinstanceexternalstreamingdestinationid) | ID of the audit events external streaming destination to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.instanceAuditEventStreamingDestinationsUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `InstanceAuditEventStreamingDestinationsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateid"></a>`id` | [`AuditEventsInstanceExternalStreamingDestinationID!`](#auditeventsinstanceexternalstreamingdestinationid) | ID of external audit event destination to update. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdatesecrettoken"></a>`secretToken` | [`String`](#string) | Secret token. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | Updated destination. |
 
 ### `Mutation.instanceExternalAuditEventDestinationCreate`
 
@@ -6029,6 +6245,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmergerequestupdatedescription"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutationmergerequestupdateiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
@@ -6157,6 +6374,44 @@ Input type: `NamespaceCiCdSettingsUpdateInput`
 | <a id="mutationnamespacecicdsettingsupdatecicdsettings"></a>`ciCdSettings` | [`NamespaceCiCdSetting!`](#namespacecicdsetting) | CI/CD settings after mutation. |
 | <a id="mutationnamespacecicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacecicdsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.namespaceCreateRemoteDevelopmentClusterAgentMapping`
+
+Input type: `NamespaceCreateRemoteDevelopmentClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be associated with the namespace. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | GlobalID of the namespace to be associated with the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.namespaceDeleteRemoteDevelopmentClusterAgentMapping`
+
+Input type: `NamespaceDeleteRemoteDevelopmentClusterAgentMappingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent to be un-associated from the namespace. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | GlobalID of the namespace to be un-associated from the cluster agent. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.namespaceIncreaseStorageTemporarily`
 
@@ -6684,6 +6939,79 @@ Input type: `ProjectMemberBulkUpdateInput`
 | <a id="mutationprojectmemberbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectmemberbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectmemberbulkupdateprojectmembers"></a>`projectMembers` | [`[ProjectMember!]`](#projectmember) | Project members after mutation. |
+
+### `Mutation.projectSavedReplyCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `ProjectSavedReplyCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplycreatecontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
+| <a id="mutationprojectsavedreplycreatename"></a>`name` | [`String!`](#string) | Name of the saved reply. |
+| <a id="mutationprojectsavedreplycreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsavedreplycreatesavedreply"></a>`savedReply` | [`ProjectSavedReply`](#projectsavedreply) | Saved reply after mutation. |
+
+### `Mutation.projectSavedReplyDestroy`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `ProjectSavedReplyDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplydestroyid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of the project-level saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsavedreplydestroysavedreply"></a>`savedReply` | [`ProjectSavedReply`](#projectsavedreply) | Saved reply after mutation. |
+
+### `Mutation.projectSavedReplyUpdate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `ProjectSavedReplyUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplyupdatecontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
+| <a id="mutationprojectsavedreplyupdateid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of the project-level saved reply. |
+| <a id="mutationprojectsavedreplyupdatename"></a>`name` | [`String!`](#string) | Name of the saved reply. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsavedreplyupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsavedreplyupdatesavedreply"></a>`savedReply` | [`ProjectSavedReply`](#projectsavedreply) | Saved reply after mutation. |
 
 ### `Mutation.projectSetComplianceFramework`
 
@@ -7496,6 +7824,28 @@ Input type: `SecurityTrainingUpdateInput`
 | <a id="mutationsecuritytrainingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritytrainingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecuritytrainingupdatetraining"></a>`training` | [`ProjectSecurityTraining`](#projectsecuritytraining) | Represents the training entity subject to mutation. |
+
+### `Mutation.setPreReceiveSecretDetection`
+
+Enable/disable pre-receive secret detection for the given project.
+
+Input type: `SetPreReceiveSecretDetectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetprereceivesecretdetectionenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for pre-receive secret detection feature. |
+| <a id="mutationsetprereceivesecretdetectionnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetprereceivesecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsetprereceivesecretdetectionprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 
 ### `Mutation.starProject`
 
@@ -8429,6 +8779,54 @@ Input type: `UserAchievementsDeleteInput`
 | <a id="mutationuserachievementsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuserachievementsdeleteuserachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Deleted user achievement. |
 
+### `Mutation.userAddOnAssignmentBulkCreate`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `UserAddOnAssignmentBulkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkcreateaddonpurchaseid"></a>`addOnPurchaseId` | [`GitlabSubscriptionsAddOnPurchaseID!`](#gitlabsubscriptionsaddonpurchaseid) | Global ID of AddOnPurchase to be assigned to. |
+| <a id="mutationuseraddonassignmentbulkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of user to be assigned. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkcreateaddonpurchase"></a>`addOnPurchase` | [`AddOnPurchase`](#addonpurchase) | AddOnPurchase state after mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.userAddOnAssignmentBulkRemove`
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Input type: `UserAddOnAssignmentBulkRemoveInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkremoveaddonpurchaseid"></a>`addOnPurchaseId` | [`GitlabSubscriptionsAddOnPurchaseID!`](#gitlabsubscriptionsaddonpurchaseid) | Global ID of AddOnPurchase to be unassigned from. |
+| <a id="mutationuseraddonassignmentbulkremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkremoveuserids"></a>`userIds` | [`[UserID!]!`](#userid) | Global IDs of user to be unassigned. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuseraddonassignmentbulkremoveaddonpurchase"></a>`addOnPurchase` | [`AddOnPurchase`](#addonpurchase) | AddOnPurchase state after mutation. |
+| <a id="mutationuseraddonassignmentbulkremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuseraddonassignmentbulkremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.userAddOnAssignmentCreate`
 
 DETAILS:
@@ -8642,6 +9040,8 @@ Input type: `VulnerabilitiesDismissInput`
 | <a id="mutationvulnerabilitiesdismissvulnerabilities"></a>`vulnerabilities` | [`[Vulnerability!]!`](#vulnerability) | Vulnerabilities after state change. |
 
 ### `Mutation.vulnerabilitiesRemoveAllFromProject`
+
+Remove all Vulnerabilities and related information from a given project. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412602) in GitLab 16.7.
 
 Input type: `VulnerabilitiesRemoveAllFromProjectInput`
 
@@ -11477,6 +11877,29 @@ The edge type for [`ExternalStatusCheck`](#externalstatuscheck).
 | <a id="externalstatuscheckedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="externalstatuscheckedgenode"></a>`node` | [`ExternalStatusCheck`](#externalstatuscheck) | The item at the end of the edge. |
 
+#### `FeatureFlagConnection`
+
+The connection type for [`FeatureFlag`](#featureflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagconnectionedges"></a>`edges` | [`[FeatureFlagEdge]`](#featureflagedge) | A list of edges. |
+| <a id="featureflagconnectionnodes"></a>`nodes` | [`[FeatureFlag]`](#featureflag) | A list of nodes. |
+| <a id="featureflagconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `FeatureFlagEdge`
+
+The edge type for [`FeatureFlag`](#featureflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="featureflagedgenode"></a>`node` | [`FeatureFlag`](#featureflag) | The item at the end of the edge. |
+
 #### `ForecastDatapointConnection`
 
 The connection type for [`ForecastDatapoint`](#forecastdatapoint).
@@ -11545,6 +11968,29 @@ The edge type for [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingcon
 | ---- | ---- | ----------- |
 | <a id="googlecloudloggingconfigurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="googlecloudloggingconfigurationtypeedgenode"></a>`node` | [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype) | The item at the end of the edge. |
+
+#### `GroupAuditEventStreamingDestinationConnection`
+
+The connection type for [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationconnectionedges"></a>`edges` | [`[GroupAuditEventStreamingDestinationEdge]`](#groupauditeventstreamingdestinationedge) | A list of edges. |
+| <a id="groupauditeventstreamingdestinationconnectionnodes"></a>`nodes` | [`[GroupAuditEventStreamingDestination]`](#groupauditeventstreamingdestination) | A list of nodes. |
+| <a id="groupauditeventstreamingdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupAuditEventStreamingDestinationEdge`
+
+The edge type for [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupauditeventstreamingdestinationedgenode"></a>`node` | [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination) | The item at the end of the edge. |
 
 #### `GroupConnection`
 
@@ -11753,6 +12199,29 @@ The edge type for [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configu
 | ---- | ---- | ----------- |
 | <a id="instanceamazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="instanceamazons3configurationtypeedgenode"></a>`node` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | The item at the end of the edge. |
+
+#### `InstanceAuditEventStreamingDestinationConnection`
+
+The connection type for [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationconnectionedges"></a>`edges` | [`[InstanceAuditEventStreamingDestinationEdge]`](#instanceauditeventstreamingdestinationedge) | A list of edges. |
+| <a id="instanceauditeventstreamingdestinationconnectionnodes"></a>`nodes` | [`[InstanceAuditEventStreamingDestination]`](#instanceauditeventstreamingdestination) | A list of nodes. |
+| <a id="instanceauditeventstreamingdestinationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceAuditEventStreamingDestinationEdge`
+
+The edge type for [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instanceauditeventstreamingdestinationedgenode"></a>`node` | [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination) | The item at the end of the edge. |
 
 #### `InstanceExternalAuditEventDestinationConnection`
 
@@ -12209,29 +12678,6 @@ The edge type for [`MergeRequestDiff`](#mergerequestdiff).
 | <a id="mergerequestdiffedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestdiffedgenode"></a>`node` | [`MergeRequestDiff`](#mergerequestdiff) | The item at the end of the edge. |
 
-#### `MergeRequestDiffLlmSummaryConnection`
-
-The connection type for [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mergerequestdiffllmsummaryconnectionedges"></a>`edges` | [`[MergeRequestDiffLlmSummaryEdge]`](#mergerequestdiffllmsummaryedge) | A list of edges. |
-| <a id="mergerequestdiffllmsummaryconnectionnodes"></a>`nodes` | [`[MergeRequestDiffLlmSummary]`](#mergerequestdiffllmsummary) | A list of nodes. |
-| <a id="mergerequestdiffllmsummaryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `MergeRequestDiffLlmSummaryEdge`
-
-The edge type for [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mergerequestdiffllmsummaryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="mergerequestdiffllmsummaryedgenode"></a>`node` | [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary) | The item at the end of the edge. |
-
 #### `MergeRequestDiffRegistryConnection`
 
 The connection type for [`MergeRequestDiffRegistry`](#mergerequestdiffregistry).
@@ -12396,6 +12842,117 @@ The edge type for [`MlCandidate`](#mlcandidate).
 | ---- | ---- | ----------- |
 | <a id="mlcandidateedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mlcandidateedgenode"></a>`node` | [`MlCandidate`](#mlcandidate) | The item at the end of the edge. |
+
+#### `MlCandidateMetadataConnection`
+
+The connection type for [`MlCandidateMetadata`](#mlcandidatemetadata).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetadataconnectionedges"></a>`edges` | [`[MlCandidateMetadataEdge]`](#mlcandidatemetadataedge) | A list of edges. |
+| <a id="mlcandidatemetadataconnectionnodes"></a>`nodes` | [`[MlCandidateMetadata]`](#mlcandidatemetadata) | A list of nodes. |
+| <a id="mlcandidatemetadataconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlCandidateMetadataConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetadataconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlCandidateMetadataEdge`
+
+The edge type for [`MlCandidateMetadata`](#mlcandidatemetadata).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetadataedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlcandidatemetadataedgenode"></a>`node` | [`MlCandidateMetadata`](#mlcandidatemetadata) | The item at the end of the edge. |
+
+#### `MlCandidateMetricConnection`
+
+The connection type for [`MlCandidateMetric`](#mlcandidatemetric).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetricconnectionedges"></a>`edges` | [`[MlCandidateMetricEdge]`](#mlcandidatemetricedge) | A list of edges. |
+| <a id="mlcandidatemetricconnectionnodes"></a>`nodes` | [`[MlCandidateMetric]`](#mlcandidatemetric) | A list of nodes. |
+| <a id="mlcandidatemetricconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlCandidateMetricConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetricconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlCandidateMetricEdge`
+
+The edge type for [`MlCandidateMetric`](#mlcandidatemetric).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetricedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlcandidatemetricedgenode"></a>`node` | [`MlCandidateMetric`](#mlcandidatemetric) | The item at the end of the edge. |
+
+#### `MlCandidateParamConnection`
+
+The connection type for [`MlCandidateParam`](#mlcandidateparam).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateparamconnectionedges"></a>`edges` | [`[MlCandidateParamEdge]`](#mlcandidateparamedge) | A list of edges. |
+| <a id="mlcandidateparamconnectionnodes"></a>`nodes` | [`[MlCandidateParam]`](#mlcandidateparam) | A list of nodes. |
+| <a id="mlcandidateparamconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `MlCandidateParamConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateparamconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `MlCandidateParamEdge`
+
+The edge type for [`MlCandidateParam`](#mlcandidateparam).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateparamedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mlcandidateparamedgenode"></a>`node` | [`MlCandidateParam`](#mlcandidateparam) | The item at the end of the edge. |
 
 #### `MlModelConnection`
 
@@ -13098,6 +13655,30 @@ The edge type for [`ProjectRepositoryRegistry`](#projectrepositoryregistry).
 | ---- | ---- | ----------- |
 | <a id="projectrepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectrepositoryregistryedgenode"></a>`node` | [`ProjectRepositoryRegistry`](#projectrepositoryregistry) | The item at the end of the edge. |
+
+#### `ProjectSavedReplyConnection`
+
+The connection type for [`ProjectSavedReply`](#projectsavedreply).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsavedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="projectsavedreplyconnectionedges"></a>`edges` | [`[ProjectSavedReplyEdge]`](#projectsavedreplyedge) | A list of edges. |
+| <a id="projectsavedreplyconnectionnodes"></a>`nodes` | [`[ProjectSavedReply]`](#projectsavedreply) | A list of nodes. |
+| <a id="projectsavedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectSavedReplyEdge`
+
+The edge type for [`ProjectSavedReply`](#projectsavedreply).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectsavedreplyedgenode"></a>`node` | [`ProjectSavedReply`](#projectsavedreply) | The item at the end of the edge. |
 
 #### `ProjectWikiRepositoryRegistryConnection`
 
@@ -15032,6 +15613,14 @@ Extra metadata for AI message.
 | <a id="aimessageextrashasfeedback"></a>`hasFeedback` | [`Boolean`](#boolean) | Whether the user has provided feedback for the mesage. |
 | <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
 
+### `AiMetrics`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimetricscodesuggestionsusagerate"></a>`codeSuggestionsUsageRate` | [`Float!`](#float) | Percentage of contributors who used GitLab Duo Code Suggestions features. |
+
 ### `AlertManagementAlert`
 
 Describes an alert from the project's Alert Management.
@@ -15234,7 +15823,7 @@ Represents the approval policy.
 | <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="approvalpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="approvalpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="approvalpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="approvalpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
@@ -16103,14 +16692,14 @@ Branch rules configured for a rule target.
 | ---- | ---- | ----------- |
 | <a id="branchruleapprovalrules"></a>`approvalRules` | [`ApprovalProjectRuleConnection`](#approvalprojectruleconnection) | Merge request approval rules configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchrulebranchprotection"></a>`branchProtection` | [`BranchProtection`](#branchprotection) | Branch protections configured for this branch rule. |
-| <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
+| <a id="branchrulecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the branch rule was created. |
 | <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for this branch rule. (see [Connections](#connections)) |
 | <a id="branchruleid"></a>`id` | [`ProjectsBranchRuleID`](#projectsbranchruleid) | ID of the branch rule. |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if this branch rule protects the project's default branch. |
 | <a id="branchruleisprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Check if this branch rule protects access for the branch. |
 | <a id="branchrulematchingbranchescount"></a>`matchingBranchesCount` | [`Int!`](#int) | Number of existing branches that match this branch rule. |
 | <a id="branchrulename"></a>`name` | [`String!`](#string) | Name of the branch rule target. Includes wildcards. |
-| <a id="branchruleupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the branch rule was last updated. |
+| <a id="branchruleupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the branch rule was last updated. |
 
 ### `BurnupChartDailyTotals`
 
@@ -16150,10 +16739,10 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Description of the catalog resource. |
+| <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
-| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | **Introduced** in GitLab 16.1. **Status**: Experiment. Latest version of the catalog resource. |
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
@@ -16363,6 +16952,7 @@ CI/CD variables for a group.
 | ---- | ---- | ----------- |
 | <a id="cigroupvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="cigroupvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="cigroupvariablehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates whether the variable is hidden. |
 | <a id="cigroupvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="cigroupvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="cigroupvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
@@ -16564,6 +17154,7 @@ CI/CD variables for a project.
 | ---- | ---- | ----------- |
 | <a id="ciprojectvariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
 | <a id="ciprojectvariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
+| <a id="ciprojectvariablehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates whether the variable is hidden. |
 | <a id="ciprojectvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="ciprojectvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciprojectvariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
@@ -16682,6 +17273,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnerprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="cirunnerprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="cirunnerprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="cirunnerprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="cirunnerprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.4. Default sort order will change in GitLab 17.0. Specify `"id_asc"` if you require the query results to be ordered by ascending IDs. |
@@ -17405,6 +17997,18 @@ Details of a container repository.
 
 #### Fields with arguments
 
+##### `ContainerRepositoryDetails.manifest`
+
+An image manifest from the container repository.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="containerrepositorydetailsmanifestreference"></a>`reference` | [`String!`](#string) | Tag name or digest of the manifest. |
+
 ##### `ContainerRepositoryDetails.tags`
 
 Tags of the container repository.
@@ -17420,6 +18024,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerrepositorydetailstagsname"></a>`name` | [`String`](#string) | Search by tag name. |
+| <a id="containerrepositorydetailstagsreferrertype"></a>`referrerType` | [`String`](#string) | Comma-separated list of artifact types used to filter referrers. Applies only when `referrers` is set to `true`. |
 | <a id="containerrepositorydetailstagsreferrers"></a>`referrers` | [`Boolean`](#boolean) | Include tag referrers. |
 | <a id="containerrepositorydetailstagssort"></a>`sort` | [`ContainerRepositoryTagSort`](#containerrepositorytagsort) | Sort tags by these criteria. |
 
@@ -17921,6 +18526,7 @@ Represents a product analytics dashboard.
 | <a id="customizabledashboardcategory"></a>`category` | [`CustomizableDashboardCategory!`](#customizabledashboardcategory) | Category of dashboard. |
 | <a id="customizabledashboardconfigurationproject"></a>`configurationProject` | [`Project`](#project) | Project which contains the dashboard definition. |
 | <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
+| <a id="customizabledashboarderrors"></a>`errors` | [`[String!]`](#string) | Errors on yaml definition. |
 | <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection!`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="customizabledashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
@@ -18321,6 +18927,7 @@ The deployment of an environment.
 | <a id="deploymenttriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
 | <a id="deploymentuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
+| <a id="deploymentwebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web path to the deployment page, returns `null` if the `deployment_details_page` feature flag is disabled. |
 
 ### `DeploymentApproval`
 
@@ -18369,6 +18976,7 @@ Tags for a given deployment.
 | ---- | ---- | ----------- |
 | <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
 | <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
+| <a id="deploymenttagwebpath"></a>`webPath` | [`String`](#string) | Web path for this tag. |
 
 ### `DescriptionVersion`
 
@@ -19586,6 +20194,16 @@ Describes an external status check.
 | <a id="externalstatuscheckid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="externalstatuscheckname"></a>`name` | [`String!`](#string) | Name of the rule. |
 
+### `FeatureFlag`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featureflagactive"></a>`active` | [`Boolean!`](#boolean) | Whether the feature flag is active. |
+| <a id="featureflagid"></a>`id` | [`OperationsFeatureFlagID!`](#operationsfeatureflagid) | Global ID of the feature flag. |
+| <a id="featureflagname"></a>`name` | [`String!`](#string) | Name of the feature flag. |
+
 ### `FileUpload`
 
 #### Fields
@@ -20147,16 +20765,19 @@ GPG signature for a signed commit.
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
+| <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` **{warning-solid}** | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
 | <a id="grouplockmathrenderinglimitsenabled"></a>`lockMathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
+| <a id="groupmarkedfordeletionon"></a>`markedForDeletionOn` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group was scheduled to be deleted. |
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for this group. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | The maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
@@ -20165,6 +20786,7 @@ GPG signature for a signed commit.
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
+| <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group will be deleted if delayed group deletion is enabled. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in this group. |
@@ -20246,6 +20868,23 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
+##### `Group.aiMetrics`
+
+AI-related metrics.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`AiMetrics`](#aimetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="groupaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+
 ##### `Group.approvalPolicies`
 
 Approval Policies of the project.
@@ -20313,6 +20952,23 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
+
+##### `Group.ciQueueingHistory`
+
+Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`QueueingDelayHistory`](#queueingdelayhistory).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time frame. Defaults to three hours ago. |
+| <a id="groupciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time frame. Defaults to the current time. |
 
 ##### `Group.ciVariables`
 
@@ -21376,6 +22032,20 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
+### `GroupAuditEventStreamingDestination`
+
+Represents an external destination to stream group level audit events.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="groupauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="groupauditeventstreamingdestinationgroup"></a>`group` | [`Group!`](#group) | Group to which the destination belongs. |
+| <a id="groupauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="groupauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
 ### `GroupDataTransfer`
 
 #### Fields
@@ -21768,6 +22438,19 @@ Stores instance level Amazon S3 configurations for audit event streaming.
 | <a id="instanceamazons3configurationtypebucketname"></a>`bucketName` | [`String!`](#string) | Name of the bucket where the audit events would be logged. |
 | <a id="instanceamazons3configurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="instanceamazons3configurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
+### `InstanceAuditEventStreamingDestination`
+
+Represents an external destination to stream instance level audit events.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="instanceauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="instanceauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="instanceauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 ### `InstanceExternalAuditEventDestination`
 
@@ -22245,8 +22928,8 @@ Represents the Geo replication and verification state of a job_artifact.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="kasenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the Kubernetes Agent Server is enabled. |
-| <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | URL used by the Agents to communicate with KAS. |
+| <a id="kasenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the Kubernetes agent server is enabled. |
+| <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | URL used by the agents to communicate with the server. |
 | <a id="kasversion"></a>`version` | [`String`](#string) | KAS version. |
 
 ### `Key`
@@ -22465,7 +23148,6 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="mergerequestdetailedmergestatus"></a>`detailedMergeStatus` | [`DetailedMergeStatus`](#detailedmergestatus) | Detailed merge status of the merge request. |
 | <a id="mergerequestdiffheadsha"></a>`diffHeadSha` | [`String`](#string) | Diff head SHA of the merge request. |
-| <a id="mergerequestdiffllmsummaries"></a>`diffLlmSummaries` **{warning-solid}** | [`MergeRequestDiffLlmSummaryConnection`](#mergerequestdiffllmsummaryconnection) | **Introduced** in GitLab 16.1. **Status**: Experiment. Diff summaries generated by AI. |
 | <a id="mergerequestdiffrefs"></a>`diffRefs` | [`DiffRefs`](#diffrefs) | References of the base SHA, the head SHA, and the start SHA for this merge request. |
 | <a id="mergerequestdiffstatssummary"></a>`diffStatsSummary` | [`DiffStatsSummary`](#diffstatssummary) | Summary of which files were changed in this merge request. |
 | <a id="mergerequestdiscussionlocked"></a>`discussionLocked` | [`Boolean!`](#boolean) | Indicates if comments on the merge request are locked to members only. |
@@ -22504,7 +23186,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestrebasecommitsha"></a>`rebaseCommitSha` | [`String`](#string) | Rebase commit SHA of the merge request. |
 | <a id="mergerequestrebaseinprogress"></a>`rebaseInProgress` | [`Boolean!`](#boolean) | Indicates if there is a rebase currently in progress for the merge request. |
 | <a id="mergerequestreviewers"></a>`reviewers` | [`MergeRequestReviewerConnection`](#mergerequestreviewerconnection) | Users from whom a review has been requested. (see [Connections](#connections)) |
-| <a id="mergerequestsecurityautofix"></a>`securityAutoFix` | [`Boolean`](#boolean) | Indicates if the merge request is created by @GitLab-Security-Bot. |
+| <a id="mergerequestsecurityautofix"></a>`securityAutoFix` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.11. Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag. |
 | <a id="mergerequestsecurityreportsuptodateontargetbranch"></a>`securityReportsUpToDateOnTargetBranch` | [`Boolean!`](#boolean) | Indicates if the target branch security reports are out of date. |
 | <a id="mergerequestshouldberebased"></a>`shouldBeRebased` | [`Boolean!`](#boolean) | Indicates if the merge request will be rebased. |
 | <a id="mergerequestshouldremovesourcebranch"></a>`shouldRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
@@ -23261,24 +23943,8 @@ A diff version of a merge request.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestdiffcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the diff was created. |
-| <a id="mergerequestdiffdiffllmsummary"></a>`diffLlmSummary` | [`MergeRequestDiffLlmSummary`](#mergerequestdiffllmsummary) | Diff summary generated by AI. |
 | <a id="mergerequestdiffreviewllmsummaries"></a>`reviewLlmSummaries` | [`MergeRequestReviewLlmSummaryConnection`](#mergerequestreviewllmsummaryconnection) | Review summaries generated by AI. (see [Connections](#connections)) |
 | <a id="mergerequestdiffupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the diff was updated. |
-
-### `MergeRequestDiffLlmSummary`
-
-A diff summary generated by AI.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mergerequestdiffllmsummarycontent"></a>`content` | [`String!`](#string) | Content of the diff summary. |
-| <a id="mergerequestdiffllmsummarycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the diff summary was created. |
-| <a id="mergerequestdiffllmsummarymergerequestdiffid"></a>`mergeRequestDiffId` | [`ID!`](#id) | ID of the Merge Request diff associated with the diff summary. |
-| <a id="mergerequestdiffllmsummaryprovider"></a>`provider` | [`String!`](#string) | AI provider that generated the summary. |
-| <a id="mergerequestdiffllmsummaryupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the diff summary was updated. |
-| <a id="mergerequestdiffllmsummaryuser"></a>`user` | [`UserCore`](#usercore) | User associated with the diff summary. |
 
 ### `MergeRequestDiffRegistry`
 
@@ -24006,9 +24672,11 @@ Represents a milestone.
 | <a id="milestonedescription"></a>`description` | [`String`](#string) | Description of the milestone. |
 | <a id="milestoneduedate"></a>`dueDate` | [`Time`](#time) | Timestamp of the milestone due date. |
 | <a id="milestoneexpired"></a>`expired` | [`Boolean!`](#boolean) | Expired state of the milestone (a milestone is expired when the due date is past the current date). Defaults to `false` when due date has not been set. |
+| <a id="milestonegroup"></a>`group` | [`Group`](#group) | Group of the milestone. |
 | <a id="milestonegroupmilestone"></a>`groupMilestone` | [`Boolean!`](#boolean) | Indicates if milestone is at group level. |
 | <a id="milestoneid"></a>`id` | [`ID!`](#id) | ID of the milestone. |
 | <a id="milestoneiid"></a>`iid` | [`ID!`](#id) | Internal ID of the milestone. |
+| <a id="milestoneproject"></a>`project` | [`Project`](#project) | Project of the milestone. |
 | <a id="milestoneprojectmilestone"></a>`projectMilestone` | [`Boolean!`](#boolean) | Indicates if milestone is at project level. |
 | <a id="milestonereleases"></a>`releases` | [`ReleaseConnection`](#releaseconnection) | Releases associated with this milestone. (see [Connections](#connections)) |
 | <a id="milestonestartdate"></a>`startDate` | [`Time`](#time) | Timestamp of the milestone start date. |
@@ -24016,6 +24684,7 @@ Represents a milestone.
 | <a id="milestonestats"></a>`stats` | [`MilestoneStats`](#milestonestats) | Milestone statistics. |
 | <a id="milestonesubgroupmilestone"></a>`subgroupMilestone` | [`Boolean!`](#boolean) | Indicates if milestone is at subgroup level. |
 | <a id="milestonetitle"></a>`title` | [`String!`](#string) | Title of the milestone. |
+| <a id="milestoneupcoming"></a>`upcoming` | [`Boolean!`](#boolean) | Upcoming state of the milestone (a milestone is upcoming when the start date is in the future). Defaults to `false` when start date has not been set. |
 | <a id="milestoneupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of last milestone update. |
 | <a id="milestonewebpath"></a>`webPath` | [`String!`](#string) | Web path of the milestone. |
 
@@ -24053,9 +24722,53 @@ Candidate for a model version in the model registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlcandidate_links"></a>`_links` | [`MLCandidateLinks!`](#mlcandidatelinks) | Map of links to perform actions on the candidate. |
+| <a id="mlcandidatecijob"></a>`ciJob` | [`CiJob`](#cijob) | CI information about the job that created the candidate. |
 | <a id="mlcandidatecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="mlcandidateeid"></a>`eid` | [`String!`](#string) | MLflow uuid for the candidate. |
 | <a id="mlcandidateid"></a>`id` | [`MlCandidateID!`](#mlcandidateid) | ID of the candidate. |
-| <a id="mlcandidatename"></a>`name` | [`String!`](#string) | Name of the candidate. |
+| <a id="mlcandidateiid"></a>`iid` | [`Int!`](#int) | IID of the candidate scoped to project. |
+| <a id="mlcandidatemetadata"></a>`metadata` | [`MlCandidateMetadataConnection!`](#mlcandidatemetadataconnection) | Metadata entries for the candidate. (see [Connections](#connections)) |
+| <a id="mlcandidatemetrics"></a>`metrics` | [`MlCandidateMetricConnection!`](#mlcandidatemetricconnection) | Metrics for the candidate. (see [Connections](#connections)) |
+| <a id="mlcandidatename"></a>`name` | [`String`](#string) | Name of the candidate. |
+| <a id="mlcandidateparams"></a>`params` | [`MlCandidateParamConnection!`](#mlcandidateparamconnection) | Parameters for the candidate. (see [Connections](#connections)) |
+| <a id="mlcandidatestatus"></a>`status` | [`String`](#string) | Candidate status. |
+
+### `MlCandidateMetadata`
+
+Metadata for a candidate in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetadataid"></a>`id` | [`MlCandidateMetadataID!`](#mlcandidatemetadataid) | ID of the metadata. |
+| <a id="mlcandidatemetadataname"></a>`name` | [`String`](#string) | Name of the metadata entry. |
+| <a id="mlcandidatemetadatavalue"></a>`value` | [`String!`](#string) | Value set for the metadata entry. |
+
+### `MlCandidateMetric`
+
+Metric for a candidate in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidatemetricid"></a>`id` | [`MlCandidateMetricID!`](#mlcandidatemetricid) | ID of the metric. |
+| <a id="mlcandidatemetricname"></a>`name` | [`String`](#string) | Name of the metric. |
+| <a id="mlcandidatemetricstep"></a>`step` | [`Int!`](#int) | Step at which the metric was measured. |
+| <a id="mlcandidatemetricvalue"></a>`value` | [`Float!`](#float) | Value set for the metric. |
+
+### `MlCandidateParam`
+
+Parameter for a candidate in the model registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlcandidateparamid"></a>`id` | [`MlCandidateParamID!`](#mlcandidateparamid) | ID of the parameter. |
+| <a id="mlcandidateparamname"></a>`name` | [`String`](#string) | Name of the parameter. |
+| <a id="mlcandidateparamvalue"></a>`value` | [`String!`](#string) | Value set for the parameter. |
 
 ### `MlModel`
 
@@ -24066,15 +24779,28 @@ Machine learning model in the model registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlmodel_links"></a>`_links` | [`MLModelLinks!`](#mlmodellinks) | Map of links to perform actions on the model. |
+| <a id="mlmodelcandidatecount"></a>`candidateCount` | [`Int`](#int) | Count of candidates in the model. |
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
-| <a id="mlmodeldescription"></a>`description` | [`String!`](#string) | Description of the model. |
+| <a id="mlmodeldescription"></a>`description` | [`String`](#string) | Description of the model. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 | <a id="mlmodellatestversion"></a>`latestVersion` | [`MlModelVersion`](#mlmodelversion) | Latest version of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |
 | <a id="mlmodelversioncount"></a>`versionCount` | [`Int`](#int) | Count of versions in the model. |
 
 #### Fields with arguments
+
+##### `MlModel.version`
+
+Version of the model.
+
+Returns [`MlModelVersion`](#mlmodelversion).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mlmodelversionmodelversionid"></a>`modelVersionId` | [`MlModelVersionID`](#mlmodelversionid) | Id of the version to be fetched. |
 
 ##### `MlModel.versions`
 
@@ -24103,8 +24829,10 @@ Version of a machine learning model.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mlmodelversion_links"></a>`_links` | [`MLModelVersionLinks!`](#mlmodelversionlinks) | Map of links to perform actions on the model version. |
+| <a id="mlmodelversioncandidate"></a>`candidate` | [`MlCandidate!`](#mlcandidate) | Metrics, params and metadata for the model version. |
 | <a id="mlmodelversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodelversionid"></a>`id` | [`MlModelVersionID!`](#mlmodelversionid) | ID of the model version. |
+| <a id="mlmodelversionpackageid"></a>`packageId` | [`PackagesPackageID!`](#packagespackageid) | Package for model version artifacts. |
 | <a id="mlmodelversionversion"></a>`version` | [`String!`](#string) | Name of the version. |
 
 ### `MonthlyUsage`
@@ -24305,6 +25033,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespacescanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
+##### `Namespace.workItem`
+
+Find a work item by IID directly associated with the namespace(project or group).  Returns `null` for group level work items if the `namespace_level_work_items` feature flag is disabled.
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Returns [`WorkItem`](#workitem).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemiid"></a>`iid` | [`String!`](#string) | IID of the work item. |
 
 ### `NamespaceBan`
 
@@ -24518,6 +25262,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="organizationprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="organizationprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="organizationprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
@@ -24545,9 +25290,23 @@ A user with access to the organization.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationuseraccesslevel"></a>`accessLevel` **{warning-solid}** | [`OrganizationUserAccess!`](#organizationuseraccess) | **Introduced** in GitLab 16.11. **Status**: Experiment. Access level of the user in the organization. |
 | <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[OrganizationUserBadge!]`](#organizationuserbadge) | **Introduced** in GitLab 16.4. **Status**: Experiment. Badges describing the user within the organization. |
 | <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 16.4. **Status**: Experiment. ID of the organization user. |
+| <a id="organizationuserislastowner"></a>`isLastOwner` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether the user is the last owner of the organization. |
 | <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in GitLab 16.4. **Status**: Experiment. User that is associated with the organization. |
+| <a id="organizationuseruserpermissions"></a>`userPermissions` | [`OrganizationUserPermissions!`](#organizationuserpermissions) | Permissions for the current user on the resource. |
+
+### `OrganizationUserAccess`
+
+Represents the access level of a relationship between a User and Organization that it is related to.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuseraccessintegervalue"></a>`integerValue` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.11. **Status**: Experiment. Integer representation of access level. |
+| <a id="organizationuseraccessstringvalue"></a>`stringValue` **{warning-solid}** | [`OrganizationUserAccessLevel`](#organizationuseraccesslevel) | **Introduced** in GitLab 16.11. **Status**: Experiment. String representation of access level. |
 
 ### `OrganizationUserBadge`
 
@@ -24559,6 +25318,14 @@ An organization user badge.
 | ---- | ---- | ----------- |
 | <a id="organizationuserbadgetext"></a>`text` | [`String!`](#string) | Badge text. |
 | <a id="organizationuserbadgevariant"></a>`variant` | [`String!`](#string) | Badge variant. |
+
+### `OrganizationUserPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuserpermissionsremoveuser"></a>`removeUser` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_user` on this resource. |
 
 ### `Package`
 
@@ -24574,6 +25341,7 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagename"></a>`name` | [`String!`](#string) | Name of the package. |
+| <a id="packagepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
@@ -24598,6 +25366,7 @@ Represents a package in the Package Registry.
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagebasename"></a>`name` | [`String!`](#string) | Name of the package. |
+| <a id="packagebasepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagebasestatus"></a>`status` | [`PackageStatus!`](#packagestatus) | Package status. |
@@ -24668,6 +25437,7 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypenpmurl"></a>`npmUrl` | [`String`](#string) | Url of the NPM project endpoint. |
 | <a id="packagedetailstypenugeturl"></a>`nugetUrl` | [`String`](#string) | Url of the Nuget project endpoint. |
 | <a id="packagedetailstypepackagefiles"></a>`packageFiles` | [`PackageFileConnection`](#packagefileconnection) | Package files. (see [Connections](#connections)) |
+| <a id="packagedetailstypepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
@@ -25336,7 +26106,6 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectarchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
 | <a id="projectautoclosereferencedissues"></a>`autocloseReferencedIssues` | [`Boolean`](#boolean) | Indicates if issues referenced by merge requests and commits within the default branch are closed automatically. |
 | <a id="projectavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the project. |
-| <a id="projectbranchrules"></a>`branchRules` | [`BranchRuleConnection`](#branchruleconnection) | Branch rules configured for the project. (see [Connections](#connections)) |
 | <a id="projectciaccessauthorizedagents"></a>`ciAccessAuthorizedAgents` | [`ClusterAgentAuthorizationCiAccessConnection`](#clusteragentauthorizationciaccessconnection) | Authorized cluster agents for the project through ci_access keyword. (see [Connections](#connections)) |
 | <a id="projectcicdsettings"></a>`ciCdSettings` | [`ProjectCiCdSetting`](#projectcicdsetting) | CI/CD settings for the project. |
 | <a id="projectciconfigpathordefault"></a>`ciConfigPathOrDefault` | [`String!`](#string) | Path of the CI configuration file. |
@@ -25371,6 +26140,7 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
+| <a id="projectisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed project deletion is enabled. |
 | <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
 | <a id="projectisforked"></a>`isForked` | [`Boolean!`](#boolean) | Project is forked. |
 | <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |
@@ -25396,10 +26166,12 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectonlyallowmergeifpipelinesucceeds"></a>`onlyAllowMergeIfPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if merge requests of the project can only be merged with successful jobs. |
 | <a id="projectopenissuescount"></a>`openIssuesCount` | [`Int`](#int) | Number of open issues for the project. |
 | <a id="projectopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
+| <a id="projectorganizationeditpath"></a>`organizationEditPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
 | <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
+| <a id="projectpermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when project will be deleted if delayed project deletion is enabled. |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
 | <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in GitLab 16.3. **Status**: Experiment. List of pipeline trigger tokens. |
 | <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |
@@ -25417,6 +26189,7 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="projectrequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request member access to the project. |
 | <a id="projectrequirementstatescount"></a>`requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
+| <a id="projectsavedreplies"></a>`savedReplies` **{warning-solid}** | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. Saved replies available to the project. Available only when feature flag `project_saved_replies_flag` is enabled. |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
 | <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` | [`NamespaceConnection`](#namespaceconnection) | Namespaces linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
@@ -25466,6 +26239,23 @@ Returns [`AiAgent`](#aiagent).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectaiagentid"></a>`id` | [`AiAgentID!`](#aiagentid) | ID of the Agent. |
+
+##### `Project.aiMetrics`
+
+AI-related metrics.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`AiMetrics`](#aimetrics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="projectaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Project.alertManagementAlert`
 
@@ -25633,6 +26423,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectboardsid"></a>`id` | [`BoardID`](#boardid) | Find a board by its ID. |
+
+##### `Project.branchRules`
+
+Branch rules configured for the project.
+
+Returns [`BranchRuleConnection`](#branchruleconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectbranchrulesbuildmissing"></a>`buildMissing` | [`Boolean`](#boolean) | Return unpersisted custom branch rules. |
 
 ##### `Project.ciConfigVariables`
 
@@ -26710,6 +27516,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 | <a id="projectrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
+##### `Project.savedReply`
+
+Saved reply in the project. Available only when feature flag `group_saved_replies_flag` is enabled.
+
+DETAILS:
+**Introduced** in GitLab 16.11.
+**Status**: Experiment.
+
+Returns [`ProjectSavedReply`](#projectsavedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsavedreplyid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of a saved reply. |
+
 ##### `Project.scanExecutionPolicies`
 
 Scan Execution Policies of the project.
@@ -27153,6 +27975,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsupdatepages"></a>`updatePages` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pages` on this resource. |
 | <a id="projectpermissionsupdatewiki"></a>`updateWiki` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_wiki` on this resource. |
 | <a id="projectpermissionsuploadfile"></a>`uploadFile` | [`Boolean!`](#boolean) | If `true`, the user can perform `upload_file` on this resource. |
+| <a id="projectpermissionsvieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
 
 ### `ProjectPlanLimits`
 
@@ -27187,6 +28010,16 @@ Represents the Geo replication and verification state of a project repository.
 | <a id="projectrepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the ProjectRepositoryRegistry. |
 | <a id="projectrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the ProjectRepositoryRegistry. |
+
+### `ProjectSavedReply`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsavedreplycontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
+| <a id="projectsavedreplyid"></a>`id` | [`ProjectsSavedReplyID!`](#projectssavedreplyid) | Global ID of the project-level saved reply. |
+| <a id="projectsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
 ### `ProjectSecurityPolicySource`
 
@@ -27457,6 +28290,7 @@ Which group, user or role is allowed to approve deployments to the environment.
 | <a id="protectedenvironmentapprovalruleforsummaryaccesslevel"></a>`accessLevel` | [`AccessLevel`](#accesslevel) | Role details. Present if it's role specific access control. |
 | <a id="protectedenvironmentapprovalruleforsummaryapprovals"></a>`approvals` | [`[DeploymentApproval!]`](#deploymentapproval) | Current approvals of the deployment. |
 | <a id="protectedenvironmentapprovalruleforsummaryapprovedcount"></a>`approvedCount` | [`Int`](#int) | Approved count. |
+| <a id="protectedenvironmentapprovalruleforsummarycanapprove"></a>`canApprove` | [`Boolean`](#boolean) | Indicates whether a user is authorized to approve. |
 | <a id="protectedenvironmentapprovalruleforsummarygroup"></a>`group` | [`Group`](#group) | Group details. Present if it's group specific access control. |
 | <a id="protectedenvironmentapprovalruleforsummarypendingapprovalcount"></a>`pendingApprovalCount` | [`Int`](#int) | Pending approval count. |
 | <a id="protectedenvironmentapprovalruleforsummaryrequiredapprovals"></a>`requiredApprovals` | [`Int`](#int) | Number of required approvals. |
@@ -27800,6 +28634,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
+| <a id="repositoryblobunicodeescapedblob"></a>`unicodeEscapedBlob` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Raw content of the blob where invalid UTF-8 characters are escaped to unicode. Returns `null` if the `unicode_escaped_data` feature flag is disabled. |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 
 #### Fields with arguments
@@ -28065,7 +28900,7 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="scanexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="scanexecutionpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="scanexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
@@ -28085,7 +28920,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="scanresultpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="scanresultpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="scanresultpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
@@ -30069,12 +30904,12 @@ Represents a vulnerable Kubernetes resource. Used in vulnerability location data
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerablekubernetesresourceagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Kubernetes Agent which performed the scan. |
-| <a id="vulnerablekubernetesresourceclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | ID of the Cluster integration which was used to perform the scan. |
+| <a id="vulnerablekubernetesresourceagent"></a>`agent` | [`ClusterAgent`](#clusteragent) | Kubernetes agent that performed the scan. |
+| <a id="vulnerablekubernetesresourceclusterid"></a>`clusterId` | [`ClustersClusterID`](#clustersclusterid) | ID of the cluster integration used to perform the scan. |
 | <a id="vulnerablekubernetesresourcecontainername"></a>`containerName` | [`String!`](#string) | Name of the container that had its image scanned. |
 | <a id="vulnerablekubernetesresourcekind"></a>`kind` | [`String!`](#string) | Kind of the Kubernetes resource. |
 | <a id="vulnerablekubernetesresourcename"></a>`name` | [`String!`](#string) | Name of the Kubernetes resource. |
-| <a id="vulnerablekubernetesresourcenamespace"></a>`namespace` | [`String!`](#string) | Kubernetes namespace which the resource resides in. |
+| <a id="vulnerablekubernetesresourcenamespace"></a>`namespace` | [`String!`](#string) | Kubernetes namespace where the resource resides. |
 
 ### `VulnerablePackage`
 
@@ -30329,6 +31164,17 @@ Represents designs widget.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdesignsdesigncollection"></a>`designCollection` | [`DesignCollection`](#designcollection) | Collection of design images associated with the issue. |
 | <a id="workitemwidgetdesignstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+### `WorkItemWidgetDevelopment`
+
+Represents a development widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetHealthStatus`
 
@@ -31631,7 +32477,6 @@ Detailed representation of whether a GitLab merge request can be merged.
 | Value | Description |
 | ----- | ----------- |
 | <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request dependencies must be merged. |
-| <a id="detailedmergestatusbroken_status"></a>`BROKEN_STATUS` | Can not merge the source into the target branch, potential conflict. |
 | <a id="detailedmergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
 | <a id="detailedmergestatusci_must_pass"></a>`CI_MUST_PASS` | Pipeline must succeed before merging. |
 | <a id="detailedmergestatusci_still_running"></a>`CI_STILL_RUNNING` | Pipeline is still running. |
@@ -31646,6 +32491,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatusnot_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatusnot_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
 | <a id="detailedmergestatuspreparing"></a>`PREPARING` | Merge request diff is being created. |
+| <a id="detailedmergestatusrequested_changes"></a>`REQUESTED_CHANGES` | Indicates a reviewer has requested changes. |
 | <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`
@@ -32202,14 +33048,16 @@ Member role permission.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Allows to admin CI/CD variables. |
+| <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Create, read, update, and delete CI/CD variables. |
 | <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. |
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
+| <a id="memberrolepermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolepermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. |
 | <a id="memberrolepermissionarchive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
 | <a id="memberrolepermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
+| <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows assigning security policy projects. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
@@ -32260,8 +33108,10 @@ State of a review of a GitLab merge request.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="mergerequestreviewstateapproved"></a>`APPROVED` | Merge request reviewer has approved the changes. |
 | <a id="mergerequestreviewstaterequested_changes"></a>`REQUESTED_CHANGES` | Merge request reviewer has requested changes. |
 | <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | Merge request reviewer has reviewed. |
+| <a id="mergerequestreviewstateunapproved"></a>`UNAPPROVED` | Merge request reviewer removed their approval of the changes. |
 | <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
 
 ### `MergeRequestSort`
@@ -32330,7 +33180,6 @@ Representation of mergeability check identifier.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="mergeabilitycheckidentifierbroken_status"></a>`BROKEN_STATUS` | Checks whether the merge request is broken. |
 | <a id="mergeabilitycheckidentifierci_must_pass"></a>`CI_MUST_PASS` | Checks whether CI has passed. |
 | <a id="mergeabilitycheckidentifiercommits_status"></a>`COMMITS_STATUS` | Checks source branch exists and contains commits. |
 | <a id="mergeabilitycheckidentifierconflict"></a>`CONFLICT` | Checks whether the merge request has a conflict. |
@@ -32341,6 +33190,7 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifierneed_rebase"></a>`NEED_REBASE` | Checks whether the merge request needs to be rebased. |
 | <a id="mergeabilitycheckidentifiernot_approved"></a>`NOT_APPROVED` | Checks whether the merge request is approved. |
 | <a id="mergeabilitycheckidentifiernot_open"></a>`NOT_OPEN` | Checks whether the merge request is open. |
+| <a id="mergeabilitycheckidentifierrequested_changes"></a>`REQUESTED_CHANGES` | Checks whether the merge request has changes requested. |
 | <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
 
 ### `MergeabilityCheckStatus`
@@ -32352,6 +33202,7 @@ Representation of whether a mergeability check passed, failed or is inactive.
 | <a id="mergeabilitycheckstatusfailed"></a>`FAILED` | Mergeability check has failed. The merge request cannot be merged. |
 | <a id="mergeabilitycheckstatusinactive"></a>`INACTIVE` | Mergeability check is disabled via settings. |
 | <a id="mergeabilitycheckstatussuccess"></a>`SUCCESS` | Mergeability check has passed. |
+| <a id="mergeabilitycheckstatuswarning"></a>`WARNING` | Mergeability check has passed with a warning. |
 
 ### `MilestoneSort`
 
@@ -32511,6 +33362,15 @@ Values for sorting organizations.
 | <a id="organizationsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
 | <a id="organizationsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
 | <a id="organizationsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
+
+### `OrganizationUserAccessLevel`
+
+Access level of an organization user.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationuseraccessleveldefault"></a>`DEFAULT` **{warning-solid}** | **Introduced** in GitLab 16.11. **Status**: Experiment. Guest access. |
+| <a id="organizationuseraccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.11. **Status**: Experiment. Owner access. |
 
 ### `PackageDependencyType`
 
@@ -32852,6 +33712,7 @@ The status of the security scan.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="securitypolicyrelationtypedescendant"></a>`DESCENDANT` | Policies defined for the group's descendant projects/groups only. Only valid for group-level policies. |
 | <a id="securitypolicyrelationtypedirect"></a>`DIRECT` | Policies defined for the project/group only. |
 | <a id="securitypolicyrelationtypeinherited"></a>`INHERITED` | Policies defined for the project/group and ancestor groups. |
 | <a id="securitypolicyrelationtypeinherited_only"></a>`INHERITED_ONLY` | Policies defined for the project/group's ancestor groups only. |
@@ -32933,6 +33794,7 @@ State of a Sentry error.
 | <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type. |
 | <a id="servicetypemicrosoft_teams_service"></a>`MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type. |
 | <a id="servicetypepackagist_service"></a>`PACKAGIST_SERVICE` | PackagistService type. |
+| <a id="servicetypephorge_service"></a>`PHORGE_SERVICE` | PhorgeService type. |
 | <a id="servicetypepipelines_email_service"></a>`PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type. |
 | <a id="servicetypepivotaltracker_service"></a>`PIVOTALTRACKER_SERVICE` | PivotaltrackerService type. |
 | <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | PrometheusService type. |
@@ -33067,6 +33929,7 @@ Values for sorting timelogs.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="todoactionenumadded_approver"></a>`added_approver` | User was added as an approver. |
 | <a id="todoactionenumapproval_required"></a>`approval_required` | User was set as an approver. |
 | <a id="todoactionenumassigned"></a>`assigned` | User was assigned. |
 | <a id="todoactionenumbuild_failed"></a>`build_failed` | Build triggered by the user failed. |
@@ -33128,8 +33991,9 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenumcloud_licensing_subscription_activation_banner"></a>`CLOUD_LICENSING_SUBSCRIPTION_ACTIVATION_BANNER` | Callout feature name for cloud_licensing_subscription_activation_banner. |
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
-| <a id="usercalloutfeaturenameenumcode_suggestions_ga_owner_alert"></a>`CODE_SUGGESTIONS_GA_OWNER_ALERT` | Callout feature name for code_suggestions_ga_owner_alert. |
+| <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
+| <a id="usercalloutfeaturenameenumduo_pro_trial_alert"></a>`DUO_PRO_TRIAL_ALERT` | Callout feature name for duo_pro_trial_alert. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
 | <a id="usercalloutfeaturenameenumgeo_enable_hashed_storage"></a>`GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |
@@ -33209,6 +34073,7 @@ Possible identifier types for a measurement.
 | <a id="valuestreamdashboardmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |
 | <a id="valuestreamdashboardmetricpipelines"></a>`PIPELINES` | Pipeline count. |
 | <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
+| <a id="valuestreamdashboardmetricusers"></a>`USERS` | User count. |
 
 ### `ValueStreamStageEvent`
 
@@ -33520,6 +34385,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypedesigns"></a>`DESIGNS` | Designs widget. |
+| <a id="workitemwidgettypedevelopment"></a>`DEVELOPMENT` | Development widget. |
 | <a id="workitemwidgettypehealth_status"></a>`HEALTH_STATUS` | Health Status widget. |
 | <a id="workitemwidgettypehierarchy"></a>`HIERARCHY` | Hierarchy widget. |
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
@@ -33639,6 +34505,12 @@ A `AuditEventsGoogleCloudLoggingConfigurationID` is a global ID. It is encoded a
 
 An example `AuditEventsGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/AuditEvents::GoogleCloudLoggingConfiguration/1"`.
 
+### `AuditEventsGroupExternalStreamingDestinationID`
+
+A `AuditEventsGroupExternalStreamingDestinationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsGroupExternalStreamingDestinationID` is: `"gid://gitlab/AuditEvents::Group::ExternalStreamingDestination/1"`.
+
 ### `AuditEventsInstanceAmazonS3ConfigurationID`
 
 A `AuditEventsInstanceAmazonS3ConfigurationID` is a global ID. It is encoded as a string.
@@ -33650,6 +34522,12 @@ An example `AuditEventsInstanceAmazonS3ConfigurationID` is: `"gid://gitlab/Audit
 A `AuditEventsInstanceExternalAuditEventDestinationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsInstanceExternalAuditEventDestinationID` is: `"gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1"`.
+
+### `AuditEventsInstanceExternalStreamingDestinationID`
+
+A `AuditEventsInstanceExternalStreamingDestinationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsInstanceExternalStreamingDestinationID` is: `"gid://gitlab/AuditEvents::Instance::ExternalStreamingDestination/1"`.
 
 ### `AuditEventsInstanceGoogleCloudLoggingConfigurationID`
 
@@ -34174,6 +35052,24 @@ A `MlCandidateID` is a global ID. It is encoded as a string.
 
 An example `MlCandidateID` is: `"gid://gitlab/Ml::Candidate/1"`.
 
+### `MlCandidateMetadataID`
+
+A `MlCandidateMetadataID` is a global ID. It is encoded as a string.
+
+An example `MlCandidateMetadataID` is: `"gid://gitlab/Ml::CandidateMetadata/1"`.
+
+### `MlCandidateMetricID`
+
+A `MlCandidateMetricID` is a global ID. It is encoded as a string.
+
+An example `MlCandidateMetricID` is: `"gid://gitlab/Ml::CandidateMetric/1"`.
+
+### `MlCandidateParamID`
+
+A `MlCandidateParamID` is a global ID. It is encoded as a string.
+
+An example `MlCandidateParamID` is: `"gid://gitlab/Ml::CandidateParam/1"`.
+
 ### `MlModelID`
 
 A `MlModelID` is a global ID. It is encoded as a string.
@@ -34209,6 +35105,12 @@ An example `NoteID` is: `"gid://gitlab/Note/1"`.
 A `NoteableID` is a global ID. It is encoded as a string.
 
 An example `NoteableID` is: `"gid://gitlab/Noteable/1"`.
+
+### `OperationsFeatureFlagID`
+
+A `OperationsFeatureFlagID` is a global ID. It is encoded as a string.
+
+An example `OperationsFeatureFlagID` is: `"gid://gitlab/Operations::FeatureFlag/1"`.
 
 ### `OrganizationsOrganizationID`
 
@@ -34309,6 +35211,12 @@ An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
 A `ProjectsBranchRuleID` is a global ID. It is encoded as a string.
 
 An example `ProjectsBranchRuleID` is: `"gid://gitlab/Projects::BranchRule/1"`.
+
+### `ProjectsSavedReplyID`
+
+A `ProjectsSavedReplyID` is a global ID. It is encoded as a string.
+
+An example `ProjectsSavedReplyID` is: `"gid://gitlab/Projects::SavedReply/1"`.
 
 ### `ReleaseID`
 
@@ -34638,6 +35546,22 @@ Implementations:
 | <a id="amazons3configurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
 | <a id="amazons3configurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
+#### `AuditEventStreamingDestinationInterface`
+
+Implementations:
+
+- [`GroupAuditEventStreamingDestination`](#groupauditeventstreamingdestination)
+- [`InstanceAuditEventStreamingDestination`](#instanceauditeventstreamingdestination)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventstreamingdestinationinterfacecategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
+| <a id="auditeventstreamingdestinationinterfaceconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="auditeventstreamingdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
+| <a id="auditeventstreamingdestinationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
+
 #### `BaseHeaderInterface`
 
 Implementations:
@@ -34900,7 +35824,7 @@ Implementations:
 | <a id="orchestrationpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
 | <a id="orchestrationpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="orchestrationpolicypolicyscope"></a>`policyScope` **{warning-solid}** | [`PolicyScope`](#policyscope) | **Introduced** in GitLab 16.10. **Status**: Experiment. Scope of the policy. Returns `null` if Security Policy Scope experimental feature is disabled. |
+| <a id="orchestrationpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="orchestrationpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="orchestrationpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
@@ -35295,6 +36219,7 @@ Implementations:
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)
+- [`WorkItemWidgetDevelopment`](#workitemwidgetdevelopment)
 - [`WorkItemWidgetHealthStatus`](#workitemwidgethealthstatus)
 - [`WorkItemWidgetHierarchy`](#workitemwidgethierarchy)
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)
@@ -35350,7 +36275,7 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aichatinputagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent version to answer the chat. |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
-| <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="aichatinputcurrentfile"></a>`currentFile` | [`AiCurrentFileInput`](#aicurrentfileinput) | Information about currently selected text which can be passed for additional context. |
 | <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource to mutate. |
 

@@ -22,13 +22,12 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
-    ...mapState('diffs', ['renderTreeList', 'showWhitespace', 'viewDiffsFileByFile']),
+    ...mapState('diffs', ['showWhitespace', 'viewDiffsFileByFile']),
   },
   methods: {
     ...mapActions('diffs', [
       'setInlineDiffViewType',
       'setParallelDiffViewType',
-      'setRenderTreeList',
       'setShowWhitespace',
       'setFileByFile',
     ]),
@@ -60,25 +59,6 @@ export default {
           >{{ $options.i18n.preferences }}</span
         >
       </slot>
-      <div class="gl-px-3">
-        <span class="gl-font-weight-bold gl-display-block gl-mb-2">{{ __('File browser') }}</span>
-        <gl-button-group class="gl-display-flex">
-          <gl-button
-            :class="{ selected: !renderTreeList }"
-            class="gl-w-half js-list-view"
-            @click="setRenderTreeList({ renderTreeList: false })"
-          >
-            {{ __('List view') }}
-          </gl-button>
-          <gl-button
-            :class="{ selected: renderTreeList }"
-            class="gl-w-half js-tree-view"
-            @click="setRenderTreeList({ renderTreeList: true })"
-          >
-            {{ __('Tree view') }}
-          </gl-button>
-        </gl-button-group>
-      </div>
       <div class="gl-mt-3 gl-px-3">
         <span class="gl-font-weight-bold gl-display-block gl-mb-2">{{
           __('Compare changes')

@@ -30,7 +30,7 @@ module Auth
       end
 
       if repository_path_push_protected?
-        return error('PROTECTED', status: 403, message: 'Pushing to protected repository path forbidden')
+        return error('DENIED', status: 403, message: 'Pushing to protected repository path forbidden')
       end
 
       { token: authorized_token(*scopes).encoded }
@@ -120,8 +120,11 @@ module Auth
         end
       end
 
-      # Return the project path (lowercase) as metadata
-      { project_path: project&.full_path&.downcase }
+      {
+        project_path: project&.full_path&.downcase,
+        project_id: project&.id,
+        root_namespace_id: project&.root_ancestor&.id
+      }
     end
 
     private

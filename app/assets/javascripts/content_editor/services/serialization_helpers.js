@@ -586,6 +586,10 @@ export const italic = {
   expelEnclosingWhitespace: true,
 };
 
+function getMarkText(mark, parent) {
+  return findChildWithMark(mark, parent).child?.text || '';
+}
+
 const generateCodeTag = (wrapTagName = openTag) => {
   const isOpen = wrapTagName === openTag;
 
@@ -596,7 +600,7 @@ const generateCodeTag = (wrapTagName = openTag) => {
       return wrapTagName(type.substring(1));
     }
 
-    const childText = findChildWithMark(mark, parent).child?.text || '';
+    const childText = getMarkText(mark, parent);
     if (childText.includes('`')) {
       let tag = '``';
       if (childText.startsWith('`') || childText.endsWith('`'))
@@ -694,12 +698,13 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '<' : '';
     }
 
-    const { href, title, sourceMarkdown } = mark.attrs;
+    const { href, title, sourceMarkdown, isGollumLink } = mark.attrs;
 
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';
 
     if (linkType(sourceMarkdown) === LINK_MARKDOWN) {
+      if (isGollumLink) return '[[';
       return '[';
     }
 
@@ -718,7 +723,14 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
-    const { href = '', title, sourceMarkdown, isReference } = mark.attrs;
+    const {
+      href = '',
+      title,
+      sourceMarkdown,
+      isReference,
+      isGollumLink,
+      canonicalSrc,
+    } = mark.attrs;
 
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';
@@ -729,6 +741,17 @@ export const link = {
 
     if (linkType(sourceMarkdown) === LINK_HTML) {
       return closeTag('a');
+    }
+
+    if (isGollumLink) {
+      const text = getMarkText(mark, parent);
+      const escapedCanonicalSrc = state.esc(canonicalSrc);
+
+      if (text.toLowerCase() === escapedCanonicalSrc.toLowerCase()) {
+        return ']]';
+      }
+
+      return `|${escapedCanonicalSrc}]]`;
     }
 
     return `](${state.esc(getLinkHref(mark, state.options.useCanonicalSrc))}${

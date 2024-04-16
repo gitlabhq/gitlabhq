@@ -133,6 +133,7 @@ describe('InviteMembersModal', () => {
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
+  const findSeatOveragesAlert = () => wrapper.findByTestId('seat-overages-alert');
   const expectedErrorMessage = (index, errorType) => {
     const [username, message] = Object.entries(errorType.parsedMessage)[index];
     return `${username}: ${message}`;
@@ -828,6 +829,18 @@ describe('InviteMembersModal', () => {
 
           expect(Api.inviteGroupMembers).toHaveBeenCalledWith(propsData.id, singleUserPostData);
         });
+      });
+    });
+
+    describe('blocked seat overage error notifications', () => {
+      it('shows the notification alert when seat overage limit is reached', async () => {
+        createInviteMembersToGroupWrapper();
+        await triggerMembersTokenSelect([user1]);
+        mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.ERROR_SEAT_LIMIT_REACHED);
+        clickInviteButton();
+        await waitForPromises();
+
+        expect(findSeatOveragesAlert().exists()).toBe(true);
       });
     });
   });

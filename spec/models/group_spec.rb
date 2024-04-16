@@ -13,6 +13,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:all_group_members).dependent(:destroy) }
     it { is_expected.to have_many(:all_owner_members) }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
+    it { is_expected.to have_many(:non_invite_group_members).class_name('GroupMember') }
     it { is_expected.to have_many(:namespace_members) }
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:all_owner_members) }
@@ -56,6 +57,23 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
     it { is_expected.to have_one(:harbor_integration) }
+
+    describe '#non_invite_group_members' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:non_requested_member) { create(:group_member, group: group) }
+      let_it_be(:non_invited_member) { create(:group_member, group: group) }
+      let_it_be(:non_minimal_access_member) { create(:group_member, group: group) }
+
+      before do
+        create(:group_member, :access_request, group: group)
+        create(:group_member, :invited, group: group)
+        create(:group_member, :minimal_access, group: group)
+      end
+
+      it 'includes the correct members' do
+        expect(group.non_invite_group_members).to contain_exactly(non_invited_member, non_requested_member, non_minimal_access_member)
+      end
+    end
 
     describe '#namespace_members' do
       let(:requester) { create(:user) }
@@ -471,7 +489,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
-  it_behaves_like 'ensures runners_token is prefixed', :group
+  it_behaves_like 'ensures runners_token is prefixed' do
+    subject(:record) do
+      create(:group, namespace_settings: create(:namespace_settings, allow_runner_registration_token: true))
+    end
+  end
 
   context 'after initialized' do
     it 'has a group_feature' do
@@ -842,6 +864,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.groups_user_can' do
+    let_it_be(:public_group) { create(:group, :public) }
+    let_it_be(:internal_subgroup) { create(:group, :internal, parent: public_group) }
+    let_it_be(:private_subgroup_1) { create(:group, :private, parent: internal_subgroup) }
+    let_it_be(:private_subgroup_2) { create(:group, :private, parent: private_subgroup_1) }
+
+    let_it_be(:user) { create(:user) }
+
+    it 'filters groups based on permissions' do
+      private_subgroup_2.add_guest(user)
+
+      expect(described_class.groups_user_can(public_group.self_and_descendants, user, :read_group)).to contain_exactly(
+        public_group,
+        internal_subgroup,
+        private_subgroup_2
+      )
+    end
+  end
+
   describe '.execute_integrations' do
     let(:integration) { create(:integrations_slack, :group, group: group) }
     let(:test_data) { { 'foo' => 'bar' } }
@@ -1097,6 +1138,28 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe 'with_non_archived_projects' do
+      let_it_be(:project) { create(:project, group: private_group, archived: false) }
+
+      subject { described_class.with_non_archived_projects }
+
+      it 'loads the records of non archived projects' do
+        associations = subject.map { |group| group.association(:non_archived_projects) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
+    describe 'with_non_invite_group_members' do
+      let_it_be(:group_member) { create(:group_member, member_namespace: private_group, requested_at: nil, invite_token: nil, access_level: Gitlab::Access::DEVELOPER) }
+
+      subject { described_class.with_non_invite_group_members }
+
+      it 'loads the records of non invite group members' do
+        associations = subject.map { |group| group.association(:non_invite_group_members) }
+        expect(associations).to all(be_loaded)
+      end
+    end
+
     describe 'for_authorized_group_members' do
       let_it_be(:group_member1) { create(:group_member, source: private_group, user_id: user1.id, access_level: Gitlab::Access::OWNER) }
 
@@ -1141,16 +1204,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       context 'when restricted_visibility_level is not configured' do
         context 'when user is an admin', :enable_admin_mode do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
 
         context 'when user is not an admin' do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
@@ -1163,16 +1226,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         context 'and user is an admin', :enable_admin_mode do
           it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
-              [private_group, internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
+              private_group, internal_group, group
             )
           end
         end
 
         context 'and user is not an admin' do
           it 'excludes private groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
-              [internal_group, group]
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
+              internal_group, group
             )
           end
         end
@@ -1921,7 +1984,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'evaluating admin access level' do
-      let_it_be(:admin) { create(:admin) }
+      let_it_be(:admin) { create(:admin, :without_default_org) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'returns OWNER by default' do
@@ -1938,6 +2001,21 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it 'returns NO_ACCESS when only concrete membership should be considered' do
         expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
           .to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when organization owner' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'returns OWNER by default' do
+        expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when only concrete members' do
+        it 'returns NO_ACCESS' do
+          expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
+            .to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
     end
 
@@ -3036,8 +3114,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#first_owner' do
-    let(:group) { build(:group) }
-
     context 'the group has owners' do
       it 'is the first owner' do
         user_1 = create(:user)
@@ -3162,9 +3238,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     shared_examples 'returns namespaces with disabled email' do
       subject(:group_ids_where_email_is_disabled) { described_class.ids_with_disabled_email([child_1, child_2, other_group]) }
 
-      it do
+      it "when a group's parent has disabled emails" do
         parent_1.update_attribute(:emails_enabled, false)
         is_expected.to eq(Set.new([child_1.id]))
+      end
+
+      it "when a group itself has disabled emails" do
+        child_2.update_attribute(:emails_enabled, false)
+        is_expected.to eq(Set.new([child_2.id]))
       end
     end
 

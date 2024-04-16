@@ -1,7 +1,9 @@
 fragment BaseProject on Project {
   id
+  fullPath
   archived
   nameWithNamespace
+  organizationEditPath
   webUrl
   topics
   forksCount
@@ -22,6 +24,7 @@ fragment BaseProject on Project {
   }
   userPermissions {
     removeProject
+    viewEditPage
   }
   maxAccessLevel {
     integerValue

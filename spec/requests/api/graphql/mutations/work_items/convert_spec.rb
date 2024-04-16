@@ -6,7 +6,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |user| project.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:new_type) { create(:work_item_type, :incident, :default) }
   let_it_be(:work_item, refind: true) do
     create(:work_item, :task, project: project, milestone: create(:milestone, project: project))
@@ -63,7 +63,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
   context 'when converting epic work item' do
     let_it_be(:new_type) { create(:work_item_type, :issue, :default) }
     let(:current_user) { developer }
-    let_it_be(:group) { create(:group).tap { |group| group.add_developer(developer) } }
+    let_it_be(:group) { create(:group, developers: developer) }
 
     before do
       allow(Ability).to receive(:allowed?).and_call_original

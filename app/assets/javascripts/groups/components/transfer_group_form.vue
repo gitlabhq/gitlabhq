@@ -6,8 +6,9 @@ import { getGroupTransferLocations } from '~/api/groups_api';
 
 export const i18n = {
   confirmationMessage: __(
-    'You are going to transfer %{group_name} to another namespace. Are you ABSOLUTELY sure?',
+    "You are about to transfer %{codeStart}%{groupName}%{codeEnd} to another namespace. This action changes the %{projectLinkStart}project's path%{projectLinkEnd} and can lead to %{documentationLinkStart}data loss%{documentationLinkEnd}.",
   ),
+  confirmButtonText: __('Transfer group'),
   emptyNamespaceTitle: __('No parent group'),
   dropdownLabel: s__('GroupSettings|Select parent group'),
 };

@@ -105,7 +105,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
       context 'for note notification' do
         let_it_be(:issue_note) { create(:note_on_issue, project: project, note: 'issue note') }
 
-        let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user) }
+        let(:data) { Gitlab::DataBuilder::Note.build(issue_note, user, :create) }
 
         it_behaves_like 'increases the usage data counter', :note
       end
@@ -126,7 +126,7 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
           create(:note_on_issue, project: project, note: 'issue note', confidential: true)
         end
 
-        let(:data) { Gitlab::DataBuilder::Note.build(confidential_issue_note, user) }
+        let(:data) { Gitlab::DataBuilder::Note.build(confidential_issue_note, user, :create) }
 
         it_behaves_like 'increases the usage data counter', :confidential_note
       end

@@ -1,0 +1,9 @@
+---
+name: index_terraform_module_archive
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438058
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145020
+rollout_issue_url:
+milestone: '16.10'
+group: group::package registry
+type: wip
+default_enabled: false

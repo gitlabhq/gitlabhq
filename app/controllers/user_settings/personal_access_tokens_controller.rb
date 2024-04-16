@@ -74,3 +74,5 @@ module UserSettings
     end
   end
 end
+
+UserSettings::PersonalAccessTokensController.prepend_mod

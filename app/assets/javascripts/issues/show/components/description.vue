@@ -155,7 +155,10 @@ export default {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
-    this.renderGFM();
+    // this.renderGFM();
+    this.$nextTick(() => {
+      this.renderGFM();
+    });
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);

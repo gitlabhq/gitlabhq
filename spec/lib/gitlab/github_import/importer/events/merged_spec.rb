@@ -11,7 +11,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:commit_id) { nil }
-  let(:extended_events) { false }
 
   let(:issue_event) do
     Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
@@ -32,9 +31,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
     end
     allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
       allow(finder).to receive(:find).with(user.id, user.username).and_return(user.id)
-    end
-    allow_next_instance_of(Gitlab::GithubImport::Settings) do |setting|
-      allow(setting).to receive(:extended_events?).and_return(extended_events)
     end
   end
 
@@ -63,6 +59,15 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
     )
   end
 
+  it 'creates a merged by note' do
+    expect { importer.execute(issue_event) }.to change { Note.count }.by(1)
+
+    last_note = merge_request.notes.last
+    expect(last_note.created_at).to eq(issue_event.created_at)
+    expect(last_note.author).to eq(project.owner)
+    expect(last_note.note).to eq("*Merged by: #{user.username} at #{issue_event.created_at}*")
+  end
+
   context 'when commit ID is present' do
     let!(:commit) { create(:commit, project: project) }
     let(:commit_id) { commit.id }
@@ -73,29 +78,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
       expect(merge_request.events.count).to eq 1
       state_event = merge_request.resource_state_events.last
       expect(state_event.source_commit).to eq commit_id[0..40]
-    end
-  end
-
-  describe 'extended events' do
-    context 'when using extended events' do
-      let(:extended_events) { true }
-
-      it 'creates a merged by note' do
-        expect { importer.execute(issue_event) }.to change { Note.count }.by(1)
-
-        last_note = merge_request.notes.last
-        expect(last_note.created_at).to eq(issue_event.created_at)
-        expect(last_note.author).to eq(project.owner)
-        expect(last_note.note).to eq("*Merged by: #{user.username} at #{issue_event.created_at}*")
-      end
-    end
-
-    context 'when not using extended events' do
-      let(:extended_events) { false }
-
-      it 'does not create a merged by note' do
-        expect { importer.execute(issue_event) }.not_to change { Note.count }
-      end
     end
   end
 end

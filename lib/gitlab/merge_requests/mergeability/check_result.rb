@@ -6,6 +6,7 @@ module Gitlab
         SUCCESS_STATUS = :success
         FAILED_STATUS = :failed
         INACTIVE_STATUS = :inactive
+        WARNING_STATUS = :warning
 
         attr_reader :status, :payload
 
@@ -23,6 +24,10 @@ module Gitlab
 
         def self.inactive(payload: {})
           new(status: INACTIVE_STATUS, payload: default_payload.merge(**payload))
+        end
+
+        def self.warning(payload: {})
+          new(status: WARNING_STATUS, payload: default_payload.merge(**payload))
         end
 
         def self.from_hash(data)

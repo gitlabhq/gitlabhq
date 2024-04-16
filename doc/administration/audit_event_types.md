@@ -39,10 +39,6 @@ or instance and user audit events. You can see the audit events in [audit event 
 
 Audit event types belong to the following product categories.
 
-NOTE:
-Audit event types with the `-` scope are limited to either project, group, or instance and user audit events, but the
-[information on the scope](https://gitlab.com/gitlab-org/gitlab/-/issues/438620) is still being added to the documentation.
-
 ### Ai framework
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
@@ -64,7 +60,11 @@ Audit event types with the `-` scope are limited to either project, group, or in
 | [`create_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) | Group |
 | [`create_http_namespace_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136047) | Event triggered when a namespace filter for an external audit event destination for a top-level group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/424176) | Group |
 | [`create_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123882) | Event triggered when an instance level external audit event destination is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) | Instance |
+| [`created_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147888) | Event triggered when an external audit event destination for a top-level group is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
+| [`created_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148383) | Event triggered when an external audit event destination for a GitLab instance is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
 | [`delete_http_namespace_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136302) | Event triggered when a namespace filter for an external audit event destination for a top-level group is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/424177) | Group |
+| [`deleted_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148738) | Event triggered when an external audit event destination for a top-level group is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
+| [`deleted_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14910) | Event triggered when an external audit event destination for a GitLab instance is deleted.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
 | [`destroy_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) | Group |
 | [`destroy_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) | Instance |
 | [`event_type_filters_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113081) | Event triggered when a new audit events streaming event type filter is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/344848) | Group |
@@ -80,6 +80,8 @@ Audit event types with the `-` scope are limited to either project, group, or in
 | [`instance_google_cloud_logging_configuration_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131790) | Triggered when instance level Google Cloud Logging configuration is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/423039) | Instance |
 | [`update_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74632) | Event triggered when an external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/344664) | Group |
 | [`update_instance_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125846) | Event triggered when an instance level external audit event destination is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.2](https://gitlab.com/gitlab-org/gitlab/-/issues/404730) | Instance |
+| [`updated_group_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148388) | Event triggered when an external audit event destination for a top-level group is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436610) | Group |
+| [`updated_instance_audit_event_streaming_destination`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149104) | Event triggered when an external audit event destination for a GitLab instance is updated.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/436615) | Instance |
 
 ### Build artifacts
 
@@ -196,9 +198,9 @@ Audit event types with the `-` scope are limited to either project, group, or in
 | [`ci_group_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a group level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
 | [`ci_group_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
 | [`ci_group_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a group's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Group |
-| [`ci_instance_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
-| [`ci_instance_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
-| [`ci_instance_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | - |
+| [`ci_instance_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
+| [`ci_instance_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
+| [`ci_instance_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131882) | When an instance level CI variable is changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/8070) | Instance |
 | [`ci_variable_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a CI variable is created at a project level| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | Triggered when a project's CI variable is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
@@ -386,7 +388,13 @@ Audit event types with the `-` scope are limited to either project, group, or in
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Event triggered on successful assignment of associated projects to a CI runner| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | - |
+| [`set_runner_associated_projects`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97666) | Event triggered on successful assignment of associated projects to a CI runner| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/359958) | User |
+
+### Secret detection
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`skip_pre_receive_secret_detection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Triggered when pre-receive secret detection is skipped by the user| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
 
 ### Security policy management
 

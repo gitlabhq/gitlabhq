@@ -11,7 +11,9 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
 
   let(:source_table_name) { '_test_partitioned_table' }
   let(:target_table_name) { '_test_referenced_table' }
+  let(:second_target_table_name) { '_test_second_referenced_table' }
   let(:column_name) { "#{target_table_name}_id" }
+  let(:second_column_name) { "#{second_target_table_name}_id" }
   let(:foreign_key_name) { '_test_partitioned_fk' }
   let(:partition_schema) { 'gitlab_partitions_dynamic' }
   let(:partition1_name) { "#{partition_schema}.#{source_table_name}_202001" }
@@ -35,17 +37,27 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
 
   before do
     allow(migration).to receive(:puts)
+    allow(migration).to receive(:with_lock_retries).and_yield
     allow(migration).to receive(:transaction_open?).and_return(false)
 
     connection.execute(<<~SQL)
+      DROP TABLE IF EXISTS #{target_table_name};
       CREATE TABLE #{target_table_name} (
         id serial NOT NULL,
         PRIMARY KEY (id)
       );
 
+      DROP TABLE IF EXISTS #{second_target_table_name};
+      CREATE TABLE #{second_target_table_name} (
+        id serial NOT NULL,
+        PRIMARY KEY (id)
+      );
+
+      DROP TABLE IF EXISTS #{source_table_name};
       CREATE TABLE #{source_table_name} (
         id serial NOT NULL,
         #{column_name} int NOT NULL,
+        #{second_column_name} int NOT NULL,
         created_at timestamptz NOT NULL,
         PRIMARY KEY (id, created_at)
       ) PARTITION BY RANGE (created_at);
@@ -63,8 +75,6 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
       allow(migration).to receive(:foreign_key_exists?)
         .with(source_table_name, target_table_name, anything)
         .and_return(false)
-
-      allow(migration).to receive(:with_lock_retries).and_yield
     end
 
     context 'when the foreign key does not exist on the parent table' do
@@ -289,6 +299,142 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
 
           migration.validate_partitioned_foreign_key(source_table_name, column_name, name: foreign_key_name)
         end
+      end
+    end
+  end
+
+  shared_examples 'raising undefined object error' do
+    specify do
+      expect { execute }.to raise_error(
+        ActiveRecord::StatementInvalid,
+        /PG::UndefinedObject: ERROR:  constraint "#{foreign_key_for_error}" for table .* does not exist/
+      )
+    end
+  end
+
+  describe '#rename_partitioned_foreign_key' do
+    subject(:execute) { migration.rename_partitioned_foreign_key(source_table_name, old_foreign_key, new_foreign_key) }
+
+    let(:old_foreign_key) { foreign_key_name }
+    let(:new_foreign_key) { :_test_partitioned_fk_new }
+
+    context 'when old foreign key exists' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(
+          source_table_name, target_table_name, column: column_name, name: old_foreign_key
+        )
+      end
+
+      context 'when new foreign key does not exists' do
+        it 'renames the old foreign key into the new name' do
+          expect { execute }
+            .to change { foreign_key_by_name(source_table_name, old_foreign_key) }.from(be_present).to(nil)
+            .and change { foreign_key_by_name(partition1_name, old_foreign_key) }.from(be_present).to(nil)
+            .and change { foreign_key_by_name(partition2_name, old_foreign_key) }.from(be_present).to(nil)
+            .and change { foreign_key_by_name(source_table_name, new_foreign_key) }.from(nil).to(be_present)
+            .and change { foreign_key_by_name(partition1_name, new_foreign_key) }.from(nil).to(be_present)
+            .and change { foreign_key_by_name(partition2_name, new_foreign_key) }.from(nil).to(be_present)
+        end
+      end
+
+      context 'when new foreign key exists' do
+        before do
+          migration.add_concurrent_partitioned_foreign_key(
+            source_table_name, target_table_name, column: column_name, name: new_foreign_key
+          )
+        end
+
+        it 'raises duplicate object error' do
+          expect { execute }.to raise_error(
+            ActiveRecord::StatementInvalid,
+            /PG::DuplicateObject: ERROR:  constraint "#{new_foreign_key}" for relation .* already exists/
+          )
+        end
+      end
+    end
+
+    context 'when old foreign key does not exist' do
+      context 'when new foreign key does not exists' do
+        let(:foreign_key_for_error) { old_foreign_key }
+
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new foreign key exists' do
+        before do
+          migration.add_concurrent_partitioned_foreign_key(
+            source_table_name, target_table_name, column: column_name, name: new_foreign_key
+          )
+        end
+
+        let(:foreign_key_for_error) { old_foreign_key }
+
+        it_behaves_like 'raising undefined object error'
+      end
+    end
+  end
+
+  describe '#swap_partitioned_foreign_keys' do
+    subject(:execute) { migration.swap_partitioned_foreign_keys(source_table_name, old_foreign_key, new_foreign_key) }
+
+    let(:old_foreign_key) { foreign_key_name }
+    let(:new_foreign_key) { :_test_partitioned_fk_new }
+
+    context 'when old foreign key exists' do
+      before do
+        migration.add_concurrent_partitioned_foreign_key(
+          source_table_name, target_table_name, column: column_name, name: old_foreign_key
+        )
+      end
+
+      context 'when new foreign key does not exists' do
+        let(:foreign_key_for_error) { new_foreign_key }
+
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new foreign key exists' do
+        before do
+          migration.add_concurrent_partitioned_foreign_key(
+            source_table_name, target_table_name, column: second_column_name, name: new_foreign_key
+          )
+        end
+
+        it 'swaps foreign keys' do
+          expect { execute }
+            .to change { foreign_key_by_name(source_table_name, old_foreign_key).column }
+            .from(column_name).to(second_column_name)
+            .and change { foreign_key_by_name(partition1_name, old_foreign_key).column }
+            .from(column_name).to(second_column_name)
+            .and change { foreign_key_by_name(partition2_name, old_foreign_key).column }
+            .from(column_name).to(second_column_name)
+            .and change { foreign_key_by_name(source_table_name, new_foreign_key).column }
+            .from(second_column_name).to(column_name)
+            .and change { foreign_key_by_name(partition1_name, new_foreign_key).column }
+            .from(second_column_name).to(column_name)
+            .and change { foreign_key_by_name(partition2_name, new_foreign_key).column }
+            .from(second_column_name).to(column_name)
+        end
+      end
+    end
+
+    context 'when old foreign key does not exist' do
+      context 'when new foreign key does not exists' do
+        let(:foreign_key_for_error) { old_foreign_key }
+
+        it_behaves_like 'raising undefined object error'
+      end
+
+      context 'when new foreign key exists' do
+        before do
+          migration.add_concurrent_partitioned_foreign_key(
+            source_table_name, target_table_name, column: second_column_name, name: new_foreign_key
+          )
+        end
+
+        let(:foreign_key_for_error) { old_foreign_key }
+
+        it_behaves_like 'raising undefined object error'
       end
     end
   end

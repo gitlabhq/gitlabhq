@@ -7,6 +7,7 @@
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
 = render_if_exists 'shared/promotions/promote_mobile_devops', project: @project
+= render_if_exists 'projects/duo_pro_trial_alert', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render 'clusters_deprecation_alert'
@@ -14,31 +15,19 @@
 
 = render "home_panel"
 
-- if Feature.enabled?(:project_overview_reorg)
-  .project-page-indicator.js-show-on-project-root
+.project-page-indicator.js-show-on-project-root
 
-  .project-page-layout
-    .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
-      = render "sidebar"
+.project-page-layout
+  .project-page-layout-sidebar.js-show-on-project-root.gl-mt-5
+    = render "sidebar"
 
-    .project-page-layout-content
-      - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
-        - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
+  .project-page-layout-content
+    - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
+      - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 
       = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
 
-      - view_path = @project.default_view
+    - view_path = @project.default_view
 
-      %div{ class: project_child_container_class(view_path) }
-        = render view_path, is_project_overview: true
-- else
-  - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
-    - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
-    = repository_languages_bar(@project.repository_languages)
-
-  = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
-
-  - view_path = @project.default_view
-
-  %div{ class: project_child_container_class(view_path) }
-    = render view_path, is_project_overview: true
+    %div{ class: project_child_container_class(view_path) }
+      = render view_path, is_project_overview: true

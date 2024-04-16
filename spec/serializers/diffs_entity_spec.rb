@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffsEntity do
+RSpec.describe DiffsEntity, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }

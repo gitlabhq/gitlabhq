@@ -102,7 +102,7 @@ export default {
     <gl-button
       data-testid="accordion-button"
       variant="link"
-      class="gl-font-weight-bold"
+      class="gl-font-weight-bold gl-text-black-normal!"
       @click="toggleAssetsExpansion"
     >
       <gl-icon

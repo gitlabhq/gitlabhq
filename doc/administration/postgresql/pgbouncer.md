@@ -182,7 +182,7 @@ ote_pid | tls
 Some database changes have to be done directly, and not through PgBouncer.
 
 The main affected tasks are [database restores](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
-and [GitLab upgrades with database migrations](../../update/zero_downtime.md#postgresql).
+and [GitLab upgrades with database migrations](../../update/zero_downtime.md).
 
 1. To find the primary node, run the following on a database node:
 
@@ -277,8 +277,8 @@ Additionally, `current_connections` should be greater than 1.
 
 ### Message: `LOG:  invalid CIDR mask in address`
 
-See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-cidr-mask-in-address).
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting/replication.md#message-log--invalid-cidr-mask-in-address).
 
 ### Message: `LOG:  invalid IP mask "md5": Name or service not known`
 
-See the suggested fix [in Geo documentation](../geo/replication/troubleshooting.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).
+See the suggested fix [in Geo documentation](../geo/replication/troubleshooting/replication.md#message-log--invalid-ip-mask-md5-name-or-service-not-known).

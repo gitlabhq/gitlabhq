@@ -88,11 +88,11 @@
                             %tbody
                               %tr{ style: 'width:100%;' }
                                 %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#8c8c8c;font-weight:300;padding:14px 0;margin:0;text-align:center;" }
-                                  %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:-4px;", alt: "Merge request icon" }
+                                  %img{ src: image_url('mailers/approval/icon-merge-request-gray.gif'), style: "height:18px;width:18px;margin-bottom:2px;vertical-align:bottom;", alt: "Merge request icon" }
                                   %span{ style: "font-weight: 600;color:#333333;" }= _('Merge request')
                                   %a{ href: merge_request_url(@merge_request), style: "font-weight: 600;color:#3777b0;text-decoration:none" }= @merge_request.to_reference
                                   %span= _('was set to auto-merge by')
-                                  %img.avatar{ height: "24", src: avatar_icon_for_user(@mwps_set_by, 24, only_path: false), style: "border-radius:12px;margin:-7px 0 -7px 3px;", width: "24", alt: "Avatar" }
+                                  %img.avatar{ height: "24", src: avatar_icon_for_user(@mwps_set_by, 24, only_path: false), style: "border-radius:12px;margin-left:3px;vertical-align:bottom;", width: "24", alt: "Avatar" }
                                   %a.muted{ href: user_url(@mwps_set_by), style: "color:#333333;text-decoration:none;" }
                                     = @mwps_set_by.name
                         %tr.spacer
@@ -131,7 +131,7 @@
                                       %tbody
                                         %tr
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;padding-right:5px;" }
-                                            %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.author, 24, only_path: false), style: "display:block;border-radius:12px;margin:-2px 0;", width: "24", alt: "Avatar" }
+                                            %img.avatar{ height: "24", src: avatar_icon_for_user(@merge_request.author, 24, only_path: false), style: "display:block;border-radius:12px;margin:0;", width: "24", alt: "Avatar" }
                                           %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;vertical-align:middle;" }
                                             %a.muted{ href: user_url(@merge_request.author), style: "color:#333333;text-decoration:none;" }
                                               = @merge_request.author.name

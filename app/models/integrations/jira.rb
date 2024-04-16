@@ -29,6 +29,7 @@ module Integrations
 
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
     SECTION_TYPE_JIRA_ISSUES = 'jira_issues'
+    SECTION_TYPE_JIRA_ISSUE_CREATION = 'jira_issue_creation'
 
     AUTH_TYPE_BASIC = 0
     AUTH_TYPE_PAT = 1
@@ -61,7 +62,7 @@ module Integrations
 
     before_save :copy_project_key_to_project_keys,
       if: -> {
-        Feature.disabled?(:jira_multiple_project_keys, project&.group)
+        Feature.disabled?(:jira_multiple_project_keys, group || project&.group)
       }
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
@@ -254,12 +255,28 @@ module Integrations
 
       # Currently, Jira issues are only configurable at the project and group levels.
       unless instance_level?
+        issues_title = if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
+                         s_('JiraService|View Jira issues (optional)')
+                       else
+                         _('Issues')
+                       end
+
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
-          title: _('Issues'),
+          title: issues_title,
           description: jira_issues_section_description,
           plan: 'premium'
         })
+
+        if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
+          sections.push({
+            type: SECTION_TYPE_JIRA_ISSUE_CREATION,
+            title: s_('JiraService|Jira issue creation from vulnerabilities (optional)'),
+            description: s_('JiraService|Create a Jira issue for a vulnerability to track any action taken ' \
+                            'to resolve or mitigate a vulnerability.'),
+            plan: 'ultimate'
+          })
+        end
       end
 
       sections
@@ -415,6 +432,10 @@ module Integrations
 
     def testable?
       group_level? || project_level?
+    end
+
+    def project_keys_as_string
+      project_keys.join(',')
     end
 
     private

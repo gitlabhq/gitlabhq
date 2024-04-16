@@ -122,7 +122,7 @@ export default {
       </gl-alert>
 
       <gl-form-group
-        :label="s__('PackageRegistry|Package name pattern')"
+        :label="s__('PackageRegistry|Name pattern')"
         label-for="input-package-name-pattern"
       >
         <gl-form-input
@@ -135,7 +135,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        :label="s__('PackageRegistry|Package type')"
+        :label="s__('PackageRegistry|Type')"
         label-for="input-package-type"
         :disabled="isFieldDisabled"
       >
@@ -168,7 +168,7 @@ export default {
           type="submit"
           :disabled="isSubmitButtonDisabled"
           :loading="showLoadingIcon"
-          >{{ __('Protect') }}</gl-button
+          >{{ s__('PackageRegistry|Add rule') }}</gl-button
         >
         <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
       </div>

@@ -6,7 +6,11 @@ import { MOCK_QUERY } from 'jest/search/mock_data';
 import BlobsFilters from '~/search/sidebar/components/blobs_filters.vue';
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
-import { SEARCH_TYPE_ADVANCED } from '~/search/sidebar/constants';
+import {
+  SEARCH_TYPE_ZOEKT,
+  SEARCH_TYPE_ADVANCED,
+  SEARCH_TYPE_BASIC,
+} from '~/search/sidebar/constants';
 
 Vue.use(Vuex);
 
@@ -17,11 +21,11 @@ describe('GlobalSearch BlobsFilters', () => {
     currentScope: () => 'blobs',
   };
 
-  const createComponent = () => {
+  const createComponent = (initialState = { searchType: SEARCH_TYPE_ADVANCED }) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
-        searchType: SEARCH_TYPE_ADVANCED,
+        ...initialState,
       },
       getters: defaultGetters,
     });
@@ -38,8 +42,19 @@ describe('GlobalSearch BlobsFilters', () => {
     createComponent();
   });
 
-  it('renders LanguageFilter', () => {
-    expect(findLanguageFilter().exists()).toBe(true);
+  describe.each`
+    searchType              | isShown
+    ${SEARCH_TYPE_BASIC}    | ${false}
+    ${SEARCH_TYPE_ADVANCED} | ${true}
+    ${SEARCH_TYPE_ZOEKT}    | ${false}
+  `('sidebar blobs language filter:', ({ searchType, isShown }) => {
+    beforeEach(() => {
+      createComponent({ searchType });
+    });
+
+    it(`does ${isShown ? '' : 'not '}render LanguageFilter when search_type ${searchType}`, () => {
+      expect(findLanguageFilter().exists()).toBe(isShown);
+    });
   });
 
   it('renders ArchivedFilter', () => {

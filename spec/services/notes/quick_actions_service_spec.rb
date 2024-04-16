@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
   shared_context 'note on noteable' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
     let_it_be(:assignee) { create(:user) }
 
     before do
@@ -348,9 +348,9 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
     end
 
     describe '/add_child' do
-      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:second_child) { create(:work_item, :objective, project: project) }
+      let_it_be(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:second_child) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/add_child #{child.to_reference}, #{second_child.to_reference}" }
       let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
       let_it_be(:children) { [child, second_child] }
@@ -361,20 +361,17 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         end
 
         it 'adds child work items' do
-          execute(note)
-
+          expect { execute(note) }.to change { WorkItems::ParentLink.count }.by(2)
+          expect(noteable.reload.work_item_children).to match_array(children)
           expect(noteable.valid?).to be_truthy
-          expect(noteable.work_item_children).to eq(children)
         end
       end
 
-      context 'when using work item reference' do
+      it_behaves_like 'adds child work items'
+
+      context 'when using work item full reference' do
         let_it_be(:note_text) { "/add_child #{child.to_reference(full: true)}, #{second_child.to_reference(full: true)}" }
 
-        it_behaves_like 'adds child work items'
-      end
-
-      context 'when using work item iid' do
         it_behaves_like 'adds child work items'
       end
 

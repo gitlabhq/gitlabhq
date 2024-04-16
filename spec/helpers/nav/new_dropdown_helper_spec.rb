@@ -169,6 +169,16 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
             expect(view_model[:menu_sections]).to match_array([])
           end
         end
+
+        context 'when allow_organization_creation feature flag is disabled' do
+          before do
+            stub_feature_flags(allow_organization_creation: false)
+          end
+
+          it 'does not have new organization menu item' do
+            expect(view_model[:menu_sections]).to match_array([])
+          end
+        end
       end
     end
 

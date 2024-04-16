@@ -37,6 +37,8 @@ module Integrations
             releases_events_data
           when 'award_emoji'
             emoji_events_data
+          when 'current_user'
+            current_user_events_data
           end
         end
       end

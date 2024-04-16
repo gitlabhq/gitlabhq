@@ -27,6 +27,19 @@
               ]
             }
           }
+        },
+        "license_scanning": {
+          "type": "object",
+          "minProperties": 1,
+          "patternProperties": {
+            "^.+$": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
         }
       }
     },

@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 10,000 users
+# Reference architecture: 200 RPS or up to 10,000 users 
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 10,000 users
-with notable headroom.
+This page describes the GitLab reference architecture designed to target a peak load of 200 requests per second (RPS), the typical peak load of up to 10,000 users, both manual and automated, based on real data with headroom added.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
@@ -157,7 +156,7 @@ Before starting, see the [requirements](index.md#requirements) for reference arc
 ## Testing methodology
 
 The 10k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 200 RPS
@@ -177,13 +176,13 @@ The results of this testing are [available publicly on the GPT wiki](https://git
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
-## Setup components
+## Set up components
 
-To set up GitLab and its components to accommodate up to 10,000 users:
+To set up GitLab and its components to accommodate up to 200 RPS or 10,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
-1. [Configure the internal load balancer](#configure-the-internal-load-balancer).
+1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
 1. [Configure Consul](#configure-consul).
 1. [Configure PostgreSQL](#configure-postgresql), the database for GitLab.
@@ -354,8 +353,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -423,8 +422,8 @@ backend praefect
 Refer to your preferred Load Balancer's documentation for further guidance.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -503,8 +502,8 @@ run: node-exporter: (pid 30093) 76833s; run: log: (pid 29663) 76855s
 ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -673,8 +672,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/databa
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -703,8 +702,8 @@ If the 'State' column for any node doesn't say "running", check the
 before proceeding.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -801,8 +800,8 @@ The following IPs will be used as an example:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1018,8 +1017,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1163,8 +1162,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1277,8 +1276,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. Follow the [post configuration](#praefect-postgresql-post-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1342,8 +1341,8 @@ This is how this would work with a Linux package PostgreSQL setup:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1747,8 +1746,8 @@ To configure Praefect with TLS:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1904,8 +1903,8 @@ To configure the Sidekiq nodes, on each one:
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2108,8 +2107,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2176,8 +2175,8 @@ To configure the Monitoring node:
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2209,8 +2208,8 @@ There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab
 in the future.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2231,8 +2230,8 @@ cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2398,7 +2397,7 @@ Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because four worker processes
 are created by default and each pod has other small processes running.
 
-For 10,000 users we recommend a total Puma worker count of around 80.
+For 200 RPS or 10,000 users we recommend a total Puma worker count of around 80.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 20
 Webservice pods with 4 workers per pod and 5 pods per node. Expand available resources using
 the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
@@ -2436,7 +2435,7 @@ When setting up a Cloud Native Hybrid environment, it's worth noting that severa
 For this setup specifically, the [GitLab Rails](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-rails-secret) and [GitLab Shell](https://docs.gitlab.com/charts/installation/secrets.html#gitlab-rails-secret) secrets should be synced.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>

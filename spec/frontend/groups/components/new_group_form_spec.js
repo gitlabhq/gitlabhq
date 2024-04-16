@@ -1,14 +1,16 @@
+import { GlLink, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import NewGroupForm from '~/groups/components/new_group_form.vue';
 import GroupPathField from '~/groups/components/group_path_field.vue';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   VISIBILITY_LEVELS_STRING_TO_INTEGER,
-  VISIBILITY_LEVEL_PRIVATE_INTEGER,
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
 } from '~/visibility_level/constants';
+import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '~/groups/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('NewGroupForm', () => {
@@ -22,6 +24,11 @@ describe('NewGroupForm', () => {
     pathPattern: '[a-zA-Z0-9_\\.][a-zA-Z0-9_\\-\\.]{0,254}[a-zA-Z0-9_\\-]|[a-zA-Z0-9_]',
     availableVisibilityLevels: Object.values(VISIBILITY_LEVELS_STRING_TO_INTEGER),
     restrictedVisibilityLevels: [],
+    initialFormValues: {
+      [FORM_FIELD_NAME]: '',
+      [FORM_FIELD_PATH]: '',
+      [FORM_FIELD_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PUBLIC_INTEGER,
+    },
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -54,10 +61,24 @@ describe('NewGroupForm', () => {
     await findSubmitButton().trigger('click');
   };
 
-  it('renders `Group name` field', () => {
+  it('renders `Group name` field with label description', () => {
     createComponent();
 
     expect(findNameField().exists()).toBe(true);
+
+    const formGroup = wrapper.findByTestId(`${FORM_FIELD_VISIBILITY_LEVEL}-group`);
+    expect(formGroup.text()).toContain('Who will be able to see this group?');
+    expect(formGroup.findComponent(GlLink).attributes('href')).toBe(
+      helpPagePath('user/public_access'),
+    );
+  });
+
+  it('renders SCIM warning', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(GlAlert).text()).toBe(
+      'Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
+    );
   });
 
   it('renders `Group URL` field', () => {
@@ -70,7 +91,7 @@ describe('NewGroupForm', () => {
     createComponent();
 
     expect(findVisibilityLevelField().props()).toMatchObject({
-      checked: VISIBILITY_LEVEL_PRIVATE_INTEGER,
+      checked: VISIBILITY_LEVEL_PUBLIC_INTEGER,
       visibilityLevels: defaultPropsData.availableVisibilityLevels,
       visibilityLevelDescriptions: GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
     });

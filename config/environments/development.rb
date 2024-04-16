@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'gitlab/middleware/strip_cookies'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -108,4 +110,6 @@ Rails.application.configure do
 
     config.middleware.delete BetterErrors::Middleware
   end
+
+  config.middleware.insert_before(ActionDispatch::Cookies, Gitlab::Middleware::StripCookies, paths: [%r{^/assets/}])
 end

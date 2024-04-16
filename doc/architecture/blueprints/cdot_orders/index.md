@@ -70,87 +70,104 @@ erDiagram
 
   "Zuora::Subscription" {
     string(64) zuora_id PK "`id` field on Zuora Subscription"
-    string(64) account_id
-    string name
-    string(64) previous_subscription_id
-    string status
-    date term_start_date
-    date term_end_date
-    int version
-    boolean auto_renew "null:false default:false"
-    date cancelled_date
-    string(64) created_by_id
+    integer version "null:false"
     integer current_term
-    string current_term_period_type
-    string eoa_starter_bronze_offer_accepted__c
-    string external_subscription_id__c
-    string external_subscription_source__c
-    string git_lab_namespace_id__c
-    string git_lab_namespace_name__c
     integer initial_term
-    string(64) invoice_owner_id
-    string notes
-    string opportunity_id__c
-    string(64) original_id
-    string(64) ramp_id
-    string renewal_subscription__c__c
     integer renewal_term
+    datetime created_date "null:false"
+    datetime updated_date "null:false"
+    date term_start_date "null:false"
+    date term_end_date
+    date cancelled_date
+    date subscription_start_date "null:false"
     date subscription_end_date
-    date subscription_start_date
-    string turn_on_auto_renew__c
-    string turn_on_cloud_licensing__c
-    string turn_on_operational_metrics__c
-    string turn_on_seat_reconciliation__c
-    datetime created_date
-    datetime updated_date
+    boolean auto_renew "null:false default:false"
+    string(3) eoa_starter_bronze_offer_accepted__c
+    string(3) contract_auto_renew__c
+    string(3) turn_on_auto_renew__c
+    string(3) turn_on_operational_metrics__c
+    string(3) turn_on_seat_reconciliation__c
+    string(5) current_term_period_type
+    string(7) turn_on_cloud_licensing__c
+    string(7) marketplace_offer_type__c
+    string(18) status
+    string(64) account_id "null:false"
+    string(64) previous_subscription_id
+    string(64) invoice_owner_id "null:false"
+    string(64) original_id "null:false"
+    string(64) ramp_id
+    string(64) created_by_id "null:false"
+    string(64) updated_by_id "null:false"
+    string(255) name "null:false"
+    string(255) opportunity_id__c
+    string(255) renewal_subscription__c__c
+    string(255) external_subscription_id__c
+    string(255) external_subscription_source__c
+    string(255) git_lab_namespace_id__c
+    string(255) git_lab_namespace_name__c
+    string(255) marketplace_agreement_id__c
+    string(255) marketplace_offer_id__c
+    string(255) marketplace_fee_percentage__c
+    string(500) notes
     datetime created_at
     datetime updated_at
   }
 
   "Zuora::RatePlan" {
     string(64) zuora_id PK "`id` field on Zuora RatePlan"
-    string(64) subscription_id FK
-    string name
-    string(64) product_rate_plan_id
-    datetime created_date
-    datetime updated_date
-    datetime created_at
-    datetime updated_at
+    datetime created_date "null:false"
+    datetime updated_date "null:false"
+    datetime created_at "null:false"
+    datetime updated_at "null:false"
+    string(64) subscription_id FK "null:false"
+    string(64) product_rate_plan_id "null:false"
+    string(64) created_by_id "null:false"
+    string(64) updated_by_id "null:false"
+    string(255) name "null:false"
   }
 
   "Zuora::RatePlanCharge" {
     string(64) zuora_id PK "`id` field on Zuora RatePlanCharge"
-    string(64) rate_plan_id FK
-    string(64) product_rate_plan_charge_id
-    int quantity
+    integer version "null:false"
+    integer segment "null:false"
+    integer quantity
+    integer mrr
+    integer tcv
+    integer dmrc
+    integer dtcv
+    datetime created_date "null:false"
+    datetime updated_date "null:false"
+    datetime created_at "null:false"
+    datetime updated_at "null:false"
     date effective_start_date
     date effective_end_date
-    string price_change_option
-    string charge_number
-    string charge_type
     boolean is_last_segment "null:false default:false"
-    int segment
-    int mrr
-    int tcv
-    int dmrc
-    int dtcv
-    string(64) subscription_id
-    string(64) subscription_owner_id
-    int version
-    datetime created_date
-    datetime updated_date
-    datetime created_at
-    datetime updated_at
+    string(9) charge_type
+    string(30) price_change_option
+    string(50) charge_number "null:false"
+    string(64) rate_plan_id FK "null:false"
+    string(64) subscription_id "null:false"
+    string(64) subscription_owner_id "null:false"
+    string(64) product_rate_plan_charge_id "null:false"
+    string(64) created_by_id "null:false"
+    string(64) updated_by_id "null:false"
+    string(100) name
+    string(500) description
   }
 
   "Zuora::RatePlanChargeTier" {
-    string zuora_id PK "`id` field on Zuora RatePlanChargeTier"
-    string rate_plan_charge_id FK
-    string price
-    datetime created_date
-    datetime updated_date
-    datetime created_at
-    datetime updated_at
+    string(64) zuora_id PK "`id` field on Zuora RatePlanChargeTier"
+    integer tier
+    decimal price "precision:18 scale:2"
+    datetime created_date "null:false"
+    datetime updated_date "null:false"
+    datetime created_at "null:false"
+    datetime updated_at "null:false"
+    string(3) currency
+    string(16) price_format
+    string(64) rate_plan_charge_id FK "null:false"
+    string(64) created_by_id "null:false"
+    string(64) updated_by_id "null:false"
   }
 ```
 

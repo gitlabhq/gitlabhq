@@ -12,7 +12,9 @@ RSpec.describe 'overridden has_many :through associations', :eager_load, feature
       # https://gitlab.com/gitlab-org/gitlab/-/issues/424853
       override_class.new(:project, 'app/models/incident_management/issuable_escalation_status.rb'),
       # https://gitlab.com/gitlab-org/gitlab/-/issues/424854
-      override_class.new(:remediations, 'ee/app/models/vulnerabilities/finding.rb')
+      override_class.new(:remediations, 'ee/app/models/vulnerabilities/finding.rb'),
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/450797
+      override_class.new(:vulnerability_findings, 'ee/app/models/ee/ci/pipeline.rb')
     ]
   end
 

@@ -20,4 +20,3 @@ Style/MissingRespondToMissing:
     - 'lib/uploaded_file.rb'
     - 'qa/qa/runtime/release.rb'
     - 'qa/qa/runtime/scenario.rb'
-    - 'spec/support/helpers/next_found_instance_of.rb'

@@ -18,6 +18,11 @@ import {
 let wrapper;
 let savedRepliesResp;
 
+const newCommentTemplatePaths = [
+  { path: '/user/comment_templates', text: 'Manage user' },
+  { path: '/group/comment_templates', text: 'Manage group' },
+];
+
 function createMockApolloProvider(response) {
   Vue.use(VueApollo);
 
@@ -35,7 +40,7 @@ function createComponent(options = {}) {
 
   return mountExtended(CommentTemplatesDropdown, {
     propsData: {
-      newCommentTemplatePath: '/new',
+      newCommentTemplatePaths,
     },
     apolloProvider: mockApollo,
   });
@@ -67,6 +72,22 @@ describe('Comment templates dropdown', () => {
     await waitForPromises();
 
     expect(savedRepliesResp).toHaveBeenCalled();
+  });
+
+  it('renders multiple manage links', () => {
+    const mockApollo = createMockApolloProvider(savedRepliesResponse);
+    wrapper = createComponent({ mockApollo });
+
+    wrapper.find('.js-comment-template-toggle').trigger('click');
+
+    const links = wrapper.findAllByTestId('manage-button');
+
+    expect(links).toHaveLength(newCommentTemplatePaths.length);
+
+    newCommentTemplatePaths.forEach(({ path, text }, index) => {
+      expect(links.at(index).attributes('href')).toBe(path);
+      expect(links.at(index).text()).toBe(text);
+    });
   });
 
   describe('when selecting a comment', () => {

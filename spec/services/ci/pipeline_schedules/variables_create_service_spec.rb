@@ -6,16 +6,13 @@ RSpec.describe Ci::PipelineSchedules::VariablesCreateService, feature_category: 
   let_it_be(:reporter) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:developer) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) do
+    create(:project, :public, :repository, maintainers: user, developers: developer, reporters: reporter)
+  end
+
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
   subject(:service) { described_class.new(pipeline_schedule, user, params) }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   describe 'execute' do
     context 'when user does not have permission' do

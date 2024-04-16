@@ -1,12 +1,18 @@
 <script>
-import { GlButton, GlSprintf } from '@gitlab/ui';
+import { GlSprintf, GlEmptyState } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
+import { s__, __ } from '~/locale';
 
 export default {
+  i18n: {
+    title: s__('MergeRequest|There are no changes yet'),
+    message: __('No changes between %{source} and %{target}'),
+    buttonText: __('Create commit'),
+  },
   components: {
-    GlButton,
     GlSprintf,
+    GlEmptyState,
   },
   props: {
     changesEmptyStateIllustration: {
@@ -45,28 +51,23 @@ export default {
 </script>
 
 <template>
-  <div class="row empty-state">
-    <div class="col-12">
-      <div class="svg-content svg-250"><img :src="changesEmptyStateIllustration" /></div>
-    </div>
-    <div class="col-12">
-      <div class="text-content text-center">
-        <div data-testid="no-changes-message">
-          <gl-sprintf :message="__('No changes between %{source} and %{target}')">
-            <template #source>
-              <span class="ref-name">{{ sourceName }}</span>
-            </template>
-            <template #target>
-              <span class="ref-name">{{ targetName }}</span>
-            </template>
-          </gl-sprintf>
-        </div>
-        <div class="text-center">
-          <gl-button :href="getNoteableData.new_blob_path" variant="confirm" category="primary">{{
-            __('Create commit')
-          }}</gl-button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <gl-empty-state
+    :title="$options.i18n.title"
+    :svg-path="changesEmptyStateIllustration"
+    :primary-button-text="$options.i18n.buttonText"
+    :primary-button-link="getNoteableData.new_blob_path"
+  >
+    <template #description>
+      <span data-testid="no-changes-message">
+        <gl-sprintf :message="$options.i18n.message">
+          <template #source>
+            <span class="ref-name">{{ sourceName }}</span>
+          </template>
+          <template #target>
+            <span class="ref-name">{{ targetName }}</span>
+          </template>
+        </gl-sprintf>
+      </span>
+    </template>
+  </gl-empty-state>
 </template>

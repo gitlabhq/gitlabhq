@@ -37,7 +37,7 @@ module Environments
     end
 
     def execute_for_merge_request_pipeline(merge_request)
-      return unless merge_request.actual_head_pipeline&.merge_request?
+      return unless merge_request.diff_head_pipeline&.merge_request?
 
       created_environments = merge_request.created_environments
 

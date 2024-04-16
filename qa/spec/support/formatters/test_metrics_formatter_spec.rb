@@ -3,6 +3,7 @@
 require 'rspec/core/sandbox'
 require 'active_support/testing/time_helpers'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers, Lint/EmptyBlock -- false positives for empty blocks and memoized helpers help with testing different data hash parameters
 describe QA::Support::Formatters::TestMetricsFormatter do
   include QA::Support::Helpers::StubEnv
   include QA::Specs::Helpers::RSpec
@@ -29,7 +30,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:api_fabrication) { 0 }
   let(:fabrication_resources) { {} }
   let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
-  let(:product_group) { nil }
+  let(:status) { :passed }
 
   let(:influx_client_args) do
     {
@@ -46,17 +47,15 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       tags: {
         name: 'stats export spec',
         file_path: file_path.gsub('./qa/specs/features', ''),
-        status: :passed,
+        status: status,
         smoke: smoke,
         reliable: reliable,
         blocking: blocking,
         quarantined: quarantined,
-        retried: 'false',
         job_name: 'test-job',
         merge_request: 'false',
         run_type: run_type,
         stage: 'manage',
-        product_group: product_group,
         testcase: testcase
       },
       fields: {
@@ -65,21 +64,20 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         api_fabrication: api_fabrication * 1000,
         ui_fabrication: ui_fabrication * 1000,
         total_fabrication: (api_fabrication + ui_fabrication) * 1000,
-        retry_attempts: 0,
         job_url: ci_job_url,
         pipeline_url: ci_pipeline_url,
         pipeline_id: ci_pipeline_id,
         job_id: ci_job_id,
-        merge_request_iid: nil,
         failure_exception: ''
       }
     }
   end
 
-  def run_spec(&spec)
+  def run_spec(passed: true, &spec)
     spec ||= -> { it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {} }
+    method = passed ? :describe_successfully : :describe_unsuccessfully
 
-    describe_successfully('stats export', &spec).tap do |example_group|
+    send(method, 'stats export', &spec).tap do |example_group|
       example_group.examples.each do |ex|
         ex.metadata[:file_path] = file_path
         ex.metadata[:rerun_file_path] = rerun_file_path
@@ -140,6 +138,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
       stub_env('QA_RUN_TYPE', run_type)
       stub_env('QA_EXPORT_TEST_METRICS', "true")
+      stub_env('QA_RSPEC_RETRIED', "false")
     end
 
     context 'with reliable spec' do
@@ -169,15 +168,15 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     end
 
     context 'with product group tag' do
-      let(:product_group) { :import }
-
       it 'exports data to influxdb with correct reliable tag' do
         run_spec do
           it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
+        expect(influx_write_api).to have_received(:write).with(
+          data: [data.tap { |d| d[:tags][:product_group] = :import }]
+        )
       end
     end
 
@@ -196,10 +195,16 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
     context 'with quarantined spec' do
       let(:quarantined) { 'true' }
+      let(:status) { :pending }
 
       it 'exports data to influxdb with correct quarantine tag' do
         run_spec do
-          it('spec', :quarantine, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+          it(
+            'spec',
+            :quarantine,
+            skip: 'quarantined',
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
         end
 
         expect(influx_write_api).to have_received(:write).once
@@ -225,7 +230,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     end
 
     context 'with skipped spec' do
-      it 'skips export' do
+      let(:status) { :pending }
+
+      it 'exports data with pending status' do
         run_spec do
           it(
             'spec',
@@ -234,7 +241,53 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           ) {}
         end
 
-        expect(influx_write_api).to have_received(:write).with(data: [])
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with failed spec' do
+      let(:status) { :failed }
+
+      it 'saves exception class' do
+        run_spec(passed: false) do
+          it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') { raise }
+        end
+
+        expect(influx_write_api).to have_received(:write).with(
+          data: [data.tap { |d| d[:tags][:exception_class] = "RuntimeError" }]
+        )
+      end
+    end
+
+    context 'with retry in separate process' do
+      before do
+        stub_env('QA_DISABLE_RSPEC_RETRY', 'true')
+      end
+
+      context 'with initial run' do
+        it 'skips failed spec' do
+          run_spec(passed: false) do
+            it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') { raise }
+          end
+
+          expect(influx_write_api).to have_received(:write).with(data: [])
+        end
+      end
+
+      context 'with retry run' do
+        let(:status) { :flaky }
+
+        before do
+          stub_env('QA_RSPEC_RETRIED', 'true')
+        end
+
+        it 'sets test as flaky' do
+          run_spec do
+            it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+          end
+
+          expect(influx_write_api).to have_received(:write).with(data: [data])
+        end
       end
     end
 
@@ -283,10 +336,10 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         end
 
         custom_data = data.merge({
-                                   **data,
-                                   tags: data[:tags].merge({ custom_tag: "tag" }),
-                                   fields: data[:fields].merge({ custom_field: 1 })
-                                 })
+          **data,
+          tags: data[:tags].merge({ custom_tag: "tag" }),
+          fields: data[:fields].merge({ custom_field: 1 })
+        })
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [custom_data])
@@ -296,7 +349,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     context 'with fabrication runtimes' do
       let(:api_fabrication) { 4 }
       let(:ui_fabrication) { 10 }
-      let(:testcase) { nil }
 
       it 'exports data to influxdb with fabrication times' do
         run_spec do
@@ -304,7 +356,12 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           # global after hook defined in main spec_helper.
           #
           # Inject the values directly since we do not load e2e test spec_helper in unit tests
-          it('spec', api_fabrication: 4, browser_ui_fabrication: 10) {}
+          it(
+            'spec',
+            api_fabrication: 4,
+            browser_ui_fabrication: 10,
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
         end
 
         expect(influx_write_api).to have_received(:write).once
@@ -325,7 +382,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       end
     end
 
-    context 'with fabrication resources' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    context 'with fabrication resources' do
       let(:fabrication_resources) do
         {
           'QA::Resource::Project' => [{
@@ -382,8 +439,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       it 'saves test metrics as json files' do
         run_spec
 
-        expect(File).to have_received(:write).with("tmp/test-metrics-test-job.json", [data].to_json)
+        expect(File).to have_received(:write).with("tmp/test-metrics-test-job-retry-false.json", [data].to_json)
       end
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers, Lint/EmptyBlock

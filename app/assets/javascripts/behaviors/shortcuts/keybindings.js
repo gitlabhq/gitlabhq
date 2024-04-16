@@ -261,8 +261,8 @@ export const GO_TO_PROJECT_FILES = {
   defaultKeys: ['g f'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
-export const GO_TO_PROJECT_FIND_FILE = {
-  id: 'project.goToFindFile',
+export const START_SEARCH_PROJECT_FILE = {
+  id: 'project.startSearchFile',
   description: __('Go to find file'),
   defaultKeys: ['t'],
 };
@@ -588,7 +588,7 @@ const PROJECT_SHORTCUTS_GROUP = {
     GO_TO_PROJECT_ACTIVITY_FEED,
     GO_TO_PROJECT_RELEASES,
     GO_TO_PROJECT_FILES,
-    GO_TO_PROJECT_FIND_FILE,
+    START_SEARCH_PROJECT_FILE,
     GO_TO_PROJECT_COMMITS,
     GO_TO_PROJECT_REPO_GRAPH,
     GO_TO_PROJECT_REPO_CHARTS,

@@ -207,7 +207,7 @@ module IssuesHelper
       dashboard_labels_path: dashboard_labels_path(format: :json, include_ancestor_groups: true),
       dashboard_milestones_path: dashboard_milestones_path(format: :json),
       empty_state_with_filter_svg_path: image_path('illustrations/empty-state/empty-issues-md.svg'),
-      empty_state_without_filter_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
+      empty_state_without_filter_svg_path: image_path('illustrations/empty-state/empty-search-md.svg'),
       has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, current_user).to_s,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_public_visibility_restricted:

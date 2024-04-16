@@ -120,7 +120,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
       {
         'AdjournedProjectDeletionWorker' => 3,
         'AdminEmailsWorker' => 3,
-        'Ai::SyncServiceTokenWorker' => 3, # TODO: remove starting 16.11, see https://gitlab.com/groups/gitlab-org/-/epics/12544
         'Analytics::CodeReviewMetricsWorker' => 3,
         'Analytics::DevopsAdoption::CreateSnapshotWorker' => 3,
         'Analytics::UsageTrends::CounterJobWorker' => 3,
@@ -160,6 +159,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::DeleteObjectsWorker' => 0,
         'Ci::DropPipelineWorker' => 3,
         'Ci::InitialPipelineProcessWorker' => 3,
+        'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,
         'Ci::Minutes::UpdateProjectAndNamespaceUsageWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,
@@ -255,6 +255,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportRepositoryWorker' => 6,
+        'Gitlab::BitbucketImport::Stage::ImportUsersWorker' => 6,
         'Gitlab::BitbucketServerImport::AdvanceStageWorker' => 6,
         'Gitlab::BitbucketServerImport::Stage::FinishImportWorker' => 6,
         'Gitlab::BitbucketServerImport::Stage::ImportLfsObjectsWorker' => 6,
@@ -409,6 +410,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
+        'Projects::ImportExport::RelationImportWorker' => 6,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
         'Projects::PostCreationWorker' => 3,
         'Projects::ScheduleBulkRepositoryShardMovesWorker' => 3,

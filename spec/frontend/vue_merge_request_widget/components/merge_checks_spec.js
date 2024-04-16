@@ -115,6 +115,7 @@ describe('Merge request merge checks component', () => {
     mergeabilityChecks                                                                               | text
     ${[{ identifier: 'discussions', status: 'FAILED' }]}                                             | ${'Merge blocked: 1 check failed'}
     ${[{ identifier: 'discussions', status: 'FAILED' }, { identifier: 'rebase', status: 'FAILED' }]} | ${'Merge blocked: 2 checks failed'}
+    ${[{ identifier: 'discussions', status: 'WARNING' }]}                                            | ${'Merge with caution: Override added'}
   `('renders $text for $mergeabilityChecks', async ({ mergeabilityChecks, text }) => {
     mountComponent({ mergeabilityChecks });
 
@@ -124,9 +125,10 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    status      | statusIcon
-    ${'FAILED'} | ${'failed'}
-    ${'PASSED'} | ${'success'}
+    status       | statusIcon
+    ${'FAILED'}  | ${'failed'}
+    ${'PASSED'}  | ${'success'}
+    ${'WARNING'} | ${'warning'}
   `('renders $statusIcon for $status result', async ({ status, statusIcon }) => {
     mountComponent({ mergeabilityChecks: [{ status, identifier: 'discussions' }] });
 
@@ -140,6 +142,7 @@ describe('Merge request merge checks component', () => {
     ${'conflict'}                 | ${'conflict'}
     ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
     ${'need_rebase'}              | ${'need_rebase'}
+    ${'requested_changes'}        | ${'requested_changes'}
   `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 
@@ -150,6 +153,17 @@ describe('Merge request merge checks component', () => {
     const { default: component } = await COMPONENTS[componentName]();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
+  });
+
+  it('renders ready to merge caution message when canMerge is false', async () => {
+    mountComponent({
+      canMerge: false,
+      mergeabilityChecks: [{ status: 'WARNING', identifier: 'discussions' }],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.text()).toBe('Ready to be merged with caution: Override added');
   });
 
   it('expands collapsed area', async () => {

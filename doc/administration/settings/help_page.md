@@ -90,7 +90,7 @@ sourced from the [`doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/m
 When redirecting `/help`, GitLab:
 
 - Redirects requests to the specified URL.
-- Appends `ee`  and the documentation path, which includes the version number, to the URL.
+- Appends `ee` and the documentation path, which includes the version number, to the URL.
 - Appends `.html` to the URL, and removes `.md` if necessary.
 
 For example, if the URL is set to `https://docs.gitlab.com`, requests for

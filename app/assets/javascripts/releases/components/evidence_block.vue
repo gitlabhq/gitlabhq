@@ -76,7 +76,7 @@ export default {
           <gl-icon name="external-link" class="gl-ml-2 gl-flex-shrink-0 gl-flex-grow-0" />
         </gl-link>
 
-        <expand-button>
+        <expand-button class="gl-ml-4">
           <template #short>
             <span class="js-short monospace">{{ shortSha(index) }}</span>
           </template>

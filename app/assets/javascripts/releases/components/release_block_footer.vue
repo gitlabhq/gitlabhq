@@ -85,36 +85,37 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <div
-      v-if="commit"
-      class="gl-float-left gl-mr-5 gl-display-flex gl-align-items-center js-commit-info"
-    >
-      <gl-icon ref="commitIcon" name="commit" class="gl-mr-2" />
+  <div class="gl-display-flex gl-gap-5">
+    <div v-if="commit" class="gl-display-flex gl-align-items-center js-commit-info">
+      <gl-icon ref="commitIcon" name="commit" class="gl-mr-2 gl-text-gray-700" />
       <div v-gl-tooltip.bottom :title="commit.title">
-        <gl-link v-if="commitPath" :href="commitPath">
+        <gl-link
+          v-if="commitPath"
+          :href="commitPath"
+          class="gl-font-sm gl-font-monospace gl-mr-0 gl-text-gray-700"
+        >
           {{ commit.shortId }}
         </gl-link>
         <span v-else>{{ commit.shortId }}</span>
       </div>
     </div>
 
-    <div
-      v-if="tagName"
-      class="gl-float-left gl-mr-5 gl-display-flex gl-align-items-center js-tag-info"
-    >
-      <gl-icon name="tag" class="gl-mr-2" />
+    <div v-if="tagName" class="gl-display-flex gl-align-items-center js-tag-info">
+      <gl-icon name="tag" class="gl-mr-2 gl-text-gray-700" />
       <div v-gl-tooltip.bottom :title="__('Tag')">
-        <gl-link v-if="tagPath" :href="tagPath">
+        <gl-link
+          v-if="tagPath"
+          :href="tagPath"
+          class="gl-font-sm gl-font-monospace gl-mr-0 gl-text-gray-700"
+        >
           {{ tagName }}
         </gl-link>
         <span v-else>{{ tagName }}</span>
       </div>
     </div>
-
     <div
       v-if="timeAt || author"
-      class="gl-float-left gl-display-flex gl-align-items-center js-author-date-info"
+      class="gl-display-flex gl-align-items-center js-author-date-info gl-font-sm"
     >
       <span class="gl-text-secondary">{{ createdTime }}&nbsp;</span>
       <template v-if="timeAt">
@@ -130,11 +131,10 @@ export default {
       <div v-if="author" class="gl-display-flex">
         <span class="gl-text-secondary">{{ __('by') }}&nbsp;</span>
         <user-avatar-link
-          class="gl-my-n1 gl-display-flex"
           :link-href="author.webUrl"
           :img-src="author.avatarUrl"
           :img-alt="userImageAltDescription"
-          :img-size="24"
+          :img-size="16"
           :tooltip-text="author.username"
           tooltip-placement="bottom"
         />

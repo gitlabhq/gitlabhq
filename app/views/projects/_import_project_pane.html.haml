@@ -1,5 +1,4 @@
 - active_tab = local_assigns.fetch(:active_tab, 'blank')
-- track_label = local_assigns.fetch(:track_label, 'import_project')
 - namespace_id = local_assigns.fetch(:destination_namespace_id, nil)
 
 .project-import
@@ -18,45 +17,45 @@
     .import-buttons
       - if gitlab_project_import_enabled?
         .import_gitlab_project.has-tooltip{ data: { container: 'body', testid: 'gitlab-import-button' } }
-          = render Pajamas::ButtonComponent.new(href: '#', icon: 'tanuki', button_options: { class: 'btn_import_gitlab_project js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'gitlab_export') } }) do
+          = render Pajamas::ButtonComponent.new(href: '#', icon: 'tanuki', button_options: { class: 'btn_import_gitlab_project js-import-project-btn', data: { href: new_import_gitlab_project_path, platform: 'gitlab_export', **tracking_attrs_data('import_project', 'click_button', 'gitlab_export') } }) do
             = _('GitLab export')
 
       - if github_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: new_import_github_path(namespace_id: namespace_id), icon: 'github', button_options: { class: 'js-import-github js-import-project-btn', data: { platform: 'github', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'github') } }) do
+          = render Pajamas::ButtonComponent.new(href: new_import_github_path(namespace_id: namespace_id), icon: 'github', button_options: { class: 'js-import-github js-import-project-btn', data: { platform: 'github', **tracking_attrs_data('import_project', 'click_button', 'github') } }) do
             GitHub
 
       - if bitbucket_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: status_import_bitbucket_path(namespace_id: namespace_id), icon: 'bitbucket', button_options: { class: "import_bitbucket js-import-project-btn #{'js-how-to-import-link' unless bitbucket_import_configured?}", data: { modal_title: _("Import projects from Bitbucket"), modal_message: import_from_bitbucket_message, platform: 'bitbucket_cloud', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'bitbucket_cloud') } }) do
+          = render Pajamas::ButtonComponent.new(href: status_import_bitbucket_path(namespace_id: namespace_id), icon: 'bitbucket', button_options: { class: "import_bitbucket js-import-project-btn #{'js-how-to-import-link' unless bitbucket_import_configured?}", data: { modal_title: _("Import projects from Bitbucket"), modal_message: import_from_bitbucket_message, platform: 'bitbucket_cloud', **tracking_attrs_data('import_project', 'click_button', 'bitbucket_cloud') } }) do
             Bitbucket Cloud
 
       - if bitbucket_server_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: status_import_bitbucket_server_path(namespace_id: namespace_id), icon: 'bitbucket', button_options: { class: 'import_bitbucket js-import-project-btn', data: { platform: 'bitbucket_server', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'bitbucket_server') } }) do
+          = render Pajamas::ButtonComponent.new(href: status_import_bitbucket_server_path(namespace_id: namespace_id), icon: 'bitbucket', button_options: { class: 'import_bitbucket js-import-project-btn', data: { platform: 'bitbucket_server', **tracking_attrs_data('import_project', 'click_button', 'bitbucket_server') } }) do
             Bitbucket Server
 
       - if fogbugz_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: new_import_fogbugz_path(namespace_id: namespace_id), icon: 'bug', button_options: { class: 'import_fogbugz js-import-project-btn', data: { platform: 'fogbugz', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'fogbugz') } }) do
+          = render Pajamas::ButtonComponent.new(href: new_import_fogbugz_path(namespace_id: namespace_id), icon: 'bug', button_options: { class: 'import_fogbugz js-import-project-btn', data: { platform: 'fogbugz', **tracking_attrs_data('import_project', 'click_button', 'fogbugz') } }) do
             FogBugz
 
       - if gitea_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: new_import_gitea_path(namespace_id: namespace_id), icon: 'gitea', button_options: { class: 'import_gitea js-import-project-btn', data: { platform: 'gitea', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'gitea') } }) do
+          = render Pajamas::ButtonComponent.new(href: new_import_gitea_path(namespace_id: namespace_id), icon: 'gitea', button_options: { class: 'import_gitea js-import-project-btn', data: { platform: 'gitea', **tracking_attrs_data('import_project', 'click_button', 'gitea') } }) do
             Gitea
 
       - if git_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(icon: 'link', button_options: { class: 'js-toggle-button js-import-git-toggle-button js-import-project-btn', data: { platform: 'repo_url', toggle_open_class: 'active', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'repo_url') } }) do
+          = render Pajamas::ButtonComponent.new(icon: 'link', button_options: { class: 'js-toggle-button js-import-git-toggle-button js-import-project-btn', data: { platform: 'repo_url', toggle_open_class: 'active', **tracking_attrs_data('import_project', 'click_button', 'repo_url') } }) do
             = _('Repository by URL')
 
       - if manifest_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(href: new_import_manifest_path(namespace_id: namespace_id), icon: 'doc-text', button_options: { class: 'import_manifest js-import-project-btn', data: { platform: 'manifest_file', track_experiment: local_assigns[:track_experiment], **tracking_attrs_data(track_label, 'click_button', 'manifest_file') } }) do
+          = render Pajamas::ButtonComponent.new(href: new_import_manifest_path(namespace_id: namespace_id), icon: 'doc-text', button_options: { class: 'import_manifest js-import-project-btn', data: { platform: 'manifest_file', **tracking_attrs_data('import_project', 'click_button', 'manifest_file') } }) do
             = _('Manifest file')
 
-      = render_if_exists "projects/gitee_import_button", namespace_id: namespace_id, track_label: track_label
+      = render_if_exists "projects/gitee_import_button", namespace_id: namespace_id, track_label: 'import_project'
 
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }

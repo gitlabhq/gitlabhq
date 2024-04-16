@@ -259,7 +259,7 @@ This writes the downloaded file to `simple.html` in the current directory.
 Upload a PyPI package:
 
 ```plaintext
-PUT projects/:id/packages/pypi
+POST projects/:id/packages/pypi
 ```
 
 | Attribute | Type | Required | Description |
@@ -270,8 +270,8 @@ PUT projects/:id/packages/pypi
 ```shell
 curl --request POST \
      --form 'content=@path/to/my.pypi.package-0.0.1.tar.gz' \
-     --form 'name=my.pypi.package'
-     --form 'version=1.3.7'
+     --form 'name=my.pypi.package' \
+     --form 'version=1.3.7' \
      --user <username>:<personal_access_token> \
      "https://gitlab.example.com/api/v4/projects/1/packages/pypi"
 ```

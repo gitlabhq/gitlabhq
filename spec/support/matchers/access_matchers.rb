@@ -11,7 +11,9 @@ module AccessMatchers
 
   def emulate_user(user_type_or_trait, membership = nil)
     case user_type_or_trait
-    when :user, :admin
+    when :admin
+      login_as(create(user_type_or_trait, :without_default_org))
+    when :user
       login_as(create(user_type_or_trait))
     when :external, :auditor
       login_as(create(:user, user_type_or_trait))

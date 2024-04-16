@@ -9,7 +9,8 @@ FactoryBot.define do
     description { 'Some description' }
 
     candidate do
-      association :ml_candidates, experiment: model.default_experiment, project: project, model_version: instance
+      association :ml_candidates, experiment: model.default_experiment, name: 'a_candidate', project: project,
+        model_version: instance
     end
 
     trait :with_package do

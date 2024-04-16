@@ -1,10 +1,8 @@
 <script>
 import {
-  GlAvatar,
   GlLoadingIcon,
   GlBadge,
   GlButton,
-  GlIcon,
   GlLabel,
   GlPopover,
   GlLink,
@@ -12,16 +10,12 @@ import {
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import VisibilityIcon from '~/vue_shared/components/visibility_icon.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
-import {
-  VISIBILITY_LEVELS_STRING_TO_INTEGER,
-  VISIBILITY_TYPE_ICON,
-  GROUP_VISIBILITY_TYPE,
-  PROJECT_VISIBILITY_TYPE,
-} from '~/visibility_level/constants';
+import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
 import { ITEM_TYPE, ACTIVE_TAB_SHARED } from '../constants';
 
 import eventHub from '../event_hub';
@@ -36,11 +30,9 @@ export default {
     SafeHtml,
   },
   components: {
-    GlAvatar,
     GlBadge,
     GlButton,
     GlLoadingIcon,
-    GlIcon,
     GlLabel,
     GlPopover,
     GlLink,
@@ -48,6 +40,8 @@ export default {
     ItemTypeIcon,
     ItemActions,
     ItemStats,
+    ProjectAvatar,
+    VisibilityIcon,
   },
   inject: {
     currentGroupVisibility: {
@@ -96,13 +90,6 @@ export default {
     },
     isGroup() {
       return this.group.type === ITEM_TYPE.GROUP;
-    },
-    visibilityIcon() {
-      return VISIBILITY_TYPE_ICON[this.group.visibility];
-    },
-    visibilityTooltip() {
-      if (this.isGroup) return GROUP_VISIBILITY_TYPE[this.group.visibility];
-      return PROJECT_VISIBILITY_TYPE[this.group.visibility];
     },
     microdata() {
       return this.group.microdata || {};
@@ -156,7 +143,6 @@ export default {
     },
   ),
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
-  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -199,14 +185,12 @@ export default {
         :href="group.relativePath"
         :aria-label="group.name"
       >
-        <gl-avatar
-          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-          :entity-id="group.id"
-          :entity-name="group.name"
-          :src="group.avatarUrl"
+        <project-avatar
           :alt="group.name"
-          :size="32"
           :itemprop="microdata.imageItemprop"
+          :project-avatar-url="group.avatarUrl"
+          :project-id="group.id"
+          :project-name="group.name"
         />
       </a>
       <div class="group-text-container d-flex flex-fill gl-align-items-center">
@@ -226,12 +210,12 @@ export default {
               <!-- link hover text-decoration from over-extending -->
               {{ group.name }}
             </a>
-            <gl-icon
-              v-gl-tooltip.bottom
-              class="gl-display-inline-flex gl-align-items-center gl-mr-3 gl-text-gray-500"
-              :name="visibilityIcon"
-              :title="visibilityTooltip"
+            <visibility-icon
+              :is-group="isGroup"
+              :visibility-level="group.visibility"
+              class="gl-mr-3"
               data-testid="group-visibility-icon"
+              tooltip-placement="bottom"
             />
             <template v-if="shouldShowVisibilityWarning">
               <gl-button

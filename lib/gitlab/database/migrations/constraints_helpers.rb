@@ -249,6 +249,30 @@ module Gitlab
           )
         end
 
+        def add_multi_column_not_null_constraint(
+          table, *columns, limit: 1, operator: '=', constraint_name: nil, validate: true)
+
+          raise 'Expected multiple columns, use add_not_null_constraint for a single column' unless columns.size > 1
+
+          add_check_constraint(
+            table,
+            "num_nonnulls(#{columns.sort.join(', ')}) #{operator} #{limit}",
+            multi_column_not_null_constraint_name(table, columns, name: constraint_name),
+            validate: validate
+          )
+        end
+
+        def validate_multi_column_not_null_constraint(table, *columns, constraint_name: nil)
+          validate_check_constraint(
+            table,
+            multi_column_not_null_constraint_name(table, columns, name: constraint_name)
+          )
+        end
+
+        def remove_multi_column_not_null_constraint(table, *columns, constraint_name: nil)
+          remove_check_constraint(table, multi_column_not_null_constraint_name(table, columns, name: constraint_name))
+        end
+
         def rename_constraint(table_name, old_name, new_name)
           execute <<~SQL
             ALTER TABLE #{quote_table_name(table_name)}
@@ -332,6 +356,10 @@ module Gitlab
 
         def not_null_constraint_name(table, column, name: nil)
           name.presence || check_constraint_name(table, column, 'not_null')
+        end
+
+        def multi_column_not_null_constraint_name(table, columns, name: nil)
+          name.presence || check_constraint_name(table, columns.sort.join('_'), 'num_nonnulls')
         end
 
         def missing_schema_object_message(table, type, name)

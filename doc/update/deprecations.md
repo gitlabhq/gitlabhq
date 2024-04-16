@@ -233,6 +233,35 @@ Offset-based pagination for the [List registry repository tags](https://docs.git
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
+</div>
+
+The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
+This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
+with a GitLab instance at the instance, group, or project level through the API. In GitLab 17.0, registration tokens, and support for certain configuration arguments,
+will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md#prevent-your-runner-registration-workflow-from-breaking).
+
+The configuration arguments disabled for runner authentication tokens are:
+
+- `--locked`
+- `--access-level`
+- `--run-untagged`
+- `--maximum-timeout`
+- `--paused`
+- `--tag-list`
+- `--maintenance-note`
+
+This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
 <div class="deprecation-notes">
@@ -271,9 +300,6 @@ This change is a breaking change. You should [create a runner in the UI](https:/
 From GitLab 18.0, we will require a [separate database for CI features](https://gitlab.com/groups/gitlab-org/-/epics/7509).
 We recommend running both databases on the same Postgres instance(s) due to ease of management for most deployments.
 
-We are providing this as an informational advance notice but we do not recommend taking action yet.
-We will have another update communicated (as well as the deprecation note) when we recommend admins to start the migration process.
-
 This change provides additional scalability for the largest of GitLab instances, like GitLab.com.
 This change applies to all installation methods: Omnibus GitLab, GitLab Helm chart, GitLab Operator, GitLab Docker images, and installation from source.
 Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.gitlab.com/ee/administration/postgresql/multiple_databases.html) to two databases.
@@ -303,6 +329,28 @@ Although an explicit removal date is set, we don't plan to remove this feature u
 For more information about the blockers to removal, see [this issue](https://gitlab.com/gitlab-org/configure/general/-/issues/199).
 
 For updates and details about this deprecation, follow [this epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Single database connection is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- End of Support in GitLab <span class="milestone">17.0</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
+</div>
+
+Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
+configuration had a single `main:` section. This is being deprecated. The new
+configuration has both a `main:` and a `ci:` section.
+
+This deprecation affects users compiling GitLab from source, who will need
+to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
+Omnibus, the Helm chart, and Operator will handle this configuration
+automatically from GitLab 16.0 onwards.
 
 </div>
 
@@ -378,6 +426,20 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 The `direction` GraphQL argument for the `ciJobTokenScopeRemoveProject` mutation is deprecated. Following the [default CI/CD job token scope change](https://docs.gitlab.com/ee/update/deprecations.html#default-cicd-job-token-ci_job_token-scope-changed) announced in GitLab 15.9, the `direction` argument will default to `INBOUND` and `OUTBOUND` will no longer be valid in GitLab 17.0. We will remove the `direction` argument in GitLab 18.0.
 
 If you are using `OUTBOUND` with the `direction` argument to control the direction of your project's token access, your pipeline that use job tokens risk failing authentication. To ensure pipelines continue to run as expected, you will need to explicitly [add the other projects to your project's allowlist](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-project-to-the-job-token-allowlist).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.11</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/453949).
+</div>
+
+The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/ee/administration/environment_variables.html#supported-environment-variables) environment variable is deprecated. GitLab introduced a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8, which introduces a new method for registering runners and eliminates the legacy runner registration token. Please refer to the [documentation](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html) for guidance on migrating to the new workflow.
 
 </div>
 
@@ -869,6 +931,12 @@ In self-managed GitLab 17.0, custom role creation will be removed for group Owne
 Group Owners will be able to assign custom roles at the group level.
 
 Group owners on GitLab.com can continue to manage custom roles and assign at the group level.
+
+If using the API to manage custom roles on a self-managed instance, a new instance endpoint has been added and is required to continue API operations.
+
+- List all member roles on the instance - `GET /api/v4/member_roles`
+- Add member role to the instance - `POST /api/v4/member_roles`
+- Remove member role from the instance - `DELETE /api/v4/member_roles/:id`
 
 </div>
 
@@ -1594,35 +1662,6 @@ While the above approach is recommended for most instances, Sidekiq can also be 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/379743).
-</div>
-
-The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
-will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--maximum-timeout`
-- `--paused`
-- `--tag-list`
-- `--maintenance-note`
-
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Removal of tags from small SaaS runners on Linux
 
 <div class="deprecation-notes">
@@ -1806,27 +1845,6 @@ Based on discussion in [epic 10203](https://gitlab.com/groups/gitlab-org/-/epics
 </div>
 
 In [Support additional filters for scan result policies](https://gitlab.com/groups/gitlab-org/-/epics/6826#note_1341377224), we broke the `newly_detected` field into two options: `new_needs_triage` and `new_dismissed`. By including both options in the security policy YAML, you will achieve the same result as the original `newly_detected` field. However, you may now narrow your filter to ignore findings that have been dismissed by only using `new_needs_triage`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Single database connection is deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
-</div>
-
-Previously, [GitLab's database](https://docs.gitlab.com/omnibus/settings/database.html)
-configuration had a single `main:` section. This is being deprecated. The new
-configuration has both a `main:` and a `ci:` section.
-
-This deprecation affects users compiling GitLab from source, who will need
-to [add the `ci:` section](https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings).
-Omnibus, the Helm chart, and Operator will handle this configuration
-automatically from GitLab 16.0 onwards.
 
 </div>
 
@@ -2052,54 +2070,6 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### `Gitlab['omnibus_gitconfig']` configuration item is deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.10</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5132).
-</div>
-
-The `omnibus_gitconfig['system']` configuration item has been deprecated. If you use
-`omnibus_gitconfig['system']` to set custom Git configuration for Gitaly, you must configure Git
-directly through Gitaly configuration under `gitaly[:configuration][:git][:config]` before upgrading to GitLab 17.0.
-
-For example:
-
-```ruby
-  gitaly[:configuration][:git][:config] = [
-    {
-      key: 'fetch.fsckObjects',
-      value: 'true',
-    },
-    # ...
-  ]
-```
-
-The format of the configuration keys must match what is passed to `git` through the CLI flag `git -c <configuration>`.
-
-If you have trouble converting the existing keys to the expected format, see the existing keys in the correct format in
-the Linux package-generated configuration file of Gitaly. By default, the configuration file is located at
-`/var/opt/gitlab/gitaly/config.toml`.
-
-The following configuration options that are managed by Gitaly should be removed. These keys do not need to be migrated
-to Gitaly:
-
-- `pack.threads=1`
-- `receive.advertisePushOptions=true`
-- `receive.fsckObjects=true`
-- `repack.writeBitmaps=true`
-- `transfer.hideRefs=^refs/tmp/`
-- `transfer.hideRefs=^refs/keep-around/`
-- `transfer.hideRefs=^refs/remotes/`
-- `core.alternateRefsCommand="exit 0 #"`
-- `core.fsyncObjectFiles=true`
-- `fetch.writeCommitGraph=true`
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### `after_script` keyword will run for cancelled jobs
 
 <div class="deprecation-notes">
@@ -2157,6 +2127,54 @@ Multiple DORA metrics can now be queried simultaneously using a new metrics fiel
 GitLab users can use the `omniauth-azure-oauth2` gem to authenticate with GitLab. In 17.0, this gem will be replaced with the `omniauth_openid_connect` gem. The new gem contains all of the same features as the old gem, but also has upstream maintenance and is better for security and centralized maintenance.
 
 This change requires that users re-connect to the OAuth2 provider at time of migration. To avoid disruption, [add `omniauth_openid_connect` as a new provider](https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-multiple-openid-connect-providers) any time before 17.0. Users will see a new login button and have to manually reconnect their credentials. If you do not implement the `omniauth_openid_connect` gem before 17.0, users will no longer be able to sign in using the Azure login button, and will have to sign in using their username and password, until the correct gem is implemented by the administrator.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### `omnibus_gitconfig` configuration item is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.10</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5132).
+</div>
+
+The `omnibus_gitconfig['system']` configuration item has been deprecated. If you use
+`omnibus_gitconfig['system']` to set custom Git configuration for Gitaly, you must configure Git
+directly through Gitaly configuration under `gitaly[:configuration][:git][:config]` before upgrading to GitLab 17.0.
+
+For example:
+
+```ruby
+  gitaly[:configuration][:git][:config] = [
+    {
+      key: 'fetch.fsckObjects',
+      value: 'true',
+    },
+    # ...
+  ]
+```
+
+The format of the configuration keys must match what is passed to `git` through the CLI flag `git -c <configuration>`.
+
+If you have trouble converting the existing keys to the expected format, see the existing keys in the correct format in
+the Linux package-generated configuration file of Gitaly. By default, the configuration file is located at
+`/var/opt/gitlab/gitaly/config.toml`.
+
+The following configuration options that are managed by Gitaly should be removed. These keys do not need to be migrated
+to Gitaly:
+
+- `pack.threads=1`
+- `receive.advertisePushOptions=true`
+- `receive.fsckObjects=true`
+- `repack.writeBitmaps=true`
+- `transfer.hideRefs=^refs/tmp/`
+- `transfer.hideRefs=^refs/keep-around/`
+- `transfer.hideRefs=^refs/remotes/`
+- `core.alternateRefsCommand="exit 0 #"`
+- `core.fsyncObjectFiles=true`
+- `fetch.writeCommitGraph=true`
 
 </div>
 
@@ -3096,25 +3114,6 @@ When checking if a runner is `paused`, API users are advised to check the boolea
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### GraphQL API legacyMode argument for Runner status
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.0</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/360545).
-</div>
-
-The `legacyMode` argument to the `status` field in `RunnerType` will be rendered non-functional in the 16.0 release
-as part of the deprecations details in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-
-In GitLab 16.0 and later, the `status` field will act as if `legacyMode` is null. The `legacyMode` argument will
-be present during the 16.x cycle to avoid breaking the API signature, and will be removed altogether in the
-17.0 release.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
 ### GraphQL field `confidential` changed to `internal` on notes
 
 <div class="deprecation-notes">
@@ -3636,7 +3635,7 @@ For more information, refer to [security report validation](https://docs.gitlab.
 
 <div class="deprecation breaking-change" data-milestone="16.0">
 
-### Starboard directive in the config for the GitLab Agent for Kubernetes
+### Starboard directive in the configuration of the GitLab agent for Kubernetes
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">15.4</span>
@@ -3644,7 +3643,7 @@ For more information, refer to [security report validation](https://docs.gitlab.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368828).
 </div>
 
-GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab Agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
+GitLab's operational container scanning capabilities no longer require starboard to be installed. Consequently, use of the `starboard:` directive in the configuration file for the GitLab agent for Kubernetes is now deprecated and is scheduled for removal in GitLab 16.0. Update your configuration file to use the `container_scanning:` directive.
 
 </div>
 
@@ -5333,7 +5332,7 @@ testing coverage results in merge requests.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/346540).
 </div>
 
-Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can navigate to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
+Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distributed tracing system. GitLab users can go to their Jaeger instance to gain insight into the performance of a deployed application, tracking each function or microservice that handles a given request. Tracing in GitLab is deprecated in GitLab 14.7, and scheduled for removal in 15.0. To track work on a possible replacement, see the issue for [Opstrace integration with GitLab](https://gitlab.com/groups/gitlab-org/-/epics/6976).
 
 </div>
 

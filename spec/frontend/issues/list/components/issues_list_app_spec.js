@@ -8,6 +8,8 @@ import VueRouter from 'vue-router';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
+import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -84,6 +86,9 @@ import {
   mockLabels,
   mockMilestone,
 } from 'jest/work_items/mock_data';
+
+import { stubExperiments } from 'helpers/experimentation_helper';
+import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 
 import('~/issuable');
 import('~/users_select');
@@ -164,6 +169,8 @@ describe('CE IssuesListApp component', () => {
   const findRssButton = () => wrapper.findByTestId('subscribe-rss');
   const findIssuableDrawer = () => wrapper.findComponent(GlDrawer);
   const findDrawerWorkItem = () => wrapper.findComponent(WorkItemDetail);
+  const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
+  const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 
   const findLabelsToken = () =>
     findIssuableList()
@@ -559,40 +566,80 @@ describe('CE IssuesListApp component', () => {
         });
       },
     );
-  });
 
-  describe('empty states', () => {
-    describe('when there are issues', () => {
+    it('tracks IssuableByEmail', () => {
+      wrapper = mountComponent({ provide: { initialEmail: true, canCreateIssue: true } });
+
+      expect(findIssuableByEmail().attributes()).toMatchObject({
+        'data-track-action': 'click_email_issue_project_issues_empty_list_page',
+        'data-track-label': 'email_issue_project_issues_empty_list',
+        'data-track-experiment': 'issues_mrs_empty_state',
+      });
+    });
+
+    describe('when issues_mrs_empty_state candidate experiment', () => {
       beforeEach(() => {
-        wrapper = mountComponent({
-          provide: { hasAnyIssues: true },
-          mountFn: mount,
-          issuesQueryResponse: getIssuesQueryEmptyResponse,
-        });
-        return waitForPromises();
+        stubExperiments({ issues_mrs_empty_state: 'candidate' });
       });
 
-      it('shows EmptyStateWithAnyIssues empty state', () => {
-        expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
-          hasSearch: false,
-          isOpenTab: true,
+      it('does not render IssuableByEmail', () => {
+        wrapper = mountComponent({
+          provide: { initialEmail: true, canCreateIssue: true },
+          stubs: { GitlabExperiment },
+        });
+
+        expect(findIssuableByEmail().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('slots', () => {
+    describe('empty states', () => {
+      describe('when there are issues', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { hasAnyIssues: true },
+            mountFn: mount,
+            issuesQueryResponse: getIssuesQueryEmptyResponse,
+          });
+          return waitForPromises();
+        });
+
+        it('shows EmptyStateWithAnyIssues empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
+            hasSearch: false,
+            isOpenTab: true,
+          });
+        });
+      });
+
+      describe('when there are no issues', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({ provide: { hasAnyIssues: false } });
+        });
+
+        it('shows EmptyStateWithoutAnyIssues empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
+            currentTabCount: 0,
+            exportCsvPathWithQuery: defaultProvide.exportCsvPath,
+            showCsvButtons: true,
+            showIssuableByEmail: false,
+            showNewIssueDropdown: false,
+          });
         });
       });
     });
 
-    describe('when there are no issues', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ provide: { hasAnyIssues: false } });
-      });
+    it('includes IssueCardStatistics component', async () => {
+      wrapper = mountComponent();
+      await nextTick();
+      expect(findIssueCardStatistics().exists()).toBe(true);
+    });
 
-      it('shows EmptyStateWithoutAnyIssues empty state', () => {
-        expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
-          currentTabCount: 0,
-          exportCsvPathWithQuery: defaultProvide.exportCsvPath,
-          showCsvButtons: true,
-          showNewIssueDropdown: false,
-        });
-      });
+    it('includes IssuseCardTimeInfo component', async () => {
+      wrapper = mountComponent();
+      await nextTick();
+      expect(findIssueCardTimeInfo().exists()).toBe(true);
     });
   });
 

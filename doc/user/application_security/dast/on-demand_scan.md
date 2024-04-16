@@ -18,7 +18,7 @@ Only run DAST scans against a test server.
 ## On-demand scans
 
 > - Auditing for DAST profile management [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
-> - Scheduled on-demand DAST scans [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named  `dast_on_demand_scans_scheduler`. Disabled by default.
+> - Scheduled on-demand DAST scans [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named `dast_on_demand_scans_scheduler`. Disabled by default.
 > - Scheduled on-demand DAST scans [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5. Feature flag `dast_on_demand_scans_scheduler` removed.
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 > - Browser based on-demand DAST scans [deployed behind the feature flag `dast_ods_browser_based_scanner`](https://gitlab.com/gitlab-org/gitlab/-/issues/430212) in GitLab 16.8.
@@ -410,4 +410,4 @@ To delete a scanner profile:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
-and DAST site profiles are included in the [audit log](../../../administration/audit_events.md).
+and DAST site profiles are included in the [audit log](../../../administration/audit_event_reports.md).

@@ -288,7 +288,7 @@ the integration by using GDK:
 
 1. The state of the flag must be observable. To check it, you must enable it
    by fetching the Prometheus metrics:
-   1. Navigate to the GDK root directory.
+   1. Go to the GDK root directory.
    1. Make sure you have the proper branch checked out for Gitaly.
    1. Recompile it with `make gitaly-setup` and restart the service with `gdk restart gitaly`.
    1. Make sure your setup is running: `gdk status | grep praefect`.
@@ -306,7 +306,7 @@ the integration by using GDK:
 
 1. After you observe the metrics for the new feature flag and it increments, you
    can enable the new feature:
-   1. Navigate to the GDK root directory.
+   1. Go to the GDK root directory.
    1. Start a Rails console:
 
       ```shell

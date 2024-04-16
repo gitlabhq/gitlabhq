@@ -13,7 +13,7 @@ DETAILS:
 If you wish to have your database service hosted separately from your GitLab
 application servers, you can do this using the PostgreSQL binaries packaged
 together with the Linux package. This is recommended as part of our
-[reference architecture for up to 2,000 users](../reference_architectures/2k_users.md).
+[reference architecture for up to 40 RPS or 2,000 users](../reference_architectures/2k_users.md).
 
 ## Setting it up
 

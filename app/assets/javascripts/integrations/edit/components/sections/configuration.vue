@@ -40,6 +40,7 @@ export default {
       v-bind="field"
       :field-class="fieldClass"
       :is-validated="isValidated"
+      @update="$emit('update', { value: $event, field })"
     />
   </div>
 </template>

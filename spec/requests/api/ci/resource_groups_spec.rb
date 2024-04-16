@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe API::Ci::ResourceGroups, feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:user) { developer }
 

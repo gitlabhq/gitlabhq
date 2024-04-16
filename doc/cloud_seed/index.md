@@ -1,7 +1,7 @@
 ---
-stage: Deploy
-group: Incubation
-info: Cloud Seed (formerly 5mp) is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+stage: none
+group: unassigned
+info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
 # Cloud Seed

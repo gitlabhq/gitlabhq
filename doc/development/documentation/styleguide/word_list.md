@@ -77,6 +77,20 @@ When you create a user, you choose an access level: **Regular**, **Auditor**, or
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
 
+## add
+
+Use **add** when an object already exists. If the object does not exist yet, use [**create**](#create) instead.
+**Add** is the opposite of [remove](#remove).
+
+For example:
+
+- Add a user to the list.
+- Add an issue to the epic.
+
+Do not confuse **add** with [**create**](#create).
+
+Do not use **Add new**.
+
 ## Admin Area
 
 Use title case for **Admin Area**. The UI uses title case.
@@ -337,6 +351,15 @@ Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#co
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
 
+## cloud licensing
+
+Do not use the phrase **cloud licensing**. Instead, focus on the fact
+that this subscription is synchronized with GitLab.
+
+For example:
+
+- Your instance must be able to synchronize your subscription data with GitLab.
+
 ## cloud native
 
 When you're talking about using a Kubernetes cluster to host GitLab, you're talking about a **cloud-native version of GitLab**.
@@ -430,6 +453,18 @@ Use:
 - The GitLab container registry supports A, B, and C.
 - You can push a Docker image to your project's container registry.
 
+## create
+
+Use **create** when an object does not exist and you are creating it for the first time.  **Create** is the opposite of [delete](#delete).
+
+For example:
+
+- Create an issue.
+
+Do not confuse **create** with [**add**](#add).
+
+Do not use **create new**. The word **create** implies that the object is new, and the extra word is not necessary.
+
 ## currently
 
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
@@ -471,7 +506,7 @@ Do not use **static role**, **built-in role**, or **predefined role**.
 
 ## delete
 
-Use **delete** when an object is completely deleted. **Delete** is the opposite of **create**.
+Use **delete** when an object is completely deleted. **Delete** is the opposite of [create](#create).
 
 When the object continues to exist, use [**remove**](#remove) instead.
 For example, you can remove an issue from an epic, but the issue still exists.
@@ -842,7 +877,7 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
 If you use it in a context of describing the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
 
 ## GitLab Pages
@@ -1058,7 +1093,7 @@ Use the full phrase **dropdown list** instead.
 
 When writing about licenses:
 
-- Do not use variations such as **cloud license**, **offline license**, or **legacy license**.
+- Do not use variations such as [**cloud license**](#cloud-licensing), **offline license**, or **legacy license**.
 - Do not use interchangeably with **subscription**:
   - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
   - A subscription is the subscription tier that the user purchases.
@@ -1240,6 +1275,13 @@ When the variable is **recommended**:
 When the variable is **optional**:
 
 - You can set the variable.
+
+## new
+
+Often, you can avoid the word **new**. When you create an object, it is new,
+so you don't need this additional word.
+
+See also [**create**](#create) and [**add**](#add).
 
 ## newer
 
@@ -1603,6 +1645,21 @@ Use lowercase for **runner workers**. This is the process created by the runner 
 Use **runner authentication token** instead of variations like **runner token**, **authentication token**, or **token**.
 Runners are assigned runner authentication tokens when they are created, and use them to authenticate with GitLab when
 they execute jobs.
+
+## Runner SaaS, SaaS runners
+
+Do not use **Runner SaaS** or **SaaS runners**.
+
+Use **GitLab-hosted runners** as the main feature name that describes runners hosted on GitLab.com and GitLab Dedicated.
+
+To specify offerings and operating systems use:
+
+- **hosted runners for GitLab.com**
+- **hosted runners for GitLab Dedicated**
+- **hosted runners on Linux for GitLab.com**
+- **hosted runners on Windows for GitLab.com**
+
+Do not use **hosted runners** without the **GitLab-** prefix or without the offering or operating system.
 
 ## (s)
 

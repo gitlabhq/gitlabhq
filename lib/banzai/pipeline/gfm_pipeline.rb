@@ -17,6 +17,7 @@ module Banzai
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
           Filter::KrokiFilter,
+          Filter::GollumTagsFilter,
           Filter::AssetProxyFilter,
           Filter::MathFilter,
           Filter::ColorFilter,

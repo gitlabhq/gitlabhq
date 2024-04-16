@@ -17,8 +17,6 @@ query provisionGoogleCloudRunnerProject(
           ephemeralMachineType: $machineType
           runnerToken: $runnerToken
         ) {
-          title
-          languageIdentifier
           instructions
         }
       }

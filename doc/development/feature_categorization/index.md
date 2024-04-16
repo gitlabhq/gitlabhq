@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Feature Categorization
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/269) in GitLab 13.2.
-
 Each Sidekiq worker, Batched Background migrations, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
 of these to a [feature category](https://handbook.gitlab.com/handbook/product/categories/). This

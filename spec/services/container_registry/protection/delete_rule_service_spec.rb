@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', feature_category: :container_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:current_user) { create(:user, maintainer_of: project) }
   let_it_be_with_refind(:container_registry_protection_rule) do
     create(:container_registry_protection_rule, project: project)
   end
@@ -75,9 +75,9 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
   end
 
   context 'when current_user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:current_user) do

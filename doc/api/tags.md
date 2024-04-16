@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Documentation for the REST API for Git tags in GitLab."
 ---
 
 # Tags API
@@ -13,6 +14,7 @@ DETAILS:
 ## List project repository tags
 
 > - `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
+> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
 
 Get a list of repository tags from a project, sorted by update date and time in
 descending order.
@@ -67,12 +69,15 @@ Example Response:
     "name": "v1.0.0",
     "target": "2695effb5807a22ff3d138d593fd856244e155e7",
     "message": null,
-    "protected": true
+    "protected": true,
+    "created_at": "2017-07-26T11:08:53.000+02:00"
   }
 ]
 ```
 
 ## Get a single repository tag
+
+> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
 
 Get a specific repository tag determined by its name. This endpoint can be
 accessed without authentication if the repository is publicly accessible.
@@ -117,11 +122,14 @@ Example Response:
     "committed_date": "2015-02-01T21:56:31.000+01:00"
   },
   "release": null,
-  "protected": false
+  "protected": false,
+  "created_at": "2017-07-26T11:08:53.000+02:00"
 }
 ```
 
 ## Create a new tag
+
+> - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
 
 Creates a new tag in the repository that points to the supplied ref.
 
@@ -168,14 +176,21 @@ Example response:
   "name": "v1.0.0",
   "target": "2695effb5807a22ff3d138d593fd856244e155e7",
   "message": null,
-  "protected": false
+  "protected": false,
+  "created_at": null
 }
 ```
 
-The type of tag created determines the contents of `target` and `message`:
+The type of tag created determines the contents of `created_at`, `target` and `message`:
 
-- For annotated tags, `message` contains the annotation, and `target` contains the tag object's ID.
-- For lightweight tags, `message` is null, and `target` contains the commit ID.
+- For annotated tags:
+  - `created_at` contains the timestamp of tag creation.
+  - `message` contains the annotation.
+  - `target` contains the tag object's ID.
+- For lightweight tags:
+  - `created_at` is null.
+  - `message` is null.
+  - `target` contains the commit ID.
 
 Errors return status code `405` with an explanatory error message.
 

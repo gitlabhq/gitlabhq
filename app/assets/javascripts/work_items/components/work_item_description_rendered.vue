@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
@@ -13,7 +14,13 @@ export default {
   components: {
     GlButton,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
+    disableTruncation: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemDescription: {
       type: Object,
       required: true,
@@ -30,6 +37,7 @@ export default {
   },
   data() {
     return {
+      truncated: false,
       checkboxes: [],
     };
   },
@@ -48,6 +56,9 @@ export default {
     },
     showEditButton() {
       return this.canEdit && !this.disableInlineEditing;
+    },
+    isTruncated() {
+      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsMvc2;
     },
   },
   watch: {
@@ -74,6 +85,7 @@ export default {
           checkbox.disabled = false;
         });
       }
+      this.truncateLongDescription();
     },
     toggleCheckboxes(event) {
       const { target } = event;
@@ -105,6 +117,21 @@ export default {
         this.$emit('descriptionUpdated', newDescriptionText);
       }
     },
+    truncateLongDescription() {
+      /* Truncate when description is > 40% viewport height or 512px.
+         Update `.work-item-description .truncated` max height if value changes. */
+      const defaultMaxHeight = document.documentElement.clientHeight * 0.4;
+      let maxHeight = defaultMaxHeight;
+      if (defaultMaxHeight > 512) {
+        maxHeight = 512;
+      } else if (defaultMaxHeight < 256) {
+        maxHeight = 256;
+      }
+      this.truncated = this.$refs['gfm-content'].clientHeight > maxHeight;
+    },
+    showAll() {
+      this.truncated = false;
+    },
   },
 };
 </script>
@@ -130,11 +157,32 @@ export default {
     <div v-if="showEmptyDescription" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
     <div
       v-else-if="!descriptionEmpty"
-      ref="gfm-content"
-      v-safe-html="descriptionHtml"
-      class="md gl-mb-5 gl-min-h-8 gl-clearfix"
-      data-testid="work-item-description"
-      @change="toggleCheckboxes"
-    ></div>
+      ref="description"
+      class="work-item-description md gl-mb-5 gl-min-h-8 gl-clearfix gl-relative"
+    >
+      <div
+        ref="gfm-content"
+        v-safe-html="descriptionHtml"
+        data-testid="work-item-description"
+        :class="{ truncated: isTruncated }"
+        @change="toggleCheckboxes"
+      ></div>
+      <div
+        v-if="isTruncated"
+        class="description-more gl-display-block gl-w-full"
+        data-test-id="description-read-more"
+      >
+        <div class="show-all-btn gl-w-full gl--flex-center">
+          <gl-button
+            variant="confirm"
+            category="tertiary"
+            class="gl-mx-4"
+            data-testid="show-all-btn"
+            @click="showAll"
+            >{{ __('Read more') }}</gl-button
+          >
+        </div>
+      </div>
+    </div>
   </div>
 </template>

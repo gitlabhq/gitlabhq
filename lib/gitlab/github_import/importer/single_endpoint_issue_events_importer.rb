@@ -30,7 +30,7 @@ module Gitlab
 
           compose_associated_id!(parent_record, associated)
 
-          return if already_imported?(associated) || supported_events.exclude?(associated[:event])
+          return if already_imported?(associated) || importer_class::SUPPORTED_EVENTS.exclude?(associated[:event])
 
           cache_event(parent_record, associated)
 
@@ -67,8 +67,7 @@ module Gitlab
         end
 
         def increment_object_counter(event_name)
-          counter_type = importer_class::EVENT_COUNTER_MAP[event_name] if import_settings.extended_events?
-          counter_type ||= object_type
+          counter_type = importer_class::EVENT_COUNTER_MAP[event_name] || object_type
           Gitlab::GithubImport::ObjectCounter.increment(project, counter_type, :fetched)
         end
 
@@ -112,8 +111,6 @@ module Gitlab
         end
 
         def after_batch_processed(parent)
-          return unless import_settings.extended_events?
-
           events = events_cache.events(parent)
 
           return if events.empty?
@@ -124,15 +121,7 @@ module Gitlab
           job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
         end
 
-        def supported_events
-          return importer_class::EXTENDED_SUPPORTED_EVENTS if import_settings.extended_events?
-
-          importer_class::SUPPORTED_EVENTS
-        end
-
         def cache_event(parent_record, associated)
-          return unless import_settings.extended_events?
-
           return if Importer::ReplayEventsImporter::SUPPORTED_EVENTS.exclude?(associated[:event])
 
           representation = representation_class.from_api_response(associated)

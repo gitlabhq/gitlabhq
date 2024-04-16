@@ -9,12 +9,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The [Delivery Group](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/) are the owners of the maintenance policy and must approve any requested updates. This follows our [DRI model](https://handbook.gitlab.com/handbook/people-group/directly-responsible-individuals/) and is in place to ensure predictability for customers.
 
 GitLab has strict policies governing version naming, as well as release pace for major, minor,
-patch, and security releases. New releases are announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).
+patch releases. New releases are announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).
 
 Our current policy is:
 
 - Backporting bug fixes for **only the current stable release** at any given time - see [patch releases](#patch-releases) below.
-- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [security releases](#security-releases) below) we may address a security vulnerability using the [patch release](#patch-releases) process or regular monthly release process, that is, providing an update to the current stable release only, with no backports.
+- Backporting security fixes **to the previous two monthly releases in addition to the current stable release**. In some circumstances (outlined in [patch releases](#patch-releases) below) we may address a security vulnerability to the current stable release only or in the regular monthly release process, with no backports.
 
 In rare cases, release managers may make an exception and backport to more than
 the last two monthly releases. See
@@ -68,14 +68,14 @@ Backward-incompatible changes and migrations are reserved for major versions. Se
 
 ## Patch releases
 
-Patch releases **only include bug fixes** for the current stable released version of
-GitLab.
+Patch releases include **bug fixes** for the current stable released version of
+GitLab and **security fixes** to the previous two monthly releases in addition to the current stable release.
 
-These two policies are in place because:
+These policies are in place because:
 
 1. GitLab has Community and Enterprise distributions, doubling the amount of work
    necessary to test/release the software.
-1. Backporting to more than one release creates a high development, quality assurance,
+1. Backporting to older releases creates a high development, quality assurance,
    and support cost.
 1. Supporting parallel version discourages incremental upgrades which over time accumulate in
    complexity and create upgrade challenges for all users. GitLab has a dedicated team ensuring that
@@ -92,6 +92,16 @@ have to adhere to various internal requirements (for example, org. compliance, v
 1. Inability to quickly upgrade to leverage security fixes included in patch versions.
 1. Requirements consisting of extensive testing for not only stable GitLab release, but every patch version.
 
+For highly severe security issues, there is
+[precedent](https://about.gitlab.com/releases/2016/05/02/cve-2016-4340-patches/)
+to backport security fixes to even more previous GitLab release versions.
+This decision is made on a case-by-case basis.
+
+In some circumstances, we may choose to address a vulnerability using the regular monthly release process by
+updating the active and current stable releases only, with no backports. Factors influencing this decision include
+the very low likelihood of exploitation, the low impact of the vulnerability, the complexity of security fixes and
+the eventual risk to stability. We always address high and critical security issues with a patch release.
+
 In cases where a strategic user has a requirement to test a feature before it is
 officially released, we can offer to create a Release Candidate (RC) version that
 includes the specific feature. This should be needed only in extreme cases and can be requested for
@@ -103,7 +113,7 @@ accessible.
 
 ### Backporting to older releases
 
-Backporting to more than one stable release is usually reserved for [security releases](#security-releases).
+Backporting to more than one stable release is usually reserved for [security fixes](#patch-releases).
 In some cases, however, we may need to backport *a bug fix* to more than one stable
 release, depending on the severity of the bug.
 
@@ -128,19 +138,6 @@ requests are automatically turned down.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
 [release/tasks](https://gitlab.com/gitlab-org/release/tasks/-/issues/new?issuable_template=Backporting-request) issue tracker.
-
-### Security releases
-
-Security releases are a special kind of patch release that only include security
-fixes and patches for the previous two monthly releases in addition to the current stable release.
-
-For very serious security issues, there is
-[precedent](https://about.gitlab.com/releases/2016/05/02/cve-2016-4340-patches/)
-to backport security fixes to even more monthly releases of GitLab.
-This decision is made on a case-by-case basis.
-
-In some circumstances we may choose to address a vulnerability using the [patch release](#patch-releases) process or the regular monthly release process, that is, updating the current stable release only, with no backports. Factors influencing this decision include very low likelihood of exploitation, low impact, fix complexity and risk to stability. We will **always address
-high and critical** security issues with a security release.
 
 ## More information
 

@@ -552,4 +552,80 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
       end
     end
   end
+
+  describe 'cleanup:rollback_deleted_orphan_job_artifact_final_objects' do
+    let(:deleted_list_filename) do
+      [
+        Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList::DELETED_LIST_FILENAME_PREFIX,
+        Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList::DEFAULT_FILENAME
+      ].join
+    end
+
+    subject(:rake_task) { run_rake_task('gitlab:cleanup:rollback_deleted_orphan_job_artifact_final_objects') }
+
+    before do
+      stub_artifacts_object_storage
+
+      allow(Gitlab.config.artifacts.object_store.connection).to receive(:provider).and_return('Google')
+
+      FileUtils.touch(deleted_list_filename)
+    end
+
+    after do
+      File.delete(deleted_list_filename) if File.file?(deleted_list_filename)
+    end
+
+    it 'runs the task without errors' do
+      expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects)
+        .to receive(:new)
+        .with(
+          force_restart: false,
+          filename: nil,
+          logger: anything
+        )
+        .and_call_original
+
+      expect { rake_task }.not_to raise_error
+    end
+
+    context 'with FORCE_RESTART defined' do
+      before do
+        stub_env('FORCE_RESTART', '1')
+      end
+
+      it 'passes force_restart correctly' do
+        expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects)
+          .to receive(:new)
+          .with(
+            force_restart: true,
+            filename: nil,
+            logger: anything
+          )
+          .and_call_original
+
+        expect { rake_task }.not_to raise_error
+      end
+    end
+
+    context 'with FILENAME defined' do
+      let(:deleted_list_filename) { 'custom_filename.csv' }
+
+      before do
+        stub_env('FILENAME', deleted_list_filename)
+      end
+
+      it 'passes filename correctly' do
+        expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects)
+          .to receive(:new)
+          .with(
+            force_restart: false,
+            filename: deleted_list_filename,
+            logger: anything
+          )
+          .and_call_original
+
+        expect { rake_task }.not_to raise_error
+      end
+    end
+  end
 end

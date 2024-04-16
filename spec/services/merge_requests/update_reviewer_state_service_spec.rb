@@ -62,7 +62,9 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
             MergeRequests::RemoveApprovalService,
             project: project, current_user: current_user
           ) do |service|
-            expect(service).to receive(:execute).with(merge_request).and_return({ success: true })
+            expect(service).to receive(:execute)
+              .with(merge_request, skip_system_note: true, skip_notification: true, skip_updating_state: true)
+              .and_return({ success: true })
           end
 
           expect(result[:status]).to eq :success
@@ -73,7 +75,9 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
             MergeRequests::RemoveApprovalService,
             project: project, current_user: current_user
           ) do |service|
-            expect(service).to receive(:execute).with(merge_request).and_return(nil)
+            expect(service).to receive(:execute)
+              .with(merge_request, skip_system_note: true, skip_notification: true, skip_updating_state: true)
+              .and_return(nil)
           end
 
           expect(result[:status]).to eq :error

@@ -40,6 +40,10 @@ module Ci
       @subject.artifacts_public?
     end
 
+    condition(:artifacts_none, scope: :subject) do
+      @subject.artifacts_no_access?
+    end
+
     condition(:terminal, scope: :subject) do
       @subject.has_terminal?
     end
@@ -116,7 +120,7 @@ module Ci
       prevent :create_build_service_proxy
     end
 
-    rule { can_read_project_build }.enable :read_job_artifacts
+    rule { can_read_project_build & ~artifacts_none }.enable :read_job_artifacts
     rule { ~artifacts_public & ~project_developer }.prevent :read_job_artifacts
   end
 end

@@ -151,13 +151,13 @@ describe('Description component', () => {
       TaskList.mockClear();
     });
 
-    it('re-inits the TaskList when description changed', () => {
+    it('re-inits the TaskList when description changed', async () => {
       createComponent({
         props: {
           issuableType: 'issuableType',
         },
       });
-      wrapper.setProps({
+      await wrapper.setProps({
         descriptionHtml: 'changed',
       });
 
@@ -178,13 +178,13 @@ describe('Description component', () => {
       expect(TaskList).not.toHaveBeenCalled();
     });
 
-    it('calls with issuableType dataType', () => {
+    it('calls with issuableType dataType', async () => {
       createComponent({
         props: {
           issuableType: 'issuableType',
         },
       });
-      wrapper.setProps({
+      await wrapper.setProps({
         descriptionHtml: 'changed',
       });
 

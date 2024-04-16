@@ -19,8 +19,18 @@ module WorkItems
       def reorder(link, adjacent_work_item, relative_position)
         WorkItems::ParentLink.move_nulls_to_end(RelativePositioning.mover.context(link).relative_siblings)
 
-        link.move_before(adjacent_work_item.parent_link) if relative_position == 'BEFORE'
-        link.move_after(adjacent_work_item.parent_link) if relative_position == 'AFTER'
+        adjacent_parent_link = adjacent_work_item.parent_link
+        # if issuable is an epic, we can create the missing parent link between epic work item and adjacent_work_item
+        if adjacent_parent_link.blank? && adjacent_work_item.synced_epic
+          adjacent_parent_link = set_parent(issuable, adjacent_work_item)
+          adjacent_parent_link.relative_position = adjacent_work_item.synced_epic.relative_position
+          adjacent_parent_link.save!
+        end
+
+        return unless adjacent_parent_link
+
+        link.move_before(adjacent_parent_link) if relative_position == 'BEFORE'
+        link.move_after(adjacent_parent_link) if relative_position == 'AFTER'
       end
 
       override :render_conflict_error?
@@ -37,3 +47,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::ParentLinks::ReorderService.prepend_mod

@@ -45,9 +45,11 @@ db:rollback single-db:
     - .single-db
     - .rails:rules:single-db
 
+# https://docs.gitlab.com/ee/development/database/dbmigrate:multi-version-upgrade-job.html
 db:migrate:multi-version-upgrade:
   extends:
     - .db-job-base
+    - .rails:rules:db:migrate:multi-version-upgrade
   script:
     - curl -o latest_upgrade_stop.gz https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz
     - gunzip -c latest_upgrade_stop.gz > gitlabhq_production
@@ -55,7 +57,12 @@ db:migrate:multi-version-upgrade:
     - apt-get update -qq && apt-get install -y -qq postgresql
     - psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
     - bundle exec rake gitlab:db:configure
-  allow_failure: true
+
+# Validate minimum PG version supported by GitLab
+db:migrate:multi-version-upgrade-pg13:
+  extends:
+    - db:migrate:multi-version-upgrade
+    - .use-pg13
 
 db:migrate:reset:
   extends: .db-job-base

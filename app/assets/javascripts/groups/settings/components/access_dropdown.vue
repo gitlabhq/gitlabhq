@@ -94,9 +94,11 @@ export default {
 
       if (this.hasLicense) {
         Promise.all([
-          this.groups.length
-            ? Promise.resolve({ data: this.groups })
-            : getSubGroups({ includeParentDescendants: true, includeParentSharedGroups: true }),
+          getSubGroups({
+            includeParentDescendants: true,
+            includeParentSharedGroups: true,
+            search: this.query,
+          }),
         ])
           .then(([groupsResponse]) => {
             this.consolidateData(groupsResponse.data);

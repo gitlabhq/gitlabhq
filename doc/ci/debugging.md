@@ -17,12 +17,14 @@ If you are unable to resolve pipeline issues, you can get help from:
 - The [GitLab community forum](https://forum.gitlab.com/)
 - GitLab [Support](https://about.gitlab.com/support/)
 
-## Verify syntax
+## Debugging techniques
+
+### Verify syntax
 
 An early source of problems can be incorrect syntax. The pipeline shows a `yaml invalid`
 badge and does not start running if any syntax or formatting problems are found.
 
-### Edit `.gitlab-ci.yml` with the pipeline editor
+#### Edit `.gitlab-ci.yml` with the pipeline editor
 
 The [pipeline editor](pipeline_editor/index.md) is the recommended editing
 experience (rather than the single file editor or the Web IDE). It includes:
@@ -32,7 +34,7 @@ experience (rather than the single file editor or the Web IDE). It includes:
 - The [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration),
   a graphical representation of your `.gitlab-ci.yml` file.
 
-### Edit `.gitlab-ci.yml` locally
+#### Edit `.gitlab-ci.yml` locally
 
 If you prefer to edit your pipeline configuration locally, you can use the
 GitLab CI/CD schema in your editor to verify basic syntax issues. Any
@@ -48,7 +50,7 @@ https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor
 To see the full list of custom tags covered by the CI/CD schema, check the
 latest version of the schema.
 
-### Verify syntax with CI Lint tool
+#### Verify syntax with CI Lint tool
 
 You can use the [CI Lint tool](lint.md) to verify that the syntax of a CI/CD configuration
 snippet is correct. Paste in full `.gitlab-ci.yml` files or individual job configurations,
@@ -58,7 +60,38 @@ When a `.gitlab-ci.yml` file is present in a project, you can also use the CI Li
 tool to [simulate the creation of a full pipeline](lint.md#simulate-a-pipeline).
 It does deeper verification of the configuration syntax.
 
-## Verify variables
+### Use pipeline names
+
+Use [`workflow:name`](yaml/index.md#workflowname) to give names to all your pipeline types,
+which makes it easier to identify pipelines in the pipelines list. For example:
+
+```yaml
+variables:
+  PIPELINE_NAME: "Default pipeline name"
+
+workflow:
+  name: '$PIPELINE_NAME'
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        PIPELINE_NAME: "Merge request pipeline"
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $PIPELINE_SCHEDULE_TYPE == "hourly_deploy"'
+      variables:
+        PIPELINE_NAME: "Hourly deployment pipeline"
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      variables:
+        PIPELINE_NAME: "Other scheduled pipeline"
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      variables:
+        PIPELINE_NAME: "Default branch pipeline"
+    - if: '$CI_COMMIT_BRANCH =~ /^\d{1,2}\.\d{1,2}-stable$/'
+      variables:
+        PIPELINE_NAME: "Stable branch pipeline"
+```
+
+### CI/CD variables
+
+#### Verify variables
 
 A key part of troubleshooting CI/CD is to verify which variables are present in a
 pipeline, and what their values are. A lot of pipeline configuration is dependent
@@ -68,6 +101,124 @@ a problem.
 [Export the full list of variables](variables/index.md#list-all-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
+
+#### Use variables to add flags to CLI commands
+
+You can define CI/CD variables that are not used in standard pipeline runs, but can
+be used for debugging on demand. If you add a variable like in the following example,
+you can add it during manual runs of the [pipeline](pipelines/index.md#run-a-pipeline-manually)
+or [individual job](jobs/job_control.md#run-a-manual-job) to modify the command's behavior.
+For example:
+
+```yaml
+my-flaky-job:
+  variables:
+    DEBUG_VARS: ""
+  script:
+    - my-test-command $DEBUG_VARS /test-dirs
+```
+
+In this example, `DEBUG_VARS` is blank by default in standard pipelines. If you need to
+debug the job's behavior, run the pipeline manually and set `DEBUG_VARS` to `--vebose`
+for additional output.
+
+### Dependencies
+
+Dependency-related issues are another common source of unexpected issues in pipelines.
+
+#### Verify dependency versions
+
+To validate that the correct versions of dependencies are being used in jobs, you can
+output them before running the main script commands. For example:
+
+```yaml
+job:
+  before_script:
+    - node --version
+    - yarn --version
+  script:
+    - my-javascript-tests.sh
+```
+
+#### Pin versions
+
+While you might want to always use the latest version of a dependency or image,
+an update could include breaking changes unexpectedly. Consider pinning
+key dependencies and images to avoid surprise changes. For example:
+
+```yaml
+variables:
+  ALPINE_VERSION: '3.18.6'
+
+job1:
+  image: alpine:$ALPINE_VERSION  # This will never change unexpectedly
+  script:
+    - my-test-script.sh
+
+job2:
+  image: alpine:latest  # This might suddenly change
+  script:
+    - my-test-script.sh
+```
+
+You should still regularly check the dependency and image updates, as there might be
+important security updates. Then you can manually update the version as part of a process that
+verifies the updated image or dependency still works with your pipeline.
+
+### Verify job output
+
+#### Make output verbose
+
+If you use `--silent` to reduce the amount of output in a job log, it can make it
+difficult to identify what went wrong in a job. Additionally, consider using `--verbose`
+when possible, for additional details.
+
+```yaml
+job1:
+  script:
+    - my-test-tool --silent         # If this fails, it might be impossible to identify the issue.
+    - my-other-test-tool --verbose  # This command will likely be easier to debug.
+```
+
+#### Save output and reports as artifacts
+
+Some tools might generate files that are only needed while the job is running,
+but the content of these files could be used for debugging. You can save them for
+later analysis with [`artifacts`](yaml/index.md#artifacts):
+
+```yaml
+job1:
+  script:
+    - my-tool --json-output my-output.json
+  artifacts:
+    paths:
+      - my-output.json
+```
+
+Reports configured with [`artifacts:reports`](yaml/artifacts_reports.md) are not available
+for download by default, but could also contain information to help with debugging.
+Use the same technique to make these reports available for inspection:
+
+```yaml
+job1:
+  script:
+    - rspec --format RspecJunitFormatter --out rspec.xml
+  artifacts:
+    reports:
+      junit: rspec.xml
+    paths:
+      - rspec.xmp
+```
+
+WARNING:
+Do not save tokens, passwords, or other sensitive information in artifacts,
+as they could be viewed by any user with access to the pipelines.
+
+### Run the job's commands locally
+
+You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or [similar alternatives](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
+to run the job's container image on your local machine. Then, run the job's `script` commands
+in the container and verify the behavior.
 
 ## Job configuration issues
 
@@ -314,3 +465,14 @@ These errors might also happen when trying to use a [project access token](../us
 to access images in another project. Project access tokens are scoped to one project,
 and therefore cannot access images in other projects. You must use [a different token type](../security/token_overview.md)
 with wider scope.
+
+### `Something went wrong on our end` message or `500` error when running a pipeline
+
+You might receive the following pipeline errors:
+
+- A `Something went wrong on our end` message when pushing or creating merge requests.
+- A `500` error when using the API to trigger a pipeline.
+
+These errors can happen if records of internal IDs become out of sync after a project is imported.
+
+To resolve this, see the [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround) in issue #352382.

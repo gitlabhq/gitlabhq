@@ -27,8 +27,8 @@ of `state` are:
 - `cleanup failed`: The project has been moved but the repositories on the source storage could not be deleted.
 
 To ensure data integrity, projects are put in a temporary read-only state for the
-duration of the move. During this time, users receive a `The repository is temporarily
-read-only. Please try again later.` message if they try to push new commits.
+duration of the move. During this time, users receive a `The repository is temporarily read-only. Please try again later.`
+message if they try to push new commits.
 
 This API requires you to [authenticate yourself](rest/index.md#authentication) as an administrator.
 

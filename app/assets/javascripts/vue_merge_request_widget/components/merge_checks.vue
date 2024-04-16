@@ -79,9 +79,19 @@ export default {
       return this.$apollo.queries.state.loading;
     },
     statusIcon() {
+      if (this.warningChecks.length) {
+        return 'warning';
+      }
+
       return this.failedChecks.length ? 'failed' : 'success';
     },
     summaryText() {
+      if (this.warningChecks.length) {
+        return this.state?.userPermissions?.canMerge
+          ? __('%{boldStart}Merge with caution%{boldEnd}: Override added')
+          : __('%{boldStart}Ready to be merged with caution%{boldEnd}: Override added');
+      }
+
       if (!this.failedChecks.length) {
         return this.state?.userPermissions?.canMerge
           ? __('%{boldStart}Ready to merge!%{boldEnd}')
@@ -103,7 +113,7 @@ export default {
       return this.state?.mergeabilityChecks || [];
     },
     sortedChecks() {
-      const order = ['FAILED', 'SUCCESS'];
+      const order = ['FAILED', 'WARNING', 'SUCCESS'];
 
       return [...this.checks]
         .filter((s) => {
@@ -116,6 +126,9 @@ export default {
     },
     failedChecks() {
       return this.checks.filter((c) => this.isStatusFailed(c));
+    },
+    warningChecks() {
+      return this.checks.filter((c) => this.isStatusWarning(c));
     },
     showChecks() {
       if (this.collapsed && this.collapsedCount > 0) return false;
@@ -139,6 +152,9 @@ export default {
     },
     isStatusFailed(check) {
       return check.status === 'FAILED';
+    },
+    isStatusWarning(check) {
+      return check.status === 'WARNING';
     },
   },
 };

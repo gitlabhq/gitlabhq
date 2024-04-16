@@ -22,7 +22,7 @@ export const initReviewBar = () => {
       ReviewBar: () => import('./components/review_bar.vue'),
     },
     provide: {
-      newCommentTemplatePath: el.dataset.newCommentTemplatePath,
+      newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
       canSummarize: parseBoolean(el.dataset.canSummarize),
     },
     computed: {

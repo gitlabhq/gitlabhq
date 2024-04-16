@@ -8,9 +8,9 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
   let(:user) { create(:user, email: "user@example.com") }
   let(:user2) { create(:user, email: "user2@example.com") }
   let(:guest) { create(:user) }
-  let(:issue) { create(:issue, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
+  let(:issue) { create(:issue, :unchanged, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
   let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
-  let(:closing_merge_request) { create(:merge_request, source_project: project) }
+  let(:closing_merge_request) { create(:merge_request, :unchanged, source_project: project) }
   let(:closing_commit) { create(:commit, project: project) }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 

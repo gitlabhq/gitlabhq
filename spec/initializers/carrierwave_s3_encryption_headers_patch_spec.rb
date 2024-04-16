@@ -82,16 +82,16 @@ RSpec.describe 'CarrierWave::Storage::Fog::File', feature_category: :shared do
       let(:options) { { expire_at: expire_at } }
 
       it 'has an authenticated URL' do
-        expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+        expect(subject.authenticated_url(options)).to eq("https://mockaccount.blob.core.windows.net/test_container/test_blob?token")
       end
 
       context 'with custom expire_at' do
         it 'properly sets expires param' do
-          expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
+          expect_next_instance_of(Fog::AzureRM::Storage::File) do |file|
             expect(file).to receive(:url).with(expire_at, options).and_call_original
           end
 
-          expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+          expect(subject.authenticated_url(options)).to eq("https://mockaccount.blob.core.windows.net/test_container/test_blob?token")
         end
       end
 
@@ -99,11 +99,11 @@ RSpec.describe 'CarrierWave::Storage::Fog::File', feature_category: :shared do
         let(:options) { { expire_at: expire_at, content_disposition: 'attachment' } }
 
         it 'passes options' do
-          expect_next_instance_of(Fog::Storage::AzureRM::File) do |file|
+          expect_next_instance_of(Fog::AzureRM::Storage::File) do |file|
             expect(file).to receive(:url).with(expire_at, options).and_call_original
           end
 
-          expect(subject.authenticated_url(options)).to eq("https://sa.blob.core.windows.net/test_container/test_blob?token")
+          expect(subject.authenticated_url(options)).to eq("https://mockaccount.blob.core.windows.net/test_container/test_blob?token")
         end
       end
     end

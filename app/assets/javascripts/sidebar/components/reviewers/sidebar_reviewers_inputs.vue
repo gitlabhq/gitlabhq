@@ -28,7 +28,7 @@ export default {
       :data-avatar-url="reviewer.avatarUrl"
       :data-name="reviewer.name"
       :data-username="reviewer.username"
-      :data-can-merge="reviewer.mergeRequestInteraction.canMerge"
+      :data-can_merge="reviewer.mergeRequestInteraction.canMerge"
     />
   </div>
 </template>

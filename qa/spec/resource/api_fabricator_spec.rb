@@ -86,6 +86,7 @@ RSpec.describe QA::Resource::ApiFabricator do
         stub_const('QA::Runtime::API::Request', api_request)
 
         allow(api_request).to receive(:new).and_return(double(url: resource_web_url))
+        allow(subject).to receive(:get).and_return(double("Raw GET response", code: 200, body: {}.to_json))
       end
 
       context 'when creating a resource' do

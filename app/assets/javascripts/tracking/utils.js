@@ -72,9 +72,15 @@ export const createEventPayload = (el, { suffix = '' } = {}) => {
 };
 
 export const createInternalEventPayload = (el) => {
-  const { eventTracking } = el?.dataset || {};
+  const { eventTracking, eventLabel, eventProperty, eventValue } = el?.dataset || {};
 
-  return eventTracking;
+  return {
+    event: eventTracking,
+    additionalProperties: omitBy(
+      { label: eventLabel, property: eventProperty, value: parseInt(eventValue, 10) || undefined },
+      isUndefined,
+    ),
+  };
 };
 
 export const InternalEventHandler = (e, func) => {
@@ -83,9 +89,9 @@ export const InternalEventHandler = (e, func) => {
   if (!el) {
     return;
   }
-  const event = createInternalEventPayload(el);
+  const { event, additionalProperties = {} } = createInternalEventPayload(el);
 
-  func(event);
+  func(event, additionalProperties);
 };
 
 export const eventHandler = (e, func, opts = {}) => {

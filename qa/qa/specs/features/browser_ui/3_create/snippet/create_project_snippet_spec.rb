@@ -17,13 +17,13 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user creates a project snippet', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347798' do
+      it 'user creates a project snippet', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347798' do
         snippet
 
         Page::Dashboard::Snippet::Show.perform do |snippet|
           expect(snippet).to have_snippet_title('Project snippet')
           expect(snippet).not_to have_snippet_description
-          expect(snippet).to have_visibility_type(/private/i)
+          expect(snippet).to have_visibility_description('The snippet is visible only to project members.')
           expect(snippet).to have_file_name('markdown_file.md')
           expect(snippet).to have_file_content('Snippet heading')
           expect(snippet).to have_file_content('Example link')

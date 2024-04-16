@@ -216,8 +216,16 @@ and view the pipeline details from the **Pipelines** list. Verify that:
 - The two jobs run in different stages, `build` and `deploy`.
 - After the `pages` job completes a `pages-deploy` job appears, which is the GitLab process
   that deploys the Pages site. When that job completes, you can visit your new Docusaurus
-  site. The Pages documentation explains [the URL formatting](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names),
-  which should be similar to `https://<my-username>.gitlab.io/<my-pipeline-tutorial-project>/`.
+  site.
+
+To view your site:
+
+- On the left sidebar, select **Deploy > Pages**.
+- Make sure **Use unique domain** is off.
+- Under **Access pages**, select the link. The URL format should be similar to: `https://<my-username>.gitlab.io/<project-name>`. For more information, see [GitLab Pages default domain names](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names).
+
+NOTE:
+If you need to [use unique domains](../../user/project/pages/introduction.md#enable-unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
 
 ## Add test jobs
 
@@ -301,7 +309,7 @@ pages:
 
 Commit this pipeline configuration to the default branch, and view the pipeline details.
 
-- The `test-markdown` job fails because the sample Markdown violates the default
+- The `lint-markdown` job fails because the sample Markdown violates the default
   markdownlint rules, but is allowed to fail. You can:
   - Ignore the violations for now. They do not need to be fixed as part of the tutorial.
   - Fix the Markdown file violations. Then you can change `allow_failure` to `false`,

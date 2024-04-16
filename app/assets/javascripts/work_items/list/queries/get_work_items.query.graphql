@@ -12,6 +12,7 @@ query getWorkItems($fullPath: ID!, $sort: WorkItemSort) {
           name
           username
           webUrl
+          webPath
         }
         closedAt
         confidential

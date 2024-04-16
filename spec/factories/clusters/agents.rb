@@ -6,5 +6,9 @@ FactoryBot.define do
     association :created_by_user, factory: :user
 
     sequence(:name) { |n| "agent-#{n}" }
+
+    trait :in_group do
+      project factory: [:project, :in_group]
+    end
   end
 end

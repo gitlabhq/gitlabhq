@@ -4,7 +4,7 @@
 
   %fieldset
     %h5= _('Permissions')
-    - if @group.root?
+    - if show_prevent_inviting_groups_outside_hierarchy_setting?(@group)
       .form-group.gl-mb-3
         = f.gitlab_ui_checkbox_component :prevent_sharing_groups_outside_hierarchy,
             s_('GroupSettings|Members cannot invite groups outside of %{group} and its subgroups').html_safe % { group: link_to_group(@group) },
@@ -18,25 +18,22 @@
           help_text: share_with_group_lock_help_text(@group)
 
     .form-group.gl-mb-3
-      = f.gitlab_ui_checkbox_component :emails_disabled,
-          s_('GroupSettings|Email notifications are disabled'),
-          checkbox_options: { checked: @group.emails_disabled?, disabled: !can_disable_group_emails?(@group) },
-          help_text: s_('GroupSettings|Overrides user notification preferences for all members of the group, subgroups, and projects.')
-
-    .form-group.gl-mb-3
       = f.gitlab_ui_checkbox_component :mentions_disabled,
           s_('GroupSettings|Group mentions are disabled'),
           checkbox_options: { checked: @group.mentions_disabled? },
           help_text: s_('GroupSettings|Group members are not notified if the group is mentioned.')
 
     = render 'groups/settings/resource_access_token_creation', f: f, group: @group
+    = render 'groups/settings/email_settings', f: f, group: @group
     = render 'groups/settings/ip_restriction_registration_features_cta', f: f
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
     = render_if_exists 'groups/settings/allowed_email_domain', f: f, group: @group
     - if @group.licensed_feature_available?(:group_wikis)
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
+    = render_if_exists 'groups/settings/code_suggestions', f: f, group: @group
     = render_if_exists 'groups/settings/security/security_policy_management', f: f, group: @group
+    = render_if_exists 'groups/settings/duo_features_enabled', f: f, group: @group
     = render_if_exists 'groups/settings/experimental_settings', f: f, group: @group
     = render_if_exists 'groups/settings/product_analytics_settings', f: f, group: @group
     = render 'groups/settings/git_access_protocols', f: f, group: @group
@@ -48,6 +45,7 @@
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
+    = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
 
     %h5= _('Customer relations')
     .form-group.gl-mb-3

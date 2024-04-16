@@ -4,27 +4,5 @@ query getCiCatalogResourceDetails($fullPath: ID!) {
     webPath
     openIssuesCount
     openMergeRequestsCount
-    versions(first: 1) {
-      nodes {
-        id
-        commit {
-          id
-          pipelines(first: 1) {
-            nodes {
-              id
-              detailedStatus {
-                id
-                detailsPath
-                icon
-                text
-                group
-              }
-            }
-          }
-        }
-        name
-        createdAt
-      }
-    }
   }
 }

@@ -86,7 +86,11 @@ RSpec.shared_examples 'an accessible' do
     [{ 'type' => 'repository',
        'name' => project.full_path,
        'actions' => actions,
-       'meta' => { 'project_path' => project.full_path } }]
+       'meta' => {
+         'project_path' => project.full_path,
+         'project_id' => project.id,
+         'root_namespace_id' => project.root_ancestor.id
+       } }]
   end
 
   it_behaves_like 'a valid token'
@@ -252,13 +256,21 @@ RSpec.shared_examples 'a container registry auth service' do
           'type' => 'repository',
           'name' => project.full_path,
           'actions' => ['pull'],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => {
+            'project_path' => project.full_path,
+            'project_id' => project.id,
+            'root_namespace_id' => project.root_ancestor.id
+          }
         },
         {
           'type' => 'repository',
           'name' => "#{project.full_path}/*",
           'actions' => ['pull'],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => {
+            'project_path' => project.full_path,
+            'project_id' => project.id,
+            'root_namespace_id' => project.root_ancestor.id
+          }
         }
       ]
     end
@@ -880,19 +892,35 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => internal_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => internal_project.full_path } },
+              'meta' => {
+                'project_path' => internal_project.full_path,
+                'project_id' => internal_project.id,
+                'root_namespace_id' => internal_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => private_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => private_project.full_path } },
+              'meta' => {
+                'project_path' => private_project.full_path,
+                'project_id' => private_project.id,
+                'root_namespace_id' => private_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } },
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project_private_container_registry.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project_private_container_registry.full_path } }
+              'meta' => {
+                'project_path' => public_project_private_container_registry.full_path,
+                'project_id' => public_project_private_container_registry.id,
+                'root_namespace_id' => public_project_private_container_registry.root_ancestor.id
+              } }
           ]
         end
       end
@@ -907,11 +935,19 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => internal_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => internal_project.full_path } },
+              'meta' => {
+                'project_path' => internal_project.full_path,
+                'project_id' => internal_project.id,
+                'root_namespace_id' => internal_project.root_ancestor.id
+              } },
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } }
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } }
           ]
         end
       end
@@ -926,7 +962,11 @@ RSpec.shared_examples 'a container registry auth service' do
             { 'type' => 'repository',
               'name' => public_project.full_path,
               'actions' => ['pull'],
-              'meta' => { 'project_path' => public_project.full_path } }
+              'meta' => {
+                'project_path' => public_project.full_path,
+                'project_id' => public_project.id,
+                'root_namespace_id' => public_project.root_ancestor.id
+              } }
           ]
         end
       end
@@ -1397,8 +1437,8 @@ RSpec.shared_examples 'a container registry auth service' do
         repository_path_pattern: container_repository_path)
     end
 
-    let_it_be(:project_developer) { create(:user).tap { |u| current_project.add_developer(u) } }
-    let_it_be(:project_maintainer) { create(:user).tap { |u| current_project.add_maintainer(u) } }
+    let_it_be(:project_developer) { create(:user, developer_of: current_project) }
+    let_it_be(:project_maintainer) { create(:user, maintainer_of: current_project) }
     let_it_be(:project_owner) { current_project.owner }
 
     let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
@@ -1406,7 +1446,10 @@ RSpec.shared_examples 'a container registry auth service' do
     shared_examples 'a protected container repository' do
       it_behaves_like 'a forbidden'
 
-      it { is_expected.to include errors: [include(message: 'Pushing to protected repository path forbidden')] }
+      it do
+        is_expected.to include errors: [include(code: "DENIED",
+          message: 'Pushing to protected repository path forbidden')]
+      end
     end
 
     context 'for different repository_path_patterns and current user roles' do

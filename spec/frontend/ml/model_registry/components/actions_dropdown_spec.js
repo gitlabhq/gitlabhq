@@ -17,6 +17,9 @@ describe('ml/model_registry/components/actions_dropdown', () => {
       provide: {
         mlflowTrackingUrl: 'path/to/mlflow',
       },
+      slots: {
+        default: 'Slot content',
+      },
     });
   };
 
@@ -35,5 +38,11 @@ describe('ml/model_registry/components/actions_dropdown', () => {
     findCopyLinkDropdownItem().find('button').trigger('click');
 
     expect(showToast).toHaveBeenCalledWith('Copied MLflow tracking URL to clipboard');
+  });
+
+  it('renders slots', () => {
+    createWrapper();
+
+    expect(wrapper.html()).toContain('Slot content');
   });
 });

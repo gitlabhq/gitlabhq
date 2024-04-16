@@ -65,7 +65,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def resource_access_token_about_to_expire_email
-    Notify.resource_access_tokens_about_to_expire_email(user, group, ['token_name'])
+    Notify.bot_resource_access_token_about_to_expire_email(user, group, 'token_name')
   end
 
   def access_token_created_email

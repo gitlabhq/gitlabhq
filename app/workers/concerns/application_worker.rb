@@ -67,6 +67,10 @@ module ApplicationWorker
       set(status_expiration: status_from_class || Gitlab::SidekiqStatus::DEFAULT_EXPIRATION)
     end
 
+    def deferred(count = 0, by = nil)
+      set(deferred: true, deferred_count: count, deferred_by: by)
+    end
+
     def generated_queue_name
       Gitlab::SidekiqConfig::WorkerRouter.queue_name_from_worker_name(self)
     end

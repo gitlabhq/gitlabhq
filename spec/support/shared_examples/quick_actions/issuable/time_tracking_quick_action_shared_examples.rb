@@ -115,12 +115,13 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
 
   it 'removes time log when delete is clicked in time tracking report' do
     submit_time('/estimate 1w')
-    submit_time('/spend 1d')
+    submit_time("/spend 1d #{5.seconds.ago.strftime('%F')}")
     submit_time('/spend 3d')
 
-    wait_for_requests
-
     open_time_tracking_report
+
+    expect(find('#time-tracking-report tbody tr:nth-child(1)')).to have_content "1d"
+    expect(find('#time-tracking-report tbody tr:nth-child(2)')).to have_content "3d"
 
     page.within '#time-tracking-report tbody tr:nth-child(2)' do
       click_button test_id: 'deleteButton'

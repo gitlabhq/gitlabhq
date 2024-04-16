@@ -19,35 +19,27 @@ module Projects
           latest_pipeline_path: latest_pipeline_path,
           gitlab_ci_present: project.has_ci_config_file?,
           gitlab_ci_history_path: gitlab_ci_history_path,
-          auto_fix_enabled: autofix_enabled,
-          can_toggle_auto_fix_settings: can_toggle_autofix,
-          auto_fix_user_path: auto_fix_user_path,
           security_training_enabled: project.security_training_available?,
-          continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled
+          continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled,
+          container_scanning_for_registry_enabled: container_scanning_for_registry_enabled,
+          pre_receive_secret_detection_enabled: pre_receive_secret_detection_enabled
         }
       end
 
       def to_html_data_attribute
         data = to_h
         data[:features] = data[:features].to_json
-        data[:auto_fix_enabled] = data[:auto_fix_enabled].to_json
 
         data
       end
 
       private
 
-      def autofix_enabled; end
-
-      def auto_fix_user_path; end
-
       def can_enable_auto_devops?
         feature_available?(:builds, current_user) &&
           can?(current_user, :admin_project, self) &&
           !archived?
       end
-
-      def can_toggle_autofix; end
 
       def gitlab_ci_history_path
         return '' if project.empty_repo?
@@ -96,6 +88,8 @@ module Projects
       end
 
       def continuous_vulnerability_scans_enabled; end
+      def container_scanning_for_registry_enabled; end
+      def pre_receive_secret_detection_enabled; end
     end
   end
 end

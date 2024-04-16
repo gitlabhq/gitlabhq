@@ -43,6 +43,7 @@ You should avoid:
 In general, for topic titles:
 
 - Be clear and direct. Make every word count.
+- Use fewer than 70 characters when possible.
 - Use articles and prepositions.
 - Follow [capitalization](../styleguide/index.md#topic-titles) guidelines.
 - Do not repeat text from earlier topic titles. For example, if the page is about merge requests,

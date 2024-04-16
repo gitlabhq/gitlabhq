@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Silence logger output for tests and disable colorization
+ENV["QA_LOG_LEVEL"] = "FATAL"
+ENV["COLORIZED_LOGS"] = "false"
+
 require_relative '../qa'
 
 require_relative 'scenario_shared_examples'

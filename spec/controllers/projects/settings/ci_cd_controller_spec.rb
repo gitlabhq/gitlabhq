@@ -4,9 +4,8 @@ require('spec_helper')
 
 RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project_auto_devops) { create(:project_auto_devops) }
-
-  let(:project) { project_auto_devops.project }
+  let_it_be(:project) { create(:project, :allow_runner_registration_token) }
+  let_it_be(:project_auto_devops) { create(:project_auto_devops, project: project) }
 
   context 'as a maintainer' do
     before do

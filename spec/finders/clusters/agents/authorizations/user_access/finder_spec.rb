@@ -8,9 +8,9 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::Finder, feature_cat
     let_it_be(:agent_configuration_project) { create(:project, namespace: organization) }
     let_it_be(:agent) { create(:cluster_agent, project: agent_configuration_project) }
     let_it_be(:deployment_project) { create(:project, namespace: organization) }
-    let_it_be(:deployment_maintainer) { create(:user).tap { |u| deployment_project.add_maintainer(u) } }
-    let_it_be(:deployment_developer) { create(:user).tap { |u| deployment_project.add_developer(u) } }
-    let_it_be(:deployment_guest) { create(:user).tap { |u| deployment_project.add_guest(u) } }
+    let_it_be(:deployment_maintainer) { create(:user, maintainer_of: deployment_project) }
+    let_it_be(:deployment_developer) { create(:user, developer_of: deployment_project) }
+    let_it_be(:deployment_guest) { create(:user, guest_of: deployment_project) }
 
     let(:user) { deployment_developer }
     let(:params) { { agent: nil } }

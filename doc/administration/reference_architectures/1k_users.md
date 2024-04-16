@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 1,000 users
+# Reference architecture: 20 RPS or up to 1,000 users 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 1,000 users
-with notable headroom (non-HA standalone).
+This page describes the GitLab reference architecture designed to target a peak load of 20 requests per second (RPS), the typical peak load of up to 1,000 users, both manual and automated, based on real data with headroom added.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
@@ -26,7 +25,7 @@ For a full list of reference architectures, see
 
 | Users        | Configuration           | GCP            | AWS          | Azure    |
 |--------------|-------------------------|----------------|--------------|----------|
-| Up to 1,000  | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
+| Up to 1,000 or 20 RPS | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8` | `c5.2xlarge` | `F8s v2` |
 
 ```plantuml
 @startuml 1k
@@ -74,7 +73,7 @@ If this applies to you, we strongly recommended referring to the linked document
 ## Testing methodology
 
 The 1k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 20 RPS
@@ -121,5 +120,5 @@ Cloud Native Hybrid Reference Architecture is an alternative approach where sele
 components are deployed in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/),
 and _stateful_ components are deployed in compute VMs with the Linux package.
 
-The [2k GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA) reference architectures are the smallest we recommend in Kubernetes.
-For environments that serve fewer users, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
+The [2k or 40 RPS GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k or 60 RPS GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA) reference architectures are the smallest we recommend in Kubernetes.
+For environments that serve fewer users or a lower RPS, you can lower the node specs. Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).

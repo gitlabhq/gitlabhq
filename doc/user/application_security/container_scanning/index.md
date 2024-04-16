@@ -23,6 +23,7 @@ apps.
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Container Scanning](https://www.youtube.com/watch?v=C0jn2eN5MAs).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [How to set up Container Scanning using GitLab](https://youtu.be/h__mcXpil_4?si=w_BVG68qnkL9x4l1).
+- For an introductory tutorial, see [Scan a Docker container for vulnerabilities](../../../tutorials/container_scanning/index.md).
 
 Container Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
@@ -41,7 +42,9 @@ GitLab integrates with open-source tools for vulnerability static analysis in co
 
 WARNING:
 Support for Grype was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/439164) in GitLab
-16.9 and is planned for removal in 17.0. Use Trivy instead.
+16.9 and is planned for removal in 17.0. Use Trivy instead. 
+In GitLab 17.0 and later, the Grype analyzer will no longer be maintained, except for limited fixes as explained in our [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+The existing current major version for the Grype analyzer image will continue to be updated with the latest advisory database, and operating system packages until GitLab 19.0, at which point the analyzer will stop working.
 
 To integrate GitLab with security scanners other than those listed here, see
 [Security scanner integration](../../../development/integrations/secure.md).
@@ -693,7 +696,7 @@ mirror trivy java db:
 ```
 
 The vulnerability database is not a regular Docker image, so it is not possible to pull it by using `docker pull`.
-The image shows an error if you navigate to it in the GitLab UI.
+The image shows an error if you go to it in the GitLab UI.
 
 If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way. Do not add the tag `:1` at the end, it is added by `trivy`:
 
@@ -853,6 +856,12 @@ To resolve this, add the `AWS_DEFAULT_REGION` to your CI/CD variables:
 variables:
   AWS_DEFAULT_REGION: <AWS_REGION_FOR_ECR>
 ```
+
+### `unable to open a file: open /home/gitlab/.cache/trivy/ee/db/metadata.json: no such file or directory`
+
+The compressed Trivy database is stored in the `/tmp` folder of the container and it is extracted to `/home/gitlab/.cache/trivy/{ee|ce}/db` at runtime. This error can happen if you have a volume mount for `/tmp` directory in your runner configuration.
+
+To resolve this, instead of binding the `/tmp` folder, bind specific files or folders in `/tmp` (for example `/tmp/myfile.txt`).
 
 ## Changes
 

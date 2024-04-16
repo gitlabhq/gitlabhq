@@ -47,6 +47,7 @@ module ValueStreamsDashboardHelpers
     [
       [:groups, 5, project.group],
       [:projects, 10, project.group],
+      [:direct_members, 100, project.group],
       [:issues, 1500, project.project_namespace],
       [:merge_requests, 1000, project.project_namespace],
       [:pipelines, 2000, project.project_namespace]

@@ -32,7 +32,7 @@ counted as web traffic.
 
 ## Enable unauthenticated API request rate limit
 
-To enable the unauthenticated request rate limit:
+To enable the unauthenticated API request rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
@@ -74,7 +74,7 @@ To enable the authenticated API request rate limit:
 
 ## Enable authenticated web request rate limit
 
-To enable the unauthenticated request rate limit:
+To enable the authenticated request rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Network**.
@@ -151,7 +151,7 @@ GitLab. For example:
    - Erase `Gitlab-Bypass-Rate-Limiting`.
    - Set `Gitlab-Bypass-Rate-Limiting` to a value other than `1` on all requests that
      should be affected by rate limiting.
-1. Set the environment variable  `GITLAB_THROTTLE_BYPASS_HEADER`.
+1. Set the environment variable `GITLAB_THROTTLE_BYPASS_HEADER`.
    - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
      set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
    - For self-compiled installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`

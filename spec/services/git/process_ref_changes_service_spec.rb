@@ -134,6 +134,8 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           it "creates exactly #{described_class::PIPELINE_PROCESS_LIMIT} pipelines" do
             stub_const("#{described_class}::PIPELINE_PROCESS_LIMIT", changes.count - 1)
 
+            expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
             expect { subject.execute }.to change { Ci::Pipeline.count }.by(described_class::PIPELINE_PROCESS_LIMIT)
           end
         end
@@ -216,7 +218,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
     context 'when there are merge requests associated with branches' do
       let(:tag_changes) do
         [
-          { index: 0, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
+          { index: 7, oldrev: Gitlab::Git::SHA1_BLANK_SHA, newrev: '789012', ref: "refs/tags/v10.0.0" }
         ]
       end
 
@@ -232,7 +234,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         ]
       end
 
-      let(:git_changes) { double(branch_changes: branch_changes, tag_changes: tag_changes) }
+      let(:git_changes) do
+        double(branch_changes: branch_changes, tag_changes: tag_changes)
+      end
 
       before do
         allow(MergeRequests::PushedBranchesService).to receive(:new).and_return(
@@ -276,6 +280,26 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           { 'push_options' => nil }).ordered
 
         subject.execute
+      end
+
+      context 'when git_push_create_all_pipelines is disabled' do
+        before do
+          stub_feature_flags(git_push_create_all_pipelines: false)
+        end
+
+        it 'logs a warning' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            hash_including(
+              message: "Some pipelines may not have been created because ref count exceeded limit",
+              ref_limit: described_class::PIPELINE_PROCESS_LIMIT,
+              total_ref_count: branch_changes.count + tag_changes.count,
+              possible_omitted_refs: ["#{ref_prefix}/changed2", "refs/tags/v10.0.0"],
+              possible_omitted_ref_count: 2
+            )
+          )
+
+          subject.execute
+        end
       end
     end
   end

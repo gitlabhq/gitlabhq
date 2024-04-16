@@ -8,7 +8,7 @@ RSpec.describe Integrations::SlackInteractions::SlackBlockActions::IncidentManag
     let_it_be(:slack_installation) { create(:slack_integration) }
     let_it_be(:old_project) { create(:project) }
     let_it_be(:new_project) { create(:project) }
-    let_it_be(:user) { create(:user, developer_projects: [old_project, new_project]) }
+    let_it_be(:user) { create(:user, developer_of: [old_project, new_project]) }
     let_it_be(:chat_name) { create(:chat_name, user: user) }
     let_it_be(:api_url) { "#{Slack::API::BASE_URL}/views.update" }
 

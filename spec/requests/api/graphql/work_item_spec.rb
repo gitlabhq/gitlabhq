@@ -7,8 +7,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, :private, group: group) }
-  let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
-  let_it_be(:guest) { create(:user).tap { |u| group.add_guest(u) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:work_item) do
     create(
       :work_item,
@@ -788,7 +788,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         end
 
         it 'avoids N+1 queries' do
-          another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+          another_user = create(:user, developer_of: note.resource_parent)
           create(:note, project: note.project, noteable: work_item, author: another_user)
 
           post_graphql(query, current_user: developer)
@@ -799,7 +799,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           another_note = create(:note, project: work_item.project, noteable: work_item)
           create(:award_emoji, awardable: another_note, name: 'star', user: guest)
-          another_user = create(:user).tap { |u| note.resource_parent.add_developer(u) }
+          another_user = create(:user, developer_of: note.resource_parent)
           note_with_different_user = create(:note, project: note.project, noteable: work_item, author: another_user)
           create(:award_emoji, awardable: note_with_different_user, name: 'star', user: developer)
 

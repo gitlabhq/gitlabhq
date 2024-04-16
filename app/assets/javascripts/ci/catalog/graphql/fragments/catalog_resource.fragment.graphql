@@ -1,11 +1,11 @@
 fragment CatalogResourceFields on CiCatalogResource {
   id
-  webPath
+  description
   icon
   name
-  description
   starCount
   starrersPath
+  verificationLevel
   versions(first: 1) {
     nodes {
       id
@@ -21,8 +21,10 @@ fragment CatalogResourceFields on CiCatalogResource {
       author {
         id
         name
+        state
         webUrl
       }
     }
   }
+  webPath
 }

@@ -42,6 +42,23 @@ You can set all new projects to have instance runners available by default.
 
 Any time a new project is created, the instance runners are available.
 
+## Enable runner registrations tokens
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
+
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
+Users must use runner authentication tokens instead.
+If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
+you can enable runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Select the **Allow runner registration token** checkbox.
+
 ## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific
@@ -135,8 +152,6 @@ artifacts, as described in the [troubleshooting documentation](../../administrat
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
-
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
 are locked against deletion and kept regardless of the expiry time.
@@ -220,8 +235,6 @@ The default is `0` (no restriction).
 
 ## Default CI/CD configuration file
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
-
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
@@ -234,7 +247,6 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 ## Set CI/CD limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352175) in GitLab 14.10.
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
@@ -388,7 +400,6 @@ To set the maximum file size:
 
 ## Restrict runner registration by all users in an instance
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.

@@ -127,7 +127,7 @@ graph LR
   Geo -- TCP 22 --> SSH
   Geo -- TCP 5432 --> PostgreSQL
   Runner{{GitLab Runner}} -- TCP 443 --> HTTP
-  K8sAgent{{GitLab Agent}} -- TCP 443 --> HTTP
+  K8sAgent{{GitLab agent}} -- TCP 443 --> HTTP
 
   %% GitLab Application Suite
   subgraph GitLab
@@ -158,7 +158,7 @@ graph LR
         Puma["Puma (GitLab Rails)"]
         Puma <--> Registry
         GitLabWorkhorse[GitLab Workhorse] <--> Puma
-        GitLabKas[GitLab Agent Server] --> GitLabWorkhorse
+        GitLabKas[GitLab agent server] --> GitLabWorkhorse
         GitLabPages[GitLab Pages] --> GitLabWorkhorse
         Mailroom
         Sidekiq

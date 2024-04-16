@@ -36,6 +36,7 @@ You can also configure the integration at the
 [instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration)
 on self-managed GitLab.
 
+With this integration, your GitLab project can interact with all Jira projects on your instance.
 To configure your project settings in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -92,13 +93,10 @@ To configure your project settings in GitLab:
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-Your GitLab project can now interact with all Jira projects on your instance.
-
 ## View Jira issues
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Ability to enable Jira issues at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
 
@@ -127,7 +125,6 @@ Issues are grouped into the following tabs based on their
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -147,12 +144,33 @@ You can also filter the issues by:
   (for example, `/-/integrations/jira/issues?author_username=John Smith`).
 - **Assignee**: specify the Jira display name of the `assignee_username` parameter in the URL
   (for example, `/-/integrations/jira/issues?assignee_username=John Smith`).
+- **Project**: specify the [Jira project key](#multiple-jira-project-keys) in the `project` parameter in the URL
+  (for example, `/-/integrations/jira/issues?project=GTL`).
+
+### Multiple Jira project keys
+
+DETAILS:
+**Tier:** Premium, Ultimate
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440430) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `jira_multiple_project_keys`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can enable the feature flag named `jira_multiple_project_keys`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+When you enable `jira_multiple_project_keys`, you can:
+
+- [View issues](#view-jira-issues) from multiple Jira projects in a GitLab project.
+- [Filter Jira issues](#filter-jira-issues) by project.
+
+In **Jira project keys**, you can enter up to 100 project keys separated by commas.
+Leave blank to include all available keys.
 
 ## Create a Jira issue for a vulnerability
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Prerequisites:
 

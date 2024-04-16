@@ -149,7 +149,7 @@ class Gitlab::Seeder::TriageOps
       confirmed_at: DateTime.now,
       password: SecureRandom.hex.slice(0, 16)
     ) do |user|
-      user.assign_personal_namespace
+      user.assign_personal_namespace(Organizations::Organization.default_organization)
     end
   end
 

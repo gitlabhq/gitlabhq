@@ -143,7 +143,7 @@ module Types
     field :web_url, GraphQL::Types::String, null: true,
                                             description: 'Web URL of the merge request.'
 
-    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline,
+    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :diff_head_pipeline,
                                                    description: 'Pipeline running on the branch HEAD of the merge request.'
     field :pipelines,
           null: true,
@@ -225,7 +225,8 @@ module Types
     field :mergeable, GraphQL::Types::Boolean, null: false, method: :mergeable?, calls_gitaly: true,
                                                description: 'Indicates if the merge request is mergeable.'
     field :security_auto_fix, GraphQL::Types::Boolean, null: true,
-                                                       description: 'Indicates if the merge request is created by @GitLab-Security-Bot.'
+      description: 'Indicates if the merge request is created by @GitLab-Security-Bot.', deprecated: { reason: 'Security Auto Fix experiment feature was removed. It was always hidden behind `security_auto_fix` feature flag', milestone: '16.11' }
+
     field :squash, GraphQL::Types::Boolean, null: false,
       description: 'Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account.'
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,

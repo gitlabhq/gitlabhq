@@ -193,7 +193,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 |-------------------|--------------------------------|----------|-------------|
 | `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
-| `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/272627) in GitLab 13.9. |
+| `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
 | `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
 
 ```shell
@@ -875,7 +875,7 @@ POST /projects/:id/jobs/:job_id/play
 |----------------------------|-----------------|----------|-------------|
 | `id`                       | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                   | integer         | Yes      | ID of a job. |
-| `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. [Introduced in](https://gitlab.com/gitlab-org/gitlab/-/issues/37267) GitLab 14.9. |
+| `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. |
 
 Example request:
 

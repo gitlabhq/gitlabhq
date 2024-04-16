@@ -343,7 +343,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def onboarding_status
-    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, @user)
+    Onboarding::Status.new(request.env.fetch('omniauth.params', {}).deep_symbolize_keys, session, @user)
   end
   strong_memoize_attr :onboarding_status
 

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class MergeRequest::Metrics < ApplicationRecord
+  include IgnorableColumns
+
+  ignore_columns :pipeline_id_convert_to_bigint, remove_with: '17.1', remove_after: '2024-06-14'
+
   belongs_to :merge_request, inverse_of: :metrics
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :pipeline_id
   belongs_to :latest_closed_by, class_name: 'User'

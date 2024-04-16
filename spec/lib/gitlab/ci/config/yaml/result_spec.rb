@@ -22,12 +22,23 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_com
     expect(result).not_to have_header
   end
 
-  describe '#inputs' do
-    it 'returns the value of the spec inputs' do
-      result = described_class.new(config: [{ spec: { inputs: { website: nil } } }, { b: 2 }])
+  describe '#spec' do
+    context 'when the config has a header' do
+      it 'returns the spec' do
+        result = described_class.new(config: [{ spec: { inputs: { website: nil } } }, { b: 2 }])
 
-      expect(result).to have_header
-      expect(result.inputs).to eq({ website: nil })
+        expect(result).to have_header
+        expect(result.spec).to eq({ inputs: { website: nil } })
+      end
+    end
+
+    context 'when the config does not have a header' do
+      it 'returns an empty hash' do
+        result = described_class.new(config: [{ b: 2 }])
+
+        expect(result).not_to have_header
+        expect(result.spec).to eq({})
+      end
     end
   end
 

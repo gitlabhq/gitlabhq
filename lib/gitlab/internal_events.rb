@@ -118,12 +118,14 @@ module Gitlab
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
+        feature_enabled_by_namespace_ids = kwargs[:feature_enabled_by_namespace_ids]
 
         standard_context = Tracking::StandardContext.new(
           project_id: project&.id,
           user_id: user&.id,
           namespace_id: namespace&.id,
-          plan_name: namespace&.actual_plan_name
+          plan_name: namespace&.actual_plan_name,
+          feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids
         ).to_context
 
         service_ping_context = Tracking::ServicePingContext.new(

@@ -10,6 +10,8 @@ FactoryBot.define do
 
     runner_type { :instance_type }
 
+    creation_state { :finished }
+
     transient do
       groups { [] }
       projects { [] }
@@ -39,6 +41,11 @@ FactoryBot.define do
 
     trait :instance do
       runner_type { :instance_type }
+    end
+
+    trait :unregistered do
+      contacted_at { nil }
+      creation_state { :started }
     end
 
     trait :group do

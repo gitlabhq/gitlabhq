@@ -38,7 +38,7 @@ describe('CiResourceComponents', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCopyToClipboardButton = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
+  const findCodeSnippetContainer = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
 
   beforeEach(() => {
@@ -112,19 +112,20 @@ describe('CiResourceComponents', () => {
         expect(findComponents()).toHaveLength(components.length);
       });
 
-      it('renders the component name and snippet', () => {
+      it('renders the component name', () => {
         components.forEach((component) => {
           expect(wrapper.text()).toContain(component.name);
-          expect(wrapper.text()).toContain(component.includePath);
         });
       });
 
-      it('adds a copy-to-clipboard button', () => {
+      it('renders the component code snippet', () => {
         components.forEach((component, i) => {
-          const button = findCopyToClipboardButton(i);
+          const codeSnippetContainer = findCodeSnippetContainer(i);
+          const expectedCodeSnippet = `include:
+  - component: ${component.includePath}`;
 
-          expect(button.props().icon).toBe('copy-to-clipboard');
-          expect(button.attributes('data-clipboard-text')).toContain(component.includePath);
+          expect(codeSnippetContainer.exists()).toBe(true);
+          expect(codeSnippetContainer.text()).toContain(expectedCodeSnippet);
         });
       });
 

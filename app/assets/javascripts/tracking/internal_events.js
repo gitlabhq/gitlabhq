@@ -13,14 +13,14 @@ const InternalEvents = {
   /**
    *
    * @param {string} event
+   * @param {Object} additionalProperties - Object containing additional data for the event tracking.
+   * Supports `value`(number), `property`(string), and `label`(string) as keys.
    * @param {string} category - The category of the event. This is optional and
    * defaults to the page name where the event was triggered. It's advised not to use
    * this parameter for new events unless absolutely necessary.
-   * @param {Object} additionalProperties - Object containing additional data for the event tracking.
-   * Supports `value`(number), `property`(string), and `label`(string) as keys.
    *
    */
-  trackEvent(event, category = undefined, additionalProperties = {}) {
+  trackEvent(event, additionalProperties = {}, category = undefined) {
     validateAdditionalProperties(additionalProperties);
 
     API.trackInternalEvent(event, additionalProperties);
@@ -43,8 +43,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        trackEvent(event, category = undefined, additionalProperties = {}) {
-          InternalEvents.trackEvent(event, category, additionalProperties);
+        trackEvent(event, additionalProperties = {}, category = undefined) {
+          InternalEvents.trackEvent(event, additionalProperties, category);
         },
       },
     };
@@ -83,9 +83,9 @@ const InternalEvents = {
     const loadEvents = parent.querySelectorAll(LOAD_INTERNAL_EVENTS_SELECTOR);
 
     loadEvents.forEach((element) => {
-      const action = createInternalEventPayload(element);
-      if (action) {
-        this.trackEvent(action);
+      const { event, additionalProperties = {} } = createInternalEventPayload(element);
+      if (event) {
+        this.trackEvent(event, additionalProperties);
       }
     });
 

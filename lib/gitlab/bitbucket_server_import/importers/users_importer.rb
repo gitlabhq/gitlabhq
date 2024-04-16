@@ -47,7 +47,7 @@ module Gitlab
         def cache_users(users)
           users_hash = users.each_with_object({}) do |user, hash|
             cache_key = source_user_cache_key('bitbucket_server', project_id, user.username)
-            hash[cache_key] = user.email
+            hash[cache_key] = source_user_cache_value(user.email, type: :email)
           end
 
           cache_multiple(users_hash)

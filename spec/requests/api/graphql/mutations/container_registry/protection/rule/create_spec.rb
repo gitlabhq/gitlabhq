@@ -6,7 +6,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, maintainer_projects: [project]) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let(:container_registry_protection_rule_attributes) do
     build_stubbed(:container_registry_protection_rule, project: project)
@@ -150,9 +150,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
   end
 
   context 'when user does not have permission' do
-    let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-    let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-    let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:guest) { create(:user, guest_of: project) }
     let_it_be(:anonymous) { create(:user) }
 
     where(:user) do

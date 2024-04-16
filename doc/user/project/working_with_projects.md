@@ -216,7 +216,7 @@ Active pipeline schedules of archived projects don't become read-only.
 Archived projects are:
 
 - Labeled with an `archived` badge on the project page.
-- Listed on the group page in the **Archived projects** tab.
+- Listed on the group page in the **Inactive** tab.
 - Hidden from project lists in **Your Work** and **Explore**.
 - Read-only.
 
@@ -429,5 +429,5 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 - [Import a project](../../user/project/import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
-- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/project_features_permissions.md#configure-project-features-and-permissions).
+- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
 - [Limitations on project and group names](../../user/reserved_names.md#limitations-on-usernames-project-and-group-names)

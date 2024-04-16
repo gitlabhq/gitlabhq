@@ -2,7 +2,7 @@
   .profile-header.gl-pb-5.gl-pt-3.gl-overflow-y-auto.gl-sm-pr-4
     .gl-vertical-align-top.gl-text-left.gl-max-w-80.gl-overflow-wrap-anywhere
       .user-info
-        - if !@user.blocked? && @user.confirmed?
+        - if @user.confirmed?
           .gl-display-flex.gl-gap-4.gl-flex-direction-column
             - if @user.pronouns.present? || @user.pronunciation.present? || @user.bio.present?
               %div
@@ -52,8 +52,6 @@
                 %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|Contact')
                 - if @user.website_url.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
-                    - if Feature.enabled?(:security_auto_fix) && @user.bot?
-                      = sprite_icon('question-o', css_class: 'gl-text-blue-500')
                     = sprite_icon('earth', css_class: 'fgray gl-mt-1 flex-shrink-0')
                     = link_to @user.short_website_url, @user.full_website_url, class: 'gl-text-gray-900', target: '_blank', rel: 'me noopener noreferrer nofollow', itemprop: 'url'
                 - if display_public_email?(@user)
@@ -67,7 +65,7 @@
                 - if @user.linkedin.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('linkedin', css_class: 'fgray gl-mt-1 flex-shrink-0')
-                    = link_to @user.linkedin, linkedin_url(@user), class: 'gl-text-gray-900', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow'
+                    = link_to linkedin_name(@user), linkedin_url(@user), class: 'gl-text-gray-900', title: "LinkedIn", target: '_blank', rel: 'noopener noreferrer nofollow'
                 - if @user.twitter.present?
                   .gl-display-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('x', css_class: 'fgray gl-mt-1 flex-shrink-0')
@@ -80,52 +78,3 @@
                   .gl-display-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('discord', css_class: 'fgray gl-mt-1 flex-shrink-0')
                     = link_to @user.discord, discord_url(@user), class: 'gl-text-gray-900', title: "Discord", target: '_blank', rel: 'noopener noreferrer nofollow'
-
-  -# TODO: Remove this with the removal of the old navigation.
-  -# See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
-  - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
-    .scrolling-tabs-container.gl-display-none
-      %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
-        = sprite_icon('chevron-lg-left', size: 12)
-      %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
-        = sprite_icon('chevron-lg-right', size: 12)
-      %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs.gl-border-b-0
-        - if profile_tab?(:overview)
-          %li.js-overview-tab
-            = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
-              = s_('UserProfile|Overview')
-        - if profile_tab?(:activity)
-          %li.js-activity-tab
-            = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-              = s_('UserProfile|Activity')
-        - unless Feature.enabled?(:security_auto_fix) && @user.bot?
-          - if profile_tab?(:groups)
-            %li.js-groups-tab
-              = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-                = s_('UserProfile|Groups')
-          - if profile_tab?(:contributed)
-            %li.js-contributed-tab
-              = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-                = s_('UserProfile|Contributed projects')
-          - if profile_tab?(:projects)
-            %li.js-projects-tab
-              = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-                = s_('UserProfile|Personal projects')
-          - if profile_tab?(:starred)
-            %li.js-starred-tab
-              = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json), card_mode: true } do
-                = s_('UserProfile|Starred projects')
-          - if profile_tab?(:snippets)
-            %li.js-snippets-tab
-              = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-                = s_('UserProfile|Snippets')
-          - if profile_tab?(:followers)
-            %li.js-followers-tab
-              = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
-                = s_('UserProfile|Followers')
-                = gl_badge_tag @user.followers.count, size: :sm
-          - if profile_tab?(:following)
-            %li.js-following-tab
-              = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), testid: 'following_tab' } do
-                = s_('UserProfile|Following')
-                = gl_badge_tag @user.followees.count, size: :sm

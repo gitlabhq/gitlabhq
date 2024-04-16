@@ -4,6 +4,9 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getCountsQueryResponse, getQueryResponse } from 'jest/merge_requests/list/mock_data';
+import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TOKEN_TYPE_AUTHOR } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
 import MergeRequestsListApp from '~/merge_requests/list/components/merge_requests_list_app.vue';
@@ -70,6 +73,58 @@ describe('Merge requests list app', () => {
       useKeysetPagination: true,
       hasPreviousPage: false,
       hasNextPage: true,
+    });
+  });
+
+  describe('tokens', () => {
+    const mockCurrentUser = {
+      id: 1,
+      name: 'Administrator',
+      username: 'root',
+      avatar_url: 'avatar/url',
+    };
+
+    describe('when user is signed out', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      it('does not have preloaded users when gon.current_user_id does not exist', () => {
+        expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
+        ]);
+      });
+    });
+
+    describe('when all tokens are available', () => {
+      beforeEach(async () => {
+        window.gon = {
+          current_user_id: mockCurrentUser.id,
+          current_user_fullname: mockCurrentUser.name,
+          current_username: mockCurrentUser.username,
+          current_user_avatar_url: mockCurrentUser.avatar_url,
+        };
+
+        createComponent();
+
+        await waitForPromises();
+      });
+
+      afterEach(() => {
+        window.gon = {};
+      });
+
+      it('renders all tokens', () => {
+        const preloadedUsers = [
+          { ...mockCurrentUser, id: convertToGraphQLId(TYPENAME_USER, mockCurrentUser.id) },
+        ];
+
+        expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        ]);
+      });
     });
   });
 });

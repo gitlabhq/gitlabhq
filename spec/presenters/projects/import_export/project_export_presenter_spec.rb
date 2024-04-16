@@ -84,7 +84,7 @@ RSpec.describe Projects::ImportExport::ProjectExportPresenter do
     end
 
     context 'as admin' do
-      let(:user) { create(:admin) }
+      let(:user) { create(:admin, :without_default_org) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'exports group members as admin' do

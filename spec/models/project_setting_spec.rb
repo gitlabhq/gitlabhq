@@ -206,7 +206,7 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
 
       context 'when emails have been disabled in parent group' do
         it 'returns false' do
-          group.update_attribute(:emails_disabled, true)
+          group.update_attribute(:emails_enabled, false)
 
           expect(project.emails_enabled?).to be_falsey
         end

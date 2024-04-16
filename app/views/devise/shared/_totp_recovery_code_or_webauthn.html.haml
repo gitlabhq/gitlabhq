@@ -10,8 +10,8 @@
       = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
 
     - if render_remember_me
-      - resource_params = params[:user].presence || params
-      = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
+      - user_params = params[:user].presence || params
+      = f.hidden_field :remember_me, value: user_params.fetch(:remember_me, 0)
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'verify-code-button' } }) do
     = _("Verify code")

@@ -73,7 +73,7 @@ module Groups
         end
       end
 
-      transfer_labels if Feature.enabled?(:group_labels_transfer)
+      transfer_labels
       remove_paid_features_for_projects(old_root_ancestor_id)
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations

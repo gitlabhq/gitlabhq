@@ -51,7 +51,7 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
 
   describe 'POST #preview_markdown' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:developer) { create(:user).tap { |u| group.add_developer(u) } }
+    let_it_be(:developer) { create(:user, developer_of: group) }
 
     before do
       login_as(developer)

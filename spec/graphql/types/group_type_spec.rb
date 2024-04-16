@@ -18,7 +18,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       web_url avatar_url share_with_group_lock project_creation_level
       descendant_groups_count group_members_count projects_count
       subgroup_creation_level require_two_factor_authentication
-      two_factor_grace_period auto_devops_enabled emails_disabled
+      two_factor_grace_period auto_devops_enabled emails_disabled emails_enabled
       mentions_disabled parent boards milestones group_members
       merge_requests container_repositories container_repositories_count
       packages dependency_proxy_setting dependency_proxy_manifests

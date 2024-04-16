@@ -223,12 +223,16 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
 
   def create_developers!
     5.times do |i|
-      user = FactoryBot.create(
-        :user,
-        name: "VSM User#{i}",
-        username: "vsm-user-#{i}-#{suffix}",
-        email: "vsm-user-#{i}@#{suffix}.com"
-      )
+      user =
+        ::User.create!(
+          username: "vsm-user-#{i}-#{suffix}",
+          name: "VSM User#{i}",
+          email: "vsm-user-#{i}@#{suffix}.com",
+          confirmed_at: DateTime.now,
+          password: ::User.random_password
+        ) do |user|
+          user.assign_personal_namespace(Organizations::Organization.default_organization)
+        end
 
       project.group&.add_developer(user)
       project.add_developer(user)

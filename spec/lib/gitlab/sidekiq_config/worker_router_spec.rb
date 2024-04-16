@@ -244,4 +244,37 @@ RSpec.describe Gitlab::SidekiqConfig::WorkerRouter do
       end
     end
   end
+
+  describe '#stores_with_queue' do
+    include_context 'router examples setup'
+
+    with_them do
+      it 'routes the queue to the correct stores' do
+        router = described_class.new(routing_rules)
+
+        expect(router.stores_with_queue(expected_queue)).to eql([expected_store].compact)
+      end
+    end
+
+    context 'when multiple stores has a similar queue name' do
+      let(:routing_rules) do
+        [
+          ['name=foo_bar', 'queue_foo', 'store_foo'],
+          ['name=bar_baz', 'queue_foo', 'store_baz'],
+          ['feature_category=feature_a|urgency=low', 'queue_a'],
+          ['resource_boundary=cpu', 'queue_b'],
+          ['tags=expensive', 'queue_c']
+        ]
+      end
+
+      let(:queue) { 'queue_foo' }
+      let(:stores) { %w[store_foo store_baz] }
+
+      it 'routes the worker to the correct store' do
+        router = described_class.new(routing_rules)
+
+        expect(router.stores_with_queue(queue)).to match_array(stores)
+      end
+    end
+  end
 end

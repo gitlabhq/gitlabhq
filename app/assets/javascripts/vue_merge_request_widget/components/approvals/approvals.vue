@@ -121,6 +121,9 @@ export default {
     showUnapprove() {
       return this.userHasApproved && !this.userCanApprove && this.mr.state !== STATUS_MERGED;
     },
+    showApproveButton() {
+      return (!this.requireSamlAuthToApprove || this.showUnapprove) && this.action;
+    },
     approvalText() {
       // Repeating a text of this to keep i18n easier to do (vs, construcing a compound string)
       if (this.requireSamlAuthToApprove) {
@@ -275,7 +278,7 @@ export default {
       <template v-if="$apollo.queries.approvals.loading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
-          <div class="gl-display-flex gl-flex-direction-row gl-align-items-center">
+          <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3">
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form
                 ref="form"
@@ -289,7 +292,6 @@ export default {
                   size="small"
                   :category="action.category"
                   :loading="isApproving"
-                  class="gl-mr-3"
                   data-testid="approve-button"
                   type="submit"
                 >
@@ -298,20 +300,17 @@ export default {
                 <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
               </gl-form>
             </div>
-            <span v-if="!requireSamlAuthToApprove || showUnapprove">
-              <gl-button
-                v-if="action"
-                :variant="action.variant"
-                size="small"
-                :category="action.category"
-                :loading="isApproving"
-                class="gl-mr-3"
-                data-testid="approve-button"
-                @click="action.action"
-              >
-                {{ action.text }}
-              </gl-button>
-            </span>
+            <gl-button
+              v-if="showApproveButton"
+              :variant="action.variant"
+              size="small"
+              :category="action.category"
+              :loading="isApproving"
+              data-testid="approve-button"
+              @click="action.action"
+            >
+              {{ action.text }}
+            </gl-button>
             <approvals-summary-optional
               v-if="isOptional"
               :can-approve="hasAction"

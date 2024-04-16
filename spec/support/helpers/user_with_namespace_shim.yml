@@ -445,11 +445,9 @@
 - spec/features/profiles/chat_names_spec.rb
 - spec/features/profiles/emails_spec.rb
 - spec/features/profiles/gpg_keys_spec.rb
-- spec/features/profiles/keys_spec.rb
 - spec/features/profiles/list_users_comment_template_spec.rb
 - spec/features/profiles/oauth_applications_spec.rb
 - spec/features/profiles/password_spec.rb
-- spec/features/profiles/personal_access_tokens_spec.rb
 - spec/features/profiles/two_factor_auths_spec.rb
 - spec/features/profiles/user_changes_notified_of_own_activity_spec.rb
 - spec/features/profiles/user_creates_comment_template_spec.rb
@@ -548,6 +546,7 @@
 - spec/features/projects/show/redirects_spec.rb
 - spec/features/projects/show/rss_spec.rb
 - spec/features/projects/show/user_interacts_with_auto_devops_banner_spec.rb
+- spec/features/projects/show/user_interacts_with_dropdown_actions_spec.rb
 - spec/features/projects/show/user_interacts_with_stars_spec.rb
 - spec/features/projects/show/user_sees_collaboration_links_spec.rb
 - spec/features/projects/show/user_sees_git_instructions_spec.rb
@@ -599,6 +598,7 @@
 - spec/features/user_settings/active_sessions_spec.rb
 - spec/features/user_settings/password_spec.rb
 - spec/features/user_settings/personal_access_tokens_spec.rb
+- spec/features/user_settings/ssh_keys_spec.rb
 - spec/features/users/login_spec.rb
 - spec/features/users/overview_spec.rb
 - spec/features/users/rss_spec.rb
@@ -938,7 +938,7 @@
 - spec/services/merge_requests/update_service_spec.rb
 - spec/services/milestones/promote_service_spec.rb
 - spec/services/milestones/transfer_service_spec.rb
-- spec/services/namespace_settings/update_service_spec.rb
+- spec/services/namespace_settings/assign_attributes_service_spec.rb
 - spec/services/notes/build_service_spec.rb
 - spec/services/notes/copy_service_spec.rb
 - spec/services/notes/create_service_spec.rb

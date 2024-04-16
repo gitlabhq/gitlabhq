@@ -326,7 +326,9 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
 
   context 'local' do
     it 'runs locally' do
+      stub_env('CI', 'true')
       stub_env('CI_JOB_NAME', nil)
+
       group = describe_successfully 'Runs locally', :local do
         it('runs locally') {}
       end
@@ -335,6 +337,7 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
 
     it 'does not run in CI' do
+      stub_env('CI', 'true')
       stub_env('CI_JOB_NAME', 'ee:instance-image')
 
       group = describe_successfully 'Does not run in CI' do

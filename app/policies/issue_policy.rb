@@ -80,9 +80,6 @@ class IssuePolicy < IssuablePolicy
     prevent :create_design
     prevent :update_design
     prevent :destroy_design
-  end
-
-  rule { ~can?(:read_design) }.policy do
     prevent :move_design
   end
 

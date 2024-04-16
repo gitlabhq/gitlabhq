@@ -21,6 +21,7 @@ module Tasks
       # or have a direct impact on asset compilation (e.g. scss) and therefore
       # we should compile when these change
       RAILS_ASSET_FILES = %w[
+        config/application.rb
         Gemfile
         Gemfile.lock
       ].freeze

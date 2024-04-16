@@ -10,9 +10,7 @@ class FeatureFlagsUserListsFinder
   end
 
   def execute
-    unless Ability.allowed?(current_user, :read_feature_flag, project)
-      return Operations::FeatureFlagsUserList.none
-    end
+    return Operations::FeatureFlagsUserList.none unless Ability.allowed?(current_user, :read_feature_flag, project)
 
     items = feature_flags_user_lists
     by_search(items)

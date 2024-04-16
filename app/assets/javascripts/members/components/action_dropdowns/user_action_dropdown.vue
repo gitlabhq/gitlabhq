@@ -7,7 +7,7 @@ import {
   MEMBER_MODEL_TYPE_PROJECT_MEMBER,
 } from '~/members/constants';
 import { I18N } from './constants';
-import LeaveGroupDropdownItem from './leave_group_dropdown_item.vue';
+import LeaveDropdownItem from './leave_dropdown_item.vue';
 import RemoveMemberDropdownItem from './remove_member_dropdown_item.vue';
 
 export default {
@@ -21,7 +21,7 @@ export default {
       ),
     LdapOverrideDropdownItem: () =>
       import('ee_component/members/components/action_dropdowns/ldap_override_dropdown_item.vue'),
-    LeaveGroupDropdownItem,
+    LeaveDropdownItem,
     RemoveMemberDropdownItem,
     BanMemberDropdownItem: () =>
       import('ee_component/members/components/action_dropdowns/ban_member_dropdown_item.vue'),
@@ -88,6 +88,11 @@ export default {
     showLeaveOrRemove() {
       return this.permissions.canRemove || this.permissions.canRemoveBlockedByLastOwner;
     },
+    leaveDropdownItemText() {
+      return this.member.type === MEMBER_MODEL_TYPE_PROJECT_MEMBER
+        ? this.$options.i18n.leaveProject
+        : this.$options.i18n.leaveGroup;
+    },
     showLdapOverride() {
       return this.permissions.canOverride && !this.member.isOverridden;
     },
@@ -119,9 +124,9 @@ export default {
     </disable-two-factor-dropdown-item>
 
     <template v-if="showLeaveOrRemove">
-      <leave-group-dropdown-item v-if="isCurrentUser" :member="member" :permissions="permissions">{{
-        $options.i18n.leaveGroup
-      }}</leave-group-dropdown-item>
+      <leave-dropdown-item v-if="isCurrentUser" :member="member" :permissions="permissions">{{
+        leaveDropdownItemText
+      }}</leave-dropdown-item>
 
       <remove-member-dropdown-item
         v-else

@@ -22,7 +22,9 @@ module Mutations
         raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature disabled' unless feature_enabled?(project)
 
         contact_ids = contact_ids.compact.map do |contact_id|
-          raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid." unless contact_id.respond_to?(:model_id)
+          unless contact_id.respond_to?(:model_id)
+            raise Gitlab::Graphql::Errors::ArgumentError, "Contact #{contact_id} is invalid."
+          end
 
           contact_id.model_id.to_i
         end

@@ -6,7 +6,7 @@ module Groups
       include ::Integrations::Actions
 
       before_action :authorize_admin_group!
-      before_action only: [:edit] do
+      before_action only: [:edit, :update] do
         push_frontend_feature_flag(:jira_multiple_project_keys, group)
       end
 

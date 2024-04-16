@@ -340,3 +340,69 @@ scheduled after the background migration has completed, which could be several r
 For these cases, consult the database team early in the update cycle. The `NOT NULL`
 constraint may not be required or other options could exist that do not affect really large
 or frequently accessed tables.
+
+## `NOT NULL` constraints for multiple columns
+
+Sometimes we want to ensure a set of columns contains a specific number of `NOT NULL` values. A common example
+is a table that can belong to either a project or a group, and therefore `project_id` or `group_id` must
+be present. To enforce this, follow the steps for your use case above, but instead use the
+`add_multi_column_not_null_constraint` helper.
+
+In this example, `labels` must belong to either a project or a group, but not both. We can add
+a check constraint to enforce this:
+
+```ruby
+class AddLabelsNullConstraint < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.10'
+
+  def up
+    add_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+
+  def down
+    remove_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+end
+```
+
+This will add the following constraint to `labels`:
+
+```sql
+CREATE TABLE labels (
+    ...
+    CONSTRAINT check_45e873b2a8 CHECK ((num_nonnulls(group_id, project_id) = 1))
+);
+```
+
+`num_nonnulls` returns the number of supplied arguments that are non-null. Checking this value
+equals `1` in the constraint means that only one of `group_id` and `project_id` should contain
+a non-null value in a row, but not both.
+
+### Custom limits and operators
+
+If we want to customize the number of non-nulls required, we can use a different `limit` and/or `operator`:
+
+```ruby
+class AddLabelsNullConstraint < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.10'
+
+  def up
+    add_multi_column_not_null_constraint(:labels, :group_id, :project_id, limit: 0, operator: '>')
+  end
+
+  def down
+    remove_multi_column_not_null_constraint(:labels, :group_id, :project_id)
+  end
+end
+```
+
+This is then reflected in the constraint, allowing both `project_id` and `group_id` to be present:
+
+```sql
+CREATE TABLE labels (
+    ...
+    CONSTRAINT check_45e873b2a8 CHECK ((num_nonnulls(group_id, project_id) > 0))
+);
+```

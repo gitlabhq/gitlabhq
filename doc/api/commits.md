@@ -894,9 +894,9 @@ Example response:
 ]
 ```
 
-## Get GPG signature of a commit
+## Get signature of a commit
 
-Get the [GPG signature from a commit](../user/project/repository/signed_commits/gpg.md),
+Get the [signature from a commit](../user/project/repository/signed_commits),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext
@@ -926,6 +926,24 @@ Example response if commit is GPG signed:
   "gpg_key_user_name": "John Doe",
   "gpg_key_user_email": "johndoe@example.com",
   "gpg_key_subkey_id": null,
+  "commit_source": "gitaly"
+}
+```
+
+Example response if commit is signed with SSH:
+
+```json
+{
+  "signature_type": "SSH",
+  "verification_status": "verified",
+  "key": {
+    "id": 11,
+    "title": "Key",
+    "created_at": "2023-05-08T09:12:38.503Z",
+    "expires_at": "2024-05-07T00:00:00.000Z",
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILZzYDq6DhLp3aX84DGIV3F6Vf+Ae4yCTTz7RnqMJOlR MyKey)",
+    "usage_type": "auth_and_signing"
+  },
   "commit_source": "gitaly"
 }
 ```

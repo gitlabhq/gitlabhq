@@ -63,18 +63,13 @@ Files with many changes are collapsed to improve performance. GitLab displays th
 
 ### Collapse generated files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
-
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To disable it,
-an administrator can [disable the feature flag](../../../administration/feature_flags.md)
-named `collapse_generated_diff_files`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145100) in GitLab 16.10.
+> - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. These files are collapsed by default, because

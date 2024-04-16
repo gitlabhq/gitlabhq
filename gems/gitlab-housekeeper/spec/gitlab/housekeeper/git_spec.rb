@@ -128,5 +128,53 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
       expect(File).not_to exist(file_in_another_branch)
     end
   end
+
+  describe '#push' do
+    let(:push_options) { ::Gitlab::Housekeeper::PushOptions.new }
+
+    before do
+      # Needed to check if remote exists
+      allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'config', anything)
+        .and_call_original
+    end
+
+    context 'when there is a housekeeper remote' do
+      before do
+        # Since we stub execute for git push for these tests we need
+        # to allow it to create the remote below
+        allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'remote', 'add', anything, anything)
+          .and_call_original
+
+        ::Gitlab::Housekeeper::Shell.execute('git', 'remote', 'add', 'housekeeper', 'https://git.example.com/fake-project.git')
+      end
+
+      it 'pushes to the housekeeper remote' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'push', '-f', 'housekeeper', 'the-branch-name:the-branch-name')
+
+        git.push('the-branch-name', push_options)
+      end
+    end
+
+    it 'pushes to origin' do
+      expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+        .with('git', 'push', '-f', 'origin', 'the-branch-name:the-branch-name')
+
+      git.push('the-branch-name', push_options)
+    end
+
+    context 'with push options defined' do
+      it 'pushes with push options set' do
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'push', '-f', 'origin', 'the-branch-name:the-branch-name', '-o ci.skip')
+
+        push_options.ci_skip = true
+
+        git.push('the-branch-name', push_options)
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleMemoizedHelpers

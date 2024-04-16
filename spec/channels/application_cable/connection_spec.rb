@@ -7,7 +7,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
 
   context 'when session cookie is set' do
     before do
-      stub_session(session_hash)
+      stub_session(**session_hash)
     end
 
     context 'when user is logged in' do

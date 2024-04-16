@@ -14,3 +14,4 @@ allow_cross_transactions:
 - gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
+exempt_from_sharding: true # Marked for drop - https://gitlab.com/gitlab-org/gitlab/-/issues/444234

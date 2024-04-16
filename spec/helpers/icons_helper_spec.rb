@@ -53,6 +53,11 @@ RSpec.describe IconsHelper do
         .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
+    it 'returns svg icon html with aria label' do
+      expect(sprite_icon(icon_name, size: nil, aria_label: 'label').to_s)
+        .to eq "<svg data-testid=\"#{icon_name}-icon\" aria-label=\"label\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
+    end
+
     it 'returns a file icon' do
       file_icons_path = ActionController::Base.helpers.image_path("file_icons/file_icons.svg")
 
@@ -61,28 +66,36 @@ RSpec.describe IconsHelper do
     end
 
     describe 'non existing icon' do
+      let(:helper) do
+        Class.new do
+          include IconsHelper
+        end.new
+      end
+
       non_existing = 'non_existing_icon_sprite'
 
       it 'raises in development mode' do
         stub_rails_env('development')
 
-        expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
-        expect { sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect(helper).to receive(:parse_sprite_definition).with('icons.json').once.and_call_original
+        expect(helper).to receive(:parse_sprite_definition).with('file_icons/file_icons.json').once.and_call_original
+        expect { helper.sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect { helper.sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
       end
 
       it 'raises in test mode' do
         stub_rails_env('test')
 
-        expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
-        expect { sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect(helper).to receive(:parse_sprite_definition).with('icons.json').once.and_call_original
+        expect(helper).to receive(:parse_sprite_definition).with('file_icons/file_icons.json').once.and_call_original
+        expect { helper.sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect { helper.sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
       end
 
       it 'does not raise in production mode' do
         stub_rails_env('production')
 
-        expect_file_not_to_read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json'))
-        expect_file_not_to_read(Rails.root.join('node_modules/@gitlab/svgs/dist/file_icons/file_icons.json'))
-
+        expect(helper).not_to receive(:parse_sprite_definition)
         expect { sprite_icon(non_existing) }.not_to raise_error
         expect { sprite_icon(non_existing, file_icon: true) }.not_to raise_error
       end

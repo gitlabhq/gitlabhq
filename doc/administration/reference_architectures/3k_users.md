@@ -4,14 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 3,000 users
+# Reference architecture: 60 RPS or up to 3,000 users 
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 3,000 users
-with notable headroom.
+This page describes the GitLab reference architecture designed to target a peak load of 60 requests per second (RPS), the typical peak load of up to 3,000 users, both manual and automated, based on real data with headroom added.
 
 This architecture is the smallest one available with HA built in. If you require HA but
 have a lower user count or total load the [Supported Modifications for lower user counts](#supported-modifications-for-lower-user-counts-ha)
@@ -152,7 +151,7 @@ Before starting, see the [requirements](index.md#requirements) for reference arc
 ## Testing methodology
 
 The 3k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 60 RPS
@@ -172,13 +171,13 @@ The results of this testing are [available publicly on the GPT wiki](https://git
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
-## Setup components
+## Set up components
 
-To set up GitLab and its components to accommodate up to 3,000 users:
+To set up GitLab and its components to accommodate up to 60 RPS or 3,000 users:
 
 1. [Configure the external load balancer](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
-1. [Configure the internal load balancer](#configure-the-internal-load-balancer).
+1. [Configure the internal load balancer](#configure-the-internal-load-balancer)
    to handle the load balancing of GitLab application internal connections.
 1. [Configure Redis](#configure-redis).
 1. [Configure Consul and Sentinel](#configure-consul-and-sentinel).
@@ -344,8 +343,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -413,8 +412,8 @@ backend praefect
 Refer to your preferred Load Balancer's documentation for further guidance.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -628,8 +627,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -778,8 +777,8 @@ run: sentinel: (pid 30098) 76832s; run: log: (pid 29704) 76850s
 ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -948,8 +947,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/databa
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -978,8 +977,8 @@ If the 'State' column for any node doesn't say "running", check the
 before proceeding.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1093,8 +1092,8 @@ The following IPs will be used as an example:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1206,8 +1205,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 1. Follow the [post configuration](#praefect-postgresql-post-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1269,8 +1268,8 @@ This is how this would work with a Linux package PostgreSQL setup:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1678,8 +1677,8 @@ To configure Praefect with TLS:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1843,8 +1842,8 @@ To configure the Sidekiq nodes, on each one:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2065,8 +2064,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2140,8 +2139,8 @@ running [Prometheus](../monitoring/prometheus/index.md):
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2173,8 +2172,8 @@ There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab
 in the future.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -2195,25 +2194,25 @@ cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
 ## Supported modifications for lower user counts (HA)
 
-The 3,000 user GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
-However, for environments that need to serve fewer users but maintain HA, there are several
+The 60 RPS or 3,000 users GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
+However, for environments that need to serve fewer users or a lower RPS but maintain HA, there are several
 supported modifications you can make to this architecture to reduce complexity and cost.
 
-It should be noted that to achieve HA with GitLab, the 3,000 user architecture's makeup is ultimately what is
-required. Each component has various considerations and rules to follow, and the 3,000 user architecture
+It should be noted that to achieve HA with GitLab, the 60 RPS or 3,000 users architecture's makeup is ultimately what is
+required. Each component has various considerations and rules to follow, and the architecture
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
 but with smaller performance requirements, several modifications can be considered as follows:
 
 - Lowering node specs: Depending on your user count, you can lower all suggested node specs as desired. However, it's recommended that you don't go lower than the [general requirements](../../install/requirements.md).
 - Combining select nodes: Some nodes can be combined to reduce complexity at the cost of some performance:
-  - GitLab Rails and Sidekiq: Sidekiq nodes can be removed and the component instead enabled on the GitLab Rails nodes.
+  - GitLab Rails and Sidekiq: Sidekiq nodes can be removed, and the component instead enabled on the GitLab Rails nodes.
   - PostgreSQL and PgBouncer: PgBouncer nodes could be removed and instead be enabled on PostgreSQL nodes with the Internal Load Balancer pointing to them. However, to enable [Database Load Balancing](../postgresql/database_load_balancing.md), a separate PgBouncer array is still required.
 - Reducing the node counts: Some node types do not need consensus and can run with fewer nodes (but more than one for redundancy). This will also lead to reduced performance.
   - GitLab Rails and Sidekiq: Stateless services don't have a minimum node count. Two are enough for redundancy.
@@ -2381,7 +2380,7 @@ Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because four worker processes
 are created by default and each pod has other small processes running.
 
-For 3,000 users we recommend a total Puma worker count of around 16.
+For 60 RPS or 3,000 users we recommend a total Puma worker count of around 16.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 4
 Webservice pods with 4 workers per pod and 2 pods per node. Expand available resources using
 the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
@@ -2413,7 +2412,7 @@ specifically to accommodate several additional deployments. However, if your dep
 pool as given, you can increase the node pool accordingly.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>

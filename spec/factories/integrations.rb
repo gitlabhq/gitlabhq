@@ -82,6 +82,13 @@ FactoryBot.define do
     server { 'https://packagist.example.comp' }
   end
 
+  factory :phorge_integration, class: 'Integrations::Phorge' do
+    project
+    active { true }
+    project_url { 'http://phorge.example.com' }
+    issues_url { 'http://phorge.example.com/issues/:id' }
+  end
+
   factory :prometheus_integration, class: 'Integrations::Prometheus' do
     project
     active { true }
@@ -126,6 +133,7 @@ FactoryBot.define do
       jira_issue_prefix { '' }
       jira_issue_regex { '' }
       project_key { nil }
+      project_keys { [] }
       vulnerabilities_enabled { false }
       vulnerabilities_issuetype { nil }
       deployment_type { 'cloud' }
@@ -143,8 +151,10 @@ FactoryBot.define do
           jira_issue_prefix: evaluator.jira_issue_prefix,
           jira_issue_regex: evaluator.jira_issue_regex,
           username: evaluator.username, password: evaluator.password, issues_enabled: evaluator.issues_enabled,
-          project_key: evaluator.project_key, vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
-          vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype, deployment_type: evaluator.deployment_type
+          project_key: evaluator.project_key, project_keys: evaluator.project_keys,
+          vulnerabilities_enabled: evaluator.vulnerabilities_enabled,
+          vulnerabilities_issuetype: evaluator.vulnerabilities_issuetype,
+          deployment_type: evaluator.deployment_type
         )
       end
     end
@@ -473,6 +483,7 @@ FactoryBot.define do
 
     token { '123456:ABC-DEF1234' }
     room { '@channel' }
+    thread { nil }
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in

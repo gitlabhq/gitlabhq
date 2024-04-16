@@ -186,7 +186,7 @@ Be sure to add these polyfills to `app/assets/javascripts/commons/polyfills.js`.
 
 To see what polyfills are being used:
 
-1. Navigate to your merge request.
+1. Go to your merge request.
 1. In the secondary menu below the title of the merge request, select **Pipelines**, then
    select the pipeline you want to view, to display the jobs in that pipeline.
 1. Select the [`compile-production-assets`](https://gitlab.com/gitlab-org/gitlab/-/jobs/641770154) job.

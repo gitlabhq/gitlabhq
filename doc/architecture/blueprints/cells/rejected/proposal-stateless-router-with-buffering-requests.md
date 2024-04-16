@@ -341,7 +341,7 @@ projects/namespaces but their MR/Todo/Issue counts at the top of the page will
 not be correctly populated in the first iteration. The user will be aware of
 this limitation.
 
-#### Navigates to `/my-company/my-project` while logged in
+#### Goes to `/my-company/my-project` while logged in
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. They request `/my-company/my-project` without the router cache, so the router chooses randomly `Cell EU1`
@@ -362,7 +362,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project... X-Gitlab-Cell-Cache={path_prefix:/my-company/}
 ```
 
-#### Navigates to `/my-company/my-project` while not logged in
+#### Goes to `/my-company/my-project` while not logged in
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router does not have `/my-company/*` cached yet so it chooses randomly `Cell EU1`
@@ -394,7 +394,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project... X-Gitlab-Cell-Cache={path_prefix:/my-company/}
 ```
 
-#### Navigates to `/my-company/my-other-project` after last step
+#### Goes to `/my-company/my-other-project` after last step
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router cache now has `/my-company/* => Cell EU0`, so the router chooses `Cell EU0`
@@ -411,7 +411,7 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Project... X-Gitlab-Cell-Cache={path_prefix:/my-company/}
 ```
 
-#### Navigates to `/gitlab-org/gitlab` after last step
+#### Goes to `/gitlab-org/gitlab` after last step
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router has no cached value for this URL so randomly chooses `Cell EU0`
@@ -436,7 +436,7 @@ counter will not include their typical todos. We may choose to highlight this in
 the UI somewhere. A future iteration may be able to fetch that for them from
 their default organization.
 
-#### Navigates to `/`
+#### Goes to `/`
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. Router does not have a cache for `/` route (specifically rails never tells it to cache this route)
@@ -464,12 +464,12 @@ sequenceDiagram
     cell_eu0->>user: <h1>My Company Dashboard... X-Gitlab-Cell-Cache={path_prefix:/organizations/my-organization/}
 ```
 
-#### Navigates to `/dashboard`
+#### Goes to `/dashboard`
 
 As above, they will end up on `/organizations/my-organization/-/dashboard` as
 the rails application will already redirect `/` to the dashboard page.
 
-### Navigates to `/not-my-company/not-my-project` while logged in (but they don't have access since this project/group is private)
+### Goes to `/not-my-company/not-my-project` while logged in (but they don't have access since this project/group is private)
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router knows that `/not-my-company` lives in `Cell US1` so sends the request to this
@@ -502,11 +502,11 @@ the Rails application knows to interpret this organization to mean that they are
 allowed to use legacy global functionality like `/dashboard` to see data across
 namespaces located on `Cell US0`. The rails backend also knows that the default cell to render any ambiguous
 routes like `/dashboard` is `Cell US0`. Lastly the user will be allowed to
-navigate to organizations on another cell like `/my-organization` but when they do the
+go to organizations on another cell like `/my-organization` but when they do the
 user will see a message indicating that some data may be missing (for example, the
 MRs/Issues/Todos) counts.
 
-#### Navigates to `/gitlab-org/gitlab` while not logged in
+#### Goes to `/gitlab-org/gitlab` while not logged in
 
 1. User is in the US so DNS resolves to the US router
 1. The router knows that `/gitlab-org` lives in `Cell US0` so sends the request
@@ -523,7 +523,7 @@ sequenceDiagram
     cell_us0->>user: <h1>GitLab.org... X-Gitlab-Cell-Cache={path_prefix:/gitlab-org/}
 ```
 
-#### Navigates to `/`
+#### Goes to `/`
 
 1. User is in US so DNS resolves to the router in US
 1. Router does not have a cache for `/` route (specifically rails never tells it to cache this route)
@@ -555,7 +555,7 @@ sequenceDiagram
     cell_us0->>user: <h1>Dashboard...
 ```
 
-#### Navigates to `/my-company/my-other-project` while logged in (but they don't have access since this project is private)
+#### Goes to `/my-company/my-other-project` while logged in (but they don't have access since this project is private)
 
 They get a 404.
 

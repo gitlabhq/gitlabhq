@@ -5,6 +5,7 @@ fragment PackageData on Package {
   packageType
   createdAt
   status
+  statusMessage
   tags {
     nodes {
       id
@@ -29,6 +30,7 @@ fragment PackageData on Package {
     fullPath
     webUrl
   }
+  packageProtectionRuleExists
   _links {
     webPath
   }

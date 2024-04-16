@@ -3,6 +3,9 @@
 class Packages::SemVer
   attr_accessor :major, :minor, :patch, :prerelease, :build
 
+  # TODO: Move logic into the SemanticVersionable concern
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/455670
+
   def initialize(major = 0, minor = 0, patch = 0, prerelease = nil, build = nil, prefixed: false)
     @major = major
     @minor = minor

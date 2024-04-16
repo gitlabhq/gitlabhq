@@ -501,6 +501,8 @@ module ApplicationSettingImplementation
   end
 
   def runners_registration_token
+    return unless Gitlab::CurrentSettings.allow_runner_registration_token
+
     ensure_runners_registration_token!
   end
 

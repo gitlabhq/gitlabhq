@@ -73,7 +73,7 @@ export default {
         </template>
       </template>
       <span v-else class="gl-text-secondary">
-        {{ s__('TimeTracking|Use /spend or /estimate to manage time.') }}
+        {{ s__('TimeTracking|To manage time, use /spend or /estimate.') }}
       </span>
     </div>
   </div>

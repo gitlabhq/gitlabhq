@@ -17,7 +17,7 @@ module Gitlab
     DEFAULT_ADOC_ATTRS = {
         'showtitle' => true,
         'sectanchors' => true,
-        'idprefix' => 'user-content-',
+        'idprefix' => Banzai::Renderer::USER_CONTENT_ID_PREFIX,
         'idseparator' => '-',
         'env' => 'gitlab',
         'env-gitlab' => '',

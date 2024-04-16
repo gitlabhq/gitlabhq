@@ -33,21 +33,6 @@ module Gitlab
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
-      def definition(basename, category: nil, action: nil, label: nil, property: nil, value: nil, context: [], project: nil, user: nil, namespace: nil, **extra) # rubocop:disable Metrics/ParameterLists
-        definition = YAML.load_file(Rails.root.join("config/events/#{basename}.yml"))
-
-        dispatch_from_definition(definition, label: label, property: property, value: value, context: context, project: project, user: user, namespace: namespace, **extra)
-      end
-
-      def dispatch_from_definition(definition, **event_data)
-        definition = definition.with_indifferent_access
-
-        category ||= definition[:category]
-        action ||= definition[:action]
-
-        event(category, action, **event_data)
-      end
-
       def options(group)
         tracker.options(group)
       end

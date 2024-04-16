@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let(:user) { create(:user, developer_projects: [project]) }
+  let(:user) { create(:user, developer_of: project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 

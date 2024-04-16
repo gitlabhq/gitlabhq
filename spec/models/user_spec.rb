@@ -694,9 +694,19 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when creating user' do
+      let(:username) { 'test' }
       let(:user) { build(:user, username: username) }
 
       include_examples 'username validations'
+
+      context 'when created without an organization' do
+        let!(:default_organization) { create(:organization, :default) }
+        let(:user) { create(:user) }
+
+        it 'is assigned to the default organization' do
+          expect(user.organizations).to contain_exactly(Organizations::Organization.default_organization)
+        end
+      end
     end
 
     context 'when updating user' do
@@ -1420,18 +1430,13 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe '.with_personal_access_tokens_expiring_soon_and_ids' do
+    describe '.with_personal_access_tokens_expiring_soon' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }
       let_it_be(:pat1) { create(:personal_access_token, user: user1, expires_at: 2.days.from_now) }
       let_it_be(:pat2) { create(:personal_access_token, user: user2, expires_at: 7.days.from_now) }
-      let_it_be(:ids) { [user1.id] }
 
-      subject(:users) { described_class.with_personal_access_tokens_expiring_soon_and_ids(ids) }
-
-      it 'filters users only by id' do
-        expect(users).to contain_exactly(user1)
-      end
+      subject(:users) { described_class.with_personal_access_tokens_expiring_soon }
 
       it 'includes expiring personal access tokens' do
         expect(users.first.expiring_soon_and_unnotified_personal_access_tokens).to be_loaded
@@ -3560,7 +3565,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it 'prioritizes sorting of matches that start with the query' do
-      expect(described_class.gfm_autocomplete_search('user')).to eq([user_2, user_1])
+      expect(described_class.gfm_autocomplete_search('uSeR')).to eq([user_2, user_1])
     end
 
     it 'falls back to sorting by username' do
@@ -4322,10 +4327,6 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.follow(followee1)).to be_truthy
 
       expect(user.following?(followee1)).to be_truthy
-
-      expect(user.unfollow(followee1)).to be_truthy
-
-      expect(user.following?(followee1)).to be_falsey
     end
   end
 
@@ -4416,46 +4417,6 @@ RSpec.describe User, feature_category: :user_profile do
       follower.ban
 
       expect(user.followed_by?(follower)).to be_falsey
-    end
-  end
-
-  describe '#unfollow' do
-    it 'unfollow another user' do
-      user = create :user
-      followee1 = create :user
-      followee2 = create :user
-
-      expect(user.followees).to be_empty
-
-      expect(user.follow(followee1)).to be_truthy
-      expect(user.follow(followee1)).to be_falsey
-
-      expect(user.follow(followee2)).to be_truthy
-      expect(user.follow(followee2)).to be_falsey
-
-      expect(user.followees).to contain_exactly(followee1, followee2)
-
-      expect(user.unfollow(followee1)).to be_truthy
-      expect(user.unfollow(followee1)).to be_falsey
-
-      expect(user.followees).to contain_exactly(followee2)
-
-      expect(user.unfollow(followee2)).to be_truthy
-      expect(user.unfollow(followee2)).to be_falsey
-
-      expect(user.followees).to be_empty
-    end
-
-    it 'unfollows when over followee limit' do
-      user = create(:user)
-
-      followees = create_list(:user, 4)
-      followees.each { |f| expect(user.follow(f)).to be_truthy }
-
-      stub_const('Users::UserFollowUser::MAX_FOLLOWEE_LIMIT', followees.length - 2)
-
-      expect(user.unfollow(followees.first)).to be_truthy
-      expect(user.following?(followees.first)).to be_falsey
     end
   end
 
@@ -4868,6 +4829,46 @@ RSpec.describe User, feature_category: :user_profile do
     subject { user.membership_groups }
 
     specify { is_expected.to contain_exactly(parent_group, child_group) }
+  end
+
+  describe '#first_group_paths' do
+    subject { user.first_group_paths }
+
+    context 'with less than max allowed direct group memberships' do
+      let_it_be(:user) { create(:user) }
+      let(:expected_group_paths) { [] }
+
+      before do
+        3.times do
+          create(:group).tap do |new_group|
+            new_group.add_member(user, Gitlab::Access::GUEST)
+            expected_group_paths.push(new_group.full_path)
+          end
+        end
+      end
+
+      it 'returns sorted list of group paths' do
+        expect(subject).to eq(expected_group_paths.sort!)
+      end
+    end
+
+    context 'with more than max allowed direct group memberships' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        stub_const("#{described_class}::FIRST_GROUP_PATHS_LIMIT", 4)
+
+        5.times do
+          create(:group).tap do |new_group|
+            new_group.add_member(user, Gitlab::Access::GUEST)
+          end
+        end
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
   end
 
   describe '#authorizations_for_projects' do
@@ -5673,6 +5674,56 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  shared_examples 'organization owner' do
+    let!(:org_user) { create(:organization_user, organization: organization, user: user, access_level: access_level) }
+
+    context 'when user is the owner of the organization' do
+      let(:access_level) { Gitlab::Access::OWNER }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is not the owner of the organization' do
+      let(:access_level) { Gitlab::Access::GUEST }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#can_admin_organization?' do
+    let(:user) { create(:user) }
+    let(:organization) { create(:organization) }
+
+    subject { user.can_admin_organization?(organization) }
+
+    it_behaves_like 'organization owner'
+  end
+
+  describe '#owns_organization?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+
+    subject { user.owns_organization?(organization_param) }
+
+    context 'when passed organization object' do
+      let(:organization_param) { organization }
+
+      it_behaves_like 'organization owner'
+    end
+
+    context 'when passed organization id' do
+      let(:organization_param) { organization.id }
+
+      it_behaves_like 'organization owner'
+    end
+
+    context 'when passed nil' do
+      let(:organization_param) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#update_two_factor_requirement' do
     let(:user) { create :user }
 
@@ -6077,6 +6128,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when namespace does not exist' do
+      let_it_be(:default_organization) { create(:organization, :default) }
       let(:user) { described_class.new attributes_for(:user) }
 
       it 'builds a new namespace using assigned organization' do
@@ -6092,11 +6144,8 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when organization is nil' do
-        let!(:default_organization) { create(:organization, :default) }
-
-        # This logic will be removed when organization becomes a required argument
         it 'builds a new namespace using default organization' do
-          user.assign_personal_namespace
+          user.assign_personal_namespace(nil)
 
           expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
         end
@@ -7121,6 +7170,30 @@ RSpec.describe User, feature_category: :user_profile do
       let(:password) { user.password }
 
       it { is_expected.to eq(false) }
+    end
+
+    context 'using a correct password' do
+      let(:user) { create(:user) }
+      let(:password) { user.password }
+
+      it { is_expected.to eq(true) }
+
+      context 'when password authentication is disabled' do
+        before do
+          stub_application_setting(password_authentication_enabled_for_web: false)
+          stub_application_setting(password_authentication_enabled_for_git: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'when user with LDAP identity' do
+        before do
+          create(:identity, provider: 'ldapmain', user: user)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
 
     context 'using a wrong password' do

@@ -9,8 +9,8 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:current_user) { developer }
-  let_it_be(:group1) { create(:group).tap { |group| group.add_developer(developer) } }
-  let_it_be(:group2) { create(:group).tap { |group| group.add_developer(developer) } }
+  let_it_be(:group1) { create(:group, developers: developer) }
+  let_it_be(:group2) { create(:group, developers: developer) }
   let_it_be(:project_a) { create(:project, :repository, :public, group: group1) }
   let_it_be(:project_b) { create(:project, :repository, :private, group: group1) }
   let_it_be(:project_c) { create(:project, :repository, :public, group: group2) }
@@ -218,7 +218,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       new_private_project = create(:project, :private).tap { |project| project.add_developer(current_user) }
       create(:issue, project: new_private_project)
 
-      private_group = create(:group, :private).tap { |group| group.add_developer(current_user) }
+      private_group = create(:group, :private, developers: current_user)
       private_project = create(:project, :private, group: private_group)
       create(:issue, project: private_project)
 

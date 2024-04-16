@@ -34,6 +34,7 @@ RSpec.describe "Achievements", :js, feature_category: :user_profile do
       achievement_desc = 'A legend!'
       fill_in('Name', with: achievement_name)
       fill_in('Description', with: achievement_desc)
+      attach_file('avatar_file', Rails.root.join('spec/fixtures/dk.png'), visible: false)
 
       click_button('Save changes')
 
@@ -42,6 +43,9 @@ RSpec.describe "Achievements", :js, feature_category: :user_profile do
         .and have_content(achievement_desc)
         .and have_content(achievement2.description)
         .and have_content('Achievement has been added.')
+
+      # TODO: Look for this avatar on the page once we start to show them!
+      expect(Achievements::Achievement.last.avatar_url).not_to be_nil
     end
 
     it 'validates required fields' do

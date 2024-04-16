@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import printMarkdownDom from '~/lib/print_markdown_dom';
 import { isTemplate } from '../utils';
@@ -8,7 +8,18 @@ export default {
   components: {
     GlDisclosureDropdown,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   inject: ['print', 'history'],
+  i18n: {
+    wikiActions: s__('Wiki|Wiki actions'),
+  },
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
   computed: {
     isTemplate,
     dropdownItems() {
@@ -36,6 +47,9 @@ export default {
 
       return items;
     },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.wikiActions : '';
+    },
   },
   methods: {
     printPage() {
@@ -45,16 +59,25 @@ export default {
         stylesheet: this.print.stylesheet,
       });
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
 <template>
   <gl-disclosure-dropdown
+    v-gl-tooltip="showDropdownTooltip"
     :items="dropdownItems"
     icon="ellipsis_v"
     category="tertiary"
     placement="right"
     no-caret
     data-testid="wiki-more-dropdown"
+    @shown="showDropdown"
+    @hidden="hideDropdown"
   />
 </template>

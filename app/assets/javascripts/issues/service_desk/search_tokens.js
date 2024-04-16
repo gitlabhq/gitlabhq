@@ -56,7 +56,7 @@ export const assigneeTokenBase = {
 export const milestoneTokenBase = {
   type: TOKEN_TYPE_MILESTONE,
   title: TOKEN_TITLE_MILESTONE,
-  icon: 'clock',
+  icon: 'milestone',
   token: MilestoneToken,
   shouldSkipSort: true,
 };

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
-  subject { described_class.new(params, detect_abuse: detect_abuse) }
+  subject(:search_params) { described_class.new(params, detect_abuse: detect_abuse) }
 
   let(:search) { 'search' }
   let(:group_id) { 123 }
@@ -18,13 +18,14 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
 
     it 'uses AbuseDetection by default' do
       expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
-      described_class.new(params)
+
+      search_params
     end
   end
 
   describe '#[]' do
     it 'feels like regular params' do
-      expect(subject[:group_id]).to eq(params[:group_id])
+      expect(search_params[:group_id]).to eq(params[:group_id])
     end
 
     it 'has indifferent access' do
@@ -34,7 +35,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     it 'also works on attr_reader attributes' do
-      expect(subject[:query_string]).to eq(subject.query_string)
+      expect(search_params[:query_string]).to eq(search_params.query_string)
     end
   end
 
@@ -57,7 +58,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     end
 
     it 'strips surrounding whitespace from query string' do
-      params = described_class.new({ search: '     ' + search + '           ' })
+      params = described_class.new({ search: "     #{search}           " })
       expect(params.query_string).to eq(search)
     end
   end
@@ -68,13 +69,13 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
 
       it 'does NOT validate AbuseDetector' do
         expect(Gitlab::Search::AbuseDetection).not_to receive(:new)
-        subject.validate
+        search_params.validate
       end
     end
 
     it 'validates AbuseDetector on validation' do
       expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
-      subject.validate
+      search_params.validate
     end
 
     context 'when query has too many terms' do
@@ -96,13 +97,13 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
 
       it 'does NOT validate AbuseDetector' do
         expect(Gitlab::Search::AbuseDetection).not_to receive(:new)
-        subject.valid?
+        search_params.valid?
       end
     end
 
     it 'validates AbuseDetector on validation' do
       expect(Gitlab::Search::AbuseDetection).to receive(:new).at_least(:once).and_call_original
-      subject.valid?
+      search_params.valid?
     end
   end
 
@@ -110,7 +111,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
     let(:abuse_detection) { instance_double(Gitlab::Search::AbuseDetection) }
 
     before do
-      allow(subject).to receive(:abuse_detection).and_return abuse_detection
+      allow(search_params).to receive(:abuse_detection).and_return abuse_detection
       allow(abuse_detection).to receive(:errors).and_return abuse_errors
     end
 
@@ -118,7 +119,7 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
       let(:abuse_errors) { { foo: ['bar'] } }
 
       it 'is considered abusive' do
-        expect(subject).to be_abusive
+        expect(search_params).to be_abusive
       end
     end
 
@@ -127,20 +128,20 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
 
       context 'and there are other validation errors' do
         it 'is NOT considered abusive' do
-          allow(subject).to receive(:valid?) do
-            subject.errors.add :project_id, 'validation error unrelated to abuse'
+          allow(search_params).to receive(:valid?) do
+            search_params.errors.add :project_id, 'validation error unrelated to abuse'
             false
           end
 
-          expect(subject).not_to be_abusive
+          expect(search_params).not_to be_abusive
         end
       end
 
       context 'and there are NO other validation errors' do
         it 'is NOT considered abusive' do
-          allow(subject).to receive(:valid?).and_return(true)
+          allow(search_params).to receive(:valid?).and_return(true)
 
-          expect(subject).not_to be_abusive
+          expect(search_params).not_to be_abusive
         end
       end
     end
@@ -151,6 +152,59 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
       expect(described_class.new({ search: 'email@example.com' })).to be_email_lookup
       expect(described_class.new({ search: 'foo email@example.com bar' })).to be_email_lookup
       expect(described_class.new({ search: 'foo bar' })).not_to be_email_lookup
+    end
+  end
+
+  describe 'converts boolean params' do
+    using RSpec::Parameterized::TableSyntax
+
+    shared_context 'with inputs' do
+      where(:input, :expected) do
+        '0'     | false
+        '1'     | true
+        'yes'   | true
+        'no'    | false
+        'true'  | true
+        'false' | false
+        true    | true
+        false   | false
+      end
+    end
+
+    describe 'for confidential' do
+      let(:params) { { group_id: 123, search: search, confidential: input } }
+
+      include_context 'with inputs'
+
+      with_them do
+        it 'transforms param' do
+          expect(search_params[:confidential]).to eq(expected)
+        end
+      end
+    end
+
+    describe 'for include_archived' do
+      let(:params) { { group_id: 123, search: search, include_archived: input } }
+
+      include_context 'with inputs'
+
+      with_them do
+        it 'transforms param' do
+          expect(search_params[:include_archived]).to eq(expected)
+        end
+      end
+    end
+
+    describe 'for include_forked' do
+      let(:params) { { group_id: 123, search: search, include_forked: input } }
+
+      include_context 'with inputs'
+
+      with_them do
+        it 'transforms param' do
+          expect(search_params[:include_forked]).to eq(expected)
+        end
+      end
     end
   end
 end

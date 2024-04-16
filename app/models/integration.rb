@@ -10,7 +10,7 @@ class Integration < ApplicationRecord
   include Integrations::ResetSecretFields
   include FromUnion
   include EachBatch
-  include IgnorableColumns
+  extend SafeFormatHelper
   extend ::Gitlab::Utils::Override
 
   UnknownType = Class.new(StandardError)
@@ -22,7 +22,7 @@ class Integration < ApplicationRecord
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
     datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
     gitlab_slack_application hangouts_chat harbor irker jira
-    mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
+    mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
   ].freeze
@@ -330,7 +330,7 @@ class Integration < ApplicationRecord
   def self.integration_names
     names = INTEGRATION_NAMES.dup
 
-    unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+    unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) &&
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names.delete('gitlab_slack_application')
     end
@@ -351,7 +351,7 @@ class Integration < ApplicationRecord
   def self.project_specific_integration_names
     names = PROJECT_SPECIFIC_INTEGRATION_NAMES.dup
 
-    if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+    if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :beta) &&
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names << 'gitlab_slack_application'
     end
@@ -677,6 +677,18 @@ class Integration < ApplicationRecord
 
   def ci?
     category == :ci
+  end
+
+  def deactivate!
+    update(active: false)
+  end
+
+  def activate!
+    update(active: true)
+  end
+
+  def toggle!
+    active? ? deactivate! : activate!
   end
 
   private

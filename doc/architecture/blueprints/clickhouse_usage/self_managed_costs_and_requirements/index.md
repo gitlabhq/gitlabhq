@@ -40,13 +40,13 @@ GitLab Reference Architecture sizes and [costs](../../../../administration/refer
 
 | Reference Architecture  | ClickHouse type | ClickHouse cost / (GitLab cost + ClickHouse cost) |
 |-------------|-----------------|-----------------------------------|
-| [1k - non HA](https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed) | [non-HA](https://cloud.google.com/products/calculator#id=9af5359e-b155-451c-b090-5f0879bb591e)          | 78.01%                            |
-| [2k - non HA](https://cloud.google.com/products/calculator#id=0d3aff1f-ea3d-43f9-aa59-df49d27c35ca) | [non-HA](https://cloud.google.com/products/calculator#id=9af5359e-b155-451c-b090-5f0879bb591e)          | 44.50%                            |
-| [3k - HA](https://cloud.google.com/products/calculator/#id=15fc2bd9-5b1c-479d-bc46-d5ce096b8107)     | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 37.87%                            |
-| [5k - HA](https://cloud.google.com/products/calculator/#id=9a798136-53f2-4c35-be43-8e1e975a6663)     | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 30.92%                           |
-| [10k - HA](https://cloud.google.com/products/calculator#id=cbe61840-31a1-487f-88fa-631251c2fde5)   | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 20.47%                            |
-| [25k - HA](https://cloud.google.com/products/calculator#id=b4b8b587-508a-4433-adc8-dc506bbe924f)    | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 14.30%                            |
-| [50k - HA](https://cloud.google.com/products/calculator/#id=48b4d817-d6cd-44b8-b069-0ba9a5d123ea)    | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 8.16%                            |
+| [20 RPS / 1k users - non HA](https://cloud.google.com/products/calculator#id=a6d6a94a-c7dc-4c22-85c4-7c5747f272ed) | [non-HA](https://cloud.google.com/products/calculator#id=9af5359e-b155-451c-b090-5f0879bb591e)          | 78.01%                            |
+| [40 RPS / 2k users- non HA](https://cloud.google.com/products/calculator#id=0d3aff1f-ea3d-43f9-aa59-df49d27c35ca) | [non-HA](https://cloud.google.com/products/calculator#id=9af5359e-b155-451c-b090-5f0879bb591e)          | 44.50%                            |
+| [60 RPS / 3k users - HA](https://cloud.google.com/products/calculator/#id=15fc2bd9-5b1c-479d-bc46-d5ce096b8107)     | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 37.87%                            |
+| [100 RPS / 5k users - HA](https://cloud.google.com/products/calculator/#id=9a798136-53f2-4c35-be43-8e1e975a6663)     | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 30.92%                           |
+| [200 RPS / 10k users - HA](https://cloud.google.com/products/calculator#id=cbe61840-31a1-487f-88fa-631251c2fde5)   | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 20.47%                            |
+| [500 RPS / 25k users - HA](https://cloud.google.com/products/calculator#id=b4b8b587-508a-4433-adc8-dc506bbe924f)    | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 14.30%                            |
+| [1000 RPS / 50k users - HA](https://cloud.google.com/products/calculator/#id=48b4d817-d6cd-44b8-b069-0ba9a5d123ea)    | [HA](https://cloud.google.com/products/calculator#id=9909f5af-d41a-4da2-b8cc-a0347702a823)              | 8.16%                            |
 
 NOTE:
 The ClickHouse Self-Managed component evaluation is the minimum estimation for the costs
@@ -57,7 +57,7 @@ The following components increase the cost, and were not considered in the minim
 - Disk size - depends on data size, hard to estimate.
 - Disk types - ClickHouse recommends [fast SSDs](https://clickhouse.com/docs/ru/operations/tips#storage-subsystem).
 - Network usage - ClickHouse recommends using [10 GB network, if possible](https://clickhouse.com/docs/en/operations/tips#network).
-- For HA we sum minimum cost across all reference architectures from 3k to 50k users, but HA specs tend to increase with user count.
+- For HA we sum minimum cost across all reference architectures from 60 RPS / 3k users to 1000 RPS / 50k users, but HA specs tend to increase with user count.
 
 ### Resources
 

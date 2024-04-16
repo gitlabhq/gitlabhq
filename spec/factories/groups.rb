@@ -8,7 +8,17 @@ FactoryBot.define do
     owner { nil }
     project_creation_level { ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }
 
-    after(:create) do |group|
+    transient do
+      # rubocop:disable Lint/EmptyBlock -- block is required by factorybot
+      guests {}
+      reporters {}
+      developers {}
+      maintainers {}
+      owners {}
+      # rubocop:enable Lint/EmptyBlock
+    end
+
+    after(:create) do |group, evaluator|
       if group.owner
         # We could remove this after we have proper constraint:
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/43292
@@ -16,6 +26,12 @@ FactoryBot.define do
       end
 
       create(:namespace_settings, namespace: group) unless group.namespace_settings
+
+      group.add_members(Array.wrap(evaluator.guests), :guest)
+      group.add_members(Array.wrap(evaluator.reporters), :reporter)
+      group.add_members(Array.wrap(evaluator.developers), :developer)
+      group.add_members(Array.wrap(evaluator.maintainers), :maintainer)
+      group.add_members(Array.wrap(evaluator.owners), :owner)
     end
 
     trait :with_organization do

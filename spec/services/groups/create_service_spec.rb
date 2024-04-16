@@ -7,7 +7,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   let(:current_user) { user }
   let(:group_params) { { path: 'group_path', visibility_level: Gitlab::VisibilityLevel::PUBLIC }.merge(extra_params) }
   let(:extra_params) { {} }
-  let(:created_group) { response }
+  let(:created_group) { response[:group] }
 
   subject(:response) { described_class.new(current_user, group_params).execute }
 
@@ -20,14 +20,14 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   shared_examples 'creating a group' do
     specify do
       expect { response }.to change { Group.count }
-      expect(created_group).to be_persisted
+      expect(response).to be_success
     end
   end
 
   shared_examples 'does not create a group' do
     specify do
       expect { response }.not_to change { Group.count }
-      expect(created_group).not_to be_persisted
+      expect(response).to be_error
     end
   end
 
@@ -94,6 +94,48 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         allow(Ability).to receive(:allowed?).with(user, :create_group_with_default_branch_protection).and_return(false)
 
         expect(created_group.default_branch_protection_defaults).not_to eq(Gitlab::Access::PROTECTION_NONE)
+      end
+    end
+  end
+
+  context 'with `emails_disabled` attribute' do
+    context 'when emails_disabled is false' do
+      let(:extra_params) { { emails_disabled: false } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to true' do
+        expect(created_group.emails_enabled).to eq(true)
+      end
+    end
+
+    context 'when emails_disabled is true' do
+      let(:extra_params) { { emails_disabled: true } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to false' do
+        expect(created_group.emails_enabled).to eq(false)
+      end
+    end
+
+    context 'when emails_disabled is nil' do
+      let(:extra_params) { { emails_disabled: nil } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to default true' do
+        expect(created_group.emails_enabled).to eq(true)
+      end
+    end
+
+    context 'when emails_disabled is the string "false"' do
+      let(:extra_params) { { emails_disabled: "false" } }
+
+      it_behaves_like 'creating a group'
+
+      it 'sets emails_enabled to false' do
+        expect(created_group.emails_enabled).to eq(true)
       end
     end
   end

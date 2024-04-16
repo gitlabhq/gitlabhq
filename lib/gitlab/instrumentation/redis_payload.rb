@@ -17,6 +17,7 @@ module Gitlab
       def to_lazy_payload
         strong_memoize(:to_lazy_payload) do
           key_prefix = storage_key ? "redis_#{storage_key}" : 'redis'
+          key_prefix += "_#{shard_key}" if shard_key && shard_key != RedisBase::DEFAULT_SHARD_KEY
 
           {
             "#{key_prefix}_calls": -> { get_request_count },

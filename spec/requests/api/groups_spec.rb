@@ -1022,6 +1022,35 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
       end
 
+      context 'when updating :emails_disabled' do
+        context 'when setting to true' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
+
+        context 'when setting to nil' do
+          it 'sets :emails_enabled to default true' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: nil }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(true)
+          end
+        end
+
+        context 'when setting to string "true"' do
+          it 'sets :emails_enabled to false' do
+            put api("/groups/#{group1.id}", user1), params: { emails_disabled: "true" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['emails_enabled']).to eq(false)
+          end
+        end
+      end
+
       it 'removes the group avatar', :aggregate_failures do
         put api("/groups/#{group1.id}", user1), params: { avatar: '' }
 
@@ -1039,6 +1068,36 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['visibility_level']).to include('internal has been restricted by your GitLab administrator')
+      end
+
+      context 'updating the `default_branch` attribute' do
+        subject do
+          put api("/groups/#{group1.id}", user1), params: { default_branch: default_branch }
+        end
+
+        let(:default_branch) { 'new' }
+
+        it 'updates the attribute', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['default_branch']).to eq(default_branch)
+        end
+
+        context 'when "default_branch" attribute is removed' do
+          before do
+            group1.namespace_settings.update!(default_branch_name: 'new')
+          end
+
+          let(:default_branch) { '' }
+
+          it 'removes the attribute', :aggregate_failures do
+            subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['default_branch']).to be_nil
+          end
+        end
       end
 
       context 'updating the `default_branch_protection` attribute' do
@@ -2227,6 +2286,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
           end
+        end
+      end
+
+      context 'when creating a group with "default_branch" attribute' do
+        let(:params) { attributes_for_group_api default_branch: 'main' }
+
+        subject { post api("/groups", user3), params: params }
+
+        it 'creates group with the specified default branch', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['default_branch']).to eq('main')
         end
       end
 

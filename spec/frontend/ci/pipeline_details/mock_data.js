@@ -111,6 +111,22 @@ export const mockRunningPipelineHeaderData = {
   },
 };
 
+export const pipelineHeaderFailedNoPermissions = {
+  data: {
+    project: {
+      id: '1',
+      pipeline: {
+        ...pipelineHeaderFailed.data.project.pipeline,
+        userPermissions: {
+          destroyPipeline: false,
+          cancelPipeline: false,
+          updatePipeline: false,
+        },
+      },
+    },
+  },
+};
+
 export const users = [
   {
     id: 1,

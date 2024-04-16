@@ -23,6 +23,8 @@ import {
   crmContactsMock,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 
+const mockSpriteIcons = '/icons.svg';
+
 describe('escape', () => {
   it.each`
     xssPayload                                           | escapedPayload
@@ -54,6 +56,10 @@ describe('GfmAutoComplete', () => {
 
     jest.runOnlyPendingTimers();
   };
+
+  beforeEach(() => {
+    window.gon = { sprite_icons: mockSpriteIcons };
+  });
 
   describe('DefaultOptions.filter', () => {
     let items;
@@ -577,7 +583,7 @@ describe('GfmAutoComplete', () => {
           title: 'My Group',
           search: 'MyGroup my-group',
           icon:
-            '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="undefined#notifications-off" /></svg>',
+            '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="/icons.svg#notifications-off" /></svg>',
         },
       ]);
     });
@@ -768,6 +774,54 @@ describe('GfmAutoComplete', () => {
         it('filters out non-matches, then puts matches with start of name/username first', () => {
           expect(GfmAutoComplete.Members.sort(query, items)).toMatchObject(expected);
         });
+      });
+    });
+  });
+
+  describe('GfmAutoComplete.Wikis', () => {
+    const wikiPage1 = {
+      title: 'My Wiki Page',
+      slug: 'my-wiki-page',
+      path: '/path/to/project/-/wikis/my-wiki-page',
+    };
+    const wikiPage2 = {
+      title: 'Home',
+      slug: 'home',
+      path: '/path/to/project/-/wikis/home',
+    };
+
+    describe('templateFunction', () => {
+      it('shows both title and slug, if they are different', () => {
+        expect(GfmAutoComplete.Wikis.templateFunction(wikiPage1)).toMatchInlineSnapshot(`
+          <li>
+            <svg
+              class="gl-mr-2 s16 vertical-align-middle"
+            >
+              <use
+                xlink:href="/icons.svg#document"
+              />
+            </svg>
+            My Wiki Page
+            <small>
+              (my-wiki-page)
+            </small>
+          </li>
+        `);
+      });
+
+      it('shows only title, if title and slug are the same', () => {
+        expect(GfmAutoComplete.Wikis.templateFunction(wikiPage2)).toMatchInlineSnapshot(`
+          <li>
+            <svg
+              class="gl-mr-2 s16 vertical-align-middle"
+            >
+              <use
+                xlink:href="/icons.svg#document"
+              />
+            </svg>
+            Home
+          </li>
+        `);
       });
     });
   });

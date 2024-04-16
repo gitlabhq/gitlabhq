@@ -483,6 +483,15 @@ RSpec.describe Gitlab::Git::Blob do
     end
   end
 
+  describe '#raw' do
+    let(:input_data) { (+"abcd \xE9efgh").force_encoding(Encoding::UTF_16BE) }
+    let(:blob) { described_class.new(name: 'test', data: input_data.dup) }
+
+    it 'loads unencoded raw blob' do
+      expect(blob.raw).to eq(input_data)
+    end
+  end
+
   describe '#truncated?' do
     context 'when blob.size is nil' do
       let(:nil_size_blob) { described_class.new(name: 'test', data: 'abcd') }

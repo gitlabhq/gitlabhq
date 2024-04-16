@@ -66,7 +66,7 @@ RSpec.describe 'Projects > Activity > User sees design Activity', :js, feature_c
 
   context 'the project is private' do
     let_it_be(:project) { create(:project, :repository) }
-    let_it_be(:user) { create(:user, developer_projects: [project]) }
+    let_it_be(:user) { create(:user, developer_of: project) }
 
     it_behaves_like 'being able to see design activity'
   end

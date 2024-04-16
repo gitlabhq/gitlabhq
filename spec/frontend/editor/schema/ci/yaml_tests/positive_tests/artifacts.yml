@@ -51,3 +51,15 @@ artifacts-no-when:
   artifacts:
     paths:
       - binaries/
+
+artifacts-access-developer:
+  artifacts:
+    access: developer
+
+artifacts-access-all:
+  artifacts:
+    access: all
+
+artifacts-access-none:
+  artifacts:
+    access: none

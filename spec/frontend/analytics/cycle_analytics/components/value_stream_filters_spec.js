@@ -66,8 +66,8 @@ describe('ValueStreamFilters', () => {
           expect(findProjectsDropdown().exists()).toBe(true);
           expect(findProjectsDropdown().props()).toEqual(
             expect.objectContaining({
-              queryParams: wrapper.vm.projectsQueryParams,
-              multiSelect: wrapper.vm.$options.multiProjectSelect,
+              queryParams: { first: 50, includeSubgroups: true },
+              multiSelect: true,
             }),
           );
         });

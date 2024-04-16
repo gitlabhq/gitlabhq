@@ -9,7 +9,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: [public_project, repository_project]) }
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -23,11 +23,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let(:container) { project }
 
   subject(:service) { described_class.new(container: container, current_user: current_user) }
-
-  before_all do
-    public_project.add_developer(developer)
-    repository_project.add_developer(developer)
-  end
 
   before do
     stub_licensed_features(
@@ -1712,7 +1707,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
     context '/label command' do
       context 'when target is a group level work item' do
-        let_it_be(:new_group) { create(:group).tap { |g| g.add_developer(developer) } }
+        let_it_be(:new_group) { create(:group, developers: developer) }
         let_it_be(:group_level_work_item) { create(:work_item, :group_level, namespace: new_group) }
         # this label should not be show on the list as belongs to another group
         let_it_be(:invalid_label) { create(:group_label, title: 'not_from_group', group: group) }
@@ -2779,7 +2774,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           MergeRequests::UpdateReviewerStateService,
           project: project, current_user: current_user
         ) do |service|
-          expect(service).to receive(:execute).with(merge_request, "unreviewed")
+          expect(service).to receive(:execute).with(merge_request, :unapproved)
         end
 
         service.execute(content, merge_request)

@@ -66,6 +66,7 @@ export const getIssuesQueryResponse = {
                   name: 'Marge Simpson',
                   username: 'msimpson',
                   webUrl: 'url/msimpson',
+                  webPath: '/msimpson',
                 },
               ],
             },
@@ -77,6 +78,7 @@ export const getIssuesQueryResponse = {
               name: 'Homer Simpson',
               username: 'hsimpson',
               webUrl: 'url/hsimpson',
+              webPath: '/hsimpson',
             },
             labels: {
               nodes: [

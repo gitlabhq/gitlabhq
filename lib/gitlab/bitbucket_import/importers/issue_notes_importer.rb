@@ -11,6 +11,7 @@ module Gitlab
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
           @ref_converter = Gitlab::BitbucketImport::RefConverter.new(project)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket', project)
           @object = hash.with_indifferent_access
         end
 
@@ -23,13 +24,9 @@ module Gitlab
             client.issue_comments(project.import_source, issue.iid).each do |comment|
               next unless comment.note.present?
 
-              note = ''
-              note += formatter.author_line(comment.author) unless user_finder.find_user_id(comment.author)
-              note += ref_converter.convert_note(comment.note)
-
               issue.notes.create!(
                 project: project,
-                note: note,
+                note: comment_note(comment),
                 author_id: user_finder.gitlab_user_id(project, comment.author),
                 created_at: comment.created_at,
                 updated_at: comment.updated_at
@@ -44,7 +41,15 @@ module Gitlab
 
         private
 
-        attr_reader :object, :project, :formatter, :user_finder, :ref_converter
+        attr_reader :object, :project, :formatter, :user_finder, :ref_converter, :mentions_converter
+
+        def comment_note(comment)
+          note = ''
+          note += formatter.author_line(comment.author) unless user_finder.find_user_id(comment.author)
+          note += ref_converter.convert_note(comment.note)
+
+          mentions_converter.convert(note)
+        end
       end
     end
   end

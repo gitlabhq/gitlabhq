@@ -57,6 +57,29 @@ clone-gitlab-repo:
       - '*'
     expire_in: '12 hours'
 
+set-pipeline-name:
+  extends:
+    - .predictive-job
+    - .setup:rules:set-pipeline-name
+    - .fast-no-clone-job
+  variables:
+    # We use > instead of | because we want the files to be space-separated.
+    FILES_TO_DOWNLOAD: >
+      scripts/utils.sh
+      scripts/pipeline/set-pipeline-name
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  stage: prepare
+  before_script:
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
+  script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+    - chmod u+x scripts/pipeline/set-pipeline-name && scripts/pipeline/set-pipeline-name
+  allow_failure:
+    exit_codes:
+      - 3
+
 gitlab_git_test:
   extends:
     - .predictive-job
@@ -137,10 +160,21 @@ detect-tests:
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
 
-        echoinfo "Changed files: $(cat $RSPEC_CHANGED_FILES_PATH)";
-        echoinfo "Related FOSS RSpec tests: $(cat $RSPEC_MATCHING_TESTS_FOSS_PATH)";
-        echoinfo "Related EE RSpec tests: $(cat $RSPEC_MATCHING_TESTS_EE_PATH)";
-        echoinfo "Related JS files: $(cat $RSPEC_MATCHING_JS_FILES_PATH)";
+        echoinfo 'Changed files:'
+        echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
+        echo ""
+
+        echoinfo 'Related FOSS RSpec tests:'
+        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_FOSS_PATH)"
+        echo ""
+
+        echoinfo 'Related EE RSpec tests:'
+        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_EE_PATH)"
+        echo ""
+
+        echoinfo 'Related JS files:'
+        echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_JS_FILES_PATH)"
+        echo ""
       fi
   artifacts:
     expire_in: 7d
@@ -186,6 +220,16 @@ e2e-test-pipeline-generate:
       - '*-pipeline.yml'
       - "${CI_PROJECT_DIR}/qa_tests_vars.env"
 
+# This is the manual start of the chain of E2E jobs
+# After playing this, it'll follow up with:
+# follow-up:compile-production-assets -> follow-up:build-assets-image --\
+#                                    \-> follow-up:trigger-omnibus-env -> follow-up:trigger-omnibus -> follow-up:e2e:package-and-test-ee
+# follow-up:build-qa-image --------------------------------------------------------------------------/
+manual:e2e-test-pipeline-generate:
+  extends:
+    - e2e-test-pipeline-generate
+    - .qa:rules:manual-e2e
+
 trigger-omnibus-env:
   stage: prepare
   extends:
@@ -229,3 +273,9 @@ trigger-omnibus-env as-if-foss:
     - compile-production-assets as-if-foss
   variables:
     FOSS_ONLY: "1"
+
+follow-up:trigger-omnibus-env:
+  extends:
+    - trigger-omnibus-env
+    - .qa:rules:follow-up-e2e
+  needs: ["follow-up:compile-production-assets"]

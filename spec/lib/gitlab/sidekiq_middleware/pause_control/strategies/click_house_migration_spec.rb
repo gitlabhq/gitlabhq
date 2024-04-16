@@ -55,14 +55,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::PauseControl::Strategies::ClickHouseMi
 
         expect(worker_class.jobs.count).to eq(0)
       end
-
-      context 'when pause_clickhouse_workers_during_migration FF is disabled' do
-        before do
-          stub_feature_flags(pause_clickhouse_workers_during_migration: false)
-        end
-
-        it_behaves_like 'a worker being executed'
-      end
     end
   end
 end

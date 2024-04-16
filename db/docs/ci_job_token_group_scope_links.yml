@@ -12,4 +12,3 @@ milestone: '16.9'
 gitlab_schema: gitlab_ci
 sharding_key:
   source_project_id: projects
-  target_group_id: namespaces

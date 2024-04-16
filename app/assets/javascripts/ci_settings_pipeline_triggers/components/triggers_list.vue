@@ -1,7 +1,6 @@
 <script>
 import { GlAvatar, GlAvatarLink, GlBadge, GlButton, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
-import { thWidthPercent } from '~/lib/utils/table_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
@@ -44,32 +43,32 @@ export default {
     {
       key: 'token',
       label: s__('Pipelines|Token'),
-      thClass: thWidthPercent(60),
+      thClass: 'gl-w-60p',
       tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'description',
       label: s__('Pipelines|Description'),
-      thClass: thWidthPercent(20),
+      thClass: 'gl-w-20p',
       tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'owner',
       label: s__('Pipelines|Owner'),
-      thClass: thWidthPercent(5),
+      thClass: 'gl-w-5p',
       tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'lastUsed',
       label: s__('Pipelines|Last Used'),
-      thClass: thWidthPercent(10),
+      thClass: 'gl-w-10p',
       tdClass: 'gl-vertical-align-middle!',
     },
     {
       key: 'actions',
       label: __('Actions'),
       tdClass: 'gl-text-right gl-white-space-nowrap',
-      thClass: `gl-text-right ${thWidthPercent(5)}`,
+      thClass: `gl-text-right gl-w-5p`,
     },
   ],
   computed: {

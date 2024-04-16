@@ -26,8 +26,6 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :ensure_user_allowed_to_password_authenticate,
-    if: -> { action_name == 'create' && password_based_login? }
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
   before_action :auto_sign_in_with_provider, only: [:new]
@@ -68,9 +66,7 @@ class SessionsController < Devise::SessionsController
   def create
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
-      if resource.reset_password_token.present?
-        resource.update(reset_password_token: nil, reset_password_sent_at: nil)
-      end
+      resource.update(reset_password_token: nil, reset_password_sent_at: nil) if resource.reset_password_token.present?
 
       if resource.deactivated?
         resource.activate
@@ -317,13 +313,6 @@ class SessionsController < Devise::SessionsController
 
   def set_invite_params
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
-  end
-
-  def ensure_user_allowed_to_password_authenticate
-    return unless find_user
-    return if find_user.allow_password_authentication_for_web? && !find_user.password_based_login_forbidden?
-
-    redirect_to new_user_session_path, alert: I18n.t('devise.failure.invalid')
   end
 end
 

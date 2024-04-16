@@ -32,7 +32,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
       described_class.new_client_for(project)
     end
 
-    it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
+    it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
       expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
@@ -73,11 +73,11 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
       described_class.new_client_for(project)
     end
 
-    it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
+    it 'returns the ID of the ghost user', :clean_gitlab_redis_shared_state do
       expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
-    it 'caches the ghost user ID', :clean_gitlab_redis_cache do
+    it 'caches the ghost user ID', :clean_gitlab_redis_shared_state do
       expect(Gitlab::Cache::Import::Caching)
         .to receive(:write)
         .once
@@ -123,20 +123,6 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
 
         expect(described_class.per_page(project)).to eq(Gitlab::GithubImport::Client::DEFAULT_PER_PAGE)
       end
-    end
-  end
-
-  describe '.fine_grained_personal_token?' do
-    it 'detects a fine-grained token' do
-      expect(described_class.fine_grained_personal_token?('github_pat_235234')).to eq(true)
-      expect(described_class.fine_grained_personal_token?('ghp_235234ab234234')).to eq(false)
-    end
-  end
-
-  describe '.classic_personal_token?' do
-    it 'detects a fine-grained token' do
-      expect(described_class.classic_personal_token?('github_pat_235234')).to eq(false)
-      expect(described_class.classic_personal_token?('ghp_235234ab234234')).to eq(true)
     end
   end
 end

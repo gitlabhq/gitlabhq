@@ -97,7 +97,7 @@ GitLab are of the `gitlab_com_derisk` type.
 
 - `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
-- Documentation: This type of feature flag don't need to be documented in the
+- Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../user/feature_flags.md) page given they're short-lived and deployment-related
 - Rollout issue: **Must** have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
@@ -145,7 +145,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 - `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
-- Documentation: This type of feature flag don't need to be documented in the
+- Documentation: This type of feature flag doesn't need to be documented in the
   [All feature flags in GitLab](../../user/feature_flags.md) page given they're mostly hiding unfinished code
 - Rollout issue: Likely no need for a rollout issues, as `wip` feature flags should be transitioned to
   another type before being enabled

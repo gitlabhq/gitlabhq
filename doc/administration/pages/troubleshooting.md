@@ -310,3 +310,20 @@ If you get a `404 Page Not Found` response from GitLab Pages:
 1. Check the current project's pipeline to confirm the job `pages:deploy` is being run.
 
 Without the `pages:deploy` job, the updates to your GitLab Pages site are never published.
+
+## 503 error `Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.`
+
+If Pages is a registered OAuth application and [access control is enabled](../../user/project/pages/pages_access_control.md), this error indicates that the authentication token stored in `/etc/gitlab/gitlab-secrets.json` has become invalid. To resolve:
+
+1. Back up your secrets file:
+
+   ```shell
+   sudo cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.$(date +\%Y\%m\%d)
+   ```
+
+1. Edit `/etc/gitlab/gitlab-secrets.json` and remove the `gitlab_pages` section.
+1. Reconfigure GitLab and regenerate the OAuth token:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```

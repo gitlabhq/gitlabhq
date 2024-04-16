@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use push rules to control the content and format of Git commits your repository will accept. Set standards for commit messages, and block secrets or credentials from being added accidentally."
 ---
 
 # Push rules
@@ -142,7 +143,7 @@ Some validation examples:
 
 Use these rules to prevent unintended consequences.
 
-- **Reject unsigned commits**: Commit must be signed through [GPG](signed_commits/gpg.md). This rule
+- **Reject unsigned commits**: Commit [must be signed](signed_commits). This rule
   can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
   and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
@@ -291,6 +292,8 @@ to use them as standard characters in a match condition.
 
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signing commits with GPG](signed_commits/gpg.md)
+- [Signing commits with SSH](signed_commits/ssh.md)
+- [Signing commits with X.509](signed_commits/x509.md)
 - [Protected branches](../protected_branches.md)
 
 ## Troubleshooting

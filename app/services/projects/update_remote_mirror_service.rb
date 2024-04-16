@@ -39,7 +39,7 @@ module Projects
     private
 
     def normalized_url(url)
-      strong_memoize(:normalized_url) do
+      strong_memoize_with(:normalized_url, url) do
         CGI.unescape(Gitlab::UrlSanitizer.sanitize(url))
       end
     end

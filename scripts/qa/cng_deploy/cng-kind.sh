@@ -59,8 +59,6 @@ global:
     configureCertmanager: false
     tls:
       enabled: false
-  shell:
-    port: 32022
   extraEnv:
     GITLAB_LICENSE_MODE: test
     CUSTOMER_PORTAL_URL: https://customers.staging.gitlab.com
@@ -69,6 +67,12 @@ global:
   gitlab:
     license:
       secret: gitlab-license
+  gitaly:
+    hooks:
+      preReceive:
+        configmap: pre-receive-hook
+  appConfig:
+    applicationSettingsCacheSeconds: 0
 
 gitlab:
   gitaly:
@@ -144,7 +148,7 @@ echo $values_file
 }
 
 function create_admin_password_secret() {
-  log_with_header "Create the 'gitlab-initial-root-password' secret"
+  log_info "Create the 'gitlab-initial-root-password' secret"
   kubectl create secret generic --namespace "${NAMESPACE}" \
     "gitlab-initial-root-password" \
     --from-literal="password=${GITLAB_ADMIN_PASSWORD}" \
@@ -152,11 +156,16 @@ function create_admin_password_secret() {
 }
 
 function create_license_secret() {
-  log_with_header "Create the 'gitlab-license' secret"
+  log_info "Create the 'gitlab-license' secret"
   kubectl create secret generic --namespace "${NAMESPACE}" \
     "gitlab-license" \
     --from-literal=license="${QA_EE_LICENSE}" \
     --dry-run=client -o json | kubectl apply -f -
+}
+
+function create_hook_configmap() {
+  log_info "Create 'pre-receive-hook' configmap"
+  kubectl create configmap pre-receive-hook --namespace ${NAMESPACE} --from-file $CI_PROJECT_DIR/scripts/qa/cng_deploy/config/hook.sh
 }
 
 function add_root_token() {
@@ -170,7 +179,7 @@ token.save!;
 EOF
   )
 
-  log_with_header "Add root user PAT"
+  log_info "Add root user PAT"
   local toolbox_pod=$(kubectl get pods --namespace ${NAMESPACE} -lapp=toolbox --no-headers -o=custom-columns=NAME:.metadata.name | tail -n 1)
   kubectl exec --namespace "${NAMESPACE}" --container toolbox "${toolbox_pod}" -- gitlab-rails runner "${cmd}"
   log "success!"
@@ -191,15 +200,17 @@ function deploy() {
   local domain=$1
   local values=$(chart_values $domain)
 
-  log_with_header "Add gitlab chart repo"
+  log_with_header "Running pre-deploy setup"
+  log_info "Add gitlab chart repo"
   helm repo add gitlab https://charts.gitlab.io/
   helm repo update
 
-  log_with_header "Create '${NAMESPACE} namespace'"
+  log_info "Create '${NAMESPACE} namespace'"
   kubectl create namespace "$NAMESPACE"
 
   create_license_secret
   create_admin_password_secret
+  create_hook_configmap
 
   log_with_header "Install GitLab"
   log_info "Using following values.yml"

@@ -7,9 +7,9 @@ RSpec.describe Mutations::ReleaseAssetLinks::Delete, feature_category: :release_
 
   let_it_be(:project) { create(:project, :private, :repository) }
   let_it_be_with_reload(:release) { create(:release, project: project) }
-  let_it_be(:reporter) { create(:user).tap { |u| project.add_reporter(u) } }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
-  let_it_be(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:release_link) { create(:release_link, release: release) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }

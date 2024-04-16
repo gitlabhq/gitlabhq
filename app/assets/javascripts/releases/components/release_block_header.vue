@@ -6,7 +6,7 @@ import { BACK_URL_PARAM } from '~/releases/constants';
 
 export default {
   i18n: {
-    editButton: __('Edit this release'),
+    editButton: __('Edit release'),
     historical: __('Historical release'),
     historicalTooltip: __(
       'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
@@ -49,12 +49,12 @@ export default {
 
 <template>
   <div class="card-header d-flex gl-align-items-center bg-white pr-0">
-    <h2 class="card-title my-2 mr-auto">
-      <gl-link v-if="selfLink" :href="selfLink">
+    <h2 class="card-title gl-my-2 mr-auto gl-font-size-h2">
+      <gl-link v-if="selfLink" class="gl-text-black-normal" :href="selfLink">
         {{ release.name }}
       </gl-link>
       <template v-else>
-        {{ release.name }}
+        <span class="gl-text-black-normal">{{ release.name }}</span>
         <gl-icon
           v-gl-tooltip
           name="lock"
@@ -80,14 +80,13 @@ export default {
     </h2>
     <gl-button
       v-if="editLink"
-      v-gl-tooltip
       category="primary"
+      size="small"
       variant="default"
-      icon="pencil"
       class="gl-mr-3 js-edit-button gl-ml-3 gl-pb-3"
-      :title="$options.i18n.editButton"
-      :aria-label="$options.i18n.editButton"
       :href="editLink"
-    />
+    >
+      {{ $options.i18n.editButton }}
+    </gl-button>
   </div>
 </template>

@@ -5,6 +5,7 @@
 -# This is a temporary place for the page specific style migrations to be included on all pages like page_specific_files
 - if Feature.disabled?(:page_specific_styles, current_user)
   - add_page_specific_style('page_bundles/commit_description')
+- tailwind_all_the_way = Feature.enabled?(:tailwind_all_the_way, current_user)
 
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
@@ -30,11 +31,16 @@
     = stylesheet_link_tag_defer "application_dark"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer "application_utilities_dark"
+    = stylesheet_link_tag_defer "application_utilities_to_be_replaced_dark" unless tailwind_all_the_way
   - else
     = stylesheet_link_tag_defer "application"
     = yield :page_specific_styles
     = stylesheet_link_tag_defer 'application_utilities'
-  = stylesheet_link_tag_defer 'tailwind'
+    = stylesheet_link_tag_defer "application_utilities_to_be_replaced" unless tailwind_all_the_way
+  - if tailwind_all_the_way
+    = stylesheet_link_tag_defer 'tailwind_all_the_way'
+  - else
+    = stylesheet_link_tag_defer 'tailwind'
   = stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 
@@ -54,21 +60,16 @@
     = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  - if vite_enabled?
-    %meta{ name: 'controller-path', content: controller_full_path }
-    - if Rails.env.development?
-      = vite_client_tag
-    = vite_javascript_tag "main"
-    - if Gitlab.ee?
-      = vite_javascript_tag "main_ee"
-    - if Gitlab.jh?
-      = vite_javascript_tag "main_jh"
-
   = yield :page_specific_javascripts
 
   = webpack_bundle_tag 'super_sidebar'
 
-  = webpack_controller_bundle_tags
+  - if vite_enabled?
+    - if Rails.env.development?
+      = vite_client_tag
+    = vite_javascript_tag "main", *vite_page_entrypoint_paths
+  - else
+    = webpack_controller_bundle_tags
 
   - unless omit_og
     -# Open Graph - http://ogp.me/

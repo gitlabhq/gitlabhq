@@ -23,6 +23,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
+- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+  - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
+  - The second database connection can be disabled:
+    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
+    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
   In all cases, you should review the notes for those intermediate versions.
 
@@ -58,7 +64,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -80,6 +86,20 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - If you reconfigure Gitaly to store Git data in a location other than `/var/opt/gitlab/git-data/repositories`,
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
+
+## 16.11.0
+
+### Linux package installations
+
+In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for the following cases:
+
+- You are running the database in high availability using Patroni.
+- Your database nodes are part of a GitLab Geo configuration.
+- You have specifically [opted out](https://docs.gitlab.com/omnibus/settings/database.html#opt-out-of-automatic-postgresql-upgrades) from automatically upgrading PostgreSQL.
+- You have `postgresql['version'] = 13` in your `/etc/gitlab/gitlab.rb`.
+
+Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 14,
+see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
 
 ## 16.10.0
 
@@ -132,6 +152,10 @@ planned for release in 16.9.1.
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
+### Linux package installations
+
+- The [Sidekiq `min_concurrency` and `max_concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-min_concurrency-and-max_concurrency-fields-deprecated) options are deprecated in GitLab 16.9.0 and due for removal in GitLab 17.0.0. In GitLab 16.9.0 and later, to avoid breaking changes in GitLab 17.0.0, set the new [`concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-concurrency-field) option and remove the `min_concurrency` and `max_concurrency` options.
+
 ## 16.8.0
 
 - In GitLab 16.8.0 and 16.8.1, the Sidekiq gem was upgraded, and the newer version requires Redis 6.2 or later. If you are using Redis 6.0, upgrade
@@ -145,7 +169,7 @@ planned for release in 16.9.1.
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -204,7 +228,7 @@ you must take one of the following actions based on your configuration:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -271,7 +295,7 @@ take one of the following actions based on your configuration:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -332,7 +356,7 @@ take one of the following actions based on your configuration:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -522,7 +546,7 @@ Specific information applies to installations using Geo:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -652,7 +676,7 @@ Specific information applies to installations using Geo:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -783,7 +807,7 @@ Specific information applies to installations using Geo:
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -816,8 +840,7 @@ Specific information applies to Linux package installations:
   mentioning that the installed Redis version is different than the one running is
   displayed at the end of reconfigure run until the restart is performed.
 
-  If your instance has Redis HA with Sentinel, follow the upgrade steps mentioned in
-  [Zero Downtime documentation](../zero_downtime.md#redis-ha-using-sentinel).
+  Follow [the zero downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
 
 ### Self-compiled installations
 
@@ -887,7 +910,7 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |
@@ -946,13 +969,7 @@ by this issue.
   every Sidekiq process also listens to those queues to ensure all jobs are processed across
   all queues. This behavior does not apply if you have configured the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
-  [throw errors on startup](../../install/docker.md#threaderror-cant-create-thread-operation-not-permitted).
-- Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-  - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-  - The second database connection can be disabled:
-    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
-    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
+  [throw errors on startup](../../install/docker_troubleshooting.md#threaderror-cant-create-thread-operation-not-permitted).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
@@ -962,7 +979,7 @@ by this issue.
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 15.11                   |  All                    | None     |
-  | 16.0                    |  All                    | None     |  
+  | 16.0                    |  All                    | None     |
   | 16.1                    |  All                    | None     |
   | 16.2                    |  All                    | None     |
   | 16.3                    |  All                    | None     |

@@ -451,6 +451,48 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       end
     end
 
+    context 'when custom_headers are set' do
+      let(:custom_headers) { { testing: 'blub', 'more-testing': 'whoops' } }
+
+      before do
+        stub_full_request(project_hook.url, method: :post)
+        project_hook.custom_headers = custom_headers
+      end
+
+      it 'sends request with custom headers' do
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+          .with(headers: custom_headers.merge(headers))
+      end
+
+      context 'when overriding predefined headers' do
+        let(:custom_headers) do
+          { Gitlab::WebHooks::RecursionDetection::UUID::HEADER => 'some overriden value' }
+        end
+
+        it 'does not take user-provided value' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: Gitlab::WebHooks::RecursionDetection.header(project_hook))
+        end
+      end
+
+      context 'when custom_webhook_headers feature flag is disabled' do
+        before do
+          stub_feature_flags(custom_webhook_headers: false)
+        end
+
+        it 'sends request without custom headers' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(headers: headers)
+        end
+      end
+    end
+
     it 'handles 200 status code' do
       stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
 

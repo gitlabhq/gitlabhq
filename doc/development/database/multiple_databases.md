@@ -47,7 +47,7 @@ The usage of schema enforces the base class to be used:
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 
-### Guidelines on choosing between `gitlab_main_cell` and `gitlab_main_clusterwide` schema
+### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
@@ -87,6 +87,8 @@ in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable
 
 Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
 the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
+See [`NOT NULL` constraints for multiple columns](not_null_constraints.md#not-null-constraints-for-multiple-columns)
+for instructions on creating these constraints.
 
 The following are examples of valid sharding keys:
 
@@ -149,7 +151,7 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
-#### Defining a `desired_sharding_key` for automatically backfilling a `sharding_key`
+#### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
 This process will involve creating a merge request like
@@ -194,7 +196,7 @@ background migration. It also specifies a `belongs_to` relation which
 will be added to the model to automatically populate the `sharding_key` in
 the `before_save`.
 
-##### Defining a `desired_sharding_key` when the parent table also has a `desired_sharding_key`
+##### Define a `desired_sharding_key` when the parent table also has one
 
 By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
 exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration
@@ -227,8 +229,11 @@ Certain tables can be exempted from having sharding keys by adding
 exempt_from_sharding: true
 ```
 
-to the table's database dictionary file. This is currently the case for JiHu specific tables, because these tables do not contain any data for the
-`.com` database. This was implemented in [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905).
+to the table's database dictionary file. This can be used for:
+
+- JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
+- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
+- tables that mandatorily need to be present per cell to support a cell's operations, have unique data per cell, but cannot have a sharding key defined. For example, `zoekt_nodes`.
 
 When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
 
@@ -544,8 +549,8 @@ it does less joins and needs less filtering.
 
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
-Sometimes a join query is caused by using `has_one ... through:` or `has_many
-... through:` across tables that span the different databases. These joins
+Sometimes a join query is caused by using `has_one ... through:` or `has_many ... through:`
+across tables that span the different databases. These joins
 sometimes can be solved by adding
 [`disable_joins:true`](https://edgeguides.rubyonrails.org/active_record_multiple_databases.html#handling-associations-with-joins-across-databases).
 This is a Rails feature which we
@@ -693,7 +698,7 @@ end
 
 ```ruby
 # Mark a relation as allowed to cross-join databases
-def find_actual_head_pipeline
+def find_diff_head_pipeline
   all_pipelines
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
     .for_sha_or_source_sha(diff_head_sha)

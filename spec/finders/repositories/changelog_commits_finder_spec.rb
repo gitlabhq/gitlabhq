@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repositories::ChangelogCommitsFinder do
+RSpec.describe Repositories::ChangelogCommitsFinder, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   describe '#each_page' do

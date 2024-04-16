@@ -11,7 +11,7 @@ class EnvironmentPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def deployments_display_count
-    count = deployments.limit(MAX_DEPLOYMENTS_COUNT).count
+    count = all_deployments.limit(MAX_DEPLOYMENTS_COUNT).count
     count >= MAX_DEPLOYMENTS_COUNT ? MAX_DISPLAY_COUNT : count.to_s
   end
 end

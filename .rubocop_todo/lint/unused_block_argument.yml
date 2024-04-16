@@ -344,7 +344,6 @@ Lint/UnusedBlockArgument:
     - 'spec/models/network/graph_spec.rb'
     - 'spec/requests/api/ci/pipeline_schedules_spec.rb'
     - 'spec/requests/api/graphql/gitlab_schema_spec.rb'
-    - 'spec/requests/api/internal/container_registry/migration_spec.rb'
     - 'spec/requests/git_http_spec.rb'
     - 'spec/requests/projects/google_cloud/deployments_controller_spec.rb'
     - 'spec/requests/projects/google_cloud/gcp_regions_controller_spec.rb'

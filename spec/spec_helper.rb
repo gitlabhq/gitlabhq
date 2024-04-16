@@ -69,10 +69,10 @@ require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest
-Dir[Rails.root.join("spec/support/helpers/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/shared_examples/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 require_relative '../tooling/quality/test_level'
 
@@ -205,6 +205,7 @@ RSpec.configure do |config|
   config.include UnlockPipelinesHelpers, :unlock_pipelines
   config.include UserWithNamespaceShim
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
+  config.include ClickHouseHelpers, :click_house
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -318,17 +319,12 @@ RSpec.configure do |config|
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
-      # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
-      stub_feature_flags(clickhouse_data_collection: false)
-
-      # The code under this flag will be removed soon
-      # We are temporarily keeping it in place while we confirm some assumptions
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/440667
-      stub_feature_flags(ci_text_interpolation: false)
-
       # The Vue version of the merge request list app is missing a lot of information
       # disabling this for now whilst we work on it across multiple merge requests
       stub_feature_flags(vue_merge_request_list: false)
+
+      # Work in progress reviewer sidebar that does not have most of the features yet
+      stub_feature_flags(reviewer_assign_drawer: false)
     else
       unstub_all_feature_flags
     end

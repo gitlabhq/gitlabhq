@@ -76,10 +76,10 @@ import { InternalEvents } from '~/tracking';
 mixins: [InternalEvents.mixin()]
 ...
 ...
-this.trackEvent('action', 'category')
+this.trackEvent('action', {}, 'category')
 ```
 
-If you are currently passing `category` and need to keep it, it can be passed as the second argument in the `trackEvent` method, as illustrated in the previous example. Nonetheless, it is strongly advised against using the `category` parameter for new events. This is because, by default, the category field is populated with information about where the event was triggered.
+If you are currently passing `category` and need to keep it, it can be passed as the third argument in the `trackEvent` method, as illustrated in the previous example. Nonetheless, it is strongly advised against using the `category` parameter for new events. This is because, by default, the category field is populated with information about where the event was triggered.
 
 You can use [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123901/diffs) as an example. It migrates the `devops_adoption_app` component to use Internal Events Tracking.
 
@@ -88,7 +88,7 @@ If you are using `label`, `value`, and `property` in Snowplow tracking, you can 
 For Vue Mixin:
 
 ```javascript
-   this.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+   this.trackEvent('i_code_review_user_apply_suggestion', {
     label: 'push_event',
     property: 'golang',
     value: 20
@@ -98,14 +98,14 @@ For Vue Mixin:
 For raw JavaScript:
 
 ```javascript
-   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', undefined, {
+   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', {
     label: 'admin',
     property: 'system',
     value: 20
    });
 ```
 
-If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking.
+If you are using `data-track-action` in the component, you have to change it to `data-event-tracking` to migrate to Internal Events Tracking. If there are additional tracking attributes like `data-track-label`, `data-track-property` and `data-track-value` then you can replace them with `data-event-label`, `data-event-property` and `data-event-value` respectively.
 
 For example, if a button is defined like this:
 
@@ -131,6 +131,8 @@ This can be converted to Internal Events Tracking like this:
   :aria-label="externalUrlLabel"
   target="_blank"
   data-event-tracking="click_toggle_external_button"
+  data-event-label="diff_toggle_external_button"
+  data-event-property="diff_toggle_external"
   icon="external-link"
 />
 ```

@@ -18,7 +18,8 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
       ::WorkItems::Widgets::LinkedItems,
       ::WorkItems::Widgets::Participants,
       ::WorkItems::Widgets::TimeTracking,
-      ::WorkItems::Widgets::Designs
+      ::WorkItems::Widgets::Designs,
+      ::WorkItems::Widgets::Development
     ]
 
     if Gitlab.ee?

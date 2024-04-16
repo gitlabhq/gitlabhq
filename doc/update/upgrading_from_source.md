@@ -333,8 +333,7 @@ sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workh
 
 ### 13. Update Gitaly
 
-If Gitaly is located on its own server, or you use Gitaly Cluster, see [Gitaly or Gitaly Cluster](zero_downtime.md#gitaly-or-gitaly-cluster)
-on the Zero downtime upgrades page.
+If Gitaly is located on its own server, or you use Gitaly Cluster, see [Zero Downtime upgrades](zero_downtime.md).
 
 #### Compile Gitaly
 

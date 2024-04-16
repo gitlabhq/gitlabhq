@@ -21,6 +21,7 @@ module Organizations
     end
 
     def authorize_create_organization!
+      access_denied! unless Feature.enabled?(:allow_organization_creation, current_user)
       access_denied! unless can?(current_user, :create_organization)
     end
 

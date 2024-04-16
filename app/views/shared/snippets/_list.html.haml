@@ -4,8 +4,7 @@
 - if @snippets.to_a.empty?
   .nothing-here-block= s_("SnippetsEmptyState|No snippets found")
 - else
-  .snippets-list-holder
-    %ul.content-list
-      = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
+  %ul.gl-p-0.gl-list-style-none
+    = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
 
-    = paginate_collection @snippets, remote: remote
+  = paginate_collection @snippets, remote: remote

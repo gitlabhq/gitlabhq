@@ -45,6 +45,11 @@ export default {
     deleteBranch: s__('Branches|Delete branch'),
     deleteProtectedBranch: s__('Branches|Delete protected branch'),
   },
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
   computed: {
     deleteBranchText() {
       return this.isProtectedBranch
@@ -80,6 +85,9 @@ export default {
 
       return items;
     },
+    moreActionsTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.toggleText : '';
+    },
   },
   methods: {
     openModal() {
@@ -91,16 +99,19 @@ export default {
         merged: this.merged,
       });
     },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
 };
 </script>
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip.hover.top="{
-      title: $options.i18n.toggleText,
-      boundary: 'viewport',
-    }"
+    v-gl-tooltip.top.viewport="moreActionsTooltip"
     :items="dropdownItems"
     :toggle-text="$options.i18n.toggleText"
     icon="ellipsis_v"
@@ -109,5 +120,7 @@ export default {
     data-testid="branch-more-actions"
     text-sr-only
     no-caret
+    @shown="showDropdown"
+    @hidden="hideDropdown"
   />
 </template>

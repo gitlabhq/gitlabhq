@@ -84,7 +84,7 @@ To help us improve the Runner Fleet Dashboard, you can provide feedback in
 [issue 421737](https://gitlab.com/gitlab-org/gitlab/-/issues/421737).
 In particular:
 
-- How easy or difficult it was to setup GitLab to make the dashboard work.
+- How easy or difficult it was to set up GitLab to make the dashboard work.
 - How useful you found the dashboard.
 - What other information you would like to see on that dashboard.
 - Any other related thoughts and ideas.

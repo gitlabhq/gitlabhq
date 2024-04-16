@@ -3,6 +3,7 @@
 <% target_url = local_assigns.fetch(:target_url, @target_url) -%>
 <% author = local_assigns.fetch(:author) { note.author } -%>
 <% discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
+<% project = local_assigns.fetch(:project, @project) -%>
 
 <%= sanitize_name(author.name) -%>
 <%  if discussion.nil? -%>
@@ -21,10 +22,10 @@
 <%= " #{target_url}" -%>
 
 
-<%  if discussion&.diff_discussion? && discussion.on_text? -%>
+<%  if discussion&.diff_discussion? && discussion.on_text? && project.show_diff_preview_in_email? -%>
 <%    discussion.truncated_diff_lines(highlight: false, diff_limit: diff_limit).each do |line| -%>
-<%=     "> #{line.text}\n" -%>
-<%    end -%>
-
+ <%=     "> #{line.text}\n" -%>
+ <%  end -%>
 <%  end -%>
+
 <%= note.note -%>

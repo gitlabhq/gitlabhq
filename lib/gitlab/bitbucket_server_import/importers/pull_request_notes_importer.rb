@@ -11,7 +11,7 @@ module Gitlab
           @project = project
           @user_finder = UserFinder.new(project)
           @formatter = Gitlab::ImportFormatter.new
-          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project.id)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project)
           @object = hash.with_indifferent_access
         end
 

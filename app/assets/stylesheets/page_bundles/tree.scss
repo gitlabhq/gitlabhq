@@ -106,10 +106,6 @@
     tr {
       border-bottom: 1px solid var(--gray-50, $gray-50);
 
-      &:last-of-type {
-        border-bottom-color: transparent;
-      }
-
       td,
       th {
         line-height: 21px;
@@ -139,6 +135,12 @@
           border-top: 1px solid var(--border-color, $border-color);
           border-bottom: 1px solid var(--border-color, $border-color);
         }
+      }
+
+      &:last-of-type,
+      &:last-of-type td,
+      &:last-of-type:hover td {
+        border-bottom: 0;
       }
     }
   }

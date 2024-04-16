@@ -325,6 +325,23 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
   end
 
+  context "phorge project" do
+    before_all do
+      create(:phorge_integration, project: project)
+    end
+
+    before do
+      project.update!(issues_enabled: false)
+    end
+
+    context "with right markdown" do
+      let(:issue) { ExternalIssue.new("T123", project) }
+      let(:reference) { issue.to_reference }
+
+      it_behaves_like "external issue tracker"
+    end
+  end
+
   context 'checking N+1' do
     let_it_be(:integration) { create(:redmine_integration, project: project) }
     let_it_be(:issue1) { ExternalIssue.new("#123", project) }

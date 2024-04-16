@@ -68,6 +68,10 @@
     }
   }
 
+  details[open] summary {
+    margin-bottom: $gl-padding;
+  }
+
   summary > * {
     display: inline-block;
     margin-bottom: 0;
@@ -149,6 +153,19 @@
 
       &:last-child {
         margin: 0;
+      }
+    }
+
+    // ensure quoted lists are styled the same as normal lists
+    > ul {
+      list-style-type: disc;
+
+      ul {
+        list-style-type: circle;
+
+        ul {
+          list-style-type: square;
+        }
       }
     }
   }
@@ -457,6 +474,24 @@
     .drag-icon {
       color: $gl-text-color;
     }
+
+    // If an inapplicable task list item contains labels or <kbd>s, strike them
+    // out as well.
+    .gl-label, kbd {
+      text-decoration: line-through;
+      text-decoration-color: $gl-text-color-disabled;
+      vertical-align: text-bottom;
+    }
+  }
+
+  a.gfm-gollum-wiki-page {
+    &::before {
+      margin-right: 4px;
+      vertical-align: -2px;
+
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/document.svg');
+    }
   }
 
   a.with-attachment-icon,
@@ -464,15 +499,14 @@
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
+      vertical-align: -2px;
 
-      font-style: normal;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      content: '📎';
+      @include gl-dark-invert-keep-hue;
+      content: url('sprite_icons/paperclip.svg');
     }
   }
 
+  a[href*='/wikis/'],
   a[href*='/uploads/'],
   a[href*='storage.googleapis.com/google-code-attachments/'] {
     &.no-attachment-icon {

@@ -157,8 +157,8 @@ must follow [SemVer](https://semver.org/) format.
 client = MlflowClient()
 model_name = '<your_model_name>'
 version = '<your_version>'
-tags = { "gitlab.version" = version }
-client.create_model)version(model_name, version, description=description, tags=tags)
+tags = { "gitlab.version": version }
+client.create_model_version(model_name, version, description=description, tags=tags)
 ```
 
 **Notes**

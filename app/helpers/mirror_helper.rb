@@ -8,12 +8,26 @@ module MirrorHelper
     }
   end
 
-  def mirror_lfs_sync_message
-    docs_link_url = help_page_path('topics/git/lfs/index')
-    docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: docs_link_url }
+  def pull_mirror_lfs_sync_message
+    template = _('Pull mirrors will only create LFS objects if LFS is %{docs_link_start}enabled for the project%{docs_link_end}.')
 
-    ERB::Util.html_escape(_('Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH.')) %
-      { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
+    docs_link = link_to('', help_page_path('topics/git/lfs/index'), target: '_blank', rel: 'noopener noreferrer')
+
+    safe_format(template, tag_pair(docs_link, :docs_link_start, :docs_link_end))
+  end
+
+  def push_mirror_lfs_sync_message
+    template = _('Push mirrors will only sync LFS objects if LFS is %{docs_link_start}enabled for the project%{docs_link_end}.')
+
+    docs_link = link_to('', help_page_path('topics/git/lfs/index'), target: '_blank', rel: 'noopener noreferrer')
+
+    safe_format(template, tag_pair(docs_link, :docs_link_start, :docs_link_end))
+  end
+
+  def push_mirror_lfs_ssh_sync_message
+    template = _('Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH.')
+
+    safe_format(template, tag_pair(tag.strong, :strong_open, :strong_close))
   end
 
   def mirrored_repositories_count

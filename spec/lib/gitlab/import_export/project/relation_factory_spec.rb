@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, feature_category: :importers do
-  let(:group) { create(:group).tap { |g| g.add_maintainer(importer_user) } }
+  let(:group) { create(:group, maintainers: importer_user) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:admin) { create(:admin) }
+  let(:admin) { create(:admin, :without_default_org) }
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:additional_relation_attributes) { {} }

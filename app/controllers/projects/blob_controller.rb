@@ -147,9 +147,7 @@ class Projects::BlobController < Projects::ApplicationController
       @blob
     else
       if tree = @repository.tree(@commit.id, @path)
-        if tree.entries.any?
-          return redirect_to project_tree_path(@project, File.join(@ref, @path))
-        end
+        return redirect_to project_tree_path(@project, File.join(@ref, @path)) if tree.entries.any?
       end
 
       redirect_to_tree_root_for_missing_path(@project, @ref, @path)
@@ -215,9 +213,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     @file_path =
       if action_name.to_s == 'create'
-        if params[:file].present?
-          params[:file_name] = params[:file].original_filename
-        end
+        params[:file_name] = params[:file].original_filename if params[:file].present?
 
         File.join(@path, params[:file_name])
       elsif params[:file_path].present?
@@ -226,9 +222,7 @@ class Projects::BlobController < Projects::ApplicationController
         @path
       end
 
-    if params[:file].present?
-      params[:content] = params[:file]
-    end
+    params[:content] = params[:file] if params[:file].present?
 
     @commit_params = {
       file_path: @file_path,
@@ -243,9 +237,7 @@ class Projects::BlobController < Projects::ApplicationController
   def validate_diff_params
     return if params[:full]
 
-    if [:since, :to, :offset].any? { |key| params[key].blank? }
-      head :ok
-    end
+    head :ok if [:since, :to, :offset].any? { |key| params[key].blank? }
   end
 
   def set_last_commit_sha

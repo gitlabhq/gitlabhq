@@ -18,6 +18,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     create(
       :merge_request,
       :simple,
+      :unchanged,
       title: 'Old title',
       description: "FYI #{user2.to_reference}",
       assignee_ids: [user3.id],
@@ -552,7 +553,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             head_pipeline_of: merge_request
           )
 
-          expect(AutoMerge::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
+          expected_class = if Gitlab.ee?
+                             AutoMerge::MergeWhenChecksPassService
+                           else
+                             AutoMerge::MergeWhenPipelineSucceedsService
+                           end
+
+          expect(expected_class).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
             .and_return(service_mock)
           allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
@@ -1237,7 +1244,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
     it_behaves_like 'issuable update service' do
       let(:open_issuable) { merge_request }
-      let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
+      let(:closed_issuable) { create(:closed_merge_request, :unchanged, source_project: project) }
     end
 
     context 'setting `allow_collaboration`' do
@@ -1254,7 +1261,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
 
       before do
-        allow(ProtectedBranch).to receive(:protected?).with(source_project, 'fixes') { false }
+        allow(ProtectedBranch).to receive(:protected?).and_return(false)
       end
 
       it 'does not allow a maintainer of the target project to set `allow_collaboration`' do

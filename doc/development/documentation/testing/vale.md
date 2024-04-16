@@ -279,3 +279,52 @@ find . -name '*.md' | sort | xargs vale --minAlertLevel error --output line > ..
 These results can be used with the
 [`create_issues.js` script](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/create_issues.js)
 to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
+
+## Enable custom rules locally
+
+Vale 3.0 and later supports using two locations for rules. This change enables you
+to create and use your own custom rules alongside the rules included in a project.
+
+To create and use custom rules locally on macOS:
+
+1. Create a local file in the Application Support folder for Vale:
+
+   ```shell
+   touch ~/Library/Application\ Support/vale/.vale.ini
+   ```
+
+1. Add these lines to the `.vale.ini` file you just created:
+
+   ```yaml
+   [*.md]
+   BasedOnStyles = local
+   ```
+
+1. If the folder `~/Library/Application Support/vale/styles/local` does not exist,
+   create it:
+
+   ```shell
+   mkdir ~/Library/Application\ Support/vale/styles/local
+   ```
+
+1. Add your desired rules to `~/Library/Application Support/vale/styles/local`.
+
+Rules in your `local` style directory are prefixed with `local` instead of `gitlab`
+in Vale results, like this:
+
+```shell
+$ vale --minAlertLevel warning doc/ci/yaml/index.md
+
+ doc/ci/yaml/index.md
+    ...[snip]...
+ 3876:17   warning  Instead of future tense 'will   gitlab.FutureTense
+                    be', use present tense.
+ 3897:26   error    Remove 'documentation'          local.new-rule
+
+✖ 1 error, 5 warnings and 0 suggestions in 1 file.
+```
+
+## Related topics
+
+- [Styles in Vale](https://vale.sh/docs/topics/styles/)
+- [Example styles](https://github.com/errata-ai/vale/tree/master/testdata/styles) containing rules you can adapt

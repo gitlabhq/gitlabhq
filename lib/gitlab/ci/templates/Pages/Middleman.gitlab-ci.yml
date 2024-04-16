@@ -5,7 +5,7 @@
 
 default:
   # Full project: https://gitlab.com/pages/middleman
-  image: ruby:2.6
+  image: ruby:3.2
 
   cache:
     paths:
@@ -14,6 +14,8 @@ default:
 test:
   script:
     - apt-get update -yqqq
+    # Install Node v18.x
+    - url -fsSL https://deb.nodesource.com/setup_18.x | bash -
     - apt-get install -y nodejs
     - bundle install --path vendor
     - bundle exec middleman build
@@ -24,6 +26,8 @@ test:
 pages:
   script:
     - apt-get update -yqqq
+    # Install Node v18.x
+    - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
     - apt-get install -y nodejs
     - bundle install --path vendor
     - bundle exec middleman build

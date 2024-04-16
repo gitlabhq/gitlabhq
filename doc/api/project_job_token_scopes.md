@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md)
+You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md).
 
 NOTE:
 All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/index.md#authentication).
@@ -34,8 +34,8 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the CI/CD job token generated in other projects has access to this project. |
-| `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 17.0](../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed). |
+| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) is enabled. |
+| `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed). |
 
 Example request:
 
@@ -67,7 +67,7 @@ Supported attributes:
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `enabled` | boolean        | Yes      | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
+| `enabled` | boolean        | Yes      | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) should be enabled. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and no response body.
 

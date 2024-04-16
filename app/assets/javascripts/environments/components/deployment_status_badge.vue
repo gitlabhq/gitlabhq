@@ -41,6 +41,11 @@ export default {
       type: String,
       required: true,
     },
+    href: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     icon() {
@@ -56,5 +61,5 @@ export default {
 };
 </script>
 <template>
-  <gl-badge v-if="status" :icon="icon" :variant="variant">{{ text }}</gl-badge>
+  <gl-badge v-if="status" :icon="icon" :variant="variant" :href="href">{{ text }}</gl-badge>
 </template>

@@ -3,7 +3,7 @@ status: ongoing
 creation-date: "2022-11-15"
 authors: [ "@vtak" ]
 coach: "@grzesiek"
-approvers: [ "@ericschurter", "@oregand" ]
+approvers: [ "@michelle-chen", "@adebayo_a" ]
 owning-stage: "~devops::create"
 participating-stages: []
 ---
@@ -137,7 +137,7 @@ Some advantages of us opting to write our own custom-built solution are:
 
 - We can still use the core DevWorkspace Operator and build on top of it.
 - It is easier to add support for other configurations apart from `devfile` in the future if the need arises.
-- We have the ability to choose which tech stack to use (for example, instead of using `traefik`, which is used in Che, explore NGINX itself or use the GitLab Agent for Kubernetes).
+- We have the ability to choose which tech stack to use (for example, instead of using `traefik`, which is used in Che, explore NGINX itself or use the GitLab agent for Kubernetes).
 
 After writing our own custom-built solution using DevWorkspace Operator,
 we decided to [remove the dependency on DevWorkspace Operator](https://gitlab.com/groups/gitlab-org/-/epics/9895)
@@ -146,7 +146,7 @@ and thus the transitive dependency of Cert Manager.
 ## Architecture details
 
 Remote development is delivered as a module in the
-[GitLab Agent for Kubernetes](../../../user/clusters/agent/index.md) project.
+[GitLab agent for Kubernetes](../../../user/clusters/agent/index.md) project.
 The overall goal of this architecture is to ensure that the **actual state** of all
 remote development workspaces running in the Kubernetes clusters is reconciled with the **desired state** of the
 workspaces as set by the user.
@@ -206,7 +206,7 @@ node "GitLab" {
 @enduml
 ```
 
-### Remote development with the GitLab Agent for Kubernetes topology
+### Remote development with the GitLab agent for Kubernetes topology
 
 - The Kubernetes API is not shown in this diagram, but it is assumed that it is managing the workspaces through the agent.
 - The numbers of components in each Kubernetes cluster are arbitrary.
@@ -215,7 +215,7 @@ node "GitLab" {
 @startuml
 
 title
-  Remote Development with GitLab Agent for Kubernetes topology
+  Remote Development with GitLab agent for Kubernetes topology
 end title
 
 node "GitLab Monolith" as gitlab {
@@ -552,7 +552,7 @@ flowchart TB
 - Disadvantages
   - Single point of failure
   - It will have to scale with traffic
-  - New component (other than the GitLab Agent) that would have to be deployed in the Kubernetes cluster by the customer
+  - New component (other than the GitLab agent) that would have to be deployed in the Kubernetes cluster by the customer
   - Does need Kubernetes privileges to list service resources.
 
 ### Other options considered
@@ -593,7 +593,7 @@ flowchart TB
 
 #### Auth annotations on the Ingress resource
 
-Use auth annotations on the Ingress resource to allow Ingress controllers(for example, `ingress-nginx`) to delegate authentication and authorization to a separate process. The challenge is that these annotations are not standardized (that is, not part of the [Ingress specification](https://kubernetes.io/docs/concepts/services-networking/ingress/)) and may not be supported across different Ingress controllers. We would need to document the process to setup our Auth provider for each of the Ingress controllers. However, if they do become a part of the new [Gateway API](https://gateway-api.sigs.k8s.io/concepts/security-model/), we will reconsider this decision.
+Use auth annotations on the Ingress resource to allow Ingress controllers(for example, `ingress-nginx`) to delegate authentication and authorization to a separate process. The challenge is that these annotations are not standardized (that is, not part of the [Ingress specification](https://kubernetes.io/docs/concepts/services-networking/ingress/)) and may not be supported across different Ingress controllers. We would need to document the process to set up our Auth provider for each of the Ingress controllers. However, if they do become a part of the new [Gateway API](https://gateway-api.sigs.k8s.io/concepts/security-model/), we will reconsider this decision.
 
 For `ingress-nginx`, the auth annotations would be:
 

@@ -34,6 +34,11 @@ module Ci
       project_type: 3
     }
 
+    enum creation_state: {
+      started: 0,
+      finished: 100
+    }, _suffix: true
+
     enum registration_type: {
       registration_token: 0,
       authenticated_user: 1
@@ -80,6 +85,9 @@ module Ci
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
     has_many :groups, through: :runner_namespaces, disable_joins: true
+
+    # currently we have only 1 namespace assigned, but order is here for consistency
+    has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
     has_one :runner_version, primary_key: :version, foreign_key: :version, class_name: 'Ci::RunnerVersion'
@@ -451,7 +459,11 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config, :executor) || {}
-        values[:contacted_at] = Time.current if update_contacted_at
+
+        if update_contacted_at
+          values.merge!(contacted_at: Time.current, creation_state: :finished)
+        end
+
         if values.include?(:executor)
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
         end

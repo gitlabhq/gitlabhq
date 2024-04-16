@@ -96,6 +96,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-42/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -110,6 +111,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-41/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -124,6 +126,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-40/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -138,6 +141,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-39/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -152,6 +156,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-38/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -166,6 +171,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-37/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -180,6 +186,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-36/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -194,6 +201,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-35/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -208,6 +216,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-34/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -222,6 +231,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-33/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -236,6 +246,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-32/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -250,6 +261,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-31/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -264,6 +276,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-30/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -278,6 +291,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-29/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -292,6 +306,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-28/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -306,6 +321,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-27/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -320,6 +336,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-26/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -334,6 +351,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-25/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -348,6 +366,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-24/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -362,6 +381,7 @@ export const catalogResponseBody = {
           description: 'A simple component',
           starCount: 0,
           starrersPath: '/frontend-fixtures/project-23/-/starrers',
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -394,11 +414,18 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
+          verificationLevel: 'UNVERIFIED',
           versions: {
+            __typename: 'CiCatalogResourceVersionConnection',
             nodes: [
               {
                 id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
-                author: { name: 'author', username: 'author-username', webUrl: '/user/1' },
+                author: {
+                  __typename: 'UserCore',
+                  name: 'author',
+                  username: 'author-username',
+                  webUrl: '/user/1',
+                },
                 createdAt: '2024-01-26T19:40:03Z',
                 name: '1.0.0',
                 path: '/root/catalog-component-test/-/tags/1.0.2',
@@ -418,6 +445,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-44 Name',
           description: 'A simple component',
           starCount: 0,
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -431,6 +459,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-43 Name',
           description: 'A simple component',
           starCount: 0,
+          verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
             __typename: 'CiCatalogResourceVersionConnection',
@@ -454,16 +483,24 @@ export const catalogSharedDataMock = {
       name: 'Ruby',
       starCount: 1,
       starrersPath: '/path/to/project/-/starrers',
+      verificationLevel: 'UNVERIFIED',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
-            __typename: 'Release',
+            __typename: 'CiCatalogResourceVersion',
             id: '3',
             components: componentsListMockData,
             name: '1.0.0',
             path: 'path/to/release',
             createdAt: Date.now(),
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
+            author: {
+              __typename: 'UserCore',
+              id: 1,
+              webUrl: 'profile/1',
+              name: 'username',
+              state: 'active',
+            },
           },
         ],
       },
@@ -481,40 +518,6 @@ export const catalogAdditionalDetailsMock = {
       openIssuesCount: 4,
       openMergeRequestsCount: 10,
       readmeHtml: '<h1>Hello world</h1>',
-      versions: {
-        __typename: 'ReleaseConnection',
-        nodes: [
-          {
-            __typename: 'Release',
-            id: 'gid://gitlab/Release/3',
-            commit: {
-              __typename: 'Commit',
-              id: 'gid://gitlab/CommitPresenter/afa936495f20e08c26ed4a67130ee2166f94fa6e',
-              pipelines: {
-                __typename: 'PipelineConnection',
-                nodes: [
-                  {
-                    __typename: 'Pipeline',
-                    id: 'gid://gitlab/Ci::Pipeline/583',
-                    detailedStatus: {
-                      __typename: 'DetailedStatus',
-                      id: 'success-583-583',
-                      detailsPath: '/root/cicd-circular/-/pipelines/583',
-                      icon: 'status_success',
-                      text: 'passed',
-                      group: 'success',
-                    },
-                  },
-                ],
-              },
-            },
-            name: '1.0.2',
-            path: '/path/to/release',
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
-            createdAt: '2022-08-23T17:19:09Z',
-          },
-        ],
-      },
     },
   },
 };
@@ -530,9 +533,10 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       name: `My component #${i}`,
       starCount: 10,
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
-            __typename: 'Release',
+            __typename: 'CiCatalogResourceVersion',
             id: '3',
             components: {
               ...componentsListMockData,
@@ -540,7 +544,12 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
             name: '1.0.0',
             path: 'path/to/release',
             createdAt: Date.now(),
-            author: { id: 1, webUrl: 'profile/1', name: 'username' },
+            author: {
+              __typename: 'UserCore',
+              id: 1,
+              webUrl: 'profile/1',
+              name: 'username',
+            },
           },
         ],
       },
@@ -560,6 +569,7 @@ export const mockComponents = {
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
             id: 'gid://gitlab/Version/1',
@@ -580,6 +590,7 @@ export const mockComponentsEmpty = {
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
       versions: {
+        __typename: 'CiCatalogResourceVersionConnection',
         nodes: [
           {
             id: 'gid://gitlab/Version/1',

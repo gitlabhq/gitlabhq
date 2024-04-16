@@ -15,7 +15,7 @@ class Import::BaseController < ApplicationController
                        incompatible_repos: serialized_incompatible_repos }
       end
       format.html do
-        if params[:namespace_id]&.present?
+        if params[:namespace_id].present?
           @namespace = Namespace.find_by_id(params[:namespace_id])
 
           render_404 unless current_user.can?(:import_projects, @namespace)

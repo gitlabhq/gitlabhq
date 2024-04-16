@@ -13,7 +13,7 @@ RSpec.describe 'Creation of a machine learning model', feature_category: :mlops 
   let(:name) { 'some_name' }
   let(:description) { 'A description' }
 
-  let(:mutation) { graphql_mutation(:ml_model_create, input) }
+  let(:mutation) { graphql_mutation(:ml_model_create, input, nil, ['version']) }
   let(:mutation_response) { graphql_mutation_response(:ml_model_create) }
 
   context 'when user is not allowed write changes' do

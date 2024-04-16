@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Ml::Mlflow::RegisteredModels, feature_category: :mlops do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:model) do
     create(:ml_models, :with_metadata, project: project)
   end

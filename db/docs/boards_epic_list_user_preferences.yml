@@ -4,7 +4,24 @@ classes:
 - Boards::EpicListUserPreference
 feature_categories:
 - portfolio_management
-description: Epic board list preferences on a per-user basis, specifically whether the user has collapsed the list or not
+description: Epic board list preferences on a per-user basis, specifically whether
+  the user has collapsed the list or not
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54541
 milestone: '13.10'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  group_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: epic_list_id
+        table: boards_epic_lists
+        sharding_key: group_id
+        belongs_to: epic_list
+    awaiting_backfill_on_parent: true

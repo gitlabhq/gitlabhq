@@ -1,0 +1,8 @@
+---
+name: ai_duo_code_suggestions_switch
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120892
+rollout_issue_url:
+milestone: '16.1'
+type: ops
+group: group::ai model validation
+default_enabled: true

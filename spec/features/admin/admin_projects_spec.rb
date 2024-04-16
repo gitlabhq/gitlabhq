@@ -165,7 +165,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
       expect(find_member_row(current_user)).to have_content('Developer')
 
       show_actions_for_username(current_user)
-      click_button _('Leave group')
+      click_button _('Leave project')
 
       within_modal do
         click_button _('Leave')

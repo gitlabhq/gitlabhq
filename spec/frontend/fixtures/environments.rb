@@ -34,7 +34,8 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
           {
             projectFullPath: project.full_path,
             environmentName: environment.name,
-            pageSize: 10
+            pageSize: 10,
+            deployment_details_enabled: true
           }
         )
         expect_graphql_errors_to_be_empty
@@ -68,7 +69,8 @@ RSpec.describe 'Environments (JavaScript fixtures)', feature_category: :environm
           {
             projectFullPath: project.full_path,
             environmentName: environment.name,
-            pageSize: 10
+            pageSize: 10,
+            deployment_details_enabled: true
           }
         )
         expect_graphql_errors_to_be_empty

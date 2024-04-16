@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import { GlToggle, GlButton } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
+import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';
 import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
@@ -29,6 +30,7 @@ describe('Markdown field header component', () => {
   const findPreviewToggle = () => wrapper.findByTestId('preview-toggle');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
   const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
+  const findDividers = () => wrapper.findAllComponents(HeaderDividerComponent);
   const findToolbarButtonByProp = (prop, value) =>
     findToolbarButtons()
       .filter((button) => button.props(prop) === value)
@@ -105,6 +107,12 @@ describe('Markdown field header component', () => {
 
     // only one button is rendered in preview mode
     expect(findToolbar().findAllComponents(GlButton)).toHaveLength(1);
+  });
+
+  it('hides divider in preview mode', () => {
+    createWrapper({ props: { previewMarkdown: true } });
+
+    expect(findDividers().length).toBe(0);
   });
 
   it('emits toggle markdown event when clicking preview toggle', async () => {
@@ -194,6 +202,29 @@ describe('Markdown field header component', () => {
 
       expect(findToolbarButtons().length).toBe(defaultCount);
     });
+
+    it("doesn't render dividers when toolbar buttons past them are restricted", () => {
+      createWrapper({
+        props: {
+          enablePreview: false,
+          canSuggest: false,
+          restrictedToolBarItems: [
+            'quote',
+            'strikethrough',
+            'bullet-list',
+            'numbered-list',
+            'task-list',
+            'collapsible-section',
+            'table',
+            'attach-file',
+            'full-screen',
+            'indent',
+            'outdent',
+          ],
+        },
+      });
+      expect(findDividers().length).toBe(1);
+    });
   });
 
   describe('when drawIOEnabled is true', () => {
@@ -231,7 +262,7 @@ describe('Markdown field header component', () => {
       createWrapper({
         attachTo: '#root',
         provide: {
-          newCommentTemplatePath: 'some/path',
+          newCommentTemplatePaths: ['some/path'],
           glFeatures: {
             savedReplies: true,
           },
@@ -248,7 +279,7 @@ describe('Markdown field header component', () => {
       });
     });
 
-    it('does not show the saved replies button if newCommentTemplatePath is not defined', () => {
+    it('does not show the saved replies button if newCommentTemplatePaths is not defined', () => {
       createWrapper({
         provide: {
           glFeatures: {

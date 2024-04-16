@@ -72,6 +72,22 @@ To enable error tracking with GitLab as the backend:
 
 1. Copy the Data Source Name (DSN) string. You need it for configuring your SDK implementation.
 
+### Configure user tracking
+
+To track the number of users impacted by an error:
+
+- In the instrumentation code, ensure each user is uniquely identified.
+
+  You can use a user ID, name, email address, or IP address to identify a user.
+
+For example, if you use [Python](https://docs.sentry.io/platforms/python/enriching-events/identify-user/), you can identify a user by email:
+
+```python
+Sentry.setUser({ email: "john.doe@example.com" });
+```
+
+For more information about user identification, see the [Sentry documentation](https://docs.sentry.io/).
+
 ## Error tracking list
 
 After your application has emitted errors to the Error Tracking API through the Sentry SDK,
@@ -227,7 +243,7 @@ When working with Error Tracking, you might encounter the following issues.
 
 ### Error `Connection failed. Check auth token and try again`
 
-If the Monitor feature is disabled in the [project settings](../user/project/settings/project_features_permissions.md#configure-project-features-and-permissions),
+If the Monitor feature is disabled in the [project settings](../user/project/settings/index.md#configure-project-features-and-permissions),
 you might see an error when you try to [enable Sentry integration for a project](#enable-sentry-integration-for-a-project).
 The resulting request to `/project/path/-/error_tracking/projects.json?api_host=https:%2F%2Fsentry.example.com%2F&token=<token>` returns a 404 status.
 

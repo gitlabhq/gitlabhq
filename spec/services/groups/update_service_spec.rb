@@ -374,19 +374,69 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
-  context 'when updating #emails_disabled' do
-    let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
+  context 'when updating #emails_enabled' do
+    let(:service) { described_class.new(internal_group, user, emails_enabled: false) }
 
     it 'updates the attribute' do
       internal_group.add_member(user, Gitlab::Access::OWNER)
 
-      expect { service.execute }.to change { internal_group.emails_disabled }.to(true)
+      expect { service.execute }.to change { internal_group.emails_enabled }.to(false)
     end
 
     it 'does not update when not group owner' do
       internal_group.add_member(user, Gitlab::Access::MAINTAINER)
 
-      expect { service.execute }.not_to change { internal_group.emails_disabled }
+      expect { service.execute }.not_to change { internal_group.emails_enabled }
+    end
+  end
+
+  context 'when updating #emails_disabled' do
+    context 'when emails_disabled is true' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
+
+      it 'updates email_enabled to false' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(false)
+      end
+    end
+
+    context 'when emails_disabled is false' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: false) }
+
+      it 'email_enabled is set to true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(true)
+      end
+    end
+
+    context 'when emails_disabled is nil' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: nil) }
+
+      it 'email_enabled is set to the default value of true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(true)
+      end
+    end
+
+    context 'when emails_disabled is the string "true"' do
+      let(:service) { described_class.new(internal_group, user, emails_disabled: "true") }
+
+      it 'email_enabled is set to the default value of true' do
+        internal_group.add_member(user, Gitlab::Access::OWNER)
+
+        service.execute
+
+        expect(internal_group.emails_enabled).to be(false)
+      end
     end
   end
 
@@ -538,7 +588,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     let(:service) { described_class.new(group, user, **params) }
     let(:root_group) { create(:group, path: 'root') }
     let(:group) do
-      create(:group, parent: root_group, path: 'old-path').tap { |g| g.add_owner(user) }
+      create(:group, parent: root_group, path: 'old-path', owners: user)
     end
 
     context 'when changing a group path' do

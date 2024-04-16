@@ -20,7 +20,7 @@ Depending on a component's functionality, [testing the component](index.md#test-
 
 The following "hello world" example for the Rust programming language uses the `cargo` tool chain for simplicity:
 
-1. Navigate into the CI/CD component root directory.
+1. Go to the CI/CD component root directory.
 1. Initialize a new Rust project by using the `cargo init` command.
 
    ```shell

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
       expect_next(Gitlab::Import::MergeRequestCreator, project).to receive(:execute).and_call_original
       expect_next(Gitlab::BitbucketServerImport::UserFinder, project).to receive(:author_id).and_call_original
       expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server',
-        project.id).to receive(:convert).and_call_original
+        project).to receive(:convert).and_call_original
 
       expect { importer.execute }.to change { MergeRequest.count }.by(1)
 

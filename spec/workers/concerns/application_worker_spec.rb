@@ -509,6 +509,37 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
     end
   end
 
+  describe '.deferred' do
+    around do |example|
+      Sidekiq::Testing.fake!(&example)
+    end
+
+    context 'when the worker is not marked as deferred' do
+      it 'all deferred-related keys are nil' do
+        worker.perform_async
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq nil
+      end
+    end
+
+    context 'when the worker is marked as deferred' do
+      it 'correctly sets options' do
+        worker.deferred(1, :feature_flag).perform_async
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq true
+        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq "feature_flag"
+        expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq 1
+      end
+
+      it 'sets defaults if no arguments are passed' do
+        worker.deferred.perform_async
+        expect(Sidekiq::Queues[worker.queue].first['deferred']).to eq true
+        expect(Sidekiq::Queues[worker.queue].first['deferred_by']).to eq nil
+        expect(Sidekiq::Queues[worker.queue].first['deferred_count']).to eq 0
+      end
+    end
+  end
+
   describe '.with_status' do
     around do |example|
       Sidekiq::Testing.fake!(&example)

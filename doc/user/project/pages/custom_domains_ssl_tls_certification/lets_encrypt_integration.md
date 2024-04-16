@@ -68,7 +68,7 @@ associated Pages domain. GitLab also renews it automatically.
 
 ## Troubleshooting
 
-### Error "Something went wrong while obtaining the Let's Encrypt certificate"
+### Something went wrong while obtaining the Let's Encrypt certificate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30146) in GitLab 13.0.
 
@@ -85,9 +85,16 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
    1. Make sure [your domain is verified](index.md#1-add-a-custom-domain).
    1. Go to step 1.
 
-### Message "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later." hangs for more than an hour
+### Obtaining a certificate hangs for more than an hour
 
-If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message, "GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.", try to remove and add the domain for GitLab Pages again by following these steps:
+If you've enabled Let's Encrypt integration, but a certificate is absent after an hour and you see the message:
+
+```plaintext
+GitLab is obtaining a Let's Encrypt SSL certificate for this domain.
+This process can take some time. Please try again later.
+```
+
+Remove and add the domain for GitLab Pages again by following these steps:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.

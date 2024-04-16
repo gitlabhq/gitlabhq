@@ -118,9 +118,9 @@ input[type='file'] {
   margin-bottom: 16px;
 
   .ref-list {
-    border-color: $well-inner-border;
+    border-color: $gray-100;
   }
-  
+
   .well-segment {
     padding: 1rem;
 
@@ -132,7 +132,7 @@ input[type='file'] {
     }
 
     &:not(:last-of-type) {
-      border-bottom: 1px solid $well-inner-border;
+      border-bottom: 1px solid $gray-100;
     }
 
     p,

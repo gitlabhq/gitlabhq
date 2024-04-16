@@ -18,8 +18,7 @@ module Gitlab
       end
 
       def increment_object_counter(object, project)
-        counter_type = importer_class::EVENT_COUNTER_MAP[object[:event]] if import_settings.extended_events?
-        counter_type ||= object_type
+        counter_type = importer_class::EVENT_COUNTER_MAP[object[:event]] || object_type
         Gitlab::GithubImport::ObjectCounter.increment(project, counter_type, :imported)
       end
 

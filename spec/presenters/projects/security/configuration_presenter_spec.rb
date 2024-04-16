@@ -47,10 +47,6 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
         expect(html_data[:latest_pipeline_path]).to eq(project_pipeline_path(project, pipeline))
       end
 
-      it 'has stubs for autofix' do
-        expect(html_data.keys).to include(:can_toggle_auto_fix_settings, :auto_fix_enabled, :auto_fix_user_path)
-      end
-
       context "while retrieving information about user's ability to enable auto_devops" do
         where(:is_admin, :archived, :feature_available, :result) do
           true     | true      | true   | false

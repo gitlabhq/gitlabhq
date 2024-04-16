@@ -10,9 +10,12 @@ import { extendedWrapper, shallowMountExtended } from 'helpers/vue_test_utils_he
 import { TEST_HOST } from 'helpers/test_constants';
 
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+
+import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
+import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
 import {
   DEFAULT_PLATFORM,
   EXECUTORS_HELP_URL,
@@ -20,7 +23,8 @@ import {
   STATUS_NEVER_CONTACTED,
   STATUS_ONLINE,
   RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
-  I18N_REGISTRATION_SUCCESS,
+  WINDOWS_PLATFORM,
+  GOOGLE_CLOUD_PLATFORM,
 } from '~/ci/runner/constants';
 import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data';
 
@@ -43,6 +47,7 @@ describe('RegistrationInstructions', () => {
 
   const findHeading = () => wrapper.find('h1');
   const findStepAt = (i) => extendedWrapper(wrapper.findAll('section').at(i));
+  const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findByText = (text, container = wrapper) => container.findByText(text);
 
   const waitForPolling = async () => {
@@ -70,7 +75,7 @@ describe('RegistrationInstructions', () => {
     });
   };
 
-  const createComponent = (props) => {
+  const createComponent = ({ props = {}, ...options } = {}) => {
     wrapper = shallowMountExtended(RegistrationInstructions, {
       apolloProvider: createMockApollo([[runnerForRegistrationQuery, mockRunnerQuery]]),
       propsData: {
@@ -81,6 +86,7 @@ describe('RegistrationInstructions', () => {
       stubs: {
         GlSprintf,
       },
+      ...options,
     });
   };
 
@@ -129,12 +135,26 @@ describe('RegistrationInstructions', () => {
     });
   });
 
-  it('renders legacy instructions', () => {
-    createComponent();
+  describe('platform installation drawer instructions', () => {
+    it('opens and closes the drawer', async () => {
+      createComponent();
 
-    findByText('How do I install GitLab Runner?').vm.$emit('click');
+      expect(findPlatformsDrawer().props('open')).toBe(false);
 
-    expect(wrapper.emitted('toggleDrawer')).toHaveLength(1);
+      await findByText('How do I install GitLab Runner?').vm.$emit('click');
+      expect(findPlatformsDrawer().props('open')).toBe(true);
+
+      await findPlatformsDrawer().vm.$emit('close');
+      expect(findPlatformsDrawer().props('open')).toBe(false);
+    });
+
+    it('selects a new platform from the drawer', () => {
+      createComponent();
+
+      findPlatformsDrawer().vm.$emit('selectPlatform', WINDOWS_PLATFORM);
+
+      expect(wrapper.emitted('selectPlatform')).toEqual([[WINDOWS_PLATFORM]]);
+    });
   });
 
   describe('step 1', () => {
@@ -144,7 +164,7 @@ describe('RegistrationInstructions', () => {
 
       const step1 = findStepAt(0);
 
-      expect(step1.findComponent(CliCommand).props()).toEqual({
+      expect(step1.findComponent(CliCommand).props()).toMatchObject({
         command: [
           'gitlab-runner register',
           `  --url ${TEST_HOST}`,
@@ -253,7 +273,7 @@ describe('RegistrationInstructions', () => {
     createComponent();
     const step3 = findStepAt(2);
 
-    expect(step3.findComponent(CliCommand).props()).toEqual({
+    expect(step3.findComponent(CliCommand).props()).toMatchObject({
       command: 'gitlab-runner run',
       prompt: '$',
     });
@@ -276,7 +296,7 @@ describe('RegistrationInstructions', () => {
       });
 
       it('does not show success message', () => {
-        expect(wrapper.text()).not.toContain(I18N_REGISTRATION_SUCCESS);
+        expect(wrapper.text()).not.toContain('🎉');
       });
 
       describe('when the page is closing', () => {
@@ -305,7 +325,7 @@ describe('RegistrationInstructions', () => {
 
       it('shows success message', () => {
         expect(wrapper.text()).toContain('🎉');
-        expect(wrapper.text()).toContain(I18N_REGISTRATION_SUCCESS);
+        expect(wrapper.text()).toContain("You've registered a new runner!");
       });
 
       describe('when the page is closing', () => {
@@ -321,6 +341,83 @@ describe('RegistrationInstructions', () => {
           expect(returnValueSetter).not.toHaveBeenCalled();
         });
       });
+    });
+  });
+
+  describe('when using Google Cloud registration method', () => {
+    const findGoogleCloudRegistrationInstructions = () =>
+      wrapper.findComponent(GoogleCloudRegistrationInstructions);
+
+    it('passes a group path to the google instructions', async () => {
+      createComponent({
+        props: {
+          platform: GOOGLE_CLOUD_PLATFORM,
+          groupPath: 'mock/group/path',
+        },
+        provide: {
+          glFeatures: { googleCloudSupportFeatureFlag: true },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGoogleCloudRegistrationInstructions().props()).toEqual({
+        token: mockAuthenticationToken,
+        groupPath: 'mock/group/path',
+        projectPath: null,
+      });
+    });
+
+    it('passes a project path to the google instructions', async () => {
+      createComponent({
+        props: {
+          platform: GOOGLE_CLOUD_PLATFORM,
+          projectPath: 'mock/project/path',
+        },
+        provide: {
+          glFeatures: { googleCloudSupportFeatureFlag: true },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGoogleCloudRegistrationInstructions().props()).toEqual({
+        token: mockAuthenticationToken,
+        projectPath: 'mock/project/path',
+        groupPath: null,
+      });
+    });
+
+    it('does not show google instructions when disabled', async () => {
+      createComponent({
+        props: {
+          platform: GOOGLE_CLOUD_PLATFORM,
+          projectPath: 'mock/project/path',
+        },
+        provide: {
+          glFeatures: { googleCloudSupportFeatureFlag: false },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGoogleCloudRegistrationInstructions().exists()).toBe(false);
+    });
+
+    it('does not show google instructions when on another platform', async () => {
+      createComponent({
+        props: {
+          platform: WINDOWS_PLATFORM,
+          projectPath: 'mock/project/path',
+        },
+        provide: {
+          glFeatures: { googleCloudSupportFeatureFlag: true },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findGoogleCloudRegistrationInstructions().exists()).toBe(false);
     });
   });
 });

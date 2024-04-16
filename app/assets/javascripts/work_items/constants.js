@@ -17,6 +17,7 @@ export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_TIME_TRACKING = 'TIME_TRACKING';
+export const WIDGET_TYPE_ROLLEDUP_DATES = 'ROLLEDUP_DATES';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_PARTICIPANTS = 'PARTICIPANTS';
 export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
@@ -32,7 +33,7 @@ export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
-export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
+export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENT';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
@@ -220,18 +221,6 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
   },
 };
 
-export const WORK_ITEM_NAME_TO_ICON_MAP = {
-  Epic: 'epic',
-  Issue: 'issue-type-issue',
-  Task: 'issue-type-task',
-  Objective: 'issue-type-objective',
-  Incident: 'issue-type-incident',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Key Result': 'issue-type-keyresult',
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  'Test Case': 'issue-type-test-case',
-};
-
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
@@ -330,3 +319,22 @@ export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
+
+export const EPIC_COLORS = [
+  { '#1068bf': s__('WorkItem|Blue') },
+  { '#217645': s__('WorkItem|Forest green') },
+  { '#c91c00': s__('WorkItem|Dark red') },
+  { '#9e5400': s__('WorkItem|Coffee') },
+  { '#694cc0': s__('WorkItem|Purple') },
+  { '#de198f': s__('WorkItem|Magenta') },
+  { '#2e90a5': s__('WorkItem|Teal') },
+  { '#55aafe': s__('WorkItem|Light blue') },
+  { '#4dd787': s__('WorkItem|Mint green') },
+  { '#f17763': s__('WorkItem|Rose') },
+  { '#f3ad5d': s__('WorkItem|Apricot') },
+  { '#b7a0fd': s__('WorkItem|Lavender') },
+  { '#fd8cd0': s__('WorkItem|Pink') },
+  { '#6cd3ea': s__('WorkItem|Aqua') },
+];
+
+export const DEFAULT_EPIC_COLORS = '#1068bf';

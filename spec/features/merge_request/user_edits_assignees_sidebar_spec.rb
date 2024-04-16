@@ -22,8 +22,8 @@ RSpec.describe 'Merge request > User edits assignees sidebar', :js, feature_cate
   let(:users_find_limit) { 5 }
 
   # Insert more than limit so that response doesn't include assigned user
-  let(:project_developers) { Array.new(users_find_limit + 1) { create(:user).tap { |u| project.add_developer(u) } } }
-  let(:project_maintainers) { Array.new(users_find_limit + 1) { create(:user).tap { |u| project.add_maintainer(u) } } }
+  let(:project_developers) { Array.new(users_find_limit + 1) { create(:user, developer_of: project) } }
+  let(:project_maintainers) { Array.new(users_find_limit + 1) { create(:user, maintainer_of: project) } }
 
   # DOM finders to simplify and improve readability
   let(:sidebar_assignee_block) { page.find('.js-issuable-sidebar .assignee') }

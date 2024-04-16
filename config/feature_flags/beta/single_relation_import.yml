@@ -1,0 +1,9 @@
+---
+name: single_relation_import
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425798
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149444
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455889
+milestone: '16.11'
+group: group::import and integrate
+type: beta
+default_enabled: false

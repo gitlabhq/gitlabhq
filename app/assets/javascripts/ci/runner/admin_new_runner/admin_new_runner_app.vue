@@ -3,7 +3,6 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
-import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { DEFAULT_PLATFORM, PARAM_KEY_PLATFORM, INSTANCE_TYPE } from '../constants';
@@ -12,7 +11,6 @@ import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_lo
 export default {
   name: 'AdminNewRunnerApp',
   components: {
-    RegistrationCompatibilityAlert,
     RunnerPlatformsRadioGroup,
     RunnerCreateForm,
   },
@@ -41,10 +39,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1 class="gl-font-size-h2">{{ s__('Runners|New instance runner') }}</h1>
-
-    <registration-compatibility-alert :alert-key="$options.INSTANCE_TYPE" />
+  <div class="gl-mt-5">
+    <h1 class="gl-heading-1">{{ s__('Runners|New instance runner') }}</h1>
 
     <p>
       {{
@@ -56,7 +52,7 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <h2 class="gl-font-size-h2 gl-my-5">
+    <h2 class="gl-heading-2">
       {{ s__('Runners|Platform') }}
     </h2>
 

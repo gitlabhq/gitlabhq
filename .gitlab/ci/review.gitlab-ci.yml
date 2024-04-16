@@ -74,7 +74,6 @@ start-review-app-pipeline:
   resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: review
   needs:
-    - job: e2e-test-pipeline-generate
     - job: rails-production-server-boot-puma-example
       optional: true
     - job: rails-production-server-boot-puma-cng
@@ -108,10 +107,7 @@ start-review-app-pipeline:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
     SCHEDULE_TYPE: $SCHEDULE_TYPE
     DAST_RUN: $DAST_RUN
-    SKIP_MESSAGE: Skipping review-app due to mr containing only quarantine changes!
-    QA_RUN_TYPE: e2e-review-qa
   trigger:
     strategy: depend
     include:
-      - artifact: review-app-pipeline.yml
-        job: e2e-test-pipeline-generate
+      - local: .gitlab/ci/review-apps/main.gitlab-ci.yml

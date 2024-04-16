@@ -264,7 +264,12 @@ my_iteration = create(:iteration, :with_title, :current, title: 'My Iteration', 
 
 ### Frequently encountered issues
 
-#### ActiveRecord::RecordInvalid: Validation failed: Email has already been taken, Username has already been taken
+#### Username or email has already been taken
+
+If you see either of these errors:
+
+- `ActiveRecord::RecordInvalid: Validation failed: Email has already been taken`
+- `ActiveRecord::RecordInvalid: Validation failed: Username has already been taken`
 
 This is because, by default, our factories are written to backfill any data that is missing. For instance, when a project
 is created, the project must have somebody that created it. If the owner is not specified, the factory attempts to create it.
@@ -293,7 +298,7 @@ Given that non-Ruby parsers parse IDs as Ruby Objects, the [naming conventions](
 Examples of invalid IDs:
 
 - IDs that start with a number
-- IDs that have special characters (-, !, $, @, `, =, <, >, ;, :)
+- IDs that have special characters (`-`, `!`, `$`, `@`, `` ` ``, `=`, `<`, `>`, `;`, `:`)
 
 #### ActiveRecord::AssociationTypeMismatch: Model expected, got ... which is an instance of String
 

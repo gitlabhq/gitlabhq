@@ -10,7 +10,7 @@ module Gitlab
 
             attr_reader :location, :params, :context, :errors
 
-            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i
+            YAML_ALLOWLIST_EXTENSION = /.+\.(yml|yaml)$/i
 
             def initialize(params, context)
               @params = params
@@ -27,7 +27,7 @@ module Gitlab
             end
 
             def invalid_extension?
-              location.nil? || !::File.basename(location).match?(YAML_WHITELIST_EXTENSION)
+              location.nil? || !::File.basename(location).match?(YAML_ALLOWLIST_EXTENSION)
             end
 
             def valid?

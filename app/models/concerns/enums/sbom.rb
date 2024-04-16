@@ -121,5 +121,25 @@ module Enums
     def self.package_manager_from_trivy_pkg_type(pkg_type)
       PACKAGE_MANAGERS_FROM_TRIVY_PKG_TYPE[pkg_type]
     end
+
+    # We do not use the namespaced names for OS component types even
+    # if the PURL specification declares otherwise, since this will
+    # preserve the name format established by the container-scanning
+    # analyzers. For example, a namespaced name for an Alpine cURL component
+    # might look like `apk/curl` when found by an SBOM generator. If found
+    # by a container-scanning analyzer, this same component would be reported
+    # as `curl`. The differences in naming would impact dependency and
+    # vulnerability deduplication, and if left as is would create dependency
+    # lists and vulnerability reports that are inaccurate.
+    #
+    # For full details, see https://gitlab.com/gitlab-org/gitlab/-/issues/442847
+    def self.use_namespaced_name?(purl_type)
+      case purl_type
+      when 'apk', 'deb', 'rpm'
+        false
+      else
+        true
+      end
+    end
   end
 end

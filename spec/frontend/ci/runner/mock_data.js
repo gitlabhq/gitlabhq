@@ -60,6 +60,7 @@ const usersData = {
           id: 'gid://gitlab/User/1',
           avatarUrl: '/avatar.jpg',
           webUrl: '/root',
+          webPath: '/root',
           name: 'Admin Istrator',
           username: 'root',
           __typename: 'UserCore',
@@ -68,6 +69,7 @@ const usersData = {
           id: 'gid://gitlab/User/2',
           avatarUrl: '/root',
           webUrl: '/user2',
+          webPath: '/user2',
           name: 'Billy West',
           username: 'user2',
           __typename: 'UserCore',
@@ -392,19 +394,15 @@ export const projectRunnerCloudProvisioningSteps = {
   id: 'gid://gitlab/Project/1',
   runnerCloudProvisioning: {
     __typename: 'CiRunnerGoogleCloudProvisioning',
-    projectSetupShellScript: '#!/bin/bash echo "hello world!"',
+    projectSetupShellScript: 'mock project setup bash script',
     provisioningSteps: [
       {
         __typename: 'CiRunnerCloudProvisioningStep',
-        title: 'Save the Terraform script to a file',
-        languageIdentifier: 'terraform',
-        instructions: 'terraform...',
+        instructions: 'mock project setup terraform file',
       },
       {
         __typename: 'CiRunnerCloudProvisioningStep',
-        title: 'Apply the Terraform script',
-        languageIdentifier: 'shell',
-        instructions: '#!/bin/bash\n\nterraform plan...',
+        instructions: 'mock project apply terraform script',
       },
     ],
   },
@@ -415,19 +413,15 @@ export const groupRunnerCloudProvisioningSteps = {
   id: 'gid://gitlab/Group/24',
   runnerCloudProvisioning: {
     __typename: 'CiRunnerGoogleCloudProvisioning',
-    projectSetupShellScript: '#!/bin/bash echo "hello world!"',
+    projectSetupShellScript: 'mock group setup bash script',
     provisioningSteps: [
       {
         __typename: 'CiRunnerCloudProvisioningStep',
-        title: 'Save the Terraform script to a file',
-        languageIdentifier: 'terraform',
-        instructions: 'mock instructions...',
+        instructions: 'mock group setup terraform file',
       },
       {
         __typename: 'CiRunnerCloudProvisioningStep',
-        title: 'Apply the Terraform script',
-        languageIdentifier: 'shell',
-        instructions: 'mock instructions...',
+        instructions: 'mock group apply terraform script',
       },
     ],
   },

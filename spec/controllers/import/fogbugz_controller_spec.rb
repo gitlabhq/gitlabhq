@@ -17,7 +17,6 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
   end
 
   describe 'POST #callback' do
-    let(:experiment) { instance_double(ApplicationExperiment) }
     let(:xml_response) { %(<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><token><![CDATA[#{token}]]></token></response>) }
 
     before do
@@ -30,17 +29,6 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
       expect(session[:fogbugz_token]).to eq(token)
       expect(session[:fogbugz_uri]).to eq(uri)
       expect(response).to redirect_to(new_user_map_import_fogbugz_path)
-    end
-
-    it 'tracks default_to_import_tab experiment' do
-      allow(controller)
-        .to receive(:experiment)
-        .with(:default_to_import_tab, actor: user)
-        .and_return(experiment)
-
-      expect(experiment).to receive(:track).with(:successfully_authenticated, property: :fogbugz)
-
-      post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
     end
 
     it 'preserves namespace_id query param on success' do
@@ -67,17 +55,6 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
         post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
 
         expect(response).to redirect_to(new_import_fogbugz_url)
-      end
-
-      it 'does not track default_to_import_tab experiment when client raises authentication exception' do
-        allow(controller)
-          .to receive(:experiment)
-          .with(:default_to_import_tab, actor: user)
-          .and_return(experiment)
-
-        expect(experiment).not_to receive(:track)
-
-        post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
       end
     end
 

@@ -19,3 +19,6 @@ export const ACCESS_LEVEL_NONE = 0;
 export const CC_VALIDATION_REQUIRED_ERROR = __(
   'Instance runners enabled cannot be enabled until a valid credit card is on file',
 );
+
+export const WILDCARDS_HELP_PATH =
+  'user/project/protected_branches#protect-multiple-branches-with-wildcard-rules';

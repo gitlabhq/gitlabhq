@@ -1,0 +1,9 @@
+---
+name: upload_npm_packages_async
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/433009
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146493
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442729
+milestone: '16.11'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

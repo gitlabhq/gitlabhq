@@ -46,7 +46,7 @@ describe('ScopeSidebarNavigation', () => {
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItemActive = () => wrapper.find('[aria-current=page]');
   const findNavItemActiveLabel = () =>
-    findNavItemActive().find('[class="gl-flex-grow-1 gl-text-gray-900 gl-truncate-end"]');
+    findNavItemActive().find('[class="gl-flex-grow-1 gl-text-gray-900"]');
 
   describe('scope navigation', () => {
     beforeEach(() => {
@@ -72,11 +72,6 @@ describe('ScopeSidebarNavigation', () => {
       const { link } = MOCK_NAVIGATION[Object.keys(MOCK_NAVIGATION)[linkAtPosition]];
 
       expect(findNavItems().at(linkAtPosition).findComponent('a').attributes('href')).toBe(link);
-    });
-
-    it('always emits toggle-menu-header event', () => {
-      expect(sidebarEventHub.$emit).toHaveBeenCalledWith('toggle-menu-header', false);
-      expect(sidebarEventHub.$emit).toHaveBeenCalledTimes(1);
     });
   });
 

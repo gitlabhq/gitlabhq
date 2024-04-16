@@ -161,7 +161,7 @@ module SearchHelper
   end
 
   def search_service
-    @search_service ||= ::SearchService.new(current_user, sanitized_search_params)
+    @search_service ||= ::SearchService.new(current_user, params)
   end
 
   def search_sort_options
@@ -204,11 +204,11 @@ module SearchHelper
   end
 
   def search_has_group?
-    search_group&.present? && search_group&.persisted?
+    search_group.present? && search_group&.persisted?
   end
 
   def search_has_project?
-    @project&.present? && @project&.persisted?
+    @project.present? && @project&.persisted?
   end
 
   def header_search_context
@@ -228,7 +228,7 @@ module SearchHelper
       end
 
       hash[:scope] = search_scope if search_has_project? || search_has_group?
-      hash[:for_snippets] = @snippet&.present? || @snippets&.any?
+      hash[:for_snippets] = @snippet.present? || @snippets&.any?
     end
   end
 
@@ -254,7 +254,7 @@ module SearchHelper
   def default_autocomplete
     [
       { category: "Settings", label: _("User settings"),    url: user_settings_profile_path },
-      { category: "Settings", label: _("SSH Keys"),         url: profile_keys_path },
+      { category: "Settings", label: _("SSH Keys"),         url: user_settings_ssh_keys_path },
       { category: "Settings", label: _("Dashboard"),        url: root_path }
     ]
   end
@@ -586,20 +586,6 @@ module SearchHelper
     return unless issuable.is_a?(::MergeRequest)
 
     issuable.target_branch unless issuable.target_branch == issuable.project.default_branch
-  end
-
-  def sanitized_search_params
-    sanitized_params = params.dup
-
-    if sanitized_params.key?(:confidential)
-      sanitized_params[:confidential] = Gitlab::Utils.to_boolean(sanitized_params[:confidential])
-    end
-
-    if sanitized_params.key?(:include_archived)
-      sanitized_params[:include_archived] = Gitlab::Utils.to_boolean(sanitized_params[:include_archived])
-    end
-
-    sanitized_params
   end
 
   def wiki_blob_link(wiki_blob)

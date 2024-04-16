@@ -75,7 +75,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>v</kbd> | Go to the project activity feed (**Manage > Activity**). |
 | <kbd>g</kbd> + <kbd>r</kbd> | Go to the project releases list (**Deploy > Releases**). |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) list (**Code > Repository**). |
-| <kbd>t</kbd>                | Go to the project file search page. (**Code > Repository**, select **Find Files**). |
+| <kbd>t</kbd>                | Open the project file search dialog. (**Code > Repository**, select **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project commits list (**Code > Commits**). |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [repository graph](#repository-graph) page (**Code > Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts (**Analyze > Repository analytics**). |

@@ -112,6 +112,10 @@ module Gitlab
         @context.includes.filter_map { |i| i[:location] if i[:type] == :template }
       end
 
+      def included_components
+        @context.includes.filter_map { |i| i[:extra] if i[:type] == :component }.uniq
+      end
+
       def metadata
         {
           includes: @context.includes,

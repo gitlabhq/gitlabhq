@@ -481,6 +481,11 @@ Migration/BatchMigrationsPostOnly:
     - 'db/migrate/*.rb'
     - 'db/post_migrate/*.rb'
 
+Migration/EnsureFactoryForTable:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+
 Migration/UnfinishedDependencies:
   Enabled: true
   Include:
@@ -1041,7 +1046,6 @@ Cop/RedisQueueUsage:
     - 'lib/gitlab/redis.rb'
     - 'lib/system_check/app/redis_version_check.rb'
     - 'lib/gitlab/mail_room.rb'
-    - 'config/initializers/sidekiq_route_patch.rb'
     - 'lib/gitlab/sidekiq_sharding/scheduled_enq.rb'
     - 'lib/gitlab/sidekiq_sharding/router.rb'
     - 'app/workers/concerns/application_worker.rb'
@@ -1059,11 +1063,11 @@ Cop/SidekiqApiUsage:
     - 'lib/gitlab/sidekiq_queue.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
-    - 'config/initializers/sidekiq_route_patch.rb'
     - 'lib/gitlab/sidekiq_sharding/scheduled_enq.rb'
     - 'lib/gitlab/sidekiq_sharding/router.rb'
     - 'lib/gitlab/redis/queues.rb'
     - 'app/workers/concerns/application_worker.rb'
+    - 'config/initializers/active_job_shard_support.rb'
 
 Cop/FeatureFlagUsage:
   Include:

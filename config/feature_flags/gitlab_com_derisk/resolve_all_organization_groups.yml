@@ -1,0 +1,9 @@
+---
+name: resolve_all_organization_groups
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444218
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146600
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444981
+milestone: '16.11'
+group: group::tenant scale
+type: gitlab_com_derisk
+default_enabled: false

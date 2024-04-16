@@ -68,13 +68,31 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
       apply(suggestions)
 
       commit = project.repository.commit
-      author = suggestions.first.note.author
 
       expect(user.commit_email).not_to eq(user.email)
-      expect(commit.author_email).to eq(author.commit_email_or_default)
+      expect(commit.author_email).to eq(user.commit_email)
       expect(commit.committer_email).to eq(user.commit_email)
-      expect(commit.author_name).to eq(author.name)
+      expect(commit.author_name).to eq(user.name)
       expect(commit.committer_name).to eq(user.name)
+    end
+
+    context 'when web_ui_commit_author_change feature flag is disabled' do
+      before do
+        stub_feature_flags(web_ui_commit_author_change: false)
+      end
+
+      it 'created commit has users email and name' do
+        apply(suggestions)
+
+        commit = project.repository.commit
+        author = suggestions.first.note.author
+
+        expect(user.commit_email).not_to eq(user.email)
+        expect(commit.author_email).to eq(author.commit_email_or_default)
+        expect(commit.committer_email).to eq(user.commit_email)
+        expect(commit.author_name).to eq(author.name)
+        expect(commit.committer_name).to eq(user.name)
+      end
     end
 
     it 'tracks apply suggestion event' do
@@ -96,9 +114,13 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
         let(:message) { '' }
 
         it 'uses the default commit message' do
-          expect(project.repository.commit.message).to(
-            match(/\AApply #{suggestions.size} suggestion\(s\) to \d+ file\(s\)\z/)
+          message = project.repository.commit.message
+          expect(message).to match(
+            /Apply #{suggestions.size} suggestion\(s\) to \d+ file\(s\)/
           )
+
+          author = suggestion.note.author
+          expect(message).to include("Co-authored-by: #{author.name} <#{author.email}>")
         end
       end
 
@@ -350,9 +372,9 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
           it 'created commit has authors info and commiters info' do
             expect(user.commit_email).not_to eq(user.email)
             expect(author).not_to eq(user)
-            expect(commit.author_email).to eq(author.commit_email_or_default)
+            expect(commit.author_email).to eq(user.commit_email)
             expect(commit.committer_email).to eq(user.commit_email)
-            expect(commit.author_name).to eq(author.name)
+            expect(commit.author_name).to eq(user.name)
             expect(commit.committer_name).to eq(user.name)
           end
         end
@@ -370,7 +392,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_review_workflo
 
           it 'uses first authors information' do
             expect(author_emails).to include(first_author.commit_email_or_default).exactly(3)
-            expect(commit.author_email).to eq(first_author.commit_email_or_default)
+            expect(commit.author_email).to eq(user.commit_email)
           end
         end
 

@@ -23,12 +23,12 @@ If you registered for Customers Portal with your GitLab.com account, sign in wit
 
 To sign in to Customers Portal using your GitLab.com account:
 
-1. Navigate to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Continue with your GitLab.com account**.
 
 To sign in to Customers Portal with your email and to receive a one-time sign-in link:
 
-1. Navigate to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Sign in with your email**.
 1. Provide the **Email** for your Customers Portal profile. You will receive
    an email with a one-time, sign-in link for your Customers Portal profile.

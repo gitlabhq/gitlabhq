@@ -117,7 +117,7 @@ You may have connectivity issues due to the following reasons:
       [IPv6](https://www.cloudflare.com/ips-v6/) ranges for activation to work.
     - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html)
       in `gitlab.rb` to point to your server.
-    
+
     Contact your network administrator to make changes to an existing proxy or firewall.
   - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on your instance, then run `gitlab-ctl reconfigure`.
 

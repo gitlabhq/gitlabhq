@@ -16,7 +16,7 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 
 ## Initialize the module
 
-1. Open a terminal and navigate to the project's repository.
+1. Open a terminal and go to the project's repository.
 1. Run `npm init`. Name the module according to [the package registry's naming conventions](../../user/packages/npm_registry/index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
 
 1. Install the following npm packages:

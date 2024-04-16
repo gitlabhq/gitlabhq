@@ -45,7 +45,7 @@
               \.
           - if todo.note.present?
             %span.action-description<
-            = first_line_in_markdown(todo, :body, 125, is_todo: true, project: todo.project, group: todo.group)
+            = first_line_in_markdown(todo, :body, 125, project: todo.project, group: todo.group)
 
           = render_if_exists "dashboard/todos/review_summary", local_assigns: { todo: todo }
 

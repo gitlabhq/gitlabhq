@@ -12,6 +12,7 @@ import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import {
   createWorkItemNoteResponse,
   groupWorkItemByIidResponseFactory,
@@ -34,7 +35,7 @@ describe('Work item add note', () => {
   let groupWorkItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
-  const findTextarea = () => wrapper.findByTestId('note-reply-textarea');
+  const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
   const findWorkItemLockedComponent = () => wrapper.findComponent(WorkItemCommentLocked);
 
   const createComponent = async ({
@@ -84,7 +85,7 @@ describe('Work item add note', () => {
     await waitForPromises();
 
     if (isEditing) {
-      findTextarea().trigger('click');
+      findReplyPlaceholder().vm.$emit('focus');
     }
   };
 

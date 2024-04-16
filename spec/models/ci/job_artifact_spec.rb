@@ -179,6 +179,22 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
     end
   end
 
+  describe 'none_access?' do
+    subject { artifact.none_access? }
+
+    context 'when job artifact created by default' do
+      let!(:artifact) { create(:ci_job_artifact) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when job artifact created as none access' do
+      let!(:artifact) { create(:ci_job_artifact, :none) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '.file_types_for_report' do
     it 'returns the report file types for the report type' do
       expect(described_class.file_types_for_report(:test)).to match_array(%w[junit])
@@ -870,28 +886,6 @@ RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
       end
 
       it_behaves_like 'returning attributes for object deletion'
-    end
-  end
-
-  describe 'routing table switch' do
-    context 'with ff disabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_job_artifacts_routing_table: false)
-      end
-
-      it 'uses the legacy table' do
-        expect(described_class.table_name).to eq('ci_job_artifacts')
-      end
-    end
-
-    context 'with ff enabled' do
-      before do
-        stub_feature_flags(ci_partitioning_use_ci_job_artifacts_routing_table: true)
-      end
-
-      it 'uses the routing table' do
-        expect(described_class.table_name).to eq('p_ci_job_artifacts')
-      end
     end
   end
 end

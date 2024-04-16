@@ -567,7 +567,7 @@ describe('IntegrationForm', () => {
     });
   });
 
-  describe('Google Artifact Registry integration', () => {
+  describe('Google Artifact Management integration', () => {
     describe('Help and sections rendering', () => {
       const dummyHelp = 'Foo Help';
 

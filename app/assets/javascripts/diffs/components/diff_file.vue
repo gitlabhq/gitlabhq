@@ -420,7 +420,7 @@ export default {
       :show-local-file-reviews="showLocalFileReviews"
       :pinned="isPinnedFile"
       class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
-      :class="hasBodyClasses.header"
+      :class="[hasBodyClasses.header, { 'gl-border-red-500! gl-bg-red-200!': file.conflict_type }]"
       @toggleFile="handleToggle({ viaUserInteraction: true })"
       @showForkMessage="showForkMessage"
     />
@@ -448,7 +448,7 @@ export default {
     <template v-else>
       <div
         :id="fileId"
-        :class="hasBodyClasses.contentByHash"
+        :class="[hasBodyClasses.contentByHash, { 'gl-border-red-500': file.conflict_type }]"
         class="diff-content"
         data-testid="content-area"
       >

@@ -258,7 +258,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
 
       describe 'filter by status' do
         let_it_be(:never_contacted) do
-          create(:ci_runner, :instance, description: 'runner-never-contacted', contacted_at: nil)
+          create(:ci_runner, :instance, :unregistered, description: 'runner-never-contacted')
         end
 
         before_all do
@@ -614,7 +614,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
   describe "Runner edit page" do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
-    let_it_be(:project_runner) { create(:ci_runner, :project) }
+    let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
 
     before do
       visit edit_admin_runner_path(project_runner)

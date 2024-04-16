@@ -41,7 +41,9 @@ module AvatarsHelper
     return gravatar_icon(nil, size, scale) unless user
     return default_avatar if blocked_or_unconfirmed?(user) && !can_admin?(current_user)
 
-    user_avatar = user.avatar_url(size: size, only_path: only_path)
+    image_size = !size.nil? ? size * 2 : size
+
+    user_avatar = user.avatar_url(size: image_size, only_path: only_path)
     user_avatar || default_avatar
   end
 

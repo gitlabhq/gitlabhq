@@ -5,7 +5,7 @@ require('spec_helper')
 RSpec.describe Projects::ProtectedBranchesController do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be_with_reload(:empty_project) { create(:project, :empty_repo) }
-  let_it_be(:maintainer) { create(:user, maintainer_projects: [project, empty_project]) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: [project, empty_project]) }
 
   let(:protected_branch) { create(:protected_branch, project: project) }
   let(:project_params) { { namespace_id: project.namespace.to_param, project_id: project } }

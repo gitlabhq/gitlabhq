@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::Stages::ListService, feature_category: :value_stream_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, reporter_of: project) }
   let_it_be(:project_namespace) { project.project_namespace.reload }
 
   let(:value_stream) { Analytics::CycleAnalytics::ValueStream.build_default_value_stream(project_namespace) }
@@ -12,10 +12,6 @@ RSpec.describe Analytics::CycleAnalytics::Stages::ListService, feature_category:
 
   subject do
     described_class.new(parent: project_namespace, current_user: user, params: { value_stream: value_stream }).execute
-  end
-
-  before_all do
-    project.add_reporter(user)
   end
 
   it 'returns only the default stages' do

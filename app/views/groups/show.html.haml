@@ -20,6 +20,7 @@
 = render partial: 'flash_messages'
 
 = render_if_exists 'subscriptions/trials/alert', namespace: @group
+= render_if_exists 'shared/duo_pro_trial_alert', resource: @group
 
 = render 'groups/home_panel'
 

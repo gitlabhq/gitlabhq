@@ -4,21 +4,20 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 2,000 users
+# Reference architecture: 40 RPS or up to 2,000 users 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This page describes the GitLab reference architecture designed for the load of up to 2,000 users
-with notable headroom (non-HA).
+This page describes the GitLab reference architecture designed to target a peak load of 40 requests per second (RPS), the typical peak load of up to 2,000 users, both manual and automated, based on real data with headroom added.
 
 For a full list of reference architectures, see
 [Available reference architectures](index.md#available-reference-architectures).
 
 > - **Target Load:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 > - **High Availability:** No. For a highly-available environment, you can
->   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+>   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 > - **Estimated Costs:** [See cost table](index.md#cost-to-run)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use).
@@ -100,7 +99,7 @@ Before starting, see the [requirements](index.md#requirements) for reference arc
 ## Testing methodology
 
 The 2k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Quality Engineering team
+[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 40 RPS
@@ -120,9 +119,9 @@ The results of this testing are [available publicly on the GPT wiki](https://git
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services via NGINX Ingress for Cloud Native Hybrids. Note that these selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
-## Setup components
+## Set up components
 
-To set up GitLab and its components to accommodate up to 2,000 users:
+To set up GitLab and its components to accommodate up to 40 RPS or 2,000 users:
 
 1. [Configure the external load balancing node](#configure-the-external-load-balancer)
    to handle the load balancing of the GitLab application services nodes.
@@ -254,8 +253,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 for details on managing SSL certificates and configuring NGINX.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -339,8 +338,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/databa
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -407,8 +406,8 @@ Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.
 are supported and can be added if needed.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -606,8 +605,8 @@ To configure Gitaly with TLS:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -741,8 +740,8 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    ```
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -921,8 +920,8 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1018,8 +1017,8 @@ running [Prometheus](../monitoring/prometheus/index.md):
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1051,8 +1050,8 @@ There are plans to [enable the use of a single bucket](https://gitlab.com/gitlab
 in the future.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1077,8 +1076,8 @@ cluster alongside your instance, read how to
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>
 
@@ -1105,7 +1104,7 @@ section assumes this.
 
 NOTE:
 The 2,000 reference architecture is not a highly-available setup. To achieve HA,
-you can follow a modified [3K reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
+you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 
 WARNING:
 **Gitaly Cluster is not supported to be run in Kubernetes**.
@@ -1200,7 +1199,7 @@ Each Webservice pod consumes roughly 4 CPUs and 5 GB of memory using
 the [recommended topology](#cluster-topology) because two worker processes
 are created by default and each pod has other small processes running.
 
-For 2,000 users we recommend a total Puma worker count of around 12.
+For 40 RPS or 2,000 users we recommend a total Puma worker count of around 12.
 With the [provided recommendations](#cluster-topology) this allows the deployment of up to 3
 Webservice pods with 4 workers per pod and 1 pod per node. Expand available resources using
 the ratio of 1 CPU to 1.25 GB of memory _per each worker process_ for each additional
@@ -1232,7 +1231,7 @@ specifically to accommodate several additional deployments. However, if your dep
 pool as given, you can increase the node pool accordingly.
 
 <div align="right">
-  <a type="button" class="btn btn-default" href="#setup-components">
-    Back to setup components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
+  <a type="button" class="btn btn-default" href="#set-up-components">
+    Back to set up components <i class="fa fa-angle-double-up" aria-hidden="true"></i>
   </a>
 </div>

@@ -9,15 +9,15 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, creator: user, path: 'my.project') }
-  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
   let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
   let(:project_id) { project.id }
   let(:current_user) { nil }
   let(:group) { create(:group, :public) }
-  let(:inherited_guest) { create(:user).tap { |u| group.add_guest(u) } }
+  let(:inherited_guest) { create(:user, guest_of: group) }
 
   before do
     project.add_maintainer(user)
@@ -89,6 +89,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           let(:current_user) { user }
 
           it_behaves_like 'project commits'
+
+          context 'when repository does not have commits' do
+            let_it_be(:project) { create(:project, :empty_repo) }
+
+            it 'returns an empty array' do
+              get api("/projects/#{project_id}/repository/commits", user)
+
+              expect(json_response).to eq([])
+            end
+          end
 
           context "since optional parameter" do
             it "returns project commits since provided parameter" do
@@ -709,7 +719,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         context 'when the API user is a guest' do
           let(:public_project) { create(:project, :public, :repository) }
           let(:url) { "/projects/#{public_project.id}/repository/commits" }
-          let(:guest) { create(:user).tap { |u| public_project.add_guest(u) } }
+          let(:guest) { create(:user, guest_of: public_project) }
 
           it 'returns a 403' do
             post api(url, guest), params: valid_c_params
@@ -1919,8 +1929,10 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:created)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
           expect(json_response['title']).to eq(commit.title)
-          expect(json_response['message']).to eq(commit.cherry_pick_message(user))
-          expect(json_response['author_name']).to eq(commit.author_name)
+          expect(json_response['message']).to eq(
+            "#{commit.cherry_pick_message(user)}\n\nCo-authored-by: #{commit.author_name} <#{commit.author_email}>"
+          )
+          expect(json_response['author_name']).to eq(user.name)
           expect(json_response['committer_name']).to eq(user.name)
         end
 

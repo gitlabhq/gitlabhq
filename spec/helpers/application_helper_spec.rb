@@ -210,7 +210,30 @@ RSpec.describe ApplicationHelper do
     it { expect(helper.active_when(false)).to eq(nil) }
   end
 
-  describe '#linkedin_url?' do
+  describe '#linkedin_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user, linkedin: linkedin_url) }
+
+    subject { helper.linkedin_name(user) }
+
+    where(:linkedin_url, :linkedin_name) do
+      'alice'                                           | 'alice'
+      'https://www.linkedin.com/in/'                    | 'in'
+      'https://www.linkedin.com/in/alice'               | 'alice'
+      'http://www.linkedin.com/in/alice'                | 'alice'
+      'http://linkedin.com/in/alice'                    | 'alice'
+      'https://www.linkedin.com/in/alice'               | 'alice'
+      'https://linkedin.com/in/alice'                   | 'alice'
+      'https://linkedin.com/in/alice/more/path'         | 'path'
+    end
+
+    with_them do
+      it { is_expected.to eq(linkedin_name) }
+    end
+  end
+
+  describe '#linkedin_url' do
     using RSpec::Parameterized::TableSyntax
 
     let(:user) { build_stubbed(:user) }
@@ -218,18 +241,12 @@ RSpec.describe ApplicationHelper do
     subject { helper.linkedin_url(user) }
 
     before do
-      user.linkedin = linkedin_name
+      allow(helper).to receive(:linkedin_name).and_return(linkedin_name)
     end
 
     where(:linkedin_name, :linkedin_url) do
-      nil                                       | 'https://www.linkedin.com/in/'
-      ''                                        | 'https://www.linkedin.com/in/'
-      'alice'                                   | 'https://www.linkedin.com/in/alice'
-      'http://www.linkedin.com/in/alice'        | 'http://www.linkedin.com/in/alice'
-      'http://linkedin.com/in/alice'            | 'http://linkedin.com/in/alice'
-      'https://www.linkedin.com/in/alice'       | 'https://www.linkedin.com/in/alice'
-      'https://linkedin.com/in/alice'           | 'https://linkedin.com/in/alice'
-      'https://linkedin.com/in/alice/more/path' | 'https://linkedin.com/in/alice/more/path'
+      ''                                       | 'https://www.linkedin.com/in/'
+      'alice'                                  | 'https://www.linkedin.com/in/alice'
     end
 
     with_them do
@@ -435,7 +452,7 @@ RSpec.describe ApplicationHelper do
 
       it 'returns paths for autocomplete_sources_controller' do
         sources = helper.autocomplete_data_sources(project, noteable_type)
-        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts])
+        expect(sources.keys).to match_array([:members, :issues, :mergeRequests, :labels, :milestones, :commands, :snippets, :contacts, :wikis])
         sources.keys.each do |key|
           expect(sources[key]).not_to be_nil
         end
@@ -542,6 +559,7 @@ RSpec.describe ApplicationHelper do
             group_full_path: nil,
             project_id: project.id,
             project: project.path,
+            project_full_path: project.full_path,
             namespace_id: project.namespace.id
           }
         )
@@ -561,6 +579,7 @@ RSpec.describe ApplicationHelper do
               group_full_path: project.group.full_path,
               project_id: project.id,
               project: project.path,
+              project_full_path: project.full_path,
               namespace_id: project.namespace.id
             }
           )
@@ -588,6 +607,7 @@ RSpec.describe ApplicationHelper do
                 group_full_path: nil,
                 project_id: issue.project.id,
                 project: issue.project.path,
+                project_full_path: project.full_path,
                 namespace_id: issue.project.namespace.id
               }
             )
@@ -959,40 +979,6 @@ RSpec.describe ApplicationHelper do
         expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-vertical-align-text-bottom extra-class').and_return(mock_svg)
 
         helper.hidden_resource_icon(resource, css_class: 'extra-class')
-      end
-    end
-  end
-
-  describe '#controller_full_path' do
-    let(:path) { 'some_path' }
-    let(:action) { 'show' }
-
-    before do
-      allow(helper.controller).to receive(:controller_path).and_return(path)
-      allow(helper.controller).to receive(:action_name).and_return(action)
-    end
-
-    context 'when is create action' do
-      let(:action) { 'create' }
-
-      it 'transforms to "new" path' do
-        expect(helper.controller_full_path).to eq("#{path}/new")
-      end
-    end
-
-    context 'when is update action' do
-      let(:action) { 'update' }
-
-      it 'transforms to "edit" path' do
-        expect(helper.controller_full_path).to eq("#{path}/edit")
-      end
-    end
-
-    context 'when is show action' do
-      let(:action) { 'show' }
-
-      it 'passes through' do
-        expect(helper.controller_full_path).to eq("#{path}/#{action}")
       end
     end
   end

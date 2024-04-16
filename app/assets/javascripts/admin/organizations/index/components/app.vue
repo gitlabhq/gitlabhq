@@ -46,6 +46,9 @@ export default {
     showHeader() {
       return this.loading || this.organizations.nodes?.length;
     },
+    showNewOrganizationButton() {
+      return gon.features?.allowOrganizationCreation;
+    },
     loading() {
       return this.$apollo.queries.organizations.loading;
     },
@@ -78,7 +81,7 @@ export default {
       class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-mb-5"
     >
       <h1 class="gl-m-0 gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
-      <gl-button :href="newOrganizationUrl" variant="confirm">{{
+      <gl-button v-if="showNewOrganizationButton" :href="newOrganizationUrl" variant="confirm">{{
         $options.i18n.newOrganization
       }}</gl-button>
     </div>

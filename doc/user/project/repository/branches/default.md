@@ -207,7 +207,7 @@ When changing the default branch name for an existing repository, you should pre
 the history of your default branch by renaming it, instead of creating a new branch. This example
 renames a Git repository's (`example`) default branch.
 
-1. On your local command line, navigate to your `example` repository, and ensure
+1. On your local command line, go to your `example` repository, and ensure
    you're on the default branch:
 
    ```plaintext

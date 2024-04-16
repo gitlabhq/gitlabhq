@@ -3100,7 +3100,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do
-      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
@@ -3111,7 +3111,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active and only_allow_merge_if_pipeline_succeeds is true" do
-      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, actual_head_pipeline: pipeline)
+      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
       project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
 

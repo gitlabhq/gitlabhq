@@ -24,6 +24,10 @@ describe('OrganizationsView', () => {
   const findOrganizationsList = () => wrapper.findComponent(OrganizationsList);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
 
+  beforeEach(() => {
+    gon.features = { allowOrganizationCreation: true };
+  });
+
   describe.each`
     description                                    | loading  | orgsData         | emptyStateSvg               | emptyStateUrl
     ${'when loading'}                              | ${true}  | ${[]}            | ${false}                    | ${false}
@@ -52,6 +56,18 @@ describe('OrganizationsView', () => {
       expect(
         findGlEmptyState().exists() && findGlEmptyState().attributes('primarybuttonlink'),
       ).toBe(emptyStateUrl);
+    });
+  });
+
+  describe('when `allowOrganizationCreation` feature flag is disabled', () => {
+    beforeEach(() => {
+      gon.features = { allowOrganizationCreation: false };
+      createComponent({ loading: false, organizations: { nodes: [], pageInfo: {} } });
+    });
+
+    it('does not render `New organization` button in empty state', () => {
+      expect(findGlEmptyState().attributes('primarybuttonlink')).toBeUndefined();
+      expect(findGlEmptyState().attributes('primarybuttontext')).toBeUndefined();
     });
   });
 

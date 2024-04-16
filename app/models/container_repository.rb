@@ -223,12 +223,6 @@ class ContainerRepository < ApplicationRecord
     before_transition any => :import_skipped do |container_repository|
       container_repository.migration_skipped_at = Time.zone.now
     end
-
-    before_transition any => %i[import_done import_aborted import_skipped] do |container_repository|
-      container_repository.run_after_commit do
-        ::ContainerRegistry::Migration::EnqueuerWorker.enqueue_a_job
-      end
-    end
   end
 
   # Container Repository model and the code that makes API calls
@@ -437,14 +431,22 @@ class ContainerRepository < ApplicationRecord
     File.join(registry.path, path)
   end
 
+  # If the container registry GitLab API is available, the API
+  # does a search of tags containing the name and we filter them
+  # to find the exact match. Otherwise, we instantiate a tag.
   def tag(tag)
     if can_access_the_gitlab_api?
-      page = tags_page(name: tag, page_size: 1)
+      page = tags_page(name: tag)
+      return if page[:tags].blank?
 
-      page[:tags].first
+      page[:tags].find { |result_tag| result_tag.name == tag }
     else
       ContainerRegistry::Tag.new(self, tag)
     end
+  end
+
+  def image_manifest(reference)
+    client.repository_manifest(path, reference)
   end
 
   def manifest
@@ -453,7 +455,7 @@ class ContainerRepository < ApplicationRecord
 
   def tags
     strong_memoize(:tags) do
-      if can_access_the_gitlab_api? && Feature.enabled?(:fetch_tags_from_registry_api, project)
+      if can_access_the_gitlab_api?
         result = []
         each_tags_page do |array_of_tags|
           result << array_of_tags
@@ -496,7 +498,7 @@ class ContainerRepository < ApplicationRecord
     raise 'too many pages requested' if page_count >= MAX_TAGS_PAGES
   end
 
-  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil)
+  def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil, referrer_type: nil)
     raise ArgumentError, 'not a migrated repository' unless migrated?
 
     page = gitlab_api_client.tags(
@@ -506,7 +508,8 @@ class ContainerRepository < ApplicationRecord
       last: last,
       sort: sort,
       name: name,
-      referrers: referrers
+      referrers: referrers,
+      referrer_type: referrer_type
     )
 
     {

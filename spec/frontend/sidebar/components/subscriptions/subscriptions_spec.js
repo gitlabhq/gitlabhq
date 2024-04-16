@@ -89,7 +89,7 @@ describe('Subscriptions', () => {
     beforeEach(() => {
       mountComponent({
         subscribed: false,
-        projectEmailsDisabled: true,
+        projectEmailsEnabled: false,
         subscribeDisabledDescription,
       });
     });

@@ -35,7 +35,7 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
-    chat: s__('TanukiBot|GitLab Duo Chat'),
+    chat: s__('DuoChat|GitLab Duo Chat'),
   },
   props: {
     sidebarData: {

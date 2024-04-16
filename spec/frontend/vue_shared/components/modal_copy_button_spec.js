@@ -1,4 +1,5 @@
 import { shallowMount, createWrapper } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -6,17 +7,42 @@ import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 describe('modal copy button', () => {
   let wrapper;
 
-  beforeEach(() => {
+  const findBtn = () => wrapper.findComponent(GlButton);
+
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(ModalCopyButton, {
       propsData: {
         text: 'copy me',
-        title: 'Copy this value',
-        id: 'test-id',
+        ...props,
       },
+    });
+  };
+
+  it('shows default title', () => {
+    createComponent();
+
+    expect(findBtn().attributes()).toMatchObject({
+      'aria-label': 'Copy',
+      title: 'Copy',
+    });
+  });
+
+  it('shows custom title', () => {
+    createComponent({ title: 'Copy text!' });
+
+    expect(findBtn().attributes()).toMatchObject({
+      'aria-label': 'Copy text!',
+      title: 'Copy text!',
     });
   });
 
   describe('clipboard', () => {
+    beforeEach(() => {
+      createComponent({
+        id: 'test-id',
+      });
+    });
+
     it('should fire a `success` event on click', async () => {
       const root = createWrapper(wrapper.vm.$root);
       document.execCommand = jest.fn(() => true);

@@ -75,3 +75,26 @@ To delete a compliance framework from the compliance frameworks report:
 1. On the page, select the **Frameworks** tab.
 1. Hover over framework and select **Edit the framework**.
 1. Select the **Delete framework** to delete compliance framework.
+
+## Export a report of compliance frameworks in a group
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `compliance_frameworks_report_csv_export`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+named `compliance_frameworks_report_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Exports the contents of a compliance frameworks report in a group. Reports are truncated at 15 MB to avoid a large email attachment.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export the standards adherence report for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export framework report**.
+
+A report is compiled and delivered to your email inbox as an attachment.

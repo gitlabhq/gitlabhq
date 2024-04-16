@@ -38,6 +38,7 @@ export default {
     'mattermostEnabled',
     'availableVisibilityLevels',
     'restrictedVisibilityLevels',
+    'defaultVisibilityLevel',
     'pathMaxlength',
     'pathPattern',
   ],
@@ -45,6 +46,15 @@ export default {
     return {
       loading: false,
     };
+  },
+  computed: {
+    initialFormValues() {
+      return {
+        [FORM_FIELD_NAME]: '',
+        [FORM_FIELD_PATH]: '',
+        [FORM_FIELD_VISIBILITY_LEVEL]: this.defaultVisibilityLevel,
+      };
+    },
   },
   methods: {
     async onSubmit({
@@ -103,6 +113,7 @@ export default {
       :cancel-path="groupsOrganizationPath"
       :available-visibility-levels="availableVisibilityLevels"
       :restricted-visibility-levels="restrictedVisibilityLevels"
+      :initial-form-values="initialFormValues"
       @submit="onSubmit"
     />
   </div>

@@ -4,7 +4,7 @@ module Gitlab
   module Sanitizers
     class Exif
       # these tags are not removed from the image
-      WHITELISTED_TAGS = %w[
+      ALLOWLISTED_TAGS = %w[
         ResolutionUnit
         XResolution
         YResolution
@@ -43,8 +43,8 @@ module Gitlab
         MIMEType
       ].freeze
 
-      ALLOWED_TAGS = WHITELISTED_TAGS + IGNORED_TAGS
-      EXCLUDE_PARAMS = WHITELISTED_TAGS.map { |tag| "-#{tag}" }
+      ALLOWED_TAGS = ALLOWLISTED_TAGS + IGNORED_TAGS
+      EXCLUDE_PARAMS = ALLOWLISTED_TAGS.map { |tag| "-#{tag}" }
       ALLOWED_MIME_TYPES = %w[image/jpeg image/tiff].freeze
 
       attr_reader :logger

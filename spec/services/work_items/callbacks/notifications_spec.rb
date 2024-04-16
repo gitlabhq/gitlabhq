@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe WorkItems::Callbacks::Notifications, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :private, group: group) }
-  let_it_be(:guest) { create(:user).tap { |u| project.add_guest(u) } }
-  let_it_be(:author) { create(:user).tap { |u| project.add_guest(u) } }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:author) { create(:user, guest_of: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, author: author) }
   let_it_be(:current_user) { guest }
 

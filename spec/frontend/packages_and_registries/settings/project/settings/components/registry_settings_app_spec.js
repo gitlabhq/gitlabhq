@@ -5,9 +5,11 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import component from '~/packages_and_registries/settings/project/components/registry_settings_app.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
+import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 import DependencyProxyPackagesSettings from 'ee_component/packages_and_registries/settings/project/components/dependency_proxy_packages_settings.vue';
+import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
 import {
   SHOW_SETUP_SUCCESS_ALERT,
   UPDATE_SETTINGS_SUCCESS_MESSAGE,
@@ -19,11 +21,13 @@ describe('Registry Settings app', () => {
   let wrapper;
 
   const findContainerExpirationPolicy = () => wrapper.findComponent(ContainerExpirationPolicy);
+  const findContainerProtectionRules = () => wrapper.findComponent(ContainerProtectionRules);
   const findPackagesCleanupPolicy = () => wrapper.findComponent(PackagesCleanupPolicy);
   const findPackagesProtectionRules = () => wrapper.findComponent(PackagesProtectionRules);
   const findDependencyProxyPackagesSettings = () =>
     wrapper.findComponent(DependencyProxyPackagesSettings);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findMetadataDatabaseAlert = () => wrapper.findComponent(MetadataDatabaseAlert);
 
   const defaultProvide = {
     projectPath: 'path',
@@ -31,7 +35,11 @@ describe('Registry Settings app', () => {
     showPackageRegistrySettings: true,
     showDependencyProxySettings: false,
     ...(IS_EE && { showDependencyProxySettings: true }),
-    glFeatures: { packagesProtectedPackages: true },
+    glFeatures: {
+      containerRegistryProtectedContainers: true,
+      packagesProtectedPackages: true,
+    },
+    isContainerRegistryMetadataDatabaseEnabled: false,
   };
 
   const mountComponent = (provide = defaultProvide) => {
@@ -39,6 +47,23 @@ describe('Registry Settings app', () => {
       provide,
     });
   };
+
+  describe('metadata database alert', () => {
+    it('is rendered when metadata database is not enabled', () => {
+      mountComponent();
+
+      expect(findMetadataDatabaseAlert().exists()).toBe(true);
+    });
+
+    it('is not rendered when metadata database is enabled', () => {
+      mountComponent({
+        ...defaultProvide,
+        isContainerRegistryMetadataDatabaseEnabled: true,
+      });
+
+      expect(findMetadataDatabaseAlert().exists()).toBe(false);
+    });
+  });
 
   describe('container policy success alert handling', () => {
     const originalLocation = window.location.href;
@@ -97,6 +122,7 @@ describe('Registry Settings app', () => {
         });
 
         expect(findContainerExpirationPolicy().exists()).toBe(showContainerRegistrySettings);
+        expect(findContainerProtectionRules().exists()).toBe(showContainerRegistrySettings);
         expect(findPackagesCleanupPolicy().exists()).toBe(showPackageRegistrySettings);
         expect(findPackagesProtectionRules().exists()).toBe(showPackageRegistrySettings);
       },
@@ -121,6 +147,21 @@ describe('Registry Settings app', () => {
             ...defaultProvide,
             showPackageRegistrySettings,
             glFeatures: { packagesProtectedPackages: false },
+          });
+
+          expect(findPackagesProtectionRules().exists()).toBe(false);
+        },
+      );
+    });
+
+    describe('when feature flag "containerRegistryProtectedContainers" is disabled', () => {
+      it.each([true, false])(
+        'container protection rules settings is hidden if showContainerRegistrySettings is %s',
+        (showContainerRegistrySettings) => {
+          mountComponent({
+            ...defaultProvide,
+            showContainerRegistrySettings,
+            glFeatures: { containerRegistryProtectedContainers: false },
           });
 
           expect(findPackagesProtectionRules().exists()).toBe(false);

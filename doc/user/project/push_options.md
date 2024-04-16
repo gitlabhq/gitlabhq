@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "When you push commits from the command line, use push rules to pass CI/CD variables and set values for merge request fields."
 ---
 
 # Push options

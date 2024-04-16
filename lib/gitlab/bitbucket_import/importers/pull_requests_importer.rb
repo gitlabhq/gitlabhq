@@ -42,6 +42,12 @@ module Gitlab
         def id_for_already_enqueued_cache(object)
           object.iid
         end
+
+        # To avoid overloading Gitaly, we use a smaller limit for pull requests than the one defined in the
+        # application settings.
+        def concurrent_import_jobs_limit
+          100
+        end
       end
     end
   end

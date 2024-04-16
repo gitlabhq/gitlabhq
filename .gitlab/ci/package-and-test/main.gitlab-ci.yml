@@ -571,15 +571,57 @@ importers:
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
 
-ai-gateway:
+# ========== ai-gateway ===========
+
+.ai-gateway-base:
   extends:
     - .qa
     - .failure-videos
+
+ai-gateway:
+  extends:
+    - .ai-gateway-base
   variables:
     QA_SCENARIO: Test::Integration::AiGateway
   rules:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-seat-assigned:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoSeatAssigned
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoSeatAssigned/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-add-on:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoAddOn
+  before_script:
+    - export QA_EE_ACTIVATION_CODE=$QA_EE_ACTIVATION_CODE_NO_ADD_ON
+    - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoAddOn/
+    - !reference [.rules:test:manual, rules]
+
+ai-gateway-no-license:
+  extends:
+    - .ai-gateway-base
+  variables:
+    QA_SCENARIO: Test::Integration::AiGatewayNoLicense
+  before_script:
+    - unset QA_EE_LICENSE
+    - !reference [.ai-gateway-base, before_script]
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::AiGatewayNoLicense/
     - !reference [.rules:test:manual, rules]
 
 # ------------------------------------------

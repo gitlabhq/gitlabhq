@@ -2,7 +2,7 @@
 import { GlTableLite } from '@gitlab/ui';
 import Commit from '~/vue_shared/components/commit.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import DeploymentStatusLink from './components/deployment_status_link.vue';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentJob from './components/deployment_job.vue';
 import DeploymentTriggerer from './components/deployment_triggerer.vue';
 import DeploymentActions from './components/deployment_actions.vue';
@@ -33,7 +33,7 @@ export default {
       <col v-for="field in fields" :key="field.key" :class="field.columnClass" />
     </template>
     <template #cell(status)="{ item }">
-      <deployment-status-link :deployment-job="item.job" :status="item.status" />
+      <deployment-status-link :deployment="item" :deployment-job="item.job" :status="item.status" />
     </template>
     <template #cell(id)="{ item }">
       <strong data-testid="deployment-id">{{ item.id }}</strong>

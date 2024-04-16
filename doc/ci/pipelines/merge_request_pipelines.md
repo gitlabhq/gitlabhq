@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
-
 You can configure your pipeline to run every time you make changes to the
 source branch in a merge request.
 
@@ -37,15 +35,13 @@ and target branches together, use merged results pipelines.
 
 To use merge request pipelines:
 
-- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be configured with
-  jobs that run in merge request pipelines. To do this, you can use:
-  - [`rules`](#use-rules-to-add-jobs).
-  - [`only/except`](#use-only-to-add-jobs).
+- Your project's [`.gitlab-ci.yml` file](../index.md#the-gitlab-ciyml-file) must be
+  [configured with jobs that run in merge request pipelines](#add-jobs-to-merge-request-pipelines).
 - You must have at least the Developer role in the
   source project to run a merge request pipeline.
 - Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
 
-## Use `rules` to add jobs
+## Add jobs to merge request pipelines
 
 Use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
 merge request pipelines. For example:
@@ -85,24 +81,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-## Use `only` to add jobs
-
-[`rules`](#use-rules-to-add-jobs) is the preferred method, but you can also use
-the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
-to configure jobs to run in merge request pipelines. For example:
-
-```yaml
-job1:
-  script:
-    - echo "This job runs in merge request pipelines"
-  only:
-    - merge_requests
-```
-
 ## Use with forked projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217451) in GitLab 13.3.
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 External contributors who work in forks can't create pipelines in the parent project.
 
@@ -112,9 +91,7 @@ pipeline that:
 - Is created and runs in the fork (source) project, not the parent (target) project.
 - Uses the fork project's CI/CD configuration, resources, and project CI/CD variables.
 
-Pipelines for forks display with the **fork** badge in the parent project:
-
-![Pipeline ran in fork](img/pipeline_fork_v13_7.png)
+Pipelines for forks display with the **fork** badge in the parent project.
 
 ### Run pipelines in the parent project
 

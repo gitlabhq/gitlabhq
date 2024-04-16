@@ -224,6 +224,51 @@ With cumulative label event duration calculation enabled, the duration is three 
 NOTE:
 When you upgrade your GitLab version to 16.10 (or to a higher version), existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
 
+##### Reaggregate data after upgrade
+
+DETAILS:
+**Offering:** Self-managed
+
+On large self-managed GitLab instances, when you upgrade the GitLab version and especially if several minor versions are skipped, the background aggregation processes might last longer. This delay can result in outdated data on the Value Stream Analytics page.
+To speed up the aggregation process and avoid outdated data, in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) you can invoke the synchronous aggregation snippet for a given group:
+
+```ruby
+group = Group.find(-1) # put your group id here
+group_to_aggregate = group.root_ancestor
+
+loop do
+  cursor = {}
+  context = Analytics::CycleAnalytics::AggregationContext.new(cursor: cursor)
+  service_response = Analytics::CycleAnalytics::DataLoaderService.new(group: group_to_aggregate, model: Issue, context: context).execute
+
+  if service_response.success? && service_response.payload[:reason] == :limit_reached
+    cursor = service_response.payload[:context].cursor
+  elsif service_response.success?
+    puts "finished"
+    break
+  else
+    puts "failed"
+    break
+  end
+end
+
+loop do
+  cursor = {}
+  context = Analytics::CycleAnalytics::AggregationContext.new(cursor: cursor)
+  service_response = Analytics::CycleAnalytics::DataLoaderService.new(group: group_to_aggregate, model: MergeRequest, context: context).execute
+
+  if service_response.success? && service_response.payload[:reason] == :limit_reached
+    cursor = service_response.payload[:context].cursor
+  elsif service_response.success?
+    puts "finished"
+    break
+  else
+    puts "failed"
+    break
+  end
+end
+```
+
 ### How value stream analytics identifies the production environment
 
 Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
@@ -416,6 +461,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - **New value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the **New value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+
 ### Create a value stream with GitLab default stages
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
@@ -434,7 +484,7 @@ create custom stages in addition to those provided in the default template.
 1. To add a custom stage, select **Add another stage**.
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 
 NOTE:
 If you have recently upgraded to GitLab Premium, it can take up to 30 minutes for data to collect and display.
@@ -449,13 +499,13 @@ When you create a value stream, you can create and add custom stages that align 
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 1. For each stage:
    - Enter a name for the stage.
    - Select a **Start event** and a **Stop event**.
 1. To add another stage, select **Add another stage**.
 1. To re-order the stages, select the up or down arrows.
-1. Select **Create value stream**.
+1. Select **New value stream**.
 
 #### Label-based stages for custom value streams
 
@@ -482,6 +532,10 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+> - **Edit value stream** feature [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381002) from a dialog to a page in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the **Edit value stream** feature is not available. To make it available, an administrator can enable the [feature flag](../../../administration/feature_flags.md) named `vsa_standalone_settings_page`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 

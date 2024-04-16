@@ -46,6 +46,55 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
     end
   end
 
+  describe 'POST /projects/:id/remote_mirrors/:mirror_id/sync' do
+    let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror_id}/sync" }
+    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror_id) { mirror.id }
+
+    context 'without enough permissions' do
+      it 'requires `admin_remote_mirror` permission' do
+        post api(route, developer)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with sufficient permissions' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      it 'returns a successful response' do
+        post api(route, user)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      context 'when some error occurs' do
+        before do
+          mirror.update!(enabled: false)
+        end
+
+        it 'returns an error' do
+          post api(route, user)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to match(/Cannot proceed with the push mirroring/)
+        end
+      end
+
+      context 'when mirror ID is missing' do
+        let(:mirror_id) { non_existing_record_id }
+
+        it 'returns a not found error' do
+          post api(route, user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe 'POST /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
 

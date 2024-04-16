@@ -9,7 +9,6 @@ import updateWorkItemMutation from '../../graphql/update_work_item.mutation.grap
 import {
   STATE_OPEN,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_NAME_TO_ICON_MAP,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
 } from '../../constants';
@@ -84,12 +83,6 @@ export default {
     },
     childItemType() {
       return this.childItem.workItemType.name;
-    },
-    iconName() {
-      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
-        return this.isItemOpen ? 'issue-open-m' : 'issue-close';
-      }
-      return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
     },
     iconClass() {
       if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
@@ -230,10 +223,7 @@ export default {
 
 <template>
   <li class="tree-item gl-p-0! gl-border-bottom-0!">
-    <div
-      class="gl-display-flex gl-align-items-flex-start"
-      :class="{ 'gl-ml-5 gl-pl-2': canHaveChildren && !hasChildren && hasIndirectChildren }"
-    >
+    <div class="gl-display-flex gl-align-items-flex-start">
       <gl-button
         v-if="hasChildren"
         v-gl-tooltip.hover

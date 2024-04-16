@@ -281,6 +281,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         .with(organization, { display: 'groups' })
         .and_return(groups_and_projects_organization_path)
       allow(helper).to receive(:restricted_visibility_levels).and_return([])
+      stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'returns expected json' do
@@ -296,6 +297,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             Gitlab::VisibilityLevel::PUBLIC
           ],
           'restricted_visibility_levels' => [],
+          'default_visibility_level' => Gitlab::VisibilityLevel::PUBLIC,
           'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
           'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }
@@ -309,6 +311,31 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         {
           'new_organization_url' => new_organization_path,
           'organizations_empty_state_svg_path' => organizations_empty_state_svg_path
+        }
+      )
+    end
+  end
+
+  describe '#organization_projects_edit_app_data' do
+    let_it_be(:project) { build_stubbed(:project, organization: organization) }
+
+    before do
+      allow(helper).to receive(:groups_and_projects_organization_path)
+        .with(organization, { display: 'projects' })
+        .and_return(groups_and_projects_organization_path)
+    end
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(organization, project))).to eq(
+        {
+          'projects_organization_path' => groups_and_projects_organization_path,
+          'preview_markdown_path' => preview_markdown_organizations_path,
+          'project' => {
+            'id' => project.id,
+            'name' => project.name,
+            'full_name' => project.full_name,
+            'description' => project.description
+          }
         }
       )
     end

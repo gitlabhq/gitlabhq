@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::RackAttack::UserAllowlist do
+RSpec.describe Gitlab::RackAttack::UserAllowlist, feature_category: :rate_limiting do
   using RSpec::Parameterized::TableSyntax
 
   subject { described_class.new(input) }

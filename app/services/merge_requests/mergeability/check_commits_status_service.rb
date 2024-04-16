@@ -7,8 +7,6 @@ module MergeRequests
       description 'Checks source branch exists and contains commits.'
 
       def execute
-        return inactive unless Feature.enabled?(:switch_broken_status, merge_request.project, type: :gitlab_com_derisk)
-
         if merge_request.has_no_commits? || merge_request.branch_missing?
           failure
         else

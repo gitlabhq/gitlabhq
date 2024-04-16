@@ -133,7 +133,6 @@ RSpec/ReturnFromStub:
     - 'spec/lib/gitlab/legacy_github_import/importer_spec.rb'
     - 'spec/lib/gitlab/memory/instrumentation_spec.rb'
     - 'spec/lib/gitlab/memory/reports_daemon_spec.rb'
-    - 'spec/lib/gitlab/metrics/system_spec.rb'
     - 'spec/lib/gitlab/middleware/read_only_spec.rb'
     - 'spec/lib/gitlab/prometheus_client_spec.rb'
     - 'spec/lib/gitlab/redis/cache_spec.rb'

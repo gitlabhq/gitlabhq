@@ -6,7 +6,8 @@ module API
       expose :user, merge: true, using: UserBasic
       expose :access_level
       expose :created_at
-      expose :created_by, with: UserBasic, expose_nil: false
+      expose :created_by, with: UserBasic, expose_nil: false,
+        if: ->(member) { member.is_source_accessible_to_current_user }
       expose :expires_at
     end
   end

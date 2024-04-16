@@ -7,14 +7,17 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
-        LATEST_VERSION_KEYWORD = '~latest'
+        attr_reader :component_name
+
+        SHORTHAND_SEMVER_PATTERN = /^\d+(\.\d+)?$/
+        LATEST = '~latest'
 
         def self.match?(address)
           address.include?('@') && address.start_with?(fqdn_prefix)
         end
 
         def self.fqdn_prefix
-          "#{Settings.gitlab_ci['component_fqdn']}/"
+          "#{Gitlab.config.gitlab_ci.server_fqdn}/"
         end
 
         def initialize(address:)
@@ -38,19 +41,44 @@ module Gitlab
 
         def sha
           return unless project
-          return latest_version_sha if version == LATEST_VERSION_KEYWORD
 
-          release_with_tag = project.releases.find_by_tag(version)
-
-          return release_with_tag.sha if release_with_tag.present?
-
-          project.commit(version)&.id
+          find_version_sha(version)
         end
         strong_memoize_attr :sha
 
         private
 
-        attr_reader :version, :component_name
+        attr_reader :version
+
+        def find_version_sha(version)
+          return find_latest_sha if version == LATEST
+
+          sha_by_shorthand_semver(version) || sha_by_released_tag(version) || sha_by_ref(version)
+        end
+
+        def sha_by_shorthand_semver(version)
+          return unless version.match?(SHORTHAND_SEMVER_PATTERN)
+          return unless project.catalog_resource
+
+          major, minor = version.split(".")
+          project.catalog_resource.versions.latest(major, minor)&.sha
+        end
+
+        def sha_by_released_tag(version)
+          project.releases.find_by_tag(version)&.sha
+        end
+
+        def sha_by_ref(version)
+          project.commit(version)&.id
+        end
+
+        def find_latest_sha
+          if project.catalog_resource
+            project.catalog_resource.versions.latest&.sha
+          else
+            project.releases.latest&.sha
+          end
+        end
 
         def find_project_by_component_path(path)
           project_full_path = extract_project_path(path)
@@ -80,14 +108,6 @@ module Gitlab
 
         def extract_component_name(project_path)
           instance_path.delete_prefix(project_path).delete_prefix('/')
-        end
-
-        def latest_version_sha
-          if project.catalog_resource
-            project.catalog_resource.versions.latest&.sha
-          else
-            project.releases.latest&.sha
-          end
         end
       end
     end

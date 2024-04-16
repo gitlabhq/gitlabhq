@@ -454,7 +454,7 @@ class MergeRequestDiff < ApplicationRecord
           )
         end
 
-        diff_options[:generated_files] = comparison.generated_files if diff_options[:collapse_generated]
+        diff_options[:generated_files] = comparison.generated_files
 
         Gitlab::Metrics.measure(:diffs_comparison) do
           comparison.diffs(diff_options)
@@ -469,25 +469,19 @@ class MergeRequestDiff < ApplicationRecord
     fetching_repository_diffs({}) do |comparison|
       reorder_diff_files!
 
-      collapse_generated = Feature.enabled?(:collapse_generated_diff_files, project)
-      diff_options = { collapse_generated: collapse_generated }
-
       collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
         self,
         page,
-        per_page,
-        diff_options
+        per_page
       )
 
       if comparison
-        diff_options[:generated_files] = comparison.generated_files if collapse_generated
-
         comparison.diffs(
-          diff_options.merge(
-            paths: collection.diff_paths,
-            page: collection.current_page,
-            per_page: collection.limit_value,
-            count: collection.total_count)
+          generated_files: comparison.generated_files,
+          paths: collection.diff_paths,
+          page: collection.current_page,
+          per_page: collection.limit_value,
+          count: collection.total_count
         )
       else
         collection
@@ -832,7 +826,7 @@ class MergeRequestDiff < ApplicationRecord
       new_attributes[:state] = :empty
     else
       options = Commit.max_diff_options
-      options[:generated_files] = compare.generated_files if Feature.enabled?(:collapse_generated_diff_files, project)
+      options[:generated_files] = compare.generated_files
 
       diff_collection = compare.diffs(options)
       new_attributes[:real_size] = diff_collection.real_size

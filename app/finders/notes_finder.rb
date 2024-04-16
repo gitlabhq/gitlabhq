@@ -67,9 +67,7 @@ class NotesFinder
 
     @target =
       if target_type == "commit"
-        if Ability.allowed?(@current_user, :read_code, @project)
-          @project.commit(target_id)
-        end
+        @project.commit(target_id) if Ability.allowed?(@current_user, :read_code, @project)
       else
         noteable_for_type_by_id(target_type, target_id, target_iid)
       end

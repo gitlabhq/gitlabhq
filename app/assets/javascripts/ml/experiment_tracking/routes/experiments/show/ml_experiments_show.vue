@@ -1,4 +1,5 @@
 <script>
+import { isEmpty } from 'lodash';
 import { GlTableLite, GlLink, GlEmptyState, GlButton } from '@gitlab/ui';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
@@ -129,6 +130,9 @@ export default {
     hasItems() {
       return this.candidates.length > 0;
     },
+    hasMetadata() {
+      return !isEmpty(this.experiment.metadata);
+    },
     deleteButtonInfo() {
       return {
         deletePath: this.experiment.path,
@@ -176,76 +180,94 @@ export default {
       }}</gl-button>
       <delete-button v-bind="deleteButtonInfo" />
     </model-experiments-header>
+    <section>
+      <registry-search
+        :filters="filters"
+        :sorting="sorting"
+        :sortable-fields="sortableFields"
+        @sorting:changed="updateSortingAndEmitUpdate"
+        @filter:changed="updateFilters"
+        @filter:submit="submitFilters"
+        @filter:clear="filters = []"
+      />
 
-    <registry-search
-      :filters="filters"
-      :sorting="sorting"
-      :sortable-fields="sortableFields"
-      @sorting:changed="updateSortingAndEmitUpdate"
-      @filter:changed="updateFilters"
-      @filter:submit="submitFilters"
-      @filter:clear="filters = []"
-    />
+      <div v-if="hasItems" class="gl-overflow-x-auto">
+        <gl-table-lite
+          :fields="fields"
+          :items="tableItems"
+          show-empty
+          small
+          class="gl-mt-0! ml-candidate-table"
+        >
+          <template #cell()="data">
+            <div>{{ data.value }}</div>
+          </template>
 
-    <div v-if="hasItems" class="gl-overflow-x-auto">
-      <gl-table-lite
-        :fields="fields"
-        :items="tableItems"
-        show-empty
-        small
-        class="gl-mt-0! ml-candidate-table"
-      >
-        <template #cell()="data">
-          <div>{{ data.value }}</div>
-        </template>
+          <template #cell(nameColumn)="data">
+            <gl-link :href="data.value.details_path">
+              <span v-if="data.value.name"> {{ data.value.name }}</span>
+              <span v-else class="gl-font-style-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
+            </gl-link>
+          </template>
 
-        <template #cell(nameColumn)="data">
-          <gl-link :href="data.value.details_path">
-            <span v-if="data.value.name"> {{ data.value.name }}</span>
-            <span v-else class="gl-font-style-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
-          </gl-link>
-        </template>
+          <template #cell(artifact)="data">
+            <gl-link v-if="data.value" :href="data.value" target="_blank">{{
+              $options.i18n.ARTIFACTS_LABEL
+            }}</gl-link>
+            <div v-else class="gl-font-style-italic gl-text-gray-500">
+              {{ $options.i18n.NO_ARTIFACT }}
+            </div>
+          </template>
 
-        <template #cell(artifact)="data">
-          <gl-link v-if="data.value" :href="data.value" target="_blank">{{
-            $options.i18n.ARTIFACTS_LABEL
-          }}</gl-link>
-          <div v-else class="gl-font-style-italic gl-text-gray-500">
-            {{ $options.i18n.NO_ARTIFACT }}
-          </div>
-        </template>
+          <template #cell(created_at)="data">
+            <time-ago :time="data.value" />
+          </template>
 
-        <template #cell(created_at)="data">
-          <time-ago :time="data.value" />
-        </template>
+          <template #cell(user)="data">
+            <gl-link v-if="data.value" :href="data.value.path">@{{ data.value.username }}</gl-link>
+            <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
+          </template>
 
-        <template #cell(user)="data">
-          <gl-link v-if="data.value" :href="data.value.path">@{{ data.value.username }}</gl-link>
-          <div v-else>{{ $options.i18n.NO_DATA_CONTENT }}</div>
-        </template>
+          <template #cell(ci_job)="data">
+            <gl-link v-if="data.value" :href="data.value.path" target="_blank">{{
+              data.value.name
+            }}</gl-link>
+            <div v-else class="gl-font-style-italic gl-text-gray-500">
+              {{ $options.i18n.NO_JOB }}
+            </div>
+          </template>
+        </gl-table-lite>
+      </div>
 
-        <template #cell(ci_job)="data">
-          <gl-link v-if="data.value" :href="data.value.path" target="_blank">{{
-            data.value.name
-          }}</gl-link>
-          <div v-else class="gl-font-style-italic gl-text-gray-500">
-            {{ $options.i18n.NO_JOB }}
-          </div>
-        </template>
-      </gl-table-lite>
-    </div>
+      <gl-empty-state
+        v-else
+        :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
+        :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
+        :primary-button-link="$options.constants.CREATE_CANDIDATE_HELP_PATH"
+        :svg-path="emptyStateSvgPath"
+        :svg-height="null"
+        :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
+        class="gl-py-8"
+      />
 
-    <gl-empty-state
-      v-else
-      :title="$options.i18n.EMPTY_STATE_TITLE_LABEL"
-      :primary-button-text="$options.i18n.CREATE_NEW_LABEL"
-      :primary-button-link="$options.constants.CREATE_CANDIDATE_HELP_PATH"
-      :svg-path="emptyStateSvgPath"
-      :svg-height="null"
-      :description="$options.i18n.EMPTY_STATE_DESCRIPTION_LABEL"
-      class="gl-py-8"
-    />
+      <keyset-pagination v-if="displayPagination" v-bind="pageInfo" />
+    </section>
 
-    <keyset-pagination v-if="displayPagination" v-bind="pageInfo" />
+    <section>
+      <div class="experiment-metadata">
+        <h3 :class="$options.HEADER_CLASSES">{{ $options.i18n.METADATA_LABEL }}</h3>
+
+        <table v-if="hasMetadata">
+          <tbody>
+            <tr v-for="item in experiment.metadata" :key="item.name">
+              <td class="gl-font-weight-bold">{{ item.name }}</td>
+              <td>{{ item.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div v-else class="gl-text-secondary">{{ $options.i18n.NO_METADATA_MESSAGE }}</div>
+      </div>
+    </section>
   </div>
 </template>

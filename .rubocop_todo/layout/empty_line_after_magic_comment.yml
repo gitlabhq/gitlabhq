@@ -91,7 +91,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/services/clusters/build_service.rb'
     - 'app/services/labels/available_labels_service.rb'
     - 'app/services/merge_requests/mergeability/check_base_service.rb'
-    - 'app/services/merge_requests/mergeability/check_broken_status_service.rb'
     - 'app/services/merge_requests/mergeability/check_ci_status_service.rb'
     - 'app/services/merge_requests/mergeability/check_discussions_status_service.rb'
     - 'app/services/merge_requests/mergeability/run_checks_service.rb'

@@ -61,7 +61,7 @@ Alerts contain one of the following icons:
 
 ## Alert details page
 
-Navigate to the Alert details view by visiting the [Alert list](alerts.md) and selecting an alert from the list. You need at least the Developer role to access alerts. Select any alert in the list to examine its alert details page.
+Go to the Alert details view by visiting the [Alert list](alerts.md) and selecting an alert from the list. You need at least the Developer role to access alerts. Select any alert in the list to examine its alert details page.
 
 Alerts provide **Overview** and **Alert details** tabs to give you the right amount of information you need.
 

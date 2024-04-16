@@ -72,6 +72,13 @@ module Types
           extras: [:lookahead],
           resolver: ::Resolvers::Achievements::AchievementsResolver
 
+    field :work_item, Types::WorkItemType,
+          null: true,
+          resolver: Resolvers::Namespaces::WorkItemResolver,
+          alpha: { milestone: '16.10' },
+          description: 'Find a work item by IID directly associated with the namespace(project or group).  Returns ' \
+                       '`null` for group level work items if the `namespace_level_work_items` feature flag is disabled.'
+
     markdown_field :description_html, null: true
 
     def timelog_categories

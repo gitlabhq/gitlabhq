@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlTabs, GlTab } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -33,6 +33,7 @@ describe('~/environments/environment_details/index.vue', () => {
             clusterAgent,
             kubernetesNamespace,
             fluxResourcePath: fluxResourcePathMock,
+            deploymentsDisplayCount: 3,
           },
         },
       },
@@ -59,6 +60,7 @@ describe('~/environments/environment_details/index.vue', () => {
   const findTabByIndex = (index) => findAllTabs().at(index);
   const findDeploymentHistory = () => wrapper.findComponent(DeploymentsHistory);
   const findKubernetesOverview = () => wrapper.findComponent(KubernetesOverview);
+  const findTabBadge = () => wrapper.findComponent(GlBadge);
 
   describe('loading state', () => {
     beforeEach(() => {
@@ -134,7 +136,11 @@ describe('~/environments/environment_details/index.vue', () => {
     });
 
     it('renders correct title', () => {
-      expect(findTabByIndex(1).attributes('title')).toBe('Deployment history');
+      expect(findTabByIndex(1).text()).toContain('Deployment history');
+    });
+
+    it('renders a badge with the correct number of deployments', () => {
+      expect(findTabBadge().text()).toBe('3');
     });
 
     it('renders correct query param value', () => {

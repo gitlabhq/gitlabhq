@@ -8,6 +8,10 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = 'Creates merge requests that can be inferred from the current state of the codebase'
 
+  opts.on('-b=BRANCH', '--target-branch=BRANCH', String, 'Target branch to use. Defaults to master.') do |branch|
+    options[:target_branch] = branch
+  end
+
   opts.on('-m=M', '--max-mrs=M', Integer, 'Limit of MRs to create. Defaults to 1.') do |m|
     options[:max_mrs] = m
   end

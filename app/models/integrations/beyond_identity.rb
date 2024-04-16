@@ -17,6 +17,23 @@ module Integrations
       },
       required: true
 
+    field :exclude_service_accounts,
+      type: :checkbox,
+      title: 'Exclude service accounts',
+      help: -> {
+        docs_link = ActionController::Base.helpers.link_to(
+          _('service accounts'),
+          Rails.application.routes.url_helpers.help_page_url('user/profile/service_accounts'),
+          target: '_blank', rel: 'noopener noreferrer')
+
+        format(s_(
+          'BeyondIdentityService|If enabled, Beyond Identity will not check commits from %{docs_link}.'
+        ).html_safe, docs_link: docs_link.html_safe) # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
+      },
+      description: -> {
+        s_('BeyondIdentityService|If enabled, Beyond Identity will not check commits from service accounts.')
+      }
+
     def self.title
       'Beyond Identity'
     end
@@ -41,6 +58,10 @@ module Integrations
 
     def self.supported_events
       %w[]
+    end
+
+    def self.activated_for_instance?
+      !!::Integrations::BeyondIdentity.for_instance.first&.activated?
     end
 
     def inheritable?

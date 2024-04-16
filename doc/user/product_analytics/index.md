@@ -8,30 +8,32 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
+> - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 > - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
 > - Enabled in GitLab 16.7 as a [Beta](../../policy/experiment-beta-support.md#beta) feature.
+> - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
+> - `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) to GitLab self-managed and GitLab Dedicated in 16.11.
 
-This page is a work in progress, and we're updating the information as we add more features.
-For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
-To leave feedback about Product Analytics bugs or functionality:
+For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
+To leave feedback about product analytics bugs or functionality:
 
 - Comment on [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
 - Create an issue with the `group::product analytics` label.
 
 ## How product analytics works
 
-Product analytics uses several tools:
+Product analytics uses the following tools:
 
-- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data, and passing it through to ClickHouse.
+- [**Snowplow**](https://docs.snowplow.io/docs/) - A developer-first engine for collecting behavioral data and passing it through to ClickHouse.
 - [**ClickHouse**](../../integration/clickhouse.md) - A database suited to store, query, and retrieve analytical data.
 - [**Cube**](https://cube.dev/docs/product/introduction) - A universal semantic layer that provides an API to run queries against the data stored in ClickHouse.
 
@@ -67,14 +69,66 @@ flowchart TB
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
-To track events in your project's applications on GitLab.com,
-you must enable and configure Product Analytics.
+To track events in your project's applications,
+you must enable and configure product analytics.
+
+### Product analytics provider
+
+Your GitLab instance connects to a product analytics provider.
+A product analytics provider is the collection of services required to receive,
+process, store and query your analytics data.
+
+::Tabs
+
+:::TabTitle GitLab-managed provider
+
+DETAILS:
+**Offering:** GitLab.com
+
+On GitLab.com, if you signed up for Beta, you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
+To sign up, contact the GitLab [sales team](https://about.gitlab.com/sales/).
+
+If GitLab manages your product analytics provider, then your analytics data is retained for one year.
+You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
+
+:::TabTitle Self-managed provider
+
+>[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117804) in GitLab 16.0.
+
+A self-managed product analytics provider is a deployed instance of the
+[product analytics Helm charts](https://gitlab.com/gitlab-org/analytics-section/product-analytics/helm-charts).
+
+On GitLab.com, the self-managed provider details are defined in [project-level settings](#project-level-settings).
+
+On GitLab self-managed and GitLab Dedicated, you must define the self-managed analytics provider in [instance-level settings](#instance-level-settings).
+If you need different providers for different projects, you can define additional analytics providers in [project-level settings](#project-level-settings).
+
+::EndTabs
+
+### Instance-level settings
+
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 
-- You must be an Owner of the group you wish to enable Product Analytics for.
+- You must have administrator access for the instance.
+
+NOTE:
+These instance-level settings are required to enable product analytics on GitLab self-managed and GitLab Dedicated,
+and cascade to all projects by default.
+
+To enable product analytics on your instance:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Product analytics** and enter the configuration values.
+1. Select **Save changes**.
 
 ### Group-level settings
+
+Prerequisites:
+
+- You must have the Owner role for the group.
 
 NOTE:
 These group-level settings are available for top-level groups and cascade to all projects that belong to the group.
@@ -83,13 +137,12 @@ These group-level settings are available for top-level groups and cascade to all
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Use Experiment and Beta features** checkbox.
-1. Check **Use product analytics** checkbox.
 1. Select **Save changes**.
 
 ### Project-level settings
 
-You can override the instance-level settings defined by the administrator on a per-project basis. This allows you to
-have a different configured product analytics instance for your project.
+If you want to have a product analytics instance with a different configuration for your project,
+you can override the instance-level settings defined by the administrator on a per-project basis.
 
 Prerequisites:
 
@@ -101,13 +154,11 @@ Prerequisites:
 1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
 
-### Data retention
-
-If GitLab manages your product analytics instance, then your analytics data will be retained for 1 year.
-
-You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
-
 ## Onboard a GitLab project
+
+Prerequisites:
+
+- You must have at least the Developer role for the project or group the project belongs to.
 
 Onboarding a GitLab project means preparing it to receive events that are used for product analytics.
 
@@ -116,18 +167,56 @@ To onboard a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
-1. Select **Set up product analytics**.
-   Your instance is being created, and the project onboarded.
+
+Then continue with the setup depending on your environment.
+
+### On GitLab.com
+
+::Tabs
+
+:::TabTitle GitLab-managed provider
+
+Prerequisites:
+
+- You must have access to the [GitLab-managed provider](#product-analytics-provider).
+
+1. Select the **I agree to event collection and processing in this region** checkbox.
+1. Select **Connect GitLab-managed provider**.
+1. Remove already configured project-level settings for a self-managed provider:
+   1. Select **Go to analytics settings**.
+   1. Expand **Data sources** and remove the configuration values.
+   1. Select **Save changes**.
+   1. Select **Analyze > Analytics dashboards**.
+   1. Under **Product analytics**, select **Set up**.
+   1. Select **Connect GitLab-managed provider**.
+
+Your instance is being created, and the project onboarded.
+
+:::TabTitle Self-managed provider
+
+1. Select **Connect your own provider**.
+1. Configure project-level settings for your self-managed provider:
+   1. Select **Go to analytics settings**.
+   1. Expand **Data sources** and enter the configuration values.
+   1. Select **Save changes**.
+   1. Select **Analyze > Analytics dashboards**.
+   1. Under **Product analytics**, select **Set up**.
+   1. Select **Connect your own provider**.
+
+Your instance is being created, and the project onboarded.
+
+::EndTabs
+
+### On GitLab self-managed or GitLab Dedicated
+
+- Select **Set up product analytics**.
+  Project-level settings are used if defined, otherwise [instance-level settings](#instance-level-settings).
+
+Your instance is being created, and the project onboarded.
 
 ## Instrument your application
 
-To instrument code to collect data, use one or more of the existing SDKs:
-
-- [Browser SDK](instrumentation/browser_sdk.md)
-- [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
-- [Python SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-python)
-- [Node SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-node)
-- [.NET SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-dotnet)
+You can instrument code to collect data by using [tracking SDKs](instrumentation/index.md).
 
 ## Product analytics dashboards
 
@@ -164,9 +253,7 @@ The autofill approach has both benefits and limitations.
   - Only date ranges defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter are filled.
     - The date selector in the UI already uses this filter.
   - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
-  returns 20 data points, with the missing data filled by `0`.
-
-[Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
+  returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
 
 ## Funnel analysis
 
@@ -174,7 +261,8 @@ Use funnel analysis to understand the flow of users through your application, an
 users drop out of a predefined flow (for example, a checkout process or ticket purchase).
 
 Each product can also define an unlimited number of funnels.
-Like dashboards, funnels are defined using the GitLab YAML schema, and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
+Like dashboards, funnels are defined with the GitLab YAML schema
+and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
 
 Funnel definitions must include the keys `name` and `seconds_to_convert`, and an array of `steps`.
 
@@ -303,7 +391,7 @@ To view product analytics usage quota:
 1. Select **Settings > Usage quota**.
 1. Select the **Product analytics** tab.
 
-The tab displays the monthly totals for the group, and a breakdown of usage per project.
+The tab displays the monthly totals for the group and a breakdown of usage per project.
 The current month displays events counted to date.
 
 The usage quota excludes projects that are not onboarded with product analytics.
@@ -314,3 +402,7 @@ The usage quota excludes projects that are not onboarded with product analytics.
 
 Check your [instrumentation details](#enable-product-analytics),
 and make sure product analytics is enabled and set up correctly.
+
+### Access to product analytics is restricted
+
+Check that you are connected to a [product analytics provider](#product-analytics-provider).

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string'
+require 'gitlab/housekeeper/logger'
 require 'gitlab/housekeeper/keep'
 require 'gitlab/housekeeper/keeps/rubocop_fixer'
 require 'gitlab/housekeeper/gitlab_client'
@@ -13,10 +14,11 @@ require 'digest'
 module Gitlab
   module Housekeeper
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [])
+      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [], target_branch: 'master')
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
+        @target_branch = target_branch
         require_keeps
 
         @keeps = if keeps
@@ -29,14 +31,15 @@ module Gitlab
       end
 
       def run
-        created = 0
+        mrs_created_count = 0
 
         git.with_clean_state do
           @keeps.each do |keep_class|
-            keep = keep_class.new
+            @logger.puts "Running keep #{keep_class}"
+            keep = keep_class.new(logger: @logger)
             keep.each_change do |change|
               unless change.valid?
-                puts "Ignoring invalid change from: #{keep_class}"
+                @logger.warn "Ignoring invalid change from: #{keep_class}"
                 next
               end
 
@@ -55,9 +58,10 @@ module Gitlab
                   git.create_commit(change)
                 end
 
-                puts "Skipping change: #{change.identifiers} due to not matching filter."
-                puts "Modified files have been committed to branch #{branch_name.yellowish}, but will not be pushed."
-                puts
+                @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}," \
+                             "but will not be pushed."
+                @logger.puts
 
                 next
               end
@@ -79,14 +83,27 @@ module Gitlab
 
               create(change, branch_name) unless @dry_run
 
-              created += 1
-              break if created >= @max_mrs
+              mrs_created_count += 1
+              break if mrs_created_count >= @max_mrs
             end
-            break if created >= @max_mrs
+            break if mrs_created_count >= @max_mrs
           end
         end
 
-        puts "Housekeeper created #{created} MRs"
+        print_completion_message(mrs_created_count)
+      end
+
+      def print_completion_message(mrs_created_count)
+        mr_count_string = "#{mrs_created_count} #{'MR'.pluralize(mrs_created_count)}"
+
+        completion_message = if @dry_run
+                               "Dry run complete. Housekeeper would have created #{mr_count_string} on an actual run."
+                             else
+                               "Housekeeper created #{mr_count_string}."
+                             end
+
+        @logger.puts completion_message.yellowish
+        @logger.puts
       end
 
       def add_standard_change_data(change)
@@ -95,7 +112,7 @@ module Gitlab
       end
 
       def git
-        @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger)
+        @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger, branch_from: @target_branch)
       end
 
       def require_keeps
@@ -105,47 +122,48 @@ module Gitlab
       end
 
       def print_change_details(change, branch_name)
-        puts "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}".yellowish
-        puts "=> #{change.identifiers.join(': ')}".purple
+        base_message = "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}."
+        base_message << " CI skipped." if change.push_options.ci_skip
 
-        puts '=> Title:'.purple
-        puts change.title.purple
-        puts
+        @logger.puts base_message.yellowish
+        @logger.puts "=> #{change.identifiers.join(': ')}".purple
 
-        puts '=> Description:'
-        puts change.description
-        puts
+        @logger.puts '=> Title:'.purple
+        @logger.puts change.title.purple
+        @logger.puts
+
+        @logger.puts '=> Description:'
+        @logger.puts change.description
+        @logger.puts
 
         if change.labels.present? || change.reviewers.present?
-          puts '=> Attributes:'
-          puts "Labels: #{change.labels.join(', ')}"
-          puts "Reviewers: #{change.reviewers.join(', ')}"
-          puts
+          @logger.puts '=> Attributes:'
+          @logger.puts "Labels: #{change.labels.join(', ')}"
+          @logger.puts "Reviewers: #{change.reviewers.join(', ')}"
+          @logger.puts
         end
 
-        puts '=> Diff:'
-        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', 'master', branch_name, '--',
+        @logger.puts '=> Diff:'
+        @logger.puts Shell.execute('git', '--no-pager', 'diff', '--color=always', @target_branch, branch_name, '--',
           *change.changed_files)
-        puts
+        @logger.puts
       end
 
       def create(change, branch_name)
         non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
 
-        unless non_housekeeper_changes.include?(:code)
-          Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
-        end
+        git.push(branch_name, change.push_options) unless non_housekeeper_changes.include?(:code)
 
         gitlab_client.create_or_update_merge_request(
           change: change,
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id,
           update_title: !non_housekeeper_changes.include?(:title),
           update_description: !non_housekeeper_changes.include?(:description),
@@ -158,13 +176,13 @@ module Gitlab
         gitlab_client.get_existing_merge_request(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
-          target_branch: 'master',
+          target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
       end
 
       def housekeeper_fork_project_id
-        ENV.fetch('HOUSEKEEPER_FORK_PROJECT_ID')
+        ENV.fetch('HOUSEKEEPER_FORK_PROJECT_ID', housekeeper_target_project_id)
       end
 
       def housekeeper_target_project_id

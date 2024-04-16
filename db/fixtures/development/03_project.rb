@@ -168,6 +168,12 @@ class Gitlab::Seeder::Projects
     end
 
     project_path.gsub!(".git", "")
+    project = Project.find_by_name(project_path.titleize)
+
+    if project
+      puts "Project #{project.full_path} already exists, skipping"
+      return
+    end
 
     params = {
       import_url: url,
@@ -181,8 +187,6 @@ class Gitlab::Seeder::Projects
     if force_latest_storage
       params[:storage_version] = Project::LATEST_STORAGE_VERSION
     end
-
-    project = nil
 
     Gitlab::ExclusiveLease.skipping_transaction_check do
       Sidekiq::Worker.skipping_transaction_check do

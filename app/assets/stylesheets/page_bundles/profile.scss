@@ -170,6 +170,14 @@
 
   @include media-breakpoint-up(lg) {
     display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.user-profile-with-sidebar {
+  @include media-breakpoint-up(lg) {
+    display: grid;
     grid-template-columns: 1fr $right-sidebar-width;
     gap: 2rem;
   }

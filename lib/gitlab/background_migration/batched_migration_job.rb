@@ -16,7 +16,7 @@ module Gitlab
       DEFAULT_FEATURE_CATEGORY = :database
 
       class << self
-        def generic_instance(batch_table:, batch_column:, job_arguments: [], connection:)
+        def generic_instance(batch_table:, batch_column:, connection:, job_arguments: [])
           new(
             batch_table: batch_table, batch_column: batch_column,
             job_arguments: job_arguments, connection: connection,
@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def initialize(
-        start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, job_arguments: [], connection:,
+        start_id:, end_id:, batch_table:, batch_column:, sub_batch_size:, pause_ms:, connection:, job_arguments: [],
         sub_batch_exception: nil
       )
 

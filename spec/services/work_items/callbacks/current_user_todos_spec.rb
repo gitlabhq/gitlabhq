@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::Callbacks::CurrentUserTodos, feature_category: :team_planning do
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter) }
   let_it_be(:current_user) { reporter }
   let_it_be(:work_item) { create(:work_item, project: project) }
 
@@ -26,10 +26,6 @@ RSpec.describe WorkItems::Callbacks::CurrentUserTodos, feature_category: :team_p
   end
 
   let(:widget) { work_item.widgets.find { |widget| widget.is_a?(WorkItems::Callbacks::CurrentUserTodos) } }
-
-  before_all do
-    project.add_reporter(reporter)
-  end
 
   describe '#before_update_in_transaction' do
     subject(:service) do

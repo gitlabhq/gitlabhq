@@ -34,6 +34,10 @@ export default {
         }
       }
 
+      if (discussion.truncated_diff_lines) {
+        discussion.truncated_diff_lines = utils.prepareDiffLines(discussion.truncated_diff_lines);
+      }
+
       // note.base_discussion = undefined; // No point keeping a reference to this
       delete note.base_discussion;
       discussion.notes = [note];

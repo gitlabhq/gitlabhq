@@ -25,7 +25,7 @@ module QA
         project.remove_via_api! unless example.exception
       end
 
-      it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do
+      it 'sets merge when pipeline succeeds', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
           {
             action: 'create',

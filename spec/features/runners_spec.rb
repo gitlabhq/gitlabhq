@@ -10,7 +10,11 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
   end
 
   context 'with user as project maintainer' do
-    let_it_be(:project) { create(:project).tap { |project| project.add_maintainer(user) } }
+    let_it_be(:project) do
+      create(:project, :allow_runner_registration_token).tap do |project|
+        project.add_maintainer(user)
+      end
+    end
 
     context 'when user views runners page', :js do
       before do

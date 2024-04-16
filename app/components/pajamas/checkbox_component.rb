@@ -20,6 +20,7 @@ module Pajamas
       help_text: nil,
       label_options: {},
       checkbox_options: {},
+      content_wrapper_options: {},
       checked_value: '1',
       unchecked_value: '0'
     )
@@ -29,6 +30,7 @@ module Pajamas
       @help_text_argument = help_text
       @label_options = label_options
       @input_options = checkbox_options
+      @content_wrapper_options = content_wrapper_options
       @checked_value = checked_value
       @unchecked_value = unchecked_value
       @value = checked_value if checkbox_options[:multiple]
@@ -43,6 +45,7 @@ module Pajamas
       :help_text_argument,
       :label_options,
       :input_options,
+      :content_wrapper_options,
       :checked_value,
       :unchecked_value,
       :value

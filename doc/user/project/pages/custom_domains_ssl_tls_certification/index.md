@@ -209,7 +209,7 @@ can use the following setup:
 1. In GitLab, verify your domain.
 1. In Cloudflare, create a DNS `CNAME` record pointing `www` to `domain.com`.
 1. In Cloudflare, add a Page Rule pointing `www.domain.com` to `domain.com`:
-   - Navigate to your domain's dashboard and select **Page Rules**
+   - Go to your domain's dashboard and select **Page Rules**
      on the top nav.
    - Select **Create Page Rule**.
    - Enter the domain `www.domain.com` and select **+ Add a Setting**.

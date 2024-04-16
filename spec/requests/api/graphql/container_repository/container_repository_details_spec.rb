@@ -41,6 +41,66 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
   end
 
+  shared_examples 'returning proper responses with different permissions' do |raw_tags:|
+    context 'with different permissions' do
+      let_it_be(:user) { create(:user) }
+
+      let(:repository_tags) { instance_exec(&raw_tags) }
+      let(:tags_response) { container_repository_details_response.dig('tags', 'edges') }
+      let(:variables) do
+        { id: container_repository_global_id, n: 'NAME_ASC' }
+      end
+
+      let(:query) do
+        <<~GQL
+          query($id: ContainerRepositoryID!, $n: ContainerRepositoryTagSort) {
+            containerRepository(id: $id) {
+              canDelete
+              tags(sort: $n) {
+                edges {
+                  node {
+                    #{all_graphql_fields_for('ContainerRepositoryTag')}
+                  }
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      where(:project_visibility, :role, :access_granted, :can_delete) do
+        :private | :maintainer | true  | true
+        :private | :developer  | true  | true
+        :private | :reporter   | true  | false
+        :private | :guest      | false | false
+        :private | :anonymous  | false | false
+        :public  | :maintainer | true  | true
+        :public  | :developer  | true  | true
+        :public  | :reporter   | true  | false
+        :public  | :guest      | true  | false
+        :public  | :anonymous  | true  | false
+      end
+
+      with_them do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility.to_s.upcase, false))
+          project.add_member(user, role) unless role == :anonymous
+        end
+
+        it 'return the proper response' do
+          subject
+
+          if access_granted
+            expect(tags_response.size).to eq(repository_tags.size)
+            expect(container_repository_details_response.dig('canDelete')).to eq(can_delete)
+          else
+            expect(container_repository_details_response).to eq(nil)
+          end
+        end
+      end
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       subject
@@ -51,42 +111,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
   end
 
-  context 'with different permissions' do
-    let_it_be(:user) { create(:user) }
-
-    let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
-
-    where(:project_visibility, :role, :access_granted, :can_delete) do
-      :private | :maintainer | true  | true
-      :private | :developer  | true  | true
-      :private | :reporter   | true  | false
-      :private | :guest      | false | false
-      :private | :anonymous  | false | false
-      :public  | :maintainer | true  | true
-      :public  | :developer  | true  | true
-      :public  | :reporter   | true  | false
-      :public  | :guest      | true  | false
-      :public  | :anonymous  | true  | false
-    end
-
-    with_them do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility.to_s.upcase, false))
-        project.add_member(user, role) unless role == :anonymous
-      end
-
-      it 'return the proper response' do
-        subject
-
-        if access_granted
-          expect(tags_response.size).to eq(tags.size)
-          expect(container_repository_details_response.dig('canDelete')).to eq(can_delete)
-        else
-          expect(container_repository_details_response).to eq(nil)
-        end
-      end
-    end
-  end
+  it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { tags }
 
   context 'with a giant size tag' do
     let(:tags) { %w[latest] }
@@ -331,42 +356,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       end
     end
 
-    context 'with different permissions' do # OK
-      let_it_be(:user) { create(:user) }
-
-      let(:tags_response) { container_repository_details_response.dig('tags', 'nodes') }
-
-      where(:project_visibility, :role, :access_granted, :can_delete) do
-        :private | :maintainer | true  | true
-        :private | :developer  | true  | true
-        :private | :reporter   | true  | false
-        :private | :guest      | false | false
-        :private | :anonymous  | false | false
-        :public  | :maintainer | true  | true
-        :public  | :developer  | true  | true
-        :public  | :reporter   | true  | false
-        :public  | :guest      | true  | false
-        :public  | :anonymous  | true  | false
-      end
-
-      with_them do
-        before do
-          project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility.to_s.upcase, false))
-          project.add_member(user, role) unless role == :anonymous
-        end
-
-        it 'return the proper response' do
-          subject
-
-          if access_granted
-            expect(tags_response.size).to eq(raw_tags_response.size)
-            expect(container_repository_details_response.dig('canDelete')).to eq(can_delete)
-          else
-            expect(container_repository_details_response).to eq(nil)
-          end
-        end
-      end
-    end
+    it_behaves_like 'returning proper responses with different permissions', raw_tags: -> { raw_tags_response }
 
     context 'querying' do
       let(:name) { 'l' }
@@ -485,5 +475,82 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
 
     it_behaves_like 'handling graphql network errors with the container registry'
+  end
+
+  context 'manifest field' do
+    let(:query) do
+      <<~GQL
+        query($id: ContainerRepositoryID!, $n: String!) {
+          containerRepository(id: $id) {
+            manifest(reference: $n)
+          }
+        }
+      GQL
+    end
+
+    let(:reference) { 'latest' }
+    let(:manifest_response) { container_repository_details_response.dig('manifest') }
+    let(:variables) do
+      { id: container_repository_global_id, n: reference }
+    end
+
+    context 'without network error' do
+      before do
+        allow_next_instance_of(ContainerRegistry::Client) do |client|
+          allow(client).to receive(:repository_manifest)
+            .with(container_repository.path, reference)
+            .and_return(manifest_content)
+        end
+      end
+
+      context 'with existing manifest' do
+        let(:manifest_content) do
+          <<~JSON
+          {
+            "schemaVersion": 2,
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "config": {
+              "mediaType": "application/octet-stream",
+              "size": 1145,
+              "digest": "sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac"
+            },
+            "layers": [
+              {
+                "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+                "size": 2319870,
+                "digest": "sha256:420890c9e918b6668faaedd9000e220190f2493b0693ee563ebd7b4cc754a57d"
+              }
+            ]
+          }
+          JSON
+        end
+
+        it 'fetches manifest payload' do
+          subject
+
+          expect(manifest_response).to eq(manifest_content)
+        end
+      end
+
+      context 'with nonexisting manifest' do
+        let(:reference) { 'nonexistent' }
+        let(:manifest_content) { nil }
+
+        it 'returns null' do
+          subject
+          expect(manifest_response).to be_nil
+        end
+      end
+    end
+
+    context 'with a network error' do
+      it 'returns an error' do
+        stub_container_registry_network_error(client_method: :repository_manifest)
+
+        subject
+
+        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+      end
+    end
   end
 end

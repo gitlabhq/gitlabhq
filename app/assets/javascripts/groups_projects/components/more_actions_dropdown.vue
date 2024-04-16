@@ -32,6 +32,11 @@ export default {
     'canEdit',
     'editPath',
   ],
+  data() {
+    return {
+      isDropdownVisible: false,
+    };
+  },
   computed: {
     namespaceType() {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
@@ -113,9 +118,20 @@ export default {
         },
       };
     },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.actionsLabel : '';
+    },
+  },
+  methods: {
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
+    },
   },
   i18n: {
-    actionsLabel: __('Actions'),
+    actionsLabel: __('More actions'),
     groupCopiedToClipboard: s__('GroupPage|Group ID copied to clipboard.'),
     projectCopiedToClipboard: s__('ProjectPage|Project ID copied to clipboard.'),
     groupLeaveTitle: __('Leave group'),
@@ -132,7 +148,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    v-gl-tooltip.hover="$options.i18n.actionsLabel"
+    v-gl-tooltip="showDropdownTooltip"
     category="tertiary"
     icon="ellipsis_v"
     no-caret
@@ -140,6 +156,8 @@ export default {
     text-sr-only
     data-testid="groups-projects-more-actions-dropdown"
     class="gl-relative gl-w-full gl-sm-w-auto"
+    @shown="showDropdown"
+    @hidden="hideDropdown"
   >
     <template #toggle>
       <div class="gl-min-h-7">

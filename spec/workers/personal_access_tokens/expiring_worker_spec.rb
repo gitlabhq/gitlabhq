@@ -8,7 +8,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
   shared_examples 'sends notification about expiry of bot user tokens' do
     it 'uses notification service to send the email' do
       expect_next_instance_of(NotificationService) do |notification_service|
-        expect(notification_service).to receive(:resource_access_tokens_about_to_expire)
+        expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
                                           .with(project_bot, expiring_token.name)
       end
 
@@ -118,25 +118,13 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
       it 'avoids N+1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
 
-        user1 = create(:user, :project_bot, developer_projects: [project])
+        user1 = create(:user, :project_bot, developer_of: project)
         create(:personal_access_token, user: user1, expires_at: 5.days.from_now)
 
-        user2 = create(:user, :project_bot, developer_projects: [project])
+        user2 = create(:user, :project_bot, developer_of: project)
         create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
 
         expect { worker.perform }.not_to exceed_all_query_limit(control)
-      end
-
-      context 'when access_tokens_webhooks feature is disabled' do
-        before do
-          stub_feature_flags(access_tokens_webhooks: false)
-        end
-
-        it "does not execute access token webhook" do
-          expect(::Projects::TriggeredHooks).not_to receive(:execute)
-
-          worker.perform
-        end
       end
     end
 

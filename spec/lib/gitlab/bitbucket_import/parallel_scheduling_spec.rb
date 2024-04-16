@@ -19,7 +19,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelScheduling, feature_category: :i
     let(:importer) { importer_class.new(project) }
 
     before do
-      stub_const("#{described_class}::BATCH_SIZE", 2)
+      stub_application_setting(concurrent_bitbucket_import_jobs_limit: 2)
     end
 
     it 'returns an incremental delay', :freeze_time do

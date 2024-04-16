@@ -12,7 +12,7 @@ DETAILS:
 
 At the heart of GitLab is a web application
 [built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
-The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console).
+The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console)
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
 
 WARNING:

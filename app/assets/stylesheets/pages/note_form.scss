@@ -88,6 +88,13 @@
         width: calc(100% - 6px);
         margin: 2px 3px;
         padding-left: calc(#{$gl-spacing-scale-5} - 3px);
+        
+        // cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147476
+        &.note-textarea-rounded-bottom {
+          margin-bottom: 3px;
+          border-bottom-left-radius: $border-radius-default;
+          border-bottom-right-radius: $border-radius-default;
+        }
       }
 
       &:focus {
@@ -96,8 +103,14 @@
     }
 
     .note-textarea-rounded-bottom {
-      border-bottom-left-radius: calc(#{$border-radius-large} - 1px);
-      border-bottom-right-radius: calc(#{$border-radius-large} - 1px);
+      border-bottom-left-radius: calc(#{$border-radius-large} - 3px);
+      border-bottom-right-radius: calc(#{$border-radius-large} - 3px);
+    }
+  }
+
+  &.is-invalid {
+    .md-area {
+      border-color: var(--red-500, $red-500);
     }
   }
 }
@@ -343,6 +356,12 @@ table {
 
     &:hover {
       border: 1px solid $gray-500;
+    }
+  }
+
+  .reply-placeholder-input-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
     }
   }
 }

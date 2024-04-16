@@ -62,16 +62,29 @@ The parent epic's start date then reflects this change and propagates upwards to
 
 ### Epic color
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/365336) on GitLab.com, GitLab Dedicated, and self-managed in GitLab 16.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
+On self-managed GitLab, by default this feature is available. To disable it per group, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
-On GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+On GitLab Dedicated, this feature is available.
+This feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.
 An epic's color is shown in [roadmaps](../roadmap/index.md), and [epic boards](epic_boards.md).
+
+To do this:
+
+1. Create a new epic, or edit an existing epic.
+1. Go to the epic's **Detail** page.
+1. Select a **Color**, then save your changes.
+
+The epic's color is shown on roadmaps and epic boards.
 
 ## Edit an epic
 
@@ -135,9 +148,11 @@ To update multiple epics at the same time:
 1. Select **Bulk edit**. A sidebar on the right appears with editable fields.
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 ## Delete an epic
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
 
 Prerequisites:
 
@@ -149,9 +164,6 @@ To delete the epic:
 1. Select **Delete**. A modal appears to confirm your action.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
-
-WARNING:
-If you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
 
 ## Close an epic
 
@@ -260,7 +272,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of epics](#filter-the-list-of-epics) by:

@@ -153,6 +153,7 @@ describe('Sidebar assignees widget', () => {
           name: 'Jacki Kub',
           username: 'francina.skiles',
           webUrl: '/franc',
+          webPath: '/franc',
           status: null,
         },
       ]);
@@ -218,6 +219,7 @@ describe('Sidebar assignees widget', () => {
                 name: 'Administrator',
                 username: 'root',
                 webUrl: '/root',
+                webPath: '/root',
                 status: null,
               },
             ],

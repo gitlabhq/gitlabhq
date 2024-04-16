@@ -1,7 +1,7 @@
 %section.settings.as-projects-api-limits.no-animate#js-projects-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Projects API rate limit')
+      = _('Projects API rate limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary

@@ -3,7 +3,7 @@ import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
 import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
-import { MEMBER_TYPES, EE_APP_OPTIONS } from 'ee_else_ce/members/constants';
+import { EE_GROUPS_APP_OPTIONS, MEMBER_TYPES } from 'ee_else_ce/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 
 const SHARED_FIELDS = ['account', 'maxRole', 'expiration', 'actions'];
@@ -53,7 +53,7 @@ const APP_OPTIONS = {
     tableFields: SHARED_FIELDS.concat('requested'),
     requestFormatter: groupMemberRequestFormatter,
   },
-  ...EE_APP_OPTIONS,
+  ...EE_GROUPS_APP_OPTIONS,
 };
 
 initMembersApp(document.querySelector('.js-group-members-list-app'), APP_OPTIONS);

@@ -1,10 +1,10 @@
+import { EE_PROJECTS_APP_OPTIONS, MEMBER_TYPES } from 'ee_else_ce/members/constants';
 import initImportProjectMembersTrigger from '~/invite_members/init_import_project_members_trigger';
 import initImportProjectMembersModal from '~/invite_members/init_import_project_members_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
 import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
-import { MEMBER_TYPES } from '~/members/constants';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
 
@@ -53,4 +53,5 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     tableFields: SHARED_FIELDS.concat('requested'),
     requestFormatter: projectMemberRequestFormatter,
   },
+  ...EE_PROJECTS_APP_OPTIONS,
 });

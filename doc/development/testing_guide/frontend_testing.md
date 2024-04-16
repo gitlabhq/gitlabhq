@@ -1637,7 +1637,7 @@ There are many factories that already exists, so make sure to look at other exis
 
 #### Navigation
 
-You can navigate to a page by using the `visit` method and passing the path as an argument. Rails automatically generates helper paths, so make sure to use these instead of a hardcoded string. They are generated using the route model, so if we want to go to a pipeline, we'd use:
+You can go to a page by using the `visit` method and passing the path as an argument. Rails automatically generates helper paths, so make sure to use these instead of a hardcoded string. They are generated using the route model, so if we want to go to a pipeline, we'd use:
 
 ```ruby
   visit project_pipeline_path(project, pipeline)

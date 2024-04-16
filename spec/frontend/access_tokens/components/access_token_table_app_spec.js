@@ -64,7 +64,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findHeaders = () => findTable().findAll('th > :first-child');
+  const findHeaders = () => findTable().findAll('th > div > span');
   const findCells = () => findTable().findAll('td');
   const findPagination = () => wrapper.findComponent(GlPagination);
 
@@ -100,7 +100,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         __('Token name'),
         __('Scopes'),
         s__('AccessTokens|Created'),
-        'Last Used The last time a token was used',
+        'Last Used',
         __('Expires'),
         __('Action'),
       ]);
@@ -114,7 +114,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
         __('Token name'),
         __('Scopes'),
         s__('AccessTokens|Created'),
-        'Last Used The last time a token was used',
+        'Last Used',
         __('Expires'),
         __('Role'),
         __('Action'),
@@ -192,7 +192,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           __('Token name'),
           __('Scopes'),
           s__('AccessTokens|Created'),
-          'Last Used The last time a token was used',
+          'Last Used',
           __('Expires'),
           __('Role'),
         ].forEach((text, index) => {

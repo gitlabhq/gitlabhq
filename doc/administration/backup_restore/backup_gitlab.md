@@ -106,13 +106,6 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
 
 The backup command backs up registry data when they are stored in the default location on the file system.
 
-#### Object storage
-
-The [backup command](#backup-command) doesn't back up blobs that aren't stored on the file system. If you're using [object storage](../object_storage.md), be sure to enable backups with your object storage provider. For example, see:
-
-- [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
-- [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
-
 ### Storing configuration files
 
 WARNING:
@@ -302,8 +295,8 @@ The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
 fine in most cases, but can cause problems when data is rapidly changing.
 
-When data changes while `tar` is reading it, the error `file changed as we read
-it` may occur, and causes the backup process to fail. In that case, you can use
+When data changes while `tar` is reading it, the error `file changed as we read it`
+may occur, and causes the backup process to fail. In that case, you can use
 the backup strategy called `copy`. The strategy copies data files
 to a temporary location before calling `tar` and `gzip`, avoiding the error.
 
@@ -866,7 +859,7 @@ For self-compiled installations:
          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
          #   'encryption' must be set in order for this to have any effect.
          #   'encryption_key' should be set to the 256-bit encryption key for Amazon S3 to use to encrypt or decrypt.
-         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY`  your data.
+         #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` your data.
          # encryption: 'AES256'
          # encryption_key: '<key>'
          #

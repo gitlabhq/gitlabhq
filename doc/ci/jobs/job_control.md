@@ -21,8 +21,6 @@ earlier jobs it depends on finish running.
 
 ## Specify when jobs run with `rules`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
-
 Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
 
 Rules are evaluated in order until the first match. When a match is found, the job
@@ -127,12 +125,12 @@ job:
       changes:
         compare_to: 'refs/heads/main'
         paths:
-          - '*'
+          - '**/*'
 ```
 
-The rule for this job compares all files and paths (`*`) in the current branch against
-the default branch `main`. The rule matches and the job runs only when there are
-changes to the files in the branch.
+The rule for this job compares all files and paths in the current branch
+recursively (`**/*`) against the `main` branch. The rule matches and the
+job runs only when there are changes to the files in the branch.
 
 ### Complex rules
 
@@ -148,7 +146,7 @@ docker build:
     - if: $VAR == "string value"
       changes:  # Include the job and set to when:manual if any of the follow paths match a modified file.
         - Dockerfile
-        - docker/scripts/*
+        - docker/scripts/**/*
       when: manual
       allow_failure: true
 ```
@@ -157,7 +155,6 @@ If the `Dockerfile` file or any file in `/docker/scripts` has changed **and** `$
 then the job runs manually and is allowed to fail.
 
 You can use [parentheses](#group-variable-expressions-together-with-parentheses) with `&&` and `||` to build more complicated variable expressions.
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3:
 
 ```yaml
 job1:
@@ -166,10 +163,6 @@ job1:
   rules:
     - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
 ```
-
-WARNING:
-[Before GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/230938),
-rules that use both `||` and `&&` may evaluate with an unexpected order of operations.
 
 ### Avoid duplicate pipelines
 
@@ -274,7 +267,7 @@ check the value of the `$CI_PIPELINE_SOURCE` variable:
 | `push`                        | For pipelines triggered by a `git push` event, including for branches and tags. |
 | `schedule`                    | For [scheduled pipelines](../pipelines/schedules.md). |
 | `trigger`                     | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-| `web`                         | For pipelines created by using **Run pipeline** button in the GitLab UI, from the project's **Build > Pipelines** section. |
+| `web`                         | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 | `webide`                      | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md). |
 
 The following example runs the job as a manual job in scheduled pipelines or in push
@@ -321,9 +314,6 @@ Other commonly used variables for `if` clauses:
 
 ### Variables in `rules:changes`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34272) in GitLab 13.6.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267192) in GitLab 13.7.
-
 You can use CI/CD variables in `rules:changes` expressions to determine when
 to add jobs to a pipeline:
 
@@ -334,7 +324,7 @@ docker build:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - changes:
-        - $DOCKERFILES_DIR/*
+      - $DOCKERFILES_DIR/**/*
 ```
 
 You can use the `$` character for both variables and paths. For example, if the
@@ -342,8 +332,6 @@ You can use the `$` character for both variables and paths. For example, if the
 `$` is interpreted as being part of a path.
 
 ### Reuse rules in different jobs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
 
 Use [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) to reuse rules in different
 jobs. You can combine `!reference` rules with regular job-defined rules:
@@ -368,208 +356,6 @@ job2:
   script:
     - echo "This job runs for the default branch, but not schedules."
     - echo "It also runs for merge requests."
-```
-
-## Specify when jobs run with `only` and `except`
-
-NOTE:
-`only` and `except` are not being actively developed. [`rules`](#specify-when-jobs-run-with-rules)
-is the preferred keyword to control when to add jobs to pipelines.
-
-You can use [`only`](../yaml/index.md#only--except) and [`except`](../yaml/index.md#only--except)
-to control when to add jobs to pipelines.
-
-- Use `only` to define when a job runs.
-- Use `except` to define when a job **does not** run.
-
-### `only:refs` / `except:refs` examples
-
-You can use `only` or `except` with:
-
-- Specific keywords. See the full list in the [`only`/`except` syntax reference](../yaml/index.md#onlyrefs--exceptrefs).
-- Branch names. Avoid branch names that are exactly the same as a specific keyword.
-  For example, jobs configured to run for the `tags` keyword (tag pipelines)
-  would also run for a branch named `tags`.
-- Regex patterns to specify a range of branch names.
-
-The following examples omit `refs` because `only` or `except` used without `refs`
-is the same as [`only:refs` / `except/refs`](../yaml/index.md#onlyrefs--exceptrefs).
-
-For example:
-
-```yaml
-job:
-  # use special keywords
-  only:
-    - tags
-    - triggers
-    - schedules
-```
-
-In this example, `job` runs only for:
-
-- Git tags
-- [Triggers](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines)
-- [Scheduled pipelines](../pipelines/schedules.md)
-
-To execute jobs only for the parent repository and not forks:
-
-```yaml
-job:
-  only:
-    - branches@gitlab-org/gitlab
-  except:
-    - main@gitlab-org/gitlab
-    - /^release/.*$/@gitlab-org/gitlab
-```
-
-This example runs `job` for all branches on `gitlab-org/gitlab`,
-except `main` and branches that start with `release/`.
-
-### `only: variables` / `except: variables` examples
-
-You can use [`except:variables`](../yaml/index.md#onlyvariables--exceptvariables) to exclude jobs based on a commit message:
-
-```yaml
-end-to-end:
-  script: rake test:end-to-end
-  except:
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
-```
-
-You can use [parentheses](#group-variable-expressions-together-with-parentheses) with `&&` and `||`
-to build more complicated variable expressions:
-
-```yaml
-job1:
-  script:
-    - echo This rule uses parentheses.
-  only:
-    variables:
-      - ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop") && $MY_VARIABLE
-```
-
-When multiple entries are specified in `only:variables`, the job runs when at least one of them evaluates to `true`.
-You can use `&&` in a single entry when multiple conditions must be satisfied at the same time.
-
-### `only:changes` / `except:changes` examples
-
-You can skip a job if a change is detected in any file with a
-`.md` extension in the root directory of the repository:
-
-```yaml
-build:
-  script: npm run build
-  except:
-    changes:
-      - "*.md"
-```
-
-If you change multiple files, but only one file ends in `.md`,
-the `build` job is still skipped. The job does not run for any of the files.
-
-With some configurations that use `changes`, [jobs or pipelines might run unexpectedly](job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)
-
-#### Use `only:changes` with merge request pipelines
-
-With [merge request pipelines](../pipelines/merge_request_pipelines.md),
-it's possible to define a job to be created based on files modified
-in a merge request.
-
-Use this keyword with `only: [merge_requests]` so GitLab can find the correct base
-SHA of the source branch. File differences are correctly calculated from any further
-commits, and all changes in the merge requests are properly tested in pipelines.
-
-For example:
-
-```yaml
-docker build service one:
-  script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
-  only:
-    refs:
-      - merge_requests
-    changes:
-      - Dockerfile
-      - service-one/**/*
-```
-
-In this scenario, if a merge request changes
-files in the `service-one` directory or the `Dockerfile`, GitLab creates
-the `docker build service one` job.
-
-For example:
-
-```yaml
-docker build service one:
-  script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
-  only:
-    changes:
-      - Dockerfile
-      - service-one/**/*
-```
-
-In this example, the pipeline might fail because of changes to a file in `service-one/**/*`.
-
-A later commit that doesn't have changes in `service-one/**/*`
-but does have changes to the `Dockerfile` can pass. The job
-only tests the changes to the `Dockerfile`.
-
-GitLab checks the **most recent pipeline** that **passed**. If the merge request is mergeable,
-it doesn't matter that an earlier pipeline failed because of a change that has not been corrected.
-
-When you use this configuration, ensure that the most recent pipeline
-properly corrects any failures from previous pipelines.
-
-### Combine multiple keywords with `only` or `except`
-
-If you use multiple keywords with `only` or `except`, the keywords are evaluated
-as a single conjoined expression. That is:
-
-- `only` includes the job if **all** of the keys have at least one condition that matches.
-- `except` excludes the job if **any** of the keys have at least one condition that matches.
-
-With `only`, individual keys are logically joined by an `AND`. A job is added to
-the pipeline if the following is true:
-
-- `(any listed refs are true) AND (any listed variables are true) AND (any listed changes are true) AND (any chosen Kubernetes status matches)`
-
-In the following example, the `test` job is only created when **all** of the following are true:
-
-- The pipeline is [scheduled](../pipelines/schedules.md) **or** runs for `main`.
-- The `variables` keyword matches.
-- The `kubernetes` service is active on the project.
-
-```yaml
-test:
-  script: npm run test
-  only:
-    refs:
-      - main
-      - schedules
-    variables:
-      - $CI_COMMIT_MESSAGE =~ /run-end-to-end-tests/
-    kubernetes: active
-```
-
-With `except`, individual keys are logically joined by an `OR`. A job is **not**
-added if the following is true:
-
-- `(any listed refs are true) OR (any listed variables are true) OR (any listed changes are true) OR (a chosen Kubernetes status matches)`
-
-In the following example, the `test` job is **not** created when **any** of the following are true:
-
-- The pipeline runs for the `main` branch.
-- There are changes to the `README.md` file in the root directory of the repository.
-
-```yaml
-test:
-  script: npm run test
-  except:
-    refs:
-      - main
-    changes:
-      - "README.md"
 ```
 
 ## Create a job that must be run manually
@@ -653,7 +439,7 @@ To protect a manual job:
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
    select the environment (`production` in this example) and add the users, roles or groups
    that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
-   this list can trigger this manual job, as well as GitLab administrators
+   this list can trigger this manual job, and GitLab administrators
    who are always able to use protected environments.
 
 You can use protected environments with blocking manual jobs to have a list of users
@@ -662,8 +448,6 @@ manual job and the pipeline's next stages only run after the manual job is trigg
 by authorized users.
 
 ## Run a job after a delay
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
 
 Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
@@ -726,15 +510,13 @@ test:
     - bundle exec rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL
 ```
 
-You can then navigate to the **Jobs** tab of a new pipeline build and see your RSpec
+You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
 WARNING:
 Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
 
 You can create a one-dimensional matrix of parallel jobs:
 
@@ -752,8 +534,6 @@ deploystacks:
 You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix).
 
 ### Run a matrix of parallel trigger jobs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
 
 You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -786,8 +566,6 @@ deploystacks: [vultr, data]
 ```
 
 ### Select different runner tags for each parallel matrix job
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
 
 You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
 keyword for dynamic runner selection:
@@ -931,7 +709,7 @@ types the variables can control for:
 - Branch pipelines that run for Git `push` events to a branch, like new commits or tags.
 - Tag pipelines that run only when a new Git tag is pushed to a branch.
 - [Merge request pipelines](../pipelines/merge_request_pipelines.md) that run for changes
-  to a merge request, like new commits or selecting the **Run pipeline** button
+  to a merge request, like new commits or selecting **Run pipeline**
   in a merge request's pipelines tab.
 - [Scheduled pipelines](../pipelines/schedules.md).
 
@@ -991,24 +769,7 @@ matching only a substring of the tag name or branch name.
 For example, `/^issue-.*$/` is equivalent to `/^issue-/`,
 while just `/issue/` would also match a branch called `severe-issues`.
 
-### `only` / `except` regex syntax
-
-In GitLab 11.9.4, GitLab began internally converting the regexp used
-in `only` and `except` keywords to [RE2](https://github.com/google/re2/wiki/Syntax).
-
-[RE2](https://github.com/google/re2/wiki/Syntax) limits the set of available features
-due to computational complexity, and some features, like negative lookaheads, became unavailable.
-Only a subset of features provided by [Ruby Regexp](https://ruby-doc.org/core/Regexp.html)
-are now supported.
-
-From GitLab 11.9.7 to GitLab 14.9, GitLab provided a feature flag to let you
-use unsafe regexp syntax. We've fully migrated to RE2 now, and that feature
-flag is no longer available.
-
 ## CI/CD variable expressions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/37397) in GitLab 10.7 for [the `only` and `except` CI keywords](../yaml/index.md#onlyvariables--exceptvariables)
-> - [Expanded](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3 with [the `rules` keyword](../yaml/index.md#rules)
 
 Use variable expressions to control which jobs are created in a pipeline after changes
 are pushed to GitLab. You can use variable expressions with:
@@ -1125,8 +886,6 @@ regex-job2:
 
 ### Join variable expressions together with `&&` or `||`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
-
 You can join multiple expressions using `&&` (and) or `||` (or), for example:
 
 - `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
@@ -1137,9 +896,6 @@ The precedence of operators follows the [Ruby 2.5 standard](https://ruby-doc.org
 so `&&` is evaluated before `||`.
 
 #### Group variable expressions together with parentheses
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230938) in GitLab 13.3.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/238174) in GitLab 13.5.
 
 You can use parentheses to group expressions together. Parentheses take precedence over
 `&&` and `||`, so expressions enclosed in parentheses are evaluated first, and the

@@ -4,7 +4,7 @@ export const MAX_CHILDREN_COUNT = 20;
 
 export const ACTIVE_TAB_SUBGROUPS_AND_PROJECTS = 'subgroups_and_projects';
 export const ACTIVE_TAB_SHARED = 'shared';
-export const ACTIVE_TAB_ARCHIVED = 'archived';
+export const ACTIVE_TAB_INACTIVE = 'inactive';
 
 export const GROUPS_LIST_HOLDER_CLASS = '.js-groups-list-holder';
 export const CONTENT_LIST_CLASS = '.groups-list';

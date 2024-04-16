@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormGroup } from '@gitlab/ui';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
@@ -22,6 +22,7 @@ export default {
     GlButton,
     GlForm,
     GlFormGroup,
+    GlFormTextarea,
     MarkdownEditor,
     WorkItemDescriptionRendered,
   },
@@ -60,6 +61,7 @@ export default {
   data() {
     return {
       workItem: {},
+      disableTruncation: false,
       isEditing: this.editMode,
       isSubmitting: false,
       isSubmittingWithKeydown: false,
@@ -180,6 +182,7 @@ export default {
     },
     async startEditing() {
       this.isEditing = true;
+      this.disableTruncation = true;
 
       this.descriptionText = getDraft(this.autosaveKey) || this.workItemDescription?.description;
 
@@ -312,11 +315,12 @@ export default {
             </p>
             <details class="gl-mb-5">
               <summary class="gl-text-blue-500">{{ s__('WorkItem|View current version') }}</summary>
-              <textarea
-                class="note-textarea js-gfm-input js-autosize markdown-area gl-p-3"
+              <gl-form-textarea
+                class="js-gfm-input js-autosize markdown-area gl-font-monospace!"
+                data-testid="conflicted-description"
                 readonly
                 :value="conflictedDescription"
-              ></textarea>
+              />
             </details>
             <template #actions>
               <gl-button
@@ -357,6 +361,7 @@ export default {
       :disable-inline-editing="disableInlineEditing"
       :work-item-description="workItemDescription"
       :can-edit="canEdit"
+      :disable-truncation="disableTruncation"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />

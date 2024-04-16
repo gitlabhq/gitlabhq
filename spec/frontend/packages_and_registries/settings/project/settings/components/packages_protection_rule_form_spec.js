@@ -23,11 +23,11 @@ describe('Packages Protection Rule Form', () => {
   };
 
   const findPackageNamePatternInput = () =>
-    wrapper.findByRole('textbox', { name: /package name pattern/i });
-  const findPackageTypeSelect = () => wrapper.findByRole('combobox', { name: /package type/i });
+    wrapper.findByRole('textbox', { name: /name pattern/i });
+  const findPackageTypeSelect = () => wrapper.findByRole('combobox', { name: /type/i });
   const findPushProtectedUpToAccessLevelSelect = () =>
     wrapper.findByRole('combobox', { name: /push protected up to access level/i });
-  const findSubmitButton = () => wrapper.findByRole('button', { name: /protect/i });
+  const findSubmitButton = () => wrapper.findByRole('button', { name: /add rule/i });
   const findForm = () => wrapper.findComponent(GlForm);
 
   const mountComponent = ({ data, config, provide = defaultProvidedValues } = {}) => {
@@ -219,7 +219,7 @@ describe('Packages Protection Rule Form', () => {
 
         expect(findAlert().isVisible()).toBe(true);
         expect(findAlert().text()).toMatch(
-          /something went wrong while saving the package protection rule/i,
+          'Something went wrong while saving the package protection rule',
         );
       });
     });

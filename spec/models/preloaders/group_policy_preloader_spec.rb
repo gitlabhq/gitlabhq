@@ -23,11 +23,11 @@ RSpec.describe Preloaders::GroupPolicyPreloader do
     preload_groups_for_policy(user)
     control = ActiveRecord::QueryRecorder.new { authorize_all_groups(user) }
 
-    new_group1 = create(:group, :private).tap { |group| group.add_maintainer(user) }
+    new_group1 = create(:group, :private, maintainers: user)
     new_group2 = create(:group, :private, parent: private_maintainer_group)
 
     another_root = create(:group, :private, name: 'root-3', path: 'root-3')
-    new_group3 = create(:group, :private, parent: another_root).tap { |group| group.add_maintainer(user) }
+    new_group3 = create(:group, :private, parent: another_root, maintainers: user)
 
     pristine_groups = Group.where(id: base_groups + [new_group1, new_group2, new_group3])
 

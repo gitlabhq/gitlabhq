@@ -129,11 +129,14 @@ export default {
           ],
         };
       }
-      return REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState];
+      return (
+        REVIEW_STATE_ICONS[user.mergeRequestInteraction.reviewState] ||
+        REVIEW_STATE_ICONS.UNREVIEWED
+      );
     },
     showRequestReviewButton(user) {
       if (!user.mergeRequestInteraction.approved) {
-        return user.mergeRequestInteraction.reviewState !== 'UNREVIEWED';
+        return !['UNREVIEWED', 'UNAPPROVED'].includes(user.mergeRequestInteraction.reviewState);
       }
 
       return true;

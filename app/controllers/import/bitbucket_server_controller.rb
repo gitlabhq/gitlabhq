@@ -49,9 +49,6 @@ class Import::BitbucketServerController < Import::BaseController
     session[bitbucket_server_username_key] = params[:bitbucket_server_username]
     session[bitbucket_server_url_key] = params[:bitbucket_server_url]
 
-    experiment(:default_to_import_tab, actor: current_user)
-      .track(:authentication, property: provider_name)
-
     redirect_to status_import_bitbucket_server_path(namespace_id: params[:namespace_id])
   end
 

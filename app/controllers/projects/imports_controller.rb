@@ -18,9 +18,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    if @project.update(import_params)
-      @project.import_state.reset.schedule
-    end
+    @project.import_state.reset.schedule if @project.update(import_params)
 
     redirect_to project_import_path(@project)
   end
@@ -50,25 +48,21 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def require_no_repo
-    if @project.repository_exists?
-      redirect_to project_path(@project)
-    end
+    redirect_to project_path(@project) if @project.repository_exists?
   end
 
   def require_namespace_project_creation_permission
-    render_404 unless can?(current_user, :admin_project, @project) || can?(current_user, :import_projects, @project.namespace)
+    unless can?(current_user, :admin_project, @project) || can?(current_user, :import_projects, @project.namespace)
+      render_404
+    end
   end
 
   def redirect_if_progress
-    if @project.import_in_progress?
-      redirect_to project_import_path(@project)
-    end
+    redirect_to project_import_path(@project) if @project.import_in_progress?
   end
 
   def redirect_if_no_import
-    if @project.repository_exists? && @project.no_import?
-      redirect_to project_path(@project)
-    end
+    redirect_to project_path(@project) if @project.repository_exists? && @project.no_import?
   end
 
   def import_params_attributes

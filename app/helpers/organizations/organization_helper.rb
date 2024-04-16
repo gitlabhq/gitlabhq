@@ -58,6 +58,7 @@ module Organizations
         mattermost_enabled: Gitlab.config.mattermost.enabled,
         available_visibility_levels: available_visibility_levels(Group),
         restricted_visibility_levels: restricted_visibility_levels,
+        default_visibility_level: default_group_visibility,
         path_maxlength: ::Namespace::URL_MAX_LENGTH,
         path_pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
       }.to_json
@@ -65,6 +66,14 @@ module Organizations
 
     def admin_organizations_index_app_data
       shared_organization_index_app_data.to_json
+    end
+
+    def organization_projects_edit_app_data(organization, project)
+      {
+        projects_organization_path: groups_and_projects_organization_path(organization, { display: 'projects' }),
+        preview_markdown_path: preview_markdown_organizations_path,
+        project: project.slice(:id, :name, :full_name, :description)
+      }.to_json
     end
 
     private

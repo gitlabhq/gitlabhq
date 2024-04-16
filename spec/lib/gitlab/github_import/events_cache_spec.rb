@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::EventsCache, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::EventsCache, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:project) { build_stubbed(:project, id: 1) }
   let(:issue) { build_stubbed(:issue, iid: 2) }
 

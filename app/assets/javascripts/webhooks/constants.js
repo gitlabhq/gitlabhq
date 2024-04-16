@@ -17,3 +17,5 @@ export const descriptionText = {
 };
 
 export const MASK_ITEM_VALUE_HIDDEN = '************';
+
+export const CUSTOM_HEADER_KEY_PATTERN = /^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$/;

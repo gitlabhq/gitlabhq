@@ -58,10 +58,20 @@ Here we assume your backend service is called `foo` and is already reachable at 
 We also assume that the backend service exposes the feature using a `/new_feature_endpoint` endpoint.
 This allows clients to access the feature at `https://cloud.gitlab.com/foo/new_feature_endpoint`.
 
+Here, the parameters you pass to `access_token` have the following meaning:
+
+- `audience`: The name of the backend service. The token is bound to this backend
+  using the JWT `aud` claim.
+- `scopes`: The list of access scopes carried in this token. They should map to access points
+  in your backend, which could be HTTP endpoints or RPC calls.
+
 ```ruby
 include API::Helpers::CloudConnector
 
-token = ::CloudConnector::AccessService.new.access_token(scopes: [:new_feature_scope])
+token = ::CloudConnector::AccessService.new.access_token(
+  audience: 'foo',
+  scopes: [:new_feature_scope]
+)
 return unauthorized! if token.nil?
 
 Gitlab::HTTP.post(
@@ -71,6 +81,11 @@ Gitlab::HTTP.post(
     }.merge(cloud_connector_headers(current_user))
 )
 ```
+
+NOTE:
+Any arguments you pass to `access_token` that configure the token returned only take hold for
+tokens issued on GitLab.com. For self-managed GitLab instances the token is read as-is from
+the database and never modified.
 
 #### CustomersDot
 
@@ -86,6 +101,7 @@ To add a new feature bound to a scope:
     token as a scope.
 
     <!-- markdownlint-disable proper-names -->
+    `backend` is the targeted backend service and will become the token audience.
 
     `service_start_time` is the cut-off date after which payment for this feature is required.
 
@@ -104,8 +120,8 @@ To add a new feature bound to a scope:
       services:
         new_feature_scope:
           service_start_time: 2024-02-15 00:00:00 UTC
-            min_gitlab_version: '16.8'
-            bundled_with: 'duo_pro'
+          min_gitlab_version: '16.8'
+          bundled_with: 'duo_pro'
     ```
 
 1. **Optional:** If the backend service the token is used for requires additional claims to be embedded in the
@@ -255,4 +271,4 @@ and assign it to the Cloud Connector group.
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#setup).
+An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#local-setup).

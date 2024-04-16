@@ -132,7 +132,10 @@ Example response:
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
-  "bulk_import_concurrent_pipeline_batch_limit": 25
+  "bulk_import_concurrent_pipeline_batch_limit": 25,
+  "concurrent_github_import_jobs_limit": 1000,
+  "concurrent_bitbucket_import_jobs_limit": 100,
+  "concurrent_bitbucket_server_import_jobs_limit": 100
 }
 ```
 
@@ -288,7 +291,10 @@ Example response:
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
-  "downstream_pipeline_trigger_limit_per_project_user_sha": 0
+  "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
+  "concurrent_github_import_jobs_limit": 1000,
+  "concurrent_bitbucket_import_jobs_limit": 100,
+  "concurrent_bitbucket_server_import_jobs_limit": 100
 }
 ```
 
@@ -363,6 +369,9 @@ listed in the descriptions of the relevant settings.
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
 | `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#maximum-includes) per pipeline. Default is `150`. |
+| `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
+| `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
+| `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `commit_email_hostname`                  | string           | no                                   | Custom hostname (for private commit emails). |
 | `container_expiration_policies_enable_historic_entries`   | boolean | no                           | Enable [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#enable-the-cleanup-policy) for all projects. |
 | `container_registry_cleanup_tags_service_max_list_size`   | integer | no                           | The maximum number of tags that can be deleted in a single execution of [cleanup policies](../user/packages/container_registry/reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources). |
@@ -567,7 +576,7 @@ listed in the descriptions of the relevant settings.
 | `repository_size_limit`                  | integer          | no                                   | Size limit per repository (MB). Premium and Ultimate only. |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | (GitLab 13.1 and later) Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
 | `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md) by an administrator. |
-| `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
+| `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |

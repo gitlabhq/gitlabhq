@@ -95,7 +95,7 @@ export default {
         data-testid="work-item-sticky-header"
       >
         <div
-          class="gl-align-items-center gl-mx-auto gl-px-5 gl-display-flex gl-max-w-container-xl gl-gap-3"
+          class="work-item-sticky-header-text gl-align-items-center gl-mx-auto gl-px-6 gl-display-flex gl-gap-3"
         >
           <span class="gl-text-truncate gl-font-weight-bold gl-pr-3 gl-mr-auto">
             {{ workItem.title }}

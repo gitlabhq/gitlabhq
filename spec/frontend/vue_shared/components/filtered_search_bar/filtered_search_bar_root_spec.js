@@ -14,6 +14,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
+import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 
 import {
   mockAvailableTokens,
@@ -192,6 +193,17 @@ describe('FilteredSearchBarRoot', () => {
       await nextTick();
       expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
     });
+
+    it('emits component event `onInput` on filteredsearch input component', async () => {
+      const mockFilters = [tokenValueAuthor, 'foo'];
+      createComponent();
+
+      wrapper.findComponent(GlFilteredSearch).vm.$emit('input', mockFilters);
+
+      await nextTick();
+
+      expect(wrapper.emitted('onInput')[0]).toEqual([mockFilters]);
+    });
   });
 
   describe('methods', () => {
@@ -208,6 +220,22 @@ describe('FilteredSearchBarRoot', () => {
 
         expect(localStorage.setItem).toHaveBeenCalledWith('canUseLocalStorage', 'true');
         expect(wrapper.vm.recentSearchesPromise instanceof Promise).toBe(true);
+      });
+
+      describe('when `recentSearchesStorageKey` is changed', () => {
+        it('gets new items from local storage', async () => {
+          createComponent();
+
+          expect(localStorage.getItem).toHaveBeenCalledWith(
+            'gitlab-org/gitlab-test-issue-recent-searches',
+          );
+
+          await wrapper.setProps({ recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS });
+
+          expect(localStorage.getItem).toHaveBeenCalledWith(
+            'gitlab-org/gitlab-test-groups-recent-searches',
+          );
+        });
       });
     });
 
@@ -460,6 +488,18 @@ describe('FilteredSearchBarRoot', () => {
       ]);
 
       expect(sortBy).toBe(mockSortOptions[0].id);
+    });
+
+    describe('showSearchButton', () => {
+      it('sets showSearchButton on the filteredsearch component when provided', () => {
+        createComponent({ propsData: { showSearchButton: false } });
+        expect(findGlFilteredSearch().props('showSearchButton')).toBe(false);
+      });
+
+      it('sets defaults to true', () => {
+        createComponent();
+        expect(findGlFilteredSearch().props('showSearchButton')).toBe(true);
+      });
     });
   });
 

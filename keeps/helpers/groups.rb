@@ -19,6 +19,8 @@ module Keeps
       end
 
       def pick_reviewer(group, identifiers)
+        return if group['backend_engineers'].empty?
+
         random_engineer = Digest::SHA256.hexdigest(identifiers.join).to_i(16) % group['backend_engineers'].size
 
         group['backend_engineers'][random_engineer]

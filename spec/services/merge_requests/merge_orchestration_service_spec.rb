@@ -102,7 +102,7 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
 
     context 'when merge request is not mergeable' do
       before do
-        allow(merge_request).to receive(:mergeable?) { false }
+        merge_request.update!(merge_status: 'cannot_be_merged')
       end
 
       it { is_expected.to eq(false) }

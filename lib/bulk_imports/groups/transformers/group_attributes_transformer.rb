@@ -23,7 +23,7 @@ module BulkImports
             'path' => uniquify(namespace, path, :path),
             'description' => data['description'],
             'lfs_enabled' => data['lfs_enabled'],
-            'emails_disabled' => data['emails_disabled'],
+            'emails_enabled' => !data['emails_disabled'],
             'mentions_disabled' => data['mentions_disabled'],
             'share_with_group_lock' => data['share_with_group_lock']
           }

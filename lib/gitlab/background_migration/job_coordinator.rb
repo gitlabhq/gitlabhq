@@ -46,25 +46,32 @@ module Gitlab
         @queue ||= worker_class.sidekiq_options['queue']
       end
 
+      def sidekiq_redis_pool
+        @sidekiq_redis_pool ||=
+          Gitlab::SidekiqSharding::Router.get_shard_instance(worker_class.sidekiq_options['store']).last
+      end
+
       def with_shared_connection(&block)
         Gitlab::Database::SharedModel.using_connection(connection, &block)
       end
 
       def pending_jobs(include_dead_jobs: false)
         Enumerator.new do |y|
-          queues = [
-            Sidekiq::ScheduledSet.new,
-            Sidekiq::Queue.new(self.queue)
-          ]
+          Sidekiq::Client.via(sidekiq_redis_pool) do
+            queues = [
+              Sidekiq::ScheduledSet.new,
+              Sidekiq::Queue.new(self.queue)
+            ]
 
-          if include_dead_jobs
-            queues << Sidekiq::RetrySet.new
-            queues << Sidekiq::DeadSet.new
-          end
+            if include_dead_jobs
+              queues << Sidekiq::RetrySet.new
+              queues << Sidekiq::DeadSet.new
+            end
 
-          queues.each do |queue|
-            queue.each do |job|
-              y << job if job.klass == worker_class.name
+            queues.each do |queue|
+              queue.each do |job|
+                y << job if job.klass == worker_class.name
+              end
             end
           end
         end
@@ -72,19 +79,21 @@ module Gitlab
 
       def steal(steal_class, retry_dead_jobs: false)
         with_shared_connection do
-          pending_jobs(include_dead_jobs: retry_dead_jobs).each do |job|
-            migration_class, migration_args = job.args
+          Sidekiq::Client.via(sidekiq_redis_pool) do
+            pending_jobs(include_dead_jobs: retry_dead_jobs).each do |job|
+              migration_class, migration_args = job.args
 
-            next unless migration_class == steal_class
-            next if block_given? && !(yield job)
+              next unless migration_class == steal_class
+              next if block_given? && !(yield job)
 
-            begin
-              perform(migration_class, migration_args) if job.delete
-            rescue Exception # rubocop:disable Lint/RescueException
-              worker_class # enqueue this migration again
-                .perform_async(migration_class, migration_args)
+              begin
+                perform(migration_class, migration_args) if job.delete
+              rescue Exception # rubocop:disable Lint/RescueException
+                worker_class # enqueue this migration again
+                  .perform_async(migration_class, migration_args)
 
-              raise
+                raise
+              end
             end
           end
         end

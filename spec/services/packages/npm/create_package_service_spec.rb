@@ -30,6 +30,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:package) { subject[:package] }
 
       it 'creates a package' do
+        expect(::Packages::Npm::ProcessPackageFileWorker).to receive(:perform_async).once
+
         expect { subject }
           .to change { Packages::Package.count }.by(1)
           .and change { Packages::Package.npm.count }.by(1)
@@ -55,12 +57,22 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
           subject { super().payload.fetch(:package) }
         end
 
-        it_behaves_like 'assigns status to package' do
-          subject { super().payload.fetch(:package) }
-        end
-
         it 'creates a package file build info' do
           expect { subject }.to change { Packages::PackageFileBuildInfo.count }.by(1)
+        end
+      end
+
+      context 'with status param' do
+        subject { super().payload.fetch(:package) }
+
+        it { is_expected.to have_attributes status: 'processing' }
+
+        context 'when upload_npm_packages_async feature flag is disabled' do
+          before do
+            stub_feature_flags(upload_npm_packages_async: false)
+          end
+
+          it_behaves_like 'assigns status to package'
         end
       end
 
@@ -385,8 +397,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         create(:package_protection_rule, package_type: :npm, project: project)
       end
 
-      let_it_be(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
-      let_it_be(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let_it_be(:project_developer) { create(:user, developer_of: project) }
+      let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
 
       let(:project_owner) { project.owner }
       let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
@@ -431,6 +443,18 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       it 'returns an unique key' do
         is_expected.to eq lease_key
+      end
+    end
+
+    context 'when upload_npm_packages_async feature flag is disabled' do
+      before do
+        stub_feature_flags(upload_npm_packages_async: false)
+      end
+
+      it 'does not enqueue a background job' do
+        expect(::Packages::Npm::ProcessPackageFileWorker).not_to receive(:perform_async)
+
+        execute_service
       end
     end
   end

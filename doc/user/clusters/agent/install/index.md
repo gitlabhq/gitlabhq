@@ -139,7 +139,7 @@ To install the agent on your cluster using Helm:
    ```
 
 1. Optional. [Customize the Helm installation](#customize-the-helm-installation).
-   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab Agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
+   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
 
 ##### Customize the Helm installation
 
@@ -207,6 +207,9 @@ To configure your agent, add content to the `config.yaml` file:
 
 ## Install multiple agents in your cluster
 
+NOTE:
+In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, we would love to hear from you about any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
+
 To install a second agent in your cluster, you can follow the [previous steps](#register-the-agent-with-gitlab) a second time. To avoid resource name collisions within the cluster, you must either:
 
 - Use a different release name for the agent, for example, `second-gitlab-agent`:
@@ -222,6 +225,15 @@ To install a second agent in your cluster, you can follow the [previous steps](#
     --namespace different-namespace \
     ...
   ```
+
+Because each agent in a cluster runs independently, reconciliations are triggered
+by every agent with the Flux module enabled.
+[Issue 357516](https://gitlab.com/gitlab-org/gitlab/-/issues/357516) proposes to change this behavior.
+
+As a workaround, you can:
+
+- Configure RBAC with the agent so that it only accesses the Flux resources it needs.
+- Disable the Flux module on the agents that don't use it.
 
 ## Example projects
 

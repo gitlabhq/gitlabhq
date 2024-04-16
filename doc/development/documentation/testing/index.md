@@ -277,10 +277,10 @@ Some, but not all, linting can be disabled on documentation files:
 
 ## Tool versions used in CI/CD pipelines
 
-It's preferable to use linter versions that are the same as those used in our CI/CD pipelines for maximum compatibility
+You should use linter versions that are the same as those used in our CI/CD pipelines for maximum compatibility
 with the linting rules we use.
 
-To match the versions of `markdownlint-cli` (or `markdownlint-cli2`) and `vale` used in the GitLab projects, refer to:
+To match the versions of `markdownlint-cli2` and `vale` used in the GitLab projects, refer to:
 
 - For projects managed with `asdf`, the `.tool-versions` file in the project. For example, the
   [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
@@ -291,9 +291,7 @@ Versions set in these two locations should be the same.
 
 | Tool                | Version  | Command                                   | Additional information |
 |---------------------|----------|-------------------------------------------|------------------------|
-| `markdownlint-cli`  | Latest   | `yarn global add markdownlint-cli`        | None.                  |
 | `markdownlint-cli2` | Latest   | `yarn global add markdownlint-cli2`       | None.                  |
-| `markdownlint-cli`  | Specific | `yarn global add markdownlint-cli@0.35.0` | The `@` indicates a specific version, and this example updates the tool to version `0.35.0`. |
 | `markdownlint-cli2` | Specific | `yarn global add markdownlint-cli2@0.8.1` | The `@` indicates a specific version, and this example updates the tool to version `0.8.1`. |
 | Vale (using `asdf`) | Specific | `asdf install`                            | Installs the version of Vale set in `.tool-versions` file in a project. |
 | Vale (other)        | Specific | Not applicable.                           | Binaries can be [directly downloaded](https://github.com/errata-ai/vale/releases). |

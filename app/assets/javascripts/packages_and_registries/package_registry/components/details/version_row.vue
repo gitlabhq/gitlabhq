@@ -59,6 +59,12 @@ export default {
     errorStatusRow() {
       return this.packageEntity?.status === PACKAGE_ERROR_STATUS;
     },
+    errorPackageStyle() {
+      return {
+        'gl-text-red-500': this.errorStatusRow,
+        'gl-font-weight-normal': this.errorStatusRow,
+      };
+    },
     dropdownItems() {
       return [
         {
@@ -93,10 +99,15 @@ export default {
     </template>
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
-        <gl-link v-if="containsWebPathLink" class="gl-text-body gl-min-w-0" :href="packageLink">
+        <gl-link
+          v-if="containsWebPathLink"
+          class="gl-text-body gl-min-w-0"
+          :class="errorPackageStyle"
+          :href="packageLink"
+        >
           <gl-truncate :text="packageEntity.name" />
         </gl-link>
-        <gl-truncate v-else :text="packageEntity.name" />
+        <gl-truncate v-else :class="errorPackageStyle" :text="packageEntity.name" />
 
         <package-tags
           v-if="packageEntity.tags.nodes && packageEntity.tags.nodes.length"

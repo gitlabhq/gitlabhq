@@ -112,7 +112,7 @@ To configure the connection to the external read-replica database:
 
    # note this is shared between both databases,
    # make sure you define the same password in both
-   gitlab_rails['db_password'] = '<your_password_here>'
+   gitlab_rails['db_password'] = '<your_db_password_here>'
 
    gitlab_rails['db_username'] = 'gitlab'
    gitlab_rails['db_host'] = '<database_read_replica_host>'
@@ -337,7 +337,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and run:
 
@@ -345,7 +345,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -459,7 +459,7 @@ Configure GitLab to use this database. These steps are for Linux package and Doc
 
    ```ruby
    geo_secondary['db_username'] = 'gitlab_geo'
-   geo_secondary['db_password'] = '<your_password_here>'
+   geo_secondary['db_password'] = '<your_tracking_db_password_here>'
 
    geo_secondary['db_host'] = '<tracking_database_host>'
    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
@@ -491,4 +491,4 @@ The reconfigure in the [steps above](#configure-gitlab) handles these steps auto
 
 ## Troubleshooting
 
-See [troubleshooting Geo](../replication/troubleshooting.md).
+See [troubleshooting Geo](../replication/troubleshooting/index.md).

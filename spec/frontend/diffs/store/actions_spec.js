@@ -817,6 +817,19 @@ describe('DiffsStoreActions', () => {
   });
 
   describe('removeDiscussionsFromDiff', () => {
+    it('does not call mutation if no diff file is on discussion', () => {
+      testAction(
+        diffActions.removeDiscussionsFromDiff,
+        {
+          id: '1',
+          line_code: 'ABC_1_1',
+        },
+        {},
+        [],
+        [],
+      );
+    });
+
     it('should remove discussions from diffs', () => {
       const state = {
         diffFiles: [

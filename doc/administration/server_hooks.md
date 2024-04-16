@@ -182,7 +182,7 @@ Prerequisites:
 To remove server hooks, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
 
 ```shell
-cat empty_hooks.tar | sudo /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
+cat empty_hooks.tar | sudo /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>
 ```
 
 :::TabTitle GitLab 15.10 and earlier

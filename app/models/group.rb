@@ -38,6 +38,7 @@ class Group < Namespace
   has_many :all_group_members, -> { non_request }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :all_owner_members, -> { non_request.all_owners }, as: :source, class_name: 'GroupMember'
   has_many :group_members, -> { non_request.non_minimal_access }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :non_invite_group_members, -> { non_request.non_minimal_access.non_invite }, class_name: 'GroupMember', as: :source
   has_many :namespace_members, -> { non_request.non_minimal_access.unscope(where: %i[source_id source_type]) },
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -179,6 +180,10 @@ class Group < Namespace
   scope :with_users, -> { includes(:users) }
 
   scope :with_onboarding_progress, -> { joins(:onboarding_progress) }
+
+  scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
+
+  scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }
 
   scope :by_id, ->(groups) { where(id: groups) }
 
@@ -332,6 +337,12 @@ class Group < Namespace
       where('NOT EXISTS (?)', integrations)
     end
 
+    def groups_user_can(groups, user, action, same_root: false)
+      DeclarativePolicy.user_scope do
+        groups.select { |group| Ability.allowed?(user, action, group) }
+      end
+    end
+
     # This method can be used only if all groups have the same top-level
     # group
     def preset_root_ancestor_for(groups)
@@ -345,7 +356,6 @@ class Group < Namespace
     # column is set to false anywhere in the ancestor hierarchy.
     def ids_with_disabled_email(groups)
       inner_groups = Group.where('id = namespaces_with_emails_disabled.id')
-
       inner_query = inner_groups
         .self_and_ancestors
         .joins(:namespace_settings)
@@ -715,7 +725,11 @@ class Group < Namespace
   # @param only_concrete_membership [Bool] whether require admin concrete membership status
   def max_member_access_for_user(user, only_concrete_membership: false)
     return GroupMember::NO_ACCESS unless user
-    return GroupMember::OWNER if user.can_admin_all_resources? && !only_concrete_membership
+
+    unless only_concrete_membership
+      return GroupMember::OWNER if user.can_admin_all_resources?
+      return GroupMember::OWNER if user.can_admin_organization?(organization_id)
+    end
 
     max_member_access(user)
   end
@@ -768,6 +782,8 @@ class Group < Namespace
   # we do this on read since migrating all existing groups is not a feasible
   # solution.
   def runners_token
+    return unless allow_runner_registration_token?
+
     ensure_runners_token!
   end
 
@@ -916,6 +932,10 @@ class Group < Namespace
 
   def linked_work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
+  end
+
+  def work_items_rolledup_dates_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
   end
 
   def supports_lock_on_merge?

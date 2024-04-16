@@ -65,6 +65,48 @@
         ]
       }
     },
+    "additional_properties": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "property": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "value": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "description"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "iglu_schema_url": {
       "type": [
         "string",

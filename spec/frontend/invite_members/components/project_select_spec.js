@@ -33,7 +33,7 @@ describe('ProjectSelect', () => {
       loading: false,
       multiple: false,
       noResultsText: 'No matching results',
-      placement: 'left',
+      placement: 'bottom-start',
       searchPlaceholder: 'Search projects',
       searchable: true,
       searching: false,

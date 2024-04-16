@@ -62,7 +62,7 @@ RSpec.describe NotifyHelper do
 
     it 'returns MR approved description' do
       mr_link_style = "font-weight: 600;color:#3777b0;text-decoration:none"
-      reviewer_avatar_style = "border-radius:12px;margin:-7px 0 -7px 3px;"
+      reviewer_avatar_style = "border-radius:12px;margin-left:3px;vertical-align:bottom;"
       mr_link = link_to(merge_request.to_reference, merge_request_url(merge_request), style: mr_link_style).html_safe
       reviewer_avatar = content_tag(
         :img,

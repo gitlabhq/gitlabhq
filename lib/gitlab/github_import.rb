@@ -2,14 +2,6 @@
 
 module Gitlab
   module GithubImport
-    def self.fine_grained_personal_token?(token)
-      token&.start_with?('github_pat')
-    end
-
-    def self.classic_personal_token?(token)
-      token&.start_with?('ghp_')
-    end
-
     def self.refmap
       [:heads, :tags, '+refs/pull/*/head:refs/merge-requests/*/head']
     end

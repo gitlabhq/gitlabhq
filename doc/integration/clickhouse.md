@@ -11,11 +11,11 @@ DETAILS:
 
 This feature is an [Experiment](../policy/experiment-beta-support.md).
 
-Instructions about how to setup integration between GitLab and ClickHouse database.
+Instructions about how to set up integration between GitLab and ClickHouse database.
 
 ## Setup
 
-To setup ClickHouse as the GitLab data storage:
+To set up ClickHouse as the GitLab data storage:
 
 1. [Run ClickHouse Cluster and configure database](#run-and-configure-clickhouse).
 1. [Configure GitLab connection to Clickhouse](#configure-the-gitlab-connection-to-clickhouse).

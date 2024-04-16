@@ -7,7 +7,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, maintainers: user, developers: [user2, user3], guests: guest) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:label) { create(:label, title: 'a', project: project) }
   let_it_be(:label2) { create(:label, title: 'b', project: project) }
@@ -18,19 +18,13 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
   let(:issue) do
     create(
       :issue,
+      :unchanged,
       title: 'Old title',
       description: "for #{user2.to_reference}",
       assignee_ids: [user3.id],
       project: project,
       author: create(:user)
     )
-  end
-
-  before_all do
-    group.add_maintainer(user)
-    group.add_developer(user2)
-    group.add_developer(user3)
-    group.add_guest(guest)
   end
 
   describe 'execute' do
@@ -1437,7 +1431,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
     it_behaves_like 'issuable update service' do
       let(:open_issuable) { issue }
-      let(:closed_issuable) { create(:closed_issue, project: project) }
+      let(:closed_issuable) { create(:closed_issue, :unchanged, project: project) }
     end
 
     context 'broadcasting issue assignee updates' do

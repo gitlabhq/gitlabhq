@@ -23,7 +23,7 @@ DETAILS:
 | Secondaries | One                          |
 
 This runbook guides you through a planned failover of a multi-node Geo site
-with one secondary. The following [2000 user reference architecture](../../../../administration/reference_architectures/2k_users.md) is assumed:
+with one secondary. The following [40 RPS / 2,000 user reference architecture](../../../../administration/reference_architectures/2k_users.md) is assumed:
 
 ```mermaid
 graph TD
@@ -230,7 +230,7 @@ the **secondary** to the **primary**.
 
 WARNING:
 If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken` error during this process, read
-[the troubleshooting advice](../../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
+[the troubleshooting advice](../../replication/troubleshooting/failover.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 
 The `gitlab-ctl promote-to-primary-node` command cannot be used in
 conjunction with multiple servers, as it can only

@@ -48,7 +48,7 @@ RSpec.describe MergeRequestPresenter do
       let(:pipeline) { build_stubbed(:ci_pipeline) }
 
       before do
-        allow(resource).to receive(:actual_head_pipeline).and_return(pipeline)
+        allow(resource).to receive(:diff_head_pipeline).and_return(pipeline)
       end
 
       context 'success with warnings' do

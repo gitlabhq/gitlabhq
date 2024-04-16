@@ -136,7 +136,7 @@ Renders the enforcement checkbox.
 | `setting_locked` | If the setting is locked by an ancestor group or administrator setting. Can be calculated with [`cascading_namespace_setting_locked?`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/helpers/namespaces_helper.rb#L86). | `Boolean`                                                                                      | `true`                                          |
 | `help_text`      | Text shown below the checkbox.                                                                                                                                                                                                                             | `String`                                                                                       | `false` (Subgroups cannot change this setting.) |
 
-[`_setting_label_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_checkbox.html.haml)
+[`_setting_checkbox.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/e915f204f9eb5930760722ce28b4db60b1159677/app/views/shared/namespaces/cascading_settings/_setting_checkbox.html.haml)
 
 Renders the label for a checkbox setting.
 
@@ -184,20 +184,18 @@ This function should be imported and called in the [page-specific JavaScript](fe
 
 = form_for @group do |f|
   .form-group{ data: { testid: 'delayed-project-removal-form-group' } }
-    .gl-form-checkbox.custom-control.custom-checkbox
-      = f.check_box :delayed_project_removal, checked: @group.namespace_settings.delayed_project_removal?, disabled: delayed_project_removal_locked, class: 'custom-control-input'
-      = render 'shared/namespaces/cascading_settings/setting_label_checkbox', attribute: :delayed_project_removal,
-          group: @group,
-          form: f,
-          setting_locked: delayed_project_removal_locked,
-          settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') },
-          help_text: s_('Settings|Projects will be permanently deleted after a 7-day delay. Inherited by subgroups.') do
-        = s_('Settings|Enable delayed project deletion')
-      = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
-          attribute: :delayed_project_removal,
-          group: @group,
-          form: f,
-          setting_locked: delayed_project_removal_locked
+    = render 'shared/namespaces/cascading_settings/setting_checkbox', attribute: :delayed_project_removal,
+        group: @group,
+        form: f,
+        setting_locked: delayed_project_removal_locked,
+        settings_path_helper: -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') },
+        help_text: s_('Settings|Projects will be permanently deleted after a 7-day delay. Inherited by subgroups.') do
+      = s_('Settings|Enable delayed project deletion')
+    = render 'shared/namespaces/cascading_settings/enforcement_checkbox',
+        attribute: :delayed_project_removal,
+        group: @group,
+        form: f,
+        setting_locked: delayed_project_removal_locked
 
   %fieldset.form-group
     = render 'shared/namespaces/cascading_settings/setting_label_fieldset', attribute: :merge_method,

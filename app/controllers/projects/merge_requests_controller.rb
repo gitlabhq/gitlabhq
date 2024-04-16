@@ -16,10 +16,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
-  before_action :apply_diff_view_cookie!, only: [:show, :diffs]
+  before_action :apply_diff_view_cookie!, only: [:show, :diffs, :rapid_diffs]
   before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_read_actual_head_pipeline!, only: [
+  before_action :authorize_read_diff_head_pipeline!, only: [
     :test_reports,
     :exposed_artifacts,
     :coverage_reports,
@@ -38,7 +38,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
-  before_action only: [:show, :diffs] do
+  before_action only: [:show, :diffs, :rapid_diffs] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
@@ -47,17 +47,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:pinned_file, project)
+    push_frontend_feature_flag(:reviewer_assign_drawer, current_user)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
 
-  after_action :log_merge_request_show, only: [:show, :diffs]
+  after_action :log_merge_request_show, only: [:show, :diffs, :rapid_diffs]
 
   feature_category :code_review_workflow, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update
+    :show, :diffs, :rapid_diffs, :toggle_award_emoji, :toggle_subscription, :update
   ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
@@ -71,6 +72,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     :index,
     :show,
     :diffs,
+    :rapid_diffs,
     :commits,
     :bulk_update,
     :edit,
@@ -104,6 +106,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def diffs
+    show_merge_request
+  end
+
+  def rapid_diffs
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+
     show_merge_request
   end
 
@@ -607,8 +615,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     ::Gitlab::Search::RecentMergeRequests.new(user: current_user).log_view(@merge_request)
   end
 
-  def authorize_read_actual_head_pipeline!
-    render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
+  def authorize_read_diff_head_pipeline!
+    render_404 unless can?(current_user, :read_build, merge_request.diff_head_pipeline)
   end
 
   def show_whitespace

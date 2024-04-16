@@ -59,7 +59,7 @@ module MarkupHelper
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
-  def first_line_in_markdown(object, attribute, max_chars = nil, is_todo: false, **options)
+  def first_line_in_markdown(object, attribute, max_chars = nil, **options)
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
@@ -74,7 +74,7 @@ module MarkupHelper
       tags: tags,
       attributes: Rails::Html::WhiteListSanitizer.allowed_attributes +
         %w[
-          style data-src data-name data-unicode-version data-html
+          style data-src data-name data-unicode-version data-html data-fallback-src
           data-reference-type data-project-path data-iid data-mr-title
           data-user
         ]

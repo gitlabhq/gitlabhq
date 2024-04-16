@@ -281,7 +281,7 @@ describe('packages_list', () => {
       return nextTick();
     });
 
-    it('should display an alert', () => {
+    it('should display an alert with default body message', () => {
       expect(findErrorPackageAlert().exists()).toBe(true);
       expect(findErrorPackageAlert().props('title')).toBe(
         'There was an error publishing a error package package',
@@ -289,6 +289,20 @@ describe('packages_list', () => {
       expect(findErrorPackageAlert().text()).toBe(
         'There was a timeout and the package was not published. Delete this package and try again.',
       );
+    });
+
+    it('should display alert body with message set in `statusMessage`', async () => {
+      mountComponent({
+        props: { list: [firstPackage, { ...errorPackage, statusMessage: 'custom error message' }] },
+      });
+
+      await nextTick();
+
+      expect(findErrorPackageAlert().exists()).toBe(true);
+      expect(findErrorPackageAlert().props('title')).toBe(
+        'There was an error publishing a error package package',
+      );
+      expect(findErrorPackageAlert().text()).toBe('custom error message');
     });
 
     it('should display the deletion modal when clicked on the confirm button', async () => {

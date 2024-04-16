@@ -1,17 +1,10 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { Blob, BinaryBlob } from 'jest/blob/components/mock_data';
-import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 import SnippetApp from '~/snippets/components/show.vue';
 import SnippetBlob from '~/snippets/components/snippet_blob_view.vue';
 import SnippetHeader from '~/snippets/components/snippet_header.vue';
-import SnippetTitle from '~/snippets/components/snippet_title.vue';
-import {
-  VISIBILITY_LEVEL_INTERNAL_STRING,
-  VISIBILITY_LEVEL_PRIVATE_STRING,
-  VISIBILITY_LEVEL_PUBLIC_STRING,
-} from '~/visibility_level/constants';
-import CloneDropdownButton from '~/vue_shared/components/clone_dropdown/clone_dropdown.vue';
+import SnippetDescription from '~/snippets/components/snippet_description.vue';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 
 describe('Snippet view app', () => {
@@ -19,9 +12,6 @@ describe('Snippet view app', () => {
   const defaultProps = {
     snippetGid: 'gid://gitlab/PersonalSnippet/42',
   };
-  const webUrl = 'http://foo.bar';
-  const dummyHTTPUrl = webUrl;
-  const dummySSHUrl = 'ssh://foo.bar';
 
   function createComponent({ props = defaultProps, data = {}, loading = false } = {}) {
     const $apollo = {
@@ -44,7 +34,6 @@ describe('Snippet view app', () => {
   }
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmbedDropdown = () => wrapper.findComponent(EmbedDropdown);
 
   beforeEach(() => {
     stubPerformanceWebAPI();
@@ -58,19 +47,7 @@ describe('Snippet view app', () => {
   it('renders all simple components required after the query is finished', () => {
     createComponent();
     expect(wrapper.findComponent(SnippetHeader).exists()).toBe(true);
-    expect(wrapper.findComponent(SnippetTitle).exists()).toBe(true);
-  });
-
-  it('renders embed dropdown component if visibility allows', () => {
-    createComponent({
-      data: {
-        snippet: {
-          visibilityLevel: VISIBILITY_LEVEL_PUBLIC_STRING,
-          webUrl: 'http://foo.bar',
-        },
-      },
-    });
-    expect(findEmbedDropdown().exists()).toBe(true);
+    expect(wrapper.findComponent(SnippetDescription).exists()).toBe(true);
   });
 
   it('renders correct snippet-blob components', () => {
@@ -85,36 +62,6 @@ describe('Snippet view app', () => {
     expect(blobs.length).toBe(2);
     expect(blobs.at(0).props('blob')).toEqual(Blob);
     expect(blobs.at(1).props('blob')).toEqual(BinaryBlob);
-  });
-
-  describe('Embed dropdown rendering', () => {
-    it.each`
-      snippetVisibility                   | projectVisibility                  | condition       | isRendered
-      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${undefined}                       | ${'render'}     | ${true}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'render'}     | ${true}
-      ${VISIBILITY_LEVEL_INTERNAL_STRING} | ${VISIBILITY_LEVEL_PUBLIC_STRING}  | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PRIVATE_STRING}  | ${undefined}                       | ${'not render'} | ${false}
-      ${'foo'}                            | ${undefined}                       | ${'not render'} | ${false}
-      ${VISIBILITY_LEVEL_PUBLIC_STRING}   | ${VISIBILITY_LEVEL_PRIVATE_STRING} | ${'not render'} | ${false}
-    `(
-      'does $condition embed-dropdown by default',
-      ({ snippetVisibility, projectVisibility, isRendered }) => {
-        createComponent({
-          data: {
-            snippet: {
-              visibilityLevel: snippetVisibility,
-              webUrl,
-              project: {
-                visibility: projectVisibility,
-              },
-            },
-          },
-        });
-        expect(findEmbedDropdown().exists()).toBe(isRendered);
-      },
-    );
   });
 
   describe('hasUnretrievableBlobs alert rendering', () => {
@@ -132,28 +79,5 @@ describe('Snippet view app', () => {
       });
       expect(wrapper.findComponent(GlAlert).exists()).toBe(isRendered);
     });
-  });
-
-  describe('Clone button rendering', () => {
-    it.each`
-      httpUrlToRepo   | sshUrlToRepo   | shouldRender    | isRendered
-      ${null}         | ${null}        | ${'Should not'} | ${false}
-      ${null}         | ${dummySSHUrl} | ${'Should'}     | ${true}
-      ${dummyHTTPUrl} | ${null}        | ${'Should'}     | ${true}
-      ${dummyHTTPUrl} | ${dummySSHUrl} | ${'Should'}     | ${true}
-    `(
-      '$shouldRender render "Clone" button when `httpUrlToRepo` is $httpUrlToRepo and `sshUrlToRepo` is $sshUrlToRepo',
-      ({ httpUrlToRepo, sshUrlToRepo, isRendered }) => {
-        createComponent({
-          data: {
-            snippet: {
-              sshUrlToRepo,
-              httpUrlToRepo,
-            },
-          },
-        });
-        expect(wrapper.findComponent(CloneDropdownButton).exists()).toBe(isRendered);
-      },
-    );
   });
 });

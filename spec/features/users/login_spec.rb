@@ -103,7 +103,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     before do
       stub_application_setting_enum('email_confirmation_setting', 'hard')
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
-      stub_feature_flags(identity_verification: false)
     end
 
     context 'within the grace period' do
@@ -507,15 +506,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         expect_single_session_with_authenticated_ttl
         expect(page).to have_current_path root_path, ignore_query: true
         expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
-      end
-
-      it 'does not allow LDAP user to sign in with local password' do
-        create(:identity, provider: 'ldapmain', user: user)
-
-        gitlab_sign_in(user)
-
-        expect(page).to have_content(I18n.t('devise.failure.invalid'))
-        expect(user.reload.failed_attempts).to eq(0)
       end
 
       it 'does not show already signed in message when opening sign in page after login' do
@@ -1061,30 +1051,35 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     end
 
     context 'when the user does not have an email configured' do
-      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml', email: 'temp-email-for-oauth-user@gitlab.localhost') }
+      let_it_be(:username) { generate(:username) }
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml', email: "temp-email-for-oauth-#{username}@gitlab.localhost") }
 
       before do
+        stub_feature_flags(edit_user_profile_vue: false)
         stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
       end
 
-      it 'asks the user to accept the terms before setting an email',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/388049', type: :flaky } do
-          expect(authentication_metrics)
-            .to increment(:user_authenticated_counter)
+      it 'asks the user to accept the terms before setting an email' do
+        expect(authentication_metrics)
+        .to increment(:user_authenticated_counter)
 
-          gitlab_sign_in_via('saml', user, 'my-uid')
+        gitlab_sign_in_via('saml', user, 'my-uid')
 
-          expect_to_be_on_terms_page
-          click_button 'Accept terms'
+        expect_to_be_on_terms_page
+        click_button 'Accept terms'
 
-          expect(page).to have_current_path(user_settings_profile_path, ignore_query: true)
+        expect(page).to have_current_path(user_settings_profile_path, ignore_query: true)
 
-          fill_in 'Email', with: 'hello@world.com'
+        # Wait until the form has been initialized
+        has_testid?('form-ready')
 
-          click_button 'Update profile settings'
+        fill_in 'Email', with: 'hello@world.com'
 
-          expect(page).to have_content('Profile was successfully updated')
-        end
+        click_button 'Update profile settings'
+
+        expect(page).to have_content('Profile was successfully updated')
+        expect(user.reload).to have_attributes({ unconfirmed_email: 'hello@world.com' })
+      end
     end
   end
 
@@ -1096,7 +1091,6 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
     before do
       stub_application_setting_enum('email_confirmation_setting', 'soft')
-      stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
     end
 

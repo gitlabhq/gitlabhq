@@ -573,6 +573,9 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     let(:branch_name) { 'master' }
     let(:cherry_pick_message) { 'Cherry-pick message' }
     let(:time) { Time.now.utc }
+    let(:author_name) { user.name }
+    let(:author_email) { user.email }
+    let(:dry_run) { false }
 
     let(:branch_update) do
       Gitaly::OperationBranchUpdate.new(
@@ -591,7 +594,10 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_branch_name: branch_name,
         start_repository: repository.gitaly_repository,
         message: cherry_pick_message,
-        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        commit_author_name: author_name,
+        commit_author_email: author_email,
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i),
+        dry_run: dry_run
       )
     end
 
@@ -604,7 +610,10 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         branch_name: branch_name,
         message: cherry_pick_message,
         start_branch_name: branch_name,
-        start_repository: repository
+        start_repository: repository,
+        author_name: author_name,
+        author_email: author_email,
+        dry_run: dry_run
       )
     end
 

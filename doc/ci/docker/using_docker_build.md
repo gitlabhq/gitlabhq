@@ -823,17 +823,28 @@ such as `DOCKER_PORT_2375_TCP`. Your job fails with this error if:
 - The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags.html) is set to `true`.
 - `DOCKER_HOST` is not explicitly set.
 
-### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`
+### Error: `unauthorized: incorrect username or password`
 
-This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To prevent users from receiving this error, you should:
+This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`:
+
+```plaintext
+Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password
+```
+
+To prevent users from receiving this error, you should:
 
 - Use [CI_JOB_TOKEN](../jobs/ci_job_token.md) instead.
 - Change from `gitlab-ci-token/CI_BUILD_TOKEN` to `$CI_REGISTRY_USER/$CI_REGISTRY_PASSWORD`.
 
-### Error: `error during connect: Post "https://docker:2376/v1.24/auth": dial tcp: lookup docker on 127.0.0.11:53: no such host`
+### Error during connect: `no such host`
 
-This error appears when the `dind` service has failed to start. Check
-the job log to see if `mount: permission denied (are you root?)`
+This error appears when the `dind` service has failed to start:
+
+```plaintext
+error during connect: Post "https://docker:2376/v1.24/auth": dial tcp: lookup docker on 127.0.0.11:53: no such host
+```
+
+Check the job log to see if `mount: permission denied (are you root?)`
 appears. For example:
 
 ```plaintext

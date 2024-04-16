@@ -26,8 +26,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
-  describe '.qa:rules:manual-omnibus-and-follow-up-e2e' do
-    let(:base_rules) { config.dig('.qa:rules:manual-omnibus-and-follow-up-e2e', 'rules') }
+  describe '.qa:rules:manual-e2e' do
+    let(:base_rules) { config.dig('.qa:rules:manual-e2e', 'rules') }
 
     context 'with .qa:rules:follow-up-e2e' do
       let(:derived_rules) { config.dig('.qa:rules:follow-up-e2e', 'rules') }
@@ -161,7 +161,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.byebug_history',
         '.editorconfig',
         '.eslintcache',
-        '.foreman',
         '.git-blame-ignore-revs',
         '.gitlab_kas_secret',
         '.gitlab_shell_secret',
@@ -171,6 +170,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.gitlab/CODEOWNERS',
         '.gitleaksignore',
         '.gitpod.yml',
+        '.graphqlrc',
         '.index.yml.example',
         '.license_encryption_key.pub',
         '.mailmap',
@@ -211,7 +211,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('*.md') +
       Dir.glob('changelogs/*') +
       Dir.glob('doc/.{markdownlint,vale}/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('keeps/**/*') +
       Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +

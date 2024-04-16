@@ -10,7 +10,9 @@ class Groups::RunnersController < Groups::ApplicationController
   urgency :low
 
   def index
+    @allow_registration_token = @group.allow_runner_registration_token?
     @group_runner_registration_token = @group.runners_token if can?(current_user, :register_group_runners, group)
+
     @group_new_runner_path = new_group_runner_path(@group) if can?(current_user, :create_runner, group)
 
     Gitlab::Tracking.event(self.class.name, 'index', user: current_user, namespace: @group)

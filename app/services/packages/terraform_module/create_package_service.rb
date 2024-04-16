@@ -21,17 +21,21 @@ module Packages
           return ServiceResponse.error(message: 'Package version already exists.', reason: :forbidden)
         end
 
-        ApplicationRecord.transaction { create_terraform_module_package! }
+        package, package_file = ApplicationRecord.transaction { create_terraform_module_package! }
+
+        if Feature.enabled?(:index_terraform_module_archive, project)
+          ::Packages::TerraformModule::ProcessPackageFileWorker.perform_async(package_file.id)
+        end
+
+        package
       end
 
       private
 
       def create_terraform_module_package!
         package = create_package!(:terraform_module, name: name, version: params[:module_version])
-
-        ::Packages::CreatePackageFileService.new(package, file_params).execute
-
-        package
+        package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
+        [package, package_file]
       end
 
       def duplicates_not_allowed?

@@ -1,4 +1,4 @@
-import { GlSprintf, GlToggle } from '@gitlab/ui';
+import { GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
@@ -29,7 +29,7 @@ const defaultProps = {
     analyticsAccessLevel: 20,
     containerRegistryAccessLevel: 20,
     lfsEnabled: true,
-    emailsDisabled: false,
+    emailsEnabled: true,
     packagesEnabled: true,
     showDefaultAwardEmojis: true,
     warnAboutPotentiallyUnwantedCharacters: true,
@@ -122,6 +122,8 @@ describe('Settings Panel', () => {
     wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
   const findCiCatalogSettings = () => wrapper.findComponent(CiCatalogSettings);
   const findEmailSettings = () => wrapper.findComponent({ ref: 'email-settings' });
+  const findShowDiffPreviewSetting = () =>
+    wrapper.findComponent({ ref: 'enable-diff-preview-settings' });
   const findShowDefaultAwardEmojis = () =>
     wrapper.find('input[name="project[project_setting_attributes][show_default_award_emojis]"]');
   const findWarnAboutPuc = () =>
@@ -683,6 +685,66 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({ canDisableEmails: false });
 
       expect(findEmailSettings().exists()).toBe(false);
+    });
+  });
+
+  describe('Show Diff Preview in Email', () => {
+    it('should show the diff preview toggle if diff previews can be disabled', () => {
+      wrapper = mountComponent({ canDisableEmails: true, canSetDiffPreviewInEmail: true });
+
+      expect(findShowDiffPreviewSetting().exists()).toBe(true);
+    });
+
+    it('should hide the diff preview toggle if diff previews cannot be disabled', () => {
+      wrapper = mountComponent({ canDisableEmails: true, canSetDiffPreviewInEmail: false });
+
+      expect(findShowDiffPreviewSetting().exists()).toBe(false);
+    });
+    it('should hide the diff preview toggle if emails cannot be disabled', () => {
+      wrapper = mountComponent({ canDisableEmails: true, canSetDiffPreviewInEmail: false });
+
+      expect(findShowDiffPreviewSetting().exists()).toBe(false);
+    });
+
+    it('disables the checkbox when emails are disabled', async () => {
+      wrapper = mountComponent(
+        {
+          canDisableEmails: true,
+          canSetDiffPreviewInEmail: true,
+        },
+        mount,
+      );
+
+      // It seems like we need the "interactivity" to ensure that the disabled
+      // attribute appears.
+      await findEmailSettings().findComponent(GlFormCheckbox).find('input').setChecked(false);
+      expect(
+        findShowDiffPreviewSetting()
+          .findComponent(GlFormCheckbox)
+          .find('input')
+          .attributes('disabled'),
+      ).toBe('disabled');
+    });
+
+    it('Updates the hidden value when toggled', async () => {
+      wrapper = mountComponent(
+        {
+          canDisableEmails: true,
+          canSetDiffPreviewInEmail: true,
+          emailsEnabled: true,
+        },
+        mount,
+      );
+      const originalHiddenInputValue = findShowDiffPreviewSetting()
+        .find('input[type="hidden"]')
+        .attributes('value');
+      await findShowDiffPreviewSetting()
+        .findComponent(GlFormCheckbox)
+        .find('input')
+        .setChecked(false);
+      expect(
+        findShowDiffPreviewSetting().find('input[type="hidden"]').attributes('value'),
+      ).not.toEqual(originalHiddenInputValue);
     });
   });
 

@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command."
 ---
 
 # Reduce repository size
@@ -75,7 +76,7 @@ To purge files from a GitLab repository:
    This contains a `project.bundle` file, which was created by
    [`git bundle`](https://git-scm.com/docs/git-bundle).
 
-1. Clone a fresh copy of the repository from the bundle using  `--bare` and `--mirror` options:
+1. Clone a fresh copy of the repository from the bundle using `--bare` and `--mirror` options:
 
    ```shell
    git clone --bare --mirror /path/to/project.bundle

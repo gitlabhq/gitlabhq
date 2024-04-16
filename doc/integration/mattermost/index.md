@@ -137,7 +137,7 @@ authorization. This can be done in the **Settings > Applications** area of GitLa
 
 ### Authorize GitLab Mattermost
 
-Navigate to the **Settings > Applications** area in GitLab. Create a new application and for the **Redirect URI** use the following (replace `http` with `https` if you use HTTPS):
+Go to the **Settings > Applications** area in GitLab. Create a new application and for the **Redirect URI** use the following (replace `http` with `https` if you use HTTPS):
 
 ```plaintext
 http://mattermost.example.com/signup/gitlab/complete

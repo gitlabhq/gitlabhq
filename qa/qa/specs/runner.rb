@@ -23,7 +23,7 @@ module QA
       def rspec_tags
         tags_for_rspec = []
 
-        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only]
+        return tags_for_rspec if Runtime::Scenario.attributes[:test_metadata_only] || Runtime::Env.rspec_retried?
 
         if tags.any?
           tags.each { |tag| tags_for_rspec.push(['--tag', tag.to_s]) }

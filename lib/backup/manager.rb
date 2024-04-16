@@ -25,13 +25,13 @@ module Backup
       previous_backup = options.previous_backup || options.backup_id
 
       unpack(previous_backup) if options.incremental?
-      run_all_create_tasks
+      create_all_tasks_result = run_all_create_tasks
 
       puts_time "Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data \n" \
            "and are not included in this backup. You will need these files to restore a backup.\n" \
            "Please back them up manually.".color(:red)
       puts_time "Backup #{backup_id} is done."
-      true
+      create_all_tasks_result
     end
 
     # @param [Gitlab::Backup::Tasks::Task] task
@@ -138,8 +138,8 @@ module Backup
       end
 
       build_backup_information
-
-      backup_tasks.each_value { |task| run_create_task(task) }
+      create_task_result = []
+      backup_tasks.each_value { |task| create_task_result << run_create_task(task) }
 
       write_backup_information
 
@@ -148,6 +148,8 @@ module Backup
         upload
         remove_old
       end
+
+      create_task_result.all?
 
     ensure
       cleanup unless options.skippable_operations.archive

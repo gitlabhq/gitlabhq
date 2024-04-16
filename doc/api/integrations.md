@@ -806,7 +806,10 @@ GET /projects/:id/integrations/github
 
 Update the GitLab for Slack app integration for a project.
 
-You cannot create a GitLab for Slack app. You must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You cannot create a GitLab for Slack app through the API because the integration
+requires an OAuth 2.0 token that you cannot get from the GitLab API alone.
+Instead, you must [install the app](../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) from the GitLab UI.
+You can then use this API endpoint to update the integration.
 
 ```plaintext
 PUT /projects/:id/integrations/gitlab-slack-application
@@ -894,7 +897,7 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
-## Google Artifact Registry
+## Google Artifact Management
 
 DETAILS:
 **Offering:** GitLab.com
@@ -903,11 +906,11 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 
 FLAG:
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On GitLab.com, this feature is not available. This feature is not ready for production use.
 
-### Set up Google Artifact Registry
+### Set up Google Artifact Management
 
-Set up the Google Artifact Registry integration for a project.
+Set up the Google Artifact Management integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -921,17 +924,17 @@ Parameters:
 | `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
 
-### Disable Google Artifact Registry
+### Disable Google Artifact Management
 
-Disable the Google Artifact Registry integration for a project. Integration settings are reset.
+Disable the Google Artifact Management integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/google-cloud-platform-artifact-registry
 ```
 
-### Get Google Artifact Registry settings
+### Get Google Artifact Management settings
 
-Get the Google Artifact Registry integration settings for a project.
+Get the Google Artifact Management integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -1414,6 +1417,41 @@ Get the Packagist integration settings for a project.
 GET /projects/:id/integrations/packagist
 ```
 
+## Phorge
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145863) in GitLab 16.11.
+
+### Set up Phorge
+
+Set up the Phorge integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/phorge
+```
+
+Parameters:
+
+| Parameter       | Type   | Required | Description           |
+|-----------------|--------|----------|-----------------------|
+| `issues_url`    | string | true     | URL of the issue.     |
+| `project_url`   | string | true     | URL of the project.   |
+
+### Disable Phorge
+
+Disable the Phorge integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/phorge
+```
+
+### Get Phorge settings
+
+Get the Phorge integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/phorge
+```
+
 ## Pipeline status emails
 
 ### Set up pipeline status emails
@@ -1769,6 +1807,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
+| `thread` | integer | false | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |
 | `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
 | `branches_to_be_notified` | string | false | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `push_events` | boolean | true | Enable notifications for push events. |

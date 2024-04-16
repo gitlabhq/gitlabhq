@@ -31,7 +31,7 @@ module QA
           aggregate_failures 'file content verification' do
             expect(snippet).to have_snippet_title('Project snippet with multiple files')
             expect(snippet).to have_snippet_description('Snippet description')
-            expect(snippet).to have_visibility_type(/private/i)
+            expect(snippet).to have_visibility_description('The snippet is visible only to project members.')
 
             (1..10).each do |i|
               expect(snippet).to have_file_name(file_name(i), i)

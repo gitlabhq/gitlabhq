@@ -17,11 +17,17 @@ module Types
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
 
-      field :description, ::GraphQL::Types::String, null: false, description: 'Description of the model.'
+      field :description, ::GraphQL::Types::String,
+        null: true,
+        description: 'Description of the model.'
 
       field :latest_version, ::Types::Ml::ModelVersionType, null: true, description: 'Latest version of the model.'
 
       field :version_count, ::GraphQL::Types::Int, null: true, description: 'Count of versions in the model.'
+
+      field :candidate_count, ::GraphQL::Types::Int,
+        null: true,
+        description: 'Count of candidates in the model.'
 
       field :_links, ::Types::Ml::ModelLinksType, null: false, method: :itself,
         description: 'Map of links to perform actions on the model.'
@@ -32,6 +38,10 @@ module Types
 
       field :candidates, ::Types::Ml::CandidateType.connection_type, null: true,
         description: 'Version candidates of the model.'
+
+      field :version, ::Types::Ml::ModelVersionType, null: true,
+        description: 'Version of the model.',
+        resolver: ::Resolvers::Ml::FindModelVersionResolver
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

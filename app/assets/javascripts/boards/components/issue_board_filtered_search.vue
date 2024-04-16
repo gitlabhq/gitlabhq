@@ -145,7 +145,7 @@ export default {
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
-          icon: 'clock',
+          icon: 'milestone',
           symbol: '%',
           token: MilestoneToken,
           unique: true,

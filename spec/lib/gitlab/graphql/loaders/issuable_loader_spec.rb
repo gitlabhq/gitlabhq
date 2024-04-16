@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Graphql::Loaders::IssuableLoader do
         issue_c = create(:issue, project: issue_a.project)
         proj_1 = issue_a.project
         proj_2 = issue_b.project
-        user = create(:user, developer_projects: [proj_1, proj_2])
+        user = create(:user, developer_of: [proj_1, proj_2])
 
         finder_a = finder_class.new(user, iids: [issue_a.iid])
         finder_b = finder_class.new(user, iids: [issue_b.iid])

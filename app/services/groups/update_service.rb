@@ -10,6 +10,8 @@ module Groups
       reject_parent_id!
       remove_unallowed_params
 
+      invert_emails_disabled_to_emails_enabled
+
       before_assignment_hook(group, params)
 
       if renaming_group_with_container_registry_images?
@@ -135,7 +137,7 @@ module Groups
 
     # overridden in EE
     def remove_unallowed_params
-      params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, group)
+      params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, group)
 
       unless can?(current_user, :update_default_branch_protection, group)
         params.delete(:default_branch_protection)
@@ -158,7 +160,7 @@ module Groups
       settings_params.merge!({ default_branch_protection: params[:default_branch_protection] }.compact)
       allowed_settings_params.each { |param| params.delete(param) }
 
-      ::NamespaceSettings::UpdateService.new(current_user, group, settings_params).execute
+      ::NamespaceSettings::AssignAttributesService.new(current_user, group, settings_params).execute
     end
 
     def handle_crm_settings_update

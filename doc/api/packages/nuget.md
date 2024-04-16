@@ -163,7 +163,7 @@ The examples in this document all use the project-level prefix.
 ### Group-level
 
 ```plaintext
- /groups/:id/-/packages/nuget`
+/groups/:id/-/packages/nuget
 ```
 
 | Attribute | Type   | Required | Description |
@@ -173,7 +173,7 @@ The examples in this document all use the project-level prefix.
 ### Project-level
 
 ```plaintext
- /projects/:id/packages/nuget`
+/projects/:id/packages/nuget
 ```
 
 | Attribute | Type   | Required | Description |

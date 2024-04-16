@@ -15,10 +15,13 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
     <div
       class="d-none js-collapsed"
     >
-      <gl-form-input-stub
+      <gl-form-textarea-stub
         class="form-control"
         data-testid="description-placeholder"
+        noresize="true"
         placeholder="Describe what your snippet does or how to use it…"
+        rows="2"
+        value=""
       />
     </div>
     <div
@@ -50,7 +53,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
               data-testid="snippet-description-field"
               dir="auto"
               id="reference-0"
-              placeholder="Write a comment or drag your files here…"
+              placeholder="Describe what your snippet does or how to use it…"
               style="overflow-x: hidden; word-wrap: break-word; overflow-y: hidden;"
             />
             <div

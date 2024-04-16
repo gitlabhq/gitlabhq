@@ -83,6 +83,12 @@ module Gitlab
         nil
       end
 
+      def stores_with_queue(queue_name)
+        @rule_evaluators.filter_map do |evaluator|
+          evaluator.store_name if evaluator.queue_name == queue_name
+        end
+      end
+
       private
 
       def parse_routing_rules(routing_rules)

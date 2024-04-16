@@ -51,9 +51,9 @@ curl --request GET \
      --url "https://gitlab.com/api/v4/projects/<your_project_id>/google_cloud/setup/wlif.sh"
 ```
 
-### Script to setup a Google Cloud integration
+### Script to set up a Google Cloud integration
 
- > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
 
 Users with at least the Maintainer role for the project can use the following endpoint to
 query a shell script to set up a Google Cloud integration:
@@ -62,8 +62,8 @@ query a shell script to set up a Google Cloud integration:
 GET /projects/:id/google_cloud/setup/integrations.sh
 ```
 
-Only the [Google Artifact Registry](../user/project/integrations/google_artifact_registry.md)
-integration is supported.
+Only the [Google Artifact Management integration](../user/project/integrations/google_artifact_management.md)
+is supported.
 The script creates IAM policies to access Google Artifact Registry:
 
 - [Artifact Registry Reader](https://cloud.google.com/artifact-registry/docs/access-control#roles)
@@ -76,7 +76,7 @@ Supported attributes:
 | Attribute                                   | Type    | Required | Description                                                                 |
 |---------------------------------------------|---------|----------|-----------------------------------------------------------------------------|
 | `id`                                        | integer | Yes      | The ID of a GitLab project.                                                           |
-| `enable_google_cloud_artifact_registry`     | boolean | Yes      | Flag to indicate if Google Artifact Registry integration should be enabled. |
+| `enable_google_cloud_artifact_registry`     | boolean | Yes      | Flag to indicate if Google Artifact Management integration should be enabled. |
 | `google_cloud_artifact_registry_project_id` | string  | Yes      | Google Cloud Project ID for the Artifact Registry.                          |
 
 Example request:

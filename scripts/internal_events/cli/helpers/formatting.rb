@@ -35,6 +35,10 @@ module InternalEventsCli
         [divider, pastel.cyan(string), divider].join("\n")
       end
 
+      def format_prefix(prefix, string)
+        string.lines.map { |line| line.prepend(prefix) }.join
+      end
+
       def divider
         "-" * window_size
       end

@@ -4,13 +4,14 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
+import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import {
   keysFor,
-  GO_TO_PROJECT_FIND_FILE,
+  START_SEARCH_PROJECT_FILE,
   PROJECT_FILES_GO_TO_PERMALINK,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
@@ -98,10 +99,10 @@ export default {
       return !this.blobInfo.storedExternally && this.blobInfo.externalStorage !== 'lfs';
     },
     findFileShortcutKey() {
-      return keysFor(GO_TO_PROJECT_FIND_FILE)[0];
+      return keysFor(START_SEARCH_PROJECT_FILE)[0];
     },
     findFileTooltip() {
-      const { description } = GO_TO_PROJECT_FIND_FILE;
+      const { description } = START_SEARCH_PROJECT_FILE;
       const key = this.findFileShortcutKey;
       return shouldDisableShortcuts()
         ? null
@@ -150,6 +151,9 @@ export default {
         document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
       );
     },
+    handleFindFile() {
+      Shortcuts.focusSearchFile();
+    },
   },
 };
 </script>
@@ -160,8 +164,8 @@ export default {
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
       data-testid="find"
-      :href="blobInfo.findFilePath"
       :class="$options.buttonClassList"
+      @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
     </gl-button>

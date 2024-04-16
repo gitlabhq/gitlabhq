@@ -16,7 +16,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'clock'
+          'milestone'
         end
 
         override :render?

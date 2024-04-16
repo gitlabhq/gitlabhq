@@ -240,6 +240,25 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       it 'includes SECTION_TYPE_JIRA_ISSUES' do
         expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUES)
       end
+
+      it 'includes SECTION_TYPE_JIRA_ISSUE_CREATION' do
+        expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
+      end
+
+      context 'when jira_multiple_project_keys feature is disabled' do
+        before do
+          stub_feature_flags(jira_multiple_project_keys: false)
+        end
+
+        it 'does not include SECTION_TYPE_JIRA_ISSUE_CREATION' do
+          expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
+        end
+
+        it 'section SECTION_TYPE_JIRA_ISSUES title is "Issues"' do
+          jira_issues_section = integration.sections.find { |s| s[:type] == described_class::SECTION_TYPE_JIRA_ISSUES }
+          expect(jira_issues_section[:title]).to eq('Issues')
+        end
+      end
     end
 
     context 'when instance_level? is true' do
@@ -249,6 +268,10 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it 'does not include SECTION_TYPE_JIRA_ISSUES' do
         expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUES)
+      end
+
+      it 'does not include SECTION_TYPE_JIRA_ISSUE_CREATION' do
+        expect(sections).not_to include(described_class::SECTION_TYPE_JIRA_ISSUE_CREATION)
       end
     end
   end
@@ -1409,6 +1432,12 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
           expect(jira_integration).not_to be_configured
         end
       end
+    end
+  end
+
+  describe '#project_keys_as_string' do
+    it 'returns comma separated project_keys' do
+      expect(jira_integration.project_keys_as_string).to eq 'TEST1,TEST2'
     end
   end
 end

@@ -19,7 +19,7 @@ If you need to configure runners on the machine where you installed GitLab Runne
 
 You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
-used of it is shorter than the job timeout defined in the project.
+used if it is shorter than the job timeout defined in the project.
 
 ### For an instance runner
 
@@ -162,7 +162,7 @@ To work around this issue, ensure that the instance runner settings are consiste
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. Authentication tokens
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 18.0. Authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
@@ -405,7 +405,7 @@ You can use tags to run different jobs on different platforms. For
 example, if you have an OS X runner with tag `osx` and a Windows runner with tag
 `windows`, you can run a job on each platform.
 
-Update the `tags` field in the `config.toml`:
+Update the `tags` field in the `.gitlab-ci.yml`:
 
 ```yaml
 windows job:

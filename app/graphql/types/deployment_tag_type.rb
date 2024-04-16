@@ -15,6 +15,10 @@ module Types
           GraphQL::Types::String,
           description: 'Path for this tag.',
           hash_key: :path
+
+    field :web_path,
+          GraphQL::Types::String,
+          description: 'Web path for this tag.'
   end
   # rubocop:enable Graphql/AuthorizeTypes
 end

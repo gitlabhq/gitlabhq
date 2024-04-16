@@ -31,9 +31,6 @@ class Import::ManifestController < Import::BaseController
     if manifest.valid?
       manifest_import_metadata.save(manifest.projects, group.id)
 
-      experiment(:default_to_import_tab, actor: current_user)
-        .track(:successfully_imported, property: provider_name)
-
       redirect_to status_import_manifest_path
     else
       @errors = manifest.errors
@@ -86,9 +83,7 @@ class Import::ManifestController < Import::BaseController
   private
 
   def ensure_import_vars
-    unless group && importable_repos.present?
-      redirect_to(new_import_manifest_path)
-    end
+    redirect_to(new_import_manifest_path) unless group && importable_repos.present?
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

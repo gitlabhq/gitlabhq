@@ -64,7 +64,7 @@ Here are a few reasons that led us to choosing Tailwind CSS over similar tools:
 - Tailwind CSS is well maintained and keeps evolving without getting bloated.
 - It integrates well in all of our tech stacks
   - Ruby on Rails projects can leverage the [`tailwindcss-rails` Gem](https://tailwindcss.com/docs/guides/ruby-on-rails).
-  - Nuxt apps can setup the [`tailwindcss` module](https://nuxt.com/modules/tailwindcss).
+  - Nuxt apps can set up the [`tailwindcss` module](https://nuxt.com/modules/tailwindcss).
   - More generic frontend stacks can use the [`tailwindcss` Node module](https://tailwindcss.com/docs/installation).
 
 ### Goals

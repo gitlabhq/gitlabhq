@@ -217,7 +217,6 @@ Style/RedundantSelf:
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'ee/lib/ee/gitlab/background_migration/delete_invalid_epic_issues.rb'
     - 'ee/lib/ee/gitlab/database.rb'
-    - 'ee/lib/ee/gitlab/tracking.rb'
     - 'ee/lib/ee/legacy_model.rb'
     - 'ee/lib/ee/model.rb'
     - 'ee/lib/elastic/instance_proxy_util.rb'
@@ -381,4 +380,3 @@ Style/RedundantSelf:
     - 'spec/helpers/submodule_helper_spec.rb'
     - 'spec/lib/gitlab/background_task_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing_spec.rb'
-    - 'spec/models/integration_spec.rb'

@@ -84,6 +84,14 @@ module Ci
             .perform_async(processable.resource_group_id)
         end
       end
+
+      after_transition any => [:failed] do |processable|
+        next unless processable.can_auto_cancel_pipeline_on_job_failure?
+
+        processable.run_after_commit do
+          processable.pipeline.cancel_async_on_job_failure
+        end
+      end
     end
 
     def self.select_with_aggregated_needs(project)
@@ -149,6 +157,10 @@ module Ci
     end
 
     def action?
+      raise NotImplementedError
+    end
+
+    def can_auto_cancel_pipeline_on_job_failure?
       raise NotImplementedError
     end
 

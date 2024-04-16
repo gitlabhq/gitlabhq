@@ -254,3 +254,10 @@ Array [
   "Cross Site Scripting (Persistent)",
 ]
 `;
+
+exports[`AutocompleteHelper for reference type "wiki", searches for "ho" correctly 1`] = `
+Array [
+  "Home",
+  "How to use GitLab",
+]
+`;

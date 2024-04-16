@@ -479,10 +479,15 @@ describe('GroupRunnersApp', () => {
     it('shows the register group runner button', () => {
       createComponent({
         props: {
+          allowRegistrationToken: true,
           registrationToken: mockRegistrationToken,
         },
       });
-      expect(findRegistrationDropdown().exists()).toBe(true);
+      expect(findRegistrationDropdown().props()).toEqual({
+        allowRegistrationToken: true,
+        registrationToken: mockRegistrationToken,
+        type: GROUP_TYPE,
+      });
     });
 
     it('shows the create runner button', () => {
@@ -497,15 +502,6 @@ describe('GroupRunnersApp', () => {
   });
 
   describe('when user has no permission to register group runner', () => {
-    it('does not show the register group runner button', () => {
-      createComponent({
-        props: {
-          registrationToken: null,
-        },
-      });
-      expect(findRegistrationDropdown().exists()).toBe(false);
-    });
-
     it('shows the create runner button', () => {
       createComponent({
         props: {

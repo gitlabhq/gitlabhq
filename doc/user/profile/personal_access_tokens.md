@@ -102,6 +102,31 @@ Prerequisites:
 
 In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
+### Disable personal access tokens for enterprise users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.
+
+Prerequisites:
+
+- You must have the Owner role in the group that the enterprise user belongs to.
+
+Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/index.md):
+
+- Stops the enterprise users from creating new personal access tokens. This behavior applies
+  even if an enterprise user is also an administrator of the group.
+- Disables the existing personal access tokens of the enterprise users.
+
+NOTE:
+Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).
+
+To disable the enterprise users' personal access tokens:
+
+1. On the left sidebar, select **Search or go to** and find your group or subgroup.
+1. Select **Settings > General**.
+1. Expand **Permissions and group features**.
+1. Under **Personal access tokens**, select **Disable personal access tokens**.
+1. Select **Save changes**.
+
 ## View the last time a token was used
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33162) in GitLab 13.2. Token usage information is updated every 24 hours.

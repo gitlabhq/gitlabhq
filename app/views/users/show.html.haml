@@ -13,7 +13,7 @@
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 %div{ class: container_class }
-  .user-profile-header.gl-display-flex.gl-justify-content-space-between.gl-flex-direction-column.gl-md-flex-direction-row-reverse.gl-my-5
+  .user-profile-header.gl-display-flex.gl-justify-content-space-between.gl-flex-direction-column.gl-md-flex-direction-row-reverse.gl-my-5{ 'data-testid': 'user-profile-header' }
     %div
       .cover-controls.gl-display-flex.gl-gap-3.gl-mb-4.gl-md-justify-content-end.gl-md-flex-direction-row-reverse
         .js-user-profile-actions{ data: user_profile_actions_data(@user) }
@@ -34,14 +34,14 @@
       %div
         %h1.gl-heading-1.gl-line-height-1.gl-mr-2{ class: 'gl-my-0!', itemprop: 'name' }
           = user_display_name(@user)
-        .gl-font-size-h2.gl-text-gray-600.gl-font-weight-normal.gl-my-0
+        .gl-font-size-h2.gl-text-gray-500.gl-font-weight-normal.gl-my-0
           = @user.to_reference
         - if !@user.blocked? && @user.confirmed? && @user.status&.customized?
           .gl-my-2.cover-status.gl-font-sm.gl-pt-2.gl-display-flex.gl-flex-direction-column
             .gl-display-inline-flex.gl-gap-3.gl-align-items-baseline
               = emoji_icon(@user.status.emoji)
               = markdown_field(@user.status, :message)
-  .user-profile
+  .user-profile{ class: @user.blocked? ? '' : 'user-profile-with-sidebar' }
     .user-profile-content
       - if !profile_tabs.empty? && Feature.enabled?(:profile_tabs_vue, current_user)
         #js-profile-tabs{ data: user_profile_tabs_app_data(@user) }
@@ -98,4 +98,53 @@
           = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-private-md.svg',
             title: s_('UserProfile|This user has a private profile'))
 
-    = render 'users/profile_sidebar'
+    - unless @user.blocked?
+      = render 'users/profile_sidebar'
+
+    -# TODO: Remove this with the removal of the old navigatifon.
+    -# See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
+    - if !profile_tabs.empty? && !Feature.enabled?(:profile_tabs_vue, current_user)
+      .scrolling-tabs-container.gl-display-none
+        %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
+          = sprite_icon('chevron-lg-left', size: 12)
+        %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
+          = sprite_icon('chevron-lg-right', size: 12)
+        %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs.gl-border-b-0
+          - if profile_tab?(:overview)
+            %li.js-overview-tab
+              = link_to user_path, data: { target: 'div#js-overview', action: 'overview', toggle: 'tab' } do
+                = s_('UserProfile|Overview')
+          - if profile_tab?(:activity)
+            %li.js-activity-tab
+              = link_to user_activity_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+                = s_('UserProfile|Activity')
+          - if profile_tab?(:groups)
+            %li.js-groups-tab
+              = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                = s_('UserProfile|Groups')
+          - if profile_tab?(:contributed)
+            %li.js-contributed-tab
+              = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                = s_('UserProfile|Contributed projects')
+          - if profile_tab?(:projects)
+            %li.js-projects-tab
+              = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                = s_('UserProfile|Personal projects')
+          - if profile_tab?(:starred)
+            %li.js-starred-tab
+              = link_to user_starred_projects_path, data: { target: 'div#starred', action: 'starred', toggle: 'tab', endpoint: user_starred_projects_path(format: :json), card_mode: true } do
+                = s_('UserProfile|Starred projects')
+          - if profile_tab?(:snippets)
+            %li.js-snippets-tab
+              = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                = s_('UserProfile|Snippets')
+          - if profile_tab?(:followers)
+            %li.js-followers-tab
+              = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
+                = s_('UserProfile|Followers')
+                = gl_badge_tag @user.followers.count, size: :sm
+          - if profile_tab?(:following)
+            %li.js-following-tab
+              = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), testid: 'following_tab' } do
+                = s_('UserProfile|Following')
+                = gl_badge_tag @user.followees.count, size: :sm

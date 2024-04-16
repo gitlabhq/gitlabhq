@@ -61,6 +61,24 @@ describe('IntegrationSectionCoonfiguration', () => {
         });
       });
 
+      it('emits update event with field when Dynamic text field emits event', () => {
+        const fields = [{ name: 'username', type: 'text' }];
+
+        createComponent({
+          props: {
+            fields,
+          },
+        });
+
+        const dynamicFields = findAllDynamicFields();
+
+        const [dynamicField] = dynamicFields.wrappers;
+
+        dynamicField.vm.$emit('update', 'example');
+
+        expect(wrapper.emitted('update')).toEqual([[{ value: 'example', field: fields[0] }]]);
+      });
+
       it('does not render DynamicField when field is empty', () => {
         createComponent();
 

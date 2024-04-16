@@ -96,7 +96,6 @@ describe('IssueAssigneesComponent', () => {
 
       const expected = mockAssigneesList.slice(0, TEST_MAX_VISIBLE - 1).map((x) =>
         expect.objectContaining({
-          linkHref: x.web_url,
           imgAlt: `Assigned to ${x.name}`,
           imgCssClasses: TEST_CSS_CLASSES,
           imgSrc: x.avatar_url,
@@ -134,6 +133,16 @@ describe('IssueAssigneesComponent', () => {
 
         expect(tooltipText).toContain(userName);
         expect(tooltipText).not.toContain('@');
+      });
+    });
+    describe('Author Link', () => {
+      it('properly sets href on each assignee', () => {
+        const template = findAvatars().wrappers.map((x) => x.props('linkHref'));
+        const expected = mockAssigneesList
+          .slice(0, TEST_MAX_VISIBLE - 1)
+          .map((x) => `/${x.username}`);
+
+        expect(template).toEqual(expected);
       });
     });
   });

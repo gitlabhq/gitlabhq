@@ -61,7 +61,16 @@ module Ci
     # before we delete builds. By doing this, the relation should be empty and not fire any
     # DELETE queries when the Ci::Build is destroyed. The next step is to remove `dependent: :destroy`.
     # Details: https://gitlab.com/gitlab-org/gitlab/-/issues/24644#note_689472685
-    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
+    # rubocop:disable Cop/ActiveRecordDependent -- See above
+    has_many :job_artifacts,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobArtifact',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      dependent: :destroy,
+      inverse_of: :job
+    # rubocop:enable Cop/ActiveRecordDependent
+
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
     has_many :job_annotations,
       ->(build) { in_partition(build) },
@@ -73,8 +82,12 @@ module Ci
 
     has_many :pages_deployments, foreign_key: :ci_build_id, inverse_of: :ci_build
 
-    Ci::JobArtifact.file_types.each do |key, value|
-      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id, inverse_of: :job
+    Ci::JobArtifact.file_types.each_key do |key|
+      has_one :"job_artifacts_#{key}", ->(build) { in_partition(build).with_file_types([key]) },
+        class_name: 'Ci::JobArtifact',
+        foreign_key: :job_id,
+        partition_foreign_key: :partition_id,
+        inverse_of: :job
     end
 
     has_one :runner_manager_build,
@@ -365,7 +378,7 @@ module Ci
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
     # but only a Ci::Build will transition to `canceling`` via `.cancel`
     def supports_canceling?
-      Feature.enabled?(:ci_canceling_status, project, type: :wip) && cancel_gracefully?
+      Feature.enabled?(:ci_canceling_status, project) && cancel_gracefully?
     end
 
     def build_matcher
@@ -434,6 +447,11 @@ module Ci
 
     def action?
       %w[manual delayed].include?(self.when)
+    end
+
+    def can_auto_cancel_pipeline_on_job_failure?
+      # A job that doesn't need to be auto-retried can auto-cancel its own pipeline
+      !auto_retry_expected?
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -726,12 +744,24 @@ module Ci
       job_artifacts_archive.public_access?
     end
 
-    def artifact_is_public_in_config?
+    def artifacts_no_access?
+      return false if job_artifacts_archive.nil? # To backward compatibility return false if no artifacts found
+
+      job_artifacts_archive.none_access?
+    end
+
+    def artifact_access_setting_in_config
       artifacts_public = options.dig(:artifacts, :public)
+      artifacts_access = options.dig(:artifacts, :access)
 
-      return true if artifacts_public.nil? # Default artifacts:public to true
+      raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive' if !artifacts_public.nil? && !artifacts_access.nil?
 
-      artifacts_public
+      return :public if artifacts_public == true || artifacts_access == 'all'
+      return :private if artifacts_public == false || artifacts_access == 'developer'
+      return :none if artifacts_access == 'none'
+
+      # default behaviour
+      :public
     end
 
     def artifacts_metadata_entry(path, **options)
@@ -1132,7 +1162,7 @@ module Ci
     end
 
     def job_jwt_variables
-      if id_tokens?
+      if Feature.enabled?(:remove_shared_jwts) || id_tokens?
         id_tokens_variables
       else
         predefined_jwt_variables
@@ -1153,6 +1183,8 @@ module Ci
 
     def id_tokens_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless id_tokens?
+
         id_tokens.each do |var_name, token_data|
           token = Gitlab::Ci::JwtV2.for_build(self, aud: expanded_id_token_aud(token_data['aud']))
 

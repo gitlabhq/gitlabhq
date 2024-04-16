@@ -1055,31 +1055,57 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#artifact_is_public_in_config?' do
-    subject { build.artifact_is_public_in_config? }
+  describe '#artifact_access_setting_in_config' do
+    subject { build.artifact_access_setting_in_config }
 
     context 'artifacts with defaults' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
     end
 
     context 'non public artifacts' do
       let(:build) { create(:ci_build, :with_private_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access' do
+      let(:build) { create(:ci_build, :with_developer_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:private) }
+    end
+
+    context 'non public artifacts via access as none' do
+      let(:build) { create(:ci_build, :with_none_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:none) }
     end
 
     context 'public artifacts' do
       let(:build) { create(:ci_build, :with_public_artifacts_config, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'public artifacts via access' do
+      let(:build) { create(:ci_build, :with_all_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:public) }
     end
 
     context 'no artifacts' do
       let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to eq(:public) }
+    end
+
+    context 'when public and access are used together' do
+      let(:build) { create(:ci_build, :with_access_and_public_setting, pipeline: pipeline) }
+
+      it 'raises ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive')
+      end
     end
   end
 
@@ -1747,6 +1773,26 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         it { is_expected.to be_falsey }
       end
     end
+
+    describe '#can_auto_cancel_pipeline_on_job_failure?' do
+      subject { build.can_auto_cancel_pipeline_on_job_failure? }
+
+      before do
+        allow(build).to receive(:auto_retry_expected?) { auto_retry_expected }
+      end
+
+      context 'when the job can be auto-retried' do
+        let(:auto_retry_expected) { true }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when the job cannot be auto-retried' do
+        let(:auto_retry_expected) { false }
+
+        it { is_expected.to be true }
+      end
+    end
   end
 
   describe '#runner_manager' do
@@ -2391,17 +2437,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_DEPENDENCY_PROXY_PASSWORD', value: 'my-token', public: false, masked: true },
-          { key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
-          { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
-          { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true },
           { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_NAME_SLUG', value: 'test', public: true, masked: false },
           { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
-          { key: 'CI_COMPONENT_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
-          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn, public: true, masked: false },
+          { key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn, public: true, masked: false },
           { key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url, public: true, masked: false },
           { key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host, public: true, masked: false },
           { key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s, public: true, masked: false },
@@ -2471,7 +2513,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
-      it { expect(subject.to_runner_variables).to eq(predefined_variables) }
+
+      context 'when feature flag remove_shared_jwts enabled' do
+        it { expect(subject.to_runner_variables).to eq(predefined_variables) }
+      end
+
+      context 'when feature flag remove_shared_jwts disabled' do
+        before do
+          stub_feature_flags(remove_shared_jwts: false)
+          predefined_variables.insert(11,
+            *[{ key: 'CI_JOB_JWT', value: 'ci.job.jwt', public: false, masked: true },
+            { key: 'CI_JOB_JWT_V1', value: 'ci.job.jwt', public: false, masked: true },
+            { key: 'CI_JOB_JWT_V2', value: 'ci.job.jwtv2', public: false, masked: true }])
+        end
+
+        it { expect(subject.to_runner_variables).to eq(predefined_variables) }
+
+        context 'when CI_JOB_JWT generation fails' do
+          [
+            OpenSSL::PKey::RSAError,
+            Gitlab::Ci::Jwt::NoSigningKeyError
+          ].each do |reason_to_fail|
+            it 'CI_JOB_JWT is not included' do
+              expect(Gitlab::Ci::Jwt).to receive(:for_build).and_raise(reason_to_fail)
+              expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+              expect { subject }.not_to raise_error
+              expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
+            end
+          end
+        end
+      end
 
       it 'excludes variables that require an environment or user' do
         environment_based_variables_collection = subject.filter do |variable|
@@ -2482,21 +2554,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(environment_based_variables_collection).to be_empty
-      end
-
-      context 'when CI_JOB_JWT generation fails' do
-        [
-          OpenSSL::PKey::RSAError,
-          Gitlab::Ci::Jwt::NoSigningKeyError
-        ].each do |reason_to_fail|
-          it 'CI_JOB_JWT is not included' do
-            expect(Gitlab::Ci::Jwt).to receive(:for_build).and_raise(reason_to_fail)
-            expect(Gitlab::ErrorTracking).to receive(:track_exception)
-
-            expect { subject }.not_to raise_error
-            expect(subject.pluck(:key)).not_to include('CI_JOB_JWT')
-          end
-        end
       end
 
       describe 'variables ordering' do
@@ -3153,11 +3210,41 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
 
-      it 'returns static predefined variables' do
-        expect(build.variables.size).to be >= 28
-        expect(build.variables)
-          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
-        expect(build).not_to be_persisted
+      context 'when feature flag remove_shared_jwts is enabled' do
+        context 'and id_tokens are not present in the build' do
+          it 'does not return id_token variables' do
+            expect(build.variables)
+              .not_to include(key: 'ID_TOKEN_1', value: 'feature', public: true, masked: false)
+          end
+        end
+
+        context 'and id_tokens are present in the build' do
+          before do
+            build.id_tokens = {
+              'ID_TOKEN_1' => { aud: 'developers' },
+              'ID_TOKEN_2' => { aud: 'maintainers' }
+            }
+          end
+
+          it 'returns static predefined variables' do
+            expect(build.variables)
+              .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+            expect(build).not_to be_persisted
+          end
+        end
+      end
+
+      context 'when feature flag remove_shared_jwts is disabled' do
+        before do
+          stub_feature_flags(remove_shared_jwts: false)
+        end
+
+        it 'returns static predefined variables' do
+          expect(build.variables.size).to be >= 28
+          expect(build.variables)
+            .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
+          expect(build).not_to be_persisted
+        end
       end
     end
 
@@ -5533,7 +5620,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#runtime_runner_features' do
     subject do
       build.save!
-      build.cancel_gracefully?
+      build.reload.cancel_gracefully?
     end
 
     let(:build) { create(:ci_build, pipeline: pipeline) }

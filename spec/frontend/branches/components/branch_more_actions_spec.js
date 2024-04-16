@@ -1,4 +1,5 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import BranchMoreDropdown from '~/branches/components/branch_more_actions.vue';
 import eventHub from '~/branches/event_hub';
 
@@ -6,11 +7,16 @@ describe('Delete branch button', () => {
   let wrapper;
   let eventHubSpy;
 
+  const findMoreDropdown = () => wrapper.findByTestId('branch-more-actions');
+  const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
   const findCompareButton = () => wrapper.findByTestId('compare-branch-button');
   const findDeleteButton = () => wrapper.findByTestId('delete-branch-button');
 
   const createComponent = (props = {}) => {
     wrapper = mountExtended(BranchMoreDropdown, {
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         branchName: 'test',
         defaultBranchName: 'main',
@@ -66,5 +72,21 @@ describe('Delete branch button', () => {
     createComponent({ canDeleteBranch: false });
 
     expect(findDeleteButton().exists()).toBe(false);
+  });
+
+  describe('More actions menu', () => {
+    createComponent();
+
+    it('renders the dropdown button', () => {
+      createComponent();
+
+      expect(findMoreDropdown().exists()).toBe(true);
+    });
+
+    it('renders tooltip', () => {
+      createComponent();
+
+      expect(findMoreDropdownTooltip().value).toBe('More actions');
+    });
   });
 });

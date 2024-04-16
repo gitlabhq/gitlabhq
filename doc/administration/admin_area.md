@@ -17,6 +17,9 @@ self-managed instances. If you are an administrator, to access the Admin Area:
 - In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin Area**.
 - In GitLab 16.0 and earlier: on the top bar, select **Main menu > Admin**.
 
+If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
+the **Admin Area** button is visible.
+
 NOTE:
 Only administrators can access the Admin Area.
 
@@ -448,7 +451,7 @@ The **System Info** page provides the following statistics:
 | Disk Usage     | Disk space in use, and total disk space available |
 | System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
 
-These statistics are updated only when you navigate to the **System Info** page, or you refresh the page in your browser.
+These statistics are updated only when you go to the **System Info** page, or you refresh the page in your browser.
 
 ### Background Jobs
 

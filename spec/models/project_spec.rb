@@ -14,7 +14,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'ensures runners_token is prefixed', :project
+  context 'when runner registration is allowed' do
+    let_it_be(:project) { create(:project, :allow_runner_registration_token) }
+
+    it_behaves_like 'ensures runners_token is prefixed' do
+      subject(:record) { project }
+    end
+  end
 
   describe 'associations' do
     it { is_expected.to belong_to(:organization) }
@@ -60,6 +66,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:pumble_integration) }
     it { is_expected.to have_one(:webex_teams_integration) }
     it { is_expected.to have_one(:packagist_integration) }
+    it { is_expected.to have_one(:phorge_integration) }
     it { is_expected.to have_one(:pushover_integration) }
     it { is_expected.to have_one(:apple_app_store_integration) }
     it { is_expected.to have_one(:google_play_integration) }
@@ -186,6 +193,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:deployment_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:relation_import_trackers).class_name('Projects::ImportExport::RelationImportTracker') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -1048,7 +1056,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:personal_project) { create(:project, namespace: namespace_user.namespace) }
     let_it_be(:group_project) { create(:project, group: group) }
     let_it_be(:another_user) { create(:user) }
-    let_it_be(:group_owner_user) { create(:user).tap { |user| group.add_owner(user) } }
+    let_it_be(:group_owner_user) { create(:user, owner_of: group) }
 
     where(:project, :user, :result) do
       ref(:personal_project)      | ref(:namespace_user)   | true
@@ -1142,15 +1150,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'project token' do
-    it 'sets an random token if none provided' do
-      project = FactoryBot.create(:project, runners_token: '')
-      expect(project.runners_token).not_to eq('')
+  describe 'runner registration token' do
+    let(:project) { create(:project, :allow_runner_registration_token, runners_token: initial_token) }
+
+    context 'when no token provided' do
+      let(:initial_token) { '' }
+
+      it 'sets a random token as the project runners_token' do
+        expect(project.runners_token).to be_present
+        expect(project.runners_token).not_to eq(initial_token)
+      end
     end
 
-    it 'does not set an random token if one provided' do
-      project = FactoryBot.create(:project, runners_token: "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
-      expect(project.runners_token).to eq("#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token")
+    context 'when initial token exists' do
+      let(:initial_token) { "#{RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX}my-token" }
+
+      it 'assigns the provided token value as the project runners_token' do
+        expect(project.runners_token).to eq(initial_token)
+      end
     end
   end
 
@@ -4015,6 +4032,40 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { expect(project.gitea_import?).to be true }
   end
 
+  describe '#any_import_in_progress?' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    subject { project.any_import_in_progress? }
+
+    context 'when a file import is in progress' do
+      before do
+        create(:import_state, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a relation import is in progress' do
+      before do
+        create(:relation_import_tracker, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when direct transfer is in progress' do
+      before do
+        create(:bulk_import_entity, :project_entity, :started, project: project)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when no imports are in progress' do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#has_remote_mirror?' do
     let(:project) { create(:project, :remote_mirror, :import_started) }
 
@@ -6005,7 +6056,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
-      expect(project).to receive(:set_full_path)
 
       project.after_import
     end
@@ -6155,30 +6205,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         .and_call_original
 
       project.update_project_counter_caches
-    end
-  end
-
-  describe '#set_full_path' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    let(:repository) { project.repository.raw }
-
-    it 'writes full path in .git/config when key is missing' do
-      project.set_full_path
-
-      expect(repository.full_path).to eq project.full_path
-    end
-
-    it 'updates full path in .git/config when key is present' do
-      project.set_full_path(gl_full_path: 'old/path')
-
-      expect { project.set_full_path }.to change { repository.full_path }.from('old/path').to(project.full_path)
-    end
-
-    it 'does not raise an error with an empty repository' do
-      project = create(:project_empty_repo)
-
-      expect { project.set_full_path }.not_to raise_error
     end
   end
 
@@ -7034,6 +7060,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:project, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false)
 
       expect(subject).to contain_exactly(project_1)
+    end
+  end
+
+  describe '.not_a_fork' do
+    let_it_be(:project) { create(:project, :public) }
+
+    subject(:not_a_fork) { described_class.not_a_fork }
+
+    it 'returns projects which are not forks' do
+      fork_project(project)
+
+      expect(not_a_fork).to contain_exactly(project)
     end
   end
 
@@ -9405,5 +9443,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(groups_path).to eq([])
       end
     end
+  end
+
+  describe '.by_project_namespace' do
+    let_it_be(:project) { create(:project) }
+    let(:project_namespace) { project.project_namespace }
+
+    it 'returns project' do
+      expect(described_class.by_project_namespace(project_namespace)).to match_array([project])
+    end
+
+    context 'when using ID' do
+      it 'returns project' do
+        expect(described_class.by_project_namespace(project_namespace.id)).to match_array([project])
+      end
+    end
+
+    context 'when using non-existent-id' do
+      it 'returns nothing' do
+        expect(described_class.by_project_namespace(non_existing_record_id)).to be_empty
+      end
+    end
+  end
+
+  describe '#supports_saved_replies?' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(project.supports_saved_replies?).to eq(false) }
   end
 end

@@ -19,6 +19,15 @@ module QA
           Page::Project::Show.perform { |show| show.has_text?("Archived project!") }
         end
       end
+
+      def enable_catalog_resource_feature(project)
+        project.visit!
+
+        Page::Project::Menu.perform(&:go_to_general_settings)
+        Page::Project::Settings::Main.perform do |settings|
+          settings.expand_visibility_project_features_permissions(&:enable_ci_cd_catalog_resource)
+        end
+      end
     end
   end
 end

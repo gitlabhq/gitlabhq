@@ -129,12 +129,24 @@ RSpec.describe ProjectGroupLinkPolicy, feature_category: :system_access do
     end
 
     context 'when the user is a project member' do
-      before_all do
-        project.add_guest(user)
+      context 'when the user is not a project admin' do
+        before_all do
+          project.add_guest(user)
+        end
+
+        it 'cannot read_shared_with_group' do
+          expect(policy).to be_disallowed(:read_shared_with_group)
+        end
       end
 
-      it 'can read_shared_with_group' do
-        expect(policy).to be_allowed(:read_shared_with_group)
+      context 'when the user is a project admin' do
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        it 'can read_shared_with_group' do
+          expect(policy).to be_allowed(:read_shared_with_group)
+        end
       end
     end
 

@@ -50,7 +50,7 @@ module Releases
     def create_release(tag, evidence_pipeline)
       release = build_release(tag)
 
-      if project.catalog_resource && release.valid?
+      if publish_catalog?(release)
         response = Ci::Catalog::Resources::ReleaseService.new(release).execute
 
         return error(response.message, 422) if response.error?
@@ -98,6 +98,12 @@ module Releases
       return if release.historical_release? || release.upcoming_release?
 
       ::Releases::CreateEvidenceWorker.perform_async(release.id, pipeline&.id)
+    end
+
+    def publish_catalog?(release)
+      return false unless project.catalog_resource && release.valid?
+
+      ::Feature.enabled?(:ci_release_cli_catalog_publish_option, project) ? params[:legacy_catalog_publish] : true
     end
   end
 end

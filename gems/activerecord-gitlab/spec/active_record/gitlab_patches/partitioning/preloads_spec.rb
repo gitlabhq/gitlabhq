@@ -216,9 +216,11 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::Preload
         AS t2_r2, \"metadata\".\"test_flag\"
         AS t2_r3
         FROM \"pipelines\"
-        LEFT OUTER JOIN \"jobs\" ON \"jobs\".\"pipeline_id\" = \"pipelines\".\"id\"
+        LEFT OUTER JOIN \"jobs\" ON \"jobs\".\"partition_id\" IS NOT NULL
+        AND \"jobs\".\"pipeline_id\" = \"pipelines\".\"id\"
         AND \"jobs\".\"partition_id\" = \"pipelines\".\"partition_id\"
-        LEFT OUTER JOIN \"metadata\" ON \"metadata\".\"job_id\" = \"jobs\".\"id\"
+        LEFT OUTER JOIN \"metadata\" ON \"metadata\".\"partition_id\" IS NOT NULL
+        AND \"metadata\".\"job_id\" = \"jobs\".\"id\"
         AND \"metadata\".\"partition_id\" = \"jobs\".\"partition_id\"
         WHERE \"pipelines\".\"project_id\" = 1
         AND \"pipelines\".\"id\"
@@ -231,6 +233,76 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::Preload
           .pipelines
           .includes(jobs: :metadata)
           .references(:jobs, :metadata)
+          .where(id: [1, 2], partition_id: 100)
+          .to_a
+      end
+
+      expect(result).to include(preload_statement)
+    end
+
+    it 'keeps join conditions from scope' do
+      preload_statement = <<~SQL.squish
+        SELECT \"pipelines\".\"id\"
+        AS t0_r0, \"pipelines\".\"project_id\"
+        AS t0_r1, \"pipelines\".\"partition_id\"
+        AS t0_r2, \"jobs\".\"id\"
+        AS t1_r0, \"jobs\".\"pipeline_id\"
+        AS t1_r1, \"jobs\".\"partition_id\"
+        AS t1_r2, \"jobs\".\"name\"
+        AS t1_r3, \"metadata\".\"id\"
+        AS t2_r0, \"metadata\".\"job_id\"
+        AS t2_r1, \"metadata\".\"partition_id\"
+        AS t2_r2, \"metadata\".\"test_flag\"
+        AS t2_r3
+        FROM \"pipelines\"
+        LEFT OUTER JOIN \"jobs\" ON \"jobs\".\"partition_id\" IS NOT NULL
+        AND \"jobs\".\"pipeline_id\" = \"pipelines\".\"id\"
+        AND \"jobs\".\"partition_id\" = \"pipelines\".\"partition_id\"
+        LEFT OUTER JOIN \"metadata\" ON \"metadata\".\"test_flag\" = 1
+        AND \"metadata\".\"partition_id\" IS NOT NULL
+        AND \"metadata\".\"job_id\" = \"jobs\".\"id\"
+        AND \"metadata\".\"partition_id\" = \"jobs\".\"partition_id\"
+        WHERE \"pipelines\".\"project_id\" = 1
+        AND \"pipelines\".\"id\"
+        IN (#{pipeline.id}, #{other_pipeline.id})
+        AND \"pipelines\".\"partition_id\" = 100
+      SQL
+
+      result = QueryRecorder.log do
+        project
+          .pipelines
+          .includes(jobs: :test_metadata)
+          .references(:jobs, :test_metadata)
+          .where(id: [1, 2], partition_id: 100)
+          .to_a
+      end
+
+      expect(result).to include(preload_statement)
+    end
+
+    it 'does rewhere the partition_id condition when missing' do
+      preload_statement = <<~SQL.squish
+        SELECT \"pipelines\".\"id\"
+        AS t0_r0, \"pipelines\".\"project_id\"
+        AS t0_r1, \"pipelines\".\"partition_id\"
+        AS t0_r2, \"jobs\".\"id\"
+        AS t1_r0, \"jobs\".\"pipeline_id\"
+        AS t1_r1, \"jobs\".\"partition_id\"
+        AS t1_r2, \"jobs\".\"name\"
+        AS t1_r3 FROM \"pipelines\"
+        LEFT OUTER JOIN \"jobs\" ON \"jobs\".\"pipeline_id\" = NULL
+        AND \"jobs\".\"pipeline_id\" = \"pipelines\".\"id\"
+        AND \"jobs\".\"partition_id\" = \"pipelines\".\"partition_id\"
+        WHERE \"pipelines\".\"project_id\" = 1
+        AND \"pipelines\".\"id\" IN (1, 2)
+        AND \"pipelines\".\"partition_id\" = 100
+      SQL
+
+      result = QueryRecorder.log do
+        project
+          .pipelines
+          .includes(:unpartitioned_jobs)
+          .references(:unpartitioned_jobs)
           .where(id: [1, 2], partition_id: 100)
           .to_a
       end

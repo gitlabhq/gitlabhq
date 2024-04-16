@@ -119,7 +119,6 @@ module Sidebars
           )
         end
 
-        # overriden in ee/lib/ee/sidebars/groups/menus/settings_menu.rb
         def usage_quotas_menu_enabled?
           context.group.usage_quotas_enabled?
         end

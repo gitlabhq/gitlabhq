@@ -55,7 +55,7 @@ RSpec.shared_examples 'when user' do
 end
 
 RSpec.shared_examples 'when admin' do
-  let_it_be(:current_user) { create(:admin) }
+  let_it_be(:current_user) { create(:admin, :without_default_org) }
 
   it_behaves_like 'makes request' do
     let(:status) { success_status_code }

@@ -59,7 +59,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
       deployment.tags.forEach((tag) => {
         const link = wrapper.findByRole('link', { name: tag.name });
 
-        expect(link.attributes('href')).toBe(tag.path);
+        expect(link.attributes('href')).toBe(tag.webPath);
       });
     });
 

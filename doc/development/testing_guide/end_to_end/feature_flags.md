@@ -122,7 +122,7 @@ displays on the page. You should:
 # This is the link to the old file
 view 'app/views/devise/passwords/edit.html.haml' do
   # The new selector should have the same name
-  element :password_field
+  element 'password-field'
   ...
 end
 ```
@@ -131,14 +131,14 @@ end
 
 ```ruby
 view 'app/views/devise/passwords/edit.html.haml' do
-  element :password_field
+  element 'password-field'
   ...
 end
 
 # Now it can verify the selector is available
 view 'app/views/devise/passwords/new_edit_behind_ff.html.haml' do
   # The selector has the same name
-  element :password_field
+  element 'password-field'
 end
 ```
 

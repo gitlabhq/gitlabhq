@@ -7,7 +7,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
-import CloneDropdownItem from '~/vue_shared/components/clone_dropdown/clone_dropdown_item.vue';
+import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
 
 describe('Clone Dropdown Button', () => {
   let wrapper;
@@ -32,8 +32,8 @@ describe('Clone Dropdown Button', () => {
   const encodedSshUrl = encodeURIComponent(sshUrl);
   const encodedHttpUrl = encodeURIComponent(httpUrl);
 
-  const findCloneDropdownItems = () => wrapper.findAllComponents(CloneDropdownItem);
-  const findCloneDropdownItemAtIndex = (index) => findCloneDropdownItems().at(index);
+  const findCodeDropdownItems = () => wrapper.findAllComponents(CodeDropdownItem);
+  const findCodeDropdownItemAtIndex = (index) => findCodeDropdownItems().at(index);
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItemAtIndex = (index) => findDropdownItems().at(index);
 
@@ -63,7 +63,7 @@ describe('Clone Dropdown Button', () => {
       `('renders correct link and a copy-button for $name', ({ index, link }) => {
         createComponent();
 
-        const item = findCloneDropdownItemAtIndex(index);
+        const item = findCodeDropdownItemAtIndex(index);
         expect(item.props('link')).toBe(link);
       });
 
@@ -74,7 +74,7 @@ describe('Clone Dropdown Button', () => {
       `('does not fail if only $name is set', ({ name, value }) => {
         createComponent({ [name]: value });
 
-        expect(findCloneDropdownItemAtIndex(0).props('link')).toBe(value);
+        expect(findCodeDropdownItemAtIndex(0).props('link')).toBe(value);
       });
     });
 
@@ -86,13 +86,13 @@ describe('Clone Dropdown Button', () => {
       `('allows null values for the props', ({ name, value }) => {
         createComponent({ ...defaultPropsData, [name]: value });
 
-        expect(findCloneDropdownItems().length).toBe(1);
+        expect(findCodeDropdownItems().length).toBe(1);
       });
 
       it('correctly calculates httpLabel for HTTPS protocol', () => {
         createComponent({ httpUrl: httpsUrl });
 
-        expect(findCloneDropdownItemAtIndex(0).attributes('label')).toContain('HTTPS');
+        expect(findCodeDropdownItemAtIndex(0).attributes('label')).toContain('HTTPS');
       });
 
       it.each`
@@ -102,7 +102,7 @@ describe('Clone Dropdown Button', () => {
       `('does not close dropdown on $name item click', ({ index }) => {
         createComponent();
 
-        findCloneDropdownItemAtIndex(index).vm.$emit('action');
+        findCodeDropdownItemAtIndex(index).vm.$emit('action');
 
         expect(closeDropdown).not.toHaveBeenCalled();
       });

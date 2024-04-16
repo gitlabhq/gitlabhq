@@ -313,6 +313,7 @@ func configureRoutes(u *upstream) {
 		u.route("PUT", apiTopicPattern, tempfileMultipartProxy),
 		u.route("POST", apiPattern+`v4/groups/import`, mimeMultipartUploader),
 		u.route("POST", apiPattern+`v4/projects/import`, mimeMultipartUploader),
+		u.route("POST", apiPattern+`v4/projects/import-relation`, mimeMultipartUploader),
 
 		// Project Import via UI upload acceleration
 		u.route("POST", importPattern+`gitlab_project`, mimeMultipartUploader),

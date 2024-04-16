@@ -1,10 +1,19 @@
-import { formatProjects, formatGroups, onPageChange } from '~/organizations/shared/utils';
+import {
+  formatProjects,
+  formatGroups,
+  onPageChange,
+  deleteProjectParams,
+  renderProjectDeleteSuccessToast,
+} from '~/organizations/shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import toast from '~/vue_shared/plugins/global_toast';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
 
+jest.mock('~/vue_shared/plugins/global_toast');
+
 describe('formatProjects', () => {
-  it('correctly formats the projects with delete permissions', () => {
+  it('correctly formats the projects', () => {
     const [firstMockProject] = organizationProjects;
     const formattedProjects = formatProjects(organizationProjects);
     const [firstFormattedProject] = formattedProjects;
@@ -27,24 +36,30 @@ describe('formatProjects', () => {
     expect(formattedProjects.length).toBe(organizationProjects.length);
   });
 
-  it('correctly formats the projects without delete permissions', () => {
-    const nonDeletableProject = organizationProjects[organizationProjects.length - 1];
-    const formattedProjects = formatProjects(organizationProjects);
-    const nonDeletableFormattedProject = formattedProjects[formattedProjects.length - 1];
+  describe('when project does not have delete permissions', () => {
+    const [firstProject] = organizationProjects;
+    const nonDeletableProject = {
+      ...firstProject,
+      userPermissions: { ...firstProject.userPermissions, removeProject: false },
+    };
+    const [nonDeletableFormattedProject] = formatProjects([nonDeletableProject]);
 
-    expect(nonDeletableFormattedProject).toMatchObject({
-      id: getIdFromGraphQLId(nonDeletableProject.id),
-      name: nonDeletableProject.nameWithNamespace,
-      mergeRequestsAccessLevel: nonDeletableProject.mergeRequestsAccessLevel.stringValue,
-      issuesAccessLevel: nonDeletableProject.issuesAccessLevel.stringValue,
-      forkingAccessLevel: nonDeletableProject.forkingAccessLevel.stringValue,
-      availableActions: [ACTION_EDIT],
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
+    it('does not include delete action in `availableActions`', () => {
+      expect(nonDeletableFormattedProject.availableActions).toEqual([ACTION_EDIT]);
     });
+  });
 
-    expect(formattedProjects.length).toBe(organizationProjects.length);
+  describe('when project does not have edit permissions', () => {
+    const [firstProject] = organizationProjects;
+    const nonEditableProject = {
+      ...firstProject,
+      userPermissions: { ...firstProject.userPermissions, viewEditPage: false },
+    };
+    const [nonEditableFormattedProject] = formatProjects([nonEditableProject]);
+
+    it('does not include edit action in `availableActions`', () => {
+      expect(nonEditableFormattedProject.availableActions).toEqual([ACTION_DELETE]);
+    });
   });
 });
 
@@ -114,5 +129,21 @@ describe('onPageChange', () => {
         }),
       ).toEqual({ end_cursor: 'newMockEndCursor' });
     });
+  });
+});
+
+describe('renderProjectDeleteSuccessToast', () => {
+  const [MOCK_PROJECT] = formatProjects(organizationProjects);
+
+  it('calls toast correctly', () => {
+    renderProjectDeleteSuccessToast(MOCK_PROJECT);
+
+    expect(toast).toHaveBeenCalledWith(`Project '${MOCK_PROJECT.name}' is being deleted.`);
+  });
+});
+
+describe('deleteProjectParams', () => {
+  it('returns {} always', () => {
+    expect(deleteProjectParams()).toStrictEqual({});
   });
 });

@@ -29,6 +29,14 @@ spec:
     allow_failure:
       type: boolean
       default: false
+    test_script:
+      type: array
+    test_rules:
+      type: array
+      default: []
+    deploy_rules:
+      type: array
+      default: []
 
 ---
 
@@ -49,7 +57,19 @@ variables:
     - if [ $[[ inputs.coverage_enabled ]] == true ]; then echo "Coverage is enabled"; fi
   allow_failure: $[[ inputs.allow_failure ]]
 
+"$[[ inputs.job_prefix ]]-test-2":
+  stage: $[[ inputs.job_stage ]]
+  script: $[[ inputs.test_script ]]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - .gitlab-ci.yml
+    - $[[ inputs.test_rules ]]
+
 "$[[ inputs.job_prefix ]]-deploy":
   stage: $[[ inputs.job_stage ]]
   script:
     - echo "Deploying to $[[ inputs.environment ]] using $[[ inputs.deploy_strategy ]] strategy"
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+    - $[[ inputs.deploy_rules ]]

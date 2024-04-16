@@ -373,3 +373,61 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     }
   }
 }
+
+/** Ideally should be fixed in gitlab-ui but fixing it using classes for now **/
+.work-item-sidebar-dropdown-toggle {
+  justify-content: start !important;
+}
+
+.work-item-sidebar-dropdown-toggle ~ .gl-new-dropdown-panel {
+    width: 95% !important;
+}
+
+.container-limited {
+  .work-item-sticky-header-text {
+    max-width: $fixed-layout-width;
+  }
+}
+
+.work-item-description .truncated{
+  max-height: clamp(16rem, 40vh, 32rem);
+  overflow: hidden;
+}
+
+.description-more{
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+  
+  &::before {
+    content: '';
+    display: block;
+    height: 3rem;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) 0%, $white 100%);
+
+    .gl-dark & {
+      background: linear-gradient(180deg, rgba(31, 30, 36, 0.00) 0%, $gray-950 100%);
+    }
+  }
+
+  .show-all-btn {
+    pointer-events: auto;
+    background-color: $white;
+
+    .gl-dark & {
+      background-color: $gray-950;
+    }
+
+    &::before, &::after {
+      content: '';
+      height: 1px;
+      flex: 1;
+      border-top: 1px solid $gray-50;
+
+      .gl-dark & {
+        border-top: 1px solid $gray-900;       
+      }
+    }
+  }
+}

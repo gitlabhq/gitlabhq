@@ -2,7 +2,7 @@
 
 # rubocop: disable Gitlab/NamespacedClass
 class ClickHouseTestRunner
-  include ClickHouseTestHelpers
+  include ClickHouseSchemaHelpers
 
   def truncate_tables
     ClickHouse::Client.configuration.databases.each_key do |db|

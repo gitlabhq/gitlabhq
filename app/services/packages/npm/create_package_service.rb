@@ -21,13 +21,15 @@ module Packages
         return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if current_package_protected?
         return error('File is too large.', ERROR_REASON_INVALID_PARAMETER) if file_size_exceeded?
 
-        package = try_obtain_lease do
+        package, package_file = try_obtain_lease do
           ApplicationRecord.transaction { create_npm_package! }
         end
 
         unless package
           return error('Could not obtain package lease. Please try again.', ERROR_REASON_PACKAGE_LEASE_TAKEN)
         end
+
+        ::Packages::Npm::ProcessPackageFileWorker.perform_async(package_file.id) if package.processing?
 
         ServiceResponse.success(payload: { package: package })
       end
@@ -39,15 +41,15 @@ module Packages
       end
 
       def create_npm_package!
-        package = create_package!(:npm, name: name, version: version)
+        package = create_package!(:npm, create_package_params)
 
-        ::Packages::CreatePackageFileService.new(package, file_params).execute
+        package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute
         ::Packages::Npm::CreateTagService.new(package, dist_tag).execute
 
         create_npm_metadatum!(package)
 
-        package
+        [package, package_file]
       end
 
       def create_npm_metadatum!(package)
@@ -176,6 +178,14 @@ module Packages
 
       def field_sizes_for_error_tracking
         filtered_field_sizes.empty? ? largest_fields : filtered_field_sizes
+      end
+
+      def create_package_params
+        params = { name: name, version: version }
+
+        params[:status] = :processing if ::Feature.enabled?(:upload_npm_packages_async, project)
+
+        params
       end
     end
   end

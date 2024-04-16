@@ -46,7 +46,7 @@ On the project topic page, you can filter the list of projects that have that to
 
 You can also sort the projects by:
 
-- Date 
+- Date
 - Name
 - Number of stars
 

@@ -1,9 +1,9 @@
 <script>
-import { GlAccordion, GlAccordionItem, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAccordion, GlAccordionItem, GlSkeletonLoader, GlEmptyState } from '@gitlab/ui';
+import EMPTY_DISCUSSION_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-activity-md.svg';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
-import { s__ } from '~/locale';
-import Participants from '~/sidebar/components/participants/participants.vue';
+import { s__, n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
@@ -17,10 +17,10 @@ export default {
   components: {
     DesignDiscussion,
     DesignNoteSignedOut,
-    Participants,
     GlAccordion,
     GlAccordionItem,
     GlSkeletonLoader,
+    GlEmptyState,
     DescriptionForm,
     DesignDisclosure,
   },
@@ -69,6 +69,7 @@ export default {
     return {
       discussionWithOpenForm: '',
       isLoggedIn: isLoggedIn(),
+      emptyDiscussionSvgPath: EMPTY_DISCUSSION_URL,
     };
   },
   computed: {
@@ -95,6 +96,9 @@ export default {
     },
     unresolvedDiscussions() {
       return this.discussions.filter((discussion) => !discussion.resolved);
+    },
+    unresolvedDiscussionsCount() {
+      return n__('%d Thread', '%d Threads', this.unresolvedDiscussions.length);
     },
     isResolvedDiscussionsExpanded: {
       get() {
@@ -148,20 +152,22 @@ export default {
           :markdown-preview-path="markdownPreviewPath"
           class="gl-mt-4"
         />
-        <participants
-          :participants="discussionParticipants"
-          :show-participant-label="false"
-          class="gl-mb-4"
-        />
         <gl-skeleton-loader v-if="isLoading" />
         <template v-else>
-          <h2
+          <h3 data-testid="unresolved-discussion-count" class="gl-line-height-20! gl-font-lg">
+            {{ unresolvedDiscussionsCount }}
+          </h3>
+          <gl-empty-state
             v-if="isLoggedIn && unresolvedDiscussions.length === 0"
-            class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
             data-testid="new-discussion-disclaimer"
+            :svg-path="emptyDiscussionSvgPath"
           >
-            {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
-          </h2>
+            <template #description>
+              {{
+                s__(`DesignManagement|Click on the image where you'd like to add a new comment.`)
+              }}
+            </template>
+          </gl-empty-state>
           <design-note-signed-out
             v-if="!isLoggedIn"
             class="gl-mb-4"

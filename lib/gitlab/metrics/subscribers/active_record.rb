@@ -17,7 +17,7 @@ module Gitlab
 
         DB_LOAD_BALANCING_ROLES = %i[replica primary].freeze
         DB_LOAD_BALANCING_COUNTERS = %i[txn_count count cached_count wal_count wal_cached_count].freeze
-        DB_LOAD_BALANCING_DURATIONS = %i[txn_duration_s duration_s].freeze
+        DB_LOAD_BALANCING_DURATIONS = %i[txn_max_duration_s txn_duration_s duration_s].freeze
 
         SQL_WAL_LOCATION_REGEX = /(pg_current_wal_insert_lsn\(\)::text|pg_last_wal_replay_lsn\(\)::text)/
 
@@ -40,6 +40,8 @@ module Gitlab
           duration = convert_ms_to_s(event.duration)
           increment_duration_key(compose_metric_key(:txn_duration_s), duration)
           increment_duration_key(compose_metric_key(:txn_duration_s, nil, db_config_name), duration)
+          update_max_duration_key(compose_metric_key(:txn_max_duration_s), duration)
+          update_max_duration_key(compose_metric_key(:txn_max_duration_s, nil, db_config_name), duration)
         end
 
         def sql(event)
@@ -220,6 +222,10 @@ module Gitlab
 
         def increment_duration_key(duration_key, duration)
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
+        end
+
+        def update_max_duration_key(duration_key, duration)
+          ::Gitlab::SafeRequestStore[duration_key] = [::Gitlab::SafeRequestStore[duration_key].to_f, duration].max
         end
 
         def convert_ms_to_s(duration)

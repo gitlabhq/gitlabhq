@@ -2,4 +2,4 @@
 - breadcrumb_title @model.name
 - page_title @model.name
 
-= render(Projects::Ml::ShowMlModelComponent.new(model: @model, current_user: current_user))
+#js-mount-show-ml-model{ data: { view_model: show_ml_model_data(@model, @current_user) } }

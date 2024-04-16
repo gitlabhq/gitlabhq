@@ -19,6 +19,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
   let(:client) { Bitbucket::Client.new({}) }
   let(:ref_converter) { Gitlab::BitbucketImport::RefConverter.new(project) }
   let(:user_finder) { Gitlab::BitbucketImport::UserFinder.new(project) }
+  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
   let(:note_body) { 'body' }
   let(:comments) { [Bitbucket::Representation::PullRequestComment.new(note_hash)] }
   let(:created_at) { Date.today - 2.days }
@@ -39,6 +40,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
     allow(Bitbucket::Client).to receive(:new).and_return(client)
     allow(Gitlab::BitbucketImport::RefConverter).to receive(:new).and_return(ref_converter)
     allow(Gitlab::BitbucketImport::UserFinder).to receive(:new).and_return(user_finder)
+    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
     allow(client).to receive(:pull_request_comments).and_return(comments)
   end
 
@@ -46,6 +48,12 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
     context 'for standalone pr comments' do
       it 'calls RefConverter' do
         expect(ref_converter).to receive(:convert_note).once.and_call_original
+
+        importer.execute
+      end
+
+      it 'converts mentions in the comment' do
+        expect(mentions_converter).to receive(:convert).once.and_call_original
 
         importer.execute
       end

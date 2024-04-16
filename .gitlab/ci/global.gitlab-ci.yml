@@ -382,7 +382,7 @@
 .es8-services:
   services:
     - !reference [.zoekt-services, services]
-    - name: elasticsearch:8.6.2
+    - name: elasticsearch:8.11.4
 
 .es8-variables:
   variables:

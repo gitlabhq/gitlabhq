@@ -67,6 +67,10 @@ The search index updates after you:
 - Add data to the database or repository.
 - [Enable Elasticsearch](#enable-advanced-search) in the Admin Area.
 
+NOTE:
+Before you use a new Elasticsearch cluster in production, see the
+[Elasticsearch documentation on important settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+
 ## Upgrade to a new Elasticsearch major version
 
 > - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
@@ -395,13 +399,7 @@ from the Elasticsearch index as expected.
 #### All project records are indexed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/432489) in GitLab 16.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145300) in GitLab 16.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `search_index_all_projects`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
 
 When you select the **Limit the amount of namespace and project data to index** checkbox:
 
@@ -585,7 +583,7 @@ You can use this information, for example, to identify when a migration was intr
 To check for pending advanced search migrations, run this command:
 
 ```shell
-curl "$CLUSTER_URL/gitlab-production-migrations/_search?q=*" | jq .
+curl "$CLUSTER_URL/gitlab-production-migrations/_search?size=100&q=*" | jq .
 ```
 
 This should return something similar to:
@@ -685,6 +683,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:mark_reindex_failed`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Mark the most recent re-index job as failed. |
 | [`sudo gitlab-rake gitlab:elastic:list_pending_migrations`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)          | List pending migrations. Pending migrations include those that have not yet started, have started but not finished, and those that are halted. |
 | [`sudo gitlab-rake gitlab:elastic:estimate_cluster_size`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of cluster size based on the total repository size. |
+| [`sudo gitlab-rake gitlab:elastic:estimate_shard_sizes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Get an estimate of shard sizes for each index based on approximate database counts. This estimate does not include repository data (code, commits, and wikis). |
 | [`sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Enables advanced search with Elasticsearch. |
 | [`sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Disables advanced search with Elasticsearch. |
 
@@ -743,21 +742,49 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - You should not use [coordinating-only nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#coordinating-only-node) with large instances. Coordinating-only nodes are smaller than [data nodes](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node), which can impact performance and [advanced search migrations](#advanced-search-migrations).
 - You can use the [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) to benchmark search performance with different search cluster sizes and configurations.
 - `Heap size` should be set to no more than 50% of your physical RAM. Additionally, it shouldn't be set to more than the threshold for zero-based compressed oops. The exact threshold varies, but 26 GB is safe on most systems, but can also be as large as 30 GB on some systems. See [Heap size settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#heap-size-settings) and [Setting JVM options](https://www.elastic.co/guide/en/elasticsearch/reference/current/jvm-options.html) for more details.
-- Number of CPUs (CPU cores) per node usually corresponds to the `Number of Elasticsearch shards` setting described below.
-- A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30 GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This generally helps the cluster stay in good health.
-- Number of Elasticsearch shards:
-  - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB.
-  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the Admin Area under **Dashboard > Statistics** (the number of documents to be indexed), divide by 5 million, and add 5. For example:
-    - If you have fewer than about 2,000,000 documents, use the default of 5 shards
-    - 10,000,000 documents: `10000000/5000000 + 5` = 7 shards
-    - 100,000,000 documents: `100000000/5000000 + 5` = 25 shards
 - `refresh_interval` is a per index setting. You may want to adjust that from default `1s` to a bigger value if you don't need data in real-time. This changes how soon you see fresh results. If that's important for you, you should leave it as close as possible to the default value.
 - You might want to raise [`indices.memory.index_buffer_size`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indexing-buffer.html) to 30% or 40% if you have a lot of heavy indexing operations.
 
-### Advanced search integration settings guidance
+### Advanced search settings
 
-- The `Number of Elasticsearch shards` setting usually corresponds with the number of CPUs available in your cluster. For example, if you have a 3-node cluster with 4 cores each, this means you benefit from having at least 3*4=12 shards in the cluster. It's only possible to change the shards number by using [Split index API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-split-index.html) or by reindexing to a different index with a changed number of shards.
-- The `Number of Elasticsearch replicas` setting should most of the time be equal to `1` (each shard has 1 replica). Using `0` is not recommended, because losing one node corrupts the index.
+#### Number of Elasticsearch shards
+
+Set the number of Elasticsearch shards per index to at least `5`.
+To update the shard size for an index, change the setting and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+
+##### Indices with database data
+
+For indices that contain database data:
+
+- `gitlab-production-projects`
+- `gitlab-production-issues`
+- `gitlab-production-epics`
+- `gitlab-production-merge_requests`
+- `gitlab-production-notes`
+- `gitlab-production-users`
+
+Run the Rake task `gitlab:elastic:estimate_shard_sizes` to determine the number of shards.
+The task returns approximate document counts and recommendations for shard and replica sizes.
+
+##### Indices with repository data
+
+For indices that contain repository data:
+
+- `gitlab-production`
+- `gitlab-production-wikis`
+- `gitlab-production-commits`
+
+Keep the average shard size between a few GB and 30 GB.
+If the average shard size grows to more than 30 GB, increase the shard size
+for the index and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+To ensure the cluster is healthy, the number of shards per node
+must not exceed 20 times the configured heap size.
+For example, a node with a 30 GB heap must have a maximum of 600 shards.
+
+#### Number of Elasticsearch replicas
+
+Set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
+The number must not be `0` because losing one node corrupts the index.
 
 ### How to index large instances efficiently
 

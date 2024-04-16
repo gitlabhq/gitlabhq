@@ -1,88 +1,88 @@
 mapping:
   # EE/FOSS app should map to respective spec
-  - source: '(ee/)?app/(.+)\.rb'
-    test: '%sspec/%s_spec.rb'
+  - source: '(?<prefix>ee/)?app/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/%{rest}_spec.rb'
 
   # EE extension should also map to its FOSS class spec
-  - source: 'ee/app/(.*/)ee/(.+)\.rb'
+  - source: 'ee/app/(?<directory>.*/)ee/(?<rest>.+)\.rb'
     test:
-      - 'spec/%s%s_spec.rb'
+      - 'spec/%{directory}%{rest}_spec.rb'
       # Some EE extensions also map to its EE class spec, but this is not recommended:
       # https://docs.gitlab.com/ee/development/ee_features.html#testing-ee-features-based-on-ce-features
-      - 'ee/spec/%s%s_spec.rb'
+      - 'ee/spec/%{directory}%{rest}_spec.rb'
 
   # EE/FOSS lib should map to respective spec
-  - source: '(ee/)?lib/(.+)\.rb'
-    test: '%sspec/lib/%s_spec.rb'
+  - source: '(?<prefix>ee/)?lib/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/lib/%{rest}_spec.rb'
 
   # Map rake tasks to its respective specs
-  - source: '(ee/)?lib/tasks/(.+)\.rake'
-    test: '%sspec/tasks/%s_rake_spec.rb'
+  - source: '(?<prefix>ee/)?lib/tasks/(?<rest>.+)\.rake'
+    test: '%{prefix}spec/tasks/%{rest}_rake_spec.rb'
 
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/368628
-  - source: '(ee/)?lib/gitlab/usage_data_counters/(.+)\.rb'
+  - source: '(?<prefix>ee/)?lib/gitlab/usage_data_counters/(?<rest>.+)\.rb'
     test: 'spec/lib/gitlab/usage_data_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/54#note_1160811638
-  - source: '(ee/)?lib/gitlab/ci/config/(.+)\.rb'
+  - source: '(?<prefix>ee/)?lib/gitlab/ci/config/(?<rest>.+)\.rb'
     test: 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
-  - source: 'ee/lib/gitlab/ci/config/(.+)\.rb'
+  - source: 'ee/lib/gitlab/ci/config/(?<rest>.+)\.rb'
     test: 'ee/spec/lib/gitlab/ci/yaml_processor_spec.rb'
 
   # FOSS tooling should map to respective spec
-  - source: 'tooling/(.+)\.rb'
-    test: 'spec/tooling/%s_spec.rb'
+  - source: 'tooling/(?<rest>.+)\.rb'
+    test: 'spec/tooling/%{rest}_spec.rb'
 
   # RuboCop related specs
-  - source: 'rubocop/(.+)\.rb'
-    test: 'spec/rubocop/%s_spec.rb'
+  - source: 'rubocop/(?<rest>.+)\.rb'
+    test: 'spec/rubocop/%{rest}_spec.rb'
 
   # .gitlab/ci related specs
-  - source: '.gitlab/ci/(.+)\.gitlab-ci\.yml'
-    test: 'spec/dot_gitlab_ci/%s_spec.rb'
+  - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
+    test: 'spec/dot_gitlab_ci/%{rest}_spec.rb'
 
   # Initializers should map to respective spec
-  - source: 'config/initializers/(.+)\.rb'
-    test: 'spec/initializers/%s_spec.rb'
+  - source: 'config/initializers/(?<rest>.+)\.rb'
+    test: 'spec/initializers/%{rest}_spec.rb'
 
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'
     test: 'spec/db/schema_spec.rb'
 
   # Migration should map to either timestamped or non-timestamped spec
-  - source: 'db/(?:post_)?migrate/(?:[0-9]+)_(.+)\.rb'
-    test: 'spec/migrations/%s_spec.rb'
-  - source: 'db/(?:post_)?migrate/([0-9]+)_(.+)\.rb'
-    test: 'spec/migrations/%s_%s_spec.rb'
+  - source: 'db/(?:post_)?migrate/(?:[0-9]+)_(?<name>.+)\.rb'
+    test: 'spec/migrations/%{name}_spec.rb'
+  - source: 'db/(?:post_)?migrate/(?<rest>[0-9]+_.+)\.rb'
+    test: 'spec/migrations/%{rest}_spec.rb'
 
   # EE/FOSS views should map to respective spec
-  - source: '(ee/)?app/views/(.+)\.haml'
-    test: '%sspec/views/%s.haml_spec.rb'
+  - source: '(?<prefix>ee/)?app/views/(?<rest>.+)\.haml'
+    test: '%{prefix}spec/views/%{rest}.haml_spec.rb'
 
   # EE/FOSS controllers should map to request specs
-  - source: '(ee/)?app/controllers/(.+)\.rb'
-    test: '%sspec/requests/%s_spec.rb'
+  - source: '(?<prefix>ee/)?app/controllers/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/requests/%{rest}_spec.rb'
 
   # EE/FOSS GraphQL resolvers map to request specs
-  - source: '(ee/)?app/graphql/resolvers/(.+)_resolver\.rb'
+  - source: '(?<prefix>ee/)?app/graphql/resolvers/(?<rest>.+)_resolver\.rb'
     test:
-      - '%sspec/requests/api/graphql/%s_spec.rb'
-      - '%sspec/requests/api/graphql/%s_query_spec.rb'
+      - '%{prefix}spec/requests/api/graphql/%{rest}_spec.rb'
+      - '%{prefix}spec/requests/api/graphql/%{rest}_query_spec.rb'
 
   # EE/FOSS GraphQL mutations map to request specs
-  - source: '(ee/)?app/graphql/mutations/(.+)\.rb'
-    test: '%sspec/requests/api/graphql/mutations/%s_spec.rb'
+  - source: '(?<prefix>ee/)?app/graphql/mutations/(?<rest>.+)\.rb'
+    test: '%{prefix}spec/requests/api/graphql/mutations/%{rest}_spec.rb'
 
   # EE/FOSS spec code should map to itself
-  - source: '(.+)_spec\.rb'
-    test: '%s_spec.rb'
+  - source: '(?<rest>.+_spec\.rb)'
+    test: '%{rest}'
 
   # EE extension spec should map to its FOSS class spec
-  - source: 'ee/spec/(.*/)ee/(.+)\.rb'
-    test: 'spec/%s%s.rb'
+  - source: 'ee/spec/(?<directory>.*/)ee/(?<rest>.+\.rb)'
+    test: 'spec/%{directory}%{rest}'
 
   # EE/FOSS factory should map to factories spec
-  - source: '(ee/)?spec/factories/.+\.rb'
+  - source: '(?<prefix>ee/)?spec/factories/.+\.rb'
     test: 'ee/spec/models/factories_spec.rb'
 
   # Whats New should map to its respective spec
@@ -93,14 +93,14 @@ mapping:
   - source: 'doc/index\.md'
     test: 'spec/haml_lint/linter/documentation_links_spec.rb'
 
-  - source: '(ee/)?app/models/.+\.rb'
+  - source: '(?<prefix>ee/)?app/models/.+\.rb'
     test: 'spec/models/every_model_spec.rb'
 
-  - source: '(ee/)?app/workers/.+\.rb'
+  - source: '(?<prefix>ee/)?app/workers/.+\.rb'
     test: 'spec/workers/every_sidekiq_worker_spec.rb'
 
   # Mailer previews
-  - source: '(ee/)?app/mailers/(ee/)?previews/.+\.rb'
+  - source: '(?<prefix>ee/)?app/mailers/(?<inner_prefix>ee/)?previews/.+\.rb'
     test: 'spec/mailers/previews_spec.rb'
 
   ## GLFM spec and config files for CE and EE should map to respective markdown snapshot specs
@@ -112,26 +112,15 @@ mapping:
   ## Remote development GraphQL resolvers
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_agent_resolver\.rb'
     test:
-      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_actual_states_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_ids_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_no_args_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/with_project_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/cluster_agent/workspaces/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_current_user_resolver\.rb'
     test:
-      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_actual_states_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_agent_ids_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_ids_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_no_args_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/with_project_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/current_user/workspaces/*_spec.rb'
 
   - source: 'ee/app/graphql/resolvers/remote_development/workspaces_for_query_root_resolver\.rb'
     test:
-      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_actual_states_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_agent_ids_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_ids_arg_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_no_args_spec.rb'
-      - 'ee/spec/requests/api/graphql/remote_development/workspaces/with_project_ids_arg_spec.rb'
+      - 'ee/spec/requests/api/graphql/remote_development/workspaces/*_spec.rb'
 
   - source: 'ee/app/graphql/types/remote_development/workspace_type\.rb'
     test:
@@ -162,7 +151,7 @@ mapping:
     test: 'spec/graphql/types/group_member_relation_enum_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/4440#note_1675547256
-  - source: lib/gitlab/ci/templates/.*\.gitlab-ci\.yml
+  - source: 'lib/gitlab/ci/templates/.*\.gitlab-ci\.yml'
     test:
-      - spec/lib/gitlab/ci/templates/templates_spec.rb
-      - ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb
+      - 'spec/lib/gitlab/ci/templates/templates_spec.rb'
+      - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'

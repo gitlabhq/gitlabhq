@@ -15,7 +15,7 @@ DETAILS:
 
 FLAG:
 This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
-The feature is not ready for production use.
+This feature is not ready for production use.
 
 GitLab supports centralized application and infrastructure logs collection, storage, and analysis.
 GiLab Logging provides insight about the operational health of monitored systems.
@@ -38,8 +38,8 @@ Prerequisites:
 
    ```shell
    OTEL_EXPORTER = "otlphttp"
-   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/logs"
-   OTEL_EXPORTER_OTLP_METRICS_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
+   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT = "https://observe.gitlab.com/v3/<namespace-id>/<gitlab-project-id>/ingest/logs"
+   OTEL_EXPORTER_OTLP_LOGS_HEADERS = "PRIVATE-TOKEN=<gitlab-access-token>"
    ```
 
    Use the following values:

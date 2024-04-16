@@ -4,7 +4,6 @@ module BranchRules
   class BaseService
     include Gitlab::Allowable
 
-    PERMITTED_PARAMS = [].freeze
     MISSING_METHOD_ERROR = Class.new(StandardError)
 
     attr_reader :branch_rule, :current_user, :params
@@ -14,7 +13,7 @@ module BranchRules
     def initialize(branch_rule, user = nil, params = {})
       @branch_rule = branch_rule
       @current_user = user
-      @params = params.slice(*self.class::PERMITTED_PARAMS)
+      @params = ActionController::Parameters.new(**params).permit(*permitted_params).to_h
     end
 
     def execute(skip_authorization: false)
@@ -33,6 +32,10 @@ module BranchRules
 
     def authorized?
       missing_method_error('authorized?')
+    end
+
+    def permitted_params
+      []
     end
 
     def missing_method_error(method_name)

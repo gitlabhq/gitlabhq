@@ -42,7 +42,7 @@ review-docs-cleanup:
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.18-ruby-3.2.2-08fa6df8
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.19-ruby-3.2.3-a5032206
   stage: lint
   needs: []
   script:
@@ -87,7 +87,7 @@ docs-lint blueprint:
 
 docs code_quality:
   extends:
-    - .reports:rules:code_quality
+    - .reports:rules:docs_code_quality
     - .docs-markdown-lint-image
   stage: lint
   needs: []

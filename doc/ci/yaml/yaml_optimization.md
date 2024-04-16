@@ -169,7 +169,6 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 ### YAML anchors for scripts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23005) in GitLab 12.5.
 > - Support for anchors with the [`stages`](../yaml/index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
 You can use [YAML anchors](#anchors) with [script](index.md#script), [`before_script`](index.md#before_script),
@@ -383,9 +382,6 @@ In this example:
 
 ## `!reference` tags
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/266173) in GitLab 13.9.
-> - `rules` keyword support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
-
 Use the `!reference` custom YAML tag to select keyword configuration from other job
 sections and reuse it in the current section. Unlike [YAML anchors](#anchors), you can
 use `!reference` tags to reuse configuration from [included](index.md#include) configuration
@@ -443,7 +439,6 @@ test-vars-2:
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74792) in GitLab 14.8.
 > - Support for `!reference` with the [`stages`](../yaml/index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
 You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:

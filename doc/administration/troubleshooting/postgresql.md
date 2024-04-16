@@ -297,7 +297,7 @@ HINT:  Free one or increase max_replication_slots.
 ### Geo replication errors
 
 If you receive errors like this example, read about how to resolve
-[Geo replication errors](../geo/replication/troubleshooting.md#fixing-postgresql-database-replication-errors):
+[Geo replication errors](../geo/replication/troubleshooting/replication.md#fixing-postgresql-database-replication-errors):
 
 ```plaintext
 ERROR: replication slots can only be used if max_replication_slots > 0
@@ -313,8 +313,8 @@ PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device
 
 When troubleshooting problems with Geo, you should:
 
-- Review [common Geo errors](../geo/replication/troubleshooting.md#fixing-common-errors).
-- [Review your Geo configuration](../geo/replication/troubleshooting.md), including:
+- Review [common Geo errors](../geo/replication/troubleshooting/common.md#fixing-common-errors).
+- [Review your Geo configuration](../geo/replication/troubleshooting/index.md), including:
   - Reconfiguring hosts and ports.
   - Reviewing and fixing the user and password mappings.
 

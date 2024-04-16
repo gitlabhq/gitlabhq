@@ -65,17 +65,6 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
           expect(json_response).to include('containers' => [expected_response])
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(atlassian_new_app_based_auth_model: false)
-          get '/-/jira_connect/repositories/search', params: { jwt: jwt, searchQuery: search_query }
-        end
-
-        it 'returns 404' do
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 
@@ -113,17 +102,6 @@ RSpec.describe JiraConnect::RepositoriesController, feature_category: :integrati
 
         it 'renders the relevant data as JSON' do
           expect(json_response).to include(expected_response)
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(atlassian_new_app_based_auth_model: false)
-          post '/-/jira_connect/repositories/associate', params: { jwt: jwt, id: id }
-        end
-
-        it 'returns 404' do
-          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

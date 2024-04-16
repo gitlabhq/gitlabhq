@@ -1,10 +1,25 @@
 ---
 table_name: audit_events_streaming_headers
 classes:
-  - AuditEvents::Streaming::Header
+- AuditEvents::Streaming::Header
 feature_categories:
-  - audit_events
+- audit_events
 description: Represents a HTTP header sent with streaming audit events
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88063
 milestone: '15.1'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  group_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: external_audit_event_destination_id
+        table: audit_events_external_audit_event_destinations
+        sharding_key: namespace_id
+        belongs_to: external_audit_event_destination

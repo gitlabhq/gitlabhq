@@ -401,26 +401,7 @@ task, then check the dimensions of the new sprite sheet and update the
 
 ## Update project templates
 
-Starting a project from a template needs this project to be exported. On a
-up to date main branch run:
-
-```shell
-gdk start
-bundle exec rake gitlab:update_project_templates
-git checkout -b update-project-templates
-git add vendor/project_templates
-git commit
-git push -u origin update-project-templates
-```
-
-Now create a merge request and merge that to main.
-
-To update just a single template instead of all of them, specify the template name
-between square brackets. For example, for the `cluster_management` template, run:
-
-```shell
-bundle exec rake gitlab:update_project_templates\[cluster_management\]
-```
+See [contributing to project templates for GitLab team members](project_templates.md#for-gitlab-team-members).
 
 ## Generate route lists
 

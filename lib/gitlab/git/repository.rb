@@ -701,19 +701,9 @@ module Gitlab
         end
       end
 
-      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
-        args = {
-          user: user,
-          commit: commit,
-          branch_name: branch_name,
-          message: message,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository,
-          dry_run: dry_run
-        }
-
+      def cherry_pick(...)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_cherry_pick(**args)
+          gitaly_operation_client.user_cherry_pick(...)
         end
       end
 
@@ -1037,21 +1027,6 @@ module Gitlab
         end
       end
       # rubocop:enable Metrics/ParameterLists
-
-      def set_full_path(full_path:)
-        return unless full_path.present?
-
-        # This guard avoids Gitaly log/error spam
-        raise NoRepository, 'repository does not exist' unless exists?
-
-        gitaly_repository_client.set_full_path(full_path)
-      end
-
-      def full_path
-        wrapped_gitaly_errors do
-          gitaly_repository_client.full_path
-        end
-      end
 
       def disconnect_alternates
         wrapped_gitaly_errors do

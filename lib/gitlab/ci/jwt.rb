@@ -68,6 +68,9 @@ module Gitlab
           ref_protected: build.protected.to_s
         }
 
+        direct_groups = user&.first_group_paths
+        fields[:groups_direct] = direct_groups if direct_groups
+
         if environment.present?
           fields.merge!(
             environment: environment.name,

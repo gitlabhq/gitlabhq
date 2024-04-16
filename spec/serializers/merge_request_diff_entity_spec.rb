@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestDiffEntity do
+RSpec.describe MergeRequestDiffEntity, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:request) { EntityRequest.new(project: project) }

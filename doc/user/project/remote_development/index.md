@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Write and compile code in your browser, using a secure cloud-based environment."
 ---
 
 # Remote development
@@ -15,7 +16,7 @@ DETAILS:
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com and GitLab Dedicated, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com and GitLab Dedicated, this feature is available. This feature is not ready for production use.
 
 You can use remote development to write and compile code hosted on GitLab.
 With remote development, you can:

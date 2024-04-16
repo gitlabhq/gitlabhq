@@ -30,15 +30,19 @@ export default {
           namespace: this.namespace,
         };
       },
-
       update(data) {
         return (
           data?.k8sPods?.map((pod) => {
             return {
-              name: pod.metadata?.name,
-              namespace: pod.metadata?.namespace,
+              name: pod.metadata.name,
+              namespace: pod.metadata.namespace,
               status: pod.status.phase,
-              age: getAge(pod.metadata?.creationTimestamp),
+              age: getAge(pod.metadata.creationTimestamp),
+              labels: pod.metadata.labels,
+              annotations: pod.metadata.annotations,
+              kind: s__('KubernetesDashboard|Pod'),
+              spec: pod.spec,
+              fullStatus: pod.status,
             };
           }) || []
         );
@@ -106,6 +110,12 @@ export default {
 
       return filteredPods.length;
     },
+    onItemSelect(item) {
+      this.$emit('show-resource-details', item);
+    },
+    onRemoveSelection() {
+      this.$emit('remove-selection');
+    },
   },
   i18n: {
     podsTitle: s__('Environment|Pods'),
@@ -128,8 +138,9 @@ export default {
         v-if="k8sPods"
         :items="k8sPods"
         :page-size="$options.PAGE_SIZE"
-        :row-clickable="false"
         class="gl-mt-8"
+        @select-item="onItemSelect"
+        @remove-selection="onRemoveSelection"
       />
     </template>
   </gl-tab>

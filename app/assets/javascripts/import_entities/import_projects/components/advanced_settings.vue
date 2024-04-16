@@ -20,11 +20,6 @@ export default {
     GlForm,
     GlFormCheckbox,
   },
-  inject: {
-    isFineGrainedToken: {
-      default: false,
-    },
-  },
   props: {
     stages: {
       required: true,
@@ -40,7 +35,9 @@ export default {
       default: false,
     },
   },
-  docsLink: helpPagePath('user/project/import/github', { anchor: 'use-the-github-integration' }),
+  docsLink: helpPagePath('user/project/import/github', {
+    anchor: 'use-a-github-personal-access-token',
+  }),
 };
 </script>
 <template>
@@ -53,11 +50,11 @@ export default {
         >{{
           s__('ImportProjects|The more information you select, the longer it will take to import')
         }}
-        <p v-if="isFineGrainedToken" class="mb-0">
+        <p class="mb-0">
           <gl-sprintf
             :message="
               s__(
-                'ImportProjects|Your fine-grained personal access token may not support collaborator import. Please use a classic token with %{codeStart}read:org%{codeEnd} scope to import collaborators. See the %{linkStart}documentation%{linkEnd} for further details.',
+                'ImportProjects|To import collaborators, you must use a classic personal access token with %{codeStart}read:org%{codeEnd} scope. %{linkStart}Learn more%{linkEnd}.',
               )
             "
           >

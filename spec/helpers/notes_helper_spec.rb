@@ -295,24 +295,6 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#discussion_resolved_intro' do
-    context 'when the discussion was resolved by a push' do
-      let(:discussion) { double(:discussion, resolved_by_push?: true) }
-
-      it 'returns "Automatically resolved"' do
-        expect(discussion_resolved_intro(discussion)).to eq('Automatically resolved')
-      end
-    end
-
-    context 'when the discussion was not resolved by a push' do
-      let(:discussion) { double(:discussion, resolved_by_push?: false) }
-
-      it 'returns "Resolved"' do
-        expect(discussion_resolved_intro(discussion)).to eq('Resolved')
-      end
-    end
-  end
-
   describe '#notes_data' do
     let_it_be(:issue) { create(:issue, project: project) }
 

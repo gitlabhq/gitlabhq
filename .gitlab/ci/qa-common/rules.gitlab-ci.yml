@@ -123,7 +123,6 @@ include:
       allow_failure: true
       variables:
         QA_TESTS: ""
-    - *feature-flags-set-manual
 
 # general qa job rule for jobs without the need to run in parallel
 .rules:test:qa:

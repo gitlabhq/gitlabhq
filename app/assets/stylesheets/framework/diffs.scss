@@ -539,9 +539,29 @@ table.code {
   }
 
   .line_holder:last-of-type {
-    .diff-td:first-child,
-    td:first-child {
-      border-bottom-left-radius: $border-radius-default - 1px;
+    .diff-grid-left {
+      .diff-td:first-child,
+      td:first-child {
+        border-bottom-left-radius: $border-radius-default - 1px;
+
+        .diff-line-expand-button {
+          border-bottom-left-radius: $border-radius-default - 1px;
+        }
+      }
+    }
+
+    .diff-td:last-child:not(.left-side.parallel),
+    td:last-child:not(.left-side.parallel) {
+      border-bottom-right-radius: $border-radius-default - 1px;
+    }
+  }
+
+  .line_holder:last-of-type {
+    .diff-grid-left.left-side.parallel {
+      .diff-td:last-child,
+      td:last-child {
+        border-bottom-right-radius: 0;
+      }
     }
   }
 

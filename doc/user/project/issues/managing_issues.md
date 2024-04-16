@@ -63,7 +63,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a project, you can edit the following attributes:
 
@@ -101,7 +101,7 @@ To edit multiple issues at the same time:
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
-1. Select **Update all**.
+1. Select **Update selected**.
 
 When bulk editing issues in a group, you can edit the following attributes:
 
@@ -130,6 +130,21 @@ To move an issue:
 1. On the right sidebar, select **Move issue**.
 1. Search for a project to move the issue to.
 1. Select **Move**.
+
+### Moving tasks when the parent issue is moved
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `move_issue_children`.
+On GitLab.com, this feature is available.
+
+When this feature is enabled, when you move an issue to another project, all its child tasks are also
+moved to the target project and remain associated as child tasks on the moved issue.
+Each task is moved the same way as the parent, that is, it's closed in the original project and
+copied to the target project.
 
 ### Bulk move issues
 
@@ -307,7 +322,7 @@ The default issue closing pattern regex:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
 
 You can disable the automatic issue closing feature on a per-project basis
-in the [project's settings](../settings/index.md).
+in the [project's settings](#disable-automatic-issue-closing).
 
 Prerequisites:
 
@@ -338,7 +353,7 @@ Prerequisites:
 
 - You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
-Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
+Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
 
 ## Change the issue type

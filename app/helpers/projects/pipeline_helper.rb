@@ -25,7 +25,7 @@ module Projects
       }
     end
 
-    def js_pipeline_details_header_data(project, pipeline)
+    def js_pipeline_header_data(project, pipeline)
       {
         full_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),

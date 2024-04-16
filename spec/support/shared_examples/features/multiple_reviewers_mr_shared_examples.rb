@@ -24,7 +24,7 @@ RSpec.shared_examples 'multiple reviewers merge request' do |action, save_button
       page.within '.reviewer' do
         expect(page).to have_content '2 Reviewers'
 
-        click_link 'Edit'
+        click_button 'Edit'
 
         expect(page).to have_content user.name
         expect(page).to have_content user2.name
@@ -38,7 +38,7 @@ RSpec.shared_examples 'multiple reviewers merge request' do |action, save_button
     page.within '.issuable-sidebar' do
       page.within '.reviewer' do
         # Closing dropdown to persist
-        click_link 'Edit'
+        click_button 'Edit'
 
         expect(page).to have_content user2.name
       end

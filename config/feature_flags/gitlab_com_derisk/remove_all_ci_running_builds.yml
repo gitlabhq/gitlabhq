@@ -1,0 +1,9 @@
+---
+name: remove_all_ci_running_builds
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437846
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147943
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452166
+milestone: '16.11'
+group: group::runner
+type: gitlab_com_derisk
+default_enabled: false

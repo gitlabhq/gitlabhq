@@ -1,13 +1,12 @@
 - if current_user
   - if note.emoji_awardable?
-    .note-actions-item
-      = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { title: _('Add reaction'), class: 'btn-icon add-reaction-button note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip' }) do
-        = sprite_icon('slight-smile', css_class: 'reaction-control-icon-neutral award-control-icon-neutral gl-button-icon gl-icon')
-        = sprite_icon('smiley', css_class: 'reaction-control-icon-positive award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
-        = sprite_icon('smile', css_class: 'reaction-control-icon-super-positive award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3 ')
+    = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { title: _('Add reaction'), class: 'btn-icon add-reaction-button note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip' }) do
+      = sprite_icon('slight-smile', css_class: 'reaction-control-icon-neutral award-control-icon-neutral gl-button-icon gl-icon')
+      = sprite_icon('smiley', css_class: 'reaction-control-icon-positive award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
+      = sprite_icon('smile', css_class: 'reaction-control-icon-super-positive award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3 ')
 
   - if note_editable
-    .note-actions-item.gl-ml-0
-      = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'pencil', button_options: { title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip', data: { container: 'body', testid: 'edit-comment-button' } })
+    .gl-ml-0
+      = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'pencil', button_options: { title: _('Edit comment'), class: 'note-action-button js-note-edit has-tooltip gl-display-none gl-sm-display-block', data: { container: 'body', testid: 'edit-comment-button' } })
 
   = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable

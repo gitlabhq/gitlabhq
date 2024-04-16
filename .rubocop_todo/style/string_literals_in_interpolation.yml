@@ -15,7 +15,6 @@ Style/StringLiteralsInInterpolation:
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/lib/ee/api/helpers/issues_helpers.rb'
     - 'ee/spec/features/admin/admin_settings_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_real_requests_spec.rb'
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/validations/validators/check_assignees_count.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'

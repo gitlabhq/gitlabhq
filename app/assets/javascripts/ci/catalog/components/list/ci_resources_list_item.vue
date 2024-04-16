@@ -1,10 +1,20 @@
 <script>
-import { GlAvatar, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAvatar,
+  GlBadge,
+  GlButton,
+  GlLink,
+  GlSprintf,
+  GlTooltipDirective,
+  GlTruncate,
+} from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
+import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
+import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 
 export default {
   i18n: {
@@ -13,11 +23,13 @@ export default {
     releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
   },
   components: {
+    CiVerificationBadge,
     GlAvatar,
     GlBadge,
     GlButton,
     GlLink,
     GlSprintf,
+    GlTruncate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,9 +53,13 @@ export default {
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
     },
-    componentNames() {
-      const components = this.latestVersion?.components?.nodes;
-      return components?.map((component) => component.name).join(', ') || null;
+    components() {
+      return this.resource.versions?.nodes[0]?.components?.nodes || [];
+    },
+    componentNamesSprintfMessage() {
+      return toNounSeriesText(
+        this.components.map((name, index) => `%{componentStart}${index}%{componentEnd}`),
+      );
     },
     detailsPageHref() {
       return decodeURIComponent(this.detailsPageResolved.href);
@@ -61,10 +77,13 @@ export default {
       return formatDate(this.latestVersion?.createdAt);
     },
     hasComponents() {
-      return Boolean(this.componentNames);
+      return Boolean(this.components.length);
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
+    },
+    isVerified() {
+      return this.resource?.verificationLevel !== 'UNVERIFIED';
     },
     latestVersion() {
       return this.resource?.versions?.nodes[0] || [];
@@ -92,6 +111,9 @@ export default {
     },
   },
   methods: {
+    getComponent(index) {
+      return this.components[Number(index)];
+    },
     navigateToDetailsPage(e) {
       // Open link in a new tab if any of these modifier key is held down.
       if (e?.ctrlKey || e?.metaKey) {
@@ -123,7 +145,14 @@ export default {
       @click="navigateToDetailsPage"
     />
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+      <div>
+        <span class="gl-font-sm gl-mb-1">{{ webPath }}</span>
+        <ci-verification-badge
+          v-if="isVerified"
+          :resource-id="resource.id"
+          :verification-level="resource.verificationLevel"
+        />
+      </div>
       <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-mb-1">
         <gl-link
           class="gl-text-gray-900! gl-mr-1"
@@ -157,10 +186,19 @@ export default {
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-font-sm gl-mt-1"
+            class="gl-font-sm gl-mt-1 gl-display-inline-flex gl-flex-wrap gl-text-gray-900"
           >
             <span class="gl-font-weight-bold"> &#8226; {{ $options.i18n.components }} </span>
-            <span class="gl-text-gray-900">{{ componentNames }}</span>
+            <gl-sprintf :message="componentNamesSprintfMessage">
+              <template #component="{ content }">
+                <gl-truncate
+                  class="gl-max-w-30 gl-ml-2"
+                  :text="getComponent(content).name"
+                  position="end"
+                  with-tooltip
+                />
+              </template>
+            </gl-sprintf>
           </div>
         </div>
         <div class="gl-display-flex gl-justify-content-end">

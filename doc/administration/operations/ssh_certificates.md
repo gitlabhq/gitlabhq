@@ -51,8 +51,8 @@ added the `TrustedUserCAKeys` of your CA to your `sshd_config`, for example:
 TrustedUserCAKeys /etc/security/mycompany_user_ca.pub
 ```
 
-Usually `TrustedUserCAKeys` would not be scoped under a `Match User
-git` in such a setup, since it would also be used for system logins to
+Usually `TrustedUserCAKeys` would not be scoped under a `Match User git`
+in such a setup, since it would also be used for system logins to
 the GitLab server itself, but your setup may vary. If the CA is only
 used for GitLab consider putting this in the `Match User git` section
 (described below).

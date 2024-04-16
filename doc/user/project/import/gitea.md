@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+> - Ability to import projects with a `.` in their path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/434175) in GitLab 16.11.
 
 Import your projects from Gitea to GitLab.
 
@@ -26,15 +27,13 @@ The Gitea importer can import:
 When importing, repository public access is retained. If a repository is private in Gitea, it's
 created as private in GitLab as well.
 
-Because Gitea isn't an OAuth provider, author/assignee can't be mapped to users
-in your GitLab instance. This means the project creator (usually the user that
-started the import process) is set as the author. A reference, however, is kept
-on the issue about the original Gitea author.
-
 ## Known issues
 
-- Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
-  in their path must be renamed for all items to be imported correctly.
+- Because Gitea is not an OAuth provider, the author or assignee cannot be mapped to users on
+  your GitLab instance. The project creator (usually the user who started the import process)
+  is then set as the author. For issues, you can still see the original Gitea author.
+- Because Gitea cannot get comments from merge requests through the API, these comments are not imported.
+  For more information, see the [Gitea API documentation](https://docs.gitea.com/api/1.20/#tag/repository/operation/repoGetPullRequest).
 
 ## Prerequisites
 

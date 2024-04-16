@@ -1,10 +1,8 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
-import ExperimentBadge from '~/vue_shared/components/badges/experiment_badge.vue';
+import { shallowMount } from '@vue/test-utils';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import CiResourceDetails from '~/ci/catalog/components/details/ci_resource_details.vue';
 import CiResourceReadme from '~/ci/catalog/components/details/ci_resource_readme.vue';
-import waitForPromises from 'helpers/wait_for_promises';
 
 describe('CiResourceDetails', () => {
   let wrapper;
@@ -14,8 +12,8 @@ describe('CiResourceDetails', () => {
     version: '1.0.1',
   };
 
-  const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
-    wrapper = mountFn(CiResourceDetails, {
+  const createComponent = ({ props = {} } = {}) => {
+    wrapper = shallowMount(CiResourceDetails, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -28,7 +26,6 @@ describe('CiResourceDetails', () => {
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findCiResourceReadme = () => wrapper.findComponent(CiResourceReadme);
   const findCiResourceComponents = () => wrapper.findComponent(CiResourceComponents);
-  const findExperimentBadge = () => wrapper.findComponent(ExperimentBadge);
 
   describe('UI', () => {
     beforeEach(() => {
@@ -55,13 +52,6 @@ describe('CiResourceDetails', () => {
       findAllTabs().wrappers.forEach((tab) => {
         expect(tab.attributes().lazy).not.toBeUndefined();
       });
-    });
-
-    it('renders an Experiment Badge for the components tab', async () => {
-      createComponent({ mountFn: mount });
-      await waitForPromises();
-
-      expect(findExperimentBadge().exists()).toBe(true);
     });
 
     describe('Inner tab components', () => {

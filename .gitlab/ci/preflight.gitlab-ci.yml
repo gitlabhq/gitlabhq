@@ -24,6 +24,11 @@
     - .ruby-cache
     - .preflight:rules:rails-production-server-boot
     - .use-pg13
+  artifacts:
+    expire_in: 7d
+    when: always
+    paths:
+      - log/
 
 # Test the puma configuration present in `config/puma.rb.example`
 rails-production-server-boot-puma-example:

@@ -1,0 +1,9 @@
+---
+name: custom_webhook_headers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/17290
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/448604
+milestone: '16.11'
+group: group::import and integrate
+type: beta
+default_enabled: true

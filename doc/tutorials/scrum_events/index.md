@@ -241,7 +241,7 @@ journey:
 flowchart TD
 Epic["Epic: When using the application, I need to create an <br> account, so that I can use the application features"] --> Issue1["Issue: When creating my account, I need to specify my email address,<br> so that I can receive future updates from the application"]
     Epic --> Issue2["Issue: When creating my account, I need to <br>specify a password, so that my account remains secure"]
-    Epic --> Issue3["Issue: When creating my account and entering the required info, I need to <br>finalize creating my account, so that I can login"]
+    Epic --> Issue3["Issue: When creating my account and entering the required info, I need to <br>finalize creating my account, so that I can log in"]
 ```
 
 You've taken the feature of an unmodified account sign-up for an application and broke it down into

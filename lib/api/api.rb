@@ -388,7 +388,6 @@ module API
     mount ::API::Internal::Kubernetes
     mount ::API::Internal::ErrorTracking
     mount ::API::Internal::MailRoom
-    mount ::API::Internal::ContainerRegistry::Migration
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
 

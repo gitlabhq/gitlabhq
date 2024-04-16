@@ -85,9 +85,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def create
-    @group = Groups::CreateService.new(current_user, group_params).execute
+    response = Groups::CreateService.new(current_user, group_params).execute
+    @group = response[:group]
 
-    if @group.persisted?
+    if response.success?
       successful_creation_hooks
 
       notice = if @group.chat_team.present?
@@ -334,9 +335,7 @@ class GroupsController < Groups::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def user_actions
-    if current_user
-      @notification_setting = current_user.notification_settings_for(group)
-    end
+    @notification_setting = current_user.notification_settings_for(group) if current_user
   end
 
   def build_canonical_path(group)
@@ -381,14 +380,16 @@ class GroupsController < Groups::ApplicationController
 
   def update_user_role_and_setup_for_company
     user_params = params.fetch(:user, {}).permit(:role)
-    user_params[:setup_for_company] = @group.setup_for_company if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
+
+    if !@group.setup_for_company.nil? && current_user.setup_for_company.nil?
+      user_params[:setup_for_company] = @group.setup_for_company
+    end
+
     Users::UpdateService.new(current_user, user_params.merge(user: current_user)).execute if user_params.present?
   end
 
   def groups
-    if @group.supports_events?
-      @group.self_and_descendants.public_or_visible_to_user(current_user)
-    end
+    @group.self_and_descendants.public_or_visible_to_user(current_user) if @group.supports_events?
   end
 
   override :resource_parent

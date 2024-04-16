@@ -171,6 +171,11 @@ class Repository
     commits = Commit.decorate(commits, container) if commits.present?
 
     CommitCollection.new(container, commits, ref)
+  rescue Gitlab::Git::CommandError => e
+    # Temporary fix to address a new Gitaly internal error: https://gitlab.com/gitlab-org/gitlab/-/issues/452488
+    return CommitCollection.new(container, [], ref) if e.message.include?('listing commits failed')
+
+    raise
   end
 
   def commits_between(from, to, limit: nil)
@@ -951,7 +956,8 @@ class Repository
 
   def cherry_pick(
     user, commit, branch_name, message,
-    start_branch_name: nil, start_project: project, dry_run: false)
+    start_branch_name: nil, start_project: project,
+    author_name: nil, author_email: nil, dry_run: false)
 
     with_cache_hooks do
       raw_repository.cherry_pick(
@@ -961,6 +967,8 @@ class Repository
         message: message,
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
+        author_name: author_name,
+        author_email: author_email,
         dry_run: dry_run
       )
     end

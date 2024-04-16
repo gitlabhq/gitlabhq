@@ -6,8 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Performance Guidelines
 
-This document describes various guidelines to follow to ensure good and
-consistent performance of GitLab. Refer to the [Index](#performance-documentation) section below to navigate to Performance-related pages.
+This document describes various guidelines to ensure good and consistent performance of GitLab.
 
 ## Performance Documentation
 
@@ -267,8 +266,8 @@ This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the
 worker processes), selecting the latter.
 
-For Sidekiq, the signal can be sent to the `sidekiq-cluster` process via `pkill
--USR2 bin/sidekiq-cluster`, which forwards the signal to all Sidekiq
+For Sidekiq, the signal can be sent to the `sidekiq-cluster` process with
+`pkill -USR2 bin/sidekiq-cluster` which forwards the signal to all Sidekiq
 children. Alternatively, you can also select a specific PID of interest.
 
 ### Reading a Stackprof profile

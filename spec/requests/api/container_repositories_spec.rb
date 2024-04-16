@@ -139,14 +139,6 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
                 expect(json_response['tags']).to be_empty
               end
             end
-
-            context 'when the feature fetch_tags_from_registry_api is disabled' do
-              before do
-                stub_feature_flags(fetch_tags_from_registry_api: false)
-              end
-
-              it_behaves_like 'returning a repository and its tags'
-            end
           end
 
           context 'when the GitLab API is not supported' do

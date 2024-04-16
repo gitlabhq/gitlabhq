@@ -144,7 +144,7 @@ export default {
         {{ eventDate }}
       </h2>
 
-      <ul class="notes main-notes-list">
+      <ul class="notes main-notes-list gl-mt-4">
         <li
           v-for="(event, eventIndex) in events"
           :key="eventIndex"

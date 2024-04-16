@@ -101,7 +101,7 @@ RSpec.describe Tooling::FindTests, feature_category: :tooling do
       it 'loads the direct matching pattern file' do
         expect(TestFileFinder::MappingStrategies::DirectMatching)
           .to receive(:load_json)
-          .with('crystalball-test/mapping.json')
+          .with('crystalball-test/mapping.json', limit_min: 14, limit_percentage: 50)
 
         subject
       end

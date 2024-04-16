@@ -246,7 +246,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
     context 'without the need for a license' do
       context 'with build info' do
-        it 'does not result in additional queries' do
+        it 'does not result in additional queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439528' do # rubocop:disable Layout/LineLength -- We prefer to keep it on a single line, for simplicity sake
           control = ActiveRecord::QueryRecorder.new do
             get api(package_url, user)
           end

@@ -64,6 +64,9 @@ work it needs to perform and how long it takes to complete:
      - Creating a new table, example: `create_table`.
      - Adding a new column to an existing table, example: `add_column`.
 
+    NOTE:
+    Post-deployment migration is often abbreviated as PDM.
+
 1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
    exceed the timing guidelines for post-deploy migrations. Batched background migrations should _not_ change the schema.
@@ -87,6 +90,9 @@ graph LR
     D -->|No| G[Background migration]
 ```
 
+Also refer to [Migration type to use](database/adding_database_indexes.md#migration-type-to-use)
+when choosing which migration type to use when adding a database index.
+
 ### How long a migration should take
 
 In general, all migrations for a single deploy shouldn't take longer than
@@ -95,6 +101,10 @@ estimated to keep migration duration to a minimum.
 
 NOTE:
 Keep in mind that all durations should be measured against GitLab.com.
+
+NOTE:
+The result of a [database migration pipeline](database/database_migration_pipeline.md)
+includes the timing information for migrations.
 
 | Migration Type | Recommended Duration | Notes |
 |----|----|---|

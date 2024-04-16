@@ -129,7 +129,7 @@ export default {
           class="gl-mr-2"
           :class="$options.JS_TOGGLE_EXPAND_CLASS"
         />
-        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
+        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-flex-grow-1" />
       </div>
     </div>
 

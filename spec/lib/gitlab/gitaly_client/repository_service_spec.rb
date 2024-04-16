@@ -451,31 +451,6 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
-  describe '#set_full_path' do
-    let(:path) { 'repo/path' }
-
-    it 'sends a set_full_path message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:set_full_path)
-        .with(gitaly_request_with_params(path: path), kind_of(Hash))
-        .and_return(double)
-
-      client.set_full_path(path)
-    end
-  end
-
-  describe '#full_path' do
-    let(:path) { 'repo/path' }
-
-    it 'sends a full_path message' do
-      expect_any_instance_of(Gitaly::RepositoryService::Stub)
-        .to receive(:full_path)
-        .and_return(double(path: path))
-
-      expect(client.full_path).to eq(path)
-    end
-  end
-
   describe "#find_license" do
     it 'sends a find_license request with medium timeout' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

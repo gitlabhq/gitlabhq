@@ -50,18 +50,31 @@ export default {
 
       return this.k8sServices.map((service) => {
         return {
-          name: service?.metadata?.name,
-          namespace: service?.metadata?.namespace,
-          type: service?.spec?.type,
-          clusterIP: service?.spec?.clusterIP,
-          externalIP: service?.spec?.externalIP,
-          ports: generateServicePortsString(service?.spec?.ports),
-          age: getAge(service?.metadata?.creationTimestamp),
+          name: service.metadata.name,
+          namespace: service.metadata.namespace,
+          type: service.spec.type,
+          clusterIP: service.spec.clusterIP || '-',
+          externalIP: service.spec.externalIP || '-',
+          ports: generateServicePortsString(service.spec.ports),
+          age: getAge(service.metadata.creationTimestamp),
+          labels: service.metadata.labels,
+          annotations: service.metadata.annotations,
+          kind: s__('KubernetesDashboard|Service'),
+          spec: service.spec,
+          fullStatus: service.status,
         };
       });
     },
     servicesLoading() {
       return this.$apollo.queries.k8sServices.loading;
+    },
+  },
+  methods: {
+    onItemSelect(item) {
+      this.$emit('show-resource-details', item);
+    },
+    onRemoveSelection() {
+      this.$emit('remove-selection');
     },
   },
   i18n: {
@@ -85,8 +98,9 @@ export default {
       :items="servicesItems"
       :fields="$options.SERVICES_TABLE_FIELDS"
       :page-size="$options.SERVICES_LIMIT_PER_PAGE"
-      :row-clickable="false"
       class="gl-mt-5"
+      @select-item="onItemSelect"
+      @remove-selection="onRemoveSelection"
     />
   </gl-tab>
 </template>

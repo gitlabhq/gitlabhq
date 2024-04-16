@@ -131,15 +131,10 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
   end
 
   def actions
-    actions = {
+    {
       createBranch: {
         templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
-      }
-    }
-
-    return actions unless Feature.enabled?(:atlassian_new_app_based_auth_model)
-
-    actions.merge(
+      },
       searchConnectedWorkspaces: {
         templateUrl: search_jira_connect_workspaces_url
       },
@@ -149,6 +144,6 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       associateRepository: {
         templateUrl: associate_jira_connect_repositories_url
       }
-    )
+    }
   end
 end

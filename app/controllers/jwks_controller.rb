@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
 class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
+  # To be removed soon
   def index
-    expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
-
-    render json: { keys: payload }
+    if Feature.enabled?(:remove_jwks_endpoint)
+      render status: :not_found
+    else
+      keys
+    end
   end
 
   def keys
-    index
+    expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
+
+    render json: { keys: payload }
   end
 
   private

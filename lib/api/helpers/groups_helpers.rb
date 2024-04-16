@@ -20,9 +20,11 @@ module API
         optional :subgroup_creation_level, type: String, values: ::Gitlab::Access.subgroup_creation_string_values, desc: 'Allowed to create subgroups', as: :subgroup_creation_level_str
         optional :emails_disabled, type: Boolean, desc: '_(Deprecated)_ Disable email notifications. Use: emails_enabled'
         optional :emails_enabled, type: Boolean, desc: 'Enable email notifications'
+        optional :show_diff_preview_in_email, type: Boolean, desc: 'Include the code diff preview in merge request notification emails'
         optional :mentions_disabled, type: Boolean, desc: 'Disable a group from getting mentioned'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
+        optional :default_branch, type: String, desc: "The default branch of group's projects", documentation: { example: 'main' }, as: :default_branch_name
         optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
         optional :default_branch_protection_defaults, type: Hash, desc: 'Determine if developers can push to default branch' do
           optional :allowed_to_push, type: Array, desc: 'An array of access levels allowed to push' do

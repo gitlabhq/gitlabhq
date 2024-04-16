@@ -1,4 +1,5 @@
 #js-authenticate-token-2fa
+
 = render Pajamas::ButtonComponent.new(variant: :confirm,
   block: true,
   button_options: { id: 'js-login-2fa-device' }) do
@@ -10,18 +11,17 @@
 
 -# haml-lint:disable InlineJavaScript
 %script#js-authenticate-token-2fa-error{ type: "text/template" }
-  %div
+  .gl-mb-3
     %p <%= error_message %> (<%= error_name %>)
-    = render Pajamas::ButtonComponent.new(block: true,
-      button_options: { id: 'js-token-2fa-try-again', class: 'gl-mb-3' }) do
+    = render Pajamas::ButtonComponent.new(block: true, button_options: { id: 'js-token-2fa-try-again' }) do
       = _("Try again?")
 
 -# haml-lint:disable InlineJavaScript
 %script#js-authenticate-token-2fa-authenticated{ type: "text/template" }
   %div
     %p= _("We heard back from your device. You have been authenticated.")
-    = form_tag(target_path, method: :post, id: 'js-login-token-2fa-form') do |f|
-      - if remember_me_enabled? && render_remember_me
-        - resource_params = params[resource_name].presence || params
-        = hidden_field_tag 'user[remember_me]', resource_params.fetch(:remember_me, 0)
-      = hidden_field_tag 'user[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
+    = gitlab_ui_form_for(:user, url: target_path, method: :post, html: { id: 'js-login-token-2fa-form' }) do |f|
+      - if render_remember_me
+        - user_params = params[:user].presence || params
+        = f.hidden_field :remember_me, value: user_params.fetch(:remember_me, 0)
+      = f.hidden_field :device_response, value: nil, id: 'js-device-response'

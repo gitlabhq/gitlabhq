@@ -6,8 +6,6 @@ module Repositories
     include WorkhorseRequest
     include SendFileUpload
 
-    InvalidUploadedFile = Class.new(StandardError)
-
     skip_before_action :verify_workhorse_api!, only: :download
 
     # added here as a part of the refactor, will be removed
@@ -43,21 +41,25 @@ module Repositories
     end
 
     def upload_finalize
-      validate_uploaded_file!
+      service = Lfs::FinalizeUploadService.new(
+        oid: oid,
+        size: size,
+        uploaded_file: uploaded_file,
+        project: project
+      )
 
-      if store_file!(oid, size)
-        head :ok, content_type: LfsRequest::CONTENT_TYPE
+      response = service.execute
+
+      return head :ok, content_type: LfsRequest::CONTENT_TYPE if response.success?
+
+      case response.reason
+      when :invalid_record, :invalid_path, :remote_store_error
+        render_lfs_forbidden
+      when :invalid_uploaded_file
+        render plain: 'SHA256 or size mismatch', status: :bad_request
       else
         render plain: 'Unprocessable entity', status: :unprocessable_entity
       end
-    rescue ActiveRecord::RecordInvalid
-      render_lfs_forbidden
-    rescue UploadedFile::InvalidPathError
-      render_lfs_forbidden
-    rescue ObjectStorage::RemoteStoreError
-      render_lfs_forbidden
-    rescue InvalidUploadedFile
-      render plain: 'SHA256 or size mismatch', status: :bad_request
     end
 
     private
@@ -80,53 +82,6 @@ module Repositories
 
     def uploaded_file
       params[:file]
-    end
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def store_file!(oid, size)
-      object = LfsObject.find_by(oid: oid, size: size)
-
-      if object
-        replace_file!(object) unless object.file&.exists?
-      else
-        object = create_file!(oid, size)
-      end
-
-      return unless object
-
-      link_to_project!(object)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    def create_file!(oid, size)
-      return unless uploaded_file.is_a?(UploadedFile)
-
-      LfsObject.create!(oid: oid, size: size, file: uploaded_file)
-    end
-
-    def replace_file!(lfs_object)
-      raise UploadedFile::InvalidPathError unless uploaded_file.is_a?(UploadedFile)
-
-      Gitlab::AppJsonLogger.info(message: "LFS file replaced because it did not exist", oid: oid, size: size)
-      lfs_object.file = uploaded_file
-      lfs_object.save!
-    end
-
-    def link_to_project!(object)
-      return unless object
-
-      LfsObjectsProject.safe_find_or_create_by!(
-        project: project,
-        lfs_object: object
-      )
-    end
-
-    def validate_uploaded_file!
-      return unless uploaded_file
-
-      if size != uploaded_file.size || oid != uploaded_file.sha256
-        raise InvalidUploadedFile
-      end
     end
   end
 end

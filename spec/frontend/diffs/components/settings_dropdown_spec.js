@@ -30,44 +30,6 @@ describe('Diff settings dropdown component', () => {
     store.getters['diffs/isParallelView'] = false;
   });
 
-  describe('tree view buttons', () => {
-    it('list view button dispatches setRenderTreeList with false', () => {
-      const wrapper = createComponent();
-      wrapper.find('.js-list-view').trigger('click');
-
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', {
-        renderTreeList: false,
-      });
-    });
-
-    it('tree view button dispatches setRenderTreeList with true', () => {
-      const wrapper = createComponent();
-      wrapper.find('.js-tree-view').trigger('click');
-
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/setRenderTreeList', {
-        renderTreeList: true,
-      });
-    });
-
-    it('sets list button as selected when renderTreeList is false', () => {
-      store.state.diffs = { renderTreeList: false };
-
-      const wrapper = createComponent();
-
-      expect(wrapper.find('.js-list-view').classes('selected')).toBe(true);
-      expect(wrapper.find('.js-tree-view').classes('selected')).toBe(false);
-    });
-
-    it('sets tree button as selected when renderTreeList is true', () => {
-      store.state.diffs = { renderTreeList: true };
-
-      const wrapper = createComponent();
-
-      expect(wrapper.find('.js-list-view').classes('selected')).toBe(false);
-      expect(wrapper.find('.js-tree-view').classes('selected')).toBe(true);
-    });
-  });
-
   describe('compare changes', () => {
     it('sets inline button as selected', () => {
       store.state.diffs = { diffViewType: INLINE_DIFF_VIEW_TYPE };

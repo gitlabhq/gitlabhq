@@ -22,9 +22,10 @@ module BulkImports
             raise(GroupCreationError, 'User requires Two-Factor Authentication')
           end
 
-          group = ::Groups::CreateService.new(current_user, data).execute
+          response = ::Groups::CreateService.new(current_user, data).execute
+          group = response[:group]
 
-          raise(GroupCreationError, group.errors.full_messages.to_sentence) if group.errors.any?
+          raise(GroupCreationError, group.errors.full_messages.to_sentence) if response.error?
 
           context.entity.update!(group: group)
 

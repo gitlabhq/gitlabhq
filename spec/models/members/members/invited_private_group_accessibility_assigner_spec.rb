@@ -7,18 +7,6 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
 
   let_it_be(:user) { create(:user) }
 
-  describe '#initialize' do
-    it 'raises an error when initializing using ActiveRecord::Relation' do
-      members = Member.all
-      expect { described_class.new(members, source: nil, current_user: user) }.to raise_error(ArgumentError)
-    end
-
-    it 'does not raise an error when initializing using Array or MembersPresenter' do
-      expect { described_class.new([], source: nil, current_user: user) }.not_to raise_error
-      expect { described_class.new(MembersPresenter.new(nil), source: nil, current_user: user) }.not_to raise_error
-    end
-  end
-
   describe '#execute' do
     shared_examples 'assigns is_source_accessible_to_current_user' do
       let(:current_user) { user }

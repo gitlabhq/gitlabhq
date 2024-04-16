@@ -9,13 +9,15 @@ module Gitlab
         LIMIT_FIXES = 20
         RUBOCOP_TODO_DIR_PATTERN = ".rubocop_todo/**/*.yml"
 
-        def initialize(todo_dir_pattern: RUBOCOP_TODO_DIR_PATTERN, limit_fixes: LIMIT_FIXES)
+        def initialize(logger: nil, todo_dir_pattern: RUBOCOP_TODO_DIR_PATTERN, limit_fixes: LIMIT_FIXES)
+          super(logger: logger)
           @todo_dir_pattern = todo_dir_pattern
           @limit_fixes = limit_fixes
         end
 
         def each_change
           each_allowed_rubocop_rule do |rule, rule_file_path, violating_files|
+            @logger.puts "RubopCop rule #{rule}"
             remove_allow_rule = true
 
             if violating_files.count > @limit_fixes
@@ -38,9 +40,8 @@ module Gitlab
               remove_first_exclusions(rule, rule_file_path, violating_files.count)
             end
 
-            begin
-              ::Gitlab::Housekeeper::Shell.execute('rubocop', '--autocorrect', *violating_files)
-            rescue ::Gitlab::Housekeeper::Shell::Error
+            unless Gitlab::Housekeeper::Shell.rubocop_autocorrect(violating_files)
+              @logger.warn "Failed to autocorrect files. Reverting"
               # Ignore when it cannot be automatically fixed. But we need to checkout any files we might have updated.
               ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', rule_file_path, *violating_files)
               next

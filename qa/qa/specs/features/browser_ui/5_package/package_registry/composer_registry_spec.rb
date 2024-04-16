@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry,
-    quarantine: { only: { pipeline: %i[staging staging-canary canary production] },
-                  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439376',
-                  type: :broken } do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
     describe 'Composer Repository', :external_api_calls do
       include Runtime::Fixtures
 
@@ -19,7 +16,7 @@ module QA
           project: project)
       end
 
-      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
+      let(:gitlab_address_without_port) { Support::GitlabAddress.address_with_port(with_default_port: false) }
 
       before do
         Flow::Login.sign_in
@@ -51,7 +48,7 @@ module QA
       end
 
       it(
-        'publishes a composer package and deletes it',
+        'publishes a composer package and deletes it', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
       ) do
         Page::Project::Menu.perform(&:go_to_package_registry)

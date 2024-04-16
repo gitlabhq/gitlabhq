@@ -587,6 +587,7 @@ project:
 - harbor_integration
 - irker_integration
 - packagist_integration
+- phorge_integration
 - pivotaltracker_integration
 - prometheus_integration
 - assembla_integration
@@ -851,6 +852,8 @@ project:
 - security_policy_management_project_linked_configurations
 - security_policy_project_linked_projects
 - security_policy_project_linked_namespaces
+- relation_import_trackers
+- saved_replies
 award_emoji:
 - awardable
 - user
@@ -924,6 +927,7 @@ self_managed_prometheus_alert_events:
 epic_issues:
 - issue
 - epic
+- work_item
 feature_flag_issues:
 - issue
 - feature_flag
@@ -1026,6 +1030,7 @@ epic:
 epic_issue:
 - epic
 - issue
+- work_item
 system_note_metadata:
 - note
 - description_version

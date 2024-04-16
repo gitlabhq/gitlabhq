@@ -50,6 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:linked_work_items, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
+    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
 
   before_action only: [:index, :show] do
@@ -69,7 +70,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
     push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
-    push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
   end
 
@@ -158,9 +158,7 @@ class Projects::IssuesController < Projects::ApplicationController
     result = service.execute
 
     # Only irrecoverable errors such as unauthorized user won't contain an issue in the response
-    if result.error? && result[:issue].blank?
-      render_by_create_result_error(result) && return
-    end
+    render_by_create_result_error(result) && return if result.error? && result[:issue].blank?
 
     @issue = result[:issue]
 
@@ -364,9 +362,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def store_uri
-    if request.get? && request.format.html?
-      store_location_for :user, request.fullpath
-    end
+    store_location_for :user, request.fullpath if request.get? && request.format.html?
   end
 
   def serializer

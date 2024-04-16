@@ -86,7 +86,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'includes a link to ssh keys page' do
-      is_expected.to have_body_text /#{profile_keys_path}/
+      is_expected.to have_body_text /#{user_settings_ssh_keys_path}/
     end
 
     context 'with SSH key that does not exist' do
@@ -116,7 +116,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     it 'includes a link to gpg keys page' do
-      is_expected.to have_body_text /#{profile_gpg_keys_path}/
+      is_expected.to have_body_text /#{user_settings_gpg_keys_path}/
     end
 
     context 'with GPG key that does not exist' do
@@ -193,7 +193,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_developer(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -216,7 +216,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
         resource.add_reporter(project_bot)
       end
 
-      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+      subject { Notify.bot_resource_access_token_about_to_expire_email(user, resource, expiring_token.name) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -359,7 +359,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
 
     shared_examples 'includes a link to ssh key page' do
-      it { is_expected.to have_body_text /#{profile_keys_url}/ }
+      it { is_expected.to have_body_text /#{user_settings_ssh_keys_url}/ }
     end
 
     shared_examples 'includes the email reason' do

@@ -112,7 +112,6 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
     let(:token) { 'token' }
     let(:username) { 'bitbucket-user' }
     let(:url) { 'http://localhost:7990/bitbucket' }
-    let(:experiment) { instance_double(ApplicationExperiment) }
 
     it 'clears out existing session' do
       post :configure
@@ -123,17 +122,6 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
 
       expect(response).to have_gitlab_http_status(:found)
       expect(response).to redirect_to(status_import_bitbucket_server_path)
-    end
-
-    it 'tracks default_to_import_tab experiment' do
-      allow(controller)
-        .to receive(:experiment)
-        .with(:default_to_import_tab, actor: user)
-        .and_return(experiment)
-
-      expect(experiment).to receive(:track).with(:authentication, property: :bitbucket_server)
-
-      post :configure
     end
 
     it 'sets the session variables' do

@@ -48,6 +48,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         a_graphql_entity_for(
           resource, :name, :description,
           icon: project.avatar_path,
+          fullPath: project.full_path,
           webPath: "/#{project.full_path}",
           verificationLevel: "UNVERIFIED",
           starCount: project.star_count
@@ -67,6 +68,28 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
   end
 
   describe 'components' do
+    let_it_be(:version) do
+      create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
+    end
+
+    let_it_be(:inputs) do
+      {
+        website: nil,
+        environment: {
+          default: 'test'
+        },
+        tags: {
+          type: 'array'
+        }
+      }
+    end
+
+    let_it_be(:components) do
+      create_list(
+        :ci_catalog_resource_component, 2, version: version, spec: { inputs: inputs }
+      )
+    end
+
     let(:query) do
       <<~GQL
         query {
@@ -94,62 +117,40 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
       GQL
     end
 
-    context 'when the catalog resource has components' do
-      let_it_be(:inputs) do
-        {
-          website: nil,
-          environment: {
-            default: 'test'
-          },
-          tags: {
-            type: 'array'
-          }
-        }
-      end
+    it 'returns the components' do
+      post_query
 
-      let_it_be(:version) do
-        create(:release, :with_catalog_resource_version, project: project).catalog_resource_version
-      end
+      expect(graphql_data_at(:ciCatalogResource)).to match(a_graphql_entity_for(resource))
 
-      let_it_be(:components) do
-        create_list(:ci_catalog_resource_component, 2, version: version, inputs: inputs, path: 'templates/comp.yml')
-      end
-
-      it 'returns the resource with the component data' do
-        post_query
-
-        expect(graphql_data_at(:ciCatalogResource)).to match(a_graphql_entity_for(resource))
-
-        expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
-          a_graphql_entity_for(
-            components.first,
-            name: components.first.name,
-            include_path: components.first.path,
-            inputs: [
-              a_graphql_entity_for(
-                name: 'tags',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'website',
-                default: nil,
-                required: true
-              ),
-              a_graphql_entity_for(
-                name: 'environment',
-                default: 'test',
-                required: false
-              )
-            ]
-          ),
-          a_graphql_entity_for(
-            components.last,
-            name: components.last.name,
-            include_path: components.last.path
-          )
+      expect(graphql_data_at(:ciCatalogResource, :versions, :nodes, :components, :nodes)).to contain_exactly(
+        a_graphql_entity_for(
+          components.first,
+          name: components.first.name,
+          include_path: components.first.include_path,
+          inputs: [
+            a_graphql_entity_for(
+              name: 'tags',
+              default: nil,
+              required: true
+            ),
+            a_graphql_entity_for(
+              name: 'website',
+              default: nil,
+              required: true
+            ),
+            a_graphql_entity_for(
+              name: 'environment',
+              default: 'test',
+              required: false
+            )
+          ]
+        ),
+        a_graphql_entity_for(
+          components.last,
+          name: components.last.name,
+          include_path: components.last.include_path
         )
-      end
+      )
     end
   end
 
@@ -172,7 +173,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         released_at: Date.yesterday
       ).catalog_resource_version
 
-      version.update!(version: '1.0.0')
+      version.update!(semver: '1.0.0')
 
       version
     end
@@ -185,7 +186,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         released_at: Date.today
       ).catalog_resource_version
 
-      version.update!(version: '2.0.0')
+      version.update!(semver: '2.0.0')
 
       version
     end

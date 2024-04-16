@@ -11,7 +11,8 @@ module Groups
         button_testid: 'remove-group-button',
         disabled: group.prevent_delete?.to_s,
         confirm_danger_message: remove_group_message(group),
-        phrase: group.full_path
+        phrase: group.full_path,
+        html_confirmation_message: 'true'
       }
     end
   end

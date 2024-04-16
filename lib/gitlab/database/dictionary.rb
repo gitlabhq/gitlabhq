@@ -86,6 +86,18 @@ module Gitlab
           data['milestone']
         end
 
+        def milestone_greater_than_or_equal_to?(other_milestone)
+          # some tables have milestones denoted as <6.0 or TODO, which are not clean milestones.
+          # For these tables, we just return `false` as these are probably older tables and we needn't run checks.
+          return false if not_having_a_clean_milestone?
+
+          # we use Gem::Version to compare version numbers correctly
+          my_milestone = Gem::Version.new(milestone.to_s)
+          other_milestone = Gem::Version.new(other_milestone.to_s)
+
+          my_milestone >= other_milestone
+        end
+
         def gitlab_schema
           data['gitlab_schema']
         end
@@ -133,6 +145,10 @@ module Gitlab
         end
 
         private
+
+        def not_having_a_clean_milestone?
+          milestone.to_s == 'TODO' || milestone.to_s.start_with?('<')
+        end
 
         attr_reader :file_path, :data
 

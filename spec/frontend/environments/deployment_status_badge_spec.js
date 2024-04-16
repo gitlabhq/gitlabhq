@@ -39,4 +39,12 @@ describe('~/environments/components/deployment_status_badge.vue', () => {
       expect(badge.props('icon')).toBe(icon);
     });
   });
+
+  it('passes an href to the GlBadge', () => {
+    const href = 'http://example.com';
+    wrapper = createWrapper({ propsData: { status: 'created', href } });
+    const badge = wrapper.findComponent(GlBadge);
+
+    expect(badge.attributes('href')).toBe(href);
+  });
 });

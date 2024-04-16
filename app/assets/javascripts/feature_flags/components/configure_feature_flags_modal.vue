@@ -221,7 +221,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this modal to cancel.',
+            'FeatureFlags|To prevent accidental actions we ask you to confirm your intention. Please type %{projectName} to proceed or close this dialog to cancel.',
           )
         "
       >

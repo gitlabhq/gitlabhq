@@ -11,6 +11,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - Sidebar actions menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Enabled by default.
+> - Sidebar actions menu [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127001) in GitLab 16.9. Feature flag `moved_mr_sidebar` removed.
+
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
 When you open a merge request, you can visualize and collaborate on the changes before merge.
@@ -171,8 +175,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Moved to GitLab Premium in 13.9.
-
 GitLab enables multiple assignees for merge requests, if multiple people are
 accountable for it:
 
@@ -193,9 +195,14 @@ To remove an assignee, clear the user from the same dropdown list.
 
 If you decide to permanently stop work on a merge request,
 GitLab recommends you close the merge request rather than
-[delete it](#delete-a-merge-request). The author and assignees of a merge request, and users with
-Developer, Maintainer, or Owner [roles](../../permissions.md) in a project
-can close merge requests in the project:
+[delete it](manage.md#delete-a-merge-request).
+
+Prerequisites:
+
+- You must be the author or assignees of the merge request, or
+- You must have the Developer, Maintainer, or Owner [roles](../../permissions.md) in a project.
+
+To close merge requests in the project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
@@ -204,22 +211,6 @@ can close merge requests in the project:
 
 GitLab closes the merge request, but preserves records of the merge request,
 its comments, and any associated pipelines.
-
-### Delete a merge request
-
-GitLab recommends you close, rather than delete, merge requests.
-You cannot undo the deletion of a merge request.
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-
-To delete a merge request:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find the merge request you want to delete.
-1. Select **Edit**.
-1. Scroll to the bottom of the page, and select **Delete merge request**.
 
 ### Delete the source branch on merge
 
@@ -266,27 +257,6 @@ Merge requests with interconnected content updates are usually handled in one of
 This feature works only when a merge request is merged. Selecting **Remove source branch**
 after merging does not retarget open merge requests. This improvement is
 [proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
-
-## Move sidebar actions
-
-<!-- When the `moved_mr_sidebar` feature flag is removed, delete this topic and update the steps for these actions
-like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_id=522279685#5d9afba799c4af9920dab533571d7abb8b9e9163 -->
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Enabled by default.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
-
-When this feature flag is enabled, in the upper-right corner,
-**Merge request actions** (**{ellipsis_v}**) contains the following actions:
-
-- The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
-- Mark merge request as ready or [draft](../merge_requests/drafts.md)
-- Close merge request
-- [Lock discussion](../../discussions/index.md#prevent-comments-by-locking-the-discussion)
-- Copy reference
-
-In GitLab 16.0 and later, similar action menus are available on issues, incidents, and epics.
-
-When this feature flag is disabled, these actions are in the right sidebar.
 
 ## Merge request workflows
 

@@ -44,6 +44,7 @@ classes:
 - Integrations::MockCi
 - Integrations::MockMonitoring
 - Integrations::Packagist
+- Integrations::Phorge
 - Integrations::PipelinesEmail
 - Integrations::Pivotaltracker
 - Integrations::Prometheus

@@ -182,7 +182,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     let_it_be(:awaiting_project_member) { create(:project_member, :awaiting, project: project) }
 
     before_all do
-      @owner_user = create(:user).tap { |u| group.add_owner(u) }
+      @owner_user = create(:user, owner_of: group)
       @owner = group.members.find_by(user_id: @owner_user.id)
       @blocked_owner_user = create(:user).tap do |u|
         group.add_owner(u)
@@ -191,7 +191,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
       @blocked_owner = group.members.find_by(user_id: @blocked_owner_user.id)
 
-      @maintainer_user = create(:user).tap { |u| project.add_maintainer(u) }
+      @maintainer_user = create(:user, maintainer_of: project)
       @maintainer = project.members.find_by(user_id: @maintainer_user.id)
 
       @blocked_maintainer_user = create(:user).tap do |u|

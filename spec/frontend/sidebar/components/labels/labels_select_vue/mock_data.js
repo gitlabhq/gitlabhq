@@ -55,7 +55,7 @@ export const mockConfig = {
   allowLabelCreate: true,
   allowScopedLabels: true,
   allowMultiselect: true,
-  labelsListTitle: 'Assign labels',
+  labelsListTitle: 'Select labels',
   labelsCreateTitle: 'Create label',
   variant: 'sidebar',
   dropdownOnly: false,

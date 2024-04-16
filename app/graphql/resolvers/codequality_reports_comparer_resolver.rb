@@ -9,7 +9,7 @@ module Resolvers
     authorize :read_build
 
     def resolve
-      authorize!(object.actual_head_pipeline)
+      authorize!(object.diff_head_pipeline)
 
       object.compare_codequality_reports
     end

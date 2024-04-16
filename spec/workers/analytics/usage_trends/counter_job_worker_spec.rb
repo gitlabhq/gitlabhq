@@ -100,4 +100,21 @@ RSpec.describe Analytics::UsageTrends::CounterJobWorker, feature_category: :devo
       expect(measurement.count).to eq(1)
     end
   end
+
+  context 'when issues identifier is passed' do
+    let_it_be(:group_work_item) { create(:work_item, :group_level) }
+    let_it_be(:project_work_item) { create(:work_item) }
+
+    let(:issues_identifier) { ::Analytics::UsageTrends::Measurement.identifiers.fetch(:issues) }
+    let(:job_args) { [issues_identifier, group_work_item.id, project_work_item.id, recorded_at] }
+
+    it 'does not count group level work items' do
+      subject
+
+      measurement = Analytics::UsageTrends::Measurement.issues.first
+      expect(measurement.recorded_at).to be_like_time(recorded_at)
+      expect(measurement.identifier).to eq('issues')
+      expect(measurement.count).to eq(1)
+    end
+  end
 end

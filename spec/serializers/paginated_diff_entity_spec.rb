@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PaginatedDiffEntity do
+RSpec.describe PaginatedDiffEntity, feature_category: :code_review_workflow do
   let(:user) { create(:user) }
   let(:request) { double('request', current_user: user) }
   let(:merge_request) { create(:merge_request) }

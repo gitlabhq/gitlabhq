@@ -81,7 +81,7 @@ class Gitlab::Seeder::Users
           confirmed_at: DateTime.now,
           password: random_password
         ) do |user|
-          user.assign_personal_namespace
+          user.assign_personal_namespace(Organizations::Organization.default_organization)
         end
 
         print '.'

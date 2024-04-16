@@ -10,15 +10,14 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
   let_it_be(:minor_release) { create(:release, project: project, tag: '1.1.0', created_at: Date.yesterday - 1.day) }
   let_it_be(:major_release) { create(:release, project: project, tag: '2.0.0', created_at: Date.yesterday) }
-  let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today) }
+  let_it_be(:patch) { create(:release, project: project, tag: '1.1.3', created_at: Date.today, sha: 'patch_sha') }
   let!(:v1_1_0) do
-    create(:ci_catalog_resource_version, version: '1.1.0', catalog_resource: resource, release:
-                         minor_release)
+    create(:ci_catalog_resource_version, semver: '1.1.0', catalog_resource: resource, release: minor_release)
   end
 
-  let!(:v1_1_3) { create(:ci_catalog_resource_version, version: '1.1.3', catalog_resource: resource, release: patch) }
+  let!(:v1_1_3) { create(:ci_catalog_resource_version, semver: '1.1.3', catalog_resource: resource, release: patch) }
   let!(:v2_0_0) do
-    create(:ci_catalog_resource_version, version: '2.0.0', catalog_resource: resource, release: major_release)
+    create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: major_release)
   end
 
   it { is_expected.to belong_to(:release) }
@@ -35,15 +34,17 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
     describe 'semver validation' do
       where(:version, :valid, :semver_major, :semver_minor, :semver_patch, :semver_prerelease) do
-        '1'             | false | nil | nil | nil | nil
-        '1.2'           | false | nil | nil | nil | nil
-        '1.2.3'         | true  | 1   | 2   | 3   | nil
-        '1.2.3-beta'    | true  | 1   | 2   | 3   | 'beta'
-        '1.2.3.beta'    | false | nil | nil | nil | nil
+        '1'          | false | nil | nil | nil | nil
+        '1.2'        | false | nil | nil | nil | nil
+        '1.2.3'      | true  | 1   | 2   | 3   | nil
+        'v1.2.3'     | true  | 1   | 2   | 3   | nil
+        'V1.2.3'     | false | nil | nil | nil | nil
+        '1.2.3-beta' | true  | 1   | 2   | 3   | 'beta'
+        '1.2.3.beta' | true  | nil | nil | nil | nil
       end
 
       with_them do
-        let(:catalog_version) { build(:ci_catalog_resource_version, version: version) }
+        let(:catalog_version) { build(:ci_catalog_resource_version, semver: version) }
 
         it do
           expect(catalog_version.semver_major).to be semver_major
@@ -60,7 +61,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     let_it_be(:resource2) { create(:ci_catalog_resource, project: project2) }
     let_it_be(:release_v3) { create(:release, tag: '3.0.0', project: project2, created_at: Date.yesterday) }
     let_it_be(:v3_0_0) do
-      create(:ci_catalog_resource_version, catalog_resource: resource2, version: '3.0.0', release: release_v3)
+      create(:ci_catalog_resource_version, catalog_resource: resource2, semver: '3.0.0', release: release_v3)
     end
 
     describe '.for_catalog resources' do
@@ -92,10 +93,35 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   end
 
   describe '.latest' do
-    subject { described_class.latest }
+    context 'when providing the ~latest tag' do
+      it 'returns the latest version' do
+        latest_version = described_class.latest
 
-    it 'returns the latest version by released date' do
-      is_expected.to eq(v2_0_0)
+        expect(latest_version).to eq(v2_0_0)
+      end
+    end
+
+    context 'when providing only a major version number' do
+      it 'returns the latest for the given major version' do
+        latest_major_version = described_class.latest('1')
+
+        expect(latest_major_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing a major and minor version number' do
+      it 'returns the latest for the given minor version' do
+        latest_minor_version = described_class.latest('1', '1')
+
+        expect(latest_minor_version).to eq(v1_1_3)
+      end
+    end
+
+    context 'when providing only a minor version but no major version' do
+      it 'raises an error' do
+        expect { described_class.latest(nil, '1') }
+        .to raise_error(ArgumentError, 'semver minor version used without major version')
+      end
     end
   end
 
@@ -108,11 +134,18 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     end
   end
 
-  describe '#name' do
-    it 'is equivalent to release.tag' do
-      v1_1_0.release.update!(name: 'Release v1.1.0')
+  describe '.by_sha' do
+    it 'returns the version that matches the sha' do
+      versions = described_class.by_sha('patch_sha')
 
-      expect(v1_1_0.name).to eq(v1_1_0.release.tag)
+      expect(versions.count).to eq(1)
+      expect(versions.first.sha).to eq('patch_sha')
+    end
+  end
+
+  describe '#name' do
+    it 'is equivalent to semver' do
+      expect(v1_1_0.name).to eq(v1_1_0.semver.to_s)
     end
   end
 

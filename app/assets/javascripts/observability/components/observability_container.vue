@@ -30,7 +30,7 @@ export default {
     // setTimeout(() => {
     //   this.messageHandler({
     //     data: { type: 'AUTH_COMPLETION', status: 'success' },
-    //     origin: new URL(this.oauthUrl).origin,
+    //     origin: new URL(this.apiConfig.oauthUrl).origin,
     //   });
     // }, 2000);
   },

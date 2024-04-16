@@ -36,7 +36,7 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
     subject { user.can?(:erase_build, job) }
 
     context 'when the job triggerer is a project maintainer' do
-      let_it_be_with_refind(:user) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let_it_be_with_refind(:user) { create(:user, maintainer_of: project) }
 
       before do
         stub_licensed_features(protected_environments: true)

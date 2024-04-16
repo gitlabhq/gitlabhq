@@ -6,8 +6,6 @@ Vue.use(Translate);
 
 export const initSidebar = (store) => {
   const el = document.getElementById('js-search-sidebar');
-  const hederEl = document.getElementById('super-sidebar-context-header');
-  const headerText = hederEl.innerText;
 
   if (!el) return false;
 
@@ -16,11 +14,7 @@ export const initSidebar = (store) => {
     name: 'GlobalSearchSidebar',
     store,
     render(createElement) {
-      return createElement(GlobalSearchSidebar, {
-        props: {
-          headerText,
-        },
-      });
+      return createElement(GlobalSearchSidebar);
     },
   });
 };

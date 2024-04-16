@@ -12,6 +12,7 @@ DETAILS:
 
 > - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
 > - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
+> - [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
 
 In projects with frequent merges to the default branch, changes in different merge requests
 might conflict with each other. Use merge trains to put merge requests in a queue.
@@ -101,7 +102,8 @@ To enable merge trains:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. In the **Merge method** section, verify that **Merge commit** is selected.
+1. In GitLab 16.4 and earlier, in the **Merge method** section, verify that **Merge commit** is selected.
+   In GitLab 16.5 and later, you can use any merge method.
 1. In the **Merge options** section, ensure **Enable merged results pipelines** is enabled
    and select **Enable merge trains**.
 1. Select **Save changes**.
@@ -173,7 +175,7 @@ Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
 
 NOTE:
-The **merge immediately** option may not be available if your project utilizes the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) 
+The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge)
 merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
 
 ### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines

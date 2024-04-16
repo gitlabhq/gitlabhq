@@ -14,6 +14,7 @@ import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
+import WorkItemTypeIcon from '../work_item_type_icon.vue';
 import {
   STATE_OPEN,
   WIDGET_TYPE_PROGRESS,
@@ -22,7 +23,6 @@ import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
-  WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
 
 export default {
@@ -43,6 +43,7 @@ export default {
     GlTooltip,
     RichTimestampTooltip,
     WorkItemLinkChildMetadata,
+    WorkItemTypeIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -98,9 +99,6 @@ export default {
     isChildItemOpen() {
       return this.childItem.state === STATE_OPEN;
     },
-    iconName() {
-      return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
-    },
     statusIconName() {
       return this.isChildItemOpen ? 'issue-open-m' : 'issue-close';
     },
@@ -154,7 +152,7 @@ export default {
     data-testid="links-child"
   >
     <div ref="stateIcon" class="gl-cursor-help">
-      <gl-icon class="gl-text-secondary" :name="iconName" />
+      <work-item-type-icon class="gl-text-secondary" :work-item-type="childItemType" />
       <gl-tooltip :target="() => $refs.stateIcon">
         {{ childItemType }}
       </gl-tooltip>

@@ -4,8 +4,8 @@
 .js-sidebar-assignees-root{ data: { field: issuable_type,
   max_assignees: dropdown_options[:data][:"max-select"],
   directly_invite_members: can_admin_project_member?(@project) } }
-  .title.hide-collapsed
-    = s_('Label|Assignee')
+  .title.hide-collapsed.gl-display-flex.gl-justify-content-space-between.gl-align-items-center{ class: 'gl-mb-0!' }
+    %span.gl-font-weight-bold= s_('Label|Assignee')
     = gl_loading_icon(inline: true)
 
 .js-sidebar-assignee-data.selectbox.hide-collapsed
@@ -16,7 +16,7 @@
       = hidden_field_tag "#{issuable_type}[assignee_ids][]", assignee.id, id: nil, data: assignee_sidebar_data(assignee, merge_request: @merge_request)
 
   - options = { toggle_class: 'js-user-search js-author-search',
-    title: _('Assign to'),
+    title: _('Select assignees'),
     filter: true,
     dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author',
     placeholder: _('Search users'),

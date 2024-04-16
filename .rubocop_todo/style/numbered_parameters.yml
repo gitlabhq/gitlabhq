@@ -66,7 +66,6 @@ Style/NumberedParameters:
     - 'spec/lib/gitlab/zentao/client_spec.rb'
     - 'spec/models/bulk_imports/entity_spec.rb'
     - 'spec/models/hooks/web_hook_spec.rb'
-    - 'spec/models/integration_spec.rb'
     - 'spec/requests/api/graphql/mutations/issues/set_crm_contacts_spec.rb'
     - 'spec/requests/api/graphql/project/merge_request_spec.rb'
     - 'spec/requests/api/groups_spec.rb'

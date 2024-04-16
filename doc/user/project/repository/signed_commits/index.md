@@ -14,7 +14,7 @@ When you add a cryptographic signature to your commit, you provide extra assuran
 originated from you, rather than an impersonator. If GitLab can verify a commit
 author's identity with a public GPG key, the commit is marked **Verified** in the
 GitLab UI. You can then configure [push rules](../push_rules.md)
-for your project to reject individual commits not signed with GPG, or reject all
+for your project to reject individual unsigned commits, or reject all
 commits from unverified users.
 
 Sign commits with your:
@@ -47,7 +47,7 @@ they are signed.
 
    ![Signed commit with unverified signature](img/project_signed_commit_unverified_signature.png)
 
-You can also [use the Commits API](../../../../api/commits.md#get-gpg-signature-of-a-commit)
+You can also [use the Commits API](../../../../api/commits.md#get-signature-of-a-commit)
 to check a commit's signature.
 
 ### Verify commits made in the web UI

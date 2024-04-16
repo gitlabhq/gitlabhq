@@ -1,4 +1,4 @@
-import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -12,6 +12,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
+import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
+import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
+import DeleteDisclosureDropdownItem from '~/ml/model_registry/components/delete_disclosure_dropdown_item.vue';
+import { destroyModelResponses } from '../graphql_mock_data';
 import { MODEL } from '../mock_data';
 
 // Vue Test Utils `stubs` option does not stub components mounted
@@ -42,17 +48,40 @@ jest.mock('~/ml/model_registry/components/model_detail.vue', () => {
   };
 });
 
-const apolloProvider = createMockApollo([]);
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrlWithAlerts: jest.fn(),
+}));
+
+let apolloProvider;
 let wrapper;
 
 describe('ml/model_registry/apps/show_ml_model', () => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
-  const createWrapper = ({ model = MODEL, mountFn = shallowMountExtended } = {}) => {
+  beforeEach(() => {
+    jest.spyOn(Sentry, 'captureException').mockImplementation();
+  });
+
+  const createWrapper = ({
+    model = MODEL,
+    mountFn = shallowMountExtended,
+    resolver = jest.fn().mockResolvedValue(destroyModelResponses.success),
+    canWriteModelRegistry = true,
+  } = {}) => {
+    const requestHandlers = [[destroyModelMutation, resolver]];
+    apolloProvider = createMockApollo(requestHandlers);
+
     wrapper = mountFn(ShowMlModel, {
       apolloProvider,
-      propsData: { model },
+      propsData: {
+        model,
+        projectPath: 'project/path',
+        indexModelsPath: 'index/path',
+        mlflowTrackingUrl: 'path/to/tracking',
+        canWriteModelRegistry,
+      },
       stubs: { GlTab },
     });
 
@@ -70,6 +99,9 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+  const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
+  const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -84,6 +116,36 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     it('sets version metadata item to version count', () => {
       expect(findVersionCountMetadataItem().props('text')).toBe(`${MODEL.versionCount} versions`);
+    });
+
+    it('renders the extra actions button', () => {
+      expect(findActionsDropdown().exists()).toBe(true);
+    });
+  });
+
+  describe('Alert', () => {
+    it('is not rendered when errorMessage is empty', () => {
+      createWrapper();
+
+      expect(findAlert().exists()).toBe(false);
+    });
+  });
+
+  describe('Delete button', () => {
+    describe('when user has permission to write model registry', () => {
+      it('displays create button', () => {
+        createWrapper();
+
+        expect(findDeleteButton().props('actionPrimaryText')).toBe('Delete model');
+      });
+    });
+
+    describe('when user has no permission to write model registry', () => {
+      it('does not display delete button', () => {
+        createWrapper({ canWriteModelRegistry: false });
+
+        expect(findDeleteButton().exists()).toBe(false);
+      });
     });
   });
 
@@ -155,6 +217,58 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         await tab().vm.$emit('click');
 
         expect(findTabs().props('value')).toBe(navigatedTo);
+      });
+    });
+  });
+
+  describe('Model deletion', () => {
+    describe('When deletion is successful', () => {
+      it('navigates to index page', async () => {
+        const resolver = jest.fn().mockResolvedValue(destroyModelResponses.success);
+
+        createWrapper({ resolver });
+
+        findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenLastCalledWith({
+          id: 'gid://gitlab/Ml::Model/1234',
+          projectPath: 'project/path',
+        });
+
+        expect(visitUrlWithAlerts).toHaveBeenCalledWith('index/path', [
+          expect.objectContaining({ id: 'ml-model-deleted-successfully' }),
+        ]);
+      });
+    });
+
+    describe('When deletion call fails', () => {
+      it('shows error message', async () => {
+        const error = new Error('Failure!');
+
+        createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
+
+        findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
+
+        await waitForPromises();
+
+        expect(findAlert().text()).toContain('Failed to delete model with error: Failure!');
+      });
+    });
+
+    describe('When deletion results in error', () => {
+      it('shows error message', async () => {
+        const resolver = jest.fn().mockResolvedValue(destroyModelResponses.failure);
+
+        createWrapper({ resolver });
+
+        findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
+
+        await waitForPromises();
+
+        expect(visitUrlWithAlerts).not.toHaveBeenCalled();
+        expect(findAlert().text()).toContain('Model not found');
       });
     });
   });

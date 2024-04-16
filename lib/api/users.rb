@@ -238,7 +238,12 @@ module API
         user = find_user(params[:id])
         not_found!('User') unless user
 
-        if current_user.unfollow(user)
+        service_response = ::Users::UnfollowService.new(
+          follower: current_user,
+          followee: user
+        ).execute
+
+        if service_response.success?
           present user, with: Entities::UserBasic
         else
           not_modified!

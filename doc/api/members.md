@@ -114,6 +114,12 @@ Example response:
 
 ## List all members of a group or project including inherited and invited members
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
 Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group or project and also of one or more ancestor groups,
@@ -125,6 +131,12 @@ Members from an invited group are returned if either:
 
 - The invited group is public.
 - The requester is also a member of the invited group.
+- The requester is a member of the shared group or project.
+
+NOTE:
+The invited group members have shared membership in the shared group or project.
+This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -266,8 +278,18 @@ Example response:
 ## Get a member of a group or project, including inherited and invited members
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can [enable the feature flag](../administration/feature_flags.md) named `webui_members_inherited_users`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
+
+NOTE:
+The invited group members have shared membership in the shared group or project.
+This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
+then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
 
 ```plaintext
 GET /groups/:id/members/all/:user_id
@@ -455,6 +477,58 @@ Example response:
     "access_level": {
       "string_value": "Maintainer",
       "integer_value": 40
+    }
+  }
+]
+```
+
+## List indirect memberships for a billable member of a group
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+
+Gets a list of indirect memberships for a billable member of a group.
+
+Lists all projects and groups that a user is a member of, that have been invited to the requested root group.
+For instance, if the requested group is `Root Group`, and the requested user is a direct member of `Other Group / Sub Group Two`, which was invited to `Root Group`, then only `Other Group / Sub Group Two` is returned.
+
+The response lists only indirect memberships. Direct memberships are not included.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
+This API endpoint requires permission to administer memberships for the group.
+
+This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+
+```plaintext
+GET /groups/:id/billable_members/:user_id/indirect
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer        | yes | The user ID of the billable member |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/billable_members/:user_id/indirect"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 168,
+    "source_id": 132,
+    "source_full_name": "Invited Group / Sub Group One",
+    "source_members_url": "https://gitlab.example.com/groups/invited-group/sub-group-one/-/group_members",
+    "created_at": "2021-03-31T17:28:44.812Z",
+    "expires_at": "2022-03-21",
+    "access_level": {
+      "string_value": "Developer",
+      "integer_value": 30
     }
   }
 ]

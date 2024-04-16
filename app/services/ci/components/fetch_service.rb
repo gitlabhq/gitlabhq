@@ -29,7 +29,8 @@ module Ci
             content: result.content,
             path: result.path,
             project: component_path.project,
-            sha: component_path.sha
+            sha: component_path.sha,
+            name: component_path.component_name
           })
         else
           ServiceResponse.error(message: "#{error_prefix} content not found", reason: :content_not_found)

@@ -31,10 +31,11 @@ export const integrationFormSections = {
   CONNECTION: 'connection',
   JIRA_TRIGGER: 'jira_trigger',
   JIRA_ISSUES: 'jira_issues',
+  JIRA_ISSUE_CREATION: 'jira_issue_creation',
   TRIGGER: 'trigger',
   APPLE_APP_STORE: 'apple_app_store',
   GOOGLE_PLAY: 'google_play',
-  GOOGLE_CLOUD_ARTIFACT_REGISTRY: 'google_cloud_artifact_registry',
+  GOOGLE_ARTIFACT_MANAGEMENT: 'google_artifact_management',
   GOOGLE_CLOUD_IAM: 'google_cloud_iam',
 };
 
@@ -43,11 +44,12 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.CONNECTION]: 'IntegrationSectionConnection',
   [integrationFormSections.JIRA_TRIGGER]: 'IntegrationSectionJiraTrigger',
   [integrationFormSections.JIRA_ISSUES]: 'IntegrationSectionJiraIssues',
+  [integrationFormSections.JIRA_ISSUE_CREATION]: 'IntegrationSectionJiraIssueCreation',
   [integrationFormSections.TRIGGER]: 'IntegrationSectionTrigger',
   [integrationFormSections.APPLE_APP_STORE]: 'IntegrationSectionAppleAppStore',
   [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
-  [integrationFormSections.GOOGLE_CLOUD_ARTIFACT_REGISTRY]:
-    'IntegrationSectionGoogleCloudArtifactRegistry',
+  [integrationFormSections.GOOGLE_ARTIFACT_MANAGEMENT]:
+    'IntegrationSectionGoogleArtifactManagement',
   [integrationFormSections.GOOGLE_CLOUD_IAM]: 'IntegrationSectionGoogleCloudIAM',
 };
 

@@ -1,6 +1,7 @@
 import { __, n__, s__, sprintf } from '~/locale';
 
-const digitText = (bold = false) => (bold ? '%{strong_start}%d%{strong_end}' : '%d');
+const digitText = ({ digit, bold = false } = {}) =>
+  bold ? `%{strong_start}${digit}%{strong_end}` : digit;
 const noText = (bold = false) => (bold ? '%{strong_start}no%{strong_end}' : 'no');
 
 export const TESTS_FAILED_STATUS = 'failed';
@@ -16,7 +17,7 @@ export const i18n = {
   fixedHeader: s__('Reports|Fixed'),
   fullReport: s__('Reports|Full report'),
 
-  noChanges: (bold) => s__(`Reports|${noText(bold)} changed test results`),
+  noChanges: (bold) => sprintf(s__('Reports|%{no} changed test results'), { no: noText(bold) }),
   resultsString: (combinedString, resolvedString) =>
     sprintf(s__('Reports|%{combinedString} and %{resolvedString}'), {
       combinedString,
@@ -27,13 +28,21 @@ export const i18n = {
     sprintf(__('%{name}: %{resultsString}'), { name, resultsString }),
 
   failedClause: (failed, bold) =>
-    n__(`${digitText(bold)} failed`, `${digitText(bold)} failed`, failed),
+    sprintf(n__('%{digit} failed', '%{digit} failed', failed), {
+      digit: digitText({ digit: failed, bold }),
+    }),
   erroredClause: (errored, bold) =>
-    n__(`${digitText(bold)} error`, `${digitText(bold)} errors`, errored),
+    sprintf(n__('%{digit} error', '%{digit} errors', errored), {
+      digit: digitText({ digit: errored, bold }),
+    }),
   resolvedClause: (resolved, bold) =>
-    n__(`${digitText(bold)} fixed test result`, `${digitText(bold)} fixed test results`, resolved),
+    sprintf(n__('%{digit} fixed test result', '%{digit} fixed test results', resolved), {
+      digit: digitText({ digit: resolved, bold }),
+    }),
   totalClause: (total, bold) =>
-    n__(`${digitText(bold)} total test`, `${digitText(bold)} total tests`, total),
+    sprintf(n__('%{digit} total test', '%{digit} total tests', total), {
+      digit: digitText({ digit: total, bold }),
+    }),
 
   reportError: s__('Reports|An error occurred while loading report'),
   reportErrorWithName: (name) =>

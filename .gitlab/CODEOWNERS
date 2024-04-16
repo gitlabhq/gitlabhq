@@ -24,7 +24,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 ## Technical writing files that do not need `*` rule approval,
 ## but still require an approval from a TW team DRI for each file.
 /data/deprecations/templates/ @marcel.amirault @sarahgerman @gitlab-org/tw-leadership
-.markdownlint.yml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
+.markdownlint-cli2.yaml @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.markdownlint/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /doc/.vale/ @marcel.amirault @eread @aqualls @gitlab-org/tw-leadership
 /lib/tasks/gitlab/tw/codeowners.rake @aqualls @gitlab-org/tw-leadership
@@ -96,7 +96,8 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 [Tooling] @gl-quality/eng-prod
 Dangerfile
 /danger/
-/tooling/danger/
+/tooling/
+/spec/tooling/
 /scripts/
 /scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
 /scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/plan-stage/backend-engineers
@@ -460,6 +461,7 @@ lib/gitlab/checks/**
 ^[Documentation Pages]
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
+/doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_reports.md @eread
@@ -624,6 +626,7 @@ lib/gitlab/checks/**
 /doc/api/freeze_periods.md @phillipwells
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
+/doc/api/google_cloud_integration.md @jglassman1
 /doc/api/graphql/audit_report.md @eread
 /doc/api/graphql/branch_rules.md @msedlakjakubowski
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
@@ -745,6 +748,7 @@ lib/gitlab/checks/**
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
+/doc/architecture/blueprints/autoflow/ @phillipwells
 /doc/architecture/blueprints/cells/ @lciutacu
 /doc/architecture/blueprints/ci_builds_runner_fleet_metrics/ @fneill
 /doc/architecture/blueprints/google_artifact_registry_integration/ @marcel.amirault
@@ -758,6 +762,7 @@ lib/gitlab/checks/**
 /doc/ci/examples/authenticating-with-hashicorp-vault/ @marcel.amirault
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
+/doc/ci/gitlab_google_cloud_integration/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @fneill
 /doc/ci/jobs/ci_job_token.md @marcel.amirault
 /doc/ci/jobs/index.md @marcel.amirault @lyspin
@@ -825,7 +830,7 @@ lib/gitlab/checks/**
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
 /doc/integration/index.md @eread @ashrafkhamis
-/doc/integration/jenkins.md @eread @ashrafkhamis
+/doc/integration/jenkins.md @marcel.amirault @lyspin
 /doc/integration/jira/ @eread @ashrafkhamis
 /doc/integration/mattermost/ @axil
 /doc/integration/partner_marketplace.md @fneill
@@ -946,8 +951,12 @@ lib/gitlab/checks/**
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @eread @ashrafkhamis
+/doc/user/project/integrations/bamboo.md @marcel.amirault @lyspin
 /doc/user/project/integrations/beyond_identity.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @msedlakjakubowski
+/doc/user/project/integrations/github.md @marcel.amirault @lyspin
+/doc/user/project/integrations/google_artifact_management.md @marcel.amirault
+/doc/user/project/integrations/harbor.md @marcel.amirault
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
@@ -961,6 +970,7 @@ lib/gitlab/checks/**
 /doc/user/project/ml/experiment_tracking/ @sselhorn
 /doc/user/project/ml/model_registry/ @sselhorn
 /doc/user/project/organize_work_with_projects.md @lciutacu
+/doc/user/project/project_topics.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
@@ -970,9 +980,9 @@ lib/gitlab/checks/**
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @eread @ashrafkhamis
+/doc/user/project/settings/index.md @lciutacu
 /doc/user/project/settings/migrate_projects.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
-/doc/user/project/settings/project_features_permissions.md @lciutacu
 /doc/user/project/troubleshooting.md @lciutacu
 /doc/user/project/use_project_as_go_package.md @lciutacu
 /doc/user/project/web_ide/ @ashrafkhamis
@@ -1171,7 +1181,7 @@ lib/gitlab/checks/**
 /ee/app/controllers/groups/scim_oauth_controller.rb
 /ee/app/controllers/oauth/
 /ee/app/controllers/omniauth_kerberos_controller.rb
-/ee/app/controllers/users/identity_verification_controller.rb
+/ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/finders/auth/
 /ee/app/helpers/ee/access_tokens_helper.rb
 /ee/app/helpers/ee/auth_helper.rb
@@ -1346,6 +1356,25 @@ lib/gitlab/checks/**
 /**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
 /**/javascripts/editor/schema/ci.json @gitlab-org/ci-cd/verify/frontend
 
+# CI/CD templates require approval from specific owners.
+/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
+/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
+/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
+/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
+# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
+/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
+/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
+/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+
 ## Verify:Runner Fleet Backend
 ^[Runner Fleet Backend] @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 /app/controllers/admin/runner*.rb
@@ -1391,25 +1420,6 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/runner*.rb
 /lib/gitlab/seeders/ci/runner/
 /lib/tasks/gitlab/seed/runner_fleet.rake
-
-# CI/CD templates require approval from specific owners.
-/lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
-/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/DAST.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
-# Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 # Require approvals for Project API entities affecting availability
 [Data Stores::Tenant Scale] @gitlab-org/tenant-scale-group/backend-engineers
@@ -1489,7 +1499,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/frontend/**/remote_development/
 
 ^[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
-/ee/app/controllers/users/identity_verification_controller.rb
+/ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/config/routes/identity_verification.rb
 

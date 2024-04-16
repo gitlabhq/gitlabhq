@@ -10,7 +10,7 @@ import {
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { s__, __ } from '~/locale';
-import DeploymentStatusLink from '~/environments/environment_details/components/deployment_status_link.vue';
+import DeploymentStatusLink from '~/environments/components/deployment_status_link.vue';
 import DeploymentCommit from '~/environments/components/commit.vue';
 import { isFinished } from '../utils';
 

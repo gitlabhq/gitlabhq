@@ -98,6 +98,16 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     end
   end
 
+  describe 'invalid product_group' do
+    before do
+      attributes[:product_group] = 'a_product_group'
+    end
+
+    it 'has validation errors' do
+      expect_validation_errors
+    end
+  end
+
   describe '#with_instrumentation_class' do
     let(:all_definitions) do
       metrics_definitions = [

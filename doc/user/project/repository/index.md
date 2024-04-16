@@ -83,7 +83,7 @@ to a branch in the repository. When you use the command line, you can commit mul
 
 ## Clone a repository
 
-You can [clone a repository by using the command line](../../../gitlab-basics/start-using-git.md#clone-a-repository).
+You can [clone a repository by using the command line](../../../topics/git/get_started.md#cloning-git-repositories).
 
 Alternatively, you can clone directly into a code editor.
 
@@ -236,8 +236,7 @@ GitLab can render OpenAPI specification files. The filename must include `openap
 To render an OpenAPI file:
 
 1. Go to the OpenAPI file in your repository.
-1. Between the **Display source** and **Edit** buttons, select **Display OpenAPI**. When an OpenAPI file is found, it replaces the
-   **Display rendered file** button.
+1. Select **Display rendered file**.
 1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
 
 NOTE:

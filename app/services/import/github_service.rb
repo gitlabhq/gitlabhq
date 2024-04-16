@@ -4,9 +4,7 @@ module Import
   class GithubService < Import::BaseService
     include ActiveSupport::NumberHelper
     include Gitlab::Utils::StrongMemoize
-
-    MINIMUM_IMPORT_SCOPE = 'repo'
-    COLLAB_IMPORT_SCOPES = %w[admin:org read:org].freeze
+    include SafeFormatHelper
 
     attr_accessor :client
     attr_reader :params, :current_user
@@ -15,27 +13,17 @@ module Import
       context_error = validate_context
       return context_error if context_error
 
-      if provider == :github # we skip scope validation for Gitea importer calls
-        token = access_params[:github_access_token]
-
-        if Gitlab::GithubImport.fine_grained_personal_token?(token)
-          Gitlab::GithubImport::Logger.info(
-            message: 'Fine grained GitHub personal access token used.'
-          )
-          warning = s_('GithubImport|Fine-grained personal access tokens are not officially supported. ' \
-                       'It is recommended to use a classic token instead.')
-        elsif Gitlab::GithubImport.classic_personal_token?(token)
-          scope_error = validate_scopes
-          return scope_error if scope_error
-        end
+      if provider == :github # we skip access token validation for Gitea importer calls
+        access_token_error = validate_access_token
+        return access_token_error if access_token_error
       end
 
       project = create_project(access_params, provider)
-      track_access_level('github')
+      track_access_level(provider.to_s) # provider may be :gitea
 
       if project.persisted?
         store_import_settings(project)
-        success(project, warning: warning)
+        success(project)
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
       else
@@ -117,18 +105,31 @@ module Import
 
     private
 
-    def validate_scopes
-      scopes = client.octokit.scopes
-
-      unless scopes.include?(MINIMUM_IMPORT_SCOPE)
-        return log_and_return_error('Invalid Scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{scope}' scope."), scope: 'repo'), :unprocessable_entity)
+    def validate_access_token
+      begin
+        client.octokit.repository(params[:repo_id].to_i)
+      rescue Octokit::Forbidden, Octokit::Unauthorized
+        return error(repository_access_error_message, :unprocessable_entity)
       end
 
-      collaborators_import = params.dig(:optional_stages, :collaborators_import) || false # if not set, default to false to skip collaborator import validation
+      return unless Gitlab::Utils.to_boolean(params.dig(:optional_stages, :collaborators_import))
 
-      return if collaborators_import == false || scopes.intersection(COLLAB_IMPORT_SCOPES).any?
+      begin
+        client.octokit.collaborators(params[:repo_id].to_i)
+      rescue Octokit::Forbidden, Octokit::Unauthorized
+        return error(collaborators_access_error_message, :unprocessable_entity)
+      end
+      nil # we intentionally return nil if we don't raise an error
+    end
 
-      log_and_return_error('Invalid scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."), scope: 'read:org'), :unprocessable_entity)
+    def repository_access_error_message
+      s_("GithubImport|Your GitHub personal access token does not have read access to the repository. " \
+         "Please use a classic GitHub personal access token with the `repo` scope. Fine-grained tokens are not supported.")
+    end
+
+    def collaborators_access_error_message
+      s_("GithubImport|Your GitHub personal access token does not have read access to collaborators. " \
+         "Please use a classic GitHub personal access token with the `read:org` scope. Fine-grained tokens are not supported.")
     end
 
     def validate_context
@@ -151,12 +152,12 @@ module Import
 
     def log_error(exception)
       Gitlab::GithubImport::Logger.error(
-        message: 'Import failed due to a GitHub error',
+        message: 'Import failed because of a GitHub error',
         status: exception.response_status,
         error: exception.response_body
       )
 
-      error(s_('GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
+      error(s_('GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
     end
 
     def log_and_return_error(message, translated_message, http_status)
@@ -173,8 +174,7 @@ module Import
         .new(project)
         .write(
           timeout_strategy: params[:timeout_strategy] || ProjectImportData::PESSIMISTIC_TIMEOUT,
-          optional_stages: params[:optional_stages],
-          extended_events: Feature.enabled?(:github_import_extended_events, current_user)
+          optional_stages: params[:optional_stages]
         )
     end
   end

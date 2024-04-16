@@ -54,6 +54,10 @@ export default {
     DeleteModal,
     ListActions,
     ProjectListItemInactiveBadge,
+    ProjectListItemDelayedDeletionModalFooter: () =>
+      import(
+        'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
+      ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -402,6 +406,10 @@ export default {
       :forks-count="forksCount"
       :stars-count="starCount"
       @primary="$emit('delete', project)"
-    />
+    >
+      <template #modal-footer
+        ><project-list-item-delayed-deletion-modal-footer :project="project"
+      /></template>
+    </delete-modal>
   </li>
 </template>

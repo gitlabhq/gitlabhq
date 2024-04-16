@@ -300,6 +300,19 @@ Each group in the Sec Section is responsible for:
 1. Configuring builds to push release artifacts to the new location.
 1. Removing or keeping images in old locations according to their own support agreements.
 
+### Daily rebuild of Container Images
+
+The analyzer images are rebuilt on a daily basis to ensure that we frequently and automatically pull patches provided by vendors of the base images we rely on.
+
+This process only applies to the images used in versions of GitLab matching the current MAJOR release. The intent is not to release a newer version each day but rather rebuild each active variant of an image and overwrite the corresponding tags:
+
+- the `MAJOR.MINOR.PATCH` image tag (e.g.: `4.1.7`)
+- the `MAJOR.MINOR` image tag(e.g.: `4.1`)
+- the `MAJOR`  image tag (e.g.: `4`)
+- the `latest` image tag
+
+The implementation of the rebuild process may vary [depending on the project](../../user/application_security/index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
+
 ## Security and Build fixes of Go
 
 The `Dockerfile` of the Secure analyzers implemented in Go must reference a `MAJOR` release of Go, and not a `MINOR` revision.

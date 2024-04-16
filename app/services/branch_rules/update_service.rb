@@ -2,8 +2,6 @@
 
 module BranchRules
   class UpdateService < BaseService
-    PERMITTED_PARAMS = %i[name].freeze
-
     private
 
     def authorized?
@@ -18,6 +16,10 @@ module BranchRules
       return ServiceResponse.success unless protected_branch.errors.any?
 
       ServiceResponse.error(message: protected_branch.errors.full_messages)
+    end
+
+    def permitted_params
+      [:name]
     end
   end
 end

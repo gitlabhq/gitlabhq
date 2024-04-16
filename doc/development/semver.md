@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Setup Instructions
 
-In order to use SemanticVersionable you must first create a database migration to add the required columns to your table. The required columns are `semver_major`, `semver_minor`, `semver_patch`, and `semver_prerelease`. An example migration would look like this:
+In order to use SemanticVersionable you must first create a database migration to add the required columns to your table. The required columns are `semver_major`, `semver_minor`, `semver_patch`, and `semver_prerelease`. A `v` prefix can be added to the version by including a column `semver_prefixed`. An example migration would look like this:
 
 ```ruby
 class AddVersionPartsToModelVersions < Gitlab::Database::Migration[2.2]
@@ -23,6 +23,7 @@ class AddVersionPartsToModelVersions < Gitlab::Database::Migration[2.2]
     add_column :ml_model_versions, :semver_minor, :integer
     add_column :ml_model_versions, :semver_patch, :integer
     add_column :ml_model_versions, :semver_prerelease, :text
+    add_column :ml_model_versions, :semver_prefixed, :boolean, default: false
   end
 
   def down
@@ -30,32 +31,23 @@ class AddVersionPartsToModelVersions < Gitlab::Database::Migration[2.2]
     remove_column :ml_model_versions, :semver_minor, :integer
     remove_column :ml_model_versions, :semver_patch, :integer
     remove_column :ml_model_versions, :semver_prerelease, :text
+    remove_column :ml_model_versions, :semver_prefixed, :boolean
   end
 end
 ```
 
-Once the columns are in the database, you can enable the module by including it in your model and configuring it by setting the name of the semver accessor method. For example:
+Once the columns are in the database, you can enable the module by including it in your model. For example:
 
 ```ruby
 module Ml
   class ModelVersion < ApplicationRecord
     include SemanticVersionable
-
-    semver_method :semver
-
   ...
   end
 end
 ```
 
-The module has two configuation options:
-
-- `semver_method` specifies the name of accessor method that will be added to the objecct
-- `validate_semver` is `true` or `false` (defaults to `false`). If true it will throw a validation error if the provided semver string is not in a valid semver format.
-
-Depending on the use case, you may want to disable the validation during the rollout or backfill process.
-
-Please refer to [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142228) as a reference.
+The module is configured to validate a semantic version by default.
 
 ## Sorting
 

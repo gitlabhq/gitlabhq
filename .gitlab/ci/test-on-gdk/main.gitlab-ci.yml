@@ -26,6 +26,7 @@ include:
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
+        KNAPSACK_TEST_FILE_PATTERN: ""
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]
@@ -35,6 +36,7 @@ include:
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""
+        KNAPSACK_TEST_FILE_PATTERN: ""
     - <<: *qa-run-all-tests
       variables:
         QA_TESTS: ""
@@ -76,8 +78,8 @@ include:
     QA_INTERCEPT_REQUESTS: "false"
     QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
     QA_DOCKER_NETWORK: host
+    QA_DISABLE_RSPEC_RETRY: "true"
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    RSPEC_REPORT_OPTS: "--order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}.json  --format html --out tmp/rspec-${CI_JOB_ID}.htm"
     GDK_URL: http://gdk.test:3000
     FF_NETWORK_PER_BUILD: "true"
   before_script:
@@ -87,9 +89,17 @@ include:
     - cd qa && bundle config set --local without 'development' && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS --order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.json"
     - echo "Running - '$QA_COMMAND'"
-    - eval "$QA_COMMAND"
+    - |
+      if eval "$QA_COMMAND"; then
+        echo "Test run finished successfully"
+      else
+        export QA_RSPEC_RETRIED=true
+        export NO_KNAPSACK=true
+        echo "Initial test run failed, triggering retry of failed rspec tests"
+        eval "$QA_COMMAND --only-failures"
+      fi
   after_script:
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]
@@ -149,6 +159,14 @@ gdk-qa-blocking:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+  parallel: 10
+
+gdk-qa-blocking-ff-inverse:
+  extends: gdk-qa-blocking
+  variables:
+    QA_FEATURE_FLAGS: $FEATURE_FLAGS
+  rules:
+    - !reference [.rules:test:feature-flags-set, rules]
   parallel: 10
 
 gdk-qa-blocking-selective:

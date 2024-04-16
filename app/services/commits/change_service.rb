@@ -9,25 +9,18 @@ module Commits
       @message = params[:message]
     end
 
+    def commit_message
+      raise NotImplementedError
+    end
+
     private
 
+    attr_reader :commit
+
     def commit_change(action)
-      raise NotImplementedError unless repository.respond_to?(action)
+      message = @message || commit_message
 
-      # rubocop:disable GitlabSecurity/PublicSend
-      message =
-        @message || @commit.public_send(:"#{action}_message", current_user)
-
-      repository.public_send(
-        action,
-        current_user,
-        @commit,
-        @branch_name,
-        message,
-        start_project: @start_project,
-        start_branch_name: @start_branch,
-        dry_run: @dry_run
-      )
+      yield message
     rescue Gitlab::Git::Repository::CreateTreeError => ex
       type = @commit.change_type_title(current_user)
 

@@ -203,7 +203,7 @@ function install_gitlab_gem() {
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.2.1"
+  run_timed_command "gem install test_file_finder --no-document --version 0.3.1"
 }
 
 function install_activesupport_gem() {

@@ -234,6 +234,7 @@ class Project < ApplicationRecord
   has_one :mock_ci_integration, class_name: 'Integrations::MockCi'
   has_one :mock_monitoring_integration, class_name: 'Integrations::MockMonitoring'
   has_one :packagist_integration, class_name: 'Integrations::Packagist'
+  has_one :phorge_integration, class_name: 'Integrations::Phorge'
   has_one :pipelines_email_integration, class_name: 'Integrations::PipelinesEmail'
   has_one :pivotaltracker_integration, class_name: 'Integrations::Pivotaltracker'
   has_one :prometheus_integration, class_name: 'Integrations::Prometheus', inverse_of: :project
@@ -291,6 +292,7 @@ class Project < ApplicationRecord
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :relation_import_trackers, class_name: 'Projects::ImportExport::RelationImportTracker', inverse_of: :project
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
   has_one :project_repository, inverse_of: :project
@@ -707,6 +709,7 @@ class Project < ApplicationRecord
   scope :inc_routes, -> { includes(:route, namespace: :route) }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_namespace, -> { includes(:namespace) }
+  scope :joins_namespace, -> { joins(:namespace) }
   scope :with_group, -> { includes(:group) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
@@ -813,6 +816,11 @@ class Project < ApplicationRecord
   end
 
   scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :by_project_namespace, -> (project_namespace) { where(project_namespace_id: project_namespace) }
+
+  scope :not_a_fork, -> {
+    left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
+  }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -1534,6 +1542,16 @@ class Project < ApplicationRecord
       URI.parse(import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
   end
 
+  # Determine whether any kind of import is in progress.
+  # - Full file import
+  # - Relation import
+  # - Direct Transfer
+  def any_import_in_progress?
+    relation_import_trackers.last&.started? ||
+      import_started? ||
+      BulkImports::Entity.with_status(:started).where(project_id: id).any?
+  end
+
   def has_remote_mirror?
     remote_mirror_available? && remote_mirrors.enabled.exists?
   end
@@ -2244,6 +2262,8 @@ class Project < ApplicationRecord
   end
 
   def runners_token
+    return unless namespace.allow_runner_registration_token?
+
     ensure_runners_token!
   end
 
@@ -2274,16 +2294,6 @@ class Project < ApplicationRecord
     ensure_pages_metadatum.update!(onboarding_complete: true)
   end
 
-  def set_full_path(gl_full_path: full_path)
-    # We'd need to keep track of project full path otherwise directory tree
-    # created with hashed storage enabled cannot be usefully imported using
-    # the import rake task.
-    repository.raw_repository.set_full_path(full_path: gl_full_path)
-  rescue Gitlab::Git::Repository::NoRepository => e
-    Gitlab::AppLogger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
-    nil
-  end
-
   def after_import
     repository.expire_content_cache
     repository.remove_prohibited_branches
@@ -2306,7 +2316,6 @@ class Project < ApplicationRecord
     after_create_default_branch
     join_pool_repository
     refresh_markdown_cache!
-    set_full_path
   end
 
   def update_project_counter_caches
@@ -2460,8 +2469,7 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
-      .append(key: 'CI_COMPONENT_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn)
-      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.component_fqdn)
+      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn)
       .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)
@@ -3285,6 +3293,11 @@ class Project < ApplicationRecord
 
   # Overridden in EE
   def on_demand_dast_available?
+    false
+  end
+
+  # Overridden in EE
+  def supports_saved_replies?
     false
   end
 

@@ -21,12 +21,12 @@ Some features are still in development. View details about [support for each sta
 | Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
 | Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** Premium, Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta (Subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)) |
 | Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page. | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.  <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc) | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Automates repetitive tasks and helps catch bugs early. | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta |
 | Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw) | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | **Tier:** Ultimate <br>**Offering:** GitLab.com<br>**Status:** Generally Available  |
-| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
+| Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
 | Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability explanation](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
 | Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
@@ -34,37 +34,53 @@ Some features are still in development. View details about [support for each sta
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
 
-## Enable AI/ML features
+## Controlling GitLab Duo features
 
-For features listed as Experiment and Beta:
+There are two different levels at which GitLab Duo features can be controlled. The user level and the content level.
 
-- These features are disabled by default.
-- To enable, a user with the Owner role for the group must [turn on this setting](group/manage.md#enable-experiment-and-beta-features).
-  On GitLab.com, this setting is available for Ultimate subscriptions only.
-- These features are subject to the
-  [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+GitLab Duo features that are generally available are always enabled for all users that have access to these features. Whether they have access depends on the tier or the add-on as stated in the previous table. [Experimental](../policy/experiment-beta-support.md#experiment) and [Beta](../policy/experiment-beta-support.md#beta) GitLab Duo features need to be enabled as follows.
 
-For all self-managed features:
+Owners of projects and groups as well as administrators of self-managed instances can control if GitLab Duo features can be used with their content such as code files.
 
-- Your firewalls and HTTP proxy servers must allow outbound connections
-  to `https://cloud.gitlab.com:443`. To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
+### Giving access to users
+
+If a feature is dependent on an add-on seat such as [Code Suggestions](project/repository/code_suggestions/index.md), access to the feature can be controlled through [GitLab Duo seat assignment](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+
+### Enabling Beta and Experimental AI-powered features
+
+Features listed as Experiment and Beta are disabled by default. These features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+#### GitLab.com
+
+Prerequisites
+
+- You must have the Owner role in the top-level group.
+
+To enable Beta and Experimental AI-powered features, use the [Experiment and Beta features checkbox](group/manage.md#enable-experiment-and-beta-features).
+
+#### GitLab self-managed
+
+To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed-and-gitlab-dedicated).
+
+### Enable outbound connections to enable GitLab Duo features on Self-managed instances
+
+- Your firewalls and HTTP/S proxy servers must allow outbound connections
+  to `gitlab.com` and `cloud.gitlab.com` on port `443`.
+- Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
+  uses both REST and WebSockets.
+- To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+- Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.com/-/cable` and other `.com` domains.
+  Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
+  services. Consider policy updates to allow these services.
 
-For other features:
-
-- [Code Suggestions](project/repository/code_suggestions/index.md) is enabled when you purchase the
-  GitLab Duo Pro add-on and assign seats to users.
-- [Chat](gitlab_duo_chat.md)
-  - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-users).
-  - View [how to enable for GitLab.com](gitlab_duo_chat.md#for-saas-users).
-
-### Disable GitLab Duo features
-
-> - [Settings to disable AI features were introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
+### Disable GitLab Duo features for specific groups or projects or an entire instance
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Settings to disable AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 
 You can disable GitLab Duo AI features for a group, project, or instance.
 When it's disabled, any attempt to use GitLab Duo features on the group, project, or instance is blocked and an error is displayed.
@@ -128,7 +144,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the repository.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the project.
 
 GitLab can help you get up to speed faster if you:
 
@@ -178,7 +196,9 @@ To use this feature:
 
 - The parent group of the issue must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the issue.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the issue.
 
 You can generate a summary of discussions on an issue:
 
@@ -206,7 +226,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the CI/CD analytics.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the CI/CD analytics.
 
 In CI/CD Analytics, you can view a forecast of deployment frequency:
 
@@ -236,7 +258,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the CI/CD job.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the CI/CD job.
 
 When the feature is available, the "Root cause analysis" button will appears on
 a failed CI/CD job. Selecting this button generates an analysis regarding the
@@ -255,7 +279,9 @@ To use this feature:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features).
-- You must be a member of the project with sufficient permissions to view the issue.
+- You must:
+  - Belong to at least one group with the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
+  - Have sufficient permissions to view the issue.
 
 You can generate the description for an issue from a short summary.
 

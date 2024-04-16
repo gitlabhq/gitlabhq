@@ -59,13 +59,23 @@ In addition:
 - Do not link to the pricing page. Do not include the subscription tier.
 - Even if you have only one item, ensure it begins with `> -`.
 
-#### Introducing a new feature
+#### Documenting updates to a feature
 
-If you use `introduced`, start the sentence with the feature name or a gerund:
+When a feature is changed or updated, add a new list item.
+Start the sentence with the feature name or a gerund.
+
+For example, on the issue boards page:
 
 ```markdown
-> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 11.3.
-> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 13.1.
+> - [Introduced](<link-to-issue>) in GitLab 13.1.
+> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 14.1.
+```
+
+Or on email notifications page:
+
+```markdown
+> - [Introduced](<link-to-issue>) in GitLab 13.1.
+> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
 #### Moving subscription tiers

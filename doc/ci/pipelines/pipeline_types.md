@@ -36,8 +36,6 @@ Branch pipelines:
 
 ## Merge request pipeline
 
-> - The `detached` label was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352939) to `merge request` in GitLab 14.9.
-
 Instead of a branch pipeline, you can configure your pipeline to run every time you make changes to the
 source branch in a merge request.
 

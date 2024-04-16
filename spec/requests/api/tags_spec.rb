@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Tags, feature_category: :source_code_management do
   let(:user) { create(:user) }
-  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  let(:guest) { create(:user, guest_of: project) }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
   let(:tag_name) { project.repository.find_tag('v1.1.0').name }
   let(:tag_message) { project.repository.find_tag('v1.1.0').message }
@@ -171,6 +171,16 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
         expected_tag = json_response.find { |r| r['name'] == tag_name }
         expect(expected_tag['message']).to eq(tag_message)
         expect(expected_tag['release']['description']).to eq(description)
+      end
+    end
+
+    context 'with releases preload' do
+      it 'does not cause N+1 problem' do
+        control = ActiveRecord::QueryRecorder.new do
+          get api(route, user)
+        end
+
+        expect(control.log).to include(/SELECT "releases"/).once
       end
     end
 

@@ -7,7 +7,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:developer) { create(:user).tap { |user| group.add_developer(user) } }
+  let_it_be(:developer) { create(:user, developer_of: group) }
 
   let(:input) do
     {

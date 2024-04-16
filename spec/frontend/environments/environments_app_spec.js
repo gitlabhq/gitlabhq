@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlPagination } from '@gitlab/ui';
+import { GlPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -109,6 +109,20 @@ describe('~/environments/components/environments_app.vue', () => {
       expect.anything(),
       expect.anything(),
     );
+  });
+
+  it('should show loading state while loading data', () => {
+    createWrapperWithMocked({});
+
+    const loader = wrapper.findComponent(GlSkeletonLoader);
+    expect(loader.exists()).toBe(true);
+  });
+
+  it('should hide loading state once received data', async () => {
+    await createWrapperWithMocked({ environmentsApp: resolvedEnvironmentsApp });
+
+    const loader = wrapper.findComponent(GlSkeletonLoader);
+    expect(loader.exists()).toBe(false);
   });
 
   it('should show all the folders that are fetched', async () => {

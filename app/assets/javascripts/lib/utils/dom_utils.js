@@ -1,4 +1,5 @@
 import { has } from 'lodash';
+import { __ } from '~/locale';
 import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
 /**
@@ -139,3 +140,39 @@ export const replaceCommentsWith = (el, tagName) => {
     commentNode = iterator.nextNode();
   }
 };
+
+/**
+ * Wait for an element to become available in the DOM
+ * @param {String} selector - the query selector for the target element
+ * @param {Number} timeoutDelay - how long to wait before timing out
+ * @returns {Promise} A promise that resolves when the element becomes available
+ */
+export const waitForElement = (selector, timeoutDelay = 5000) =>
+  new Promise((resolve, reject) => {
+    let element;
+
+    const findElement = () => {
+      // Set `element` here to prevent unnecessary DOM lookups
+      if (!element) element = document.querySelector(selector);
+      return element;
+    };
+
+    if (findElement()) {
+      resolve(findElement());
+    } else {
+      let timeout;
+      const observer = new MutationObserver(() => {
+        if (findElement()) {
+          observer.disconnect();
+          clearTimeout(timeout);
+          resolve(findElement());
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      timeout = setTimeout(() => {
+        observer.disconnect();
+        reject(__('Timeout: Element not found'));
+      }, timeoutDelay); // disconnect if no element was found
+    }
+  });

@@ -1,7 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __ } from '~/locale';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
@@ -16,6 +16,7 @@ import {
   SCOPE_MILESTONES,
   SCOPE_WIKI_BLOBS,
   SEARCH_TYPE_ADVANCED,
+  SEARCH_TYPE_ZOEKT,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
@@ -28,6 +29,9 @@ import WikiBlobsFilters from './wiki_blobs_filters.vue';
 import AllScopesStartFilters from './all_scopes_start_filters.vue';
 
 export default {
+  i18n: {
+    headerText: __('Search results'),
+  },
   name: 'GlobalSearchSidebar',
   components: {
     IssuesFilters,
@@ -43,17 +47,18 @@ export default {
     MilestonesFilters,
     AllScopesStartFilters,
   },
-  mixins: [glFeatureFlagsMixin()],
-  props: {
-    headerText: {
-      required: false,
-      type: String,
-      default: '',
-    },
-  },
   computed: {
     ...mapState(['searchType']),
     ...mapGetters(['currentScope']),
+    isBlobScope() {
+      return this.currentScope === SCOPE_BLOB;
+    },
+    isAdvancedSearch() {
+      return this.searchType === SEARCH_TYPE_ADVANCED;
+    },
+    isZoektSearch() {
+      return this.searchType === SEARCH_TYPE_ZOEKT;
+    },
     showIssuesFilters() {
       return this.currentScope === SCOPE_ISSUES;
     },
@@ -61,7 +66,7 @@ export default {
       return this.currentScope === SCOPE_MERGE_REQUESTS;
     },
     showBlobFilters() {
-      return this.currentScope === SCOPE_BLOB && this.searchType === SEARCH_TYPE_ADVANCED;
+      return this.isBlobScope && (this.isAdvancedSearch || this.isZoektSearch);
     },
     showProjectsFilters() {
       return this.currentScope === SCOPE_PROJECTS;
@@ -93,10 +98,9 @@ export default {
     <sidebar-portal>
       <all-scopes-start-filters />
       <div
-        v-if="headerText"
         class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
       >
-        {{ headerText }}
+        {{ $options.i18n.headerText }}
       </div>
       <scope-sidebar-navigation />
       <issues-filters v-if="showIssuesFilters" />

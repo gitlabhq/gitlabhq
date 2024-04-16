@@ -18,14 +18,45 @@ const GITLAB_WEB_IDE_PUBLIC_PATH = path.join(WEBPACK_PUBLIC_PATH, GITLAB_WEB_IDE
 const IS_EE = require('./helpers/is_ee_env');
 const IS_JH = require('./helpers/is_jh_env');
 
+const SOURCEGRAPH_PACKAGE = '@sourcegraph/code-host-integration';
+const GITLAB_WEB_IDE_PACKAGE = '@gitlab/web-ide';
+
+const copyFilesPatterns = [
+  {
+    from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
+    to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/cmaps/'),
+  },
+  {
+    from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js'),
+    to: path.join(WEBPACK_OUTPUT_PATH, 'pdfjs/'),
+  },
+  {
+    from: path.join(ROOT_PATH, 'node_modules', SOURCEGRAPH_PACKAGE, '/'),
+    to: SOURCEGRAPH_OUTPUT_PATH,
+    globOptions: {
+      ignore: ['package.json'],
+    },
+  },
+  {
+    from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
+    to: GITLAB_WEB_IDE_OUTPUT_PATH,
+  },
+  {
+    from: path.join(
+      ROOT_PATH,
+      'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
+    ),
+    to: WEBPACK_OUTPUT_PATH,
+  },
+];
+
 module.exports = {
   IS_EE,
   IS_JH,
   ROOT_PATH,
   WEBPACK_OUTPUT_PATH,
   WEBPACK_PUBLIC_PATH,
-  SOURCEGRAPH_OUTPUT_PATH,
   SOURCEGRAPH_PUBLIC_PATH,
-  GITLAB_WEB_IDE_OUTPUT_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
+  copyFilesPatterns,
 };

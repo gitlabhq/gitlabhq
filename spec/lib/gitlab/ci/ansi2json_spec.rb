@@ -194,11 +194,15 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
       end
 
       it 'ignores section_end marker if no section_start exists' do
-        expect(convert_json("Hello #{section_end}world")).to eq(
+        expect(convert_json("Hello #{section_end}world\nNext line")).to eq(
           [
             {
               offset: 0,
               content: [{ text: 'Hello world' }]
+            },
+            {
+              offset: 54,
+              content: [{ text: 'Next line' }]
             }
           ])
       end
@@ -577,7 +581,7 @@ RSpec.describe Gitlab::Ci::Ansi2json, feature_category: :continuous_integration 
       end
     end
 
-    describe 'trucates' do
+    describe 'truncates' do
       let(:text) { 'Hello World' }
       let(:stream) { StringIO.new(text) }
       let(:subject) { described_class.convert(stream) }

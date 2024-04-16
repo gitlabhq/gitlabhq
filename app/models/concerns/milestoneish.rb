@@ -88,6 +88,10 @@ module Milestoneish
     start_date && start_date.future?
   end
 
+  def upcoming
+    upcoming? || false
+  end
+
   def expires_at
     if due_date
       if due_date.past?

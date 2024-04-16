@@ -12,7 +12,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       stub_ci_pipeline_to_return_yaml_file
     end
 
-    let(:creator) { create(:user, developer_projects: [project]) }
+    let(:creator) { create(:user, developer_of: project) }
     let!(:pipeline) do
       create(
         :ci_pipeline,
@@ -41,7 +41,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
 
         it 'contains commit short id' do
-          within_testid('pipeline-details-header') do
+          within_testid('pipeline-header') do
             expect(page).to have_content pipeline.sha[0..7]
           end
         end

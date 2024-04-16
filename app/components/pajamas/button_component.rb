@@ -2,6 +2,10 @@
 
 module Pajamas
   class ButtonComponent < Pajamas::Component
+    # Below slot must be used as an exception to render custom icon image that is available from assets,
+    # configs, attachments, etc. For all other regular cases please use :icon param to add an icon.
+    renders_one :icon_content
+
     # @param [Symbol] category
     # @param [Symbol] variant
     # @param [Symbol] size

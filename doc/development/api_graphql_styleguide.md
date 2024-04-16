@@ -1461,9 +1461,19 @@ issues(labelName: "bug", not: {labelName: "bug2"}) {
 }
 ```
 
-To avoid duplicated argument definitions, you can place these arguments in a reusable module (or
-class, if the arguments are nested). Alternatively, you can consider to add a
-[helper resolver method](https://gitlab.com/gitlab-org/gitlab/-/issues/258969).
+You can use the `negated` helper from `Gitlab::Graphql::NegatableArguments` in your type or resolver.
+For example:
+
+```ruby
+extend ::Gitlab::Graphql::NegatableArguments
+
+negated do
+  argument :labels, [GraphQL::STRING_TYPE],
+            required: false,
+            as: :label_name,
+            description: 'Array of label names. All resolved merge requests will not have these labels.'
+end
+```
 
 ### Metadata
 

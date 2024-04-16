@@ -66,9 +66,15 @@ export default {
       type: String,
       required: true,
     },
+    allowRegistrationToken: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     registrationToken: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -212,6 +218,7 @@ export default {
           {{ s__('Runners|New instance runner') }}
         </gl-button>
         <registration-dropdown
+          :allow-registration-token="allowRegistrationToken"
           :registration-token="registrationToken"
           :type="$options.INSTANCE_TYPE"
           placement="right"

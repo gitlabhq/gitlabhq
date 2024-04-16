@@ -5,14 +5,30 @@ require 'spec_helper'
 RSpec.describe Integration, feature_category: :integrations do
   using RSpec::Parameterized::TableSyntax
 
+  subject(:integration) { build(:integration) }
+
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
 
-  describe "Associations" do
+  describe "associations" do
     it { is_expected.to belong_to(:project).inverse_of(:integrations) }
     it { is_expected.to belong_to(:group).inverse_of(:integrations) }
-    it { is_expected.to have_one(:issue_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:integration_id).class_name('Integrations::IssueTrackerData') }
-    it { is_expected.to have_one(:jira_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:integration_id).class_name('Integrations::JiraTrackerData') }
+
+    it do
+      is_expected.to have_one(:issue_tracker_data)
+        .autosave(true)
+        .inverse_of(:integration)
+        .with_foreign_key(:integration_id)
+        .class_name('Integrations::IssueTrackerData')
+    end
+
+    it do
+      is_expected.to have_one(:jira_tracker_data)
+        .autosave(true)
+        .inverse_of(:integration)
+        .with_foreign_key(:integration_id)
+        .class_name('Integrations::JiraTrackerData')
+    end
   end
 
   describe 'default values' do
@@ -30,7 +46,7 @@ RSpec.describe Integration, feature_category: :integrations do
     it { is_expected.to be_wiki_page_events }
     it { is_expected.not_to be_active }
     it { is_expected.not_to be_incident_events }
-    it { expect(subject.category).to eq(:common) }
+    it { expect(integration.category).to eq(:common) }
   end
 
   describe 'validations' do
@@ -63,27 +79,30 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       it 'allows only one instance integration per type' do
-        expect(build(:integration, :instance)).to be_invalid
+        expect(build(:integration, :instance)).not_to be_valid
       end
 
       it 'allows only one project integration per type' do
-        expect(build(:integration, project: project)).to be_invalid
+        expect(build(:integration, project: project)).not_to be_valid
       end
 
       it 'allows only one group integration per type' do
-        expect(build(:integration, group: group, project: nil)).to be_invalid
+        expect(build(:integration, group: group, project: nil)).not_to be_valid
       end
     end
   end
 
-  describe 'Scopes' do
+  describe 'scopes' do
     describe '.third_party_wikis' do
-      let!(:integration1) { create(:jira_integration, project: project) }
-      let!(:integration2) { create(:redmine_integration, project: project) }
-      let!(:integration3) { create(:confluence_integration, project: project) }
+      before do
+        create(:jira_integration, project: project)
+        create(:redmine_integration, project: project)
+      end
+
+      let_it_be(:confluence) { create(:confluence_integration, project: project) }
 
       it 'returns the right group integration' do
-        expect(described_class.third_party_wikis).to contain_exactly(integration3)
+        expect(described_class.third_party_wikis).to contain_exactly(confluence)
       end
     end
 
@@ -92,7 +111,7 @@ RSpec.describe Integration, feature_category: :integrations do
         instance_integration = create(:integration, :instance)
         inheriting_integration = create(:integration, inherit_from_id: instance_integration.id)
 
-        expect(described_class.with_default_settings).to match_array([inheriting_integration])
+        expect(described_class.with_default_settings).to contain_exactly(inheriting_integration)
       end
     end
 
@@ -101,36 +120,36 @@ RSpec.describe Integration, feature_category: :integrations do
         instance_integration = create(:integration, :instance)
         create(:integration, inherit_from_id: instance_integration.id)
 
-        expect(described_class.with_custom_settings).to match_array([instance_integration])
+        expect(described_class.with_custom_settings).to contain_exactly(instance_integration)
       end
     end
 
     describe '.by_type' do
-      let!(:integration1) { create(:jira_integration, project: project) }
-      let!(:integration2) { create(:jira_integration) }
-      let!(:integration3) { create(:redmine_integration) }
+      let_it_be(:jira_project_integration) { create(:jira_integration, project: project) }
+      let_it_be(:jira_integration) { create(:jira_integration) }
+      let_it_be(:redmine_integration) { create(:redmine_integration) }
 
       subject { described_class.by_type(type) }
 
       context 'when type is "Integrations::JiraService"' do
         let(:type) { 'Integrations::Jira' }
 
-        it { is_expected.to match_array([integration1, integration2]) }
+        it { is_expected.to contain_exactly(jira_project_integration, jira_integration) }
       end
 
       context 'when type is "Integrations::Redmine"' do
         let(:type) { 'Integrations::Redmine' }
 
-        it { is_expected.to match_array([integration3]) }
+        it { is_expected.to contain_exactly(redmine_integration) }
       end
     end
 
     describe '.for_group' do
-      let!(:integration1) { create(:jira_integration, project_id: nil, group_id: group.id) }
-      let!(:integration2) { create(:jira_integration, project: project) }
+      let!(:jira_group_integration) { create(:jira_integration, project_id: nil, group_id: group.id) }
+      let!(:jira_project_integration) { create(:jira_integration, project: project) }
 
       it 'returns the right group integration' do
-        expect(described_class.for_group(group)).to contain_exactly(integration1)
+        expect(described_class.for_group(group)).to contain_exactly(jira_group_integration)
       end
     end
 
@@ -174,15 +193,15 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '#operating?' do
     it 'is false when the integration is not active' do
-      expect(build(:integration).operating?).to eq(false)
+      expect(build(:integration).operating?).to be(false)
     end
 
     it 'is false when the integration is not persisted' do
-      expect(build(:integration, active: true).operating?).to eq(false)
+      expect(build(:integration, active: true).operating?).to be(false)
     end
 
     it 'is true when the integration is active and persisted' do
-      expect(create(:integration, active: true).operating?).to eq(true)
+      expect(create(:integration, active: true).operating?).to be(true)
     end
   end
 
@@ -253,36 +272,78 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '#chat?' do
     it 'is true when integration is chat integration' do
-      expect(build(:mattermost_integration).chat?).to eq(true)
+      expect(build(:mattermost_integration).chat?).to be(true)
     end
 
     it 'is false when integration is not chat integration' do
-      expect(build(:integration).chat?).to eq(false)
+      expect(build(:integration).chat?).to be(false)
     end
   end
 
   describe '#ci?' do
     it 'is true when integration is a CI integration' do
-      expect(build(:jenkins_integration).ci?).to eq(true)
+      expect(build(:jenkins_integration).ci?).to be(true)
     end
 
     it 'is false when integration is not a ci integration' do
-      expect(build(:integration).ci?).to eq(false)
+      expect(build(:integration).ci?).to be(false)
+    end
+  end
+
+  describe '#deactivate!' do
+    it 'sets active to false' do
+      integration = build(:integration, active: true)
+
+      integration.deactivate!
+
+      expect(integration.active).to eq(false)
+    end
+  end
+
+  describe '#activate!' do
+    it 'sets active to true' do
+      integration = build(:integration, active: false)
+
+      integration.activate!
+
+      expect(integration.active).to eq(true)
+    end
+  end
+
+  describe '#toggle!' do
+    context 'when active' do
+      it 'deactivates the integration' do
+        integration = build(:integration, active: true)
+
+        integration.toggle!
+
+        expect(integration).not_to be_active
+      end
+    end
+
+    context 'when not active' do
+      it 'activates the integration' do
+        integration = build(:integration, active: false)
+
+        integration.toggle!
+
+        expect(integration).to be_active
+      end
     end
   end
 
   describe '.find_or_initialize_non_project_specific_integration' do
-    let!(:integration_1) { create(:jira_integration, project_id: nil, group_id: group.id) }
-    let!(:integration_2) { create(:jira_integration, project: project) }
+    let_it_be(:jira_group_integration) { create(:jira_integration, project_id: nil, group_id: group.id) }
+    let_it_be(:jira_project_integration) { create(:jira_integration, project: project) }
 
     it 'returns the right integration' do
       expect(described_class.find_or_initialize_non_project_specific_integration('jira', group_id: group))
-        .to eq(integration_1)
+        .to eq(jira_group_integration)
     end
 
     it 'does not create a new integration' do
       expect { described_class.find_or_initialize_non_project_specific_integration('redmine', group_id: group) }
-        .not_to change(described_class, :count)
+        .not_to change { described_class.count }
     end
   end
 
@@ -308,7 +369,7 @@ RSpec.describe Integration, feature_category: :integrations do
                 described_class.for_instance,
                 include_instance_specific: include_instance_specific
               )
-            end.not_to change(described_class, :count)
+            end.not_to change { described_class.count }
           end
         end
       end
@@ -322,8 +383,8 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       before do
-        attrs = described_class.available_integration_types(include_project_specific: false).map do
-          integration_hash(_1)
+        attrs = described_class.available_integration_types(include_project_specific: false).map do |integration_type|
+          integration_hash(integration_type)
         end
 
         described_class.insert_all(attrs)
@@ -420,9 +481,9 @@ RSpec.describe Integration, feature_category: :integrations do
           expect(new_integration.api_url).to eq(api_url)
           expect(new_integration.username).to eq(username)
           expect(new_integration.password).to eq(password)
-          expect(new_integration.instance).to eq(false)
+          expect(new_integration.instance).to be(false)
           expect(new_integration.project).to eq(project)
-          expect(new_integration.group).to eq(nil)
+          expect(new_integration.group).to be_nil
         end
 
         it 'creates a correct integration for a group integration' do
@@ -433,8 +494,8 @@ RSpec.describe Integration, feature_category: :integrations do
           expect(new_integration.api_url).to eq(api_url)
           expect(new_integration.username).to eq(username)
           expect(new_integration.password).to eq(password)
-          expect(new_integration.instance).to eq(false)
-          expect(new_integration.project).to eq(nil)
+          expect(new_integration.instance).to be(false)
+          expect(new_integration.project).to be_nil
           expect(new_integration.group).to eq(group)
         end
       end
@@ -443,7 +504,8 @@ RSpec.describe Integration, feature_category: :integrations do
       context 'when data is stored in properties' do
         let(:properties) { data_params }
         let!(:integration) do
-          create(:jira_integration, :without_properties_callback, project: project, properties: properties.merge(additional: 'something'))
+          create(:jira_integration, :without_properties_callback, project: project,
+            properties: properties.merge(additional: 'something'))
         end
 
         it_behaves_like 'integration creation from an integration'
@@ -460,7 +522,8 @@ RSpec.describe Integration, feature_category: :integrations do
       context 'when data are stored in both properties and separated fields' do
         let(:properties) { data_params }
         let(:integration) do
-          create(:jira_integration, :without_properties_callback, project: project, active: true, properties: properties).tap do |integration|
+          create(:jira_integration, :without_properties_callback, project: project, active: true,
+            properties: properties).tap do |integration|
             create(:jira_tracker_data, data_params.merge(integration: integration))
           end
         end
@@ -479,7 +542,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       it 'returns nil for nonexistent integration type' do
-        expect(described_class.default_integration('Integrations::Hipchat', project)).to eq(nil)
+        expect(described_class.default_integration('Integrations::Hipchat', project)).to be_nil
       end
 
       context 'with a group integration' do
@@ -508,7 +571,7 @@ RSpec.describe Integration, feature_category: :integrations do
             expect(described_class.default_integration(integration_name, subgroup)).to eq(group_integration)
           end
 
-          context 'having a integration with custom settings' do
+          context 'when having an integration with custom settings' do
             let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil) }
 
             it 'returns the closest group integration for a project' do
@@ -516,8 +579,10 @@ RSpec.describe Integration, feature_category: :integrations do
             end
           end
 
-          context 'having a integration inheriting settings' do
-            let!(:subgroup_integration) { create(:jira_integration, group_id: subgroup.id, project_id: nil, inherit_from_id: group_integration.id) }
+          context 'when having an integration inheriting settings' do
+            let!(:subgroup_integration) do
+              create(:jira_integration, group_id: subgroup.id, project_id: nil, inherit_from_id: group_integration.id)
+            end
 
             it 'returns the closest group integration which does not inherit from its parent for a project' do
               expect(described_class.default_integration(integration_name, project)).to eq(group_integration)
@@ -540,7 +605,7 @@ RSpec.describe Integration, feature_category: :integrations do
         expect(project.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
       end
 
-      context 'passing a group' do
+      context 'when passing a group' do
         it 'creates an integration from the instance-level integration' do
           described_class.create_from_active_default_integrations(group, :group_id)
 
@@ -561,10 +626,10 @@ RSpec.describe Integration, feature_category: :integrations do
           expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
         end
 
-        context 'there are multiple inheritable integrations, and a duplicate' do
-          let!(:group_integration_2) { create(:jenkins_integration, :group, group: group) }
-          let!(:group_integration_3) { create(:datadog_integration, :instance) }
-          let!(:duplicate) { create(:jenkins_integration, project: project) }
+        context 'when there are multiple inheritable integrations, and a duplicate' do
+          let!(:jenkins_integration) { create(:jenkins_integration, :group, group: group) }
+          let!(:datadog_integration) { create(:datadog_integration, :instance) }
+          let!(:duplicate_jenkins_integration) { create(:jenkins_integration, project: project) }
 
           it 'returns the number of successfully created integrations' do
             expect(described_class.create_from_active_default_integrations(project, :project_id)).to eq 2
@@ -573,7 +638,7 @@ RSpec.describe Integration, feature_category: :integrations do
           end
         end
 
-        context 'passing a group' do
+        context 'when passing a group' do
           let!(:subgroup) { create(:group, parent: group) }
 
           it 'creates an integration from the group-level integration' do
@@ -598,10 +663,10 @@ RSpec.describe Integration, feature_category: :integrations do
             expect(project.reload.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
           end
 
-          context 'passing a group' do
+          context 'when passing a group' do
             let!(:sub_subgroup) { create(:group, parent: subgroup) }
 
-            context 'traversal queries' do
+            context 'with traversal queries' do
               shared_examples 'correct ancestor order' do
                 it 'creates an integration from the subgroup-level integration' do
                   described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
@@ -613,8 +678,11 @@ RSpec.describe Integration, feature_category: :integrations do
                   expect(sub_subgroup.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
                 end
 
-                context 'having an integration inheriting settings' do
-                  let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id, api_url: 'https://prometheus.subgroup.com/') }
+                context 'when having an integration inheriting settings' do
+                  let!(:subgroup_integration) do
+                    create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id,
+                      api_url: 'https://prometheus.subgroup.com/')
+                  end
 
                   it 'creates an integration from the group-level integration' do
                     described_class.create_from_active_default_integrations(sub_subgroup, :group_id)
@@ -637,19 +705,29 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.inherited_descendants_from_self_or_ancestors_from' do
-    let_it_be(:subgroup1) { create(:group, parent: group) }
-    let_it_be(:subgroup2) { create(:group, parent: group) }
-    let_it_be(:project1) { create(:project, group: subgroup1) }
-    let_it_be(:project2) { create(:project, group: subgroup2) }
+    let_it_be(:subgroup_1) { create(:group, parent: group) }
+    let_it_be(:subgroup_2) { create(:group, parent: group) }
+    let_it_be(:project_1) { create(:project, group: subgroup_1) }
+    let_it_be(:project_2) { create(:project, group: subgroup_2) }
     let_it_be(:group_integration) { create(:prometheus_integration, :group, group: group) }
-    let_it_be(:subgroup_integration1) { create(:prometheus_integration, :group, group: subgroup1, inherit_from_id: group_integration.id) }
-    let_it_be(:subgroup_integration2) { create(:prometheus_integration, :group, group: subgroup2) }
-    let_it_be(:project_integration1) { create(:prometheus_integration, project: project1, inherit_from_id: group_integration.id) }
-    let_it_be(:project_integration2) { create(:prometheus_integration, project: project2, inherit_from_id: subgroup_integration2.id) }
+    let_it_be(:subgroup_integration_1) do
+      create(:prometheus_integration, :group, group: subgroup_1, inherit_from_id: group_integration.id)
+    end
+
+    let_it_be(:subgroup_integration_2) { create(:prometheus_integration, :group, group: subgroup_2) }
+    let_it_be(:project_integration_1) do
+      create(:prometheus_integration, project: project_1, inherit_from_id: group_integration.id)
+    end
+
+    let_it_be(:project_integration_2) do
+      create(:prometheus_integration, project: project_2, inherit_from_id: subgroup_integration_2.id)
+    end
 
     it 'returns the groups and projects inheriting from integration ancestors', :aggregate_failures do
-      expect(described_class.inherited_descendants_from_self_or_ancestors_from(group_integration)).to eq([subgroup_integration1, project_integration1])
-      expect(described_class.inherited_descendants_from_self_or_ancestors_from(subgroup_integration2)).to eq([project_integration2])
+      expect(described_class.inherited_descendants_from_self_or_ancestors_from(group_integration))
+        .to eq([subgroup_integration_1, project_integration_1])
+      expect(described_class.inherited_descendants_from_self_or_ancestors_from(subgroup_integration_2))
+        .to eq([project_integration_2])
     end
   end
 
@@ -670,7 +748,9 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     it 'handles all available_integration_names' do
-      types = described_class.available_integration_names.map { described_class.integration_name_to_type(_1) }
+      types = described_class.available_integration_names.map do |integration_name|
+        described_class.integration_name_to_type(integration_name)
+      end
 
       expect(types).to all(start_with('Integrations::'))
     end
@@ -678,7 +758,9 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '.integration_name_to_model' do
     it 'raises an error if integration name is invalid' do
-      expect { described_class.integration_name_to_model('foo') }.to raise_exception(described_class::UnknownType, /foo/)
+      expect do
+        described_class.integration_name_to_model('foo')
+      end.to raise_exception(described_class::UnknownType, /foo/)
     end
   end
 
@@ -929,7 +1011,7 @@ RSpec.describe Integration, feature_category: :integrations do
           field :api_only_field, api_only: true
           field :enabled_field, if: -> { true }
           field :disabled_field, if: -> { false }
-          field :disabled_field_2, if: -> { nil }
+          field :disabled_field_2, if: -> {}
         end
       end
 
@@ -939,7 +1021,7 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
-  context 'logging' do
+  context 'with logging' do
     let(:integration) { build(:integration, project: project) }
     let(:test_message) { "test message" }
     let(:arguments) do
@@ -985,7 +1067,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
-    context 'logging exceptions' do
+    context 'with logging exceptions' do
       let(:error) { RuntimeError.new('exception message') }
       let(:arguments) do
         super().merge(
@@ -1012,11 +1094,13 @@ RSpec.describe Integration, feature_category: :integrations do
     subject { described_class.available_integration_names }
 
     before do
-      allow(described_class).to receive(:integration_names).and_return(%w[foo disabled])
-      allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
-      allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
-      allow(described_class).to receive(:instance_specific_integration_names).and_return(['instance-specific'])
-      allow(described_class).to receive(:disabled_integration_names).and_return(['disabled'])
+      allow(described_class).to receive_messages(
+        integration_names: %w[foo disabled],
+        project_specific_integration_names: ['bar'],
+        dev_integration_names: ['baz'],
+        instance_specific_integration_names: ['instance-specific'],
+        disabled_integration_names: ['disabled']
+      )
     end
 
     it { is_expected.to include('foo', 'bar', 'baz') }
@@ -1122,18 +1206,18 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '#secret_fields' do
     it 'returns all fields with type `password`' do
-      allow(subject).to receive(:fields).and_return(
+      allow(integration).to receive(:fields).and_return(
         [
-          Integrations::Field.new(name: 'password', integration_class: subject.class, type: :password),
-          Integrations::Field.new(name: 'secret', integration_class: subject.class, type: :password),
-          Integrations::Field.new(name: 'public', integration_class: subject.class, type: :text)
+          Integrations::Field.new(name: 'password', integration_class: integration.class, type: :password),
+          Integrations::Field.new(name: 'secret', integration_class: integration.class, type: :password),
+          Integrations::Field.new(name: 'public', integration_class: integration.class, type: :text)
         ])
 
-      expect(subject.secret_fields).to match_array(%w[password secret])
+      expect(integration.secret_fields).to match_array(%w[password secret])
     end
 
     it 'returns an empty array if no secret fields exist' do
-      expect(subject.secret_fields).to eq([])
+      expect(integration.secret_fields).to eq([])
     end
   end
 
@@ -1160,7 +1244,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       expect do
         described_class.insert_all([hash])
-      end.to change(described_class, :count).by(1)
+      end.to change { described_class.count }.by(1)
 
       expect(described_class.last).to have_attributes(properties: db_props)
     end
@@ -1196,7 +1280,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
         expect do
           described_class.insert_all([hash])
-        end.to change(described_class, :count).by(1)
+        end.to change { described_class.count }.by(1)
 
         expect(described_class.last).not_to eq record
         expect(described_class.last).to have_attributes(properties: db_props)
@@ -1222,12 +1306,12 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    let(:integration) { integration_type.new }
+    let(:data_fields) { Struct.new(:foo_dt).new }
+
     before do
       allow(integration).to receive(:data_fields).and_return(data_fields)
     end
-
-    let(:integration) { integration_type.new }
-    let(:data_fields) { Struct.new(:foo_dt).new }
 
     it 'checks the value of storage' do
       expect do
@@ -1338,7 +1422,7 @@ RSpec.describe Integration, feature_category: :integrations do
             field :project_url, storage: :data_fields, type: :checkbox
 
             def data_fields
-              issue_tracker_data || self.build_issue_tracker_data
+              issue_tracker_data || build_issue_tracker_data
             end
           end
         end
@@ -1362,7 +1446,7 @@ RSpec.describe Integration, feature_category: :integrations do
       integration = klass.new
 
       expect(integration).to have_attributes(
-        test_value: be(nil),
+        test_value: be_nil,
         test_value?: be(false)
       )
     end
@@ -1378,7 +1462,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       attrs = record.attributes
 
-      expect { record.assign_attributes(attrs) }.not_to change(record, :properties)
+      expect { record.assign_attributes(attrs) }.not_to change { record.properties }
     end
   end
 

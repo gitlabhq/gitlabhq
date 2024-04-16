@@ -17,7 +17,7 @@ RSpec.describe API::Wikis, feature_category: :wiki do
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group).tap { |g| g.add_owner(user) } }
+  let_it_be(:group) { create(:group, owners: user) }
   let_it_be(:group_project) { create(:project, :wiki_repo, namespace: group) }
 
   let_it_be(:developer) { create(:user) }

@@ -66,6 +66,48 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
         'c' => 'new'
       )
     end
+
+    it 'adds, updates and deletes custom headers' do
+      hook.update!(custom_headers: { 'a' => 'bar', 'b' => 'woo' })
+
+      params[:hook] = {
+        custom_headers: [
+          { key: 'a', value: 'updated' },
+          { key: 'c', value: 'new' }
+        ]
+      }
+
+      put :update, params: params
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:notice]).to include('was updated')
+
+      expect(hook.reload.custom_headers).to eq(
+        'a' => 'updated',
+        'c' => 'new'
+      )
+    end
+
+    it 'does not update custom headers with the secret mask' do
+      hook.update!(custom_headers: { 'a' => 'bar' })
+
+      params[:hook] = {
+        custom_headers: [
+          { key: 'a', value: WebHook::SECRET_MASK },
+          { key: 'c', value: 'new' }
+        ]
+      }
+
+      put :update, params: params
+
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:notice]).to include('was updated')
+
+      expect(hook.reload.custom_headers).to eq(
+        'a' => 'bar',
+        'c' => 'new'
+      )
+    end
   end
 
   describe '#edit' do
@@ -177,7 +219,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
     it_behaves_like 'Web hook destroyer'
 
     context 'when user does not have permission' do
-      let(:user) { create(:user, developer_projects: [project]) }
+      let(:user) { create(:user, developer_of: project) }
 
       it 'renders a 404' do
         delete :destroy, params: params

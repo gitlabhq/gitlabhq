@@ -51,7 +51,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
         'visibility_level' => Gitlab::VisibilityLevel.string_options[data['visibility']],
         'project_creation_level' => Gitlab::Access.project_creation_string_options[data['project_creation_level']],
         'subgroup_creation_level' => Gitlab::Access.subgroup_creation_string_options[data['subgroup_creation_level']],
-        'emails_disabled' => true,
+        'emails_enabled' => false,
         'lfs_enabled' => false,
         'mentions_disabled' => true,
         'share_with_group_lock' => false,
@@ -78,7 +78,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
           'description' => 'Source Group Description',
           'parent_id' => destination_group.id,
           'share_with_group_lock' => nil,
-          'emails_disabled' => nil,
+          'emails_enabled' => true,
           'lfs_enabled' => nil,
           'mentions_disabled' => nil
         })

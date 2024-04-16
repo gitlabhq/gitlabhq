@@ -6,7 +6,7 @@ RSpec.describe Mutations::Members::BulkUpdateBase, feature_category: :groups_and
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let_it_be(:group) { create(:group, owners: user) }
 
   it 'raises a NotImplementedError error if the source_type method is called on the base class' do
     mutation = described_class.new(context: { current_user: user }, object: nil, field: nil)

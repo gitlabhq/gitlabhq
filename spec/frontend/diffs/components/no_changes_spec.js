@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import store from '~/mr_notes/stores';
@@ -32,6 +32,7 @@ describe('Diff no changes empty state', () => {
     store.getters['diffs/diffCompareDropdownTargetVersions'] = [];
   });
 
+  const findEmptyState = (wrapper) => wrapper.findComponent(GlEmptyState);
   const findMessage = (wrapper) => wrapper.find('[data-testid="no-changes-message"]');
 
   it('prevents XSS', () => {
@@ -46,10 +47,10 @@ describe('Diff no changes empty state', () => {
   });
 
   describe('Renders', () => {
-    it('Show create commit button', () => {
+    it('Show empty state', () => {
       const wrapper = createComponent();
 
-      expect(wrapper.findComponent(GlButton).exists()).toBe(true);
+      expect(findEmptyState(wrapper).exists()).toBe(true);
     });
 
     it.each`

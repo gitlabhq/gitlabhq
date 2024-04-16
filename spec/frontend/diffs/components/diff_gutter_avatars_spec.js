@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import DiffGutterAvatars from '~/diffs/components/diff_gutter_avatars.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { HIDE_COMMENTS } from '~/diffs/i18n';
 import discussionsMockData from '../mock_data/diff_discussions';
 
@@ -11,7 +12,7 @@ describe('DiffGutterAvatars', () => {
 
   const findCollapseButton = () => wrapper.find('.diff-notes-collapse');
   const findMoreCount = () => wrapper.find('.diff-comments-more-count');
-  const findUserAvatars = () => wrapper.findAll('.diff-comment-avatar');
+  const findUserAvatars = () => wrapper.findAllComponents(UserAvatarImage);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DiffGutterAvatars, {
@@ -61,6 +62,11 @@ describe('DiffGutterAvatars', () => {
 
     it('renders correct amount of user avatars', () => {
       expect(findUserAvatars().length).toBe(3);
+    });
+
+    // Avoid images in file contents copy: https://gitlab.com/gitlab-org/gitlab/-/issues/337139
+    it('renders pseudo avatars', () => {
+      expect(findUserAvatars().wrappers.every((avatar) => avatar.props('pseudo'))).toBe(true);
     });
 
     it('renders correct moreCount number', () => {

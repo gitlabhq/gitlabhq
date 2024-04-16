@@ -41,6 +41,31 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 The Value Streams Dashboard panels has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
 
+### Overview panel
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. On GitLab.com, this feature is available.
+
+The Overview panel provides a holistic view of the top-level namespace activity by visualizing key DevOps metrics.
+The panel displays metrics for:
+
+- Subgroups
+- Projects
+- Users
+- Issues
+- Merge requests
+- Pipelines
+
+Data displayed in the Overview panel is collected by batch processing. GitLab stores record counts for each subgroup in the database, then aggregates the record counts to provide metrics for the top-level group.
+Data is aggregated monthly, around the end of the month, on a best-effort basis depending on the load on GitLab systems.
+
+For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/epics/10417#iterations-path).
+
+NOTE:
+To view metrics on the Overview panel, the [background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
+
 ### DevSecOps metrics comparison panel
 
 > - Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
@@ -65,15 +90,13 @@ The sparkline color ranges from blue to green, where green indicates a positive 
 Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
 
 NOTE:
-The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md), and enable the [feature flags](../../administration/feature_flags.md) `clickhouse_data_collection` and `event_sync_worker_for_click_house`.
+The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 ### DORA Performers score panel
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. On GitLab Dedicated, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
 The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
@@ -254,6 +277,7 @@ To render a [Value Streams Dashboard as a custom Analytics Dashboard](analytics_
 | `title` | Custom name for the panel |
 |`queryOverrides` (formerly `data`) | Overrides data query parameters specific to each visualization. |
 |`namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
+|`filters` (subfield of `queryOverrides`) | Filters the query for each visualization type. See [supported visualizations](#supported-visualization-filters). |
 | `visualization` | The type of visualization to be rendered. Supported options are `dora_chart`, `dora_performers_score`, and `usage_overview`. |
 | `gridAttributes` | The size and positioning of the panel |
 | `xPos` (subfield of `gridAttributes`) | Horizontal position of the panel |
@@ -271,8 +295,8 @@ description: 'Custom description'
 # panels - List of panels that contain panel settings.
 #   title - Change the title of the panel.
 #   queryOverrides.namespace - The Group or Project path to use for the chart panel
-#   options.exclude_metrics - Hide rows by metric ID from the chart panel.
-#   options.filter_labels -
+#   queryOverrides.filters.excludeMetrics - Hide rows by metric ID from the chart panel.
+#   queryOverrides.filters.labels -
 #     Only show results for data that matches the queried label(s). If multiple labels are provided,
 #     only a single label needs to match for the data to be included in the results.
 #     Compatible metrics (other metrics will be automatically excluded):
@@ -286,38 +310,78 @@ panels:
     visualization: usage_overview
     queryOverrides:
       namespace: group
+      filters:
+        include:
+          - groups
+          - projects
     gridAttributes:
       yPos: 1
       xPos: 1
       height: 1
       width: 12
-  - title: 'Group dora comparison'
+  - title: 'Group dora and issue metrics'
     visualization: dora_chart
     queryOverrides:
       namespace: group
+      filters:
+        excludeMetrics:
+          - deployment_frequency
+          - deploys
+        labels:
+          - in_development
+          - in_review
     gridAttributes:
       yPos: 2
       xPos: 1
       height: 12
       width: 12
-    options:
-      filter_labels:
-        - in_development
-        - in_review
-  - title: 'My project dora comparison'
-    visualization: dora_chart
+  - title: 'My dora performers scores'
+    visualization: dora_performers_score
     queryOverrides:
       namespace: group/my-project
+      filters:
+        projectTopics:
+          - ruby
+          - javasript
     gridAttributes:
       yPos: 26
       xPos: 1
       height: 12
       width: 12
-    options:
-      exclude_metrics:
-        - deployment_frequency
-        - change_failure_rate
 ```
+
+#### Supported visualization filters
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+The `filters` subfield on the `queryOverrides` field can be used to customize the data displayed in a panel.
+
+##### DevSecOps metrics comparison panel filters
+
+Filters for the `dora_chart` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
+| `labels` | Filters data by labels | Any available group label |
+
+##### DORA Performers score panel filters
+
+Filters for the `dora_performers_score` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`projectTopics`|Filters the projects shown based on their assigned [topics](../project/project_topics.md)| Any available group topic|
+
+##### Usage overview panel filters
+
+Filters for the `usage_overview` visualization.
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users`|
 
 ### Filter the DevSecOps metrics comparison panel by labels
 

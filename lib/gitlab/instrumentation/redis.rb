@@ -31,6 +31,10 @@ module Gitlab
           nil
         end
 
+        def shard_key
+          nil
+        end
+
         def payload
           super.merge(*STORAGES.flat_map(&:payload))
         end

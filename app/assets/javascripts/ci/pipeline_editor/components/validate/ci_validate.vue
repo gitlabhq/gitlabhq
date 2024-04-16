@@ -234,8 +234,6 @@ export default {
       v-if="isInitState"
       :svg-path="validateTabIllustrationPath"
       :title="$options.i18n.title"
-      :primary-button-link="validateYaml"
-      :primary-button-text="$options.i18n.cta"
     >
       <template #description>
         <p>{{ $options.i18n.contentNote }}</p>

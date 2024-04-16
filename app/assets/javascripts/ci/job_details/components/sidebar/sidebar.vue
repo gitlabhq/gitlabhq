@@ -44,8 +44,8 @@ export default {
     ...mapGetters(['hasForwardDeploymentFailure']),
     ...mapState(['job', 'stages', 'jobs', 'selectedStage']),
     hasArtifact() {
-      // the artifact object will always have a locked property
-      return Object.keys(this.job.artifact).length > 1;
+      // if available, the artifact object will always have a locked property
+      return this.job?.artifact && Object.keys(this.job.artifact).length > 1;
     },
     artifact() {
       return convertObjectPropsToCamelCase(this.job.artifact, { deep: true });

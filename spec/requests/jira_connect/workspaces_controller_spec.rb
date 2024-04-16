@@ -60,17 +60,6 @@ RSpec.describe JiraConnect::WorkspacesController, feature_category: :integration
           expect(json_response).to include(expected_response)
         end
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(atlassian_new_app_based_auth_model: false)
-          get '/-/jira_connect/workspaces/search', params: { jwt: jwt, searchQuery: search_query }
-        end
-
-        it 'returns 404' do
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 end

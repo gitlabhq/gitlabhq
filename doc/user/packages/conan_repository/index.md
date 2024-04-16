@@ -174,7 +174,7 @@ If you don't set a default user or remote, you can still include the user and
 remote in your commands:
 
 ```shell
-`CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> <conan command> --remote=gitlab
+CONAN_LOGIN_USERNAME=<gitlab_username or deploy_token_username> CONAN_PASSWORD=<personal_access_token or deploy_token> <conan command> --remote=gitlab
 ```
 
 ## Publish a Conan package

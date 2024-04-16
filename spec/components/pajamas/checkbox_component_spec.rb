@@ -34,6 +34,7 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
     let_it_be(:unchecked_value) { 'no' }
     let_it_be(:checkbox_options) { { class: 'checkbox-foo-bar', checked: true } }
     let_it_be(:label_options) { { class: 'label-foo-bar' } }
+    let_it_be(:content_wrapper_options) { { class: 'wrapper-foo-bar' } }
 
     before do
       fake_form_for do |form|
@@ -46,7 +47,8 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
             checked_value: checked_value,
             unchecked_value: unchecked_value,
             checkbox_options: checkbox_options,
-            label_options: label_options
+            label_options: label_options,
+            content_wrapper_options: content_wrapper_options
           )
         )
       end
@@ -60,6 +62,10 @@ RSpec.describe Pajamas::CheckboxComponent, :aggregate_failures, type: :component
 
     it 'adds CSS class to label' do
       expect(page).to have_selector('label.label-foo-bar')
+    end
+
+    it 'adds CSS class to wrapper' do
+      expect(page).to have_selector('.gl-form-checkbox.wrapper-foo-bar')
     end
 
     it 'renders hidden input with value of `no`' do

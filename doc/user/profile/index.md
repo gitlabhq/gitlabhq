@@ -41,9 +41,14 @@ Prerequisites:
   - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
     see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
-- Your username must be between 2 and 255 characters in length, and must not:
-  - Contain special characters or emoji.
-  - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
+- Your username:
+  - Must be between 2 and 255 characters in length.
+  - Must only include non-accented letters, digits, `_`, `-`, and `.`.
+  - Must not:
+    - Start with `-`.
+    - Contain emoji.
+    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git` or `jon.atom`. However,
+      `jonpng` is valid.
 
 To change your username:
 

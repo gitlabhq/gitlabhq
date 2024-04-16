@@ -67,6 +67,7 @@ GET /groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -106,6 +107,7 @@ GET /groups?statistics=true
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -194,6 +196,7 @@ GET /groups/:id/subgroups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
@@ -257,6 +260,7 @@ GET /groups/:id/descendant_groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/bar.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar",
@@ -283,6 +287,7 @@ GET /groups/:id/descendant_groups
     "emails_enabled": null,
     "mentions_disabled": null,
     "lfs_enabled": true,
+    "default_branch": null,
     "default_branch_protection": 2,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/baz.jpg",
     "web_url": "http://gitlab.example.com/groups/foo/bar/baz",
@@ -331,13 +336,11 @@ Parameters:
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `with_security_reports`                | boolean    | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Order by similarity: Orders the results by a similarity score calculated from the provided <code>search</code> URL parameter. When using <code>order_by=similarity</code>, the <code>sort</code> parameter is ignored. When the <code>search</code> parameter is not provided, the API returns the projects ordered by <code>name</code>.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. Orders the results by a similarity score calculated from the `search` URL parameter.
+   When you use `order_by=similarity`, the `sort` parameter is ignored.
+   When the `search` parameter is not provided, the API returns the projects ordered by `name`.
 
 Example response:
 
@@ -847,6 +850,7 @@ Parameters:
 | `path`                                                  | string  | yes      | The path of the group.                                                                                                                                                                          |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group.                                                                                                                             |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681)                                                                            |
+| `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
@@ -859,7 +863,7 @@ Parameters:
 | `parent_id`                                             | integer | no       | The parent group ID for creating nested group.                                                                                                                                                  |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access.                                                                                                                                                           |
-| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication.                                                                                                                             |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to set up two-factor authentication.                                                                                                                            |
 | `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group.                                                                                                                                 |
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role).                                   |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours).                                                                                                                                   |
@@ -1020,6 +1024,7 @@ PUT /groups/:id
 | `path`                                                  | string  | no       | The path of the group. |
 | `auto_devops_enabled`                                   | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. [Introduced in GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) |
+| `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
@@ -1031,7 +1036,7 @@ PUT /groups/:id
 | `prevent_sharing_groups_outside_hierarchy`              | boolean | no       | See [Prevent group sharing outside the group hierarchy](../user/group/access_and_permissions.md#prevent-group-sharing-outside-the-group-hierarchy). This attribute is only available on top-level groups. [Introduced in GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/333721) |
 | `project_creation_level`                                | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`                                | boolean | no       | Allow users to request member access. |
-| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `require_two_factor_authentication`                     | boolean | no       | Require all users in this group to set up two-factor authentication. |
 | `shared_runners_setting`                                | string  | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable shared runners for a group's subgroups and projects. |
 | `share_with_group_lock`                                 | boolean | no       | Prevent sharing a project with another group within this group. |
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
@@ -1442,8 +1447,11 @@ DETAILS:
 ### Create Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+> - Ability to specify a username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
 
 Creates a service account user. You can specify username and name. If you do not specify these attributes, the default name is `Service account user` and the username is automatically generated.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -1478,6 +1486,8 @@ Example response:
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
 ```
 
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens" --data "scopes[]=api" --data "name=service_accounts_token"
 ```
@@ -1510,6 +1520,8 @@ Example response:
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
 ```
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6/rotate"
@@ -1585,6 +1597,7 @@ GET /groups/:id/hooks/:hook_id
   "deployment_events": true,
   "releases_events": true,
   "subgroup_events": true,
+  "member_events": true,
   "enable_ssl_verification": true,
   "repository_update_events": false,
   "alert_status": "executable",
@@ -1622,6 +1635,7 @@ POST /groups/:id/hooks
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
 | `releases_events`            | boolean        | no       | Trigger hook on release events |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
+| `member_events`              | boolean        | no       | Trigger hook on member events |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 | `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
@@ -1654,6 +1668,7 @@ PUT /groups/:id/hooks/:hook_id
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
+| `member_events`              | boolean        | no       | Trigger hook on member events. |
 | `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
 | `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
@@ -2082,7 +2097,7 @@ POST /groups/:id/push_rule
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -2135,7 +2150,7 @@ PUT /groups/:id/push_rule
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
 
 <!-- markdownlint-enable MD056 -->
 

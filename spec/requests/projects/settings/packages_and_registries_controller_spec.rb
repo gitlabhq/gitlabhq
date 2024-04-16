@@ -24,6 +24,7 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
 
       before do
         sign_in(user)
+        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
       end
 
       it 'pushes the feature flag "packages_protected_packages" to the view' do
@@ -41,6 +42,24 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
           subject
 
           expect(response.body).not_to have_pushed_frontend_feature_flags(packagesProtectedPackages: true)
+        end
+      end
+
+      it 'pushes the feature flag "container_registry_protected_containers" to the view' do
+        subject
+
+        expect(response.body).to have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
+      end
+
+      context 'when feature flag "container_registry_protected_containers" is disabled' do
+        before do
+          stub_feature_flags(container_registry_protected_containers: false)
+        end
+
+        it 'does not push the feature flag "container_registry_protected_containers" to the view' do
+          subject
+
+          expect(response.body).not_to have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
         end
       end
     end

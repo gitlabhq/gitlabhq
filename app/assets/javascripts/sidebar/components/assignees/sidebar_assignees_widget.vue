@@ -28,7 +28,7 @@ export default {
     unassigned: __('Unassigned'),
     assignee: __('Assignee'),
     assignees: __('Assignees'),
-    assignTo: __('Assign to'),
+    assignTo: __('Select assignees'),
   },
   components: {
     SidebarEditableItem,

@@ -50,6 +50,7 @@ module Sidebars
                 path: %w[
                   organizations/organizations#groups_and_projects
                   organizations/groups#new
+                  organizations/projects#edit
                 ]
               },
               item_id: :organization_groups_and_projects

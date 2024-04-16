@@ -161,6 +161,20 @@ After migration:
 If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
+## Memberships
+
+> - Importing of shared and inherited shared members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer imported as direct members if they are already shared or inherited shared members of the imported group or project.
+
+Group and project members are imported if the [user account prerequisites](#user-accounts) are followed.
+
+All [direct and indirect](../../../user/project/members/index.md#membership-types) members are imported.
+
+Indirect members are imported as [direct members](../../project/members/index.md#membership-types) if:
+
+- They are not already an indirect member.
+- They are an indirect member, but have a lower [permission](../../../user/permissions.md).
+
 ## Prerequisites
 
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
@@ -313,10 +327,11 @@ To cancel a running import:
    bulk_import.fail_op!
    ```
 
-Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but:
+Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
+destination instance from:
 
-- Prevents the destination from asking for more projects to be exported.
-- Prevents the target from making more API calls to the source.
+- Asking the source instance for more projects to be exported.
+- Making other API calls to the source instance for various checks and information.
 
 ## Migrated group items
 
@@ -348,7 +363,7 @@ Group items that are migrated to the destination GitLab instance include:
 | Group labels <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)    |
 | Iterations           | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
 | Iteration cadences   | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
-| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415)         |
+| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) |
 | Group milestones     | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
 | Namespace settings   | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
 | Release milestones   | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
@@ -361,9 +376,7 @@ Group items that are migrated to the destination GitLab instance include:
    metadata [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63551) in GitLab 14.0.
 1. Group Labels cannot retain any associated Label Priorities during import. These labels will need to be re-prioritized manually
    once the relevant Project is migrated to the destination instance.
-1. Group members are associated with the imported group if the user:
-   - Already exists in the destination GitLab instance.
-   - Has a public email in the source GitLab instance that matches a confirmed email in the destination GitLab instance.
+1. See [Memberships](#memberships).
 
 ### Excluded items
 
@@ -424,7 +437,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Issue boards                            | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) |
 | Labels                                  | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/339419)        |
 | LFS Objects                             | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/339405)        |
-| Members                                 | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
+| Members <sup>2</sup>                    | [GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/341886)        |
 | Merge requests                          | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
 | Push rules                              | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339403)        |
 | Milestones                              | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339417)        |
@@ -440,13 +453,11 @@ Project items that are migrated to the destination GitLab instance include:
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>Imported branches respect the <a href="https://docs.gitlab.com/ee/user/project/protected_branches.html">default branch protection settings</a> of the destination group, which can cause an unprotected branch to be imported as protected.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. Imported branches respect the [default branch protection settings](../../project/protected_branches.md)
+   of the destination group, which could cause an unprotected branch to be imported as protected.
+1. See [Memberships](#memberships).
 
 ### Issue-related items
 

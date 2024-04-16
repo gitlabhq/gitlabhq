@@ -928,6 +928,55 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
       end
     end
 
+    context 'when dependent jobs are listed after job needs in the same stage' do
+      let(:config) do
+        <<-YAML
+        test1:
+          stage: test
+          needs: [manual1]
+          script: exit 0
+
+        test2:
+          stage: test
+          script: exit 0
+
+        manual1:
+          stage: test
+          when: manual
+          script: exit 0
+        YAML
+      end
+
+      let(:pipeline) do
+        Ci::CreatePipelineService.new(project, user, { ref: 'master' }).execute(:push).payload
+      end
+
+      let(:statuses) do
+        { 'manual1': 'manual', 'test1': 'skipped', 'test2': 'pending' }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+        process_pipeline
+      end
+
+      it 'test1 is in skipped state' do
+        expect(all_builds_names_and_statuses).to eq(statuses)
+        expect(stages).to eq(['pending'])
+      end
+
+      context 'with multiple batches' do
+        before do
+          stub_const("#{described_class}::BATCH_SIZE", 2)
+        end
+
+        it 'test1 is in skipped state' do
+          expect(all_builds_names_and_statuses).to eq(statuses)
+          expect(stages).to eq(['pending'])
+        end
+      end
+    end
+
     context 'when jobs change from stopped to alive status during pipeline processing' do
       around do |example|
         Sidekiq::Testing.fake! { example.run }
@@ -1010,7 +1059,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
       # Since this is a test for a race condition, we are calling internal method `enqueue!`
       # instead of `play` and stubbing `new_alive_jobs` of the service class.
-      it 'runs ResetSkippedJobsService on the new alive jobs and logs event', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450395' do
+      it 'runs ResetSkippedJobsService on the new alive jobs and logs event' do
         # Initial control without any pipeline processing
         expect(all_builds_names_and_statuses).to eq(statuses_0)
 
@@ -1058,7 +1107,7 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           mock_play_jobs_during_processing([manual1, manual2])
         end
 
-        it 'runs ResetSkippedJobsService on the new alive jobs', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450395' do
+        it 'runs ResetSkippedJobsService on the new alive jobs' do
           # Statuses after playing the manual jobs
           expect(all_builds_names_and_statuses).to eq(statuses_2)
 

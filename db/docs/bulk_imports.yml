@@ -4,7 +4,8 @@ classes:
 - BulkImport
 feature_categories:
 - importers
-description: Used to store and track the status of a bulk import request of groups or projects
+description: Used to store and track the status of a bulk import request of groups
+  or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_clusterwide

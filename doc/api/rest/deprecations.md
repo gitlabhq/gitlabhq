@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # REST API deprecations and removals
 
-The following API changes will occur when the v4 API is removed.
+The following API changes will occur between REST API v4 and v5.
+No date is set for this upgrade.
 
-The date of this change is unknown.
-For details, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
+For more information, see [issue 216456](https://gitlab.com/gitlab-org/gitlab/-/issues/216456)
 and [issue 387485](https://gitlab.com/gitlab-org/gitlab/-/issues/387485).
 
 ## `geo_nodes` API endpoints
