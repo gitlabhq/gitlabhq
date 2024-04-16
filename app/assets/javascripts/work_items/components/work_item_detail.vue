@@ -503,6 +503,7 @@ export default {
               :subscribed-to-notifications="workItemNotificationsSubscribed"
               :work-item-type="workItemType"
               :work-item-type-id="workItemTypeId"
+              :work-item-iid="workItemIid"
               :can-delete="canDelete"
               :can-update="canUpdate"
               :is-confidential="workItem.confidential"

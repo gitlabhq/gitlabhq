@@ -287,6 +287,8 @@ export default {
             :comment-button-text="commentButtonText"
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
+            :full-path="fullPath"
+            :work-item-iid="workItemIid"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"

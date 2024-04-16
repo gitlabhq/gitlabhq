@@ -18,9 +18,7 @@ module BulkImports
 
     PERFORM_DELAY = 5.seconds
 
-    # Keep `_current_stage` parameter for backwards compatibility.
-    # The parameter will be remove in https://gitlab.com/gitlab-org/gitlab/-/issues/426311
-    def perform(entity_id, _current_stage = nil)
+    def perform(entity_id)
       @entity = ::BulkImports::Entity.find(entity_id)
 
       return unless @entity.started?

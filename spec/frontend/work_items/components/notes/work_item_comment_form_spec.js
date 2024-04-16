@@ -47,8 +47,12 @@ describe('Work item comment form component', () => {
     isNewDiscussion = false,
     workItemState = STATE_OPEN,
     workItemType = 'Task',
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemCommentForm, {
+      provide: {
+        isGroup,
+      },
       propsData: {
         fullPath: 'test-project-path',
         workItemState,

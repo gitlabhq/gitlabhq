@@ -102,6 +102,7 @@ export const sidebarData = {
   projects_path: 'path/to/projects',
   groups_path: 'path/to/groups',
   support_path: '/support',
+  docs_path: '/help/docs',
   display_whats_new: true,
   whats_new_most_recent_release_items_count: 5,
   whats_new_version_digest: 1,

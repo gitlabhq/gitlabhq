@@ -1,18 +1,16 @@
-import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
-import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
 import * as urlHelpers from '~/lib/utils/url_utility';
+import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 import { defaultPageInfo } from '../mock_data';
 
 describe('ml/model_registry/components/searchable_list.vue', () => {
   let wrapper;
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findLoader = () => wrapper.findComponent(PackagesListLoader);
+  const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findEmptyState = () => wrapper.findByTestId('empty-state-slot');
   const findFirstRow = () => wrapper.findByTestId('element');
@@ -60,7 +58,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     });
 
     it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
+      expect(findLoadOrErrorOrShow().props('isLoading')).toBe(false);
     });
 
     it('does not display rows', () => {
@@ -71,8 +69,8 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
       expect(findRegistryList().exists()).toBe(false);
     });
 
-    it('does not display alert', () => {
-      expect(findAlert().exists()).toBe(false);
+    it('Does not display error message', () => {
+      expect(findLoadOrErrorOrShow().props('errorMessage')).toBe('');
     });
   });
 
@@ -80,27 +78,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     beforeEach(() => mountComponent({ errorMessage: 'Failure!' }));
 
     it('shows error message', () => {
-      expect(findAlert().text()).toContain('Failure!');
-    });
-
-    it('is not dismissible', () => {
-      expect(findAlert().props('dismissible')).toBe(false);
-    });
-
-    it('is of variant danger', () => {
-      expect(findAlert().attributes('variant')).toBe('danger');
-    });
-
-    it('hides loader', () => {
-      expect(findLoader().exists()).toBe(false);
-    });
-
-    it('hides registry list', () => {
-      expect(findRegistryList().exists()).toBe(false);
-    });
-
-    it('hides empty state', () => {
-      expect(findEmptyState().exists()).toBe(false);
+      expect(findLoadOrErrorOrShow().props('errorMessage')).toContain('Failure!');
     });
   });
 
@@ -108,19 +86,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     beforeEach(() => mountComponent({ isLoading: true }));
 
     it('shows loader', () => {
-      expect(findLoader().exists()).toBe(true);
-    });
-
-    it('hides error message', () => {
-      expect(findAlert().exists()).toBe(false);
-    });
-
-    it('hides registry list', () => {
-      expect(findRegistryList().exists()).toBe(false);
-    });
-
-    it('hides empty state', () => {
-      expect(findEmptyState().exists()).toBe(false);
+      expect(findLoadOrErrorOrShow().props('isLoading')).toBe(true);
     });
   });
 
@@ -146,7 +112,7 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
     });
 
     it('does not display loader', () => {
-      expect(findLoader().exists()).toBe(false);
+      expect(findLoadOrErrorOrShow().props('isLoading')).toBe(false);
     });
 
     it('does not display empty state', () => {

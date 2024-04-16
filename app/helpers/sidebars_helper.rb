@@ -49,6 +49,7 @@ module SidebarsHelper
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
       support_path: support_url,
+      docs_path: help_docs_path,
       display_whats_new: display_whats_new?,
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
       whats_new_version_digest: whats_new_version_digest,

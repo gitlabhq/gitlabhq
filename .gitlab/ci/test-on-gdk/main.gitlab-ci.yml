@@ -8,10 +8,6 @@ include:
 .code-pattern-changes: &code-pattern-changes
   if: $MR_CODE_PATTERNS == "true"
 
-# Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
-.qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $QA_FEATURE_FLAGS =~ /deleted/
-
 .rules:gdk:qa-selective:
   rules:
     - <<: *code-pattern-changes
@@ -31,18 +27,6 @@ include:
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]
 
-.rules:gdk:qa-smoke:
-  rules:
-    - <<: *code-pattern-changes
-      variables:
-        QA_TESTS: ""
-        KNAPSACK_TEST_FILE_PATTERN: ""
-    - <<: *qa-run-all-tests
-      variables:
-        QA_TESTS: ""
-    - if: $QA_SUITES =~ /Test::Instance::Smoke/
-    - !reference [.rules:test:manual, rules]
-
 .rules:test:gdk-load-balancer-changes:
   rules:
     - when: manual
@@ -50,6 +34,9 @@ include:
       changes:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
+
+.with-parallel:
+  parallel: 15
 
 .with-gdk-log:
   after_script:
@@ -143,23 +130,14 @@ download-knapsack-report:
 # ------------------------------------------
 # Blocking tests
 # ------------------------------------------
-gdk-qa-smoke:
-  extends:
-    - .gdk-qa-base
-    - .rules:gdk:qa-smoke
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: gdk-qa-smoke
-  parallel: 8
-
 gdk-qa-blocking:
   extends:
     - .gdk-qa-base
+    - .with-parallel
     - .rules:gdk:qa-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  parallel: 10
 
 gdk-qa-blocking-ff-inverse:
   extends: gdk-qa-blocking
@@ -167,7 +145,6 @@ gdk-qa-blocking-ff-inverse:
     QA_FEATURE_FLAGS: $FEATURE_FLAGS
   rules:
     - !reference [.rules:test:feature-flags-set, rules]
-  parallel: 10
 
 gdk-qa-blocking-selective:
   extends:
@@ -180,32 +157,15 @@ gdk-qa-blocking-selective:
 # ------------------------------------------
 # Non Blocking tests
 # ------------------------------------------
-gdk-qa-smoke-with-load-balancer:
-  extends:
-    - .gdk-qa-base
-    - .gdk-with-load-balancer-setup
-    - .with-gdk-log
-  variables:
-    QA_SCENARIO: Test::Instance::Smoke
-    QA_RUN_TYPE: gdk-qa-smoke
-  artifacts:
-    paths:
-      - gdk.log
-    reports:
-      dotenv: ""
-  rules:
-    - !reference [".rules:test:never-schedule-pipeline", rules]
-    - !reference [".rules:test:gdk-load-balancer-changes", rules]
-
 gdk-qa-blocking-with-load-balancer:
   extends:
     - .gdk-qa-base
     - .gdk-with-load-balancer-setup
     - .with-gdk-log
+    - .with-parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
-  parallel: 5
   artifacts:
     paths:
       - log

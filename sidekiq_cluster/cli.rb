@@ -69,30 +69,21 @@ module Gitlab
             'The --dryrun and --list-queues options are mutually exclusive'
         end
 
-        worker_metadatas = SidekiqConfig::CliMethods.worker_metadatas(@rails_path)
-        worker_queues = SidekiqConfig::CliMethods.worker_queues(@rails_path)
+        # Routing rules are defaulted to [['*', 'default']] if not specified.
+        # This means all jobs go to 'default' queue and mailer jobs go to 'mailers' queue.
+        # See config/initializers/1_settings.rb and Settings.build_sidekiq_routing_rules.
+        available_queues = queues_from_routing_rules.empty? ? DEFAULT_QUEUES : [*queues_from_routing_rules, 'mailers'].freeze
 
-        queue_groups = argv.map do |queues_or_query_string|
-          if queues_or_query_string =~ /[\r\n]/
+        queue_groups = argv.map do |queues|
+          if queues =~ /[\r\n]/
             raise CommandError,
               'The queue arguments cannot contain newlines'
           end
 
-          next worker_queues if queues_or_query_string == SidekiqConfig::WorkerMatcher::WILDCARD_MATCH
+          # Empty routing rules means Sidekiq only needs to listen to DEFAULT_QUEUES.
+          next available_queues if queues == SidekiqConfig::WorkerMatcher::WILDCARD_MATCH || routing_rules.empty?
 
-          # When using the queue query syntax, we treat each queue group
-          # as a worker attribute query, and resolve the queues for the
-          # queue group using this query.
-
-          if @queue_selector
-            SidekiqConfig::CliMethods.query_queues(queues_or_query_string, worker_metadatas)
-          else
-            SidekiqConfig::CliMethods.expand_queues(queues_or_query_string.split(','), worker_queues)
-          end
-        end
-
-        if @negate_queues
-          queue_groups.map! { |queues| worker_queues - queues }
+          queues.split(',')
         end
 
         if queue_groups.all?(&:empty?)
@@ -100,20 +91,7 @@ module Gitlab
             'No queues found, you must select at least one queue'
         end
 
-        begin
-          routing_rules = ::Gitlab.config.sidekiq.routing_rules
-        rescue StandardError
-          routing_rules = []
-        end
-
-        # Routing rules are defaulted to [['*', 'default']] if not specified.
-        # This means all jobs go to 'default' queue and mailer jobs go to 'mailers' queue.
-        # See config/initializers/1_settings.rb and Settings.build_sidekiq_routing_rules.
-        #
-        # We can override queue_groups to listen to just the default queues, any more additional queues
-        # incurs CPU overhead in Redis.
         if routing_rules.empty?
-          queue_groups.map! { DEFAULT_QUEUES }
           # setting min_concurrency equal to max_concurrency so that the concurrency eventually
           # is set to 20 (default value) instead of based on the number of queues, which is only 2+1 in this case.
           @min_concurrency = @min_concurrency == 0 ? @max_concurrency : @min_concurrency
@@ -212,6 +190,16 @@ module Gitlab
         !@dryrun && sidekiq_exporter_enabled?
       end
 
+      def routing_rules
+        ::Gitlab.config.sidekiq.routing_rules || []
+      rescue StandardError
+        []
+      end
+
+      def queues_from_routing_rules
+        routing_rules.flat_map(&:second).uniq
+      end
+
       def option_parser
         OptionParser.new do |opt|
           opt.banner = "#{File.basename(__FILE__)} [QUEUE,QUEUE] [QUEUE] ... [OPTIONS]"
@@ -244,14 +232,6 @@ module Gitlab
 
           opt.on('-r', '--require PATH', 'Location of the Rails application') do |path|
             @rails_path = path
-          end
-
-          opt.on('--queue-selector', 'Run workers based on the provided selector') do |queue_selector|
-            @queue_selector = queue_selector
-          end
-
-          opt.on('-n', '--negate', 'Run workers for all queues in sidekiq_queues.yml except the given ones') do
-            @negate_queues = true
           end
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|

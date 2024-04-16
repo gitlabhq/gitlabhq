@@ -42,6 +42,10 @@ export default {
       type: String,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     ariaLabel: {
       type: String,
       required: true,
@@ -98,6 +102,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -235,8 +244,10 @@ export default {
             v-if="isNewDiscussion"
             class="gl-ml-3"
             :work-item-id="workItemId"
+            :work-item-iid="workItemIid"
             :work-item-state="workItemState"
             :work-item-type="workItemType"
+            :full-path="fullPath"
             :has-comment="Boolean(commentText.length)"
             can-update
             @submit-comment="$emit('submitForm', { commentText, isNoteInternal })"

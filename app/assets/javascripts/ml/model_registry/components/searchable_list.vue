@@ -1,15 +1,14 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
-import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import { GRAPHQL_PAGE_SIZE, LIST_KEY_CREATED_AT } from '~/ml/model_registry/constants';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import LoadOrErrorOrShow from '~/ml/model_registry/components/load_or_error_or_show.vue';
 
 export default {
   name: 'SearchableList',
-  components: { PackagesListLoader, RegistryList, RegistrySearch, GlAlert },
+  components: { RegistryList, RegistrySearch, LoadOrErrorOrShow },
   props: {
     items: {
       type: Array,
@@ -132,23 +131,21 @@ export default {
       @filter:submit="submitFilters"
       @filter:clear="filters = []"
     />
-    <packages-list-loader v-if="isLoading" />
-    <gl-alert v-else-if="errorMessage" variant="danger" :dismissible="false">
-      {{ errorMessage }}
-    </gl-alert>
-    <slot v-else-if="isListEmpty" name="empty-state"></slot>
-    <registry-list
-      v-else
-      :hidden-delete="true"
-      :is-loading="isLoading"
-      :items="items"
-      :pagination="pageInfo"
-      @prev-page="prevPage"
-      @next-page="nextPage"
-    >
-      <template #default="{ item }">
-        <slot name="item" :item="item"></slot>
-      </template>
-    </registry-list>
+    <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
+      <slot v-if="isListEmpty" name="empty-state"></slot>
+      <registry-list
+        v-else
+        :hidden-delete="true"
+        :is-loading="isLoading"
+        :items="items"
+        :pagination="pageInfo"
+        @prev-page="prevPage"
+        @next-page="nextPage"
+      >
+        <template #default="{ item }">
+          <slot name="item" :item="item"></slot>
+        </template>
+      </registry-list>
+    </load-or-error-or-show>
   </div>
 </template>

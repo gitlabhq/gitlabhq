@@ -78,7 +78,6 @@ export default {
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
   lockDiscussionTestId: TEST_ID_LOCK_ACTION,
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -89,6 +88,11 @@ export default {
       required: true,
     },
     workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    workItemIid: {
       type: String,
       required: false,
       default: null,
@@ -338,6 +342,9 @@ export default {
     hideDropdown() {
       this.isDropdownVisible = false;
     },
+    emitStateToggleError(error) {
+      this.$emit('error', error);
+    },
   },
 };
 </script>
@@ -407,9 +414,12 @@ export default {
         v-if="canUpdate"
         :data-testid="$options.stateToggleTestId"
         :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
         :work-item-state="workItemState"
         :work-item-type="workItemType"
+        :full-path="fullPath"
         show-as-dropdown-item
+        @error="emitStateToggleError"
       />
 
       <gl-disclosure-dropdown-item

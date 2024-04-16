@@ -4,7 +4,7 @@ import toggleWhatsNewDrawer from '~/whats_new';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { DOCS_URL, FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
+import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { helpCenterState } from '~/super_sidebar/constants';
@@ -53,7 +53,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.docs,
-      href: DOCS_URL,
+      href: sidebarData.docs_path,
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
@@ -68,7 +68,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.contribute,
-      href: helpPagePath('', { anchor: 'contributing-to-gitlab' }),
+      href: helpPagePath('', { anchor: 'contribute-to-gitlab' }),
       extraAttrs: trackingAttrs('contribute_to_gitlab'),
     },
     {

@@ -118,6 +118,7 @@ export default {
           <work-item-actions
             :full-path="fullPath"
             :work-item-id="workItem.id"
+            :work-item-iid="workItem.iid"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"

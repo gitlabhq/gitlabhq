@@ -154,6 +154,14 @@ It can also be helpful to
 [debug a user sync](#sync-all-users) to
 investigate further.
 
+#### Users see an error "Invalid login or password."
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438144) in GitLab 16.10.
+
+If users see this error, it might be because they are trying to sign in using the **Standard** sign-in form instead of the **LDAP** sign-in form.
+
+To resolve, ask the user to enter their LDAP username and password into the **LDAP** sign-in form.
+
 #### Invalid credentials on sign-in
 
 If that the sign-in credentials used are accurate on LDAP, ensure the following

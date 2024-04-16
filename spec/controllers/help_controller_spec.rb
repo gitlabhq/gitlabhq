@@ -404,6 +404,32 @@ RSpec.describe HelpController do
     end
   end
 
+  describe 'GET #docs' do
+    subject { get :redirect_to_docs }
+
+    context 'with no custom docs URL configured' do
+      it 'redirects to docs.gitlab.com' do
+        subject
+
+        expect(response).to redirect_to('https://docs.gitlab.com')
+      end
+    end
+
+    context 'with a custom docs URL configured' do
+      let(:custom_docs_url) { 'https://foo.example.com' }
+
+      before do
+        stub_application_setting(help_page_documentation_base_url: custom_docs_url)
+      end
+
+      it 'redirects to the configured docs URL' do
+        subject
+
+        expect(response).to redirect_to(custom_docs_url)
+      end
+    end
+  end
+
   def stub_two_factor_required
     allow(controller).to receive(:two_factor_authentication_required?).and_return(true)
     allow(controller).to receive(:current_user_requires_two_factor?).and_return(true)
