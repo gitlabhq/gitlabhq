@@ -7,8 +7,8 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
 import {
-  renderProjectDeleteSuccessToast,
-  deleteProjectParams,
+  renderDeleteSuccessToast,
+  deleteParams,
   formatProjects,
 } from 'ee_else_ce/organizations/shared/utils';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
@@ -29,6 +29,7 @@ export default {
         'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
       ),
     },
+    project: __('Project'),
     prev: __('Prev'),
     next: __('Next'),
   },
@@ -178,9 +179,9 @@ export default {
 
       try {
         this.setProjectIsDeleting(nodeIndex, true);
-        await deleteProject(project.id, deleteProjectParams(project));
+        await deleteProject(project.id, deleteParams(project));
         this.$apollo.queries.projects.refetch();
-        renderProjectDeleteSuccessToast(project);
+        renderDeleteSuccessToast(project, this.$options.i18n.project);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {

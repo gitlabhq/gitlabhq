@@ -1364,6 +1364,12 @@ msgstr ""
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
+msgid "%{type} '%{name}' is being deleted."
+msgstr ""
+
+msgid "%{type} '%{name}' will be deleted on %{date}."
+msgstr ""
+
 msgid "%{type} must be a %{help_link}"
 msgstr ""
 
@@ -39568,12 +39574,6 @@ msgid "Project %{project_repo} could not be found"
 msgstr ""
 
 msgid "Project & Group can not be assigned at the same time"
-msgstr ""
-
-msgid "Project '%{name}' is being deleted."
-msgstr ""
-
-msgid "Project '%{name}' will be deleted on %{date}."
 msgstr ""
 
 msgid "Project '%{project_name}' is being imported."

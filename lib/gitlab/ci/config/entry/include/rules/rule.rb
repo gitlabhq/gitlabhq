@@ -19,8 +19,10 @@ module Gitlab
             entry :changes, Entry::Rules::Rule::Changes,
               description: 'File change condition rule.'
 
+            # TODO: Remove `disable_simple_exists_paths_limit` in https://gitlab.com/gitlab-org/gitlab/-/issues/456276.
             entry :exists, Entry::Rules::Rule::Exists,
-              description: 'File exists condition rule.'
+              description: 'File exists condition rule.',
+              metadata: { disable_simple_exists_paths_limit: true }
 
             validations do
               validates :config, presence: true

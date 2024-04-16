@@ -174,7 +174,7 @@ retrieve-frontend-fixtures:
 rspec-all frontend_fixture:
   extends:
     - .frontend-fixtures-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:frontend_fixture
   needs:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets"
@@ -305,7 +305,7 @@ jest predictive as-if-foss:
 jest-integration:
   extends:
     - .frontend-test-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:jest-integration
   script:
     - run_timed_command "yarn jest:integration --ci"
   needs: ["rspec-all frontend_fixture", "graphql-schema-dump"]
@@ -313,7 +313,7 @@ jest-integration:
 jest-snapshot-vue3:
   extends:
     - .jest-base
-    - .frontend:rules:jest-snapshot
+    - .frontend:rules:jest-snapshot-vue3
   needs: ["rspec-all frontend_fixture"]
   variables:
     VUE_VERSION: 3
@@ -428,7 +428,7 @@ bundle-size-review:
 compile-storybook:
   extends:
     - .compile-storybook-base
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:compile-storybook
   needs:
     - !reference [.compile-storybook-base, needs]
     - job: "rspec-all frontend_fixture"

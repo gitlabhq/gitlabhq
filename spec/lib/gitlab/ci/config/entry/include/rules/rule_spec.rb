@@ -109,6 +109,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
 
         it_behaves_like 'a valid config', { exists: { paths: [] } }
       end
+
+      context 'when array contains integers' do
+        let(:config) { { exists: [1, 2, 3] } }
+
+        it_behaves_like 'an invalid config', /should be an array of strings/
+      end
+
+      context 'when array has more items than MAX_PATHS' do
+        let(:config) { { exists: ['app/*'] * 51 } }
+
+        it_behaves_like 'a valid config', { exists: { paths: ['app/*'] * 51 } }
+      end
     end
 
     context 'with a hash' do
@@ -163,6 +175,18 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
 
       context 'when exists: clause is an empty array' do
         let(:config) { { exists: [] } }
+
+        it_behaves_like 'a valid config'
+      end
+
+      context 'when exists: clause is an array of integers' do
+        let(:config) { { exists: [1, 2, 3] } }
+
+        it_behaves_like 'an invalid config', /should be an array of strings or a string/
+      end
+
+      context 'when exists: clause has more items than MAX_PATHS' do
+        let(:config) { { exists: ['app/*'] * 51 } }
 
         it_behaves_like 'a valid config'
       end

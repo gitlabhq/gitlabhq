@@ -2,8 +2,8 @@ import {
   formatProjects,
   formatGroups,
   onPageChange,
-  deleteProjectParams,
-  renderProjectDeleteSuccessToast,
+  deleteParams,
+  renderDeleteSuccessToast,
 } from '~/organizations/shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -132,18 +132,19 @@ describe('onPageChange', () => {
   });
 });
 
-describe('renderProjectDeleteSuccessToast', () => {
+describe('renderDeleteSuccessToast', () => {
   const [MOCK_PROJECT] = formatProjects(organizationProjects);
+  const MOCK_TYPE = 'Project';
 
   it('calls toast correctly', () => {
-    renderProjectDeleteSuccessToast(MOCK_PROJECT);
+    renderDeleteSuccessToast(MOCK_PROJECT, MOCK_TYPE);
 
-    expect(toast).toHaveBeenCalledWith(`Project '${MOCK_PROJECT.name}' is being deleted.`);
+    expect(toast).toHaveBeenCalledWith(`${MOCK_TYPE} '${MOCK_PROJECT.name}' is being deleted.`);
   });
 });
 
-describe('deleteProjectParams', () => {
+describe('deleteParams', () => {
   it('returns {} always', () => {
-    expect(deleteProjectParams()).toStrictEqual({});
+    expect(deleteParams()).toStrictEqual({});
   });
 });

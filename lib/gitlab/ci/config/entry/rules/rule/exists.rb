@@ -7,6 +7,8 @@ module Gitlab
         class Rules
           class Rule
             class Exists < ::Gitlab::Config::Entry::Simplifiable
+              MAX_PATHS = 50
+
               # TODO: We should not have the String support for `exists`.
               # Issue to remove: https://gitlab.com/gitlab-org/gitlab/-/issues/455040
               strategy :SimpleExists, if: ->(config) { config.is_a?(String) || config.is_a?(Array) || config.blank? }
@@ -16,9 +18,12 @@ module Gitlab
                 include ::Gitlab::Config::Entry::Validatable
 
                 validations do
+                  # TODO: Enforce 50-path limit in https://gitlab.com/gitlab-org/gitlab/-/issues/456276.
                   validates :config, array_of_strings: true,
-                    length: { maximum: 50, too_long: 'has too many entries (maximum %{count})' },
-                    if: -> { config.is_a?(Array) }
+                    length: { maximum: MAX_PATHS, too_long: 'has too many entries (maximum %{count})' },
+                    if: -> { config.is_a?(Array) && !opt(:disable_simple_exists_paths_limit) }
+                  validates :config, array_of_strings: true,
+                    if: -> { config.is_a?(Array) && opt(:disable_simple_exists_paths_limit) }
                 end
 
                 def value
@@ -42,7 +47,7 @@ module Gitlab
 
                   with_options allow_nil: true do
                     validates :paths, array_of_strings: true,
-                      length: { maximum: 50, too_long: 'has too many entries (maximum %{count})' }
+                      length: { maximum: MAX_PATHS, too_long: 'has too many entries (maximum %{count})' }
                     validates :project, type: String
                     validates :ref, type: String
                   end

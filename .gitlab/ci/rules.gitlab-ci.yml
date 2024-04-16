@@ -283,17 +283,6 @@
   - "fixtures/emojis/**/*"
   - "vendor/assets/**/*"
 
-.frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
-  - "{package.json,yarn.lock}"
-  - ".browserslistrc"
-  - "babel.config.js"
-  - "jest.config.{base,integration,unit}.js"
-  - ".stylelintrc"
-  - "Dockerfile.assets"
-  - "config/**/*.js"
-  - "vendor/assets/**/*"
-  - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
-
 .initializers-patterns: &initializers-patterns
   - "{,ee/,jh/}config/initializers/**/*"
 
@@ -411,6 +400,22 @@
   - ".dockerignore"
   - "{,jh/}qa/**/*"
   - ".gitlab/ci/{package-and-test,qa-common,test-on-cng,test-on-gdk}/*"
+
+# See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/470
+# for the reasons why we only match those patterns.
+.frontend-predictive-patterns: &frontend-predictive-patterns
+  - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
+
+.frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
+  - "{package.json,yarn.lock}"
+  - ".browserslistrc"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
+  - ".stylelintrc"
+  - "Dockerfile.assets"
+  - "config/**/*.js"
+  - "vendor/assets/**/*"
+  - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
 
 # Frontend view patterns + .qa-patterns
 .frontend-qa-patterns: &frontend-qa-patterns
@@ -1274,6 +1279,55 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+.frontend:rules:frontend_fixture:
+  rules:
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
+    - <<: *if-merge-request-labels-run-all-rspec
+    # From .frontend:rules:jest
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
+    # From .frontend:rules:jest-snapshot-vue3
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+    # Rules for `jest predictive` jobs
+    - <<: *if-merge-request-not-approved
+      changes: *frontend-predictive-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
+# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+.frontend:rules:compile-storybook:
+  rules:
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    # If the MR isn't approved, only run when jest predictive jobs would
+    - <<: *if-merge-request-not-approved
+      changes: *frontend-predictive-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
@@ -1306,6 +1360,8 @@
       when: never
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - ".gitlab/ci/frontend.gitlab-ci.yml"
@@ -1349,6 +1405,24 @@
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"] # When this file is modified, we run full Jest jobs
       when: never
     - <<: *if-merge-request
+      changes: *frontend-predictive-patterns
+
+# .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
+.frontend:rules:jest-integration:
+  rules:
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: '$ENABLE_JEST_INTEGRATION == "true"'
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    # If the MR isn't approved, only run when jest predictive jobs would
+    - <<: *if-merge-request-not-approved
+      changes: *frontend-predictive-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
 
 .frontend:rules:jest:predictive:as-if-foss:
@@ -1389,7 +1463,7 @@
       changes: *frontend-build-patterns
       allow_failure: true
 
-.frontend:rules:jest-snapshot:
+.frontend:rules:jest-snapshot-vue3:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -2875,6 +2949,8 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request
       changes:
         - "scripts/flaky_examples/prune-old-flaky-examples"

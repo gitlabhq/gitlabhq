@@ -4,8 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Exists, feature_category: :pipeline_composition do
   let(:factory) do
-    Gitlab::Config::Entry::Factory.new(described_class).value(config)
+    Gitlab::Config::Entry::Factory.new(described_class)
+      .metadata(metadata)
+      .value(config)
   end
+
+  let(:metadata) { {} }
 
   subject(:entry) { factory.create! }
 
@@ -64,6 +68,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule::Exists, feature_category:
       it 'returns an error' do
         is_expected.not_to be_valid
         expect(entry.errors).to include(/has too many entries \(maximum 50\)/)
+      end
+
+      context 'when opt(:disable_simple_exists_paths_limit) is true' do
+        let(:metadata) { { disable_simple_exists_paths_limit: true } }
+
+        it_behaves_like 'a valid config', { paths: ['**/test.md'] * 51 }
       end
     end
   end

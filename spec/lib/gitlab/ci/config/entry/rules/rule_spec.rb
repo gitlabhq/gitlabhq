@@ -175,6 +175,24 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
 
           it { is_expected.to be_valid }
         end
+
+        context 'when array contains integers' do
+          let(:config) { { exists: [1, 2, 3] } }
+
+          it 'returns an error' do
+            is_expected.not_to be_valid
+            expect(entry.errors).to include(/should be an array of strings/)
+          end
+        end
+
+        context 'when array has more items than MAX_PATHS' do
+          let(:config) { { exists: ['app/*'] * 51 } }
+
+          it 'returns an error' do
+            is_expected.not_to be_valid
+            expect(entry.errors).to include(/has too many entries \(maximum 50\)/)
+          end
+        end
       end
 
       context 'with a hash' do

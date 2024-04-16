@@ -7,6 +7,9 @@ export default {
   components: { GlAlert, GlSprintf, GlTab, GlTabs },
   inject: ['tabs'],
   methods: {
+    glTabLinkAttributes(tab) {
+      return { 'data-testid': tab.testid };
+    },
     isActive(hash) {
       const activeTabHash = new URL(window.location.href).hash;
 
@@ -38,10 +41,11 @@ export default {
         :key="tab.hash"
         :title="tab.title"
         :active="isActive(tab.hash)"
-        :data-testid="tab.hash"
+        :data-testid="`${tab.testid}-tab-content`"
+        :title-link-attributes="glTabLinkAttributes(tab)"
         @click="updateActiveTab(tab.hash)"
       >
-        <component :is="tab.component" :data-testid="`${tab.hash}-app`" />
+        <component :is="tab.component" :data-testid="`${tab.testid}-app`" />
       </gl-tab>
     </gl-tabs>
   </section>

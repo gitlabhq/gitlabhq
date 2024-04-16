@@ -95,15 +95,16 @@ export const onPageChange = ({
   return routeQuery;
 };
 
-export const renderProjectDeleteSuccessToast = (project) => {
+export const renderDeleteSuccessToast = (item, type) => {
   toast(
-    sprintf(__("Project '%{name}' is being deleted."), {
-      name: project.name,
+    sprintf(__("%{type} '%{name}' is being deleted."), {
+      type,
+      name: item.name,
     }),
   );
 };
 
-export const deleteProjectParams = () => {
+export const deleteParams = () => {
   // Overridden in EE
   return {};
 };
