@@ -34,10 +34,7 @@ module Gitlab
         update_unique_counters(event_name, kwargs)
 
         trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
-
-        if Feature.enabled?(:internal_events_for_product_analytics) && send_snowplow_event
-          send_application_instrumentation_event(event_name, additional_properties, kwargs)
-        end
+        send_application_instrumentation_event(event_name, additional_properties, kwargs) if send_snowplow_event
       rescue StandardError => e
         extra = {}
         kwargs.each_key do |k|

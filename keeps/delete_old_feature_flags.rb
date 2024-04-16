@@ -9,7 +9,7 @@ require_relative 'helpers/milestones'
 require_relative 'helpers/git_diff_parser'
 
 module Keeps
-  # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will locate any featrure flag definition file
+  # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will locate any feature flag definition file
   # that were added at least `<CUTOFF_MILESTONE_OLD> milestones` ago and remove the definition file.
   #
   # You can run it individually with:

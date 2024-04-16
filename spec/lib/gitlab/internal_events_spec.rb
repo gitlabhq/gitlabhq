@@ -397,6 +397,10 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       stub_env('GITLAB_ANALYTICS_ID', app_id)
       stub_env('GITLAB_ANALYTICS_URL', url)
+      allow(GitlabSDK::Client)
+        .to receive(:new)
+        .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
+        .and_return(sdk_client)
     end
 
     subject(:track_event) do
@@ -411,75 +415,53 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
     end
 
-    context 'when internal_events_for_product_analytics FF is enabled' do
-      before do
-        stub_feature_flags(internal_events_for_product_analytics: true)
+    it 'calls Product Analytics Ruby SDK', :aggregate_failures do
+      expect(sdk_client).to receive(:identify).with(user.id)
+      expect(sdk_client).to receive(:track)
+        .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
 
-        allow(GitlabSDK::Client)
-          .to receive(:new)
-          .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
-          .and_return(sdk_client)
+      track_event
+    end
+
+    context 'when additional properties are passed' do
+      let(:additional_properties) do
+        {
+          label: 'label_name',
+          property: 'property_name',
+          value: 16.17
+        }
       end
 
-      it 'calls Product Analytics Ruby SDK', :aggregate_failures do
+      let(:tracked_attributes) do
+        {
+          project_id: project.id,
+          namespace_id: project.namespace.id,
+          additional_properties: additional_properties
+        }
+      end
+
+      it 'passes additional_properties to Product Analytics Ruby SDK', :aggregate_failures do
         expect(sdk_client).to receive(:identify).with(user.id)
-        expect(sdk_client).to receive(:track)
-          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
+        expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
 
         track_event
       end
-
-      context 'when additional properties are passed' do
-        let(:additional_properties) do
-          {
-            label: 'label_name',
-            property: 'property_name',
-            value: 16.17
-          }
-        end
-
-        let(:tracked_attributes) do
-          {
-            project_id: project.id,
-            namespace_id: project.namespace.id,
-            additional_properties: additional_properties
-          }
-        end
-
-        it 'passes additional_properties to Product Analytics Ruby SDK', :aggregate_failures do
-          expect(sdk_client).to receive(:identify).with(user.id)
-          expect(sdk_client).to receive(:track).with(event_name, tracked_attributes)
-
-          track_event
-        end
-      end
-
-      context 'when GITLAB_ANALYTICS_ID is nil' do
-        let(:app_id) { nil }
-
-        it_behaves_like 'does not send a Product Analytics event'
-      end
-
-      context 'when GITLAB_ANALYTICS_URL is nil' do
-        let(:url) { nil }
-
-        it_behaves_like 'does not send a Product Analytics event'
-      end
-
-      context 'when send_snowplow_event is false' do
-        let(:send_snowplow_event) { false }
-
-        it_behaves_like 'does not send a Product Analytics event'
-      end
     end
 
-    context 'when internal_events_for_product_analytics FF is disabled' do
-      let(:app_id) { 'foobar' }
-      let(:url) { 'http://localhost:4000' }
+    context 'when GITLAB_ANALYTICS_ID is nil' do
+      let(:app_id) { nil }
 
-      before do
-        stub_feature_flags(internal_events_for_product_analytics: false)
-      end
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'when GITLAB_ANALYTICS_URL is nil' do
+      let(:url) { nil }
+
+      it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'when send_snowplow_event is false' do
+      let(:send_snowplow_event) { false }
 
       it_behaves_like 'does not send a Product Analytics event'
     end

@@ -2,6 +2,10 @@
 # important planned changes at least three releases prior to removal.
 # Breaking changes must happen in a major release.
 #
+# Copy this template into a new file in /data/deprecations, and name the file similar to:
+# `16-9-deprecated-feature.yml`, where `16-9` is the announcement milestone,
+# not the removal milestone.
+#
 # See the deprecation guidelines to confirm your understanding of GitLab's definitions:
 # https://docs.gitlab.com/ee/development/deprecation_guidelines/#terminology
 #

@@ -9,9 +9,9 @@
   reporter: mjwood
   stage: systems
   issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/5598
-  impact: low # Can be one of: [critical, high, medium, low]
-  scope: instance # Can be one or a combination of: [instance, group, project]
-  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: instance  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     Support for configuring multiple Gitaly storages that point to the same storage path is deprecated and will be removed in GitLab 17.0
