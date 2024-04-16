@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Tooltips on .timeago dates', :js, feature_category: :user_profile do
   let_it_be(:user)      { create(:user) }
-  let_it_be(:project)   { create(:project, name: 'test', namespace: user.namespace) }
+  let_it_be(:project)   { create(:project, name: 'test', namespace: user.namespace, maintainers: user) }
 
   let(:created_date)    { 1.day.ago.beginning_of_minute - 1.hour }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   before do
     stub_feature_flags(profile_tabs_vue: false)

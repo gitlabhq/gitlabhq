@@ -4,14 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Project Merge Requests RSS', feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, developers: user) }
   let_it_be(:project) { create(:project, :repository, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, assignees: [user]) }
   let_it_be(:path) { project_merge_requests_path(project) }
-
-  before_all do
-    group.add_developer(user)
-  end
 
   context 'when signed in' do
     let_it_be(:user) { create(:user) }

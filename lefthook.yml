@@ -120,6 +120,10 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'tests.yml'
       run: scripts/verify-tff-mapping
+    secrets-detection:
+      tags: secrets
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks detect --log-opts="$(git merge-base origin/master HEAD)..HEAD" --no-banner --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
 
   scripts:
     'merge_conflicts':

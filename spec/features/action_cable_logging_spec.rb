@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe 'ActionCable logging', :js, feature_category: :shared do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:user) { create(:user) }
-
-  before_all do
-    project.add_developer(user)
-  end
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   it 'adds extra context to logs' do
     allow(ActiveSupport::Notifications).to receive(:instrument).and_call_original

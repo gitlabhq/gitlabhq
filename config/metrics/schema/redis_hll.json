@@ -30,14 +30,8 @@
           }
         },
         "required": [
-          "instrumentation_class",
-          "options"
-        ],
-        "not": {
-          "required": [
-            "events"
-          ]
-        }
+          "instrumentation_class"
+        ]
       },
       {
         "properties": {

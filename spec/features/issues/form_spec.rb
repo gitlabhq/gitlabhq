@@ -7,9 +7,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ListboxHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
-  let_it_be(:user)      { create(:user) }
-  let_it_be(:user2)     { create(:user) }
-  let_it_be(:guest)     { create(:user) }
+  let_it_be(:user)      { create(:user, maintainer_of: project) }
+  let_it_be(:user2)     { create(:user, maintainer_of: project) }
+  let_it_be(:guest)     { create(:user, guest_of: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }
@@ -17,12 +17,6 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   let_it_be(:confidential_issue) { create(:issue, project: project, assignees: [user], milestone: milestone, confidential: true) }
 
   let(:current_user) { user }
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_maintainer(user2)
-    project.add_guest(guest)
-  end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)

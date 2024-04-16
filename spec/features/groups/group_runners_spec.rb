@@ -8,13 +8,8 @@ RSpec.describe "Group Runners", feature_category: :fleet_visibility do
 
   let_it_be(:group_owner) { create(:user) }
   let_it_be(:group_maintainer) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, owners: group_owner, maintainers: group_maintainer) }
   let_it_be(:project) { create(:project, group: group) }
-
-  before_all do
-    group.add_owner(group_owner)
-    group.add_maintainer(group_maintainer)
-  end
 
   describe "Group runners page", :js do
     context 'when logged in as group maintainer' do

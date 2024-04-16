@@ -6,11 +6,7 @@ RSpec.describe 'User updates feature flag', :js, feature_category: :feature_flag
   include FeatureFlagHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, namespace: user.namespace) }
-
-  before_all do
-    project.add_developer(user)
-  end
+  let_it_be(:project) { create(:project, namespace: user.namespace, developers: user) }
 
   before do
     sign_in(user)

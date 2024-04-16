@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe "Achievements", :js, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:group) { create(:group, :public, maintainers: user) }
   let_it_be(:achievement1) { create(:achievement, namespace: group) }
   let_it_be(:achievement2) { create(:achievement, namespace: group, description: 'Achievement description') }
-
-  before_all do
-    group.add_maintainer(user)
-  end
 
   before do
     sign_in(user)

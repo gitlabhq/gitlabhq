@@ -8,15 +8,15 @@ product_group: ide
 value_type: number
 status: active
 time_frame: 28d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    attribute: user.id
-  events:
-    - g_edit_by_web_ide
-    - g_edit_by_sfe
-    - g_edit_by_snippet_ide
+events:
+- name: g_edit_by_web_ide
+  unique: user.id
+- name: g_edit_by_sfe
+  unique: user.id
+- name: g_edit_by_snippet_ide
+  unique: user.id
 distribution:
 - ce
 - ee

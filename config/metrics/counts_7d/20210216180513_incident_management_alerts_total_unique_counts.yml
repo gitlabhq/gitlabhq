@@ -8,16 +8,17 @@ product_group: respond
 value_type: number
 status: active
 time_frame: 7d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    attribute: user.id
-  events:
-    - 'incident_management_alert_status_changed'
-    - 'incident_management_alert_assigned'
-    - 'incident_management_alert_todo'
-    - 'incident_management_alert_create_incident'
+events:
+- name: incident_management_alert_status_changed
+  unique: user.id
+- name: incident_management_alert_assigned
+  unique: user.id
+- name: incident_management_alert_todo
+  unique: user.id
+- name: incident_management_alert_create_incident
+  unique: user.id
 distribution:
 - ce
 - ee

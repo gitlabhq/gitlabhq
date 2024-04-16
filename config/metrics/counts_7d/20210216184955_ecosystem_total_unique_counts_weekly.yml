@@ -9,24 +9,34 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-  - i_ecosystem_jira_service_close_issue
-  - i_ecosystem_jira_service_cross_reference
-  - i_ecosystem_jira_service_list_issues
-  - i_ecosystem_jira_service_create_issue
-  - i_ecosystem_slack_service_issue_notification
-  - i_ecosystem_slack_service_push_notification
-  - i_ecosystem_slack_service_deployment_notification
-  - i_ecosystem_slack_service_wiki_page_notification
-  - i_ecosystem_slack_service_merge_request_notification
-  - i_ecosystem_slack_service_note_notification
-  - i_ecosystem_slack_service_tag_push_notification
-  - i_ecosystem_slack_service_confidential_note_notification
-  - i_ecosystem_slack_service_confidential_issue_notification
+instrumentation_class: RedisHLLMetric
+events:
+- name: i_ecosystem_jira_service_close_issue
+  unique: user.id
+- name: i_ecosystem_jira_service_cross_reference
+  unique: user.id
+- name: i_ecosystem_jira_service_list_issues
+  unique: user.id
+- name: i_ecosystem_jira_service_create_issue
+  unique: user.id
+- name: i_ecosystem_slack_service_issue_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_push_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_deployment_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_wiki_page_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_merge_request_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_note_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_tag_push_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_confidential_note_notification
+  unique: user.id
+- name: i_ecosystem_slack_service_confidential_issue_notification
+  unique: user.id
 distribution:
 - ce
 - ee

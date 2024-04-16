@@ -31370,6 +31370,15 @@ msgstr ""
 msgid "MemberRole|Failed to fetch roles."
 msgstr ""
 
+msgid "MemberRole|Failed to load custom role."
+msgstr ""
+
+msgid "MemberRole|Failed to save role."
+msgstr ""
+
+msgid "MemberRole|Failed to save role: %{error}"
+msgstr ""
+
 msgid "MemberRole|ID"
 msgstr ""
 
@@ -31401,6 +31410,9 @@ msgid "MemberRole|Role successfully created."
 msgstr ""
 
 msgid "MemberRole|Role successfully deleted."
+msgstr ""
+
+msgid "MemberRole|Save role"
 msgstr ""
 
 msgid "MemberRole|Select a %{linkStart}pre-existing static role%{linkEnd} to predefine a set of permissions."
@@ -60815,6 +60827,9 @@ msgid "is invalid because there is downstream lock"
 msgstr ""
 
 msgid "is invalid because there is upstream lock"
+msgstr ""
+
+msgid "is linked to an account pending deletion."
 msgstr ""
 
 msgid "is not"

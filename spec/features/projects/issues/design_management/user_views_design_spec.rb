@@ -7,7 +7,7 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
 
   let_it_be(:user) { create(:user) }
   let_it_be(:guest_user) { create(:user) }
-  let_it_be(:project) { create(:project_empty_repo, :public) }
+  let_it_be(:project) { create(:project_empty_repo, :public, maintainers: user, guests: guest_user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:design) { create(:design, :with_file, issue: issue) }
   let_it_be(:design_without_notes) { create(:design, :with_file, issue: issue) }
@@ -28,11 +28,6 @@ RSpec.describe 'User views issue designs', :js, feature_category: :design_manage
     page.within(first(".image-notes li#note_#{diff_note.id}.design-note")) do
       page.find(".awards button[data-emoji-name='#{emoji_name}']").click
     end
-  end
-
-  before_all do
-    project.add_maintainer(user)
-    project.add_guest(guest_user)
   end
 
   before do

@@ -6,7 +6,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   include MergeRequestDiffHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:confidential_incident) do
     create(:incident, confidential: true, project: project, author: developer, description: 'Confidential')
   end
@@ -19,10 +19,6 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
 
   let_it_be_with_reload(:issue) do
     create(:issue, project: project, author: developer, description: 'Issue description')
-  end
-
-  before_all do
-    project.add_developer(developer)
   end
 
   before do

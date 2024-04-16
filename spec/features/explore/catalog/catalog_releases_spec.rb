@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'CI/CD Catalog releases', :js, feature_category: :pipeline_composition, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432824' do
   let_it_be(:tag_name) { 'catalog_release_tag' }
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:namespace) { create(:group) }
+  let_it_be_with_reload(:namespace) { create(:group, owners: user) }
   let_it_be_with_reload(:project) do
     create(
       :project,
@@ -17,10 +17,6 @@ RSpec.describe 'CI/CD Catalog releases', :js, feature_category: :pipeline_compos
 
   let_it_be(:draft_catalog_resource) do
     create(:ci_catalog_resource, project: project)
-  end
-
-  before_all do
-    namespace.add_owner(user)
   end
 
   before do

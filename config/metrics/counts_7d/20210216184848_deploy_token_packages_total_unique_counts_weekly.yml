@@ -10,22 +10,30 @@ value_type: number
 status: active
 time_frame: 7d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-  - i_package_composer_deploy_token
-  - i_package_conan_deploy_token
-  - i_package_generic_deploy_token
-  - i_package_helm_deploy_token
-  - i_package_maven_deploy_token
-  - i_package_npm_deploy_token
-  - i_package_nuget_deploy_token
-  - i_package_pypi_deploy_token
-  - i_package_rubygems_deploy_token
-  - i_package_terraform_module_deploy_token
-  - i_package_rpm_deploy_token
+instrumentation_class: RedisHLLMetric
+events:
+- name: i_package_composer_deploy_token
+  unique: user.id
+- name: i_package_conan_deploy_token
+  unique: user.id
+- name: i_package_generic_deploy_token
+  unique: user.id
+- name: i_package_helm_deploy_token
+  unique: user.id
+- name: i_package_maven_deploy_token
+  unique: user.id
+- name: i_package_npm_deploy_token
+  unique: user.id
+- name: i_package_nuget_deploy_token
+  unique: user.id
+- name: i_package_pypi_deploy_token
+  unique: user.id
+- name: i_package_rubygems_deploy_token
+  unique: user.id
+- name: i_package_terraform_module_deploy_token
+  unique: user.id
+- name: i_package_rpm_deploy_token
+  unique: user.id
 distribution:
 - ee
 - ce

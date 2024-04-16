@@ -10,14 +10,13 @@ status: active
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108629
 time_frame: 28d
-instrumentation_class: AggregatedMetric
+instrumentation_class: RedisHLLMetric
 data_source: redis_hll
-options:
-  aggregate:
-    attribute: user.id
-  events:
-    - 'i_testing_test_report_uploaded'
-    - 'i_testing_coverage_report_uploaded'
+events:
+- name: i_testing_test_report_uploaded
+  unique: user.id
+- name: i_testing_coverage_report_uploaded
+  unique: user.id
 distribution:
 - ce
 - ee

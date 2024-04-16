@@ -9,28 +9,42 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-  - incident_management_incident_created
-  - incident_management_incident_reopened
-  - incident_management_incident_closed
-  - incident_management_incident_assigned
-  - incident_management_incident_todo
-  - incident_management_incident_comment
-  - incident_management_incident_zoom_meeting
-  - incident_management_incident_published
-  - incident_management_incident_relate
-  - incident_management_incident_unrelate
-  - incident_management_incident_change_confidential
-  - incident_management_alert_status_changed
-  - incident_management_alert_assigned
-  - incident_management_alert_todo
-  - incident_management_timeline_event_created
-  - incident_management_timeline_event_edited
-  - incident_management_timeline_event_deleted
+instrumentation_class: RedisHLLMetric
+events:
+- name: incident_management_incident_created
+  unique: user.id
+- name: incident_management_incident_reopened
+  unique: user.id
+- name: incident_management_incident_closed
+  unique: user.id
+- name: incident_management_incident_assigned
+  unique: user.id
+- name: incident_management_incident_todo
+  unique: user.id
+- name: incident_management_incident_comment
+  unique: user.id
+- name: incident_management_incident_zoom_meeting
+  unique: user.id
+- name: incident_management_incident_published
+  unique: user.id
+- name: incident_management_incident_relate
+  unique: user.id
+- name: incident_management_incident_unrelate
+  unique: user.id
+- name: incident_management_incident_change_confidential
+  unique: user.id
+- name: incident_management_alert_status_changed
+  unique: user.id
+- name: incident_management_alert_assigned
+  unique: user.id
+- name: incident_management_alert_todo
+  unique: user.id
+- name: incident_management_timeline_event_created
+  unique: user.id
+- name: incident_management_timeline_event_edited
+  unique: user.id
+- name: incident_management_timeline_event_deleted
+  unique: user.id
 distribution:
 - ce
 - ee

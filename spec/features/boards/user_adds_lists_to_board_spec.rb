@@ -7,7 +7,7 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public, namespace: group) }
   let_it_be(:group_board) { create(:board, group: group) }
   let_it_be(:project_board) { create(:board, project: project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project, owner_of: group) }
 
   let_it_be(:milestone) { create(:milestone, project: project) }
 
@@ -17,11 +17,6 @@ RSpec.describe 'User adds lists', :js, feature_category: :team_planning do
   let_it_be(:closed) { create(:group_label, group: group, name: 'Closed') }
 
   let_it_be(:issue) { create(:labeled_issue, project: project, labels: [group_label, project_label]) }
-
-  before_all do
-    project.add_maintainer(user)
-    group.add_owner(user)
-  end
 
   where(:board_type) do
     [[:project], [:group]]

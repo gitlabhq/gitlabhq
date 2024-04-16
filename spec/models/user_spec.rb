@@ -8501,4 +8501,39 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
   end
+
+  context 'when email is not unique' do
+    let_it_be(:existing_user) { create(:user) }
+
+    subject(:new_user) { build(:user, email: existing_user.email).tap { |user| user.valid? } }
+
+    shared_examples 'it does not add account pending deletion error message' do
+      it 'does not add account pending deletion error message' do
+        expect(new_user.errors.full_messages).to include('Email has already been taken')
+        expect(new_user.errors.full_messages).not_to include('Email is linked to an account pending deletion')
+      end
+    end
+
+    context 'when existing account is pending deletion' do
+      before do
+        UserCustomAttribute.set_deleted_own_account_at(existing_user)
+      end
+
+      it 'adds expected error messages' do
+        expect(new_user.errors.full_messages).to include('Email has already been taken', 'Email is linked to an account pending deletion.')
+      end
+
+      context 'when delay_delete_own_user feature flag is disabled' do
+        before do
+          stub_feature_flags(delay_delete_own_user: false)
+        end
+
+        it_behaves_like 'it does not add account pending deletion error message'
+      end
+    end
+
+    context 'when existing account is not pending deletion' do
+      it_behaves_like 'it does not add account pending deletion error message'
+    end
+  end
 end

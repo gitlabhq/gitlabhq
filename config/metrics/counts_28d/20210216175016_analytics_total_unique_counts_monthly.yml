@@ -9,31 +9,48 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-    - users_viewing_analytics_group_devops_adoption
-    - i_analytics_dev_ops_adoption
-    - i_analytics_dev_ops_score
-    - p_analytics_merge_request
-    - i_analytics_instance_statistics
-    - g_analytics_contribution
-    - g_analytics_insights
-    - g_analytics_issues
-    - g_analytics_productivity
-    - g_analytics_valuestream
-    - p_analytics_pipelines
-    - p_analytics_ci_cd_pipelines
-    - p_analytics_ci_cd_deployment_frequency
-    - p_analytics_ci_cd_lead_time
-    - p_analytics_code_reviews
-    - p_analytics_valuestream
-    - p_analytics_insights
-    - p_analytics_issues
-    - p_analytics_repo
-    - i_analytics_cohorts
+instrumentation_class: RedisHLLMetric
+events:
+- name: users_viewing_analytics_group_devops_adoption
+  unique: user.id
+- name: i_analytics_dev_ops_adoption
+  unique: user.id
+- name: i_analytics_dev_ops_score
+  unique: user.id
+- name: p_analytics_merge_request
+  unique: user.id
+- name: i_analytics_instance_statistics
+  unique: user.id
+- name: g_analytics_contribution
+  unique: user.id
+- name: g_analytics_insights
+  unique: user.id
+- name: g_analytics_issues
+  unique: user.id
+- name: g_analytics_productivity
+  unique: user.id
+- name: g_analytics_valuestream
+  unique: user.id
+- name: p_analytics_pipelines
+  unique: user.id
+- name: p_analytics_ci_cd_pipelines
+  unique: user.id
+- name: p_analytics_ci_cd_deployment_frequency
+  unique: user.id
+- name: p_analytics_ci_cd_lead_time
+  unique: user.id
+- name: p_analytics_code_reviews
+  unique: user.id
+- name: p_analytics_valuestream
+  unique: user.id
+- name: p_analytics_insights
+  unique: user.id
+- name: p_analytics_issues
+  unique: user.id
+- name: p_analytics_repo
+  unique: user.id
+- name: i_analytics_cohorts
+  unique: user.id
 distribution:
   - ce
   - ee

@@ -11,13 +11,12 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82543
 time_frame: 28d
 data_source: redis_hll
 data_category: optional
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-    - error_tracking_view_list
-    - error_tracking_view_details
+instrumentation_class: RedisHLLMetric
+events:
+- name: error_tracking_view_list
+  unique: user.id
+- name: error_tracking_view_details
+  unique: user.id
 distribution:
 - ce
 - ee

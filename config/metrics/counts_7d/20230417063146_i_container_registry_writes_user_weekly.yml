@@ -11,16 +11,18 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117779
 time_frame: 7d
 data_source: redis_hll
 data_category: optional
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-  - i_container_registry_push_tag_user
-  - i_container_registry_delete_tag_user
-  - i_container_registry_delete_repository_user
-  - i_container_registry_create_repository_user
-  - i_container_registry_push_repository_user
+instrumentation_class: RedisHLLMetric
+events:
+- name: i_container_registry_push_tag_user
+  unique: user.id
+- name: i_container_registry_delete_tag_user
+  unique: user.id
+- name: i_container_registry_delete_repository_user
+  unique: user.id
+- name: i_container_registry_create_repository_user
+  unique: user.id
+- name: i_container_registry_push_repository_user
+  unique: user.id
 performance_indicator_type: []
 distribution:
 - ce

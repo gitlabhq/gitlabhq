@@ -6,11 +6,7 @@ RSpec.describe 'Group CI/CD settings', feature_category: :continuous_integration
   include WaitForRequests
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group) }
-
-  before_all do
-    group.add_owner(user)
-  end
+  let_it_be(:group, reload: true) { create(:group, owners: user) }
 
   before do
     sign_in(user)

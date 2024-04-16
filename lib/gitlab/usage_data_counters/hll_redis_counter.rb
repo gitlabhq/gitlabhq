@@ -45,7 +45,9 @@ module Gitlab
         # start_date  - The start date of the time range.
         # end_date  - The end date of the time range.
         def unique_events(event_names:, start_date:, end_date:, property_name: nil)
-          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date)
+          used_in_aggregate_metric = event_names.is_a?(Array) && event_names.size > 1
+
+          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date, used_in_aggregate_metric: used_in_aggregate_metric)
         end
 
         def known_event?(event_name)

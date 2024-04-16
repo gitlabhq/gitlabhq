@@ -1188,10 +1188,23 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def unique_email
-    return if errors.added?(:email, _('has already been taken'))
+    email_taken = errors.added?(:email, _('has already been taken'))
 
-    if !emails.exists?(email: email) && Email.exists?(email: email)
+    if !email_taken && !emails.exists?(email: email) && Email.exists?(email: email)
       errors.add(:email, _('has already been taken'))
+      email_taken = true
+    end
+
+    if email_taken &&
+        ::Feature.enabled?(:delay_delete_own_user) &&
+        User.find_by_any_email(email)&.deleted_own_account?
+
+      help_page_url = Rails.application.routes.url_helpers.help_page_url(
+        'user/profile/account/delete_account',
+        anchor: 'delete-your-own-account'
+      )
+
+      errors.add(:email, _('is linked to an account pending deletion.'), help_page_url: help_page_url)
     end
   end
 

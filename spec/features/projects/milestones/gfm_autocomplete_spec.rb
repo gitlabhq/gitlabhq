@@ -6,7 +6,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
   include Features::AutocompleteHelpers
 
   let_it_be(:user) { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
-  let_it_be(:group) { create(:group, name: 'Ancestor') }
+  let_it_be(:group) { create(:group, name: 'Ancestor', maintainers: user) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:issue) { create(:issue, project: project, assignees: [user], title: 'My special issue') }
   let_it_be(:label) { create(:label, project: project, title: 'special+') }
@@ -40,10 +40,6 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       expect(find_autocomplete_menu).to be_visible
       expect_autocomplete_entry(merge_request.title)
     end
-  end
-
-  before_all do
-    group.add_maintainer(user)
   end
 
   describe 'new milestone page' do

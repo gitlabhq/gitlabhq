@@ -9,44 +9,74 @@ value_type: number
 status: active
 time_frame: 28d
 data_source: redis_hll
-instrumentation_class: AggregatedMetric
-options:
-  aggregate:
-    attribute: user.id
-  events:
-  - g_project_management_issue_title_changed
-  - g_project_management_issue_description_changed
-  - g_project_management_issue_assignee_changed
-  - g_project_management_issue_made_confidential
-  - g_project_management_issue_made_visible
-  - g_project_management_issue_created
-  - g_project_management_issue_closed
-  - g_project_management_issue_reopened
-  - g_project_management_issue_label_changed
-  - g_project_management_issue_milestone_changed
-  - g_project_management_issue_iteration_changed
-  - g_project_management_issue_weight_changed
-  - g_project_management_issue_cross_referenced
-  - g_project_management_issue_moved
-  - g_project_management_issue_related
-  - g_project_management_issue_unrelated
-  - g_project_management_issue_marked_as_duplicate
-  - g_project_management_issue_locked
-  - g_project_management_issue_unlocked
-  - g_project_management_issue_added_to_epic
-  - g_project_management_issue_removed_from_epic
-  - g_project_management_issue_changed_epic
-  - g_project_management_issue_designs_added
-  - g_project_management_issue_designs_modified
-  - g_project_management_issue_designs_removed
-  - g_project_management_issue_due_date_changed
-  - g_project_management_issue_time_estimate_changed
-  - g_project_management_issue_time_spent_changed
-  - g_project_management_issue_comment_added
-  - g_project_management_issue_comment_edited
-  - g_project_management_issue_comment_removed
-  - g_project_management_issue_health_status_changed
-  - g_project_management_issue_cloned
+instrumentation_class: RedisHLLMetric
+events:
+- name: g_project_management_issue_title_changed
+  unique: user.id
+- name: g_project_management_issue_description_changed
+  unique: user.id
+- name: g_project_management_issue_assignee_changed
+  unique: user.id
+- name: g_project_management_issue_made_confidential
+  unique: user.id
+- name: g_project_management_issue_made_visible
+  unique: user.id
+- name: g_project_management_issue_created
+  unique: user.id
+- name: g_project_management_issue_closed
+  unique: user.id
+- name: g_project_management_issue_reopened
+  unique: user.id
+- name: g_project_management_issue_label_changed
+  unique: user.id
+- name: g_project_management_issue_milestone_changed
+  unique: user.id
+- name: g_project_management_issue_iteration_changed
+  unique: user.id
+- name: g_project_management_issue_weight_changed
+  unique: user.id
+- name: g_project_management_issue_cross_referenced
+  unique: user.id
+- name: g_project_management_issue_moved
+  unique: user.id
+- name: g_project_management_issue_related
+  unique: user.id
+- name: g_project_management_issue_unrelated
+  unique: user.id
+- name: g_project_management_issue_marked_as_duplicate
+  unique: user.id
+- name: g_project_management_issue_locked
+  unique: user.id
+- name: g_project_management_issue_unlocked
+  unique: user.id
+- name: g_project_management_issue_added_to_epic
+  unique: user.id
+- name: g_project_management_issue_removed_from_epic
+  unique: user.id
+- name: g_project_management_issue_changed_epic
+  unique: user.id
+- name: g_project_management_issue_designs_added
+  unique: user.id
+- name: g_project_management_issue_designs_modified
+  unique: user.id
+- name: g_project_management_issue_designs_removed
+  unique: user.id
+- name: g_project_management_issue_due_date_changed
+  unique: user.id
+- name: g_project_management_issue_time_estimate_changed
+  unique: user.id
+- name: g_project_management_issue_time_spent_changed
+  unique: user.id
+- name: g_project_management_issue_comment_added
+  unique: user.id
+- name: g_project_management_issue_comment_edited
+  unique: user.id
+- name: g_project_management_issue_comment_removed
+  unique: user.id
+- name: g_project_management_issue_health_status_changed
+  unique: user.id
+- name: g_project_management_issue_cloned
+  unique: user.id
 distribution:
 - ce
 - ee

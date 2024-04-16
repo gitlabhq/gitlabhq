@@ -9,12 +9,8 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
   let_it_be(:user2) { create(:user, username: 'diane') }
   let_it_be(:user3) { create(:user) }
   let_it_be(:author) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_todos_path, :todos
 

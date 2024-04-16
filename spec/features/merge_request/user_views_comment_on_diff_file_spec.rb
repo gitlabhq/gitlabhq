@@ -11,11 +11,7 @@ RSpec.describe 'User views comment on a diff file', :js, feature_category: :code
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
 
-  let_it_be(:user) { create(:user) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   before do
     sign_in(user)

@@ -4,14 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Incident Management index', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:incident) { create(:incident, project: project) }
-
-  before_all do
-    project.add_reporter(reporter)
-    project.add_guest(guest)
-  end
 
   before do
     sign_in(user)
