@@ -336,7 +336,7 @@ Run through the following steps sequentially on each component node to perform t
    sudo gitlab-ctl restart
    ```
 
-## Multi-node / HA deployment with Geo **(PREMIUM SELF)**
+## Multi-node / HA deployment with Geo
 
 DETAILS:
 **Tier:** Premium, Ultimate

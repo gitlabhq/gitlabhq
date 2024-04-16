@@ -7,7 +7,7 @@ RSpec.describe Resolvers::WorkItemResolver do
 
   describe '#resolve' do
     let_it_be(:developer) { create(:user) }
-    let_it_be(:project) { create(:project, :private).tap { |project| project.add_developer(developer) } }
+    let_it_be(:project) { create(:project, :private, developers: developer) }
     let_it_be(:work_item) { create(:work_item, project: project) }
 
     let(:current_user) { developer }

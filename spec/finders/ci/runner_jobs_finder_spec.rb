@@ -53,9 +53,9 @@ RSpec.describe Ci::RunnerJobsFinder, feature_category: :fleet_visibility do
     end
 
     context 'when the user has different access levels in different projects' do
-      let_it_be(:guest_project) { create(:project).tap { |p| p.add_guest(user) } }
+      let_it_be(:guest_project) { create(:project, guests: user) }
       let_it_be(:guest_jobs) { create_list(:ci_build, 2, runner: runner, project: guest_project) }
-      let_it_be(:reporter_project) { create(:project).tap { |p| p.add_reporter(user) } }
+      let_it_be(:reporter_project) { create(:project, reporters: user) }
       let_it_be(:reporter_jobs) { create_list(:ci_build, 3, runner: runner, project: reporter_project) }
 
       it 'returns only the jobs the user has permission to see', :aggregate_failures do

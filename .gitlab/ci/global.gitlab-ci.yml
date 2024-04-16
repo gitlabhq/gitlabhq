@@ -305,6 +305,22 @@
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.8
       alias: zoekt-ci-image
 
+.ai-gateway-variables:
+  variables:
+    AIGW_AUTH__BYPASS_EXTERNAL: True
+    AIGW_VERTEX_TEXT_MODEL__PROJECT: $VERTEX_AI_PROJECT
+    AIGW_VERTEX_TEXT_MODEL__JSON_KEY: $VERTEX_AI_CREDENTIALS
+    AIGW_FASTAPI__DOCS_URL: "/docs"
+    AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
+    AIGW_FASTAPI__API_PORT: 5052
+    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY_FOR_SERVICE
+    # CI_DEBUG_SERVICES: "true" # Enable this variable when you debug ai-gateway boot failure.
+
+.ai-gateway-services:
+  services:
+    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
+      alias: ai-gateway
+
 .use-pg13:
   extends:
     - .pg-base-variables
@@ -359,9 +375,11 @@
   extends:
     - .use-pg14
     - .zoekt-variables
+    - .ai-gateway-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es7-services, services]
+    - !reference [.ai-gateway-services, services]
 
 .use-pg15-es7-ee:
   extends:

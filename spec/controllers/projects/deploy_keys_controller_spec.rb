@@ -17,7 +17,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user) { create(:user) }
 
-    let_it_be(:accessible_project) { create(:project, :internal).tap { |p| p.add_developer(user) } }
+    let_it_be(:accessible_project) { create(:project, :internal, developers: user) }
     let_it_be(:inaccessible_project) { create(:project, :internal) }
     let_it_be(:project_private) { create(:project, :private) }
 

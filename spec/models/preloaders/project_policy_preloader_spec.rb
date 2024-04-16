@@ -33,11 +33,11 @@ RSpec.describe Preloaders::ProjectPolicyPreloader do
     preload_projects_for_policy(user)
     control = ActiveRecord::QueryRecorder.new { authorize_all_projects(user) }
 
-    new_project1 = create(:project, :private).tap { |project| project.add_maintainer(user) }
+    new_project1 = create(:project, :private, maintainers: user)
     new_project2 = create(:project, :private, namespace: root_parent)
 
     another_root = create(:group, :private, name: 'root-3', path: 'root-3')
-    new_project3 = create(:project, :private, namespace: another_root).tap { |project| project.add_maintainer(user) }
+    new_project3 = create(:project, :private, namespace: another_root, maintainers: user)
 
     pristine_projects = Project.where(id: base_projects + [new_project1, new_project2, new_project3])
 

@@ -4878,7 +4878,7 @@ RSpec.describe User, feature_category: :user_profile do
 
     it 'includes projects that belong to a user, but no other projects' do
       owned = create(:project, :private, namespace: user.namespace)
-      member = create(:project, :private).tap { |p| p.add_maintainer(user) }
+      member = create(:project, :private, maintainers: user)
       other = create(:project)
 
       expect(subject).to include(owned)

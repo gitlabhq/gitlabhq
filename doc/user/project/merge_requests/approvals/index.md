@@ -116,10 +116,6 @@ Without the approvals, the work cannot merge. Required approvals enable multiple
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`.
-
 Whenever an approval rule cannot be satisfied, the rule is displayed as **Auto approved**. This applies to the following conditions:
 
 - The only eligible approver is the author of the merge request.

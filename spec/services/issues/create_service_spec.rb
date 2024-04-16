@@ -73,7 +73,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       describe 'authorization' do
-        let_it_be(:project) { create(:project, :private, group: group).tap { |project| project.add_guest(user) } }
+        let_it_be(:project) { create(:project, :private, group: group, guests: user) }
 
         let(:opts) { { title: 'private issue', description: 'please fix' } }
 
@@ -170,7 +170,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
       context 'when issue template is provided' do
         let_it_be(:files) { { '.gitlab/issue_templates/Default.md' => 'Default template contents' } }
-        let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: files).tap { |project| project.add_guest(user) } }
+        let_it_be_with_reload(:project) { create(:project, :custom_repo, group: group, files: files, guests: user) }
 
         context 'when description is blank' do
           it 'sets template contents as description when description is blank' do

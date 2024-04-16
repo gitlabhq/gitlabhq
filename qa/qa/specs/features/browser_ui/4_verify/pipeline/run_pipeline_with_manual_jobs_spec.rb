@@ -70,7 +70,7 @@ module QA
       end
 
       it(
-        'does not leave any job in skipped state', :reliable,
+        'does not leave any job in skipped state', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349158'
       ) do
         Page::Project::Pipeline::Show.perform do |show|

@@ -292,6 +292,32 @@ function rspec_parallelized_job() {
   handle_retry_rspec_in_new_process $rspec_run_status
 }
 
+function retry_failed_e2e_rspec_examples() {
+  local rspec_run_status=0
+
+  if [[ "${QA_COMMAND}" == "" ]]; then
+    echoerr "Missing variable 'QA_COMMAND' needed to trigger tests"
+    exit 1
+  fi
+
+  if is_rspec_last_run_results_file_missing; then
+    exit 1
+  fi
+
+  local junit_retry_file="tmp/retried-rspec-${CI_JOB_ID}.xml"
+
+  export QA_RSPEC_RETRIED="true"
+  export NO_KNAPSACK="true"
+
+  eval "$QA_COMMAND --format RspecJunitFormatter --out ${junit_retry_file} --only-failures"
+  rspec_run_status=$?
+
+  install_junit_merge_gem
+  run_timed_command "junit_merge ${junit_retry_file} tmp/rspec-${CI_JOB_ID}.xml --update-only"
+
+  exit $rspec_run_status
+}
+
 function retry_failed_rspec_examples() {
   local rspec_run_status=0
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable, product_group: :knowledge,
+  RSpec.describe 'Plan', :blocking, product_group: :knowledge,
     quarantine: {
       only: { job: 'relative-url' },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409541',

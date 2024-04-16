@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository tags', :reliable, product_group: :source_code, quarantine: {
+    describe 'Repository tags', :blocking, product_group: :source_code, quarantine: {
       type: :flaky,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/438349",
       only: { job: /gdk-qa-.*/ }

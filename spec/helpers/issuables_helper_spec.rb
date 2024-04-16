@@ -101,7 +101,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   describe '#assigned_issuables_count', feature_category: :team_planning do
     context 'when issuable is issues' do
       let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
+      let_it_be(:project) { create(:project, developers: user) }
 
       subject { helper.assigned_issuables_count(:issues) }
 

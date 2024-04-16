@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Cherry picking from a merge request', :reliable, product_group: :code_review do
+    describe 'Cherry picking from a merge request', :smoke, product_group: :code_review do
       let(:project) { create(:project, :with_readme) }
       let(:feature_mr) { create(:merge_request, project: project, target_branch: 'development') }
 

@@ -43,7 +43,7 @@ module QA
       it_behaves_like 'registration and login'
     end
 
-    describe 'standard', :reliable, :external_api_calls,
+    describe 'standard', :smoke, :external_api_calls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
       context 'when admin approval is not required' do
         before(:all) do
@@ -87,7 +87,7 @@ module QA
             end
           end
 
-          it 'allows recreating with same credentials', :reliable, :external_api_calls,
+          it 'allows recreating with same credentials', :blocking, :external_api_calls,
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 

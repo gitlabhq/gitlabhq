@@ -82,23 +82,22 @@ include:
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     GDK_URL: http://gdk.test:3000
     FF_NETWORK_PER_BUILD: "true"
+    RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
+    - source scripts/rspec_helpers.sh
     - cd qa && bundle config set --local without 'development' && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS --order random --force-color --format documentation --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.xml --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-${QA_RSPEC_RETRIED:-false}.json"
+    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS --order random --force-color --format documentation --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-\${QA_RSPEC_RETRIED:-false}.json"
     - echo "Running - '$QA_COMMAND'"
     - |
-      if eval "$QA_COMMAND"; then
+      if eval "$QA_COMMAND --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"; then
         echo "Test run finished successfully"
       else
-        export QA_RSPEC_RETRIED=true
-        export NO_KNAPSACK=true
-        echo "Initial test run failed, triggering retry of failed rspec tests"
-        eval "$QA_COMMAND --only-failures"
+        retry_failed_e2e_rspec_examples
       fi
   after_script:
     - !reference [.with-gdk-log, after_script]
@@ -151,6 +150,7 @@ gdk-qa-smoke:
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
+  parallel: 8
 
 gdk-qa-blocking:
   extends:

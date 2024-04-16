@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :reliable, product_group: :project_management do
+  RSpec.describe 'Plan', :smoke, product_group: :project_management do
     describe 'Related issues' do
       let(:project) { create(:project, name: 'project-to-test-related-issues') }
       let(:issues) { create_list(:issue, 2, project: project) }

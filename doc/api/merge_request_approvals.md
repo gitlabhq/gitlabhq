@@ -106,7 +106,7 @@ Supported attributes:
 | `approvals_required` | integer           | Yes      | The number of required approvals for this rule. |
 | `name`               | string            | Yes      | The name of the approval rule. |
 | `group_ids`          | array             | No       | The IDs of groups as approvers. |
-| `rule_type`          | string            | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../../ee/user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../../ee/user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
+| `rule_type`          | string            | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
 | `user_ids`           | array             | No       | The IDs of users as approvers. |
 
 Example request:

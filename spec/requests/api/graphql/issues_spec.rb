@@ -211,7 +211,7 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_query }
       expect_graphql_errors_to_be_empty
 
-      new_private_project = create(:project, :private).tap { |project| project.add_developer(current_user) }
+      new_private_project = create(:project, :private, developers: current_user)
       create(:issue, project: new_private_project)
 
       private_group = create(:group, :private, developers: current_user)

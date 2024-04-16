@@ -42,7 +42,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'exposes variable on protected branch', :reliable,
+      it 'exposes variable on protected branch', :blocking,
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419506',
           type: :investigating
@@ -60,7 +60,7 @@ module QA
         end
       end
 
-      it 'does not expose variable on unprotected branch', :reliable,
+      it 'does not expose variable on unprotected branch', :smoke,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347664' do
         [developer, maintainer].each do |user|
           create_merge_request(Runtime::API::Client.new(:gitlab, user: user))

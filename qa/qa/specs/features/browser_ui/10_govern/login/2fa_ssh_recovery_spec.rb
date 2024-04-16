@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :reliable, :requires_admin, :skip_live_env,
+  RSpec.describe 'Govern', :blocking, :requires_admin, :skip_live_env,
     product_group: :authentication do
     describe '2FA' do
       let!(:user) { create(:user) }

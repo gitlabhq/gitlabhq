@@ -28,7 +28,7 @@ module QA
         end
       end
 
-      it 'download archives of each user project then check they are different', :reliable,
+      it 'download archives of each user project then check they are different', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347748' do
         archive_checksums = {}
 

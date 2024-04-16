@@ -15,7 +15,7 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
       end
     end
 
-    let_it_be(:private_project) { create(:project, :private).tap { |r| r.add_developer(user) } }
+    let_it_be(:private_project) { create(:project, :private, developers: user) }
 
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:private_issue) { create(:issue, project: private_project) }

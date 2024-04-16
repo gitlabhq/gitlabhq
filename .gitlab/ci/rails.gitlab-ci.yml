@@ -653,6 +653,7 @@ rspec-ee:predictive:trigger:
     - .rspec-ee-base-pg14
   variables:
     REAL_AI_REQUEST: "true"
+    AI_GATEWAY_URL: http://ai-gateway:5052
 
 rspec-ee unit gitlab-duo-chat-zeroshot pg14:
   extends:

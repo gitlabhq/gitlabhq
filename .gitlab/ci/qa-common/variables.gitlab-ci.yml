@@ -14,3 +14,5 @@ variables:
   # Used by gitlab-qa to set up a volume for `${CI_PROJECT_DIR}/qa/rspec:/home/gitlab/qa/rspec/`
   QA_RSPEC_REPORT_PATH: "${CI_PROJECT_DIR}/qa/rspec"
   QA_OMNIBUS_MR_TESTS: "only-smoke-reliable"
+  # Retry failed specs in separate process
+  QA_RETRY_FAILED_SPECS: "true"

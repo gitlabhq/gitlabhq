@@ -30,7 +30,7 @@ RSpec.describe Users::AssignedIssuesCountService, :use_clean_rails_memory_store_
 
   context 'when the number of assigned open issues exceeds max_limit' do
     let_it_be(:banned_user) { create(:user, :banned) }
-    let_it_be(:project) { create(:project).tap { |p| p.add_developer(user) } }
+    let_it_be(:project) { create(:project, developers: user) }
 
     context 'when user is admin', :enable_admin_mode do
       let_it_be(:admin) { create(:admin) }

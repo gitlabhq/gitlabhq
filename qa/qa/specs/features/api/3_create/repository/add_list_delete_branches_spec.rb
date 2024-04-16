@@ -31,7 +31,7 @@ module QA
       end
 
       it(
-        'creates, retrieves and deletes branches', :reliable,
+        'creates, retrieves and deletes branches', :smoke,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347740'
       ) do
         # Create branch

@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env, only: {
     condition: -> { ENV['QA_RUN_TYPE']&.match?("e2e-package-and-test") }
   } do
-    describe 'rate limits', :reliable, product_group: :import_and_integrate do
+    describe 'rate limits', :blocking, product_group: :import_and_integrate do
       let(:rate_limited_user) { create(:user) }
       let(:api_client) { Runtime::API::Client.new(:gitlab, user: rate_limited_user) }
       let!(:request) { Runtime::API::Request.new(api_client, '/users') }

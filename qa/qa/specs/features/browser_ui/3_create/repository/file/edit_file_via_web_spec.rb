@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable do
+  RSpec.describe 'Create', :blocking do
     describe 'File management', product_group: :source_code do
       let(:file) { create(:file) }
 

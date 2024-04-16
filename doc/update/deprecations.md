@@ -201,7 +201,7 @@ upgrade to GitLab 16.3 or above, and remove the feature flag configuration.
 </div>
 
 The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
@@ -244,7 +244,7 @@ Offset-based pagination for the [List registry repository tags](https://docs.git
 The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
 This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
 with a GitLab instance at the instance, group, or project level through the API. In GitLab 17.0, registration tokens, and support for certain configuration arguments,
-will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md#prevent-your-runner-registration-workflow-from-breaking).
+will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html#prevent-your-runner-registration-workflow-from-breaking).
 
 The configuration arguments disabled for runner authentication tokens are:
 
@@ -256,7 +256,7 @@ The configuration arguments disabled for runner authentication tokens are:
 - `--tag-list`
 - `--maintenance-note`
 
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
+This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) to add configurations, and use the runner authentication token in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -272,7 +272,7 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
 Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
@@ -318,7 +318,7 @@ Before upgrading to GitLab 18.0, please ensure you have [migrated](https://docs.
 
 The certificate-based integration with Kubernetes [will be deprecated and removed](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/).
 
-As a self-managed customer, we are introducing the [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
+As a self-managed customer, we are introducing the [feature flag](https://docs.gitlab.com/ee/administration/feature_flags.html#enable-or-disable-the-feature) `certificate_based_clusters` in GitLab 15.0 so you can keep your certificate-based integration enabled. However, the feature flag will be disabled by default, so this change is a **breaking change**.
 
 In GitLab 18.0 we will remove both the feature and its related code. Until the final removal in 18.0, features built on this integration will continue to work, if you enable the feature flag. Until the feature is removed, GitLab will continue to fix security and critical issues as they arise.
 
@@ -5346,7 +5346,7 @@ Tracing in GitLab is an integration with Jaeger, an open-source end-to-end distr
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336912).
 </div>
 
-In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the container registry API that [gets registry repositories from a group](../api/container_registry.md#within-a-group).
+In milestone 15.0, support for the `tags` and `tags_count` parameters will be removed from the container registry API that [gets registry repositories from a group](https://docs.gitlab.com/ee/api/container_registry.html#within-a-group).
 
 The `GET /groups/:id/registry/repositories` endpoint will remain, but won't return any info about tags. To get the info about tags, you can use the existing `GET /registry/repositories/:id` endpoint, which will continue to support the `tags` and `tag_count` options as it does today. The latter must be called once per image repository.
 

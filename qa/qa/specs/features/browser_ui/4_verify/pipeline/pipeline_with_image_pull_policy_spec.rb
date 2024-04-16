@@ -60,7 +60,7 @@ module QA
         end
 
         with_them do
-          it 'applies pull policy in job correctly', :reliable, testcase: params[:testcase] do
+          it 'applies pull policy in job correctly', :smoke, testcase: params[:testcase] do
             visit_job
 
             if pull_image
@@ -84,7 +84,7 @@ module QA
         let(:text2) { 'is not one of the allowed_pull_policies ([never])' }
 
         it(
-          'fails job with policy not allowed message', :reliable,
+          'fails job with policy not allowed message', :smoke,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853'
         ) do
           visit_job

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Dashboard::TodosController do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project).tap { |project| project.add_developer(user) } }
+  let_it_be(:project) { create(:project, developers: user) }
   let_it_be(:author) { create(:user) }
 
   before do

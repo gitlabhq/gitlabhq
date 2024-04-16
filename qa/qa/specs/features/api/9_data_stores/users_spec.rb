@@ -4,7 +4,7 @@ require 'airborne'
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Users API', :reliable, product_group: :tenant_scale do
+    describe 'Users API', :smoke, product_group: :tenant_scale do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
       let(:request) { Runtime::API::Request.new(api_client, '/users') }
 

@@ -924,7 +924,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
   end
 
   describe 'when MRs are not enabled' do
-    let(:project) { create(:project, :public, :repository).tap { |pr| pr.add_developer(user1) } }
+    let(:project) { create(:project, :public, :repository, developers: user1) }
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 

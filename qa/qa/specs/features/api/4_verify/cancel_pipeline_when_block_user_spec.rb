@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :requires_admin, :reliable, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :requires_admin, :blocking, product_group: :pipeline_execution do
     describe 'When user is blocked', feature_flag: { name: 'enforce_full_refs_for_pipeline_schedules,
                                                                          scope: :project' } do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }

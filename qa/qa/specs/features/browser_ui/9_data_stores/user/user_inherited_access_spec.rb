@@ -33,7 +33,7 @@ module QA
         end
 
         it(
-          'is allowed to edit the sub-group project files', :reliable,
+          'is allowed to edit the sub-group project files', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363467'
         ) do
           Flow::Login.sign_in(as: parent_group_user)
@@ -71,7 +71,7 @@ module QA
         end
 
         it(
-          'is not allowed to edit the parent group project files', :reliable,
+          'is not allowed to edit the parent group project files', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363466'
         ) do
           Flow::Login.sign_in(as: sub_group_user)
