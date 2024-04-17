@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Mutations::Issues::UnlinkAlert, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:internal_alert) { create(:alert_management_alert, project: project) }
   let_it_be(:external_alert) { create(:alert_management_alert, project: another_project) }
   let_it_be(:issue) { create(:incident, project: project, alert_management_alerts: [internal_alert, external_alert]) }
@@ -14,11 +14,6 @@ RSpec.describe Mutations::Issues::UnlinkAlert, feature_category: :incident_manag
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_developer(developer)
-  end
 
   describe '#resolve' do
     let(:alert_to_unlink) { internal_alert }

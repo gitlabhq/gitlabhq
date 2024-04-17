@@ -4,15 +4,11 @@ require 'spec_helper'
 
 RSpec.describe DataTransfer::GroupDataTransferFinder, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:namespace_1) { create(:group) }
+  let_it_be(:namespace_1) { create(:group, owners: user) }
   let_it_be(:project_1) { create(:project, group: namespace_1) }
   let_it_be(:project_2) { create(:project, group: namespace_1) }
   let(:from_date) { Date.new(2022, 2, 1) }
   let(:to_date) { Date.new(2023, 1, 1) }
-
-  before_all do
-    namespace_1.add_owner(user)
-  end
 
   describe '#execute' do
     let(:subject) { described_class.new(group: namespace_1, from: from_date, to: to_date, user: user) }

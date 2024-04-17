@@ -681,7 +681,7 @@ class Group < Namespace
   def members_with_descendants
     GroupMember
       .active_without_invites_and_requests
-      .where(source_id: self_and_descendants.reorder(nil).select(:id))
+      .where(source_id: self_and_descendant_ids)
   end
 
   # Returns all members that are part of the group, it's subgroups, and ancestor groups

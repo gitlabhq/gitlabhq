@@ -6,12 +6,8 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group)        { create(:group) }
+  let_it_be(:group)        { create(:group, developers: current_user) }
   let_it_be(:project)      { create(:project, group: group) }
-
-  before_all do
-    group.add_developer(current_user)
-  end
 
   shared_examples 'a work item type resolver' do
     let(:args) { {} }

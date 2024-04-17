@@ -91,7 +91,7 @@ module.exports = {
       boxShadow: {
         none: 'none',
         // TODO: I don't think we have a --t-gray matching class... --t-gray-a-24 seems close
-        DEFAULT: '0 1px 4px 0 rgba(#000, 0.3)',
+        DEFAULT: '0 1px 4px 0 #0000004d',
         sm: '0 1px 2px var(--t-gray-a-08, #1f1e2414)',
         md: '0 2px 8px var(--t-gray-a-16, #1f1e2429), 0 0 2px var(--t-gray-a-16, #1f1e2429)',
         lg: '0 4px 12px var(--t-gray-a-16, #1f1e2429), 0 0 4px var(--t-gray-a-16, #1f1e2429)',

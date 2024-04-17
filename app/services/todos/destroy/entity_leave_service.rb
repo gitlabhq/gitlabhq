@@ -125,7 +125,7 @@ module Todos
       # rubocop: enable CodeReuse/ActiveRecord
 
       def non_authorized_reporter_groups
-        entity.self_and_descendants.select(:id)
+        entity.self_and_descendant_ids
           .id_not_in(authorized_reporter_groups)
       end
 

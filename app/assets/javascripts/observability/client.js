@@ -310,6 +310,14 @@ async function fetchOperations(operationsUrl, serviceName) {
   }
 }
 
+function handleMetricsAttributeFilters(attributeFilters, params) {
+  if (Array.isArray(attributeFilters)) {
+    attributeFilters.forEach(
+      ({ operator, value }) => operator === '=' && params.append('attributes', value),
+    );
+  }
+}
+
 async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   try {
     const params = new URLSearchParams();
@@ -327,6 +335,11 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
         }
       }
     }
+
+    if (filters.attribute) {
+      handleMetricsAttributeFilters(filters.attribute, params);
+    }
+
     const { data } = await axios.get(metricsUrl, {
       withCredentials: true,
       params,

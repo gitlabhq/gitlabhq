@@ -14,19 +14,16 @@ RSpec.describe DesignManagement::DesignPolicy, feature_category: :portfolio_mana
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:project) { create(:project, :public, namespace: owner.namespace) }
+  let_it_be(:project) do
+    create(:project, :public, namespace: owner.namespace, guests: guest, maintainers: maintainer, developers: developer,
+      reporters: reporter)
+  end
+
   let_it_be(:issue) { create(:issue, project: project) }
 
   let(:design) { create(:design, issue: issue) }
 
   subject(:design_policy) { described_class.new(current_user, design) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_maintainer(maintainer)
-    project.add_developer(developer)
-    project.add_reporter(reporter)
-  end
 
   shared_examples_for "design abilities not available" do
     context "for owners" do

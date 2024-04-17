@@ -52,6 +52,8 @@ Sidekiq.configure_server do |config|
     config.error_handlers.delete(Sidekiq::Config::ERROR_HANDLER)
   end
 
+  config.logger.level = ENV.fetch("GITLAB_LOG_LEVEL", ::Logger::INFO)
+
   Sidekiq.logger.info "Listening on queues #{config[:queues].uniq.sort}"
 
   # In Sidekiq 6.x, connection pools have a size of concurrency+5.

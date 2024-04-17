@@ -6,17 +6,13 @@ RSpec.describe Ci::PipelinePresenter do
   include Gitlab::Routing
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :test_repo) }
+  let_it_be_with_reload(:project) { create(:project, :test_repo, developers: user) }
   let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:current_user) { user }
 
   subject(:presenter) do
     described_class.new(pipeline)
-  end
-
-  before_all do
-    project.add_developer(user)
   end
 
   before do

@@ -7,6 +7,8 @@ coach: [ "@andrewn" ]
 status: proposed
 ---
 
+<!-- vale gitlab.FutureTense = NO -->
+
 # Cells: Infrastructure
 
 ## Pre-reads
@@ -288,6 +290,95 @@ frame "Google Cloud Platform" <<gcp>> {
   ```
 
   </details>
+
+### Rings
+
+`Rings` serve as the basis of the mental model of how we group the Cells we provision and the existing infrastructure.
+Inside of a ring, there is X number of Cells, subsequent rings consist of more cells gradually covering the entire fleet.
+Each Ring will be a superset of the previous rings.
+For example ring zero only contains the Cells in ring zero,
+ring 5 contains the Cells in `ring 5` and all other rings before it.
+Changes cascade outwards from inner rings to outer rings in discrete stages.
+For example If a change has reached `ring 5`, it will have reached ring 4, 3, 2, and 1.
+
+Any type of rollout will allow start from `ring 0` and move to subsequent rings if the change is successful,
+if it fails we can stop the rollout and we don't affect all of our customers.
+With this type of progressive rollout, we'll get the following benefits:
+
+1. Changes have a smaller blast radius, not affecting all customers at once.
+1. Clear boundaries on how to roll out a change.
+1. Removes the need of having different environments like [Staging](#staging), all Cells will be production.
+1. The more confident we are with a change the wider the audience.
+
+```plantuml
+@startuml
+
+skinparam frame {
+  borderColor<<Cells 1.0>> #0F9D58
+}
+
+skinparam frame {
+  borderColor<<Cells 1.5+>> #F4B400
+}
+
+left to right direction
+
+frame "Ring 3" <<cells 1.5+>> {
+  component "NjkwYzdhNzYtMjljNS00Y"
+  component "ZjNkOTJhMGUtNTExZC00Y"
+  component "Mzg5OGE0ZDEtMmM4OC00M"
+  component "ZDQ2MTg0MmUtYTEzZC00Y"
+
+  frame "Ring 2" <<Cells 1.0>> {
+    component "NDBiMWNhNmYtZGY0Yi00M"
+    component "OTI2MmYwMWMtMDk5Zi00Z"
+    component "NjExNWY2MDctNDBhOS00Y"
+    component "NTIxM2YyYmEtZjhjZC00O"
+    component "OTQ0MzRhNjMtMTA1Ni00Y"
+    component "N2M1MWZiOGEtZTRkMy00Z"
+    component "YjA0ZGI3ZTQtOGRhOS00N"
+    component "MWY2Y2U4ZGMtMzBhYS00Y"
+    component "ZGM2YWZhMmYtM2JiZC00M"
+    component "OTg0YWE3OTUtMjEyNC00Y"
+
+    frame "Ring 1" <<Cells 1.0>> {
+      frame "Ring 0" <<Cells 1.0>> {
+        component "Canary stage" <<legacy>> as cny
+        component "NmY1ZjlkY2YtZjZhZS00N"
+      }
+
+      component "Main stage\nPrimary Cell" <<legacy>> as Primary
+    }
+  }
+}
+
+@enduml
+```
+
+For [Cells 1.0](../iterations/cells-1.0.md) our aim is to have up to 10 cells inside `ring 2`.
+The number of Cells in a ring is arbitrary, their size is still to be determined.
+It will take into consideration our necessity to [adequately test auto-deploy packages before a public release](deployments.md#package-rollout-policy),
+the speed of a full production rollout for security fixes,
+and the protection from outages or bugs of our users.
+
+Where we'll eventually use rings for:
+
+1. [Deployments](deployments.md#ring-deployment).
+1. Roll out configuration changes.
+1. Feature flag rollouts.
+
+#### Staging
+
+We do not have the traditional Staging environment in rings,
+because we can test changes in the first rings which achieves the same outcome.
+This doesn't mean that we will shut off the existing staging environment,
+which will still be in use for the non-cell infrastructure.
+
+With this set up we'll end up removing some of the problems we have with staging right now:
+
+1. Staging is not a real representation of Production.
+1. We consider Staging as Production because it blocks deployments.
+1. The configuration of Staging can drift from Production.
 
 ## Large Domains
 

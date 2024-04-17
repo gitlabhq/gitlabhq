@@ -160,7 +160,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
           let(:file_name) { 'a/image.png' }
 
           it 'shows an error message' do
-            expect(page).not_to have_content('could not be displayed because it is stored in LFS')
+            expect(page).not_to have_content('could not be displayed: it is stored in LFS')
           end
         end
 
@@ -168,7 +168,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
           let(:file_name) { 'a/ruby.rb' }
 
           it 'shows an error message' do
-            expect(page).to have_content('This source diff could not be displayed because it is stored in LFS')
+            expect(page).to have_content('source diff could not be displayed: it is stored in LFS')
           end
         end
       end

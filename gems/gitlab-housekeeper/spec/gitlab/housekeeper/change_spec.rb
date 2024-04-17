@@ -16,8 +16,18 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
       change = described_class.new
 
       expect(change.labels).to eq([])
+      expect(change.assignees).to eq([])
       expect(change.reviewers).to eq([])
       expect(change.push_options.ci_skip).to eq(false)
+    end
+  end
+
+  describe '#assignees=' do
+    it 'always sets an array' do
+      change = described_class.new
+      change.assignees = 'foo'
+
+      expect(change.assignees).to eq(['foo'])
     end
   end
 

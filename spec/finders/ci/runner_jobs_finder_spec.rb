@@ -5,17 +5,13 @@ require 'spec_helper'
 RSpec.describe Ci::RunnerJobsFinder, feature_category: :fleet_visibility do
   let_it_be(:project) { create(:project) }
   let_it_be(:runner) { create(:ci_runner, :instance) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
   let_it_be(:jobs) { create_list(:ci_build, 5, runner_manager: runner_manager, project: project) }
 
   let(:params) { {} }
 
   subject(:returned_jobs) { described_class.new(runner, user, params).execute }
-
-  before_all do
-    project.add_developer(user)
-  end
 
   describe '#execute' do
     context 'when params is empty' do

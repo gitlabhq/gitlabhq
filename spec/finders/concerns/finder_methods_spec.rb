@@ -22,16 +22,11 @@ RSpec.describe FinderMethods do
   end
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:authorized_project) { create(:project) }
-  let_it_be(:unmatched_project) { create(:project, name: 'foo') }
+  let_it_be(:authorized_project) { create(:project, developers: user) }
+  let_it_be(:unmatched_project) { create(:project, name: 'foo', developers: user) }
   let_it_be(:unauthorized_project) { create(:project) }
 
   subject(:finder) { finder_class.new(user) }
-
-  before_all do
-    authorized_project.add_developer(user)
-    unmatched_project.add_developer(user)
-  end
 
   # rubocop:disable Rails/FindById
   describe '#find_by!' do

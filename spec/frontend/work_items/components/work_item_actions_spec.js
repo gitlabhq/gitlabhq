@@ -191,16 +191,16 @@ describe('WorkItemActions component', () => {
         divider: true,
       },
       {
+        testId: TEST_ID_TOGGLE_ACTION,
+        text: '',
+      },
+      {
         testId: TEST_ID_LOCK_ACTION,
         text: 'Lock discussion',
       },
       {
         testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
         text: 'Turn on confidentiality',
-      },
-      {
-        testId: TEST_ID_TOGGLE_ACTION,
-        text: '',
       },
       {
         testId: TEST_ID_COPY_REFERENCE_ACTION,

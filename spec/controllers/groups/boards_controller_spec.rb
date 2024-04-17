@@ -4,11 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::BoardsController do
   let_it_be(:group) { create(:group) }
-  let_it_be(:user)  { create(:user) }
-
-  before_all do
-    group.add_maintainer(user)
-  end
+  let_it_be(:user)  { create(:user, maintainer_of: group) }
 
   before do
     sign_in(user)

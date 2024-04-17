@@ -1433,6 +1433,9 @@ msgstr ""
 msgid "%{verb} this %{noun} as a draft."
 msgstr ""
 
+msgid "%{viewer} could not be displayed: %{reason}. Options to address this: %{options}."
+msgstr ""
+
 msgid "%{webhooks_link_start}%{webhook_type}%{webhooks_link_end} enable you to send notifications to web applications in response to events in a group or project."
 msgstr ""
 
@@ -12735,6 +12738,15 @@ msgstr ""
 msgid "Comment added to the timeline."
 msgstr ""
 
+msgid "Comment could not be submitted. Please check your network connection and try again."
+msgstr ""
+
+msgid "Comment could not be submitted: %{reason}."
+msgstr ""
+
+msgid "Comment could not be updated: %{reason}."
+msgstr ""
+
 msgid "Comment form position"
 msgstr ""
 
@@ -14240,6 +14252,9 @@ msgid "Contains only whitespace changes."
 msgstr ""
 
 msgid "Content"
+msgstr ""
+
+msgid "Content could not be displayed: %{reason}. Options to address this: %{options}."
 msgstr ""
 
 msgid "Content parsed with %{link}."
@@ -21473,7 +21488,7 @@ msgstr ""
 msgid "Failed to load stacktrace."
 msgstr ""
 
-msgid "Failed to make repository read-only. %{reason}"
+msgid "Failed to make repository read-only: %{reason}"
 msgstr ""
 
 msgid "Failed to mark this issue as a duplicate because referenced issue was not found."
@@ -28099,7 +28114,13 @@ msgstr ""
 msgid "Issue update failed"
 msgstr ""
 
-msgid "Issue was closed by %{name} %{reason}"
+msgid "Issue was closed by %{name}"
+msgstr ""
+
+msgid "Issue was closed by %{name} via %{closed_via}"
+msgstr ""
+
+msgid "Issue was closed by %{name} via merge request %{link}"
 msgstr ""
 
 msgid "Issue weight"
@@ -31940,6 +31961,9 @@ msgstr ""
 msgid "MergeRequests|Can't perform this action automatically. It may have already been done, or a more recent commit may have updated some of this content. Please perform this action locally."
 msgstr ""
 
+msgid "MergeRequests|Comment could not be submitted: %{reason}."
+msgstr ""
+
 msgid "MergeRequests|Commit cherry-pick failed"
 msgstr ""
 
@@ -31986,9 +32010,6 @@ msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
-msgstr ""
-
-msgid "MergeRequests|Your comment could not be submitted because %{reason}."
 msgstr ""
 
 msgid "MergeRequests|commented on commit %{commitLink}"
@@ -34876,6 +34897,9 @@ msgid "ObservabilityLogs|Warning"
 msgstr ""
 
 msgid "ObservabilityMetrics|+%{count} more"
+msgstr ""
+
+msgid "ObservabilityMetrics|Attribute"
 msgstr ""
 
 msgid "ObservabilityMetrics|Attributes"
@@ -52246,9 +52270,6 @@ msgstr ""
 msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and its %{lockedLinkStart}discussion is locked%{lockedLinkEnd}."
 msgstr ""
 
-msgid "This %{viewer} could not be displayed because %{reason}. You can %{options} instead."
-msgstr ""
-
 msgid "This Cron pattern is invalid"
 msgstr ""
 
@@ -52364,9 +52385,6 @@ msgid "This commit was signed with an unverified signature."
 msgstr ""
 
 msgid "This commit was signed with multiple signatures."
-msgstr ""
-
-msgid "This content could not be displayed because %{reason}. You can %{options} instead."
 msgstr ""
 
 msgid "This content could not be displayed because it is stored in LFS. You can %{linkStart}download it%{linkEnd} instead."
@@ -54053,6 +54071,9 @@ msgstr ""
 msgid "Transfer group to another parent group."
 msgstr ""
 
+msgid "Transfer in progress"
+msgstr ""
+
 msgid "Transfer project"
 msgstr ""
 
@@ -54105,6 +54126,9 @@ msgid "TransferProject|Project with same name or path in target namespace alread
 msgstr ""
 
 msgid "TransferProject|Root namespace can't be updated if the project has NPM packages scoped to the current root level namespace."
+msgstr ""
+
+msgid "TransferProject|This project is being transferred. Do not make any changes to the project until the transfer is complete."
 msgstr ""
 
 msgid "TransferProject|You don't have permission to transfer projects into that namespace."
@@ -54619,7 +54643,7 @@ msgstr ""
 msgid "Unable to schedule a pipeline to run immediately"
 msgstr ""
 
-msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgid "Unable to sign in to group with SAML: \"%{reason}\""
 msgstr ""
 
 msgid "Unable to suggest a path. Please refresh and try again."
@@ -59657,13 +59681,7 @@ msgstr ""
 msgid "Your changes have been successfully committed."
 msgstr ""
 
-msgid "Your comment could not be submitted because %{reason}."
-msgstr ""
-
 msgid "Your comment could not be submitted! Please check your network connection and try again."
-msgstr ""
-
-msgid "Your comment could not be updated because %{reason}."
 msgstr ""
 
 msgid "Your comment will be discarded."
@@ -62088,12 +62106,6 @@ msgid "version %{versionIndex}"
 msgstr ""
 
 msgid "via"
-msgstr ""
-
-msgid "via %{closed_via}"
-msgstr ""
-
-msgid "via merge request %{link}"
 msgstr ""
 
 msgid "view it on GitLab"

@@ -142,11 +142,7 @@ RSpec.describe Projects::MergeRequests::DiffsController, feature_category: :code
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   let_it_be_with_reload(:user) { create(:user) }
-  let_it_be(:other_project) { create(:project) }
-
-  before_all do
-    other_project.add_maintainer(user)
-  end
+  let_it_be(:other_project) { create(:project, maintainers: user) }
 
   before do
     project.add_maintainer(user) if maintainer

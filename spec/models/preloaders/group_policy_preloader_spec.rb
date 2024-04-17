@@ -5,19 +5,12 @@ require 'spec_helper'
 RSpec.describe Preloaders::GroupPolicyPreloader do
   let_it_be(:user) { create(:user) }
   let_it_be(:root_parent) { create(:group, :private, name: 'root-1', path: 'root-1') }
-  let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest') }
-  let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_parent) }
-  let_it_be(:private_developer_group) { create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer') }
-  let_it_be(:public_maintainer_group) { create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer') }
+  let_it_be(:guest_group) { create(:group, name: 'public guest', path: 'public-guest', guests: user) }
+  let_it_be(:private_maintainer_group) { create(:group, :private, name: 'b private maintainer', path: 'b-private-maintainer', parent: root_parent, maintainers: user) }
+  let_it_be(:private_developer_group) { create(:group, :private, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer', developers: user) }
+  let_it_be(:public_maintainer_group) { create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer', maintainers: user) }
 
   let(:base_groups) { [guest_group, private_maintainer_group, private_developer_group, public_maintainer_group] }
-
-  before_all do
-    guest_group.add_guest(user)
-    private_maintainer_group.add_maintainer(user)
-    private_developer_group.add_developer(user)
-    public_maintainer_group.add_maintainer(user)
-  end
 
   it 'avoids N+1 queries when authorizing a list of groups', :request_store do
     preload_groups_for_policy(user)

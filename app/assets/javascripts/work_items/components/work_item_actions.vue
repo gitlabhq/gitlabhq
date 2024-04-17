@@ -383,6 +383,18 @@ export default {
         <gl-dropdown-divider />
       </template>
 
+      <work-item-state-toggle
+        v-if="canUpdate"
+        :data-testid="$options.stateToggleTestId"
+        :work-item-id="workItemId"
+        :work-item-iid="workItemIid"
+        :work-item-state="workItemState"
+        :work-item-type="workItemType"
+        :full-path="fullPath"
+        show-as-dropdown-item
+        @error="emitStateToggleError"
+      />
+
       <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
         :data-testid="$options.promoteActionTestId"
@@ -409,18 +421,6 @@ export default {
       >
         <template #list-item>{{ confidentialItemText }}</template>
       </gl-disclosure-dropdown-item>
-
-      <work-item-state-toggle
-        v-if="canUpdate"
-        :data-testid="$options.stateToggleTestId"
-        :work-item-id="workItemId"
-        :work-item-iid="workItemIid"
-        :work-item-state="workItemState"
-        :work-item-type="workItemType"
-        :full-path="fullPath"
-        show-as-dropdown-item
-        @error="emitStateToggleError"
-      />
 
       <gl-disclosure-dropdown-item
         :data-testid="$options.copyReferenceTestId"

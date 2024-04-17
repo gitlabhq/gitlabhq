@@ -7,7 +7,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:guest) { create(:user, guest_of: project) }
-  let_it_be(:guest_author) { create(:user, guest_of: project) }
+  let_it_be(:guest_author) { create(:user, guest_of: project, developer_of: public_project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:group_reporter) { create(:user, reporter_of: group) }
   let_it_be(:non_member_user) { create(:user) }
@@ -18,10 +18,6 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let(:work_item_subject) { work_item }
 
   subject { described_class.new(current_user, work_item_subject) }
-
-  before_all do
-    public_project.add_developer(guest_author)
-  end
 
   describe 'read_work_item' do
     context 'when project is public' do

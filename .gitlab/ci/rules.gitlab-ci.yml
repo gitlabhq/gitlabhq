@@ -981,8 +981,6 @@
       changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-    - <<: *if-security-merge-request
-      changes: *code-patterns
     - <<: *if-merge-request
       changes: *code-qa-patterns
     - <<: *if-force-ci
@@ -1285,6 +1283,8 @@
     # From .frontend:rules:default-frontend-jobs
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
     - if: '$ENABLE_RSPEC_FRONTEND_FIXTURE == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     # From .frontend:rules:jest

@@ -728,7 +728,7 @@ describe('buildClient', () => {
         expect(getQueryParam()).toBe('');
       });
 
-      it('sets the start_with query param based on the search filter', async () => {
+      it('sets the search query param based on the search filter', async () => {
         await client.fetchMetrics({
           filters: { search: [{ value: 'foo' }, { value: 'bar' }, { value: ' ' }] },
         });
@@ -785,6 +785,20 @@ describe('buildClient', () => {
           search: [{ value: ' ' }, { value: '' }, { value: null }, { value: undefined }],
         });
         expect(getQueryParam()).toBe('');
+      });
+
+      it('handles attribute filter', async () => {
+        await client.fetchMetrics({
+          filters: {
+            attribute: [
+              { value: 'foo.bar', operator: '=' },
+              { value: 'foo.baz', operator: '=' },
+              { value: 'not-supported', operator: '!=' },
+            ],
+            unsupported: [{ value: 'foo.bar', operator: '=' }],
+          },
+        });
+        expect(getQueryParam()).toBe('attributes=foo.bar&attributes=foo.baz');
       });
     });
 

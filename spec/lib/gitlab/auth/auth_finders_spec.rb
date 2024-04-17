@@ -10,12 +10,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   let_it_be(:user, freeze: true) { create(:user).tap(&:feed_token).tap(&:static_object_token) }
   let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user) }
 
-  let_it_be(:project, freeze: true) { create(:project, :private) }
+  let_it_be(:project, freeze: true) { create(:project, :private, developers: user) }
   let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project) }
   let_it_be(:job, freeze: true) { create(:ci_build, :running, pipeline: pipeline, user: user) }
   let_it_be(:failed_job, freeze: true) { create(:ci_build, :failed, pipeline: pipeline, user: user) }
 
-  let_it_be(:project2, freeze: true) { create(:project, :private) }
+  let_it_be(:project2, freeze: true) { create(:project, :private, developers: user) }
   let_it_be(:pipeline2, freeze: true) { create(:ci_pipeline, project: project2) }
   let_it_be(:job2, freeze: true) { create(:ci_build, :running, pipeline: pipeline2, user: user) }
 
@@ -27,11 +27,6 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
   let(:request) { ActionDispatch::Request.new(env) }
   let(:params) { {} }
-
-  before_all do
-    project.add_developer(user)
-    project2.add_developer(user)
-  end
 
   def set_param(key, value)
     request.update_param(key, value)

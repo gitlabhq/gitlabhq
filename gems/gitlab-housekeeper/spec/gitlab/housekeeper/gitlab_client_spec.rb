@@ -23,6 +23,24 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       }
     end
 
+    let(:added_assignee_note) do
+      {
+        id: 1698248524,
+        body: "assigned to @gitlab-bot",
+        author: { "id" => 1234 },
+        system: true
+      }
+    end
+
+    let(:removed_assignee_note) do
+      {
+        id: 1698248524,
+        body: "unassigned @gitlab-bot",
+        author: { "id" => 1234 },
+        system: true
+      }
+    end
+
     let(:added_reviewer_note) do
       {
         id: 1698248524,
@@ -156,15 +174,16 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
 
     context 'when all important things change' do
       let(:notes) do
-        [not_a_system_note, updated_title_note, updated_description_note, added_commit_note, added_reviewer_note]
+        [not_a_system_note, updated_title_note, updated_description_note, added_commit_note, added_reviewer_note,
+          added_assignee_note]
       end
 
       let(:resource_label_events) do
         [removed_label_event]
       end
 
-      it 'returns :title, :description, :code, :labels' do
-        expect(non_housekeeper_changes).to match_array([:title, :description, :code, :labels, :reviewers])
+      it 'returns :title, :description, :code, :labels, :assignees, :reviewers' do
+        expect(non_housekeeper_changes).to match_array([:title, :description, :code, :labels, :assignees, :reviewers])
       end
     end
 
@@ -202,6 +221,26 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
     end
 
+    context 'when assignees are added' do
+      let(:notes) do
+        [not_a_system_note, added_assignee_note]
+      end
+
+      it 'returns :assignees' do
+        expect(non_housekeeper_changes).to match_array([:assignees])
+      end
+    end
+
+    context 'when assignees are removed' do
+      let(:notes) do
+        [not_a_system_note, removed_assignee_note]
+      end
+
+      it 'returns :assignees' do
+        expect(non_housekeeper_changes).to match_array([:assignees])
+      end
+    end
+
     context 'when reviewers are added' do
       let(:notes) do
         [not_a_system_note, added_reviewer_note]
@@ -230,6 +269,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
   end
 
   describe '#create_or_update_merge_request' do
+    let(:assignee_id) { 111 }
     let(:reviewer_id) { 999 }
 
     let(:change) do
@@ -249,7 +289,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
     let(:existing_mrs) { [] }
 
     before do
-      # Stub the user id of the reviewers
+      # Stub the user id of the reviewers and assignees
       stub_request(:get, "https://gitlab.com/api/v4/users")
         .with(
           query: { username: 'thegitlabreviewer' },
@@ -258,6 +298,14 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           }
         )
         .to_return(status: 200, body: [{ id: reviewer_id }].to_json)
+      stub_request(:get, "https://gitlab.com/api/v4/users")
+        .with(
+          query: { username: 'thegitlabassignee' },
+          headers: {
+            'Private-Token' => 'the-api-token'
+          }
+        )
+        .to_return(status: 200, body: [{ id: assignee_id }].to_json)
 
       # Stub the check to see if the merge request already exists
       stub_request(:get, "https://gitlab.com/api/v4/projects/456/merge_requests?state=opened&source_branch=the-source-branch&target_branch=the-target-branch&source_project_id=123")
@@ -284,6 +332,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
             target_branch: "the-target-branch",
             target_project_id: 456,
             remove_source_branch: true,
+            assignee_ids: [assignee_id],
             reviewer_ids: [reviewer_id]
           },
           headers: {
@@ -316,6 +365,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
               title: "The change title",
               description: change.mr_description,
               add_labels: "some-label-1,some-label-2",
+              assignee_ids: [assignee_id],
               reviewer_ids: [reviewer_id]
             }.to_json,
             headers: {
@@ -346,7 +396,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           create_change(non_housekeeper_changes: non_housekeeper_changes)
         end
 
-        context 'when update_title: false' do
+        context 'when the title has changed' do
           let(:non_housekeeper_changes) { [:title] }
 
           it 'does not update the title' do
@@ -355,6 +405,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
                 body: {
                   description: change.mr_description,
                   add_labels: "some-label-1,some-label-2",
+                  assignee_ids: [assignee_id],
                   reviewer_ids: [reviewer_id]
                 }.to_json,
                 headers: {
@@ -368,7 +419,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           end
         end
 
-        context 'when update_description: false' do
+        context 'when the description has changed' do
           let(:non_housekeeper_changes) { [:description] }
 
           it 'does not update the description' do
@@ -377,6 +428,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
                 body: {
                   title: "The change title",
                   add_labels: "some-label-1,some-label-2",
+                  assignee_ids: [assignee_id],
                   reviewer_ids: [reviewer_id]
                 }.to_json,
                 headers: {
@@ -390,7 +442,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           end
         end
 
-        context 'when update_labels: false' do
+        context 'when labels have changed' do
           let(:non_housekeeper_changes) { [:labels] }
 
           it 'does not update the labels' do
@@ -399,6 +451,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
                 body: {
                   title: "The change title",
                   description: change.mr_description,
+                  assignee_ids: [assignee_id],
                   reviewer_ids: [reviewer_id]
                 }.to_json,
                 headers: {
@@ -412,7 +465,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           end
         end
 
-        context 'when update_reviewers: false' do
+        context 'when reviewers have changed' do
           let(:non_housekeeper_changes) { [:reviewers] }
 
           it 'does not update the reviewers' do
@@ -421,7 +474,31 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
                 body: {
                   title: "The change title",
                   description: change.mr_description,
-                  add_labels: "some-label-1,some-label-2"
+                  add_labels: "some-label-1,some-label-2",
+                  assignee_ids: [assignee_id]
+                }.to_json,
+                headers: {
+                  'Content-Type' => 'application/json',
+                  'Private-Token' => 'the-api-token'
+                }
+              ).to_return(status: 200, body: '{}')
+
+            client.create_or_update_merge_request(**params)
+            expect(stub).to have_been_requested
+          end
+        end
+
+        context 'when assignees have changed' do
+          let(:non_housekeeper_changes) { [:assignees] }
+
+          it 'does not update the assignees' do
+            stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+              .with(
+                body: {
+                  title: "The change title",
+                  description: change.mr_description,
+                  add_labels: "some-label-1,some-label-2",
+                  reviewer_ids: [reviewer_id]
                 }.to_json,
                 headers: {
                   'Content-Type' => 'application/json',
@@ -435,7 +512,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         end
 
         context 'when there is nothing to update' do
-          let(:non_housekeeper_changes) { [:title, :description, :labels, :reviewers] }
+          let(:non_housekeeper_changes) { [:title, :description, :labels, :assignees, :reviewers] }
 
           it 'does not make a request' do
             client.create_or_update_merge_request(**params)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Preloaders::ProjectPolicyPreloader do
   let_it_be(:user) { create(:user) }
   let_it_be(:root_parent) { create(:group, :private, name: 'root-1', path: 'root-1') }
-  let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest') }
+  let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest', guests: user) }
   let_it_be(:private_maintainer_project) do
     create(:project, :private, name: 'b private maintainer', path: 'b-private-maintainer', namespace: root_parent)
   end
@@ -23,7 +23,6 @@ RSpec.describe Preloaders::ProjectPolicyPreloader do
   end
 
   before_all do
-    guest_project.add_guest(user)
     private_maintainer_project.add_maintainer(user)
     private_developer_project.add_developer(user)
     public_maintainer_project.add_maintainer(user)

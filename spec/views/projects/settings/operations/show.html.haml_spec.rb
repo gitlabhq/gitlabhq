@@ -4,17 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'projects/settings/operations/show' do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   let_it_be(:error_tracking_setting) do
     create(:project_error_tracking_setting, project: project)
   end
 
   let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-
-  before_all do
-    project.add_maintainer(user)
-  end
 
   before do
     assign :project, project

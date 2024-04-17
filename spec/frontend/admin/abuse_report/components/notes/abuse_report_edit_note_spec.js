@@ -116,7 +116,7 @@ describe('Abuse Report Edit Note', () => {
       await waitForPromises();
 
       const errorMessage = errorResponse
-        ? 'Your comment could not be updated because the note could not be found.'
+        ? 'Comment could not be updated: the note could not be found.'
         : 'Something went wrong while editing your comment. Please try again.';
 
       expect(createAlert).toHaveBeenCalledWith({

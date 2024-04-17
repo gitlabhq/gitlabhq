@@ -34,7 +34,7 @@
                       = _('Edit')
                 - if milestone.project_milestone? && milestone.project.group
                   %li.gl-dropdown-item
-                    %button.gl-button.btn.btn-link.menu-item.js-promote-project-milestone-button{ data: { milestone_title: milestone.title,
+                    %button.js-promote-project-milestone-button{ data: { milestone_title: milestone.title,
                       group_name: milestone.project.group.name,
                       url: promote_project_milestone_path(milestone.project, milestone)},
                       disabled: true,

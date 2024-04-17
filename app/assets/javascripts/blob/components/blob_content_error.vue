@@ -55,7 +55,7 @@ export default {
     },
   },
   errorMessage: __(
-    'This content could not be displayed because %{reason}. You can %{options} instead.',
+    'Content could not be displayed: %{reason}. Options to address this: %{options}.',
   ),
 };
 </script>

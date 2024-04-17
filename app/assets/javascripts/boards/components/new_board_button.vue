@@ -36,7 +36,10 @@ export default {
   <gitlab-experiment name="prominent_create_board_btn">
     <template #control> </template>
     <template #candidate>
-      <div v-if="canShowCreateButton" class="gl-ml-1 gl-mr-3 gl-display-flex gl-align-items-center">
+      <div
+        v-if="canShowCreateButton"
+        class="gl-ml-1 gl-mr-3 gl-display-flex gl-align-items-flex-start"
+      >
         <gl-button @click.prevent="showDialog">
           {{ createButtonText }}
         </gl-button>

@@ -40,7 +40,7 @@ RSpec.shared_examples 'renders metrics comparison table' do
 
   it 'renders the metrics comparison visualization' do
     expect(metric_table).to be_visible
-    expect(metric_table).to have_content format(_("Metrics comparison for %{name} group"), name: group_name)
+    expect(metric_table).to have_content format(_("Metrics comparison for %{title}"), title: panel_title)
   end
 
   it "renders the available metrics" do

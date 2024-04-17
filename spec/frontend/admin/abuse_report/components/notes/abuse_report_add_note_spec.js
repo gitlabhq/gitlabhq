@@ -183,8 +183,8 @@ describe('Abuse Report Add Note', () => {
       await waitForPromises();
 
       const errorMessage = errorResponse
-        ? 'Your comment could not be submitted because the discussion could not be found.'
-        : 'Your comment could not be submitted! Please check your network connection and try again.';
+        ? 'Comment could not be submitted: the discussion could not be found.'
+        : 'Comment could not be submitted. Please check your network connection and try again.';
 
       expect(createAlert).toHaveBeenCalledWith({
         message: errorMessage,

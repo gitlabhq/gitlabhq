@@ -9,7 +9,7 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
   let_it_be(:target2) { create(:work_item, :task, project: project) }
   let_it_be(:link1) { create(:work_item_link, source: issuable, target: target1) }
   let_it_be(:link2) { create(:work_item_link, source: issuable, target: target2) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, reporter_of: project) }
 
   let(:params) do
     {
@@ -19,10 +19,6 @@ RSpec.describe Issuable::RelatedLinksCreateWorker, feature_category: :portfolio_
       link_type: 'relates_to',
       user_id: user.id
     }.transform_keys(&:to_s)
-  end
-
-  before_all do
-    project.add_reporter(user)
   end
 
   subject { described_class.new.perform(params) }

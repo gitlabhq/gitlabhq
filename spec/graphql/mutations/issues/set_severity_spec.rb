@@ -4,18 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Issues::SetSeverity do
   let_it_be(:project) { create(:project) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:issue) { create(:incident, project: project) }
 
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_reporter(reporter)
-  end
 
   describe '#resolve' do
     let(:severity) { 'critical' }

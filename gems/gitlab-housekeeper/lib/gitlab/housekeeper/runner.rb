@@ -136,9 +136,10 @@ module Gitlab
         @logger.puts change.description
         @logger.puts
 
-        if change.labels.present? || change.reviewers.present?
+        if change.labels.present? || change.assignees.present? || change.reviewers.present?
           @logger.puts '=> Attributes:'
           @logger.puts "Labels: #{change.labels.join(', ')}"
+          @logger.puts "Assignees: #{change.assignees.join(', ')}"
           @logger.puts "Reviewers: #{change.reviewers.join(', ')}"
           @logger.puts
         end

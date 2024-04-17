@@ -1,15 +1,18 @@
 #
 # This list of browsers is a conservative definition, based on
-# https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers
-# with the following reasoning:
+# https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers. We
+# also use the following reasoning to choose the target versions:
 #
-# - We should support the latest ESR of Firefox: 91, because it used quite a lot.
-# - We use Edge/Chrome >= 92 because they are about as old as the Firefox ESR
-# - Safari 14.1 because it is the current minor version of the previous major version
+# - Actual Browser usage on gitlab.com
+# - Support second latest version of Firefox ESR
+# - Support Chrome / Edge versions about the same age as the Firefox ESR version chosen
+#
+# If need be we raise versions closer to the actual supported web browsers.
 #
 # See also this epic: https://gitlab.com/groups/gitlab-org/-/epics/3957
 #
-chrome >= 92
-edge >= 92
-firefox >= 91
-safari >= 14.1
+chrome >= 103
+edge >= 103
+firefox >= 102
+safari >= 15.6
+

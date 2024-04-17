@@ -8252,6 +8252,7 @@ CREATE TABLE design_management_designs (
     cached_markdown_version integer,
     description text,
     description_html text,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
     CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
     CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
@@ -8742,6 +8743,7 @@ CREATE TABLE epics (
     total_opened_issue_count integer DEFAULT 0 NOT NULL,
     total_closed_issue_count integer DEFAULT 0 NOT NULL,
     issue_id integer,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
@@ -8837,6 +8839,7 @@ CREATE TABLE events (
     fingerprint bytea,
     id bigint NOT NULL,
     target_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_97e06e05ad CHECK ((octet_length(fingerprint) <= 128))
 );
 
@@ -10417,6 +10420,7 @@ CREATE TABLE issues (
     namespace_id bigint,
     start_date date,
     tmp_epic_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_2addf801cd CHECK ((work_item_type_id IS NOT NULL)),
     CONSTRAINT check_c33362cd43 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
@@ -11319,6 +11323,7 @@ CREATE TABLE merge_requests (
     merged_commit_sha bytea,
     override_requested_changes boolean DEFAULT false NOT NULL,
     head_pipeline_id_convert_to_bigint bigint,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
@@ -12006,7 +12011,8 @@ CREATE TABLE notes (
     last_edited_at timestamp with time zone,
     internal boolean DEFAULT false NOT NULL,
     id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    imported smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE notes_id_seq
@@ -15231,7 +15237,8 @@ CREATE TABLE resource_label_events (
     created_at timestamp with time zone NOT NULL,
     cached_markdown_version integer,
     reference text,
-    reference_html text
+    reference_html text,
+    imported smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_label_events_id_seq
@@ -15270,7 +15277,8 @@ CREATE TABLE resource_milestone_events (
     milestone_id bigint,
     action smallint NOT NULL,
     state smallint NOT NULL,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    imported smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE resource_milestone_events_id_seq
@@ -15294,6 +15302,7 @@ CREATE TABLE resource_state_events (
     close_after_error_tracking_resolve boolean DEFAULT false NOT NULL,
     close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
     source_merge_request_id bigint,
+    imported smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
     CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
 );
@@ -16116,7 +16125,8 @@ CREATE TABLE snippets (
     encrypted_secret_token character varying(255),
     encrypted_secret_token_iv character varying(255),
     secret boolean DEFAULT false NOT NULL,
-    repository_read_only boolean DEFAULT false NOT NULL
+    repository_read_only boolean DEFAULT false NOT NULL,
+    imported smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE snippets_id_seq
@@ -16542,7 +16552,8 @@ CREATE TABLE temp_notes_backup (
     last_edited_at timestamp with time zone,
     internal boolean NOT NULL,
     id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    imported smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE term_agreements (
@@ -24117,6 +24128,14 @@ CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON v
 
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
+CREATE INDEX p_ci_builds_project_id_bigint_id_idx ON ONLY p_ci_builds USING btree (project_id_convert_to_bigint, id);
+
+CREATE INDEX index_3591adffe4 ON ci_builds USING btree (project_id_convert_to_bigint, id);
+
+CREATE INDEX p_ci_builds_status_type_runner_id_bigint_idx ON ONLY p_ci_builds USING btree (status, type, runner_id_convert_to_bigint);
+
+CREATE INDEX index_9f1fa3baee ON ci_builds USING btree (status, type, runner_id_convert_to_bigint);
+
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
@@ -24330,6 +24349,10 @@ CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji
 CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree (role_external_id);
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
+
+CREATE INDEX p_ci_builds_runner_id_bigint_idx ON ONLY p_ci_builds USING btree (runner_id_convert_to_bigint) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
+
+CREATE INDEX index_b4cf879bcf ON ci_builds USING btree (runner_id_convert_to_bigint) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
 
@@ -29473,7 +29496,13 @@ ALTER INDEX p_ci_stages_pkey ATTACH PARTITION ci_stages_pkey;
 
 ALTER INDEX p_ci_job_artifacts_job_id_file_type_partition_id_idx ATTACH PARTITION idx_ci_job_artifacts_on_job_id_file_type_and_partition_id_uniq;
 
+ALTER INDEX p_ci_builds_project_id_bigint_id_idx ATTACH PARTITION index_3591adffe4;
+
+ALTER INDEX p_ci_builds_status_type_runner_id_bigint_idx ATTACH PARTITION index_9f1fa3baee;
+
 ALTER INDEX p_ci_builds_runner_id_bigint_id_idx ATTACH PARTITION index_adafd086ad;
+
+ALTER INDEX p_ci_builds_runner_id_bigint_idx ATTACH PARTITION index_b4cf879bcf;
 
 ALTER INDEX p_ci_builds_metadata_build_id_idx ATTACH PARTITION index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts;
 

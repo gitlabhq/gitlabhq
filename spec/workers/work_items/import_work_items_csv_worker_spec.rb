@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::ImportWorkItemsCsvWorker, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, reporter_of: project) }
 
   let(:upload) { create(:upload, :with_file) }
-
-  before_all do
-    project.add_reporter(user)
-  end
 
   subject { described_class.new.perform(user.id, project.id, upload.id) }
 

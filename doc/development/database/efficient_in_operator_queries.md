@@ -633,7 +633,7 @@ order = Gitlab::Pagination::Keyset::Order.build([
 
 records = Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
   scope: Epic.where.not(closed_at: nil).reorder(order), # filter out NULL values
-  array_scope: Group.find(9970).self_and_descendants.select(:id),
+  array_scope: Group.find(9970).self_and_descendant_ids,
   array_mapping_scope: -> (id_expression) { Epic.where(Epic.arel_table[:group_id].eq(id_expression)) }
 ).execute.limit(20)
 
@@ -714,7 +714,7 @@ scope = cte.apply_to(Issue.where({}).reorder(order))
 
 opts = {
   scope: scope,
-  array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
+  array_scope: Project.where(namespace_id: top_level_group.self_and_descendant_ids).select(:id),
   array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
 }
 

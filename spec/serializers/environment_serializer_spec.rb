@@ -6,16 +6,12 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+  let_it_be(:project, reload: true) { create(:project, :repository, developers: user) }
 
   let(:json) do
     described_class
       .new(current_user: user, project: project)
       .represent(resource)
-  end
-
-  before_all do
-    project.add_developer(user)
   end
 
   it_behaves_like 'avoid N+1 on environments serialization'

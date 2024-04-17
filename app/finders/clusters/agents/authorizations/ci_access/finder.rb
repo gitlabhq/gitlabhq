@@ -66,7 +66,7 @@ module Clusters
           # rubocop: enable CodeReuse/ActiveRecord
 
           def all_namespace_ids
-            project.root_ancestor.self_and_descendants.select(:id)
+            project.root_ancestor.self_and_descendant_ids
           end
         end
       end

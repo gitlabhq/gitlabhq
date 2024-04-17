@@ -7,12 +7,14 @@ require 'webmock/rspec'
 require 'gitlab/rspec/all'
 
 module HousekeeperFactory
+  # rubocop: disable Metrics/ParameterLists
   def create_change(
     identifiers: %w[the identifier],
     title: 'The change title',
     description: 'The change description',
     changed_files: ['change1.txt', 'change2.txt'],
     labels: %w[some-label-1 some-label-2],
+    assignees: ['thegitlabassignee'],
     reviewers: ['thegitlabreviewer'],
     mr_web_url: nil,
     non_housekeeper_changes: []
@@ -24,12 +26,14 @@ module HousekeeperFactory
     change.description = description
     change.changed_files = changed_files
     change.labels = labels
+    change.assignees = assignees
     change.reviewers = reviewers
     change.mr_web_url = mr_web_url
     change.non_housekeeper_changes = non_housekeeper_changes
 
     change
   end
+  # rubocop: enable Metrics/ParameterLists
 end
 
 RSpec.configure do |config|

@@ -15,13 +15,19 @@ module Gitlab
         :mr_web_url,
         :push_options,
         :non_housekeeper_changes
-      attr_reader :reviewers
+      attr_reader :assignees,
+        :reviewers
 
       def initialize
         @labels = []
+        @assignees = []
         @reviewers = []
         @non_housekeeper_changes = []
         @push_options = PushOptions.new
+      end
+
+      def assignees=(assignees)
+        @assignees = Array(assignees)
       end
 
       def reviewers=(reviewers)

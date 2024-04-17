@@ -6,14 +6,10 @@ RSpec.describe Resolvers::ErrorTracking::SentryDetailedErrorResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
 
   let(:issue_details_service) { instance_double('ErrorTracking::IssueDetailsService') }
   let(:service_response) { {} }
-
-  before_all do
-    project.add_developer(current_user)
-  end
 
   before do
     allow(ErrorTracking::IssueDetailsService)

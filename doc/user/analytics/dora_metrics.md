@@ -70,7 +70,7 @@ Over time, the lead time for changes should decrease, while your team's performa
 
 ### How lead time for changes is calculated
 
-GitLab calculates lead time for changes based on the number of seconds to successfully deliver a commit into production: from merge request merge time (when the merge button is clicked) to code successfully running in production, without adding the `coding_time` to the calculation. Data is aggregated right after the deployment is finished, with a slight delay.
+GitLab calculates lead time for changes based on the number of seconds to successfully deliver a merge request into production: from merge request merge time (when the merge button is clicked) to code successfully running in production, without adding the `coding_time` to the calculation. Data is aggregated right after the deployment is finished, with a slight delay.
 
 By default, lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 

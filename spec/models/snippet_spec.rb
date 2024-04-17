@@ -856,7 +856,8 @@ RSpec.describe Snippet, feature_category: :source_code_management do
         'url' => Gitlab::UrlBuilder.build(snippet),
         'type' => 'PersonalSnippet',
         'created_at' => be_like_time(snippet.created_at),
-        'updated_at' => be_like_time(snippet.updated_at)
+        'updated_at' => be_like_time(snippet.updated_at),
+        'imported' => 0
       )
     end
   end

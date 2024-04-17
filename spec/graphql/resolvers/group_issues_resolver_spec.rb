@@ -7,10 +7,10 @@ RSpec.describe Resolvers::GroupIssuesResolver do
 
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:group)         { create(:group) }
+  let_it_be(:group)         { create(:group, developers: current_user) }
   let_it_be(:project)       { create(:project, group: group) }
   let_it_be(:other_project) { create(:project, group: group) }
-  let_it_be(:subgroup)      { create(:group, parent: group) }
+  let_it_be(:subgroup)      { create(:group, parent: group, developers: current_user) }
   let_it_be(:subproject)    { create(:project, group: subgroup) }
 
   let_it_be(:issue1)    { create(:incident, project: project, state: :opened, created_at: 3.hours.ago, updated_at: 3.hours.ago) }
@@ -21,11 +21,6 @@ RSpec.describe Resolvers::GroupIssuesResolver do
   let_it_be(:subissue1) { create(:issue, project: subproject) }
   let_it_be(:subissue2) { create(:issue, project: subproject) }
   let_it_be(:subissue3) { create(:issue, project: subproject) }
-
-  before_all do
-    group.add_developer(current_user)
-    subgroup.add_developer(current_user)
-  end
 
   describe '#resolve' do
     it 'finds all group issues' do

@@ -4,14 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Integrations::SlackInstallation::ProjectService, feature_category: :integrations do
   let_it_be_with_refind(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, owner_of: project) }
   let(:params) { {} }
 
   subject(:service) { described_class.new(project, current_user: user, params: params) }
-
-  before_all do
-    project.add_owner(user)
-  end
 
   it_behaves_like Integrations::SlackInstallation::BaseService do
     let(:installation_alias) { project.full_path }

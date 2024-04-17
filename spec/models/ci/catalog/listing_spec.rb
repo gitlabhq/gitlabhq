@@ -22,7 +22,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   end
 
   let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'Project with no access') }
-  let_it_be(:internal_project) { create(:project, :internal, name: 'Internal project') }
+  let_it_be(:internal_project) { create(:project, :internal, name: 'Internal project', owners: user) }
 
   let_it_be(:private_project) do
     create(:project, namespace: namespace, name: 'B Project', description: 'Rspec test framework')
@@ -35,7 +35,6 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     namespace_project_b.add_reporter(user)
     public_namespace_project.add_reporter(user)
     public_project.add_reporter(user)
-    internal_project.add_owner(user)
   end
 
   describe '#resources' do

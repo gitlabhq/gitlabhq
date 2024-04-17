@@ -5,17 +5,12 @@ require 'spec_helper'
 RSpec.describe Mutations::Environments::CanaryIngress::Update do
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project) }
-  let_it_be(:maintainer) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
   let(:user) { maintainer }
 
   subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
-
-  before_all do
-    project.add_maintainer(maintainer)
-    project.add_reporter(reporter)
-  end
 
   describe '#resolve' do
     subject { mutation.resolve(id: environment_id, weight: weight) }

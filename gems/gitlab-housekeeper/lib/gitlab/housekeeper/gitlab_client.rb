@@ -43,12 +43,18 @@ module Gitlab
           next false unless note["system"]
           next false if note["author"]["id"] == current_user_id
 
-          changes << :title if note['body'].start_with?("changed title from")
-          changes << :description if note['body'] == "changed the description"
-          changes << :code if note['body'].match?(/added \d+ commit/)
-
-          changes << :reviewers if note['body'].include?('requested review from')
-          changes << :reviewers if note['body'].include?('removed review request for')
+          case note['body']
+          when /^changed title from/
+            changes << :title
+          when /^changed the description$/
+            changes << :description
+          when /added \d+ commit/
+            changes << :code
+          when /assigned to|unassigned/
+            changes << :assignees
+          when /requested review from|removed review request for/
+            changes << :reviewers
+          end
         end
 
         resource_label_events = get_merge_request_resource_label_events(
@@ -146,6 +152,7 @@ module Gitlab
           target_branch: target_branch,
           target_project_id: target_project_id,
           remove_source_branch: true,
+          assignee_ids: usernames_to_ids(change.assignees),
           reviewer_ids: usernames_to_ids(change.reviewers)
         })
       end
@@ -156,6 +163,7 @@ module Gitlab
         body[:title] = change.title if change.update_required?(:title)
         body[:description] = change.mr_description if change.update_required?(:description)
         body[:add_labels] = Array(change.labels).join(',') if change.update_required?(:labels)
+        body[:assignee_ids] = usernames_to_ids(change.assignees) if change.update_required?(:assignees)
         body[:reviewer_ids] = usernames_to_ids(change.reviewers) if change.update_required?(:reviewers)
 
         return if body.empty?

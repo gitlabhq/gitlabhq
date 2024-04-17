@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Mutations::Issues::LinkAlerts, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:issue) { create(:incident, project: project) }
   let_it_be(:alert1) { create(:alert_management_alert, project: project) }
   let_it_be(:alert2) { create(:alert_management_alert, project: project) }
@@ -13,11 +13,6 @@ RSpec.describe Mutations::Issues::LinkAlerts, feature_category: :incident_manage
   let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
-
-  before_all do
-    project.add_guest(guest)
-    project.add_developer(developer)
-  end
 
   describe '#resolve' do
     let(:alert_references) { [alert1.to_reference, alert2.details_url, 'invalid-reference'] }

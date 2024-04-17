@@ -67,7 +67,6 @@ Some of these services have their own environment variables to override the log 
 | GitLab QA Runtime    | `INFO`    | `QA_LOG_LEVEL`       |
 | Google APIs          | `INFO`    |                      |
 | Rack Timeout         | `ERROR`   |                      |
-| Sidekiq (server)     | `INFO`    |                      |
 | Snowplow Tracker     | `FATAL`   |                      |
 | gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
 | LLM                  | `INFO`    | `LLM_DEBUG`          |

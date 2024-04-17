@@ -59,7 +59,6 @@ stages:
   extends:
     - .bundler-variables
     - .qa-base
-    - .gitlab-qa-report
   stage: test
   tags:
     - e2e
