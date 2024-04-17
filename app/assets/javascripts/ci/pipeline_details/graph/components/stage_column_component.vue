@@ -1,7 +1,6 @@
 <script>
 import { escape, isEmpty } from 'lodash';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import RootGraphLayout from './root_graph_layout.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
@@ -14,7 +13,6 @@ export default {
     JobItem,
     RootGraphLayout,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     groups: {
       type: Array,
@@ -68,20 +66,6 @@ export default {
       required: true,
     },
   },
-  legacyJobClasses: [
-    'gl-p-3',
-    'gl-border-gray-100',
-    'gl-border-solid',
-    'gl-border-1',
-    'gl-bg-white',
-    'gl-rounded-7',
-    'gl-hover-bg-gray-50',
-    'gl-focus-bg-gray-50',
-    'gl-hover-text-gray-900',
-    'gl-focus-text-gray-900',
-    'gl-hover-border-gray-200',
-    'gl-focus-border-gray-200',
-  ],
   jobClasses: [
     'gl-p-3',
     'gl-border-0',
@@ -92,51 +76,18 @@ export default {
     'gl-hover-text-gray-900',
     'gl-focus-text-gray-900',
   ],
-  legacyTitleClasses: [
-    'gl-font-weight-bold',
-    'gl-pipeline-job-width',
-    'gl-text-truncate',
-    'gl-line-height-36',
-    'gl-pl-3',
-  ],
-  titleClasses: [
-    'gl-font-weight-bold',
-    'gl-pipeline-job-width',
-    'gl-text-truncate',
-    'gl-line-height-36',
-    'gl-pl-4',
-    'gl-mb-n2',
-  ],
   computed: {
     canUpdatePipeline() {
       return this.userPermissions.updatePipeline;
     },
     columnSpacingClass() {
-      if (this.isNewPipelineGraph) {
-        const baseClasses = 'stage-column gl-relative gl-flex-basis-full';
-        return this.isStageView
-          ? `${baseClasses} is-stage-view gl-m-5`
-          : `${baseClasses} gl-my-5 gl-mx-7`;
-      }
-
-      return this.isStageView ? 'gl-px-6' : 'gl-px-9';
+      return this.isStageView ? 'is-stage-view gl-m-5' : 'gl-my-5 gl-mx-7';
     },
     hasAction() {
       return !isEmpty(this.action);
     },
     showStageName() {
       return !this.isStageView;
-    },
-    isNewPipelineGraph() {
-      return this.glFeatures.newPipelineGraph;
-    },
-    jobClasses() {
-      return this.isNewPipelineGraph ? this.$options.jobClasses : this.$options.legacyJobClasses;
-    },
-    titleClasses() {
-      return this.isNewPipelineGraph
-        ? this.$options.titleClasses
-        : this.$options.legacyTitleClasses;
     },
   },
   errorCaptured(err, _vm, info) {
@@ -179,8 +130,7 @@ export default {
     <template #stages>
       <div
         data-testid="stage-column-title"
-        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative"
-        :class="titleClasses"
+        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-weight-bold gl-pipeline-job-width gl-text-truncate gl-line-height-36 gl-pl-4 gl-mb-n2"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-85p">
           {{ name }}
@@ -201,11 +151,7 @@ export default {
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"
-        class="gl-relative gl-white-space-normal gl-pipeline-job-width"
-        :class="{
-          'gl-mb-3': !isNewPipelineGraph,
-          'gl-mb-2': isNewPipelineGraph,
-        }"
+        class="gl-relative gl-white-space-normal gl-pipeline-job-width gl-mb-2"
         @mouseenter="$emit('jobHover', group.name)"
         @mouseleave="$emit('jobHover', '')"
       >
@@ -218,7 +164,7 @@ export default {
           :pipeline-expanded="pipelineExpanded"
           :pipeline-id="pipelineId"
           :stage-name="showStageName ? group.stageName : ''"
-          :css-class-job-name="jobClasses"
+          :css-class-job-name="$options.jobClasses"
           :class="[
             { 'gl-opacity-3': isFadedOut(group.name) },
             'gl-transition-duration-slow gl-transition-timing-function-ease',
@@ -232,7 +178,7 @@ export default {
             :group="group"
             :stage-name="showStageName ? group.stageName : ''"
             :pipeline-id="pipelineId"
-            :css-class-job-name="jobClasses"
+            :css-class-job-name="$options.jobClasses"
           />
         </div>
       </div>

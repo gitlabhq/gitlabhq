@@ -543,6 +543,9 @@ msgstr ""
 msgid "%{approvals_given} of %{required} Approvals"
 msgstr ""
 
+msgid "%{approvals} of %{approvalRequired}"
+msgstr ""
+
 msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
@@ -701,6 +704,9 @@ msgid "%{count} of %{required} approvals from %{name}"
 msgstr ""
 
 msgid "%{count} of %{total}"
+msgstr ""
+
+msgid "%{count} optional %{label}."
 msgstr ""
 
 msgid "%{count} project"
@@ -6433,6 +6439,9 @@ msgid "Applying suggestion..."
 msgstr ""
 
 msgid "Applying suggestions..."
+msgstr ""
+
+msgid "Approval Rules"
 msgstr ""
 
 msgid "Approval options"

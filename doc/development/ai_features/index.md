@@ -163,21 +163,6 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework.
 1. Setup [AI Gateway](#local-setup).
 
-### Bypass AI Gateway
-
-NOTE:
-You need to set up AI Gateway since GitLab 16.8.
-It's a recommended way to test AI features. Sending requests directly to LLMs could lead to unnoticed bugs.
-Use this workaround with caution. 
-
-To set up direct requests to LLMs you have to:
-
-1. Disable the feature flag.
-
-     ```shell
-     echo "Feature.disable(:gitlab_duo_chat_requests_to_ai_gateway)" | rails c
-     ```
-
 ### Help
 
 - [Here's how to reach us!](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/ai-framework/#-how-to-reach-us)

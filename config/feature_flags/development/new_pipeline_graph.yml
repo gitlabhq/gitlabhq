@@ -1,8 +1,0 @@
----
-name: new_pipeline_graph
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132462
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426902
-milestone: '16.5'
-type: development
-group: group::ux paper cuts
-default_enabled: true

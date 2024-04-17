@@ -82,16 +82,6 @@ RSpec.describe ForkTargetsFinder, feature_category: :source_code_management do
         it 'returns a group for an exact match' do
           expect(finder.execute(search: subgroup.full_path)).to eq([subgroup])
         end
-
-        context 'when feature flag "fork_targets_finder_with_parents" is disabled' do
-          before do
-            stub_feature_flags(fork_targets_finder_with_parents: false)
-          end
-
-          it 'does not return a group' do
-            expect(finder.execute(search: subgroup.full_path)).to eq([])
-          end
-        end
       end
     end
   end

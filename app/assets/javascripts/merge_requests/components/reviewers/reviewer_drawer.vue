@@ -8,6 +8,8 @@ export default {
     GlDrawer,
     ApprovalSummary: () =>
       import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
+    ApprovalRulesWrapper: () =>
+      import('ee_component/merge_requests/components/reviewers/approval_rules_wrapper.vue'),
   },
   props: {
     open: {
@@ -38,5 +40,6 @@ export default {
     <template #header>
       <approval-summary />
     </template>
+    <approval-rules-wrapper />
   </gl-drawer>
 </template>
