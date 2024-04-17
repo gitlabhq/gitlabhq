@@ -29211,9 +29211,6 @@ msgstr ""
 msgid "Job|Canceled"
 msgstr ""
 
-msgid "Job|Complete Raw"
-msgstr ""
-
 msgid "Job|Created"
 msgstr ""
 
@@ -29316,6 +29313,9 @@ msgstr ""
 msgid "Job|Show full screen"
 msgstr ""
 
+msgid "Job|Showing last %{size} of log."
+msgstr ""
+
 msgid "Job|Skipped"
 msgstr ""
 
@@ -29347,6 +29347,9 @@ msgid "Job|This job is stuck because you don't have any active runners that can 
 msgstr ""
 
 msgid "Job|Update CI/CD variables"
+msgstr ""
+
+msgid "Job|View raw"
 msgstr ""
 
 msgid "Job|Waiting for resource"
@@ -48341,9 +48344,6 @@ msgid "Showing data for workflow items completed in this date range. Date range 
 msgstr ""
 
 msgid "Showing first 50 actions."
-msgstr ""
-
-msgid "Showing last %{size} of log -"
 msgstr ""
 
 msgid "Showing latest version"

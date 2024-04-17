@@ -211,6 +211,21 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "Please change the `gitlab_schema` of these tables accordingly."
   end
 
+  it 'does not allow invalid follow-up issue URLs', :aggregate_failures do
+    issue_url_regex = %r{\Ahttps://gitlab\.com/gitlab-org/gitlab/-/issues/\d+\z}
+
+    entries_with_issue_link.each do |entry|
+      if entry.sharding_key.present?
+        expect(entry.sharding_key_issue_url).not_to be_present,
+          "You must remove `sharding_key_issue_url` from #{entry.table_name} now that it has a valid sharding key." \
+      else
+        expect(entry.sharding_key_issue_url).to match(issue_url_regex),
+          "Invalid `sharding_key_issue_url` url for #{entry.table_name}. Please use the following format: " \
+          "https://gitlab.com/gitlab-org/gitlab/-/issues/XXX"
+      end
+    end
+  end
+
   private
 
   def error_message(table_name)
@@ -229,6 +244,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         !entry.exempt_from_sharding? &&
         entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.cell_local?(entry.gitlab_schema)
+    end
+  end
+
+  def entries_with_issue_link
+    ::Gitlab::Database::Dictionary.entries.select do |entry|
+      entry.sharding_key_issue_url.present?
     end
   end
 

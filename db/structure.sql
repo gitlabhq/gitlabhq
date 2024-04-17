@@ -25993,6 +25993,8 @@ CREATE INDEX index_merge_requests_compliance_violations_on_violating_user_id ON 
 
 CREATE UNIQUE INDEX index_merge_requests_compliance_violations_unique_columns ON merge_requests_compliance_violations USING btree (merge_request_id, violating_user_id, reason);
 
+CREATE INDEX index_merge_requests_for_latest_diffs_with_state_merged ON merge_requests USING btree (latest_merge_request_diff_id, target_project_id) WHERE (state_id = 3);
+
 CREATE INDEX index_merge_requests_id_created_at_prepared_at ON merge_requests USING btree (created_at, id) WHERE (prepared_at IS NULL);
 
 CREATE INDEX index_merge_requests_on_assignee_id ON merge_requests USING btree (assignee_id);
@@ -26276,6 +26278,8 @@ CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON a
 CREATE INDEX index_on_issue_assignment_events_issue_id_action_created_at_id ON issue_assignment_events USING btree (issue_id, action, created_at, id);
 
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
+
+CREATE INDEX index_on_merge_request_diffs_head_commit_sha ON merge_request_diffs USING btree (head_commit_sha);
 
 CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
 

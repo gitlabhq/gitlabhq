@@ -2,7 +2,7 @@
 import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick } from '@gitlab/ui';
 import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { __, s__, sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { compactJobLog } from '~/ci/job_details/utils';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -89,7 +89,7 @@ export default {
   },
   computed: {
     jobLogSize() {
-      return sprintf(__('Showing last %{size} of log -'), {
+      return sprintf(s__('Job|Showing last %{size} of log.'), {
         size: numberToHumanSize(this.size),
       });
     },
@@ -185,31 +185,22 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar gl-display-flex gl-justify-content-space-between">
-    <slot name="drawers"></slot>
-    <!-- truncate information -->
-    <div
-      class="truncated-info gl-display-none gl-sm-display-flex gl-flex-wrap gl-align-items-center"
-      data-testid="log-truncated-info"
-    >
+  <div class="top-bar gl-display-flex gl-align-items-center gl-justify-content-space-between">
+    <!-- truncated log information -->
+    <div class="gl-display-none gl-sm-display-block gl-text-truncate" data-testid="showing-last">
       <template v-if="isJobLogSizeVisible">
         {{ jobLogSize }}
-        <gl-link
-          v-if="rawPath"
-          :href="rawPath"
-          class="text-plain text-underline gl-ml-2"
-          data-testid="raw-link"
-          >{{ s__('Job|Complete Raw') }}</gl-link
-        >
+        <gl-link v-if="rawPath" :href="rawPath">{{ s__('Job|View raw') }}</gl-link>
       </template>
     </div>
-    <!-- eo truncate information -->
+    <!-- eo truncated log information -->
 
     <div class="controllers">
       <slot name="controllers"> </slot>
+
       <gl-search-box-by-click
         v-model="searchTerm"
-        class="gl-mr-3"
+        class="gl-mr-3 gl-flex-nowrap"
         :placeholder="$options.i18n.searchPlaceholder"
         data-testid="job-log-search-box"
         @clear="$emit('searchResults', [])"
@@ -243,7 +234,7 @@ export default {
         :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
         :disabled="shouldDisableJumpToFailures"
         class="btn-scroll gl-ml-3"
-        data-testid="job-controller-scroll-to-failure"
+        data-testid="job-top-bar-scroll-to-failure"
         icon="soft-wrap"
         @click="handleScrollToNextFailure"
       />
@@ -252,7 +243,7 @@ export default {
         <gl-button
           :disabled="isScrollTopDisabled"
           class="btn-scroll"
-          data-testid="job-controller-scroll-top"
+          data-testid="job-top-bar-scroll-top"
           icon="scroll_up"
           :aria-label="$options.i18n.scrollToTopButtonLabel"
           @click="handleScrollToTop"
@@ -263,7 +254,7 @@ export default {
         <gl-button
           :disabled="isScrollBottomDisabled"
           class="js-scroll-bottom btn-scroll"
-          data-testid="job-controller-scroll-bottom"
+          data-testid="job-top-bar-scroll-bottom"
           icon="scroll_down"
           :class="{ animate: isScrollingDown }"
           :aria-label="$options.i18n.scrollToBottomButtonLabel"
@@ -279,7 +270,7 @@ export default {
           :title="$options.i18n.enterFullscreen"
           :aria-label="$options.i18n.enterFullscreen"
           class="btn-scroll gl-ml-3"
-          data-testid="job-controller-enter-fullscreen"
+          data-testid="job-top-bar-enter-fullscreen"
           icon="maximize"
           @click="handleFullscreenMode"
         />
@@ -290,7 +281,7 @@ export default {
         :title="$options.i18n.exitFullScreen"
         :aria-label="$options.i18n.exitFullScreen"
         class="btn-scroll gl-ml-3"
-        data-testid="job-controller-exit-fullscreen"
+        data-testid="job-top-bar-exit-fullscreen"
         icon="minimize"
         @click="handleExitFullscreenMode"
       />

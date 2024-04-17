@@ -289,6 +289,53 @@ sequenceDiagram
     Diff Storage ->> Back end: Raw diff
 ```
 
+###### Backend
+
+- First files rendered on page load
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Back end
+    participant Authorization
+    participant HAML
+    participant Cache
+    participant Database
+    participant Diff storage
+    participant Gitaly
+
+    Client ->> Back end: Page load request
+    Back end ->> Authorization: Check is good request
+    alt Unauthorized
+        Authorization ->> Back end: No!
+        Back end ->> Client: 403 or 404
+    else
+        Authorization ->> Back end: Authorized.
+        alt MR Diff
+            Back end ->> Database: Get N files
+            Database ->> Back end: Files
+            Back end ->> Diff storage: Get diffs of N files
+            Diff storage ->> Back end: Diffs
+        else
+            Back end ->> Gitaly: Get diffs of N files
+            Gitaly ->> Back end: Diffs
+        end
+        loop Iterate through each diff file
+            Back end ->> HAML: Render diff file
+            HAML ->> Cache: Give me the cached rendered UI per file
+            alt Cache miss
+                Cache ->> HAML: Nada!
+                HAML ->> Cache: Cache rendered UI per file
+                Cache ->> HAML: Cached, rendered UI per file
+            else
+                Cache ->> HAML: Cached, rendered UI per file
+            end
+            HAML ->> Back end: Rendered UI
+        end
+        Back end ->> Client: Respond with application layout with rendered UI
+    end
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

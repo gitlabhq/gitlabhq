@@ -103,6 +103,40 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 
 ## 16.10.0
 
+You might encounter the following error while upgrading to GitLab 16.10 or later:
+
+```plaintext
+PG::UndefinedColumn: ERROR:  column namespace_settings.delayed_project_removal does not exist
+```
+
+This error can occur when a migration that removes the column runs before a later migration runs that references the now-deleted column. A [fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148135) for this bug is planned for release in 16.11.
+
+To workaround the problem:
+
+1. Temporarily re-create the column. Using `gitlab-psql` or connecting to the database manually, run:
+
+   ```sql
+   ALTER TABLE namespace_settings ADD COLUMN delayed_project_removal BOOLEAN DEFAULT NULL;
+   ```
+
+1. Apply pending migrations:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+1. Finalize checks:
+
+   ```shell
+   gitlab-ctl upgrade-check
+   ```
+
+1. Remove the column. Using `gitlab-psql` or connecting to the database manually, run:
+ 
+   ```sql
+   ALTER TABLE namespace_settings DROP COLUMN delayed_project_removal;
+   ```
+
 ### Linux package installations
 
 Linux package installations for GitLab 16.10 include an upgrade to a new major version of Patroni, from version 2.1.0 to version 3.0.1.

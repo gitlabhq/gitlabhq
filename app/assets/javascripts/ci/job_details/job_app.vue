@@ -4,7 +4,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
-import LogTopBar from 'ee_else_ce/ci/job_details/components/job_log_controllers.vue';
+import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
@@ -28,7 +28,7 @@ export default {
     ErasedBlock,
     GlIcon,
     Log,
-    LogTopBar,
+    JobLogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,
     Sidebar,
@@ -284,7 +284,7 @@ export default {
         </div>
         <!-- job log -->
         <div v-if="hasJobLog && !showUpdateVariablesState" class="build-log-container gl-relative">
-          <log-top-bar
+          <job-log-top-bar
             :class="{
               'has-archived-block': job.archived,
             }"

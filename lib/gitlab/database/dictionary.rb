@@ -110,6 +110,10 @@ module Gitlab
           data['desired_sharding_key']
         end
 
+        def sharding_key_issue_url
+          data['sharding_key_issue_url']
+        end
+
         def exempt_from_sharding?
           !!data['exempt_from_sharding']
         end

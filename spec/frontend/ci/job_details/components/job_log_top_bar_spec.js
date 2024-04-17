@@ -1,6 +1,6 @@
-import { GlSearchBoxByClick } from '@gitlab/ui';
+import { GlLink, GlSearchBoxByClick } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import JobLogControllers from '~/ci/job_details/components/job_log_controllers.vue';
+import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
@@ -8,7 +8,7 @@ import { mockJobLog } from 'jest/ci/jobs_mock_data';
 
 const mockToastShow = jest.fn();
 
-describe('Job log controllers', () => {
+describe('JobLogTopBar', () => {
   let wrapper;
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('Job log controllers', () => {
   };
 
   const createWrapper = (props) => {
-    wrapper = mount(JobLogControllers, {
+    wrapper = mount(JobLogTopBar, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -49,18 +49,18 @@ describe('Job log controllers', () => {
     });
   };
 
-  const findTruncatedInfo = () => wrapper.find('[data-testid="log-truncated-info"]');
-  const findRawLink = () => wrapper.find('[data-testid="raw-link"]');
+  const findShowingLast = () => wrapper.find('[data-testid="showing-last"]');
+  const findShowingLastLinks = () => findShowingLast().findAllComponents(GlLink);
   const findRawLinkController = () => wrapper.find('[data-testid="job-raw-link-controller"]');
-  const findScrollTop = () => wrapper.find('[data-testid="job-controller-scroll-top"]');
-  const findScrollBottom = () => wrapper.find('[data-testid="job-controller-scroll-bottom"]');
+  const findScrollTop = () => wrapper.find('[data-testid="job-top-bar-scroll-top"]');
+  const findScrollBottom = () => wrapper.find('[data-testid="job-top-bar-scroll-bottom"]');
   const findJobLogSearch = () => wrapper.findComponent(GlSearchBoxByClick);
   const findSearchHelp = () => wrapper.findComponent(HelpPopover);
-  const findScrollFailure = () => wrapper.find('[data-testid="job-controller-scroll-to-failure"]');
+  const findScrollFailure = () => wrapper.find('[data-testid="job-top-bar-scroll-to-failure"]');
   const findShowFullScreenButton = () =>
-    wrapper.find('[data-testid="job-controller-enter-fullscreen"]');
+    wrapper.find('[data-testid="job-top-bar-enter-fullscreen"]');
   const findExitFullScreenButton = () =>
-    wrapper.find('[data-testid="job-controller-exit-fullscreen"]');
+    wrapper.find('[data-testid="job-top-bar-exit-fullscreen"]');
 
   describe('Truncate information', () => {
     describe('with isJobLogSizeVisible', () => {
@@ -69,11 +69,12 @@ describe('Job log controllers', () => {
       });
 
       it('renders size information', () => {
-        expect(findTruncatedInfo().text()).toMatch('499.95 KiB');
+        expect(findShowingLast().text()).toMatch('Showing last 499.95 KiB of log.');
       });
 
-      it('renders link to raw job log', () => {
-        expect(findRawLink().attributes('href')).toBe(defaultProps.rawPath);
+      it('renders link', () => {
+        expect(findShowingLastLinks()).toHaveLength(1);
+        expect(findShowingLastLinks().at(0).attributes('href')).toBe('/raw');
       });
     });
   });
