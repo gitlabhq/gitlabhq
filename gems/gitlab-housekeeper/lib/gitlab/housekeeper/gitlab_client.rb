@@ -70,17 +70,12 @@ module Gitlab
         changes.to_a
       end
 
-      # rubocop:disable Metrics/ParameterLists
       def create_or_update_merge_request(
         change:,
         source_project_id:,
         source_branch:,
         target_branch:,
-        target_project_id:,
-        update_title:,
-        update_description:,
-        update_labels:,
-        update_reviewers:
+        target_project_id:
       )
         existing_merge_request = get_existing_merge_request(
           source_project_id: source_project_id,
@@ -93,11 +88,7 @@ module Gitlab
           update_existing_merge_request(
             change: change,
             existing_iid: existing_merge_request['iid'],
-            target_project_id: target_project_id,
-            update_title: update_title,
-            update_description: update_description,
-            update_labels: update_labels,
-            update_reviewers: update_reviewers
+            target_project_id: target_project_id
           )
         else
           create_merge_request(
@@ -109,7 +100,6 @@ module Gitlab
           )
         end
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def get_existing_merge_request(source_project_id:, source_branch:, target_branch:, target_project_id:)
         data = request(:get, "/projects/#{target_project_id}/merge_requests", query: {
@@ -160,21 +150,13 @@ module Gitlab
         })
       end
 
-      def update_existing_merge_request(
-        change:,
-        existing_iid:,
-        target_project_id:,
-        update_title:,
-        update_description:,
-        update_labels:,
-        update_reviewers:
-      )
+      def update_existing_merge_request(change:, existing_iid:, target_project_id:)
         body = {}
 
-        body[:title] = change.title if update_title
-        body[:description] = change.mr_description if update_description
-        body[:add_labels] = Array(change.labels).join(',') if update_labels
-        body[:reviewer_ids] = usernames_to_ids(change.reviewers) if update_reviewers
+        body[:title] = change.title if change.update_required?(:title)
+        body[:description] = change.mr_description if change.update_required?(:description)
+        body[:add_labels] = Array(change.labels).join(',') if change.update_required?(:labels)
+        body[:reviewer_ids] = usernames_to_ids(change.reviewers) if change.update_required?(:reviewers)
 
         return if body.empty?
 

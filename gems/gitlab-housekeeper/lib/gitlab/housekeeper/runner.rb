@@ -150,25 +150,21 @@ module Gitlab
       end
 
       def create(change, branch_name)
-        non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
+        change.non_housekeeper_changes = gitlab_client.non_housekeeper_changes(
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
           target_branch: @target_branch,
           target_project_id: housekeeper_target_project_id
         )
 
-        git.push(branch_name, change.push_options) unless non_housekeeper_changes.include?(:code)
+        git.push(branch_name, change.push_options) if change.update_required?(:code)
 
         gitlab_client.create_or_update_merge_request(
           change: change,
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
           target_branch: @target_branch,
-          target_project_id: housekeeper_target_project_id,
-          update_title: !non_housekeeper_changes.include?(:title),
-          update_description: !non_housekeeper_changes.include?(:description),
-          update_labels: !non_housekeeper_changes.include?(:labels),
-          update_reviewers: !non_housekeeper_changes.include?(:reviewers)
+          target_project_id: housekeeper_target_project_id
         )
       end
 

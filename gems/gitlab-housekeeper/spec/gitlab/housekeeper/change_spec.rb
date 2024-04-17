@@ -47,6 +47,20 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
     end
   end
 
+  describe '#update_required?' do
+    let(:change) { create_change }
+
+    it 'returns false if the category is in non_housekeeper_changes' do
+      change.non_housekeeper_changes = [:code]
+      expect(change.update_required?(:code)).to eq(false)
+    end
+
+    it 'returns true if the category is not in non_housekeeper_changes' do
+      change.non_housekeeper_changes = [:title]
+      expect(change.update_required?(:code)).to eq(true)
+    end
+  end
+
   describe '#commit_message' do
     it 'includes standard content' do
       expect(change.commit_message).to eq(

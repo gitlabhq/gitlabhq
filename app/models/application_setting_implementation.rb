@@ -274,6 +274,7 @@ module ApplicationSettingImplementation
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,
         gitlab_dedicated_instance: false,
+        gitlab_environment_toolkit_instance: false,
         ci_max_includes: 150,
         allow_account_deletion: true,
         gitlab_shell_operation_limit: 600,

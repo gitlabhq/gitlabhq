@@ -14,7 +14,8 @@ module HousekeeperFactory
     changed_files: ['change1.txt', 'change2.txt'],
     labels: %w[some-label-1 some-label-2],
     reviewers: ['thegitlabreviewer'],
-    mr_web_url: nil
+    mr_web_url: nil,
+    non_housekeeper_changes: []
   )
 
     change = ::Gitlab::Housekeeper::Change.new
@@ -25,6 +26,7 @@ module HousekeeperFactory
     change.labels = labels
     change.reviewers = reviewers
     change.mr_web_url = mr_web_url
+    change.non_housekeeper_changes = non_housekeeper_changes
 
     change
   end

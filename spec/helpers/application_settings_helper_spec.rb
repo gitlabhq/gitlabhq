@@ -79,6 +79,13 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(:namespace_aggregation_schedule_lease_duration_in_seconds)
     end
 
+    it 'contains service ping settings' do
+      expect(helper.visible_attributes).to include(
+        *%i[
+          gitlab_environment_toolkit_instance
+        ])
+    end
+
     context 'when on SaaS', :saas do
       it 'does not contain :deactivate_dormant_users' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users)

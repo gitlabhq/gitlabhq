@@ -66,6 +66,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { expect(described_class).to validate_jsonb_schema(['application_setting_rate_limits']) }
 
+    it { expect(described_class).to validate_jsonb_schema(['application_setting_service_ping_settings']) }
+
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
     it { is_expected.to allow_value(https).for(:home_page_url) }

@@ -610,6 +610,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
     concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }]
 
+  jsonb_accessor :service_ping_settings,
+    gitlab_environment_toolkit_instance: [:boolean, { default: false }]
+
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 
   validates :search_rate_limit_allowlist,
@@ -766,6 +769,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :gitlab_dedicated_instance,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :service_ping_settings, json_schema: { filename: 'application_setting_service_ping_settings' }
 
   validates :math_rendering_limits_enabled,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

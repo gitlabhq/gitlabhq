@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application service ping settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gitlab_environment_toolkit_instance": {
+      "type": "boolean",
+      "description": "Indicates whether the instance was provisioned with the GitLab Environment Toolkit for Service Ping reporting."
+    }
+  }
+}

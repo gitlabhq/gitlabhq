@@ -109,11 +109,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           source_project_id: '123',
           source_branch: 'the-identifier-for-the-first-change',
           target_branch: 'master',
-          target_project_id: '456',
-          update_title: true,
-          update_description: true,
-          update_labels: true,
-          update_reviewers: true
+          target_project_id: '456'
         ).twice.and_return({ 'web_url' => 'https://example.com' })
       expect(gitlab_client).to receive(:create_or_update_merge_request)
         .with(
@@ -121,11 +117,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           source_project_id: '123',
           source_branch: 'the-identifier-for-the-second-change',
           target_branch: 'master',
-          target_project_id: '456',
-          update_title: true,
-          update_description: true,
-          update_labels: true,
-          update_reviewers: true
+          target_project_id: '456'
         ).twice.and_return({ 'web_url' => 'https://example.com' })
 
       described_class.new(max_mrs: 2, keeps: [fake_keep]).run
@@ -154,11 +146,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             source_project_id: '123',
             source_branch: 'the-identifier-for-the-first-change',
             target_branch: 'the-target-branch',
-            target_project_id: '456',
-            update_title: true,
-            update_description: true,
-            update_labels: true,
-            update_reviewers: true
+            target_project_id: '456'
           ).twice.and_return({ 'web_url' => 'https://example.com' })
 
         described_class.new(max_mrs: 1, keeps: [fake_keep], target_branch: 'the-target-branch').run
@@ -202,71 +190,10 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             source_project_id: '123',
             source_branch: 'the-identifier-for-the-second-change',
             target_branch: 'master',
-            target_project_id: '456',
-            update_title: true,
-            update_description: true,
-            update_labels: true,
-            update_reviewers: true
+            target_project_id: '456'
           ).twice.and_return({ 'web_url' => 'https://example.com' })
 
         described_class.new(max_mrs: 2, keeps: [fake_keep], filter_identifiers: [/second/]).run
-      end
-    end
-
-    context 'when title, description, code has changed already' do
-      it 'does not update the changed details' do
-        # First change has updated code and description so should only update title
-        expect(gitlab_client).to receive(:non_housekeeper_changes)
-          .with(
-            source_project_id: '123',
-            source_branch: 'the-identifier-for-the-first-change',
-            target_branch: 'master',
-            target_project_id: '456'
-          ).twice.and_return([:code, :description, :reviewers])
-
-        # Second change has updated title and description so it should push the code
-        expect(gitlab_client).to receive(:non_housekeeper_changes)
-          .with(
-            source_project_id: '123',
-            source_branch: 'the-identifier-for-the-second-change',
-            target_branch: 'master',
-            target_project_id: '456'
-          ).twice.and_return([:title, :description])
-
-        expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change1)
-        expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
-
-        expect(git).not_to receive(:push)
-          .with('the-identifier-for-the-first-change', change1.push_options)
-        expect(git).to receive(:push)
-          .with('the-identifier-for-the-second-change', change2.push_options)
-
-        expect(gitlab_client).to receive(:create_or_update_merge_request)
-          .with(
-            change: change1,
-            source_project_id: '123',
-            source_branch: 'the-identifier-for-the-first-change',
-            target_branch: 'master',
-            target_project_id: '456',
-            update_title: true,
-            update_description: false,
-            update_labels: true,
-            update_reviewers: false
-          ).twice.and_return({ 'web_url' => 'https://example.com' })
-        expect(gitlab_client).to receive(:create_or_update_merge_request)
-          .with(
-            change: change2,
-            source_project_id: '123',
-            source_branch: 'the-identifier-for-the-second-change',
-            target_branch: 'master',
-            target_project_id: '456',
-            update_title: false,
-            update_description: false,
-            update_labels: true,
-            update_reviewers: true
-          ).twice.and_return({ 'web_url' => 'https://example.com' })
-
-        described_class.new(max_mrs: 2, keeps: [fake_keep]).run
       end
     end
 

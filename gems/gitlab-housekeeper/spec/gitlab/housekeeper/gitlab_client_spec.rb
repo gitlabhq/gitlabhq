@@ -242,11 +242,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         source_project_id: 123,
         source_branch: 'the-source-branch',
         target_branch: 'the-target-branch',
-        target_project_id: 456,
-        update_title: true,
-        update_description: true,
-        update_labels: true,
-        update_reviewers: true
+        target_project_id: 456
       }
     end
 
@@ -345,94 +341,105 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
         end
       end
 
-      context 'when update_title: false' do
-        it 'does not update the title' do
-          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
-            .with(
-              body: {
-                description: change.mr_description,
-                add_labels: "some-label-1,some-label-2",
-                reviewer_ids: [reviewer_id]
-              }.to_json,
-              headers: {
-                'Content-Type' => 'application/json',
-                'Private-Token' => 'the-api-token'
-              }
-            ).to_return(status: 200, body: '{}')
-
-          client.create_or_update_merge_request(**params.merge(update_title: false))
-          expect(stub).to have_been_requested
+      context 'when the merge request has been updated by a non-housekeeper user' do
+        let(:change) do
+          create_change(non_housekeeper_changes: non_housekeeper_changes)
         end
-      end
 
-      context 'when update_description: false' do
-        it 'does not update the description' do
-          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
-            .with(
-              body: {
-                title: "The change title",
-                add_labels: "some-label-1,some-label-2",
-                reviewer_ids: [reviewer_id]
-              }.to_json,
-              headers: {
-                'Content-Type' => 'application/json',
-                'Private-Token' => 'the-api-token'
-              }
-            ).to_return(status: 200, body: '{}')
+        context 'when update_title: false' do
+          let(:non_housekeeper_changes) { [:title] }
 
-          client.create_or_update_merge_request(**params.merge(update_description: false))
-          expect(stub).to have_been_requested
+          it 'does not update the title' do
+            stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+              .with(
+                body: {
+                  description: change.mr_description,
+                  add_labels: "some-label-1,some-label-2",
+                  reviewer_ids: [reviewer_id]
+                }.to_json,
+                headers: {
+                  'Content-Type' => 'application/json',
+                  'Private-Token' => 'the-api-token'
+                }
+              ).to_return(status: 200, body: '{}')
+
+            client.create_or_update_merge_request(**params)
+            expect(stub).to have_been_requested
+          end
         end
-      end
 
-      context 'when update_labels: false' do
-        it 'does not update the labels' do
-          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
-            .with(
-              body: {
-                title: "The change title",
-                description: change.mr_description,
-                reviewer_ids: [reviewer_id]
-              }.to_json,
-              headers: {
-                'Content-Type' => 'application/json',
-                'Private-Token' => 'the-api-token'
-              }
-            ).to_return(status: 200, body: '{}')
+        context 'when update_description: false' do
+          let(:non_housekeeper_changes) { [:description] }
 
-          client.create_or_update_merge_request(**params.merge(update_labels: false))
-          expect(stub).to have_been_requested
+          it 'does not update the description' do
+            stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+              .with(
+                body: {
+                  title: "The change title",
+                  add_labels: "some-label-1,some-label-2",
+                  reviewer_ids: [reviewer_id]
+                }.to_json,
+                headers: {
+                  'Content-Type' => 'application/json',
+                  'Private-Token' => 'the-api-token'
+                }
+              ).to_return(status: 200, body: '{}')
+
+            client.create_or_update_merge_request(**params)
+            expect(stub).to have_been_requested
+          end
         end
-      end
 
-      context 'when update_reviewers: false' do
-        it 'does not update the reviewers' do
-          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
-            .with(
-              body: {
-                title: "The change title",
-                description: change.mr_description,
-                add_labels: "some-label-1,some-label-2"
-              }.to_json,
-              headers: {
-                'Content-Type' => 'application/json',
-                'Private-Token' => 'the-api-token'
-              }
-            ).to_return(status: 200, body: '{}')
+        context 'when update_labels: false' do
+          let(:non_housekeeper_changes) { [:labels] }
 
-          client.create_or_update_merge_request(**params.merge(update_reviewers: false))
-          expect(stub).to have_been_requested
+          it 'does not update the labels' do
+            stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+              .with(
+                body: {
+                  title: "The change title",
+                  description: change.mr_description,
+                  reviewer_ids: [reviewer_id]
+                }.to_json,
+                headers: {
+                  'Content-Type' => 'application/json',
+                  'Private-Token' => 'the-api-token'
+                }
+              ).to_return(status: 200, body: '{}')
+
+            client.create_or_update_merge_request(**params)
+            expect(stub).to have_been_requested
+          end
         end
-      end
 
-      context 'when there is nothing to update' do
-        it 'does not make a request' do
-          client.create_or_update_merge_request(**params.merge(
-            update_description: false,
-            update_title: false,
-            update_labels: false,
-            update_reviewers: false
-          ))
+        context 'when update_reviewers: false' do
+          let(:non_housekeeper_changes) { [:reviewers] }
+
+          it 'does not update the reviewers' do
+            stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+              .with(
+                body: {
+                  title: "The change title",
+                  description: change.mr_description,
+                  add_labels: "some-label-1,some-label-2"
+                }.to_json,
+                headers: {
+                  'Content-Type' => 'application/json',
+                  'Private-Token' => 'the-api-token'
+                }
+              ).to_return(status: 200, body: '{}')
+
+            client.create_or_update_merge_request(**params)
+            expect(stub).to have_been_requested
+          end
+        end
+
+        context 'when there is nothing to update' do
+          let(:non_housekeeper_changes) { [:title, :description, :labels, :reviewers] }
+
+          it 'does not make a request' do
+            client.create_or_update_merge_request(**params)
+          end
         end
       end
     end

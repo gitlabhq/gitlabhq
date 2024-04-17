@@ -13,12 +13,14 @@ module Gitlab
         :keep_class,
         :changelog_type,
         :mr_web_url,
-        :push_options
+        :push_options,
+        :non_housekeeper_changes
       attr_reader :reviewers
 
       def initialize
         @labels = []
         @reviewers = []
+        @non_housekeeper_changes = []
         @push_options = PushOptions.new
       end
 
@@ -55,6 +57,10 @@ module Gitlab
             identifier.match?(filter)
           end
         end
+      end
+
+      def update_required?(category)
+        !category.in?(non_housekeeper_changes)
       end
 
       def valid?

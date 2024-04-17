@@ -511,6 +511,7 @@ module ApplicationSettingsHelper
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
       :gitlab_dedicated_instance,
+      :gitlab_environment_toolkit_instance,
       :ci_max_includes,
       :allow_account_deletion,
       :gitlab_shell_operation_limit,
