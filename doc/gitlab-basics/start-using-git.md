@@ -175,7 +175,7 @@ Here, `<number>` is the number of commits to undo.
 For example, if you want to undo only the latest commit:
 
 ```shell
-git rest HEAD~1
+git reset HEAD~1
 ```
 
 The commit is reset and any changes remain in the local repository.

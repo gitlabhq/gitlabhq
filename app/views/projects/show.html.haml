@@ -8,6 +8,7 @@
 
 = render_if_exists 'shared/promotions/promote_mobile_devops', project: @project
 = render_if_exists 'projects/duo_pro_trial_alert', project: @project
+= render_if_exists 'projects/duo_chat_ga_alert', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render 'clusters_deprecation_alert'

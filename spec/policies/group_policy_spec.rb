@@ -1114,7 +1114,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  # This block can be removed when packages_dependency_proxy_pass_token_to_policy is rolled out
   describe 'dependency proxy' do
     RSpec.shared_examples 'disabling admin_package feature flag' do
       before do

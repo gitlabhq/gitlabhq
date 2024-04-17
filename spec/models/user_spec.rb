@@ -3030,66 +3030,28 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '.filter_items' do
+    using RSpec::Parameterized::TableSyntax
     let(:user) { double }
 
-    it 'filters by active users by default' do
-      expect(described_class).to receive(:active_without_ghosts).and_return([user])
-
-      expect(described_class.filter_items(nil)).to include user
+    where(:scope, :filter_name) do
+      :active_without_ghosts    | nil
+      :admins                   | 'admins'
+      :blocked                  | 'blocked'
+      :banned                   | 'banned'
+      :blocked_pending_approval | 'blocked_pending_approval'
+      :deactivated              | 'deactivated'
+      :without_two_factor       | 'two_factor_disabled'
+      :with_two_factor          | 'two_factor_enabled'
+      :without_projects         | 'wop'
+      :trusted                  | 'trusted'
+      :external                 | 'external'
     end
 
-    it 'filters by admins' do
-      expect(described_class).to receive(:admins).and_return([user])
-
-      expect(described_class.filter_items('admins')).to include user
-    end
-
-    it 'filters by blocked' do
-      expect(described_class).to receive(:blocked).and_return([user])
-
-      expect(described_class.filter_items('blocked')).to include user
-    end
-
-    it 'filters by banned' do
-      expect(described_class).to receive(:banned).and_return([user])
-
-      expect(described_class.filter_items('banned')).to include user
-    end
-
-    it 'filters by blocked pending approval' do
-      expect(described_class).to receive(:blocked_pending_approval).and_return([user])
-
-      expect(described_class.filter_items('blocked_pending_approval')).to include user
-    end
-
-    it 'filters by deactivated' do
-      expect(described_class).to receive(:deactivated).and_return([user])
-
-      expect(described_class.filter_items('deactivated')).to include user
-    end
-
-    it 'filters by two_factor_disabled' do
-      expect(described_class).to receive(:without_two_factor).and_return([user])
-
-      expect(described_class.filter_items('two_factor_disabled')).to include user
-    end
-
-    it 'filters by two_factor_enabled' do
-      expect(described_class).to receive(:with_two_factor).and_return([user])
-
-      expect(described_class.filter_items('two_factor_enabled')).to include user
-    end
-
-    it 'filters by wop' do
-      expect(described_class).to receive(:without_projects).and_return([user])
-
-      expect(described_class.filter_items('wop')).to include user
-    end
-
-    it 'filters by trusted' do
-      expect(described_class).to receive(:trusted).and_return([user])
-
-      expect(described_class.filter_items('trusted')).to include user
+    with_them do
+      it 'uses a certain scope for the given filter name' do
+        expect(described_class).to receive(scope).and_return([user])
+        expect(described_class.filter_items(filter_name)).to include user
+      end
     end
   end
 
@@ -4050,22 +4012,36 @@ RSpec.describe User, feature_category: :user_profile do
 
   context 'crowd synchronized user' do
     describe '#crowd_user?' do
-      it 'is true if provider is crowd' do
-        user = create(:omniauth_user, provider: 'crowd')
+      shared_examples_for 'User#crowd_user?' do
+        subject { user.crowd_user? }
 
-        expect(user.crowd_user?).to be_truthy
+        context 'when provider is not crowd' do
+          let(:user) { create(:omniauth_user, provider: 'other-provider') }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when provider is crowd' do
+          let(:user) { create(:omniauth_user, provider: 'crowd') }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when extern_uid is not provided' do
+          let(:user) { create(:omniauth_user, extern_uid: nil) }
+
+          it { is_expected.to be_falsey }
+        end
       end
 
-      it 'is false for other providers' do
-        user = create(:omniauth_user, provider: 'other-provider')
+      it_behaves_like 'User#crowd_user?'
 
-        expect(user.crowd_user?).to be_falsey
-      end
-
-      it 'is false if no extern_uid is provided' do
-        user = create(:omniauth_user, extern_uid: nil)
-
-        expect(user.crowd_user?).to be_falsey
+      context 'when identities are loaded' do
+        it_behaves_like 'User#crowd_user?' do
+          before do
+            user.identities.to_a
+          end
+        end
       end
     end
   end
@@ -8534,6 +8510,34 @@ RSpec.describe User, feature_category: :user_profile do
 
     context 'when existing account is not pending deletion' do
       it_behaves_like 'it does not add account pending deletion error message'
+    end
+  end
+
+  describe '#ldap_sync_time' do
+    let(:user) { build(:user) }
+
+    it 'is equal to one hour' do
+      expect(user.ldap_sync_time).to eq(1.hour)
+    end
+  end
+
+  describe '#can_leave_project?' do
+    let_it_be(:user) { create :user, :with_namespace }
+    let_it_be(:user_namespace_project) { create(:project, namespace: user.namespace) }
+    let_it_be(:user_member_project) { create(:project, :in_group, developers: [user]) }
+
+    subject { user.can_leave_project?(project) }
+
+    context "when the project is in the user's namespace" do
+      let(:project) { user_namespace_project }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the user is a member of the project' do
+      let(:project) { user_member_project }
+
+      it { is_expected.to be_truthy }
     end
   end
 end

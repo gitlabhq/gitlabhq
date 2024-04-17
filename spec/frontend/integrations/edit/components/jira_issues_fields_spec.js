@@ -35,6 +35,7 @@ describe('JiraIssuesFields', () => {
   const findEnableCheckboxDisabled = () =>
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
   const findProjectKey = () => wrapper.findComponent(GlFormInput);
+  const findProjectKeys = () => wrapper.findByTestId('jira-project-keys');
   const findProjectKeyFormGroup = () => wrapper.findByTestId('project-key-form-group');
   const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
   const setEnableCheckbox = (isEnabled = true) => findEnableCheckbox().vm.$emit('input', isEnabled);
@@ -104,6 +105,41 @@ describe('JiraIssuesFields', () => {
           expect(findProjectKey().exists()).toBe(true);
           expect(findProjectKey().attributes('required')).toBe('required');
         });
+      });
+    });
+
+    describe('when jira_multiple_project_keys is not enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: shallowMountExtended,
+          props: {
+            initialEnableJiraIssues: true,
+          },
+        });
+      });
+
+      it('does not render "Jira project keys" input', () => {
+        expect(findProjectKeys().exists()).toBe(false);
+      });
+    });
+
+    describe('when jira_multiple_project_keys is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: shallowMountExtended,
+          props: {
+            initialEnableJiraIssues: true,
+          },
+          provide: {
+            glFeatures: {
+              jiraMultipleProjectKeys: true,
+            },
+          },
+        });
+      });
+
+      it('renders "Jira project keys" input', () => {
+        expect(findProjectKeys().attributes('label')).toBe('Jira project keys');
       });
     });
 

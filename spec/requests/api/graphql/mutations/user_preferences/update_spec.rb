@@ -11,6 +11,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
 
   let(:input) do
     {
+      'extensionsMarketplaceOptInStatus' => 'ENABLED',
       'issuesSort' => sort_value,
       'visibilityPipelineIdType' => 'IID',
       'useWebIdeExtensionMarketplace' => true
@@ -25,11 +26,13 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['userPreferences']['extensionsMarketplaceOptInStatus']).to eq('ENABLED')
       expect(mutation_response['userPreferences']['issuesSort']).to eq(sort_value)
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
       expect(mutation_response['userPreferences']['useWebIdeExtensionMarketplace']).to eq(true)
 
       expect(current_user.user_preference.persisted?).to eq(true)
+      expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_web_ide_extension_marketplace).to eq(true)
@@ -39,6 +42,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
   context 'when user has existing preference' do
     let(:init_user_preference) do
       {
+        extensions_marketplace_opt_in_status: 'enabled',
         issues_sort: Types::IssueSortEnum.values['TITLE_DESC'].value,
         visibility_pipeline_id_type: 'id',
         use_web_ide_extension_marketplace: true
@@ -65,6 +69,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
     context 'when input has nil attributes' do
       let(:input) do
         {
+          'extensionsMarketplaceOptInStatus' => nil,
           'issuesSort' => nil,
           'visibilityPipelineIdType' => nil,
           'useWebIdeExtensionMarketplace' => nil
@@ -80,6 +85,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           # These are nullable and are exepcted to change
           issues_sort: nil,
           # These should not have changed
+          extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
           use_web_ide_extension_marketplace: init_user_preference[:use_web_ide_extension_marketplace]
         })

@@ -33,9 +33,8 @@ class JwtController < ApplicationController
     @authentication_result = Gitlab::Auth::Result.new(nil, nil, :none, Gitlab::Auth.read_only_authentication_abilities)
 
     authenticate_with_http_basic do |login, password|
+      @raw_token = password
       @authentication_result = Gitlab::Auth.find_for_git_client(login, password, project: nil, request: request)
-
-      @raw_token = password if @authentication_result.type == :personal_access_token
 
       if @authentication_result.failed?
         log_authentication_failed(login, @authentication_result)

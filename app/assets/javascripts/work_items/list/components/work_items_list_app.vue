@@ -37,6 +37,7 @@ export default {
         return {
           fullPath: this.fullPath,
           sort: this.sortKey,
+          state: this.state,
         };
       },
       update(data) {
@@ -53,6 +54,13 @@ export default {
   methods: {
     getStatus(issue) {
       return issue.state === STATE_CLOSED ? __('Closed') : undefined;
+    },
+    handleClickTab(state) {
+      if (this.state === state) {
+        return;
+      }
+
+      this.state = state;
     },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
@@ -97,6 +105,7 @@ export default {
     show-work-item-type-icon
     :sort-options="$options.sortOptions"
     :tabs="$options.issuableListTabs"
+    @click-tab="handleClickTab"
     @dismiss-alert="error = undefined"
     @sort="handleSort"
   >

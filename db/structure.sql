@@ -15581,6 +15581,7 @@ CREATE TABLE scan_result_policies (
     project_approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     commits smallint,
     send_bot_message jsonb DEFAULT '{}'::jsonb NOT NULL,
+    fallback_behavior jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT age_value_null_or_positive CHECK (((age_value IS NULL) OR (age_value >= 0))),
     CONSTRAINT check_scan_result_policies_rule_idx_positive CHECK (((rule_idx IS NULL) OR (rule_idx >= 0)))
 );
@@ -17109,6 +17110,7 @@ CREATE TABLE user_preferences (
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
     use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
+    extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_b22446f91a CHECK ((render_whitespace_in_code IS NOT NULL)),

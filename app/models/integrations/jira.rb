@@ -5,6 +5,7 @@ module Integrations
   class Jira < BaseIssueTracker
     include Gitlab::Routing
     include ApplicationHelper
+    include SafeFormatHelper
     include ActionView::Helpers::AssetUrlHelper
     include Gitlab::Utils::StrongMemoize
     include HasAvatar
@@ -256,7 +257,7 @@ module Integrations
       # Currently, Jira issues are only configurable at the project and group levels.
       unless instance_level?
         issues_title = if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
-                         s_('JiraService|View Jira issues (optional)')
+                         s_('JiraService|Jira issues (optional)')
                        else
                          _('Issues')
                        end
@@ -271,9 +272,9 @@ module Integrations
         if Feature.enabled?(:jira_multiple_project_keys, group || project&.group)
           sections.push({
             type: SECTION_TYPE_JIRA_ISSUE_CREATION,
-            title: s_('JiraService|Jira issue creation from vulnerabilities (optional)'),
-            description: s_('JiraService|Create a Jira issue for a vulnerability to track any action taken ' \
-                            'to resolve or mitigate a vulnerability.'),
+            title: s_('JiraService|Jira issues for vulnerabilities (optional)'),
+            description: s_('JiraService|Create Jira issues from GitLab to track any action taken ' \
+                            'to resolve or mitigate vulnerabilities.'),
             plan: 'ultimate'
           })
         end
@@ -745,24 +746,21 @@ module Integrations
     end
 
     def jira_issues_section_description
-      jira_issues_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
-        url: help_page_path('integration/jira/issues'))
-      description = format(
-        s_('JiraService|Work on Jira issues without leaving GitLab. Add a Jira menu to access a read-only list of ' \
-           'your Jira issues. %{jira_issues_link_start}Learn more.%{link_end}'),
-        jira_issues_link_start: jira_issues_link_start,
-        link_end: '</a>'.html_safe
-      )
+      description = s_('JiraService|View issues from multiple Jira projects in this GitLab project. ' \
+                       'Access a read-only list of your Jira issues.')
 
       if project&.issues_enabled?
-        gitlab_issues_link_start = format('<a href="%{url}">'.html_safe, url: edit_project_path(project,
-          anchor: 'js-shared-permissions'))
         description += '<br><br>'.html_safe
-        description += format(
-          s_("JiraService|Displaying Jira issues while leaving GitLab issues also enabled might be confusing. " \
-             "Consider %{gitlab_issues_link_start}disabling GitLab issues%{link_end} if they won't otherwise be used."),
-          gitlab_issues_link_start: gitlab_issues_link_start,
-          link_end: '</a>'.html_safe
+
+        gitlab_issues_link = ActionController::Base.helpers.link_to(
+          '',
+          edit_project_path(project, anchor: 'js-shared-permissions')
+        )
+        tag_pair_gitlab_issues = tag_pair(gitlab_issues_link, :link_start, :link_end)
+        description += safe_format(
+          s_('JiraService|If you access Jira issues in GitLab, you might want to ' \
+             '%{link_start}disable GitLab issues%{link_end}.'),
+          tag_pair_gitlab_issues
         )
       end
 

@@ -1,9 +1,9 @@
 #import "ee_else_ce/work_items/list/queries/work_item_widgets.fragment.graphql"
 
-query getWorkItems($fullPath: ID!, $sort: WorkItemSort) {
+query getWorkItems($fullPath: ID!, $sort: WorkItemSort, $state: IssuableState) {
   group(fullPath: $fullPath) {
     id
-    workItems(sort: $sort) {
+    workItems(sort: $sort, state: $state, types: EPIC) {
       nodes {
         id
         author {

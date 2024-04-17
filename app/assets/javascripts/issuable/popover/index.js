@@ -3,11 +3,13 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import IssuePopover from './components/issue_popover.vue';
 import MRPopover from './components/mr_popover.vue';
+import MilestonePopover from './components/milestone_popover.vue';
 
 export const componentsByReferenceTypeMap = {
   issue: IssuePopover,
   work_item: IssuePopover,
   merge_request: MRPopover,
+  milestone: MilestonePopover,
 };
 
 let renderFn;
@@ -23,8 +25,10 @@ const handleIssuablePopoverMouseOut = ({ target }) => {
 const popoverMountedAttr = 'data-popover-mounted';
 
 /**
- * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
- * loads based on data-project-path and data-iid more data about an MR from the API and sets it on the popover
+ * Adds a Popover component for issuables and work items to the body,
+ * hands over as much data as the target element has in data attributes.
+ * loads based on data-project-path and data-iid more data about an MR
+ * from the API and sets it on the popover
  */
 export const handleIssuablePopoverMount = ({
   componentsByReferenceType = componentsByReferenceTypeMap,
@@ -32,6 +36,8 @@ export const handleIssuablePopoverMount = ({
   namespacePath,
   title,
   iid,
+  milestone,
+  innerText,
   referenceType,
   target,
 }) => {
@@ -45,7 +51,8 @@ export const handleIssuablePopoverMount = ({
         target,
         namespacePath,
         iid,
-        cachedTitle: title,
+        milestoneId: milestone,
+        cachedTitle: title || innerText,
       },
       apolloProvider,
     }).$mount();
@@ -64,11 +71,14 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
     const listenerAddedAttr = 'data-popover-listener-added';
 
     elements.forEach((el) => {
-      const { projectPath, groupPath, iid, referenceType } = el.dataset;
+      const { projectPath, groupPath, iid, referenceType, milestone, project } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
+      const { innerText } = el;
       const namespacePath = groupPath || projectPath;
+      const isIssuable = Boolean(namespacePath && title && iid);
+      const isMilestone = Boolean(milestone && project);
 
-      if (!el.getAttribute(listenerAddedAttr) && namespacePath && title && iid && referenceType) {
+      if (!el.getAttribute(listenerAddedAttr) && referenceType && (isIssuable || isMilestone)) {
         el.addEventListener('mouseenter', ({ target }) => {
           if (!el.getAttribute(popoverMountedAttr)) {
             issuablePopoverMount({
@@ -76,6 +86,8 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
               namespacePath,
               title,
               iid,
+              milestone,
+              innerText,
               referenceType,
               target,
             });

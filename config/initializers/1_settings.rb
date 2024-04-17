@@ -861,9 +861,6 @@ Gitlab.ee do
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner'] ||= {}
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['cron'] ||= "0 0 * * *"
   Settings.cron_jobs['licenses_reset_submit_license_usage_data_banner']['job_class'] = 'Licenses::ResetSubmitLicenseUsageDataBannerWorker'
-  Settings.cron_jobs['abandoned_trial_emails'] ||= {}
-  Settings.cron_jobs['abandoned_trial_emails']['cron'] ||= "0 1 * * *"
-  Settings.cron_jobs['abandoned_trial_emails']['job_class'] = 'Emails::AbandonedTrialEmailsCronWorker'
   Settings.cron_jobs['package_metadata_licenses_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_licenses_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_licenses_sync_worker']['job_class'] = 'PackageMetadata::LicensesSyncWorker'

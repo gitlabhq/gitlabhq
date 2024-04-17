@@ -82,41 +82,23 @@ RSpec.describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state, fe
     end
   end
 
-  context 'with feature flag show_admin_mode_within_active_sessions disabled' do
-    before do
-      stub_feature_flags(show_admin_mode_within_active_sessions: false)
-    end
+  it 'admin sees if the session is with admin mode', :enable_admin_mode do
+    Capybara::Session.new(:admin_session)
 
-    it 'admin sees if the session is with admin mode', :enable_admin_mode do
-      Capybara::Session.new(:admin_session)
-
-      using_session :admin_session do
-        gitlab_sign_in(admin)
-        visit user_settings_active_sessions_path
-        expect(page).not_to have_content('with Admin Mode')
-      end
+    using_session :admin_session do
+      gitlab_sign_in(admin)
+      visit user_settings_active_sessions_path
+      expect(page).to have_content('with Admin Mode')
     end
   end
 
-  context 'with feature flag show_admin_mode_within_active_sessions enabled' do
-    it 'admin sees if the session is with admin mode', :enable_admin_mode do
-      Capybara::Session.new(:admin_session)
+  it 'does not display admin mode text in case its not' do
+    Capybara::Session.new(:admin_session)
 
-      using_session :admin_session do
-        gitlab_sign_in(admin)
-        visit user_settings_active_sessions_path
-        expect(page).to have_content('with Admin Mode')
-      end
-    end
-
-    it 'does not display admin mode text in case its not' do
-      Capybara::Session.new(:admin_session)
-
-      using_session :admin_session do
-        gitlab_sign_in(admin)
-        visit user_settings_active_sessions_path
-        expect(page).not_to have_content('with Admin Mode')
-      end
+    using_session :admin_session do
+      gitlab_sign_in(admin)
+      visit user_settings_active_sessions_path
+      expect(page).not_to have_content('with Admin Mode')
     end
   end
 

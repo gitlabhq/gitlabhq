@@ -29,7 +29,7 @@ The following video provides an overview of these policies.
 
 ## Prerequisites to creating a new license approval policy
 
-License approval policies rely on the output of a dependency scanning job to verify that requirements have been met. If dependency scanning has not been properly configured, and therefore no dependency scanning jobs ran related to an open MR, the policy has no data with which to verify the requirements. When security policies are missing data for evaluation, they fail closed and assume the merge request could contain vulnerabilities.
+License approval policies rely on the output of a dependency scanning job to verify that requirements have been met. If dependency scanning has not been properly configured, and therefore no dependency scanning jobs ran related to an open MR, the policy has no data with which to verify the requirements. When security policies are missing data for evaluation, by default they fail closed and assume the merge request could contain vulnerabilities. You can opt out of the default behavior with the `fallback_behavior` property and set policies to fail open. A policy that fails open has all invalid and unenforceable rules unblocked.
 
 To ensure enforcement of your policies, you should enable dependency scanning on your target development projects. You can achieve this a few different ways:
 

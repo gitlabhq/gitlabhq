@@ -124,7 +124,7 @@ workflow:
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 which prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
+    - if: '$GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""

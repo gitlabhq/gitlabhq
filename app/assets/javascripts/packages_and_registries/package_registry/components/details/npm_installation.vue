@@ -152,10 +152,12 @@ export default {
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
-    <gl-sprintf :message="$options.i18n.helpText">
-      <template #link="{ content }">
-        <gl-link :href="$options.links.NPM_HELP_PATH" target="_blank">{{ content }}</gl-link>
-      </template>
-    </gl-sprintf>
+    <span class="gl-text-secondary">
+      <gl-sprintf :message="$options.i18n.helpText">
+        <template #link="{ content }">
+          <gl-link :href="$options.links.NPM_HELP_PATH" target="_blank">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </span>
   </div>
 </template>

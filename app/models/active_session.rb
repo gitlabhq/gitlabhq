@@ -78,32 +78,18 @@ class ActiveSession
       timestamp = Time.current
       expiry = Settings.gitlab['session_expire_delay'] * 60
 
-      active_user_session = if Feature.enabled?(:show_admin_mode_within_active_sessions)
-                              new(
-                                ip_address: request.remote_ip,
-                                browser: client.name,
-                                os: client.os_name,
-                                device_name: client.device_name,
-                                device_type: client.device_type,
-                                created_at: user.current_sign_in_at || timestamp,
-                                updated_at: timestamp,
-                                session_private_id: session_private_id,
-                                is_impersonated: request.session[:impersonator_id].present?,
-                                admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?
-                              )
-                            else
-                              new(
-                                ip_address: request.remote_ip,
-                                browser: client.name,
-                                os: client.os_name,
-                                device_name: client.device_name,
-                                device_type: client.device_type,
-                                created_at: user.current_sign_in_at || timestamp,
-                                updated_at: timestamp,
-                                session_private_id: session_private_id,
-                                is_impersonated: request.session[:impersonator_id].present?
-                              )
-                            end
+      active_user_session = new(
+        ip_address: request.remote_ip,
+        browser: client.name,
+        os: client.os_name,
+        device_name: client.device_name,
+        device_type: client.device_type,
+        created_at: user.current_sign_in_at || timestamp,
+        updated_at: timestamp,
+        session_private_id: session_private_id,
+        is_impersonated: request.session[:impersonator_id].present?,
+        admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?
+      )
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
         redis.pipelined do |pipeline|

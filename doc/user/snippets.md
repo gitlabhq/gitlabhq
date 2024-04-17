@@ -251,6 +251,7 @@ GitLab forwards the spam to Akismet.
 
 ### Snippet limitations
 
+- There are no limits as to how many snippets you can create.
 - Binary files are not supported.
 - Creating or deleting branches is not supported. Only the default branch is used.
 - Git tags are not supported in snippet repositories.
@@ -258,8 +259,7 @@ GitLab forwards the spam to Akismet.
   than 10 files results in an error.
 - Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
   for updates.
-- The default [maximum size for a snippet](../administration/snippets/index.md)
-  is 50 MB.
+- The default [maximum size for a snippet](../administration/snippets/index.md) and current (as of 2024-04-17) is 50 MB.
 - Git LFS is not supported.
 
 ### Reduce snippets repository size

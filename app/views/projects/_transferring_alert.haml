@@ -1,9 +1,0 @@
-- return unless project.git_transfer_in_progress?
-
-- content_for :page_level_alert do
-  = render Pajamas::AlertComponent.new(variant: :warning,
-    dismissible: false,
-    title: _('Transfer in progress'),
-    alert_options: { class: 'gl-mb-3', data: { testid: "transferring-alert" } }) do |c|
-    - c.with_body do
-      = s_('TransferProject|This project is being transferred. Do not make any changes to the project until the transfer is complete.')

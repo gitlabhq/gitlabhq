@@ -406,16 +406,8 @@
 .frontend-predictive-patterns: &frontend-predictive-patterns
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
 
-.frontend-patterns-for-as-if-foss: &frontend-patterns-for-as-if-foss
-  - "{package.json,yarn.lock}"
-  - ".browserslistrc"
-  - "babel.config.js"
-  - "jest.config.{base,integration,unit}.js"
-  - ".stylelintrc"
-  - "Dockerfile.assets"
-  - "config/**/*.js"
-  - "vendor/assets/**/*"
-  - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
+.frontend-predictive-patterns-as-if-foss: &frontend-predictive-patterns-as-if-foss
+  - "{app/assets/javascripts,spec/frontend}/**/*"
 
 # Frontend view patterns + .qa-patterns
 .frontend-qa-patterns: &frontend-qa-patterns
@@ -961,18 +953,26 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-default-branch-refs
+    - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-merge-request-labels-run-cs-evaluation
+    - <<: *if-force-ci
+      when: manual
+    # The rest is included to be consistent with .qa:rules:e2e:test-on-gdk
+    # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
-      changes: *gdk-component-patterns
-    # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
+      changes: *qa-patterns
+    # Otherwise, only run tests after the MR is approved
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
     # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
     # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
     - <<: *if-merge-request
+      changes: *gdk-component-patterns
+    - <<: *if-merge-request
       changes: *dependency-patterns
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-cs-evaluation
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -983,8 +983,6 @@
       changes: *ci-qa-patterns
     - <<: *if-merge-request
       changes: *code-qa-patterns
-    - <<: *if-force-ci
-      when: manual
 
 .build-images:rules:build-assets-image:
   rules:
@@ -1328,26 +1326,19 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.frontend:rules:default-frontend-jobs-as-if-foss:
+.frontend:rules:frontend_fixture-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request
-      changes: *frontend-patterns-for-as-if-foss
-
-.frontend:rules:frontend_fixture-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-merge-request
-      changes: *frontend-patterns-for-as-if-foss
+      changes: *frontend-predictive-patterns-as-if-foss
 
 .frontend:rules:upload-frontend-fixtures:
   rules:
@@ -1425,7 +1416,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
-.frontend:rules:jest:predictive:as-if-foss:
+.frontend:rules:jest:predictive-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:predictive-default-rules", rules]
@@ -1437,7 +1428,7 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request
-      changes: *frontend-patterns-for-as-if-foss
+      changes: *frontend-predictive-patterns-as-if-foss
 
 .frontend:rules:coverage-frontend:
   rules:
@@ -1742,6 +1733,8 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-run-cs-evaluation
+    - <<: *if-merge-request-not-approved
+      when: never
 
 .qa:rules:code-suggestions-eval:
   rules:
@@ -2991,7 +2984,6 @@
 # .build-images:rules:build-qa-image-merge-requests
 # .build-images:rules:build-assets-image
 # .frontend:rules:compile-production-assets
-# .frontend:rules:default-frontend-jobs-as-if-foss
 # .rails:rules:single-db
 # .rails:rules:single-db-ci-connection
 # .rails:rules:single-redis

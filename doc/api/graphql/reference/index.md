@@ -8953,6 +8953,7 @@ Input type: `UserPreferencesUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationuserpreferencesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuserpreferencesupdateextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -30228,8 +30229,9 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="userpreferencesextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
-| <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean!`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
+| <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.11. Use `extensions_marketplace_opt_in_status` instead. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
 ### `UserStatus`
@@ -32671,6 +32673,16 @@ Event action.
 | <a id="eventactionreopened"></a>`REOPENED` | Reopened action. |
 | <a id="eventactionupdated"></a>`UPDATED` | Updated action. |
 
+### `ExtensionsMarketplaceOptInStatus`
+
+Values for status of the Web IDE Extension Marketplace opt-in for the user.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="extensionsmarketplaceoptinstatusdisabled"></a>`DISABLED` | Web IDE Extension Marketplace opt-in status: DISABLED. |
+| <a id="extensionsmarketplaceoptinstatusenabled"></a>`ENABLED` | Web IDE Extension Marketplace opt-in status: ENABLED. |
+| <a id="extensionsmarketplaceoptinstatusunset"></a>`UNSET` | Web IDE Extension Marketplace opt-in status: UNSET. |
+
 ### `FindingReportsComparerStatus`
 
 Report comparison status.
@@ -34069,6 +34081,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumcluster_security_warning"></a>`CLUSTER_SECURITY_WARNING` | Callout feature name for cluster_security_warning. |
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
+| <a id="usercalloutfeaturenameenumduo_chat_ga_alert"></a>`DUO_CHAT_GA_ALERT` | Callout feature name for duo_chat_ga_alert. |
 | <a id="usercalloutfeaturenameenumduo_pro_trial_alert"></a>`DUO_PRO_TRIAL_ALERT` | Callout feature name for duo_pro_trial_alert. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |

@@ -91,12 +91,11 @@ export default {
     },
   },
   i18n: {
-    enableCheckboxLabel: s__('JiraService|Enable Jira issues'),
     enableCheckboxHelp: s__(
-      'JiraService|Warning: All GitLab users with access to this GitLab project can view all issues from the Jira project you select.',
+      'JiraService|Warning: All users with access to this GitLab project can view all issues from the Jira project you specify.',
     ),
     projectKeyLabel: s__('JiraService|Jira project key'),
-    projectKeyPlaceholder: s__('JiraService|For example, AB'),
+    projectKeyPlaceholder: s__('JiraService|AB'),
     requiredFieldFeedback: __('This field is required.'),
   },
 };
@@ -111,7 +110,7 @@ export default {
         :disabled="checkboxDisabled"
         data-testid="jira-issues-enabled-checkbox"
       >
-        {{ $options.i18n.enableCheckboxLabel }}
+        {{ s__('JiraService|View Jira issues') }}
         <template #help>
           {{ $options.i18n.enableCheckboxHelp }}
         </template>
@@ -123,13 +122,19 @@ export default {
         v-if="multipleProjectKeys && !isIssueCreation"
         :label="s__('JiraService|Jira project keys')"
         label-for="service_project_keys"
-        class="gl-max-w-26"
+        :description="
+          s__(
+            'JiraService|Comma-separated list of Jira project keys. Leave blank to include all available keys.',
+          )
+        "
+        data-testid="jira-project-keys"
       >
         <gl-form-input
           id="service_project_keys"
           v-model="projectKeys"
           name="service[project_keys]"
-          :placeholder="s__('JiraService|For example, AB,CD')"
+          width="xl"
+          :placeholder="s__('JiraService|AB,CD')"
           :readonly="isInheriting"
         />
       </gl-form-group>
@@ -140,7 +145,6 @@ export default {
           label-for="service_project_key"
           :invalid-feedback="$options.i18n.requiredFieldFeedback"
           :state="validProjectKey"
-          class="gl-max-w-26"
           data-testid="project-key-form-group"
         >
           <gl-form-input
@@ -148,6 +152,7 @@ export default {
             v-model="projectKey"
             name="service[project_key]"
             data-testid="jira-project-key-field"
+            width="md"
             :placeholder="$options.i18n.projectKeyPlaceholder"
             :required="enableJiraIssues"
             :state="validProjectKey"
@@ -168,29 +173,12 @@ export default {
     </div>
 
     <template v-if="isIssueCreation">
-      <gl-form-group
-        :label="$options.i18n.projectKeyLabel"
-        label-for="service_project_key"
-        :invalid-feedback="$options.i18n.requiredFieldFeedback"
-        :state="validProjectKey"
-        class="gl-max-w-26"
-        data-testid="project-key-form-group"
-      >
-        <gl-form-input
-          id="service_project_key"
-          v-model="projectKey"
-          name="service[project_key]"
-          data-testid="jira-project-key-field"
-          :placeholder="$options.i18n.projectKeyPlaceholder"
-          :state="validProjectKey"
-          :readonly="isInheriting"
-        />
-      </gl-form-group>
-
       <jira-issue-creation-vulnerabilities
         :project-key="projectKey"
         :initial-is-enabled="initialEnableJiraVulnerabilities"
+        :initial-project-key="initialProjectKey"
         :initial-issue-type-id="initialVulnerabilitiesIssuetype"
+        :is-validated="isValidated"
         :show-full-feature="showJiraVulnerabilitiesIntegration"
         class="gl-mt-6"
         data-testid="jira-for-vulnerabilities"

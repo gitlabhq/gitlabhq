@@ -294,7 +294,7 @@ jest predictive:
 jest predictive as-if-foss:
   extends:
     - .jest-base
-    - .frontend:rules:jest:predictive:as-if-foss
+    - .frontend:rules:jest:predictive-as-if-foss
     - .as-if-foss
   needs:
     - "rspec-all frontend_fixture as-if-foss"

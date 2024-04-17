@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Merge request approval policy `fallback_behavior`",
+  "type": "object",
+  "properties": {
+    "fail": {
+      "type": "string",
+      "enum": [
+        "open",
+        "closed"
+      ]
+    }
+  }
+}

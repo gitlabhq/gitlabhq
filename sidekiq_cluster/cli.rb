@@ -38,7 +38,10 @@ module Gitlab
       def initialize(log_output = $stderr)
         # https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
         # https://ruby.social/@getajobmike/109326475545816363
-        @concurrency = 20
+        @max_concurrency = 20
+        @min_concurrency = 0
+        # TODO: to be set to 20 once max_concurrency and min_concurrency is removed https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2760
+        @concurrency = 0
         @environment = ENV['RAILS_ENV'] || 'development'
         @metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/sidekiq")
         @pid = nil
@@ -88,6 +91,12 @@ module Gitlab
             'No queues found, you must select at least one queue'
         end
 
+        if routing_rules.empty?
+          # setting min_concurrency equal to max_concurrency so that the concurrency eventually
+          # is set to 20 (default value) instead of based on the number of queues, which is only 2+1 in this case.
+          @min_concurrency = @min_concurrency == 0 ? @max_concurrency : @min_concurrency
+        end
+
         if @list_queues
           puts queue_groups.map(&:sort) # rubocop:disable Rails/Output
 
@@ -111,6 +120,8 @@ module Gitlab
           queue_groups,
           env: @environment,
           directory: @rails_path,
+          max_concurrency: @max_concurrency,
+          min_concurrency: @min_concurrency,
           concurrency: @concurrency,
           dryrun: @dryrun,
           timeout: @soft_timeout_seconds
@@ -201,6 +212,14 @@ module Gitlab
 
           opt.on('-c', '--concurrency INT', 'Number of threads to use with Sidekiq (default: 0)') do |int|
             @concurrency = int.to_i
+          end
+
+          opt.on('-m', '--max-concurrency INT', 'Maximum threads to use with Sidekiq (default: 20, 0 to disable)') do |int|
+            @max_concurrency = int.to_i
+          end
+
+          opt.on('--min-concurrency INT', 'Minimum threads to use with Sidekiq (default: 0)') do |int|
+            @min_concurrency = int.to_i
           end
 
           opt.on('-e', '--environment ENV', 'The application environment') do |env|

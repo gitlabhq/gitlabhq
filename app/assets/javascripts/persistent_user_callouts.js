@@ -25,6 +25,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-namespace-over-storage-users-combined-alert',
   '.js-joining-a-project-alert',
   '.js-duo-pro-trial-alert',
+  '.js-duo-chat-ga-alert',
 ];
 
 const initCallouts = () => {

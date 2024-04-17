@@ -36,6 +36,16 @@ module MergeRequests
         ).execute(merge_request)
 
       merge_request.update_head_pipeline
+
+      after_perform(merge_request)
+    end
+
+    private
+
+    def after_perform(_merge_request)
+      # overridden in EE
     end
   end
 end
+
+MergeRequests::CreatePipelineWorker.prepend_mod

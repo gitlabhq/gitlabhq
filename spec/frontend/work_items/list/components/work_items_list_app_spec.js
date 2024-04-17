@@ -10,7 +10,7 @@ import {
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
-import { STATUS_OPEN } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -93,7 +93,11 @@ describe('WorkItemsListApp component', () => {
   it('fetches work items', () => {
     mountComponent();
 
-    expect(defaultQueryHandler).toHaveBeenCalledWith({ fullPath: 'full/path', sort: CREATED_DESC });
+    expect(defaultQueryHandler).toHaveBeenCalledWith({
+      fullPath: 'full/path',
+      sort: CREATED_DESC,
+      state: STATUS_OPEN,
+    });
   });
 
   describe('when there is an error fetching work items', () => {
@@ -118,6 +122,19 @@ describe('WorkItemsListApp component', () => {
   });
 
   describe('events', () => {
+    describe('when "click-tab" event is emitted by IssuableList', () => {
+      beforeEach(async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('click-tab', STATUS_CLOSED);
+      });
+
+      it('updates ui to the new tab', () => {
+        expect(findIssuableList().props('currentTab')).toBe(STATUS_CLOSED);
+      });
+    });
+
     describe('when "sort" event is emitted by IssuableList', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
@@ -132,10 +149,9 @@ describe('WorkItemsListApp component', () => {
           findIssuableList().vm.$emit('sort', sortKey);
           await waitForPromises();
 
-          expect(defaultQueryHandler).toHaveBeenCalledWith({
-            fullPath: 'full/path',
-            sort: sortKey,
-          });
+          expect(defaultQueryHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ sort: sortKey }),
+          );
         },
       );
 

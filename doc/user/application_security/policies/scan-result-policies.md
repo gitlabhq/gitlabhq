@@ -119,6 +119,7 @@ the following sections and tables provide an alternative.
 | `rules`             | `array` of rules   | true     |                 | List of rules that the policy applies.                   |
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
+| `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 
 ## `scan_finding` rule type
 
@@ -238,6 +239,18 @@ The settings set in the policy overwrite settings in the project.
 | `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
 | `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security. |
 | `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
+
+## `fallback_behavior`
+
+> - The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+
+| Field  | Type     | Required | Possible values    | Description                                                                                                          |
+|--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy do not require approval. `open`: Invalid or unenforceable rules of a policy require approval. |
 
 ## Example security merge request approval policies project
 

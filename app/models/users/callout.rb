@@ -86,7 +86,8 @@ module Users
       transition_to_jihu_callout: 84,
       summarize_code_changes: 85, # EE-only
       duo_pro_trial_alert: 86, # EE-only
-      deployment_details_feedback: 87
+      deployment_details_feedback: 87,
+      duo_chat_ga_alert: 88 # EE-only
     }
 
     validates :feature_name,

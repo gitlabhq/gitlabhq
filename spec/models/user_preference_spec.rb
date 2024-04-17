@@ -73,6 +73,19 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.to define_enum_for(:visibility_pipeline_id_type).with_values(id: 0, iid: 1) }
     end
 
+    describe 'extensions_marketplace_opt_in_status' do
+      it 'is set to 0 by default' do
+        pref = described_class.new
+
+        expect(pref.extensions_marketplace_opt_in_status).to eq('unset')
+      end
+
+      it do
+        is_expected
+          .to define_enum_for(:extensions_marketplace_opt_in_status).with_values(unset: 0, enabled: 1, disabled: 2)
+      end
+    end
+
     describe 'user belongs to the home organization' do
       let_it_be(:organization) { create(:organization) }
 

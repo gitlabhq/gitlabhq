@@ -27,7 +27,7 @@ export function renderGFM(element) {
     '.js-render-mermaid',
     '[data-canonical-lang="json"][data-lang-params="table"]',
     '.gfm-project_member',
-    '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic',
+    '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
   syntaxHighlight(highlightEls);

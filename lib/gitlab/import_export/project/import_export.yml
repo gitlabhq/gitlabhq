@@ -1271,10 +1271,6 @@ ee:
       - :project_id
       - :created_at
       - :updated_at
-      - :auto_fix_container_scanning
-      - :auto_fix_dast
-      - :auto_fix_dependency_scanning
-      - :auto_fix_sast
     project:
       - :requirements_enabled
       - :requirements_access_level

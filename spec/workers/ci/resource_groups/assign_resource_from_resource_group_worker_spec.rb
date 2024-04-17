@@ -13,6 +13,10 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupWorker, featur
     expect(described_class.get_deduplication_options).to include({ if_deduplicated: :reschedule_once })
   end
 
+  it 'has an option to deduplicate scheduled jobs' do
+    expect(described_class.get_deduplication_options).to include({ including_scheduled: true })
+  end
+
   describe '#perform' do
     subject { worker.perform(resource_group_id) }
 

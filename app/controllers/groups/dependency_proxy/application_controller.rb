@@ -19,18 +19,15 @@ module Groups
         authenticate_with_http_token do |token, _|
           @authentication_result = EMPTY_AUTH_RESULT
 
-          if Feature.enabled?(:packages_dependency_proxy_pass_token_to_policy, group_from_params)
-            user_or_token = ::DependencyProxy::AuthTokenService.user_or_token_from_jwt(token)
-            sign_in_and_setup_authentication_result(user_or_token)
-          else
-            user_or_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
-            case user_or_token
-            when User
-              @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :user, [])
-              sign_in(user_or_token) unless user_or_token.project_bot? || user_or_token.service_account?
-            when DeployToken
-              @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :deploy_token, [])
-            end
+          user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
+
+          case user_or_deploy_token
+          when User
+            @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :user, [])
+            sign_in(user_or_deploy_token) unless user_or_deploy_token.project_bot? ||
+              user_or_deploy_token.service_account?
+          when DeployToken
+            @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :deploy_token, [])
           end
         end
 
@@ -39,31 +36,10 @@ module Groups
 
       private
 
-      attr_reader :personal_access_token
-
-      def group_from_params
-        GroupsFinder.new(nil, { search: params[:group_id] }).execute.first
-      end
-
       def request_bearer_token!
         # unfortunately, we cannot use https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token.html#method-i-authentication_request
         response.headers['WWW-Authenticate'] = ::DependencyProxy::Registry.authenticate_header
         render plain: '', status: :unauthorized
-      end
-
-      # When we rollout packages_dependency_proxy_pass_token_to_policy,
-      # we can move the body of this method inline, inside authenticate_user_from_jwt_token!
-      def sign_in_and_setup_authentication_result(user_or_token)
-        case user_or_token
-        when User
-          @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :user, [])
-          sign_in(user_or_token)
-        when PersonalAccessToken
-          @authentication_result = Gitlab::Auth::Result.new(user_or_token.user, nil, :personal_access_token, [])
-          @personal_access_token = user_or_token
-        when DeployToken
-          @authentication_result = Gitlab::Auth::Result.new(user_or_token, nil, :deploy_token, [])
-        end
       end
     end
   end

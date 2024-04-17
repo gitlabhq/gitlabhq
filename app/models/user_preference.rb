@@ -42,6 +42,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
   attribute :use_web_ide_extension_marketplace, default: false
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
+  enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
 
   class << self
     def notes_filters
