@@ -79,8 +79,8 @@ module PersonalAccessTokens
           with_context(user: user) do
             expiring_user_token = user.personal_access_tokens.first # bot user should not have more than 1 token
 
-            execute_web_hooks(expiring_user_token, user)
-            deliver_bot_notifications(expiring_user_token.name, user)
+            execute_web_hooks(user, expiring_user_token)
+            deliver_bot_notifications(user, expiring_user_token.name)
           end
         end
 
@@ -91,13 +91,13 @@ module PersonalAccessTokens
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
-    def deliver_bot_notifications(token_name, user)
-      notification_service.bot_resource_access_token_about_to_expire(user, token_name)
+    def deliver_bot_notifications(bot_user, token_name)
+      notification_service.bot_resource_access_token_about_to_expire(bot_user, token_name)
 
       Gitlab::AppLogger.info(
         message: "Notifying Bot User resource owners about expiring tokens",
         class: self.class,
-        user_id: user.id
+        user_id: bot_user.id
       )
     end
 
@@ -111,7 +111,7 @@ module PersonalAccessTokens
       )
     end
 
-    def execute_web_hooks(token, bot_user)
+    def execute_web_hooks(bot_user, token)
       resource = bot_user.resource_bot_resource
 
       return if resource.is_a?(Project) && !resource.has_active_hooks?(:resource_access_token_hooks)
