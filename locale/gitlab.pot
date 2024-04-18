@@ -28827,7 +28827,7 @@ msgstr ""
 msgid "JiraRequest|An error occurred while requesting data from Jira. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again."
 msgstr ""
 
-msgid "JiraRequest|An error occurred while requesting data from Jira: %{messages}. Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again."
+msgid "JiraRequest|An error occurred while requesting data from Jira: %{messages} Check your %{docs_link_start}Jira integration configuration%{docs_link_end} and try again."
 msgstr ""
 
 msgid "JiraRequest|The Jira API URL for connecting to Jira is not valid. Check your Jira integration API URL and try again."
@@ -44971,6 +44971,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{labelStart}File path:%{labelEnd} %{filePath}"
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{overrideSelector}into the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector} And run with reference (Optional) %{refSelector}"
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
 msgstr ""
 
@@ -45016,6 +45019,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|If there are any conflicting variables with the local pipeline configuration (Ex, gitlab-ci.yml) then variables defined here will take precedence. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "ScanExecutionPolicy|Inject"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Inserted CI code block"
 msgstr ""
 
@@ -45035,6 +45041,9 @@ msgid "ScanExecutionPolicy|Maximum number of CI-criteria is one"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Only one variable can be added at a time."
+msgstr ""
+
+msgid "ScanExecutionPolicy|Override"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run CI/CD code"
@@ -45083,6 +45092,9 @@ msgid "ScanExecutionPolicy|Select site profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select timezone"
+msgstr ""
+
+msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is included in the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
 msgstr ""
 
 msgid "ScanExecutionPolicy|The file at that project, ref, and path doesn't exist"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
-  let_it_be(:model_version) { create(:ml_model_versions, :with_package) }
+  let_it_be(:model_version) { create(:ml_model_versions, :with_package, description: 'A description') }
   let_it_be(:project) { model_version.project }
   let_it_be(:current_user) { project.owner }
 
@@ -16,6 +16,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
               id
               version
               packageId
+              description
               candidate {
                 id
               }
@@ -34,7 +35,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
   subject(:data) { GitlabSchema.execute(query, context: { current_user: project.owner }).as_json }
 
   it 'includes all fields' do
-    expected_fields = %w[id version created_at _links candidate package_id]
+    expected_fields = %w[id version created_at _links candidate package_id description]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
@@ -45,6 +46,7 @@ RSpec.describe GitlabSchema.types['MlModelVersion'], feature_category: :mlops do
     expect(version_data).to eq({
       'id' => "gid://gitlab/Ml::ModelVersion/#{model_version.id}",
       'version' => model_version.version,
+      'description' => 'A description',
       'packageId' => "gid://gitlab/Packages::Package/#{model_version.package_id}",
       'candidate' => {
         'id' => "gid://gitlab/Ml::Candidate/#{model_version.candidate.id}"

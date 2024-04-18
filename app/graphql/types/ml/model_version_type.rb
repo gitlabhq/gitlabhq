@@ -12,6 +12,11 @@ module Types
       field :id, ::Types::GlobalIDType[::Ml::ModelVersion], null: false, description: 'ID of the model version.'
 
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
+
+      field :description, ::GraphQL::Types::String,
+        null: true,
+        description: 'Description of the version.'
+
       field :version, ::GraphQL::Types::String, null: false, description: 'Name of the version.'
 
       field :package_id, ::Types::GlobalIDType[::Packages::Package],

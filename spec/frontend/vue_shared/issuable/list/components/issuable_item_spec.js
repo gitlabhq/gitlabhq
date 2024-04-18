@@ -498,7 +498,6 @@ describe('IssuableItem', () => {
         description: mockLabels[0].description,
         scoped: false,
         target: wrapper.vm.labelTarget(mockLabels[0]),
-        size: 'sm',
       });
     });
 

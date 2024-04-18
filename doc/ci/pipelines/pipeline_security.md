@@ -10,27 +10,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Secrets management is the systems that developers use to securely store sensitive data
 in a secure environment with strict access controls. A **secret** is a sensitive credential
-that should be kept confidential, and includes:
+that should be kept confidential. Examples of a secret include:
 
-- Passwords.
-- SSH keys.
-- Access tokens.
-- Any other types of credentials where exposure would be harmful to an organization.
+- Passwords
+- SSH keys
+- Access tokens
+- Any other types of credentials where exposure would be harmful to an organization
 
 ## Secrets storage
 
 ### Secrets management providers
 
 Secrets that are the most sensitive and under the strictest policies should be stored
-in a secrets management. [Vault](https://www.vaultproject.io) is one provider in this space.
-When using Vault, secrets are stored outside of the GitLab instance.
+in a secrets manager. When using a secrets manager solution, secrets are stored outside
+of the GitLab instance. There are a number of providres in this space, including
+[HashiCorp's Vault](https://www.vaultproject.io), [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault),
+and [Google Cloud Secret Manager](https://cloud.google.com/security/products/secret-manager).
 
-You can use the GitLab [Vault integration](../secrets/index.md#use-vault-secrets-in-a-ci-job)
-to retrieve those secrets in CI/CD pipelines when they are needed.
+You can use the GitLab native integrations for certain [external secret management providers](../secrets/index.md) to retrieve those secrets in CI/CD pipelines when they are needed.
 
 ### CI/CD variables
 
-[CI/CD Variables](../variables/index.md) are a convenient way to store and use data
+[CI/CD Variables](../variables/index.md) are a convenient way to store and reuse data
 in a CI/CD pipeline, but variables are less secure than secrets management providers.
 Variable values:
 
@@ -39,6 +40,8 @@ Variable values:
 - Can be [overridden](../variables/index.md#override-a-defined-cicd-variable),
   making it hard to determine which value was used.
 - Can be exposed by accidental pipeline misconfiguration.
+
+Information suitable for storage in a variable should be data that can be exposed without risk of exploitation (non-sensitive).
 
 Sensitive data should be stored in a secrets management solution. If there is low
 sensitivity data that you want to store in a CI/CD variable, be sure to always:

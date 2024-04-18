@@ -3936,20 +3936,4 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.group_readme).to be(nil)
     end
   end
-
-  describe '#members_with_descendants' do
-    it 'returns members from root and descendant groups' do
-      group = create(:group)
-      subgroup = create(:group, parent: group)
-      subsubgroup = create(:group, parent: subgroup)
-
-      group_member1 = create(:group_member, source: group)
-      group_member2 = create(:group_member, source: subgroup)
-      group_member3 = create(:group_member, source: subsubgroup)
-      create(:group_member) # member outside of the hierarchy
-
-      expect(group.members_with_descendants).to match_array([group_member1, group_member2, group_member3])
-      expect(subgroup.members_with_descendants).to match_array([group_member2, group_member3])
-    end
-  end
 end
