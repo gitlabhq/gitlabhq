@@ -1223,7 +1223,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/workhorse.rb'
     - 'lib/gitlab/zoom_link_extractor.rb'
     - 'lib/tasks/gitlab/seed/group_seed.rake'
-    - 'lib/tasks/import.rake'
     - 'lib/tasks/tokens.rake'
     - 'lib/uploaded_file.rb'
     - 'lib/version_check.rb'

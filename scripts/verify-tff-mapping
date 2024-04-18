@@ -260,12 +260,6 @@ tests = [
   },
 
   {
-    explanation: 'Map FOSS rake tasks',
-    changed_file: 'lib/tasks/import.rake',
-    expected: ['spec/tasks/import_rake_spec.rb']
-  },
-
-  {
     explanation: 'Map EE rake tasks',
     changed_file: 'ee/lib/tasks/geo.rake',
     expected: ['ee/spec/tasks/geo_rake_spec.rb']

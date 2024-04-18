@@ -231,6 +231,26 @@ Offset-based pagination for the [List registry repository tags](https://docs.git
 
 </div>
 
+<div class="deprecation " data-milestone="18.0">
+
+### Project page in group settings is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.0</span>
+- End of Support in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/443347).
+</div>
+
+Group owners can access a project page in the group settings that lists the projects the group contains, with options to create, edit or delete a project, as well as a link to the Members page for each project.
+All of this functionality is available on the group overview page and the respective Member pages of the projects.
+Due to low usage of the project page in the group settings and its limited accessibility, this page will be deprecated.
+This change affects only the user interface. The underlying API will remain available, so project creation, edits, and deletions can still be performed using the [Projects API](https://docs.gitlab.com/ee/api/projects.html).
+In 17.9, we will implement a redirect to the group overview page from this page.
+The project page will be removed entirely from the group settings in 18.0.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint

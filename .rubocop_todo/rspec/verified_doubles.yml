@@ -533,7 +533,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/github_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/diff_note_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/to_hash_spec.rb'
-    - 'spec/lib/gitlab/github_import/sequential_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/user_finder_spec.rb'
     - 'spec/lib/gitlab/github_import_spec.rb'
     - 'spec/lib/gitlab/gon_helper_spec.rb'

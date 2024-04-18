@@ -62,7 +62,6 @@ Some of these services have their own environment variables to override the log 
 | GitLab Cleanup       | `INFO`    | `DEBUG`              |
 | GitLab Doctor        | `INFO`    | `VERBOSE`            |
 | GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
-| GitLab Geo           | `INFO`    |                      |
 | GitLab Import        | `INFO`    | `IMPORT_DEBUG`       |
 | GitLab QA Runtime    | `INFO`    | `QA_LOG_LEVEL`       |
 | Google APIs          | `INFO`    |                      |

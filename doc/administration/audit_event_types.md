@@ -108,6 +108,7 @@ Audit event types belong to the following product categories.
 | [`project_merge_requests_template_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Whenever a MR template is updated for a project, this audit event is created| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 | [`project_remove_source_branch_after_merge_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | Create this audit event whenever a project has its setting to remove branches after merges modified| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 | [`project_reset_approvals_on_push_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66234) | Create this audit event whenever a project has its setting on whether approvals are reset on a push is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/336211) | Project |
+| [`selective_code_owner_removals_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148743) | Event triggered when selective code owner removal is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/327562) | Project |
 
 ### Code suggestions
 

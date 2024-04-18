@@ -251,6 +251,7 @@ graphql-schema-dump:
 .vue3:
   variables:
     VUE_VERSION: 3
+    NODE_OPTIONS: --max-old-space-size=7680
   allow_failure: true
 
 .jest-base:

@@ -2556,9 +2556,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'can still access objects in the object pool' do
-      object_pool.link(repository)
-      new_commit_id = object_pool.repository.commit_files(
-        project.owner,
+      # Create a commit into a separate repository and fetch it into the object pool.
+      # Writing directly to an object pool fails as we don't support them in the
+      # authorization checks. Gitaly's pre-receive hook fails as a gl_repository is
+      # not set object pools.
+      source_project = create(:project, :repository)
+      new_commit_id = source_project.repository.commit_files(
+        source_project.owner,
         branch_name: object_pool.repository.root_ref,
         message: 'Add a file',
         actions: [{
@@ -2566,7 +2570,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           file_path: 'a.file',
           content: 'This is a file.'
         }]
-      ).newrev
+      )
+
+      # Fetch the new object into the object pool
+      Gitlab::GitalyClient::ObjectPoolService.new(object_pool).fetch(source_project.repository)
+
+      object_pool.link(repository)
 
       expect(repository.commit(new_commit_id).id).to eq(new_commit_id)
 

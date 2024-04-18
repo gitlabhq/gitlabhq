@@ -2702,7 +2702,6 @@ Layout/LineLength:
     - 'lib/tasks/gitlab/usage_data.rake'
     - 'lib/tasks/gitlab/user_management.rake'
     - 'lib/tasks/gitlab/workhorse.rake'
-    - 'lib/tasks/import.rake'
     - 'lib/tasks/migrate/schema_check.rake'
     - 'lib/tasks/tanuki_emoji.rake'
     - 'lib/tasks/test.rake'

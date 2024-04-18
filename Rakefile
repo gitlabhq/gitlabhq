@@ -21,3 +21,5 @@ Knapsack.load_tasks if defined?(Knapsack)
 
 require 'gitlab-dangerfiles'
 Gitlab::Dangerfiles.load_tasks
+
+require 'rainbow/ext/string'

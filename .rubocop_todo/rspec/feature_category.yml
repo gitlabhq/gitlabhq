@@ -3407,7 +3407,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/github_import/representation/to_hash_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/user_spec.rb'
     - 'spec/lib/gitlab/github_import/representation_spec.rb'
-    - 'spec/lib/gitlab/github_import/sequential_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/settings_spec.rb'
     - 'spec/lib/gitlab/github_import/single_endpoint_notes_importing_spec.rb'
     - 'spec/lib/gitlab/github_import/user_finder_spec.rb'

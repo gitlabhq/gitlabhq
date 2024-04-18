@@ -977,7 +977,6 @@
 - spec/services/work_items/update_service_spec.rb
 - spec/tasks/gitlab/backup_rake_spec.rb
 - spec/tasks/gitlab/check_rake_spec.rb
-- spec/tasks/import_rake_spec.rb
 - spec/views/layouts/header/_new_dropdown.haml_spec.rb
 - spec/views/layouts/profile.html.haml_spec.rb
 - spec/views/profiles/preferences/show.html.haml_spec.rb
