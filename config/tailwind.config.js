@@ -23,6 +23,16 @@ try {
   delete require.cache[path.resolve(__filename)];
 }
 
+function gitLabUIUtilities({ addUtilities }) {
+  addUtilities({
+    '.font-monospace': {
+      'font-family':
+        'var(--default-mono-font, "GitLab Mono"), "JetBrains Mono", "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace',
+      'font-variant-ligatures': 'none',
+    },
+  });
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   presets: [tailwindDefaults],
@@ -78,6 +88,11 @@ module.exports = {
     preflight: false,
   },
   theme: {
+    // TODO: Backport to GitLab UI
+    fontFamily: {
+      regular:
+        'var(--default-regular-font, "GitLab Sans"), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
       borderWidth: {
@@ -99,6 +114,7 @@ module.exports = {
     },
   },
   plugins: [
+    plugin(gitLabUIUtilities),
     plugin(({ addUtilities }) => {
       addUtilities(utilities);
     }),

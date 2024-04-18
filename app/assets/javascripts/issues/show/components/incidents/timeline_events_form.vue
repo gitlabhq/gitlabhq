@@ -237,7 +237,7 @@ export default {
           <template #textarea>
             <gl-form-textarea
               v-model="timelineText"
-              class="note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area gl-font-monospace!"
+              class="note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area !gl-font-monospace"
               data-testid="input-note"
               dir="auto"
               data-supports-quick-actions="false"

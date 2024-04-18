@@ -69,7 +69,7 @@ Prerequisites:
 For all self-managed AI features:
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `gitlab.com` and `cloud.gitlab.com` on port `443`.
+  to `cloud.gitlab.com` on port `443`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary

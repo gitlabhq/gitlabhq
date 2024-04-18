@@ -115,6 +115,10 @@ FactoryBot.define do
       user_type { :llm_bot }
     end
 
+    trait :placeholder do
+      user_type { :placeholder }
+    end
+
     trait :external do
       external { true }
     end

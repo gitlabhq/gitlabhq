@@ -146,6 +146,11 @@ async function toMinimalUtilities() {
       // Disable all core plugins, all we care about are the legacy utils
       // that are provided via addUtilities.
       corePlugins: [],
+      // We must ensure the GitLab UI plugin is disabled during this run so that whatever it defines
+      // is purged out of the CSS-in-Js.
+      plugins: tailwindConfig.plugins.filter(
+        (plugin) => plugin.handler.name !== 'gitLabUIUtilities',
+      ),
     }),
   ]).process('@tailwind utilities;', { map: false, from: undefined });
 
@@ -215,9 +220,12 @@ export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
       // We only want to generate the utils based on the fresh
       // allUtilitiesFile
       content: [allUtilitiesFile],
-      // We are disabling all plugins, so that the css-to-js
-      // import doesn't cause trouble.
-      plugins: [],
+      // We are disabling all plugins but the GitLab UI one which contains legitimate utils that
+      // will need to be backported to GitLab UI.
+      // This prevents the css-to-js import from causing trouble.
+      plugins: tailwindConfig.plugins.filter(
+        (plugin) => plugin.handler.name === 'gitLabUIUtilities',
+      ),
     }),
   ]).process('@tailwind utilities;', { map: false, from: undefined });
 

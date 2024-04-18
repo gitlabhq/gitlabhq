@@ -316,7 +316,7 @@ export default {
             <details class="gl-mb-5">
               <summary class="gl-text-blue-500">{{ s__('WorkItem|View current version') }}</summary>
               <gl-form-textarea
-                class="js-gfm-input js-autosize markdown-area gl-font-monospace!"
+                class="js-gfm-input js-autosize markdown-area !gl-font-monospace"
                 data-testid="conflicted-description"
                 readonly
                 :value="conflictedDescription"

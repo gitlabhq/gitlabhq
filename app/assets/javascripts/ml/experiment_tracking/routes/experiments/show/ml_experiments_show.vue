@@ -206,7 +206,7 @@ export default {
           <template #cell(nameColumn)="data">
             <gl-link :href="data.value.details_path">
               <span v-if="data.value.name"> {{ data.value.name }}</span>
-              <span v-else class="gl-font-style-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
+              <span v-else class="gl-italic">{{ $options.i18n.NO_CANDIDATE_NAME }}</span>
             </gl-link>
           </template>
 
@@ -214,7 +214,7 @@ export default {
             <gl-link v-if="data.value" :href="data.value" target="_blank">{{
               $options.i18n.ARTIFACTS_LABEL
             }}</gl-link>
-            <div v-else class="gl-font-style-italic gl-text-gray-500">
+            <div v-else class="gl-italic gl-text-gray-500">
               {{ $options.i18n.NO_ARTIFACT }}
             </div>
           </template>
@@ -232,7 +232,7 @@ export default {
             <gl-link v-if="data.value" :href="data.value.path" target="_blank">{{
               data.value.name
             }}</gl-link>
-            <div v-else class="gl-font-style-italic gl-text-gray-500">
+            <div v-else class="gl-italic gl-text-gray-500">
               {{ $options.i18n.NO_JOB }}
             </div>
           </template>

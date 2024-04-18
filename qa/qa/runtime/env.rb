@@ -695,6 +695,34 @@ module QA
         ENV["QA_DOCKER_NETWORK"]
       end
 
+      # Product analytics configurator string (e.g. https://usr:pass@gl-configurator.gitlab.com)
+      #
+      # @return [String]
+      def pa_configurator_url
+        ENV['PA_CONFIGURATOR_URL']
+      end
+
+      # Product analytics collector url (e.g. https://collector.gitlab.com)
+      #
+      # @return [String]
+      def pa_collector_host
+        ENV['PA_COLLECTOR_HOST']
+      end
+
+      # Product analytics cube api url (e.g. https://cube.gitlab.com)
+      #
+      # @return [String]
+      def pa_cube_api_url
+        ENV['PA_CUBE_API_URL']
+      end
+
+      # Product analytics cube api key
+      #
+      # @return [String]
+      def pa_cube_api_key
+        ENV['PA_CUBE_API_KEY']
+      end
+
       # Test run is in rspec retried process
       #
       # @return [Boolean]

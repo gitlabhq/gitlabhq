@@ -1015,6 +1015,10 @@ class User < MainClusterwide::ApplicationRecord
     def generate_incoming_mail_token
       "#{INCOMING_MAIL_TOKEN_PREFIX}#{SecureRandom.hex.to_i(16).to_s(36)}"
     end
+
+    def username_exists?(username)
+      exists?(username: username)
+    end
   end
 
   #

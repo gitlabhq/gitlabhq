@@ -116,6 +116,6 @@ describe('Repository last commit component', () => {
   it('sets correct CSS class if the commit message is empty', () => {
     createComponent({ commitMock: { message: '' } });
 
-    expect(findTitleHtml().classes()).toContain('gl-font-style-italic');
+    expect(findTitleHtml().classes()).toContain('gl-italic');
   });
 });

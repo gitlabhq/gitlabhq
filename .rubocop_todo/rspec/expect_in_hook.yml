@@ -243,7 +243,6 @@ RSpec/ExpectInHook:
     - 'spec/lib/gitlab/middleware/memory_report_spec.rb'
     - 'spec/lib/gitlab/middleware/multipart_spec.rb'
     - 'spec/lib/gitlab/omniauth_initializer_spec.rb'
-    - 'spec/lib/gitlab/pages/deployment_update_spec.rb'
     - 'spec/lib/gitlab/pagination/gitaly_keyset_pager_spec.rb'
     - 'spec/lib/gitlab/patch/database_config_spec.rb'
     - 'spec/lib/gitlab/project_search_results_spec.rb'

@@ -2,7 +2,10 @@
 
 module InProductMarketingHelper
   def inline_image_link(image, options)
-    attachments.inline[image] = File.read(Rails.root.join("app/assets/images", image))
+    asset_path = Rails.root.join("app/assets/images").to_s
+    image_path = File.join(asset_path, image)
+    Gitlab::PathTraversal.check_allowed_absolute_path_and_path_traversal!(image_path, [asset_path])
+    attachments.inline[image] = File.read(image_path)
     image_tag attachments[image].url, **options
   end
 

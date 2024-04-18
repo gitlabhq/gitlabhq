@@ -305,6 +305,8 @@ module Gitlab
       end
 
       def lfs_token_check(login, encoded_token, project)
+        return unless login
+
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =

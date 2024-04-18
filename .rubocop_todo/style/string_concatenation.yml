@@ -104,7 +104,6 @@ Style/StringConcatenation:
     - 'lib/gitlab/kubernetes/kubectl_cmd.rb'
     - 'lib/gitlab/lfs/client.rb'
     - 'lib/gitlab/logger.rb'
-    - 'lib/gitlab/pages/deployment_update.rb'
     - 'lib/gitlab/path_regex.rb'
     - 'lib/gitlab/prometheus/internal.rb'
     - 'lib/gitlab/quick_actions/extractor.rb'

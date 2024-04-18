@@ -69,7 +69,7 @@ export default {
           :value="dockerLoginCommand"
           readonly
           type="text"
-          class="gl-font-monospace!"
+          class="!gl-font-monospace"
         />
         <template #append>
           <clipboard-button
@@ -87,7 +87,7 @@ export default {
           :value="dockerBuildCommand"
           readonly
           type="text"
-          class="gl-font-monospace!"
+          class="!gl-font-monospace"
         />
         <template #append>
           <clipboard-button
@@ -98,7 +98,7 @@ export default {
         </template>
       </gl-form-input-group>
       <gl-form-input-group>
-        <gl-form-input :value="dockerPushCommand" readonly type="text" class="gl-font-monospace!" />
+        <gl-form-input :value="dockerPushCommand" readonly type="text" class="!gl-font-monospace" />
         <template #append>
           <clipboard-button
             :text="dockerPushCommand"

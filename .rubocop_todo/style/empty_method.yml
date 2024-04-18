@@ -65,7 +65,6 @@ Style/EmptyMethod:
     - 'app/services/projects/transfer_service.rb'
     - 'app/workers/namespaces/root_statistics_worker.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'
-    - 'ee/app/controllers/admin/geo/designs_controller.rb'
     - 'ee/app/controllers/admin/geo/settings_controller.rb'
     - 'ee/app/controllers/admin/push_rules_controller.rb'
     - 'ee/app/controllers/groups/analytics/ci_cd_analytics_controller.rb'

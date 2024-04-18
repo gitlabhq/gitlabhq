@@ -18,7 +18,8 @@ module HasUserType
     admin_bot: 11,
     suggested_reviewers_bot: 12,
     service_account: 13,
-    llm_bot: 14
+    llm_bot: 14,
+    placeholder: 15
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[

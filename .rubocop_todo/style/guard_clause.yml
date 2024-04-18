@@ -490,7 +490,6 @@ Style/GuardClause:
     - 'lib/gitlab/metrics/subscribers/external_http.rb'
     - 'lib/gitlab/metrics/web_transaction.rb'
     - 'lib/gitlab/middleware/read_only/controller.rb'
-    - 'lib/gitlab/pages/deployment_update.rb'
     - 'lib/gitlab/pagination/gitaly_keyset_pager.rb'
     - 'lib/gitlab/pagination/keyset/column_order_definition.rb'
     - 'lib/gitlab/pagination/keyset/in_operator_optimization/array_scope_columns.rb'

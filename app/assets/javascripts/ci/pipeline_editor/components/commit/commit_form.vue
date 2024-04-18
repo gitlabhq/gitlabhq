@@ -113,7 +113,7 @@ export default {
         <gl-form-textarea
           id="commit-message"
           v-model="message"
-          class="gl-font-monospace!"
+          class="!gl-font-monospace"
           required
           :placeholder="defaultMessage"
         />
@@ -126,7 +126,7 @@ export default {
         <gl-form-input
           id="source-branch-field"
           v-model="sourceBranch"
-          class="gl-font-monospace!"
+          class="!gl-font-monospace"
           required
           data-testid="source-branch-field"
         />

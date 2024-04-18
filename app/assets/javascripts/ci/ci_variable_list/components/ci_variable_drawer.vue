@@ -557,7 +557,7 @@ export default {
           id="ci-variable-value"
           v-model="variable.value"
           :spellcheck="false"
-          class="gl-border-none gl-font-monospace!"
+          class="gl-border-none !gl-font-monospace"
           rows="5"
           :no-resize="false"
           data-testid="ci-variable-value"

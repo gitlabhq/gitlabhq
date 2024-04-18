@@ -56,7 +56,7 @@ Prerequisites:
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
-1. Optional. In **Description**, enter a description for the custom role.
+1. Optional. In **Description**, enter a description for the custom role. 255 characters max.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
@@ -80,7 +80,7 @@ After you create a custom role for your self-managed instance, you can assign th
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
-1. Optional. In **Description**, enter a description for the custom role.
+1. Optional. In **Description**, enter a description for the custom role. 255 characters max.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 

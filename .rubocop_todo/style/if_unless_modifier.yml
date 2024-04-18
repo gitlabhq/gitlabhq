@@ -724,7 +724,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/middleware/same_site_cookies.rb'
     - 'lib/gitlab/object_hierarchy.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
-    - 'lib/gitlab/pages/deployment_update.rb'
     - 'lib/gitlab/pagination/keyset/in_operator_optimization/query_builder.rb'
     - 'lib/gitlab/patch/database_config.rb'
     - 'lib/gitlab/patch/prependable.rb'

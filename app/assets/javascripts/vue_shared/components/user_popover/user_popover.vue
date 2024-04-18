@@ -227,7 +227,7 @@ export default {
         class="gl-w-full"
       >
         <template v-if="isBlocked">
-          <span class="gl-mt-4 gl-font-style-italic">{{ $options.I18N_USER_BLOCKED }}</span>
+          <span class="gl-mt-4 gl-italic">{{ $options.I18N_USER_BLOCKED }}</span>
         </template>
         <template v-else>
           <gl-button

@@ -23,6 +23,10 @@ module QA
             open_settings_submenu('Monitor')
           end
 
+          def go_to_analytics_settings
+            open_settings_submenu('Analytics')
+          end
+
           private
 
           def open_settings_submenu(sub_menu)

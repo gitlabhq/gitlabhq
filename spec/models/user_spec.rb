@@ -8478,6 +8478,18 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '.username_exists?' do
+    let_it_be(:user) { create(:user, username: 'user_1') }
+
+    it 'returns true if a user with the given username exists' do
+      expect(described_class.username_exists?('user_1')).to be(true)
+    end
+
+    it 'returns false if a username with the username does not exist' do
+      expect(described_class.username_exists?('second_user')).to be(false)
+    end
+  end
+
   context 'when email is not unique' do
     let_it_be(:existing_user) { create(:user) }
 

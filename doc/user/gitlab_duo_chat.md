@@ -9,35 +9,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [Experiment](../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
 > - Changed to [Beta](../policy/experiment-beta-support.md#beta) for SaaS in GitLab 16.6.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [Beta](../policy/experiment-beta-support.md#beta) for self-managed in GitLab 16.8.
 > - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9.
+> - Changed to [Generally Available](../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.11.
+> - Freely available for Ultimate and Premium users for a limited time.
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
 It can assist various tasks of your daily work with the AI-generated content.
 
-NOTE:
-GitLab Duo Chat is a Beta feature. We're continuously extending the capabilities and reliability of the responses.
+> For a limited time, the following users have free access to GitLab Duo Chat:
+>
+> - GitLab.com users who are members of at least one group with a Premium or Ultimate subscription.
+> - GitLab self-managed users with a Premium or Ultimate subscription.
+> - GitLab Dedicated users.
+>
+> Eventually a subscription add-on will be required for continued access to GitLab Duo Chat.
 
 Here are examples of common use cases:
 
 | Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
 | -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
-| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com            |
-| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
-| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-
-**Footnotes:**
-
-1. GitLab Duo Chat is not available in the Web IDE on self-managed.
+| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE | GitLab.com            |
+| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
 
 ## Watch a demo and get tips
 
@@ -65,7 +67,7 @@ You can ask questions about how GitLab works. Things like:
 
 NOTE:
 This feature is not currently supported in self-managed instances.
-See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11600) for more information.
+For more information, see [issue 451215](https://gitlab.com/gitlab-org/gitlab/-/issues/451215).
 
 ### Ask about a specific issue
 
@@ -257,28 +259,37 @@ you must enable GitLab Duo Chat.
 
 ### For GitLab.com
 
-To enable GitLab Duo Chat on GitLab.com:
+For a limited time, GitLab Duo Chat is available for all GitLab.com users
+who are members of at least one group with a Premium or Ultimate subscription.
 
-- At least one group that you're a member of must
-  have the [Experiment and Beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
-- You must belong to a group that has a Premium or Ultimate subscription.
+### For self-managed
 
-You can ask questions only about resources that belong to groups where the experiment and beta features setting is enabled.
-
-### For self-managed and GitLab Dedicated
+To enable GitLab Duo Chat on a self-managed instance,
+you must have the following prerequisites.
 
 Prerequisites:
 
-- You must have GitLab version 16.8 or later.
-- You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- You must have GitLab version 16.8 or later. You should use the latest GitLab version to benefit from the latest improvements to GitLab Duo Chat. The generally available version of GitLab Duo Chat in GitLab 16.11 has significant improvements in the quality of the answers.
+- You must have a Premium or Ultimate subscription that is [synchronized with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/). To make sure GitLab Duo Chat works immediately, administrators can
+   [manually synchronize your subscription](#manually-synchronize-your-subscription).
 - Your firewalls and HTTP proxy servers must allow outbound connections
   to `cloud.gitlab.com`. To use an HTTP proxy, both
   `gitLab _workhorse` and `gitLab_rails` have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - All of the users in your instance have the latest version of their IDE extension.
-- You must be an administrator.
 
-To enable GitLab Duo Chat for your self-managed GitLab instance:
+Then, depending on the version of GitLab you have, you can enable GitLab Duo Chat.
+
+#### In GitLab 16.11 and later
+
+In GitLab 16.11 and later, GitLab Duo Chat is generally available
+and automatically enabled for all users who have a subscription to the Premium or Ultimate tier.
+
+You do not need to do anything to enable GitLab Duo Chat if you have GitLab 16.11 or later.
+
+#### In earlier GitLab versions
+
+In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in Beta. To enable GitLab Duo Chat for your self-managed GitLab instance, an administrator must enable Experiment and Beta features:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
@@ -288,17 +299,24 @@ To enable GitLab Duo Chat for your self-managed GitLab instance:
    [manually synchronize your subscription](#manually-synchronize-your-subscription).
 
 NOTE:
-Usage of GitLab Duo Chat is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Usage of GitLab Duo Chat Beta is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 #### Manually synchronize your subscription
 
-You must [manually synchronize your subscription](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
+You can [manually synchronize your subscription](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
 - You have just purchased a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
 - You already have a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
 
 Without the manual synchronization, it might take up to 24 hours to activate GitLab Duo Chat on your instance.
+
+### For GitLab Dedicated
+
+In GitLab 16.11 and later, on GitLab Dedicated, GitLab Duo Chat is generally available and
+automatically enabled.
+
+In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is available in Beta.
 
 ## Use GitLab Duo Chat in the GitLab UI
 
@@ -320,25 +338,20 @@ To delete all previous conversations:
 
 ## Use GitLab Duo Chat in the Web IDE
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Status:** Experiment
-
-> - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment)
+> - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - Changed to Generally Available in GitLab 16.11.
 
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
 1. Open the Web IDE:
-   1. On the left sidebar, select **Search or go to** and find your project.
+   1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
 1. Then open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected code** or **Generate Tests**.
-
    - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac)
-
 1. In the message box, enter your question and press **Enter** or select **Send**.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
@@ -346,13 +359,24 @@ If you have selected code in the editor, this selection is sent along with your 
 NOTE:
 GitLab Duo Chat is not available in the Web IDE on self-managed.
 
+### Perform standard task in the IDE from the context menu or by using slash commands
+
+Get code explained, refactored, or generate tests for code.
+
+1. In VS Code or in the Web IDE, select code in your editor.
+1. In the **Chat** box, type one the following slash commands:
+   - [`/explain`](#explain-code-in-the-ide)
+   - [`/refactor`](#refactor-code-in-the-ide)
+   - [`/tests`](#write-tests-in-the-ide)
+
+Alternatively, use the context menu to perform these tasks.
+
+When you use a slash command, you can also add additional instructions, for example: `/tests using the Boost.Test framework`.
+
 ## Use GitLab Duo Chat in VS Code
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Status:** Experiment
-
 > - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - Changed to Generally Available in GitLab 16.11.
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
@@ -404,15 +428,15 @@ If the button is not visible in the upper-right of the UI,
 ensure GitLab Duo Chat [is enabled](#enable-gitlab-duo-chat).
 
 The **GitLab Duo Chat** button is not displayed on personal projects,
-as well as groups and projects with GitLab Duo features disabled.
+as well as [groups and projects with GitLab Duo features disabled](ai_features.md#disable-gitlab-duo-features).
 
 After you enable GitLab Duo Chat, it might take a few minutes for the
 button to appear.
 
 ### `This feature is only allowed in groups or projects that enable this feature`
 
-This error occurs when you ask about resources that do not have
-GitLab Duo Chat [enabled](#enable-gitlab-duo-chat).
+This error occurs when you ask about resources that do have
+GitLab Duo [disabled](ai_features.md#disable-gitlab-duo-features).
 
 If any of the settings are not enabled, information about resources
 (like issues, epics, and merge requests) in the group or project
@@ -424,18 +448,3 @@ This error occurs when you ask GitLab Duo Chat about resources you don't have ac
 or about resources that do not exist.
 
 Try again, asking about resources you have access to.
-
-### Reponses are unexpected
-
-If you have are on GitLab.com and have access to GitLab Duo Chat responses you did not expect,
-you might be part of a group that has the **Use Experiment and Beta features** setting enabled.
-Review the list of your groups and verify which ones you have access to.
-
-GitLab.com administrators can verify your access by running this snippet in the Rails console:
-
-```ruby
-u = User.find_by_username($USERNAME)
-u.member_namespaces.namespace_settings_with_ai_features_enabled.with_ai_supported_plan(:ai_chat)
-```
-
-You can ask specific questions about group resources (like "summarize this issue") when this feature is enabled.

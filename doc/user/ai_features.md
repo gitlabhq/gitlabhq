@@ -10,16 +10,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
 > - [Removed support for OpenAI from all GitLab Duo features](https://gitlab.com/groups/gitlab-org/-/epics/10964) in GitLab 16.6.
 
-GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle.
+GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. GitLab Duo features are accessible through the [IDE extension](../editor_extensions/index.md) and the GitLab UI. Some of the features are accessible through [GitLab Duo Chat](gitlab_duo_chat.md), which is available in both interfaces.
 
 Some features are still in development. View details about [support for each status](../policy/experiment-beta-support.md#experiment) (Experiment, Beta, Generally Available).
 
- As features become Generally Available, GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparency) and updates the documentation to clearly state how and where you can access these capabilities.
+GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparency). As GitLab Duo features mature, the documentation will be updated to clearly state how and where you can access these capabilities.
 
 | Goal | Feature | Tier/Offering/Status |
 |---|---|---|
 | Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
-| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** Premium, Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta (Subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)) |
+| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** For a limited time, freely available for Premium and Ultimate<br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
 | Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.  <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc) | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
@@ -60,12 +60,12 @@ To enable Beta and Experimental AI-powered features, use the [Experiment and Bet
 
 #### GitLab self-managed
 
-To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed-and-gitlab-dedicated).
+To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed).
 
 ### Enable outbound connections to enable GitLab Duo features on Self-managed instances
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `gitlab.com` and `cloud.gitlab.com` on port `443`.
+  to `cloud.gitlab.com` on port `443`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
@@ -74,7 +74,7 @@ To enable Beta and Experimental AI-powered features for GitLab versions where Gi
   Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
   services. Consider policy updates to allow these services.
 
-### Disable GitLab Duo features for specific groups or projects or an entire instance
+### Disable GitLab Duo features
 
 DETAILS:
 **Tier:** Premium, Ultimate

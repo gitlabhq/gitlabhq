@@ -141,7 +141,7 @@ export default {
         id="deploy-freeze-start"
         ref="freezeStartCron"
         v-model="freezeStartCron"
-        class="gl-font-monospace!"
+        class="!gl-font-monospace"
         :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeStartCronState"
         autofocus
@@ -158,7 +158,7 @@ export default {
       <gl-form-input
         id="deploy-freeze-end"
         v-model="freezeEndCron"
-        class="gl-font-monospace!"
+        class="!gl-font-monospace"
         :placeholder="$options.i18n.cronPlaceholder"
         :state="freezeEndCronState"
         trim

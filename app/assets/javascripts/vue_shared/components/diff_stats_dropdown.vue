@@ -124,7 +124,7 @@ export default {
                 <div class="gl-display-flex">
                   <span
                     class="gl-font-weight-bold gl-mr-3 gl-flex-grow-1"
-                    :class="item.name ? 'gl-text-truncate' : 'gl-font-style-italic gl-gray-400'"
+                    :class="item.name ? 'gl-text-truncate' : 'gl-italic gl-gray-400'"
                     >{{ item.text }}</span
                   >
                   <span class="gl-ml-auto gl-white-space-nowrap" aria-hidden="true">

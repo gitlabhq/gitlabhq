@@ -9797,6 +9797,35 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
+CREATE TABLE import_source_users (
+    id bigint NOT NULL,
+    placeholder_user_id bigint,
+    reassign_to_user_id bigint,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    source_username text,
+    source_name text,
+    source_user_identifier text NOT NULL,
+    source_hostname text NOT NULL,
+    import_type text NOT NULL,
+    CONSTRAINT check_0d7295a307 CHECK ((char_length(import_type) <= 255)),
+    CONSTRAINT check_199c28ec54 CHECK ((char_length(source_username) <= 255)),
+    CONSTRAINT check_562655155f CHECK ((char_length(source_name) <= 255)),
+    CONSTRAINT check_cc9d4093b5 CHECK ((char_length(source_user_identifier) <= 255)),
+    CONSTRAINT check_e2039840c5 CHECK ((char_length(source_hostname) <= 255))
+);
+
+CREATE SEQUENCE import_source_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_source_users_id_seq OWNED BY import_source_users.id;
+
 CREATE TABLE incident_management_escalation_policies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -19241,6 +19270,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY import_source_users ALTER COLUMN id SET DEFAULT nextval('import_source_users_id_seq'::regclass);
+
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_rules ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_rules_id_seq'::regclass);
@@ -21394,6 +21425,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT import_source_users_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT inc_mgmnt_no_overlapping_oncall_shifts EXCLUDE USING gist (rotation_id WITH =, tstzrange(starts_at, ends_at, '[)'::text) WITH &&);
@@ -25633,6 +25667,12 @@ CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USI
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
 
+CREATE INDEX index_import_source_users_on_namespace_id ON import_source_users USING btree (namespace_id);
+
+CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_users USING btree (placeholder_user_id);
+
+CREATE INDEX index_import_source_users_on_reassign_to_user_id ON import_source_users USING btree (reassign_to_user_id);
+
 CREATE INDEX index_imported_projects_on_import_type_creator_id_created_at ON projects USING btree (import_type, creator_id, created_at) WHERE (import_type IS NOT NULL);
 
 CREATE INDEX index_imported_projects_on_import_type_id ON projects USING btree (import_type, id) WHERE (import_type IS NOT NULL);
@@ -28002,6 +28042,8 @@ CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id O
 CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level) WHERE (status = 0);
 
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
+
+CREATE UNIQUE INDEX unique_import_source_users_source_identifier_and_import_source ON import_source_users USING btree (source_user_identifier, namespace_id, source_hostname, import_type);
 
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
 
@@ -31097,6 +31139,9 @@ ALTER TABLE ONLY namespaces_storage_limit_exclusions
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_167f82fd95 FOREIGN KEY (reassign_to_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY ci_build_report_results
     ADD CONSTRAINT fk_rails_16cb1ff064_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -31729,6 +31774,9 @@ ALTER TABLE ONLY ci_cost_settings
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_6aee6cd676 FOREIGN KEY (placeholder_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
@@ -32689,6 +32737,9 @@ ALTER TABLE ONLY ci_daily_build_group_report_results
 
 ALTER TABLE ONLY ci_daily_build_group_report_results
     ADD CONSTRAINT fk_rails_ee072d13b3_tmp FOREIGN KEY (last_pipeline_id) REFERENCES ci_pipelines(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
+
+ALTER TABLE ONLY import_source_users
+    ADD CONSTRAINT fk_rails_ee30e569be FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_group_streaming_event_type_filters
     ADD CONSTRAINT fk_rails_ee6950967f FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;

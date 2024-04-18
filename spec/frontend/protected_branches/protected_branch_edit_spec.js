@@ -43,6 +43,11 @@ const response = {
       group_id: null,
       deploy_key_id: null,
     },
+    {
+      id: 39,
+      access_level: 40,
+      deploy_key_id: 45,
+    },
   ],
 };
 
@@ -191,6 +196,21 @@ describe('ProtectedBranchEdit', () => {
         dropdown.$emit('hidden');
         await waitForPromises();
         expect(dropdown.preselected[0].id).toBe(response.push_access_levels[0].id);
+      });
+
+      it('updates deploy key on save for enabled dropdowns', async () => {
+        const selectedValue = [{ deploy_key_id: 45 }];
+        const ProtectedBranchEditInstance = create({});
+        const dropdown = ProtectedBranchEditInstance.push_access_levels_dropdown;
+        dropdown.$emit('select', selectedValue);
+        dropdown.$emit('hidden');
+        await waitForPromises();
+        expect(dropdown.preselected[1]).toEqual({
+          deploy_key_id: 45,
+          id: 39,
+          persisted: true,
+          type: 'deploy_key',
+        });
       });
 
       it('does not update selected item on save for disabled dropdowns', async () => {
