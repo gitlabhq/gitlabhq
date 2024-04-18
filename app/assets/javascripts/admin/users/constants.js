@@ -1,3 +1,6 @@
+import { GlFilteredSearchToken } from '@gitlab/ui';
+
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { s__, __ } from '~/locale';
 
 export const I18N_USER_ACTIONS = {
@@ -18,3 +21,46 @@ export const I18N_USER_ACTIONS = {
   trust: s__('AdminUsers|Trust user'),
   untrust: s__('AdminUsers|Untrust user'),
 };
+
+export const TOKENS = [
+  {
+    title: s__('AdminUsers|Access level'),
+    type: 'access_level',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'admins', title: s__('AdminUsers|Administrator') },
+      { value: 'external', title: s__('AdminUsers|External') },
+    ],
+  },
+  {
+    title: __('State'),
+    type: 'state',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'banned', title: s__('AdminUsers|Banned') },
+      { value: 'blocked', title: s__('AdminUsers|Blocked') },
+      { value: 'deactivated', title: s__('AdminUsers|Deactivated') },
+      {
+        value: 'blocked_pending_approval',
+        title: s__('AdminUsers|Pending approval'),
+      },
+      { value: 'trusted', title: s__('AdminUsers|Trusted') },
+      { value: 'wop', title: s__('AdminUsers|Without projects') },
+    ],
+  },
+  {
+    title: s__('AdminUsers|Two-factor authentication'),
+    type: '2fa',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [
+      { value: 'two_factor_enabled', title: __('On') },
+      { value: 'two_factor_disabled', title: __('Off') },
+    ],
+  },
+];

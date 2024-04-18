@@ -16,10 +16,14 @@ class NoteEntity < API::Entities::Note
 
   expose :author, using: NoteUserEntity
 
-  unexpose :note, as: :body
-  expose :note
+  unexpose :body
+  expose :note do |note|
+    note_presenter(note).note
+  end
 
-  expose :redacted_note_html, as: :note_html
+  expose :note_html do |note|
+    note_presenter(note).note_html
+  end
 
   expose :last_edited_at, if: -> (note, _) { note.edited? }
   expose :last_edited_by, using: NoteUserEntity, if: -> (note, _) { note.edited? }
@@ -117,6 +121,10 @@ class NoteEntity < API::Entities::Note
     else
       Gitlab::Utils::Email.obfuscated_email(object.note_metadata.external_author, deform: true)
     end
+  end
+
+  def note_presenter(note)
+    NotePresenter.new(note, current_user: current_user) # rubocop: disable CodeReuse/Presenter -- Directly instantiate NotePresenter because we don't have presenters for all subclasses of Note
   end
 end
 

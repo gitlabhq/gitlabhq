@@ -4369,6 +4369,9 @@ msgstr ""
 msgid "AdminUsers|Trusted"
 msgstr ""
 
+msgid "AdminUsers|Two-factor authentication"
+msgstr ""
+
 msgid "AdminUsers|Unban user"
 msgstr ""
 
@@ -13892,6 +13895,9 @@ msgstr ""
 msgid "ContainerRegistry|Add rule"
 msgstr ""
 
+msgid "ContainerRegistry|Are you sure you want to delete the container protection rule?"
+msgstr ""
+
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
@@ -13974,6 +13980,9 @@ msgid "ContainerRegistry|Delete image repository?"
 msgstr ""
 
 msgid "ContainerRegistry|Delete protected up to access level"
+msgstr ""
+
+msgid "ContainerRegistry|Delete rule"
 msgstr ""
 
 msgid "ContainerRegistry|Delete selected tags"
@@ -14064,6 +14073,9 @@ msgid "ContainerRegistry|Please try different search criteria"
 msgstr ""
 
 msgid "ContainerRegistry|Protected containers"
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule deleted."
 msgstr ""
 
 msgid "ContainerRegistry|Published %{timeInfo}"
@@ -14224,10 +14236,13 @@ msgstr ""
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 
+msgid "ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images."
+msgstr ""
+
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
-msgid "ContainerRegistry|When a container is protected then only certain user roles are able to update and delete the protected container. This helps to avoid tampering with the container."
+msgid "ContainerRegistry|When a container is protected then only certain user roles are able to push and delete the protected container image. This helps to avoid tampering with the container image."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."
@@ -49687,6 +49702,9 @@ msgid "Starts on"
 msgstr ""
 
 msgid "Starts: %{startsAt}"
+msgstr ""
+
+msgid "State"
 msgstr ""
 
 msgid "State your message to activate"

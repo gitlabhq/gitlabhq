@@ -7,7 +7,13 @@
     - c.with_body do
       = render 'shared/registration_features_discovery_message', feature_title: s_('RegistrationFeatures|send emails to users')
 
-.top-area
+- if Feature.enabled?(:admin_user_filtered_nav)
+  .gl-display-flex.gl-align-items-flex-start.gl-flex-wrap.gl-md-flex-nowrap.gl-gap-4.row-content-block.gl-border-0{ data: { testid: "filtered-search-block" } }
+    #js-admin-users-filter-app
+    .gl-flex-shrink-0
+      = label_tag s_('AdminUsers|Sort by')
+      = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort,  data: { placement: 'right' }
+- else
   .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
     %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
       = sprite_icon('chevron-lg-left', size: 12)
@@ -17,56 +23,51 @@
       = gl_tab_link_to admin_users_path, { item_active: active_when(params[:filter].nil?), class: 'gl-border-0!' } do
         = s_('AdminUsers|Active')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.active_without_ghosts))
-      = gl_tab_link_to admin_users_path(filter: "admins"), { item_active: active_when(params[:filter] == 'admins'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "admins"), { item_active: active_when(params[:filter] == 'admins'), class:  'gl-border-0!' } do
         = s_('AdminUsers|Admins')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.admins))
-      = gl_tab_link_to admin_users_path(filter: 'two_factor_enabled'), { item_active: active_when(params[:filter] == 'two_factor_enabled'), class: 'filter-two-factor-enabled gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: 'two_factor_enabled'), { item_active: active_when(params[:filter] ==  'two_factor_enabled'), class: 'filter-two-factor-enabled gl-border-0!' } do
         = s_('AdminUsers|2FA Enabled')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.with_two_factor))
-      = gl_tab_link_to admin_users_path(filter: 'two_factor_disabled'), { item_active: active_when(params[:filter] == 'two_factor_disabled'), class: 'filter-two-factor-disabled gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: 'two_factor_disabled'), { item_active: active_when(params[:filter] ==   'two_factor_disabled'), class: 'filter-two-factor-disabled gl-border-0!' } do
         = s_('AdminUsers|2FA Disabled')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.without_two_factor))
-      = gl_tab_link_to admin_users_path(filter: 'external'), { item_active: active_when(params[:filter] == 'external'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: 'external'), { item_active: active_when(params[:filter] == 'external'), class:  'gl-border-0!' } do
         = s_('AdminUsers|External')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.external))
-      = gl_tab_link_to admin_users_path(filter: "blocked"), { item_active: active_when(params[:filter] == 'blocked'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "blocked"), { item_active: active_when(params[:filter] == 'blocked'), class:  'gl-border-0!' } do
         = s_('AdminUsers|Blocked')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked))
-      = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class:  'gl-border-0!' } do
         = s_('AdminUsers|Banned')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.banned))
-      = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] == 'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { testid: 'pending-approval-tab' } } do
+      = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] ==  'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { testid:  'pending-approval-tab' } } do
         = s_('AdminUsers|Pending approval')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked_pending_approval))
-      = gl_tab_link_to admin_users_path(filter: "deactivated"), { item_active: active_when(params[:filter] == 'deactivated'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "deactivated"), { item_active: active_when(params[:filter] == 'deactivated'),   class: 'gl-border-0!' } do
         = s_('AdminUsers|Deactivated')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.deactivated))
-      = gl_tab_link_to admin_users_path(filter: "wop"), { item_active: active_when(params[:filter] == 'wop'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "wop"), { item_active: active_when(params[:filter] == 'wop'), class:  'gl-border-0!' } do
         = s_('AdminUsers|Without projects')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.without_projects))
-      = gl_tab_link_to admin_users_path(filter: "trusted"), { item_active: active_when(params[:filter] == 'trusted'), class: 'gl-border-0!' } do
+      = gl_tab_link_to admin_users_path(filter: "trusted"), { item_active: active_when(params[:filter] == 'trusted'), class:  'gl-border-0!' } do
         = s_('AdminUsers|Trusted')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.trusted))
-  .nav-controls
-    = render_if_exists 'admin/users/admin_email_users'
-    = render_if_exists 'admin/users/admin_export_user_permissions'
-    = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
-      = s_('AdminUsers|New user')
 
-.row-content-block.gl-border-0{ data: { testid: "filtered-search-block" } }
-  = form_tag admin_users_path, method: :get do
-    - if params[:filter].present?
-      = hidden_field_tag "filter", h(params[:filter])
-    .search-holder
-      .search-field-holder
-        = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email, or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { testid: 'user-search-field' }
-        - if @sort.present?
-          = hidden_field_tag :sort, @sort
-        = sprite_icon('search', css_class: 'search-icon')
-        = button_tag s_('AdminUsers|Search users') if Rails.env.test?
-      .dropdown.gl-sm-ml-3
-        = label_tag s_('AdminUsers|Sort by')
-        = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort, data: { placement: 'right' }
+  .row-content-block.gl-border-0{ data: { testid: "filtered-search-block" } }
+    = form_tag admin_users_path, method: :get do
+      - if params[:filter].present?
+        = hidden_field_tag "filter", h(params[:filter])
+      .search-holder
+        .search-field-holder
+          = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email, or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { testid:  'user-search-field' }
+          - if @sort.present?
+            = hidden_field_tag :sort, @sort
+          = sprite_icon('search', css_class: 'search-icon')
+          = button_tag s_('AdminUsers|Search users') if Rails.env.test?
+        .dropdown.gl-sm-ml-3
+          = label_tag s_('AdminUsers|Sort by')
+          = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort,  data: { placement: 'right' }
 
 #js-admin-users-app{ data: admin_users_data_attributes(@users) }
   = render Pajamas::SpinnerComponent.new(size: :lg, class: 'gl-my-7')

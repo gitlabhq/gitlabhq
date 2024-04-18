@@ -1,14 +1,20 @@
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlModal } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import ContainerProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
-import { containerProtectionRulesData, containerProtectionRuleQueryPayload } from '../mock_data';
+import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
+import {
+  containerProtectionRulesData,
+  containerProtectionRuleQueryPayload,
+  deleteContainerProtectionRuleMutationPayload,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -26,12 +32,15 @@ describe('Container protection rules project settings', () => {
   const findTable = () =>
     extendedWrapper(wrapper.findByRole('table', { name: /protected containers/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
-  const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
+  const findTableRowButtonDelete = (i) =>
+    findTableRow(i).findByRole('button', { name: /delete rule/i });
   const findAddProtectionRuleForm = () => wrapper.findComponent(ContainerProtectionRuleForm);
   const findAddProtectionRuleFormSubmitButton = () =>
     wrapper.findByRole('button', { name: /add protection rule/i });
   const findAlert = () => wrapper.findByRole('alert');
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const mountComponent = (mountFn = mountExtended, provide = defaultProvidedValues, config) => {
     wrapper = mountFn(ContainerProtectionRules, {
@@ -53,9 +62,15 @@ describe('Container protection rules project settings', () => {
     containerProtectionRuleQueryResolver = jest
       .fn()
       .mockResolvedValue(containerProtectionRuleQueryPayload()),
+    deleteContainerProtectionRuleMutationResolver = jest
+      .fn()
+      .mockResolvedValue(deleteContainerProtectionRuleMutationPayload()),
     config = {},
   } = {}) => {
-    const requestHandlers = [[ContainerProtectionRuleQuery, containerProtectionRuleQueryResolver]];
+    const requestHandlers = [
+      [ContainerProtectionRuleQuery, containerProtectionRuleQueryResolver],
+      [deleteContainerProtectionRuleMutation, deleteContainerProtectionRuleMutationResolver],
+    ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
@@ -77,7 +92,7 @@ describe('Container protection rules project settings', () => {
   describe('table "container protection rules"', () => {
     const findTableRowCell = (i, j) => findTableRow(i).findAllByRole('cell').at(j);
 
-    it('renders table with Container protection rules', async () => {
+    it('renders table with container protection rules', async () => {
       createComponent();
 
       await waitForPromises();
@@ -86,7 +101,6 @@ describe('Container protection rules project settings', () => {
 
       containerProtectionRuleQueryPayload().data.project.containerRegistryProtectionRules.nodes.forEach(
         (protectionRule, i) => {
-          expect(findTableRow(i).findAllByRole('cell').length).toBe(3);
           expect(findTableRowCell(i, 0).text()).toBe(protectionRule.repositoryPathPattern);
           expect(findTableRowCell(i, 1).text()).toBe('Maintainer');
           expect(findTableRowCell(i, 2).text()).toBe('Maintainer');
@@ -253,6 +267,158 @@ describe('Container protection rules project settings', () => {
             }),
           );
         });
+      });
+    });
+
+    describe('column "rowActions"', () => {
+      describe('button "Delete"', () => {
+        it('exists in table', async () => {
+          createComponent();
+
+          await waitForPromises();
+
+          expect(findTableRowButtonDelete(0).exists()).toBe(true);
+        });
+
+        describe('when button is clicked', () => {
+          it('renders the "delete container protection rule" confirmation modal', async () => {
+            createComponent();
+
+            await waitForPromises();
+
+            const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
+
+            expect(findModal().props('modal-id')).toBe(modalId);
+            expect(findModal().props('title')).toBe(
+              'Are you sure you want to delete the container protection rule?',
+            );
+            expect(findModal().text()).toBe(
+              'Users with at least the Developer role for this project will be able to push and delete container images.',
+            );
+          });
+        });
+      });
+    });
+  });
+
+  describe('modal "confirmation for delete action"', () => {
+    const createComponentAndClickButtonDeleteInTableRow = async ({
+      tableRowIndex = 0,
+      deleteContainerProtectionRuleMutationResolver = jest
+        .fn()
+        .mockResolvedValue(deleteContainerProtectionRuleMutationPayload()),
+    } = {}) => {
+      createComponent({ deleteContainerProtectionRuleMutationResolver });
+
+      await waitForPromises();
+
+      findTableRowButtonDelete(tableRowIndex).trigger('click');
+    };
+
+    describe('when modal button "primary" clicked', () => {
+      const clickOnModalPrimaryBtn = () => findModal().vm.$emit('primary');
+
+      it('disables the button when graphql mutation is executed', async () => {
+        await createComponentAndClickButtonDeleteInTableRow();
+
+        await clickOnModalPrimaryBtn();
+
+        expect(findTableRowButtonDelete(0).props().disabled).toBe(true);
+
+        expect(findTableRowButtonDelete(1).props().disabled).toBe(false);
+      });
+
+      it('sends graphql mutation', async () => {
+        const deleteContainerProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(deleteContainerProtectionRuleMutationPayload());
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deleteContainerProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        expect(deleteContainerProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
+        expect(deleteContainerProtectionRuleMutationResolver).toHaveBeenCalledWith({
+          input: { id: containerProtectionRulesData[0].id },
+        });
+      });
+
+      it('handles erroneous graphql mutation', async () => {
+        const alertErrorMessage = 'Client error message';
+        const deleteContainerProtectionRuleMutationResolver = jest
+          .fn()
+          .mockRejectedValue(new Error(alertErrorMessage));
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deleteContainerProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(alertErrorMessage);
+      });
+
+      it('handles graphql mutation with error response', async () => {
+        const alertErrorMessage = 'Server error message';
+        const deleteContainerProtectionRuleMutationResolver = jest.fn().mockResolvedValue(
+          deleteContainerProtectionRuleMutationPayload({
+            containerRegistryProtectionRule: null,
+            errors: [alertErrorMessage],
+          }),
+        );
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deleteContainerProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(alertErrorMessage);
+      });
+
+      it('refetches package protection rules after successful graphql mutation', async () => {
+        const deleteContainerProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(deleteContainerProtectionRuleMutationPayload());
+
+        const containerProtectionRuleQueryResolver = jest
+          .fn()
+          .mockResolvedValue(containerProtectionRuleQueryPayload());
+
+        createComponent({
+          containerProtectionRuleQueryResolver,
+          deleteContainerProtectionRuleMutationResolver,
+        });
+
+        await waitForPromises();
+
+        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+        await findTableRowButtonDelete(0).trigger('click');
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(containerProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+      });
+
+      it('shows a toast with success message', async () => {
+        await createComponentAndClickButtonDeleteInTableRow();
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect($toast.show).toHaveBeenCalledWith('Protection rule deleted.');
       });
     });
   });

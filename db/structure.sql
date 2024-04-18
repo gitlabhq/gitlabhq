@@ -5736,7 +5736,6 @@ CREATE TABLE catalog_resource_components (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     resource_type smallint DEFAULT 1 NOT NULL,
-    inputs jsonb DEFAULT '{}'::jsonb NOT NULL,
     name text NOT NULL,
     path text,
     spec jsonb DEFAULT '{}'::jsonb NOT NULL,

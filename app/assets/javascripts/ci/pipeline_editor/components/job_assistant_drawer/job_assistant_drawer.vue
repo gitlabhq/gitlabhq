@@ -158,9 +158,9 @@ export default {
       const targetObj = path.length === 1 ? this.job : get(this.job, path.slice(0, -1));
       const lastKey = path[path.length - 1];
       if (value !== undefined) {
-        this.$set(targetObj, lastKey, value);
+        targetObj[lastKey] = value;
       } else {
-        this.$delete(targetObj, lastKey);
+        delete targetObj[lastKey];
       }
     },
     validateJob() {

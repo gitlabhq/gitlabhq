@@ -111,6 +111,13 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    it 'ignores when attempting to reference a group with full path' do
+      create(:group, name: 'a_group')
+      exp = act = "/a_group$12345"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
   end
 
   context 'cross-project / same-namespace complete reference' do

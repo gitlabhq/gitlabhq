@@ -1,0 +1,9 @@
+---
+name: admin_user_filtered_nav
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/238183
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149471
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455962
+milestone: '17.0'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

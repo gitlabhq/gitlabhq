@@ -5,12 +5,14 @@ import {
   GlCard,
   GlKeysetPagination,
   GlLoadingIcon,
+  GlModal,
   GlModalDirective,
   GlTable,
 } from '@gitlab/ui';
 import protectionRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
+import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -36,6 +38,7 @@ export default {
     GlCard,
     GlKeysetPagination,
     GlLoadingIcon,
+    GlModal,
     GlTable,
     SettingsBlock,
   },
@@ -46,8 +49,16 @@ export default {
   i18n: {
     settingBlockTitle: s__('ContainerRegistry|Protected containers'),
     settingBlockDescription: s__(
-      'ContainerRegistry|When a container is protected then only certain user roles are able to update and delete the protected container. This helps to avoid tampering with the container.',
+      'ContainerRegistry|When a container is protected then only certain user roles are able to push and delete the protected container image. This helps to avoid tampering with the container image.',
     ),
+    protectionRuleDeletionConfirmModal: {
+      title: s__(
+        'ContainerRegistry|Are you sure you want to delete the container protection rule?',
+      ),
+      description: s__(
+        'ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images.',
+      ),
+    },
   },
   apollo: {
     protectionRulesQueryPayload: {
@@ -81,6 +92,7 @@ export default {
     tableItems() {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
+          id: protectionRule.id,
           deleteProtectedUpToAccessLevel:
             ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.deleteProtectedUpToAccessLevel],
           pushProtectedUpToAccessLevel:
@@ -106,6 +118,19 @@ export default {
     },
     isAddProtectionRuleButtonDisabled() {
       return this.protectionRuleFormVisibility;
+    },
+    modalActionPrimary() {
+      return {
+        text: __('Delete'),
+        attributes: {
+          variant: 'danger',
+        },
+      };
+    },
+    modalActionCancel() {
+      return {
+        text: __('Cancel'),
+      };
     },
   },
   methods: {
@@ -150,6 +175,32 @@ export default {
     isProtectionRuleMutationInProgress(item) {
       return this.protectionRuleMutationItem === item && this.protectionRuleMutationInProgress;
     },
+    deleteProtectionRule(protectionRule) {
+      this.clearAlertMessage();
+
+      this.protectionRuleMutationInProgress = true;
+
+      return this.$apollo
+        .mutate({
+          mutation: deleteContainerProtectionRuleMutation,
+          variables: { input: { id: protectionRule.id } },
+        })
+        .then(({ data }) => {
+          const [errorMessage] = data?.deleteContainerRegistryProtectionRule?.errors ?? [];
+          if (errorMessage) {
+            this.alertErrorMessage = errorMessage;
+            return;
+          }
+          this.refetchProtectionRules();
+          this.$toast.show(s__('ContainerRegistry|Protection rule deleted.'));
+        })
+        .catch((e) => {
+          this.alertErrorMessage = e.message;
+        })
+        .finally(() => {
+          this.resetProtectionRuleMutation();
+        });
+    },
   },
   fields: [
     {
@@ -167,7 +218,14 @@ export default {
       label: I18N_DELETE_PROTECTED_UP_TO_ACCESS_LEVEL,
       tdClass: 'gl-vertical-align-middle!',
     },
+    {
+      key: 'rowActions',
+      label: '',
+      thClass: 'gl-display-none',
+      tdClass: 'gl-vertical-align-middle! gl-text-right',
+    },
   ],
+  modal: { id: 'delete-protection-rule-confirmation-modal' },
 };
 </script>
 
@@ -227,6 +285,18 @@ export default {
             <template #table-busy>
               <gl-loading-icon size="sm" class="gl-my-5" />
             </template>
+
+            <template #cell(rowActions)="{ item }">
+              <gl-button
+                v-gl-modal="$options.modal.id"
+                category="secondary"
+                variant="danger"
+                size="small"
+                :disabled="isProtectionRuleDeleteButtonDisabled(item)"
+                @click="showProtectionRuleDeletionConfirmModal(item)"
+                >{{ s__('ContainerRegistry|Delete rule') }}</gl-button
+              >
+            </template>
           </gl-table>
 
           <div v-if="shouldShowPagination" class="gl-display-flex gl-justify-content-center">
@@ -241,6 +311,17 @@ export default {
           </div>
         </template>
       </gl-card>
+
+      <gl-modal
+        :modal-id="$options.modal.id"
+        size="sm"
+        :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
+        :action-primary="modalActionPrimary"
+        :action-cancel="modalActionCancel"
+        @primary="deleteProtectionRule(protectionRuleMutationItem)"
+      >
+        <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.description }}</p>
+      </gl-modal>
     </template>
   </settings-block>
 </template>

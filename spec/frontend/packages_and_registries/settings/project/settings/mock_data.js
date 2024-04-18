@@ -224,3 +224,15 @@ export const createContainerProtectionRuleMutationInput = {
 export const createContainerProtectionRuleMutationPayloadErrors = [
   'Repository path pattern has already been taken',
 ];
+
+export const deleteContainerProtectionRuleMutationPayload = ({
+  containerRegistryProtectionRule = { ...containerProtectionRulesData[0] },
+  errors = [],
+} = {}) => ({
+  data: {
+    deleteContainerRegistryProtectionRule: {
+      containerRegistryProtectionRule,
+      errors,
+    },
+  },
+});

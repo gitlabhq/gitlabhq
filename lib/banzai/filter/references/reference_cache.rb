@@ -141,7 +141,7 @@ module Banzai
             parent_per_reference.each do |path, parent|
               record_ids = references_per_parent[path]
 
-              filter.parent_records(parent, record_ids).each do |record|
+              filter.parent_records(parent, record_ids)&.each do |record|
                 hash[parent][filter.record_identifier(record)] = record
               end
             end

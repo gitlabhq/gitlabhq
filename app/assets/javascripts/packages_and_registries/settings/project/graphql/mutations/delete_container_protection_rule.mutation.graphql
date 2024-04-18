@@ -1,0 +1,13 @@
+mutation deleteContainerRegistryProtectionRule(
+  $input: DeleteContainerRegistryProtectionRuleInput!
+) {
+  deleteContainerRegistryProtectionRule(input: $input) {
+    containerRegistryProtectionRule {
+      id
+      repositoryPathPattern
+      pushProtectedUpToAccessLevel
+      deleteProtectedUpToAccessLevel
+    }
+    errors
+  }
+}
