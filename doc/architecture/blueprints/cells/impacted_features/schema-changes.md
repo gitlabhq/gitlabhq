@@ -16,7 +16,7 @@ we can document the reasons for not choosing this approach.
 # Cells: Schema changes
 
 When we introduce multiple Cells that own their own databases this will complicate the process of making schema changes to Postgres and Elasticsearch.
-Today we already need to be careful to make changes comply with our zero downtime deployments.
+Today we already need to be careful to make changes comply with our zero-downtime deployments.
 For example, [when removing a column we need to make changes over 3 separate deployments](../../../../development/database/avoiding_downtime_in_migrations.md#dropping-columns).
 We have tooling like `post_migrate` that helps with these kinds of changes to reduce the number of merge requests needed, but these will be complicated when we are dealing with deploying multiple Rails applications that will be at different versions at any one time.
 This problem will be particularly tricky to solve for shared databases like our plan to share the `users` related tables among all Cells.

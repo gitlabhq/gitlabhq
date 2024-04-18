@@ -36,7 +36,7 @@ export default {
     <h4
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mt-3 gl-mb-0!"
+      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mt-3 gl-mb-2 gl-ml-3"
     >
       {{ heading }}
     </h4>

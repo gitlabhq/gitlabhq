@@ -34,7 +34,7 @@ GitLab package.
 - For single node installations, GitLab is not available to users while an
   upgrade is in progress. The user's web browser shows a `Deploy in progress` message or a `502` error.
 - For multi-node installations, see how to perform
-  [zero downtime upgrades](../zero_downtime.md).
+  [zero-downtime upgrades](../zero_downtime.md).
 - Upgrades to multi-node installations can also be performed
   [with downtime](../with_downtime.md).
 

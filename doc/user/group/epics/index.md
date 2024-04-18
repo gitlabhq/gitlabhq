@@ -10,8 +10,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+An epic in GitLab describes a large body of work that can be broken down into smaller parts.
+Epics organize issues and features into a high-level theme or goal.
+
 When [issues](../../project/issues/index.md) share a theme across projects and
-milestones, you can manage them by using epics.
+milestones, you can group them by using epics.
 
 You can also create child epics and assign start and end dates, which creates
 a visual roadmap for you to view progress.

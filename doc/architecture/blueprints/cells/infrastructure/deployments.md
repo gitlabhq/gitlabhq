@@ -166,7 +166,7 @@ Before we can integrate Secondary Cells to our deployment pipeline, we need a fe
    - This is required for appropriate testing. As noted below, we'll need a QA cell to direct a deployment to for which QA will execute tests against. A router will need to route QA tests to the appropriate Cell.
 1. Assets Deployment
    - This already exists today for .com. Today this is handled via HAProxy, but with Cells, the routing layer will become the responsible party to redirect assets in a similar fashion.
-   - If assets are chosen to be managed differently, this changes both how Delivery need to deploy said assets in order to provide as close to Zero Downtime Upgrades as possible, and configuration to the Cell installation to support routing to assets properly.
+   - If assets are chosen to be managed differently, this changes both how Delivery need to deploy said assets in order to provide as close to Zero-Downtime Upgrades as possible, and configuration to the Cell installation to support routing to assets properly.
 1. Feature Flags
    - We are assuming that the current Feature Flags workflows and tooling will just work on the Primary Cell and that Secondary Cells will not be affected.
    - The use of feature flags to mitigate incidents is limited to only the Primary Cell.

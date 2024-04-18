@@ -175,7 +175,7 @@ guessing query performance is a hard task.
 If you are concerned about the performance of a query on self-managed instances
 and decide that self-managed instances must have an index, follow these recommendations:
 
-- For self-managed instances following [zero downtime](../../update/zero_downtime.md)
+- For self-managed instances following [zero-downtime](../../update/zero_downtime.md)
   upgrades, post-deploy migrations execute when performing an upgrade after the application code deploys.
 - For self-managed instances that do not follow a zero-downtime upgrade,
   the administrator might choose to execute the post-deployment migrations for a release later,

@@ -14,22 +14,20 @@ DETAILS:
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 15.3.
 
-Known limitation:
-
-- [Tasks cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
-
-For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
-
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
 an administrator can [disable the feature flags](../administration/feature_flags.md) named `work_items`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
-Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
+A task in GitLab is a planning item that can be created in an issue.
+Use tasks to break down user stories captured in [issues](project/issues/index.md) into
+smaller, trackable items.
 
 When planning an issue, you need a way to capture and break down technical
 requirements or steps necessary to complete it. An issue with related tasks is better defined,
 and so you can provide a more accurate issue weight and completion criteria.
+
+For the latest updates, check the [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 
 Tasks are a type of work item, a step towards [default issue types](https://gitlab.com/gitlab-org/gitlab/-/issues/323404)
 in GitLab.

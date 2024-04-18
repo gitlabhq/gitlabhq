@@ -10,7 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
+Jobs are fundamental elements of a GitLab CI/CD pipeline. Jobs are configured in the `.gitlab-ci.yml` file
+with a list of commands to run to accomplish tasks like building, testing, or deploying code.
 
 Jobs are:
 

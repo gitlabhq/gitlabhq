@@ -9138,7 +9138,6 @@ Input type: `VulnerabilityCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilitycreateconfidence"></a>`confidence` **{warning-solid}** | [`VulnerabilityConfidence`](#vulnerabilityconfidence) | **Deprecated:** This field will be removed from the Vulnerability domain model. Deprecated in GitLab 15.4. |
 | <a id="mutationvulnerabilitycreateconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to confirmed (defaults to creation time if status is `confirmed`). |
 | <a id="mutationvulnerabilitycreatedescription"></a>`description` | [`String!`](#string) | Long text section that describes the vulnerability in more detail. |
 | <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
@@ -34247,20 +34246,6 @@ Determines whether the pipeline list shows ID or IID.
 | <a id="visibilityscopesenuminternal"></a>`internal` | Snippet is visible for any logged in user except external users. |
 | <a id="visibilityscopesenumprivate"></a>`private` | Snippet is visible only to the snippet creator. |
 | <a id="visibilityscopesenumpublic"></a>`public` | Snippet can be accessed without any authentication. |
-
-### `VulnerabilityConfidence`
-
-Confidence that a given vulnerability is present in the codebase.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="vulnerabilityconfidenceconfirmed"></a>`CONFIRMED` | Confirmed confidence. |
-| <a id="vulnerabilityconfidenceexperimental"></a>`EXPERIMENTAL` | Experimental confidence. |
-| <a id="vulnerabilityconfidencehigh"></a>`HIGH` | High confidence. |
-| <a id="vulnerabilityconfidenceignore"></a>`IGNORE` | Ignore confidence. |
-| <a id="vulnerabilityconfidencelow"></a>`LOW` | Low confidence. |
-| <a id="vulnerabilityconfidencemedium"></a>`MEDIUM` | Medium confidence. |
-| <a id="vulnerabilityconfidenceunknown"></a>`UNKNOWN` | Unknown confidence. |
 
 ### `VulnerabilityDismissalReason`
 

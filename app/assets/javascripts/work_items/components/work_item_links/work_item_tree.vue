@@ -182,7 +182,7 @@ export default {
       <work-item-actions-split-button v-if="canUpdate" :actions="addItemsActions" />
     </template>
     <template #body>
-      <div class="gl-new-card-content">
+      <div class="gl-new-card-content gl-px-0">
         <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
           <p class="gl-new-card-empty">
             {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}

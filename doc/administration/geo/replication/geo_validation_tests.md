@@ -24,7 +24,7 @@ The following are GitLab upgrade validation tests we performed.
 [Upgrade Geo multi-node installation](https://gitlab.com/gitlab-org/gitlab/-/issues/225359):
 
 - Description: Tested upgrading from GitLab 12.10.12 to 13.0.10 package in a multi-node
-  configuration. As part of the issue to [Fix zero-downtime upgrade process/instructions for multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/22568), we monitored for downtime using the looping pipeline, HAProxy stats dashboards, and a script to log readiness status on both nodes.
+  configuration. As part of the issue to [Fix zero-downtime upgrade process/instructions for multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/225684), we monitored for downtime using the looping pipeline, HAProxy stats dashboards, and a script to log readiness status on both nodes.
 - Outcome: Partial success because we observed downtime during the upgrade of the primary and secondary sites.
 - Follow up issues/actions:
   - [Investigate why `reconfigure` and `hup` cause downtime on multi-node Geo deployments](https://gitlab.com/gitlab-org/gitlab/-/issues/228898)

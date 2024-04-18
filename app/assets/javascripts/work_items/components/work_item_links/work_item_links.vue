@@ -270,7 +270,7 @@ export default {
       </gl-disclosure-dropdown>
     </template>
     <template #body>
-      <div class="gl-new-card-content">
+      <div class="gl-new-card-content gl-px-0">
         <gl-loading-icon v-if="isLoading" color="dark" class="gl-my-2" />
         <template v-else>
           <div v-if="isChildrenEmpty && !isShownAddForm && !error" data-testid="links-empty">

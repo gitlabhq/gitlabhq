@@ -208,7 +208,7 @@ DETAILS:
 
 - In GitLab 14.8, we are upgrading Redis from 6.0.16 to 6.2.6. This upgrade is expected to be fully backwards compatible.
 
-  Follow [the zero downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
+  Follow [the zero-downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
 
 ### Geo installations
 

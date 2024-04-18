@@ -529,7 +529,7 @@ For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluste
 ### Upgrade Gitaly Cluster
 
 To upgrade a Gitaly Cluster, follow the documentation for
-[zero downtime upgrades](../../update/zero_downtime.md).
+[zero-downtime upgrades](../../update/zero_downtime.md).
 
 ### Downgrade Gitaly Cluster to a previous version
 

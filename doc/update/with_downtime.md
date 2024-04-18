@@ -23,7 +23,7 @@ relevant to your [upgrade path](index.md#upgrade-paths).
 For a single node installation, you must only [upgrade the GitLab package](package/index.md).
 
 The process for upgrading a number of components of a multi-node GitLab
-installation is the same as for zero downtime upgrades.
+installation is the same as for zero-downtime upgrades.
 The differences relate to the servers running Rails (Puma/Sidekiq) and
 the order of events.
 
@@ -94,7 +94,7 @@ following principles when upgrading those servers:
 
 ## Upgrade the Gitaly nodes (Praefect / Gitaly Cluster)
 
-If you're running Gitaly cluster, follow the [zero downtime process](zero_downtime.md)
+If you're running Gitaly cluster, follow the [zero-downtime process](zero_downtime.md)
 for Gitaly cluster.
 
 If you are using Amazon Machine Images (AMIs) on AWS, you can either upgrade the Gitaly nodes
@@ -199,7 +199,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Follow [the zero downtime instructions](zero_downtime.md)
+Follow [the zero-downtime instructions](zero_downtime.md)
 for upgrading your Redis HA cluster.
 
 ## Upgrade the Rails components

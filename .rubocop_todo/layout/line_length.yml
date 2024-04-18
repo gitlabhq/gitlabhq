@@ -776,7 +776,6 @@ Layout/LineLength:
     - 'ee/app/graphql/types/security_report_summary_section_type.rb'
     - 'ee/app/graphql/types/vulnerabilities_count_by_day_type.rb'
     - 'ee/app/graphql/types/vulnerability/external_issue_link_external_tracker_enum.rb'
-    - 'ee/app/graphql/types/vulnerability_confidence_enum.rb'
     - 'ee/app/graphql/types/vulnerability_detail_type.rb'
     - 'ee/app/graphql/types/vulnerability_type.rb'
     - 'ee/app/helpers/admin/emails_helper.rb'

@@ -10,17 +10,21 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-As your count of issues, merge requests, and epics grows in GitLab, it gets more challenging
-to keep track of those items. Especially as your organization grows from just a few people to
+Labels are a way to categorize and filter issues, merge requests, and epics in GitLab.
+
+As your projects grow in GitLab, it gets more challenging to keep track of the work that's done.
+Especially as your organization grows from just a few people to
 hundreds or thousands. With labels, you can organize and tag your work, and track the work items
 you're interested in.
 
-Labels are a key part of [issue boards](issue_board.md). With labels you can:
+Labels are a key part of [issue boards](issue_board.md).
 
-- Categorize [epics](../group/epics/index.md), issues, and merge requests using colors and descriptive titles like
-  `bug`, `feature request`, or `docs`.
-- Dynamically filter and manage [epics](../group/epics/index.md), issues, and merge requests.
-- Search lists of issues, merge requests, and epics, as well as issue boards.
+Use labels on [epics](../group/epics/index.md), issues, and merge requests to:
+
+- Categorize items using colors and descriptive titles like `bug`, `feature request`, or `docs`.
+- Dynamically filter and manage items to view work that's in progress or completed.
+- Search lists and boards.
+- Communicate priority or severity of items, using [scoped labels](#scoped-labels).
 
 ## Types of labels
 

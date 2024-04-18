@@ -287,7 +287,6 @@ class WebHookService
 
   def request_payload
     return data unless hook.custom_webhook_template.present?
-    return data unless Feature.enabled?(:custom_webhook_template, hook.parent, type: :beta)
 
     start_time = Gitlab::Metrics::System.monotonic_time
     rendered_template = render_custom_template(hook.custom_webhook_template, data.deep_stringify_keys)

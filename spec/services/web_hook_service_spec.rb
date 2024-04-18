@@ -404,20 +404,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
               .once
           end
         end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(custom_webhook_template: false)
-          end
-
-          it 'does not render custom template', :aggregate_failures do
-            service_instance.execute
-
-            expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
-              .with(headers: headers, body: '{"before":"oldrev","after":"newrev","ref":"ref"}')
-              .once
-          end
-        end
       end
 
       context 'when template is invalid' do

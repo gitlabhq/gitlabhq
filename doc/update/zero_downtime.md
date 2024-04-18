@@ -4,13 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Zero downtime upgrades
+# Zero-downtime upgrades
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-With Zero downtime upgrades, it's possible to upgrade a live GitLab environment without having to
+With zero-downtime upgrades, it's possible to upgrade a live GitLab environment without having to
 take it offline. This guide will take you through the core process of performing
 such an upgrade.
 
@@ -22,7 +22,7 @@ or management of third party services, such as AWS RDS, please refer to the resp
 
 ## Before you start
 
-Achieving _true_ Zero Downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
+Achieving _true_ zero downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
 this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/index.md)
 and was found to result in effectively no observable downtime, but please be aware your mileage may vary dependent on the specific system makeup.
 
@@ -34,16 +34,16 @@ or the [Support team](https://about.gitlab.com/support/).
 
 ## Requirements and considerations
 
-The Zero downtime upgrade process has the following requirements:
+The zero-downtime upgrade process has the following requirements:
 
-- Zero downtime upgrades are only supported on multi-node GitLab environments built with the Linux package that have Load Balancing and HA mechanisms configured as follows:
+- Zero-downtime upgrades are only supported on multi-node GitLab environments built with the Linux package that have Load Balancing and HA mechanisms configured as follows:
   - External Load Balancer configured for Rails nodes with health checks enabled against the [Readiness](../administration/monitoring/health_check.md#readiness) (`/-/readiness`) endpoint.
   - Internal Load Balancer configured for any PgBouncer and Praefect components with TCP health checks enabled.
   - HA mechanisms configured for the Consul, Postgres and Redis components if present.
     - Any of these components that are not deployed in a HA fashion will need to be upgraded separately with downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
-- [Zero Downtime Upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). This in turn means this type of upgrade is not available for Cloud Native Hybrid environments.
+- [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). This in turn means this type of upgrade is not available for Cloud Native Hybrid environments.
 
 In addition to the above, please be aware of the following considerations:
 
@@ -52,8 +52,8 @@ In addition to the above, please be aware of the following considerations:
   - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](index.md#check-for-background-migrations-before-upgrading) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
 `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](index.md#check-for-background-migrations-before-upgrading).
-- [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by Zero Downtime upgrades (smaller upgrades are covered).
-- Zero Downtime Upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components via a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
+- [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
+- Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components via a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
 
 NOTE:
@@ -61,7 +61,7 @@ If you want to upgrade multiple releases or do not meet these requirements [upgr
 
 ## Upgrade order
 
-We recommend a "back to front" approach for the order of what components to upgrade with Zero Downtime.
+We recommend a "back to front" approach for the order of what components to upgrade with zero downtime.
 Generally this would be stateful backends first, their dependents next and then the frontends accordingly.
 While the order of deployment can be changed, it is best to deploy the components running GitLab application code (Rails, Sidekiq) together. If possible, upgrade the supporting infrastructure (PostgreSQL, PgBouncer, Consul, Gitaly, Praefect, Redis) separately since these components do not have dependencies on changes made in version updates within a major release.
 As such, we generally recommend the following order:

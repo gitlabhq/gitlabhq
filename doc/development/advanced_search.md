@@ -116,7 +116,7 @@ Example:
 - Searches can have their own analyzers. Remember to check when editing analyzers.
 - `Character` filters (as opposed to token filters) always replace the original character. These filters can hinder exact searches.
 
-## Zero downtime reindexing with multiple indices
+## Zero-downtime reindexing with multiple indices
 
 NOTE:
 This is not applicable yet as multiple indices functionality is not fully implemented.

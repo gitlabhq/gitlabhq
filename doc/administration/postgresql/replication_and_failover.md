@@ -1087,7 +1087,7 @@ Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the sam
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
 
-### Near zero downtime upgrade of PostgreSQL in a Patroni cluster
+### Near-zero-downtime upgrade of PostgreSQL in a Patroni cluster
 
 DETAILS:
 **Status:** Experiment
@@ -1126,7 +1126,7 @@ cluster.
 #### Preflight check
 
 We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
-to support near-zero downtime upgrades of Patroni clusters. The of
+to support near-zero-downtime upgrades of Patroni clusters. The of
 [logical replication requirements](https://www.postgresql.org/docs/current/logical-replication-restrictions.html)
 must be met. In particular, `wal_level` must be `logical`. To check the `wal_level`,
 run the following command with `gitlab-psql` on any node of the existing cluster:
@@ -1137,7 +1137,7 @@ SHOW wal_level;
 
 By default, Patroni sets `wal_level` to `replica`. You must increase it to `logical`.
 Changing `wal_level` requires restarting PostgreSQL, so this step leads to a short
-downtime (hence near-zero downtime). To do this on the Patroni **leader** node:
+downtime (hence near-zero-downtime). To do this on the Patroni **leader** node:
 
 1. Edit `gitlab.rb` by setting:
 

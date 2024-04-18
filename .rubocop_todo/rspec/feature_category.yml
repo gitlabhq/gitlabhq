@@ -357,7 +357,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/types/vulnerability/external_issue_link_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability/issue_link_type_enum_spec.rb'
     - 'ee/spec/graphql/types/vulnerability/issue_link_type_spec.rb'
-    - 'ee/spec/graphql/types/vulnerability_confidence_enum_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_detail_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_details/base_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_details/boolean_type_spec.rb'

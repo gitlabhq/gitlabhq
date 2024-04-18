@@ -148,7 +148,7 @@ As an example, when adding a new feature with frontend and API changes, it may b
 
 ### Expand and contract pattern
 
-One way to guarantee zero downtime updates for on-premise instances is following the
+One way to guarantee zero-downtime updates for on-premise instances is following the
 [expand and contract pattern](https://martinfowler.com/bliki/ParallelChange.html).
 
 This means that every breaking change is broken down in three phases: expand, migrate, and contract.
@@ -157,7 +157,7 @@ This means that every breaking change is broken down in three phases: expand, mi
 1. **migrate**: all consumers are updated to make use of the new implementation.
 1. **contract**: backward compatibility is removed.
 
-Those three phases **must be part of different milestones**, to allow zero downtime updates.
+Those three phases **must be part of different milestones**, to allow zero-downtime updates.
 
 Depending on the support level for the feature, the contract phase could be delayed until the next major release.
 

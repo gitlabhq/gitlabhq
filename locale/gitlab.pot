@@ -33989,6 +33989,9 @@ msgstr ""
 msgid "No milestone"
 msgstr ""
 
+msgid "No more seats in subscription"
+msgstr ""
+
 msgid "No more than %{max_issues} issues can be updated at the same time"
 msgstr ""
 
@@ -59789,6 +59792,9 @@ msgid "Your membership will expire in %{days_to_expire} days"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your namespace has used all the seats in your subscription and users can no longer be invited or added to the namespace."
 msgstr ""
 
 msgid "Your namespace storage is full. This merge request cannot be merged. To continue, %{link_start}manage your storage usage%{link_end}."

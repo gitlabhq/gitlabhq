@@ -80,7 +80,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Rake tasks:
   - [Displaying GitLab license information](../administration/raketasks/maintenance.md#show-gitlab-license-information)
 - Reference Architecture information:
-  - [Zero downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
+  - [Zero-downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
 - Repositories:
   - [Repository size limit](../administration/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:

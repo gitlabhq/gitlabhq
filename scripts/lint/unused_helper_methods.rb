@@ -16,7 +16,7 @@ start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 # Build an array of filename globs to process.
 # Only search file types that might use or define a helper.
 #
-extensions = %w[rb haml erb].map { |ext| "{ee/,}app/**/*.#{ext}" }
+extensions = %w[rb haml erb].flat_map { |ext| ["{ee/,}app/**/*.#{ext}", "{ee/,}lib/**/*.#{ext}"] }
 
 # Build a hash of all the source files to search.
 # Key is filename, value is an array of the lines.

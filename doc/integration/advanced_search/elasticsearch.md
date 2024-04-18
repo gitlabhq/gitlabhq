@@ -420,7 +420,7 @@ To enable languages support:
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
 1. Select **Save changes** for the changes to take effect.
-1. Trigger [Zero downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
+1. Trigger [zero-downtime reindexing](#zero-downtime-reindexing) or reindex everything from scratch to create a new index with updated mappings.
 1. Enable plugins support for **Searching** after the previous step is completed.
 
 For guidance on what to install, see the following Elasticsearch language plugin options:

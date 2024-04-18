@@ -802,7 +802,6 @@
 - './ee/spec/graphql/types/vulnerabilities/container_image_type_spec.rb'
 - './ee/spec/graphql/types/vulnerabilities_count_by_day_type_spec.rb'
 - './ee/spec/graphql/types/vulnerabilities/link_type_spec.rb'
-- './ee/spec/graphql/types/vulnerability_confidence_enum_spec.rb'
 - './ee/spec/graphql/types/vulnerability_details/base_type_spec.rb'
 - './ee/spec/graphql/types/vulnerability_details/boolean_type_spec.rb'
 - './ee/spec/graphql/types/vulnerability_details/code_type_spec.rb'

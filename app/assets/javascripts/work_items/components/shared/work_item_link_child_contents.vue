@@ -241,7 +241,7 @@ export default {
       <gl-button
         v-gl-tooltip
         :class="{ 'gl-visibility-visible': showRemove }"
-        class="gl-visibility-hidden gl-mt-n2"
+        class="gl-visibility-hidden gl-mt-n2 gl-mr-n2"
         category="tertiary"
         size="small"
         icon="close"

@@ -15,8 +15,11 @@ DETAILS:
 > - Moved to GitLab Premium in 13.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 14.6. [Feature flag `group_iterations`](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) removed.
 
-Iterations are a way to track issues over a period of time. This allows teams
-to track velocity and volatility metrics. For tracking the same item over multiple concurrent periods, you can use iterations with [milestones](../../project/milestones/index.md).
+An iteration in GitLab refers to a time-boxed workflow that groups issues to be worked on during
+a specific period of time, usually lasting 1-3 weeks.
+
+Teams can use iterations to track velocity and volatility metrics.
+For tracking the same item over multiple concurrent periods, you can use iterations with [milestones](../../project/milestones/index.md).
 Create and manage various [iteration cadences](#iteration-cadences) in a group.
 
 For example, you can use:

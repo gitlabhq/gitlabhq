@@ -131,11 +131,7 @@ Custom headers appear in [recent deliveries](#recently-triggered-webhook-payload
 ## Custom webhook template
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_template`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
 
 You can set a custom payload template in the webhook configuration. The request body is rendered from the template
 with the data for the current event. The template must render as valid JSON.

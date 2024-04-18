@@ -30,7 +30,8 @@ module Users
       project_repository_limit_alert_warning_threshold: 20, # EE-only
       project_repository_limit_alert_alert_threshold: 21, # EE-only
       project_repository_limit_alert_error_threshold: 22, # EE-only
-      namespace_over_storage_users_combined_alert: 23 # EE-only
+      namespace_over_storage_users_combined_alert: 23, # EE-only
+      all_seats_used_alert: 24 # EE-only
     }
 
     validates :group, presence: true

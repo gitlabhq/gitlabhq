@@ -26,6 +26,7 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-joining-a-project-alert',
   '.js-duo-pro-trial-alert',
   '.js-duo-chat-ga-alert',
+  '.js-all-seats-used',
 ];
 
 const initCallouts = () => {

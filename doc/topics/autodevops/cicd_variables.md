@@ -57,7 +57,7 @@ Use these variables to customize and deploy your build.
 | `KUBE_INGRESS_BASE_DOMAIN`              | Can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) for more information. |
 | `KUBE_NAMESPACE`                        | The namespace used for deployments. When using certificate-based clusters, [this value should not be overwritten directly](../../user/project/clusters/deploy_to_cluster.md#custom-namespace). |
 | `KUBECONFIG`                            | The kubeconfig to use for deployments. User-provided values take priority over GitLab-provided values. |
-| `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
+| `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero-downtime upgrades, set to 2 or greater. |
 | `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. Change this variable instead of [modifying](customize.md#customize-helm-chart-values) `replicaCount`. |
 | `ROLLOUT_RESOURCE_TYPE`                 | Allows specification of the resource type being deployed when using a custom Helm chart. Default value is `deployment`. |
 | `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |

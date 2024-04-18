@@ -1,6 +1,7 @@
 .layout-page{ class: page_with_sidebar_class }
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
+  - context = group || @project
 
   - sidebar_panel = super_sidebar_nav_panel(nav: nav, user: current_user, group: group, project: @project, current_ref: current_ref, ref_type: @ref_type, viewed_user: @user, organization: @organization)
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
@@ -28,6 +29,7 @@
       = dispensable_render "shared/service_ping_consent"
       = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
       = dispensable_render_if_exists "layouts/header/seat_count_alert"
+      = dispensable_render_if_exists "layouts/header/all_seats_used_alert", context: context
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
       = dispensable_render_if_exists "shared/silent_mode_banner"

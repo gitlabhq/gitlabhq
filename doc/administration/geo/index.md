@@ -247,7 +247,7 @@ In some circumstances, like during [upgrades](replication/upgrading_the_geo_site
 [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
 If you plan to allow user activity on your secondary sites during the upgrade,
-do not pause replication for a [zero downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
+do not pause replication for a [zero-downtime upgrade](../../update/zero_downtime.md). While paused, the secondary site gets more and more out-of-date.
 One known effect is that more and more Git fetches get redirected or proxied to the primary site. There may be additional unknown effects.
 
 Pausing and resuming replication is done through a command-line tool from a specific node in the secondary site. Depending on your database architecture,

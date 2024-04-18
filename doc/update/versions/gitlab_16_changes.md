@@ -881,7 +881,7 @@ Specific information applies to Linux package installations:
   mentioning that the installed Redis version is different than the one running is
   displayed at the end of reconfigure run until the restart is performed.
 
-  Follow [the zero downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
+  Follow [the zero-downtime instructions](../zero_downtime.md) for upgrading your Redis HA cluster.
 
 ### Self-compiled installations
 
