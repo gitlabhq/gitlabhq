@@ -40,8 +40,8 @@ module Gitlab
           duration = convert_ms_to_s(event.duration)
           increment_duration_key(compose_metric_key(:txn_duration_s), duration)
           increment_duration_key(compose_metric_key(:txn_duration_s, nil, db_config_name), duration)
-          update_max_duration_key(compose_metric_key(:txn_max_duration_s), duration)
-          update_max_duration_key(compose_metric_key(:txn_max_duration_s, nil, db_config_name), duration)
+          update_max_duration_key(:txn_max_duration_s, duration)
+          update_max_duration_key(:txn_max_duration_s, duration, db_config_name)
         end
 
         def sql(event)
@@ -224,8 +224,15 @@ module Gitlab
           ::Gitlab::SafeRequestStore[duration_key] = (::Gitlab::SafeRequestStore[duration_key].presence || 0) + duration
         end
 
-        def update_max_duration_key(duration_key, duration)
-          ::Gitlab::SafeRequestStore[duration_key] = [::Gitlab::SafeRequestStore[duration_key].to_f, duration].max
+        def update_max_duration_key(duration_key, duration, db_config_name = nil)
+          metric_key = compose_metric_key(duration_key, nil, db_config_name)
+          ::Gitlab::SafeRequestStore[metric_key] = [::Gitlab::SafeRequestStore[metric_key].to_f, duration].max
+
+          return if db_config_name.nil?
+
+          txn_duration_key = Gitlab::Metrics::DatabaseTransactionSlis::REQUEST_STORE_KEY
+          ::Gitlab::SafeRequestStore[txn_duration_key] ||= {}
+          ::Gitlab::SafeRequestStore[txn_duration_key][db_config_name] = ::Gitlab::SafeRequestStore[metric_key]
         end
 
         def convert_ms_to_s(duration)

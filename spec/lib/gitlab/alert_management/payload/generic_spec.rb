@@ -142,6 +142,16 @@ RSpec.describe Gitlab::AlertManagement::Payload::Generic do
       end
 
       it { is_expected.to eq(value) }
+
+      context 'when integer is given' do
+        let(:current_time) { Time.current }
+
+        before do
+          raw_payload['end_time'] = (current_time.to_f * 1000).to_i
+        end
+
+        it { is_expected.to be_within(1.second).of(current_time) }
+      end
     end
   end
 

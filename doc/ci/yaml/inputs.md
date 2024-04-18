@@ -361,7 +361,7 @@ Assuming the value of `inputs.test` is `0123456789`, then the output would be `3
 
 ### YAML syntax errors when using `inputs`
 
-[CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions)
+[CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions)
 in `rules:if` expect a comparison of a CI/CD variable with a string, otherwise
 [a variety of syntax errors could be returned](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 

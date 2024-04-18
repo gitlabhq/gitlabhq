@@ -101,6 +101,7 @@ Consult these topics for information on contributing to specific GitLab features
 
 ### Import and Export
 
+- [Principles of importer design](import/principles_of_importer_design.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)
 - [Test Import Project](import_project.md)

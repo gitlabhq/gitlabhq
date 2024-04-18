@@ -229,7 +229,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/analytics/merge_request_metrics_refresh_spec.rb'
     - 'ee/spec/lib/analytics/productivity_analytics_request_params_spec.rb'
     - 'ee/spec/lib/analytics/refresh_comments_data_spec.rb'
-    - 'ee/spec/lib/api/entities/code_suggestions_access_token_spec.rb'
     - 'ee/spec/lib/api/entities/deployments/approval_spec.rb'
     - 'ee/spec/lib/api/entities/deployments/approval_summary_spec.rb'
     - 'ee/spec/lib/api/entities/epic_board_spec.rb'

@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Rails request SLIs (service level indicators)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
-
 NOTE:
 This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
 by default.

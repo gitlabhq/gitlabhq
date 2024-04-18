@@ -181,7 +181,7 @@ are checked for success.
 
 Multiple pipeline types in the same merge request can be caused by:
 
-- A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_control.md#avoid-duplicate-pipelines):
+- A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
   one merge request pipeline and one branch pipeline. In this case, the status of the
   latest merge request pipeline determines if a merge request can be merged, not the branch pipeline.
 - Pipelines triggered by external tools that target the same branch as the merge request.

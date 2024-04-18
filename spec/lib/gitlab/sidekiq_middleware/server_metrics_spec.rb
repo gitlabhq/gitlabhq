@@ -76,8 +76,22 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           end
         end
 
+        context 'when emit_db_transaction_sli_metrics FF is disabled' do
+          before do
+            stub_feature_flags(emit_db_transaction_sli_metrics: false)
+            allow(Gitlab::SidekiqConfig).to receive(:current_worker_queue_mappings).and_return('MergeWorker' => 'merge')
+          end
+
+          it 'does not initialize transaction SLIs' do
+            expect(Gitlab::Metrics::DatabaseTransactionSlis).not_to receive(:initialize_slis!)
+
+            described_class.initialize_process_metrics
+          end
+        end
+
         context 'initializing execution and queueing SLIs' do
           before do
+            allow(Gitlab::Database).to receive(:database_base_models).and_return({ 'main' => nil, 'ci' => nil })
             allow(Gitlab::SidekiqConfig)
               .to receive(:current_worker_queue_mappings)
                     .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
@@ -104,10 +118,16 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
               }
             ]
 
+            expected_db_labels = %w[main ci].flat_map do |name|
+              expected_labels.map { |l| l.merge(db_config_name: name) }
+            end
+
             expect(Gitlab::Metrics::SidekiqSlis)
               .to receive(:initialize_execution_slis!).with(expected_labels)
             expect(Gitlab::Metrics::SidekiqSlis)
               .to receive(:initialize_queueing_slis!).with(expected_labels)
+            expect(Gitlab::Metrics::DatabaseTransactionSlis)
+              .to receive(:initialize_slis!).with(expected_db_labels)
 
             described_class.initialize_process_metrics
           end
@@ -195,6 +215,55 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
           expect(Thread.current).to receive(:name=).with(Gitlab::Metrics::Samplers::ThreadsSampler::SIDEKIQ_WORKER_THREAD_NAME)
 
           subject.call(worker, job, :test) { nil }
+        end
+
+        context 'when request_store does not have db_transaction' do
+          it 'does not contribute to DatabaseTransactionSlis' do
+            expect(Gitlab::Metrics::DatabaseTransactionSlis).not_to receive(:record_txn_apdex)
+
+            subject.call(worker, job, :test) { nil }
+          end
+        end
+
+        context 'when request_store contains have db_transaction information', :request_store do
+          let(:store_details) { { 'main' => db_duration, 'ci' => db_duration * 2 } }
+
+          before do
+            Gitlab::SafeRequestStore[Gitlab::Metrics::DatabaseTransactionSlis::REQUEST_STORE_KEY] = store_details
+          end
+
+          context 'when feature flag emit_db_transaction_sli_metrics is disabled' do
+            before do
+              stub_feature_flags(emit_db_transaction_sli_metrics: false)
+            end
+
+            it 'does not contribute to DatabaseTransactionSlis' do
+              expect(Gitlab::Metrics::DatabaseTransactionSlis).not_to receive(:record_txn_apdex)
+
+              subject.call(worker, job, :test) { nil }
+            end
+          end
+
+          it 'contributes to DatabaseTransactionSlis' do
+            expect(Gitlab::Metrics::DatabaseTransactionSlis).to receive(:record_txn_apdex)
+                                                    .with(labels.slice(:worker,
+                                                      :feature_category,
+                                                      :urgency,
+                                                      :external_dependencies,
+                                                      :queue,
+                                                      :destination_shard_redis
+                                                    ).merge({ db_config_name: 'main' }), db_duration)
+            expect(Gitlab::Metrics::DatabaseTransactionSlis).to receive(:record_txn_apdex)
+                                                    .with(labels.slice(:worker,
+                                                      :feature_category,
+                                                      :urgency,
+                                                      :external_dependencies,
+                                                      :queue,
+                                                      :destination_shard_redis
+                                                    ).merge({ db_config_name: 'ci' }), db_duration * 2)
+
+            subject.call(worker, job, :test) { nil }
+          end
         end
 
         context 'when job_duration is not available' do

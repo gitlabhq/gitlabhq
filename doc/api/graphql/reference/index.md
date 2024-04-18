@@ -1749,6 +1749,53 @@ Input type: `AuditEventsAmazonS3ConfigurationUpdateInput`
 | <a id="mutationauditeventsamazons3configurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationauditeventsamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.auditEventsGroupDestinationEventsAdd`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsGroupDestinationEventsAddInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationeventsaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationeventsadddestinationid"></a>`destinationId` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | Destination id. |
+| <a id="mutationauditeventsgroupdestinationeventsaddeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters to add for streaming. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationeventsaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationeventsadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsgroupdestinationeventsaddeventtypefilters"></a>`eventTypeFilters` | [`[String!]`](#string) | List of event type filters for the audit event external destination. |
+
+### `Mutation.auditEventsGroupDestinationEventsDelete`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsGroupDestinationEventsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationeventsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationeventsdeletedestinationid"></a>`destinationId` | [`AuditEventsGroupExternalStreamingDestinationID!`](#auditeventsgroupexternalstreamingdestinationid) | Destination id. |
+| <a id="mutationauditeventsgroupdestinationeventsdeleteeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters to remove from streaming. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsgroupdestinationeventsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsgroupdestinationeventsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.auditEventsInstanceAmazonS3ConfigurationCreate`
 
 Input type: `AuditEventsInstanceAmazonS3ConfigurationCreateInput`
@@ -22094,6 +22141,7 @@ Represents an external destination to stream group level audit events.
 | ---- | ---- | ----------- |
 | <a id="groupauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="groupauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="groupauditeventstreamingdestinationeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
 | <a id="groupauditeventstreamingdestinationgroup"></a>`group` | [`Group!`](#group) | Group to which the destination belongs. |
 | <a id="groupauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="groupauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
@@ -22501,6 +22549,7 @@ Represents an external destination to stream instance level audit events.
 | ---- | ---- | ----------- |
 | <a id="instanceauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="instanceauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="instanceauditeventstreamingdestinationeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
 | <a id="instanceauditeventstreamingdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="instanceauditeventstreamingdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
@@ -31693,6 +31742,7 @@ Values for alert field types used in the custom mapping.
 | ----- | ----------- |
 | <a id="alertmanagementpayloadalertfieldtypearray"></a>`ARRAY` | Array field type. |
 | <a id="alertmanagementpayloadalertfieldtypedatetime"></a>`DATETIME` | DateTime field type. |
+| <a id="alertmanagementpayloadalertfieldtypenumber"></a>`NUMBER` | Number field type. |
 | <a id="alertmanagementpayloadalertfieldtypestring"></a>`STRING` | String field type. |
 
 ### `AlertManagementSeverity`
@@ -35635,6 +35685,7 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="auditeventstreamingdestinationinterfacecategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="auditeventstreamingdestinationinterfaceconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
+| <a id="auditeventstreamingdestinationinterfaceeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
 | <a id="auditeventstreamingdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="auditeventstreamingdestinationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 

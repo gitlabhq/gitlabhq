@@ -12,7 +12,7 @@ When working with merge request pipelines, you might encounter the following iss
 
 If you get duplicate pipelines in merge requests, your pipeline might be configured
 to run for both branches and merge requests at the same time. Adjust your pipeline
-configuration to [avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
+configuration to [avoid duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
 
 You can add `workflow:rules` to [switch from branch pipelines to merge request pipelines](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines).
 After a merge request is open on the branch, the pipeline switches to a merge request pipeline.

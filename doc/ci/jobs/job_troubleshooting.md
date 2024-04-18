@@ -75,14 +75,14 @@ When you use [`rules`](../yaml/index.md#rules) with a `when` clause without an `
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
-To [prevent duplicate pipelines](job_control.md#avoid-duplicate-pipelines), use
+To [prevent duplicate pipelines](job_rules.md#avoid-duplicate-pipelines), use
 [`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ## `This GitLab CI configuration is invalid` for variable expressions
 
 You might receive one of several `This GitLab CI configuration is invalid` errors
-when working with [CI/CD variable expressions](job_control.md#cicd-variable-expressions).
+when working with [CI/CD variable expressions](job_rules.md#cicd-variable-expressions).
 These syntax errors can be caused by incorrect usage of quote characters.
 
 In variable expressions, strings should be quoted, while variables should not be quoted.

@@ -169,6 +169,14 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
     end
 
+    shared_examples 'captures max transaction duration in request store' do
+      it do
+        subscriber.transaction(event)
+
+        expect(::Gitlab::SafeRequestStore[:txn_duration]['main']).to be >= 0
+      end
+    end
+
     context 'when both web and background transaction are available' do
       before do
         allow(::Gitlab::Metrics::WebTransaction).to receive(:current)
@@ -189,6 +197,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it_behaves_like 'logs transaction info'
+      it_behaves_like 'captures max transaction duration in request store'
     end
 
     context 'when web transaction is available' do
@@ -213,6 +222,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it_behaves_like 'logs transaction info'
+      it_behaves_like 'captures max transaction duration in request store'
     end
 
     context 'when background transaction is available' do
@@ -237,6 +247,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
 
       it_behaves_like 'logs transaction info'
+      it_behaves_like 'captures max transaction duration in request store'
     end
   end
 

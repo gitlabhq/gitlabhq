@@ -59,9 +59,9 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
       [
         ::Gitlab::SidekiqMiddleware::Monitor,
         ::Labkit::Middleware::Sidekiq::Server,
+        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ServerMetrics,
         ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
-        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,

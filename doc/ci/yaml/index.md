@@ -661,7 +661,7 @@ and the pipeline is for either:
 **Additional details**:
 
 - If your rules match both branch pipelines (other than the default branch) and merge request pipelines,
-  [duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines) can occur.
+  [duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines) can occur.
 
 **Related topics**:
 
@@ -4000,12 +4000,6 @@ Rules are evaluated when the pipeline is created, and evaluated *in order*
 until the first match. When a match is found, the job is either included or excluded from the pipeline,
 depending on the configuration.
 
-You cannot use dotenv variables created in job scripts in rules, because rules are evaluated before any jobs run.
-
-`rules` replaces [`only/except`](#only--except) and they can't be used together
-in the same job. If you configure one job to use both keywords, the GitLab returns
-a `key may not be used with rules` error.
-
 `rules` accepts an array of rules defined with:
 
 - `if`
@@ -4015,11 +4009,11 @@ a `key may not be used with rules` error.
 - `variables`
 - `when`
 
-You can combine multiple keywords together for [complex rules](../jobs/job_control.md#complex-rules).
+You can combine multiple keywords together for [complex rules](../jobs/job_rules.md#complex-rules).
 
 The job is added to the pipeline:
 
-- If an `if`, `changes`, or `exists` rule matches and also has `when: on_success` (default),
+- If an `if`, `changes`, or `exists` rule matches, and is configured with `when: on_success` (default if not defined),
   `when: delayed`, or `when: always`.
 - If a rule is reached that is only `when: on_success`, `when: delayed`, or `when: always`.
 
@@ -4028,8 +4022,7 @@ The job is not added to the pipeline:
 - If no rules match.
 - If a rule matches and has `when: never`.
 
-You can use [`!reference` tags](yaml_optimization.md#reference-tags) to [reuse `rules` configuration](../jobs/job_control.md#reuse-rules-in-different-jobs)
-in different jobs.
+For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).
 
 #### `rules:if`
 
@@ -4048,7 +4041,7 @@ to configure the job behavior, or with [`workflow`](#workflow) to configure the 
 
 **Possible inputs**:
 
-- A [CI/CD variable expression](../jobs/job_control.md#cicd-variable-expressions).
+- A [CI/CD variable expression](../jobs/job_rules.md#cicd-variable-expressions).
 
 **Example of `rules:if`**:
 
@@ -4073,12 +4066,12 @@ job:
 - Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
-- CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_control.md#store-the-regex-pattern-in-a-variable).
+- CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_rules.md#store-a-regular-expression-in-a-variable).
 
 **Related topics**:
 
-- [Common `if` expressions for `rules`](../jobs/job_control.md#common-if-clauses-for-rules).
-- [Avoid duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines).
+- [Common `if` expressions for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables).
+- [Avoid duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines).
 - [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
 
 #### `rules:changes`
@@ -4100,7 +4093,7 @@ to specify the branch to compare against.
 
 An array including any number of:
 
-- Paths to files. The [file paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- Paths to files. The [file paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
   A file path array can also be in [`rules:changes:paths`](#ruleschangespaths).
 - Wildcard paths for:
   - Single directories, for example `path/to/directory/*`.
@@ -4133,12 +4126,11 @@ docker build:
 
 **Additional details**:
 
-- `rules: changes` works the same way as [`only: changes` and `except: changes`](#onlychanges--exceptchanges).
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
-- You can use `when: never` to implement a rule similar to [`except:changes`](#onlychanges--exceptchanges).
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
+- For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).
 
 **Related topics**:
 
@@ -4158,7 +4150,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. [File paths can include variables](../jobs/job_control.md#variables-in-ruleschanges).
+- An array of file paths. [File paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
 
 **Example of `rules:changes:paths`**:
 
@@ -4212,6 +4204,10 @@ docker build:
 
 In this example, the `docker build` job is only included when the `Dockerfile` has changed
 relative to `refs/heads/branch1` and the pipeline source is a merge request event.
+
+**Related topics**:
+
+- You can use `rules:changes:compare_to` to [skip a job if the branch is empty](../jobs/job_rules.md#skip-jobs-if-the-branch-is-empty).
 
 #### `rules:exists`
 
@@ -5250,8 +5246,8 @@ If the job already has that variable defined, the [job-level variable takes prec
 
 Variables defined at the global-level cannot be used as inputs for other global keywords
 like [`include`](includes.md#use-variables-with-include). These variables can only
-be used at the job-level, in `script`, `before_script`, and `after_script` sections,
-as well as inputs in some job keywords like [`rules`](../jobs/job_control.md#cicd-variable-expressions).
+be used at the job-level, in `script`, `before_script`, or `after_script` sections,
+and in some job keywords like [`rules`](../jobs/job_rules.md#cicd-variable-expressions).
 
 **Possible inputs**: Variable name and value pairs:
 
@@ -5640,7 +5636,7 @@ to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
 
 **Possible inputs**:
 
-- An array of [CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions).
+- An array of [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
 
 **Example of `only:variables`**:
 

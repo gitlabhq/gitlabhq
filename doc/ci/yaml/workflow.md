@@ -26,7 +26,7 @@ Some example `if` clauses for `workflow: rules`:
 | `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run. |
 | `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run. |
 
-See the [common `if` clauses for `rules`](../jobs/job_control.md#common-if-clauses-for-rules) for more examples.
+See the [common `if` clauses for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables) for more examples.
 
 ## `workflow: rules` examples
 
@@ -70,7 +70,7 @@ request pipelines.
 To make the pipeline switch from branch pipelines to merge request pipelines after
 a merge request is created, add a `workflow: rules` section to your `.gitlab-ci.yml` file.
 
-If you use both pipeline types at the same time, [duplicate pipelines](../jobs/job_control.md#avoid-duplicate-pipelines)
+If you use both pipeline types at the same time, [duplicate pipelines](../jobs/job_rules.md#avoid-duplicate-pipelines)
 might run at the same time. To prevent duplicate pipelines, use the
 [`CI_OPEN_MERGE_REQUESTS` variable](../variables/predefined_variables.md).
 

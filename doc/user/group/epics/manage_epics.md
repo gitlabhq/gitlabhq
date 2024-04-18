@@ -73,7 +73,6 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To disable it per group, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 On GitLab Dedicated, this feature is available.
-This feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.
 An epic's color is shown in [roadmaps](../roadmap/index.md), and [epic boards](epic_boards.md).
@@ -84,7 +83,13 @@ To do this:
 1. Go to the epic's **Detail** page.
 1. Select a **Color**, then save your changes.
 
-The epic's color is shown on roadmaps and epic boards.
+On roadmaps, the timeline bars match the color you pick for the epic.
+
+![epic color roadmap](img/epic_color_roadmap_v17_0.png)
+
+The color also shows on the epic's card accent on epic boards.
+
+![epic accent boards](img/epic_accent_boards_v17_0.png)
 
 ## Edit an epic
 

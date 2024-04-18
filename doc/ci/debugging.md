@@ -246,7 +246,7 @@ the [`rules` configuration details](yaml/index.md#rules) carefully. The behavior
 of `only/except` and `rules` is different and can cause unexpected behavior when migrating
 between the two.
 
-The [common `if` clauses for `rules`](jobs/job_control.md#common-if-clauses-for-rules)
+The [common `if` clauses for `rules`](jobs/job_rules.md#common-if-clauses-with-predefined-variables)
 can be very helpful for examples of how to write rules that behave the way you expect.
 
 ### Unexpected behavior when `.gitlab-ci.yml` file contains a byte order mark (BOM)
@@ -280,7 +280,7 @@ associated with it. Usually one pipeline is a merge request pipeline, and the ot
 is a branch pipeline.
 
 This situation is usually caused by the `rules` configuration, and there are several ways to
-[prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines).
+[prevent duplicate pipelines](jobs/job_rules.md#avoid-duplicate-pipelines).
 
 ### No pipeline or the wrong type of pipeline runs
 
@@ -320,7 +320,7 @@ When you use [`rules`](yaml/index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
-To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines), use
+To [prevent duplicate pipelines](jobs/job_rules.md#avoid-duplicate-pipelines), use
 [`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 

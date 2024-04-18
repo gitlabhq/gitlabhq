@@ -18,7 +18,7 @@ module Gitlab
       SIDEKIQ_QUEUE_DURATION_BUCKETS = [10, 60].freeze
 
       # These labels from Gitlab::SidekiqMiddleware::MetricsHelper are included in SLI metrics
-      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies, :queue, :destination_shard_redis].freeze
+      SIDEKIQ_SLI_LABELS = [:worker, :feature_category, :urgency, :external_dependencies, :queue, :destination_shard_redis, :db_config_name].freeze
 
       class << self
         include ::Gitlab::SidekiqMiddleware::MetricsHelper
@@ -84,6 +84,14 @@ module Gitlab
 
           Gitlab::Metrics::SidekiqSlis.initialize_execution_slis!(possible_sli_labels)
           Gitlab::Metrics::SidekiqSlis.initialize_queueing_slis!(possible_sli_labels)
+
+          return unless Feature.enabled?(:emit_db_transaction_sli_metrics, type: :ops)
+
+          possible_sli_labels_with_db = Gitlab::Database.database_base_models.keys.flat_map do |name|
+            possible_sli_labels.map { |l| l.merge(db_config_name: name) }
+          end
+
+          Gitlab::Metrics::DatabaseTransactionSlis.initialize_slis!(possible_sli_labels_with_db)
         end
       end
 
@@ -164,6 +172,7 @@ module Gitlab
           @sli_labels = labels.slice(*SIDEKIQ_SLI_LABELS)
           record_execution_sli
           record_queueing_sli
+          record_db_txn_sli if Feature.enabled?(:emit_db_transaction_sli_metrics, type: :ops)
         end
       end
 
@@ -203,6 +212,14 @@ module Gitlab
       def record_execution_sli
         Gitlab::Metrics::SidekiqSlis.record_execution_apdex(sli_labels, monotonic_time) if job_succeeded
         Gitlab::Metrics::SidekiqSlis.record_execution_error(sli_labels, !job_succeeded)
+      end
+
+      def record_db_txn_sli
+        return if ::Gitlab::SafeRequestStore[Gitlab::Metrics::DatabaseTransactionSlis::REQUEST_STORE_KEY].nil?
+
+        ::Gitlab::SafeRequestStore[Gitlab::Metrics::DatabaseTransactionSlis::REQUEST_STORE_KEY].each do |k, v|
+          Gitlab::Metrics::DatabaseTransactionSlis.record_txn_apdex(sli_labels.merge(db_config_name: k), v)
+        end
       end
 
       def with_load_balancing_settings(job)

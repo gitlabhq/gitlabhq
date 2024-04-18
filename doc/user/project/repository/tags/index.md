@@ -24,7 +24,7 @@ The creation or deletion of a tag can be used as a trigger for automation, inclu
 - Using a [webhook](../../integrations/webhook_events.md#tag-events) to automate actions
   like Slack notifications.
 - Signaling a [repository mirror](../mirror/index.md) to update.
-- Running a CI/CD pipeline with [`if: $CI_COMMIT_TAG`](../../../../ci/jobs/job_control.md#common-if-clauses-for-rules).
+- Running a CI/CD pipeline with [`if: $CI_COMMIT_TAG`](../../../../ci/jobs/job_rules.md#common-if-clauses-with-predefined-variables).
 
 When you [create a release](../../releases/index.md),
 GitLab also creates a tag to mark the release point.

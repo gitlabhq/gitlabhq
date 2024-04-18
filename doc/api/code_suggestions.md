@@ -126,3 +126,48 @@ curl --request POST \
     }' \
 
 ```
+
+## Fetch direct connection information
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452044) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `code_suggestions_direct_completions`. Disabled by default. This feature is an Experiment.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `code_suggestions_direct_completions`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+```plaintext
+POST /code_suggestions/direct_access
+```
+
+NOTE:
+This endpoint rate-limits each user to 10 requests per 5-minute window.
+
+Returns user-specific connection details which can be used by IDEs/clients to send completion requests directly to AI Gateway.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
+  --url "https://gitlab.example.com/api/v4/code_suggestions/direct_access"
+```
+
+Example response:
+
+```json
+{
+  "base_url": "http://0.0.0.0:5052",
+  "token": "a valid token",
+  "expires_at": 1713343569,
+  "headers": {
+    "X-Gitlab-Instance-Id": "292c3c7c-c5d5-48ec-b4bf-f00b724ce560",
+    "X-Gitlab-Realm": "saas",
+    "X-Gitlab-Global-User-Id": "Df0Jhs9xlbetQR8YoZCKDZJflhxO0ZBI8uoRzmpnd1w=",
+    "X-Gitlab-Host-Name": "gitlab.example.com"
+  }
+}
+```

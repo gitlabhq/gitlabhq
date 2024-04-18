@@ -88,7 +88,7 @@ You need at least the Maintainer role to take ownership of a pipeline created by
 ## Related topics
 
 - [Pipeline schedules API](../../api/pipeline_schedules.md)
-- [Adding jobs to scheduled pipelines](../jobs/job_control.md#run-jobs-for-scheduled-pipelines)
+- [Run jobs for scheduled pipelines](../jobs/job_rules.md#run-jobs-for-scheduled-pipelines)
 
 <!-- ## Troubleshooting
 
