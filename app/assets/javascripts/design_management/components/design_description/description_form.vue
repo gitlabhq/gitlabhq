@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlFormGroup, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { __, s__ } from '~/locale';
+import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
@@ -25,9 +25,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   i18n: {
-    edit: __('Edit'),
     editDescription: s__('DesignManagement|Edit description'),
-    descriptionLabel: s__('DesignManagement|Design description'),
+    descriptionLabel: s__('DesignManagement|Description'),
+    addDescriptionLabel: s__('DesignManagement|Add a description'),
   },
   formFieldProps: {
     id: 'design-description',
@@ -66,6 +66,9 @@ export default {
     canUpdate() {
       return this.design.issue?.userPermissions?.updateDesign && !this.showEditor;
     },
+    showAddDescriptionButton() {
+      return this.design.issue?.userPermissions?.updateDesign && !this.design.descriptionHtml;
+    },
   },
   watch: {
     'design.descriptionHtml': {
@@ -82,6 +85,11 @@ export default {
       this.showEditor = true;
     },
     closeForm() {
+      // If description text is empty on cancel,
+      // restore the old description
+      if (!this.descriptionText) {
+        this.descriptionText = this.design.description;
+      }
       this.showEditor = false;
     },
     async renderGFM() {
@@ -160,6 +168,7 @@ export default {
       v-if="showEditor"
       class="design-description-form common-note-form"
       :label="$options.i18n.descriptionLabel"
+      label-class="gl-line-height-20! gl-font-lg!"
     >
       <div v-if="errorMessage" class="gl-pb-3">
         <gl-alert variant="danger" @dismiss="errorMessage = null">
@@ -189,7 +198,7 @@ export default {
           :loading="isSubmitting"
           data-testid="save-description"
           @click="updateDesignDescription"
-          >{{ s__('DesignManagement|Save') }}
+          >{{ s__('DesignManagement|Save changes') }}
         </gl-button>
         <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="closeForm"
           >{{ s__('DesignManagement|Cancel') }}
@@ -197,40 +206,46 @@ export default {
       </div>
     </gl-form-group>
     <div v-else class="design-description-view">
-      <div
-        class="design-description-header gl-display-flex gl-justify-content-space-between gl-mb-2"
+      <gl-button
+        v-if="showAddDescriptionButton"
+        class="gl-ml-auto gl-mb-5"
+        size="small"
+        data-testid="add-design-description"
+        :aria-label="$options.i18n.addDescriptionLabel"
+        @click="startEditing"
       >
-        <label class="gl-m-0">
-          {{ $options.i18n.descriptionLabel }}
-        </label>
-        <gl-button
-          v-if="canUpdate"
-          v-gl-tooltip
-          class="gl-ml-auto"
-          size="small"
-          data-testid="edit-description"
-          :aria-label="$options.i18n.editDescription"
-          @click="startEditing"
-        >
-          {{ $options.i18n.edit }}
-        </gl-button>
-      </div>
-      <div
-        v-if="!design.descriptionHtml"
-        data-testid="design-description-none"
-        class="gl-text-secondary gl-mb-5"
-      >
-        {{ s__('DesignManagement|None') }}
-      </div>
-      <div v-else class="design-description js-task-list-container">
+        {{ $options.i18n.addDescriptionLabel }}
+      </gl-button>
+      <template v-else>
         <div
-          ref="gfm-content"
-          v-safe-html="design.descriptionHtml"
-          class="md gl-mb-4"
-          data-testid="design-description-content"
-          @change="toggleCheckboxes"
-        ></div>
-      </div>
+          class="design-description-header gl-display-flex gl-justify-content-space-between gl-mb-2"
+        >
+          <h3 class="gl-line-height-20! gl-font-lg gl-m-0">
+            {{ $options.i18n.descriptionLabel }}
+          </h3>
+          <gl-button
+            v-if="canUpdate"
+            v-gl-tooltip
+            class="gl-ml-auto"
+            size="small"
+            category="tertiary"
+            :aria-label="$options.i18n.editDescription"
+            :title="$options.i18n.editDescription"
+            data-testid="edit-description"
+            icon="pencil"
+            @click="startEditing"
+          />
+        </div>
+        <div v-if="design.descriptionHtml" class="design-description js-task-list-container">
+          <div
+            ref="gfm-content"
+            v-safe-html="design.descriptionHtml"
+            class="md gl-mb-4"
+            data-testid="design-description-content"
+            @change="toggleCheckboxes"
+          ></div>
+        </div>
+      </template>
     </div>
   </div>
 </template>

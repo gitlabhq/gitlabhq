@@ -2821,20 +2821,12 @@ job2:
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
-is disabled, the keyword has no effect.
+is disabled, the keyword has no effect. The new pipeline must be for a commit with new changes. For example,
+the **Auto-cancel redundant pipelines** feature has no effect
+if you select **Run pipeline** in the UI to run a pipeline for the same commit.
 
-**Running** jobs are only cancelled when the jobs are configured with `interruptible: true` and:
-
-- No jobs configured with `interruptible: false` have started at any time.
-  After a job with `interruptible: false` starts, the entire pipeline is no longer
-  considered interruptible.
-  - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
-    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
-- The new pipeline is for a commit with new changes. The **Auto-cancel redundant pipelines**
-  feature has no effect if you select **Run pipeline** in the UI to run a pipeline for the same commit.
-
-A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
-The `interruptible` configuration is only considered after the job starts.
+The behavior of the **Auto-cancel redundant pipelines** feature can be controlled by
+the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) setting.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2843,9 +2835,13 @@ The `interruptible` configuration is only considered after the job starts.
 
 - `true` or `false` (default).
 
-**Example of `interruptible`**:
+**Example of `interruptible` with the default behavior**:
 
 ```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: conservative # the default behavior
+
 stages:
   - stage1
   - stage2
@@ -2874,10 +2870,51 @@ In this example, a new pipeline causes a running pipeline to be:
 - Canceled, if only `step-1` is running or pending.
 - Not canceled, after `step-2` starts.
 
+**Example of `interruptible` with the `auto_cancel:on_new_commit:interruptible` setting**:
+
+```yaml
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+
+stages:
+  - stage1
+  - stage2
+  - stage3
+
+step-1:
+  stage: stage1
+  script:
+    - echo "Can be canceled."
+  interruptible: true
+
+step-2:
+  stage: stage2
+  script:
+    - echo "Can not be canceled."
+
+step-3:
+  stage: stage3
+  script:
+    - echo "Can be canceled."
+  interruptible: true
+```
+
+In this example, a new pipeline causes a running pipeline to cancel `step-1` and `step-3` if they are running or pending.
+
 **Additional details**:
 
 - Only set `interruptible: true` if the job can be safely canceled after it has started,
   like a build job. Deployment jobs usually shouldn't be cancelled, to prevent partial deployments.
+- When using the default behavior or `workflow:auto_cancel:on_new_commit: conservative`:
+  - A job that has not started yet is always considered `interruptible: true`, regardless of the job's configuration.
+    The `interruptible` configuration is only considered after the job starts.
+  - **Running** pipelines are only cancelled if all running jobs are configured with `interruptible: true` or
+    no jobs configured with `interruptible: false` have started at any time.
+    After a job with `interruptible: false` starts, the entire pipeline is no longer
+    considered interruptible.
+  - If the pipeline triggered a downstream pipeline, but no job with `interruptible: false`
+    in the downstream pipeline has started yet, the downstream pipeline is also cancelled.
 - You can add an optional manual job with `interruptible: false` in the first stage of
   a pipeline to allow users to manually prevent a pipeline from being automatically
   cancelled. After a user starts the job, the pipeline cannot be canceled by the

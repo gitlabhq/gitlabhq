@@ -393,7 +393,7 @@ When we have a blueprint merged ideally the confidence should move to 👍 becau
 | Cell Control Plane               | group::Delivery/team::Foundations | To-Do                                                                     | 👎         |
 | Cell Sizing                      | team::Scalability-Observability   | [To-Do](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2838) | 👎         |
 | CI Runners                       | team::Scalability-Practices       | To-Do                                                                     | 👎         |
-| Databases                        | team::Database Reliability        | [To-Do](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144238)     | 👎         |
+| Databases                        | team::Database Reliability        | [Blueprint](postgresql.md)                                                | 👍         |
 | Deployments                      | group::Delivery                   | [Blueprint](deployments.md)                                               | 👍         |
 | Observability                    | team::Scalability-Observability   | [Blueprint](observability.md)                                             | 👎         |
 | Cell Architecture and Tooling    | team::Foundations                 | [To-Do](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1209)       | 👎         |

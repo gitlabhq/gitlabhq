@@ -23269,6 +23269,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestuserdiscussionscount"></a>`userDiscussionsCount` | [`Int`](#int) | Number of user discussions in the merge request. |
 | <a id="mergerequestusernotescount"></a>`userNotesCount` | [`Int`](#int) | User notes count of the merge request. |
 | <a id="mergerequestuserpermissions"></a>`userPermissions` | [`MergeRequestPermissions!`](#mergerequestpermissions) | Permissions for the current user on the resource. |
+| <a id="mergerequestwebpath"></a>`webPath` | [`String!`](#string) | Web path of the merge request. |
 | <a id="mergerequestweburl"></a>`webUrl` | [`String`](#string) | Web URL of the merge request. |
 
 #### Fields with arguments

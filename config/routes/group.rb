@@ -86,7 +86,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :packages, only: [:index, :show]
 
-    resources :infrastructure_registry, only: [:index]
+    resources :terraform_module_registry, only: [:index], as: :infrastructure_registry, controller: 'infrastructure_registry'
+    get :infrastructure_registry, to: redirect('groups/%{group_id}/-/terraform_module_registry')
 
     resources :milestones, constraints: { id: %r{[^/]+} } do
       member do

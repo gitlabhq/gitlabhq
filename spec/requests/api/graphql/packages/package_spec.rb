@@ -312,7 +312,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         let(:package_global_id) { global_id_of(terraform_package) }
 
         it 'returns web_path correctly' do
-          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/infrastructure_registry/#{terraform_package.id}")
+          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/terraform_module_registry/#{terraform_package.id}")
         end
       end
     end

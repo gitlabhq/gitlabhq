@@ -18074,6 +18074,9 @@ msgid_plural "DesignManagement|The designs you tried uploading did not change."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DesignManagement|Add a description"
+msgstr ""
+
 msgid "DesignManagement|Adding a design with the same filename replaces the file in a new version."
 msgstr ""
 
@@ -18131,6 +18134,9 @@ msgstr ""
 msgid "DesignManagement|Could not update discussion. Please try again."
 msgstr ""
 
+msgid "DesignManagement|Description"
+msgstr ""
+
 msgid "DesignManagement|Deselect all"
 msgstr ""
 
@@ -18167,9 +18173,6 @@ msgstr ""
 msgid "DesignManagement|Hide comments"
 msgstr ""
 
-msgid "DesignManagement|None"
-msgstr ""
-
 msgid "DesignManagement|Requested design version does not exist. Showing latest version instead"
 msgstr ""
 
@@ -18179,7 +18182,7 @@ msgstr ""
 msgid "DesignManagement|Resolved Comments"
 msgstr ""
 
-msgid "DesignManagement|Save"
+msgid "DesignManagement|Save changes"
 msgstr ""
 
 msgid "DesignManagement|Save comment"
@@ -51472,6 +51475,9 @@ msgid "The current user is not authorized to manage the pipeline trigger token"
 msgstr ""
 
 msgid "The current user is not authorized to set pipeline schedule variables"
+msgstr ""
+
+msgid "The current user is not authorized to update the page settings"
 msgstr ""
 
 msgid "The current user is not authorized to update the pipeline schedule"

@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
 
   describe '#missing_partitions' do
     context 'when next_partition_if returns true' do
-      let(:next_partition_if) { proc { true } }
+      let(:next_partition_if) { proc { |partition| partition.values.max < 102 } }
 
       it 'is a partition definition for the next partition in the series' do
         extra = strategy.missing_partitions
@@ -115,8 +115,8 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
 
           missing_partitions = strategy.missing_partitions
 
-          expect(missing_partitions.size).to eq(2)
-          expect(missing_partitions.map(&:values)).to match_array([[100], [101]])
+          expect(missing_partitions.size).to eq(3)
+          expect(missing_partitions.map(&:values)).to match_array([[100], [101], [102]])
         end
       end
     end

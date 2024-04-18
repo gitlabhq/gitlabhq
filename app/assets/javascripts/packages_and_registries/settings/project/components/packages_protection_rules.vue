@@ -8,6 +8,7 @@ import {
   GlKeysetPagination,
   GlModal,
   GlModalDirective,
+  GlTooltipDirective,
   GlFormSelect,
 } from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
@@ -39,6 +40,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['projectPath'],
   i18n: {
@@ -324,14 +326,15 @@ export default {
 
             <template #cell(col_4_actions)="{ item }">
               <gl-button
+                v-gl-tooltip
                 v-gl-modal="$options.modal.id"
                 category="secondary"
                 variant="danger"
-                size="small"
+                icon="remove"
+                :title="s__('PackageRegistry|Delete rule')"
                 :disabled="isProtectionRuleDeleteButtonDisabled(item)"
                 @click="showProtectionRuleDeletionConfirmModal(item)"
-                >{{ s__('PackageRegistry|Delete rule') }}</gl-button
-              >
+              />
             </template>
           </gl-table>
 

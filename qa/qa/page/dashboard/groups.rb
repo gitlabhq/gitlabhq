@@ -21,9 +21,13 @@ module QA
         end
 
         def click_new_group
+          dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
+
           click_element('new-group-button')
         end
       end
     end
   end
 end
+
+QA::Page::Dashboard::Groups.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)

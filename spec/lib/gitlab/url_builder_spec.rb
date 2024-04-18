@@ -194,11 +194,11 @@ RSpec.describe Gitlab::UrlBuilder do
     context 'when passing Packages::Package' do
       let(:package) { build_stubbed(:terraform_module_package) }
 
-      context 'with infrastructure package' do
-        it 'returns the url for infrastucture registry' do
+      context 'with terraform module package' do
+        it 'returns the url for terraform module registry' do
           url = subject.build(package)
 
-          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{package.project.full_path}/-/infrastructure_registry/#{package.id}"
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{package.project.full_path}/-/terraform_module_registry/#{package.id}"
         end
       end
     end

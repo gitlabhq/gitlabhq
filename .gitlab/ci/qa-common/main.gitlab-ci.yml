@@ -42,6 +42,7 @@ stages:
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
+    BUNDLE_WITHOUT: development
 
 .qa-install:
   extends:

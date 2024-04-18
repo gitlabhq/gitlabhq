@@ -68,10 +68,9 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
             expect(json_response).to include(a_hash_including('package_type' => 'terraform_module'))
           end
 
-          it 'returns the terraform module package with the infrastructure registry web_path' do
+          it 'returns the terraform module package with the terraform module registry web_path' do
             subject
-
-            expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include('infrastructure_registry'))))
+            expect(json_response).to include(a_hash_including('_links' => a_hash_including('web_path' => include('terraform_module_registry'))))
           end
         end
 

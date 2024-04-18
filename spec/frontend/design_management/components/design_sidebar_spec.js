@@ -6,6 +6,7 @@ import DesignDiscussion from '~/design_management/components/design_notes/design
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
+import DescriptionForm from '~/design_management/components/design_description/description_form.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import design from '../mock_data/design';
 
@@ -44,6 +45,7 @@ describe('Design management design sidebar component', () => {
   const findUnresolvedDiscussions = () => wrapper.findAllByTestId('unresolved-discussion');
   const findResolvedDiscussions = () => wrapper.findAllByTestId('resolved-discussion');
   const findResolvedCommentsToggle = () => wrapper.findComponent(GlAccordionItem);
+  const findDescriptionForm = () => wrapper.findComponent(DescriptionForm);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findUnresolvedDiscussionsCount = () => wrapper.findByTestId('unresolved-discussion-count');
 
@@ -52,9 +54,10 @@ describe('Design management design sidebar component', () => {
       propsData: {
         design,
         resolvedDiscussionsExpanded: false,
-        markdownPreviewPath: '',
+        markdownPreviewPath: 'markdown/path',
         isLoading: false,
         designVariables: mockDesignVariables,
+        isOpen: true,
         ...props,
       },
       mocks: {
@@ -78,6 +81,53 @@ describe('Design management design sidebar component', () => {
     createComponent();
 
     expect(findDisclosure().exists()).toBe(true);
+  });
+
+  describe('description form', () => {
+    it('does not render when loading', () => {
+      createComponent({ isLoading: true });
+
+      expect(findDescriptionForm().exists()).toBe(false);
+    });
+
+    it('renders with default props', () => {
+      createComponent();
+
+      expect(findDescriptionForm().props()).toMatchObject({
+        design,
+        markdownPreviewPath: 'markdown/path',
+        designVariables: mockDesignVariables,
+      });
+    });
+
+    it('renders when there is permission but description is empty', () => {
+      createComponent({
+        design: { ...design, description: '', descriptionHtml: '' },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(true);
+    });
+
+    it('renders when there is description but no permission', () => {
+      createComponent({
+        design: { ...design, issue: { userPermissions: { updateDesign: false } } },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(true);
+    });
+
+    it('does not render when there is no permission and description is empty', () => {
+      createComponent({
+        design: {
+          ...design,
+          description: '',
+          descriptionHtml: '',
+          issue: { userPermissions: { updateDesign: false } },
+        },
+      });
+
+      expect(findDescriptionForm().exists()).toBe(false);
+    });
   });
 
   describe('when has no discussions', () => {

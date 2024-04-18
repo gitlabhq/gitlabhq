@@ -35,6 +35,7 @@ export const mountWorkItemsListApp = () => {
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
+      isGroup: true,
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

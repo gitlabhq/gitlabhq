@@ -140,6 +140,12 @@ module Types
     field :user_notes_count, GraphQL::Types::Int, null: true,
                                                   description: 'User notes count of the merge request.',
                                                   resolver: Resolvers::UserNotesCountResolver
+
+    field :web_path,
+          GraphQL::Types::String,
+          null: false,
+          description: 'Web path of the merge request.'
+
     field :web_url, GraphQL::Types::String, null: true,
                                             description: 'Web URL of the merge request.'
 
@@ -341,6 +347,10 @@ module Types
     # a ActiveRecord::ImmutableRelation error
     def committers
       object.commits.committers
+    end
+
+    def web_path
+      ::Gitlab::Routing.url_helpers.project_merge_request_path(object.project, object)
     end
   end
 end

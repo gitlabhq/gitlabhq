@@ -18,13 +18,12 @@ To help us improve the Value Streams Dashboard, share feedback about your experi
 For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
-The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
-
-The Value Streams Dashboard includes two panels (DevSecOps metrics comparison and DORA Performers score) that visualize the following metrics:
+The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization. The Value Streams Dashboard includes [several panels](#value-streams-dashboard-panels) that visualize the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
-- [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics.
+- [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics
+- [GitLab Duo AI Code Suggestions](../../user/project/repository/code_suggestions/index.md)
 
 With the Value Streams Dashboard, you can:
 
@@ -32,6 +31,7 @@ With the Value Streams Dashboard, you can:
 - Identify downward trends early on.
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
+- Understand the impact of adding AI to the software development life cycle (SDLC) and demonstrate the return on investment (ROI) of investments in GitLab Duo.
 
 NOTE:
 Data displayed on the Value Streams Dashboard is continuously collected in the backend.
@@ -39,7 +39,12 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 ## Value Streams Dashboard panels
 
-The Value Streams Dashboard panels has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).
+The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels). The Value Streams Dashboard includes four panels:
+
+- Overview 
+- DevSecOps metrics comparison
+- DORA Performers score
+- AI Impact analytics
 
 ### Overview panel
 
@@ -118,6 +123,27 @@ For example, if a project has a high score for deployment frequency (velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
+### AI Impact analytics
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`.
+On GitLab.com and GitLab Dedicated, this feature is available.
+
+AI Impact analytics displays SDLC metrics for a group or project in the month-to-date and the past six months. You can use this table to observe how changes in the AI usage metric correlate with changes in other metrics.
+
+The metric **Monthly Code Suggestions Usage rate** is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). GitLab considers the total monthly unique code contributors, meaning only users with `pushed` events are included in the calculation.
+
+The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
+
+The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members.
+
+NOTE:
+Usage rate for Code Suggestions is calculated with data starting on 2024-04-04.
+
+For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
+
 #### Filter the DORA Performers score by project topics
 
 When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/project_topics.md).
@@ -158,6 +184,9 @@ Prerequisites:
 
 - You must have at least the Reporter role for the group.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
+- To view AI Impact analytics, you must:
+  - Enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md). 
+  - Configure [ClickHouse for contribution analytics](../../user/group/contribution_analytics/index.md#contribution-analytics-with-clickhouse).
 
 To view the value streams dashboard:
 

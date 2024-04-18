@@ -29,7 +29,7 @@ RSpec.describe API::Entities::Package do
     let(:package) { create(:terraform_module_package) }
 
     it 'exposes correct web_path in _links' do
-      expect(subject[:_links][:web_path]).to match('/infrastructure_registry/')
+      expect(subject[:_links][:web_path]).to match('/terraform_module_registry/')
     end
   end
 

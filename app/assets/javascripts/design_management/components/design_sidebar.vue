@@ -108,6 +108,14 @@ export default {
         this.$emit('toggleResolvedComments', isExpanded);
       },
     },
+    showDescriptionForm() {
+      // user either has permission to add or update description,
+      // or the existing description should be shown read-only.
+      return (
+        !this.isLoading &&
+        (this.design.issue?.userPermissions?.updateDesign || Boolean(this.design.descriptionHtml))
+      );
+    },
   },
   mounted() {
     if (!this.isResolvedCommentsPopoverHidden && this.$refs.resolvedComments) {
@@ -146,15 +154,20 @@ export default {
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
         <description-form
-          v-if="!isLoading"
+          v-if="showDescriptionForm"
           :design="design"
           :design-variables="designVariables"
           :markdown-preview-path="markdownPreviewPath"
-          class="gl-mt-4"
+          class="gl-my-5 gl-border-b"
         />
-        <gl-skeleton-loader v-if="isLoading" />
+        <div v-if="isLoading" class="gl-my-5">
+          <gl-skeleton-loader />
+        </div>
         <template v-else>
-          <h3 data-testid="unresolved-discussion-count" class="gl-line-height-20! gl-font-lg">
+          <h3
+            data-testid="unresolved-discussion-count"
+            class="gl-line-height-20! gl-font-lg gl-my-5"
+          >
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state

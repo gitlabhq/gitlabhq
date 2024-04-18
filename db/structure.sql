@@ -1042,10 +1042,62 @@ CREATE TABLE p_ci_job_annotations (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_artifacts (
+    project_id integer NOT NULL,
+    file_type integer NOT NULL,
+    size bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    expire_at timestamp with time zone,
+    file character varying,
+    file_store integer DEFAULT 1,
+    file_sha256 bytea,
+    file_format smallint,
+    file_location smallint,
+    id bigint NOT NULL,
+    job_id bigint NOT NULL,
+    locked smallint DEFAULT 2,
+    partition_id bigint NOT NULL,
+    accessibility smallint DEFAULT 0 NOT NULL,
+    file_final_path text,
+    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
+    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_pipeline_variables (
+    key character varying NOT NULL,
+    value text,
+    encrypted_value text,
+    encrypted_value_salt character varying,
+    encrypted_value_iv character varying,
+    variable_type smallint DEFAULT 1 NOT NULL,
+    partition_id bigint NOT NULL,
+    raw boolean DEFAULT false NOT NULL,
+    id bigint NOT NULL,
+    pipeline_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_runner_machine_builds (
     partition_id bigint NOT NULL,
     build_id bigint NOT NULL,
     runner_machine_id bigint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_stages (
+    project_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    name character varying,
+    status integer,
+    lock_version integer DEFAULT 0,
+    "position" integer,
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    pipeline_id bigint,
+    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
 
@@ -6184,29 +6236,6 @@ CREATE TABLE ci_job_artifact_states (
     CONSTRAINT check_df832b66ea CHECK ((char_length(verification_failure) <= 255))
 );
 
-CREATE TABLE p_ci_job_artifacts (
-    project_id integer NOT NULL,
-    file_type integer NOT NULL,
-    size bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    expire_at timestamp with time zone,
-    file character varying,
-    file_store integer DEFAULT 1,
-    file_sha256 bytea,
-    file_format smallint,
-    file_location smallint,
-    id bigint NOT NULL,
-    job_id bigint NOT NULL,
-    locked smallint DEFAULT 2,
-    partition_id bigint NOT NULL,
-    accessibility smallint DEFAULT 0 NOT NULL,
-    file_final_path text,
-    CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
-    CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
-)
-PARTITION BY LIST (partition_id);
-
 CREATE TABLE ci_job_artifacts (
     project_id integer NOT NULL,
     file_type integer NOT NULL,
@@ -6511,20 +6540,6 @@ CREATE SEQUENCE ci_pipeline_schedules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_pipeline_schedules_id_seq OWNED BY ci_pipeline_schedules.id;
-
-CREATE TABLE p_ci_pipeline_variables (
-    key character varying NOT NULL,
-    value text,
-    encrypted_value text,
-    encrypted_value_salt character varying,
-    encrypted_value_iv character varying,
-    variable_type smallint DEFAULT 1 NOT NULL,
-    partition_id bigint NOT NULL,
-    raw boolean DEFAULT false NOT NULL,
-    id bigint NOT NULL,
-    pipeline_id bigint NOT NULL
-)
-PARTITION BY LIST (partition_id);
 
 CREATE TABLE ci_pipeline_variables (
     key character varying NOT NULL,
@@ -6916,21 +6931,6 @@ CREATE SEQUENCE ci_sources_projects_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_sources_projects_id_seq OWNED BY ci_sources_projects.id;
-
-CREATE TABLE p_ci_stages (
-    project_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    name character varying,
-    status integer,
-    lock_version integer DEFAULT 0,
-    "position" integer,
-    id bigint NOT NULL,
-    partition_id bigint NOT NULL,
-    pipeline_id bigint,
-    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
-)
-PARTITION BY LIST (partition_id);
 
 CREATE TABLE ci_stages (
     project_id integer,

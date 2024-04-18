@@ -10,10 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
-> - The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
-> - The **Flamegraph** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30275) in GitLab 14.4.
-
 You can display the performance bar to see statistics for the performance of a GitLab UI page.
 For example:
 
@@ -79,7 +75,7 @@ From left to right, the performance bar displays:
   Performance Bar which enables you to view these metrics for any requests made while
   the current page was open. Only the first two requests per unique URL are captured.
 - **Stats** (optional): if the `GITLAB_PERFORMANCE_BAR_STATS_URL` environment variable is set,
-  this URL is displayed in the bar. In GitLab 13.9 and later, used only in GitLab SaaS.
+  this URL is displayed in the bar. Used only on GitLab.com.
 
 NOTE:
 Not all indicators are available in all environments. For instance, the memory view
@@ -96,8 +92,6 @@ For non-administrators to display the performance bar, it must be
 [enabled for them](#enable-the-performance-bar-for-non-administrators).
 
 ## Request warnings
-
-> - [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
 
 Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration

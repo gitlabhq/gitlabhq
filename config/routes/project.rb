@@ -45,7 +45,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :infrastructure_registry, only: [:index, :show], module: :packages
+        resources :terraform_module_registry, only: [:index, :show], module: :packages, as: :infrastructure_registry, controller: 'infrastructure_registry'
+        get :infrastructure_registry, to: redirect('%{namespace_id}/%{project_id}/-/terraform_module_registry')
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do

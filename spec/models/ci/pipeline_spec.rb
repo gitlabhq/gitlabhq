@@ -5794,16 +5794,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '.current_partition_value' do
     subject { described_class.current_partition_value }
 
-    it { is_expected.to eq(101) }
+    it { is_expected.to eq(102) }
 
     it 'accepts an optional argument' do
-      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(101)
+      expect(described_class.current_partition_value(build_stubbed(:project))).to eq(102)
     end
 
-    it 'returns 100 when the flag is disabled' do
+    it 'returns 100 when the flags are disabled' do
       stub_feature_flags(ci_current_partition_value_101: false)
+      stub_feature_flags(ci_current_partition_value_102: false)
 
       is_expected.to eq(100)
+    end
+
+    it 'returns 101 when the 102 flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_102: false)
+
+      is_expected.to eq(101)
+    end
+
+    it 'returns 102 when the 101 flag is disabled' do
+      stub_feature_flags(ci_current_partition_value_101: false)
+
+      is_expected.to eq(102)
     end
   end
 
