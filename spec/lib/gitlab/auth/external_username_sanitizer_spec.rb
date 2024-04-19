@@ -26,4 +26,17 @@ RSpec.describe Gitlab::Auth::ExternalUsernameSanitizer, feature_category: :syste
       it { is_expected.to eq(output) }
     end
   end
+
+  context 'when external username is a ReDoS pattern' do
+    let(:external_username) { "#{'-' * 54773}\x00-z" }
+
+    it { is_expected.to eq('z') }
+  end
+
+  context 'with existing users' do
+    let!(:user_capybara) { create(:user, :with_namespace, username: 'carly_the_capybara') }
+    let(:external_username) { '___carly_the_capybara' }
+
+    it { is_expected.to eq('carly_the_capybara1') }
+  end
 end

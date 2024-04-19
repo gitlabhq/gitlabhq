@@ -79,7 +79,6 @@ export default {
         v-for="label in report.labels"
         :key="label.id"
         class="gl-mr-2"
-        size="sm"
         :background-color="label.color"
         :title="label.title"
         :target="labelTarget(label.title)"

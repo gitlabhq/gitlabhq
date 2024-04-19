@@ -744,8 +744,8 @@
 
 .issuable-show-labels {
   .gl-label {
-    margin-bottom: 5px;
-    margin-right: 5px;
+    margin-bottom: $gl-spacing-scale-2;
+    margin-right: $gl-spacing-scale-2;
   }
 
   a {

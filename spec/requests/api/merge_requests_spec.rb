@@ -936,78 +936,34 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       context 'filter by merge_user' do
         let(:params) { { scope: :all } }
 
-        context 'when flag `mr_merge_user_filter` is disabled' do
-          before do
-            stub_feature_flags(mr_merge_user_filter: false)
-          end
+        context 'with merge_user_id' do
+          let(:params) { super().merge(merge_user_id: user.id) }
 
-          context 'with merge_user_id' do
-            let(:params) { super().merge(merge_user_id: user.id) }
+          it 'returns merged merge requests for the given user' do
+            get api('/merge_requests', user), params: params
 
-            it 'returns merged merge requests for the given user' do
-              get api('/merge_requests', user), params: params
-
-              expect_response_contain_exactly(
-                merge_request.id,
-                merge_request_closed.id,
-                merge_request_merged.id,
-                merge_request_locked.id,
-                merge_request2.id
-              )
-            end
-          end
-
-          context 'with merge_user_username' do
-            let(:params) { super().merge(merge_user_username: user.username) }
-
-            it 'returns merged merge requests for the given user' do
-              get api('/merge_requests', user), params: params
-
-              expect_response_contain_exactly(
-                merge_request.id,
-                merge_request_closed.id,
-                merge_request_merged.id,
-                merge_request_locked.id,
-                merge_request2.id
-              )
-            end
+            expect_response_contain_exactly(merge_request_merged.id)
           end
         end
 
-        context 'when flag `mr_merge_user_filter` is enabled' do
-          before do
-            stub_feature_flags(mr_merge_user_filter: true)
+        context 'with merge_user_username' do
+          let(:params) { super().merge(merge_user_username: user.username) }
+
+          it 'returns merged merge requests for the given user' do
+            get api('/merge_requests', user), params: params
+
+            expect_response_contain_exactly(merge_request_merged.id)
           end
+        end
 
-          context 'with merge_user_id' do
-            let(:params) { super().merge(merge_user_id: user.id) }
+        context 'with both merge_user_id and merge_user_username' do
+          let(:params) { super().merge(merge_user_id: user.id, merge_user_username: user.username) }
 
-            it 'returns merged merge requests for the given user' do
-              get api('/merge_requests', user), params: params
+          it 'returns a 400' do
+            get api('/merge_requests', user), params: params
 
-              expect_response_contain_exactly(merge_request_merged.id)
-            end
-          end
-
-          context 'with merge_user_username' do
-            let(:params) { super().merge(merge_user_username: user.username) }
-
-            it 'returns merged merge requests for the given user' do
-              get api('/merge_requests', user), params: params
-
-              expect_response_contain_exactly(merge_request_merged.id)
-            end
-          end
-
-          context 'with both merge_user_id and merge_user_username' do
-            let(:params) { super().merge(merge_user_id: user.id, merge_user_username: user.username) }
-
-            it 'returns a 400' do
-              get api('/merge_requests', user), params: params
-
-              expect(response).to have_gitlab_http_status(:bad_request)
-              expect(json_response['error']).to eq('merge_user_id, merge_user_username are mutually exclusive')
-            end
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('merge_user_id, merge_user_username are mutually exclusive')
           end
         end
       end

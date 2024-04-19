@@ -29,9 +29,10 @@ module Members
       #    to enable management of group/project memberships.
       # 2. There are no members invited from a private group.
       return if can_admin_members? || private_invited_group_members.nil?
+      return if Feature.disabled?(:webui_members_inherited_users, current_user)
 
       private_invited_group_members.each do |member|
-        member.is_source_accessible_to_current_user = authorized_group_ids.include?(member.source_id)
+        member.is_source_accessible_to_current_user = authorized_groups.include?(member.source)
       end
     end
 
@@ -39,13 +40,13 @@ module Members
 
     attr_reader :members, :source, :current_user
 
-    def authorized_group_ids
+    def authorized_groups
       return [] if current_user.nil?
 
-      private_invited_group_ids = private_invited_group_members.map(&:source_id).uniq
-      current_user.authorized_groups.id_in(private_invited_group_ids).map(&:id)
+      private_invited_groups = private_invited_group_members.map(&:source).uniq
+      private_invited_groups.select { |group| current_user.can?(:read_group, group) }
     end
-    strong_memoize_attr(:authorized_group_ids)
+    strong_memoize_attr(:authorized_groups)
 
     def private_invited_group_members
       members.select do |member|

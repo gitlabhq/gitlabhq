@@ -561,10 +561,6 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 
 .gl-label-scoped {
   box-shadow: 0 0 0 2px currentColor inset;
-
-  &.gl-label-sm {
-    box-shadow: 0 0 0 1px inset;
-  }
 }
 
 .ref-container,

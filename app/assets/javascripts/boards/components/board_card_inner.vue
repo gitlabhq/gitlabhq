@@ -286,7 +286,6 @@ export default {
           :background-color="label.color"
           :title="label.title"
           :description="label.description"
-          size="sm"
           :scoped="showScopedLabel(label)"
           target="#"
           @click="filterByLabel(label)"

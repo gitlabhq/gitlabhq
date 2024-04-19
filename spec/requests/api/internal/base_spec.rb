@@ -584,6 +584,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(json_response["gl_key_type"]).to eq("key")
           expect(json_response["gl_key_id"]).to eq(key.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
@@ -604,6 +606,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -630,6 +634,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(json_response["gl_project_id"]).to be_nil
+          expect(json_response["gl_root_namespace_id"]).to be_nil
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
@@ -648,6 +654,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(personal_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
+          expect(json_response["gl_project_id"]).to be_nil
+          expect(json_response["gl_root_namespace_id"]).to be_nil
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -665,6 +673,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
@@ -681,6 +691,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["status"]).to be_truthy
           expect(json_response["gl_project_path"]).to eq(project_snippet.repository.full_path)
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
+          expect(json_response["gl_project_id"]).to eq(project.id)
+          expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
@@ -698,6 +710,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["status"]).to be_truthy
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
+            expect(json_response["gl_project_id"]).to eq(project.id)
+            expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -786,6 +800,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["status"]).to be_truthy
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
+            expect(json_response["gl_project_id"]).to eq(project.id)
+            expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
             expect(json_response["gl_key_type"]).to eq("key")
             expect(json_response["gl_key_id"]).to eq(key.id)
             expect(json_response["need_audit"]).to be_falsy

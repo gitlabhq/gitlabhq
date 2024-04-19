@@ -20,7 +20,7 @@
     - if issuable.labels.any?
       .gl-mt-3
         - presented_labels_sorted_by_title(issuable.labels, issuable.project).each do |label|
-          = link_to_label(label, small: true)
+          = link_to_label(label)
 
   .col-sm-3.gl-mt-3.gl-sm-mt-0.gl-text-right
     - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0

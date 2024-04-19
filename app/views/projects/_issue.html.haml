@@ -41,7 +41,7 @@
         - if issue.labels.any?
           &nbsp;
           - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
-            = link_to_label(label, small: true)
+            = link_to_label(label)
 
         = render 'projects/issue_estimate', issue: issue
 

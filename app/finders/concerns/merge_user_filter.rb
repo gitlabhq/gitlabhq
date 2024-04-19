@@ -5,7 +5,6 @@ module MergeUserFilter
 
   def by_merge_user(items)
     return items unless params.merge_user_id? || params.merge_user_username?
-    return items if Feature.disabled?(:mr_merge_user_filter, type: :development)
 
     mr_metrics_scope = MergeRequest::Metrics
     mr_metrics_scope = mr_metrics_scope.merged_by(params.merge_user)

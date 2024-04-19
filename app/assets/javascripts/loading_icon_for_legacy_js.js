@@ -1,6 +1,6 @@
-import Vue from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { renderVueComponentForLegacyJS } from './render_vue_component_for_legacy_js';
 
 const defaultValue = (prop) => GlLoadingIcon.props[prop]?.default;
 
@@ -25,29 +25,13 @@ export const loadingIconForLegacyJS = ({
   size = defaultValue('size'),
   classes = [],
   label = __('Loading'),
-} = {}) => {
-  const mountEl = document.createElement('div');
-
-  const vm = new Vue({
-    el: mountEl,
-    render(h) {
-      return h(GlLoadingIcon, {
-        class: classes,
-        props: {
-          inline,
-          color,
-          size,
-          label,
-        },
-      });
+} = {}) =>
+  renderVueComponentForLegacyJS(GlLoadingIcon, {
+    class: classes,
+    props: {
+      inline,
+      color,
+      size,
+      label,
     },
   });
-
-  // Ensure it's rendered
-  vm.$forceUpdate();
-
-  const el = vm.$el.cloneNode(true);
-  vm.$destroy();
-
-  return el;
-};

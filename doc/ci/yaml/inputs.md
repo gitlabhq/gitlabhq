@@ -241,6 +241,25 @@ include:
       stage: my-stage
 ```
 
+### Use `inputs` with child pipelines
+
+You can pass inputs to [child pipelines](../pipelines/downstream_pipelines.md),
+if the child pipeline's configuration file uses [`spec:inputs`](#define-input-parameters-with-specinputs).
+For example:
+
+```yaml
+trigger-job:
+  trigger:
+    strategy: depend
+    include:
+      - project: my-group/my-project
+        file: ".gitlab-ci.yml"
+        inputs:
+          job-name: "defined"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+```
+
 ### Include the same file multiple times
 
 You can include the same file multiple times, with different inputs. However, if multiple jobs

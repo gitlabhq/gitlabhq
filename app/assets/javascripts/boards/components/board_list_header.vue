@@ -416,7 +416,6 @@ export default {
           :background-color="list.label.color"
           :description="list.label.description"
           :scoped="showScopedLabels(list.label)"
-          :size="list.collapsed ? 'sm' : ''"
           :title="list.label.title"
         />
       </div>

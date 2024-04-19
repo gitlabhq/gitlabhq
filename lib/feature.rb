@@ -288,6 +288,15 @@ module Feature
       RequestStore.fetch(:feature_flag_events) { {} }
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord -- rubocop doesn't recognize Flipper::Adapters::ActiveRecord::Gate as ActiveRecord.
+    def group_ids_for(feature_key)
+      FlipperGate.where(feature_key: feature_key)
+                 .pluck(:value)
+                 .select { |v| v.start_with?("Group:") }
+                 .map { |v| v.sub("Group:", "") }
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     private
 
     def sanitized_thing(thing)

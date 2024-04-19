@@ -72,7 +72,7 @@ describe('DiffDiscussions', () => {
 
       expect(diffNotesToggle.text().trim()).toBe('1');
       expect(diffNotesToggle.classes()).toEqual(
-        expect.arrayContaining(['js-diff-notes-toggle', 'gl-translate-x-n50', 'design-note-pin']),
+        expect.arrayContaining(['js-diff-notes-toggle', '-gl-translate-x-1/2', 'design-note-pin']),
       );
     });
 

@@ -1,6 +1,7 @@
+import { GlBadge } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/lib/utils/jquery_at_who';
-import { escape as lodashEscape, sortBy, template, escapeRegExp } from 'lodash';
+import { escape as lodashEscape, sortBy, template, escapeRegExp, memoize } from 'lodash';
 import * as Emoji from '~/emoji';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -13,6 +14,7 @@ import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
 import { unicodeLetters } from './lib/utils/regexp';
+import { renderVueComponentForLegacyJS } from './render_vue_component_for_legacy_js';
 
 const USERS_ALIAS = 'users';
 const ISSUES_ALIAS = 'issues';
@@ -32,6 +34,21 @@ export const CONTACTS_ADD_COMMAND = '/add_contacts';
 export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
 
 const useMentionsBackendFiltering = window.gon.features?.mentionAutocompleteBackendFiltering;
+
+const busyBadge = memoize(
+  () =>
+    renderVueComponentForLegacyJS(
+      GlBadge,
+      {
+        class: 'gl-ml-2',
+        props: {
+          variant: 'warning',
+          size: 'sm',
+        },
+      },
+      s__('UserProfile|Busy'),
+    ).outerHTML,
+);
 
 /**
  * Escapes user input before we pass it to at.js, which
@@ -389,12 +406,7 @@ class GfmAutoComplete {
             username,
             title,
             icon,
-            availabilityStatus:
-              availability && isUserBusy(availability)
-                ? `<span class="badge badge-warning badge-pill gl-badge sm gl-ml-2"> ${s__(
-                    'UserProfile|Busy',
-                  )}</span>`
-                : '',
+            availabilityStatus: availability && isUserBusy(availability) ? busyBadge() : '',
           });
         }
         return tmpl;

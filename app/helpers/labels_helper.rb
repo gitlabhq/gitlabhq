@@ -36,17 +36,17 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, type: :issue, tooltip: true, small: false, css_class: nil, &block)
+  def link_to_label(label, type: :issue, tooltip: true, css_class: nil, &block)
     link = label.filter_path(type: type)
 
     if block
       link_to link, class: css_class, &block
     else
-      render_label(label, link: link, tooltip: tooltip, small: small)
+      render_label(label, link: link, tooltip: tooltip)
     end
   end
 
-  def render_label(label, link: nil, tooltip: true, dataset: nil, small: false, tooltip_shows_title: false)
+  def render_label(label, link: nil, tooltip: true, dataset: nil, tooltip_shows_title: false)
     html = render_colored_label(label)
 
     if link
@@ -54,7 +54,7 @@ module LabelsHelper
       html = render_label_link(html, link: link, title: title, dataset: dataset)
     end
 
-    wrap_label_html(html, small: small, label: label)
+    wrap_label_html(html, label: label)
   end
 
   def render_colored_label(label, suffix: '')
@@ -67,9 +67,8 @@ module LabelsHelper
   end
 
   # We need the `label` argument here for EE
-  def wrap_label_html(label_html, small:, label:)
+  def wrap_label_html(label_html, label:)
     wrapper_classes = %w[gl-label]
-    wrapper_classes << 'gl-label-sm' if small
 
     %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
   end

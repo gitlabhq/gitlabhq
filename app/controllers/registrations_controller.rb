@@ -28,8 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :instance_resiliency
 
-  helper_method :arkose_labs_enabled?
-  helper_method :registration_path_params
+  helper_method :arkose_labs_enabled?, :registration_path_params, :registration_tracking_label
 
   def new
     @resource = build_resource
@@ -315,6 +314,10 @@ class RegistrationsController < Devise::RegistrationsController
 
   def arkose_labs_enabled?(user: nil) # rubocop:disable Lint/UnusedMethodArgument -- Param is unused here but used in EE override
     false
+  end
+
+  def registration_tracking_label
+    # overridden by EE module
   end
 end
 

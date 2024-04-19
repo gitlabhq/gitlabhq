@@ -35,7 +35,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: :index do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-    push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
   before_action only: [:show, :diffs, :rapid_diffs] do

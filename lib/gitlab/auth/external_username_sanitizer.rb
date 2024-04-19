@@ -11,14 +11,33 @@ module Gitlab
 
       def sanitize
         # remove most characters illegal in usernames / slugs
-        valid_username = ::Namespace.clean_path(external_username)
+        slug = Gitlab::Slug::Path.new(external_username).generate
+
         # remove leading - , _ , or . characters not removed by Namespace.clean_path
-        valid_username = valid_username.sub(/\A[_.-]+/, '')
+        slug = slug.sub(/\A[_.-]+/, '')
+
         # remove trailing - , _ or . characters not removed by Namespace.clean_path
-        valid_username = valid_username.sub(/[_.-]+\z/, '')
+        # hard to write a regex to match end-of-string without ReDoS, so just use plain Ruby
+        slug = slug[0...-1] while slug.end_with?('.', '-', '_')
+
         # remove consecutive - , _ , or . characters
-        valid_username = valid_username.gsub(/([_.-])[_.-]+/, '\1')
-        Gitlab::Utils::Uniquify.new.string(valid_username) do |s|
+        slug = slug.gsub(/([_.-])[_.-]+/, '\1')
+
+        slug = unique_by_namespace(slug)
+
+        validated_path(slug)
+      end
+
+      # decomposed from Namespace.clean_path
+      def unique_by_namespace(slug)
+        path = Namespaces::RandomizedSuffixPath.new(slug).to_s
+        Gitlab::Utils::Uniquify.new.string(path) do |s|
+          Namespace.all.find_by_path_or_name(s)
+        end
+      end
+
+      def validated_path(path)
+        Gitlab::Utils::Uniquify.new.string(path) do |s|
           !NamespacePathValidator.valid_path?(s)
         end
       end

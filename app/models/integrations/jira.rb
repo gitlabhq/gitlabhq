@@ -65,6 +65,7 @@ module Integrations
       if: -> {
         Feature.disabled?(:jira_multiple_project_keys, group || project&.group)
       }
+    before_save :format_project_keys, if: :project_keys_changed?
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
     enum comment_detail: {
@@ -327,7 +328,7 @@ module Integrations
     end
 
     def find_issue(issue_key, rendered_fields: false, transitions: false, restrict_project_key: false)
-      return if restrict_project_key && parse_project_from_issue_key(issue_key) != project_key
+      return if restrict_project_key && !issue_key_allowed?(issue_key)
 
       expands = []
       expands << 'renderedFields' if rendered_fields
@@ -449,6 +450,14 @@ module Integrations
 
     def parse_project_from_issue_key(issue_key)
       issue_key.gsub(Gitlab::Regex.jira_issue_key_project_key_extraction_regex, '')
+    end
+
+    def issue_key_allowed?(issue_key)
+      if Feature.disabled?(:jira_multiple_project_keys)
+        parse_project_from_issue_key(issue_key) == project_key
+      else
+        project_keys.blank? || project_keys.include?(parse_project_from_issue_key(issue_key))
+      end
     end
 
     def branch_name(commit)
@@ -723,6 +732,10 @@ module Integrations
 
     def copy_project_key_to_project_keys
       data_fields.project_keys = [project_key]
+    end
+
+    def format_project_keys
+      data_fields.project_keys = project_keys.compact_blank.map(&:strip).uniq
     end
 
     def jira_cloud?

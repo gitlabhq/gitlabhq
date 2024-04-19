@@ -50,7 +50,7 @@ export default {
           v-if="showPin"
           :label="toggleText(draft, index)"
           is-draft
-          class="js-diff-notes-index gl-translate-x-n50"
+          class="js-diff-notes-index -gl-translate-x-1/2"
           size="sm"
         />
         <draft-note :draft="draft" />

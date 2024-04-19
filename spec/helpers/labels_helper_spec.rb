@@ -327,7 +327,7 @@ RSpec.describe LabelsHelper do
     end
 
     it 'does not include the color' do
-      expect(wrap_label_html('xss', label: xss_label, small: false)).not_to include('color:')
+      expect(wrap_label_html('xss', label: xss_label)).not_to include('color:')
     end
   end
 

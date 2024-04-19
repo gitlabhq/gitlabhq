@@ -130,6 +130,19 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     end
   end
 
+  describe 'callbacks' do
+    context 'before_save' do
+      context "when project_keys are changed" do
+        let(:project_keys) { [' GTL  ', 'JR ', '  GTL', ''] }
+
+        it "formats and removes duplicates from project_keys" do
+          jira_integration.save!
+          expect(jira_integration.project_keys).to contain_exactly('GTL', 'JR')
+        end
+      end
+    end
+  end
+
   describe '#options' do
     let(:options) do
       {
@@ -731,13 +744,39 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
       it { is_expected.to eq(nil) }
 
-      context 'and project_key matches' do
-        let(:project_key) { 'JIRA' }
+      context 'when project_keys includes issue_key' do
+        let(:project_keys) { ['JIRA'] }
 
         it 'calls the Jira API to get the issue' do
           find_issue
 
           expect(WebMock).to have_requested(:get, issue_url)
+        end
+      end
+
+      context 'when project_keys are empty' do
+        let(:project_keys) { [] }
+
+        it 'calls the Jira API to get the issue' do
+          find_issue
+
+          expect(WebMock).to have_requested(:get, issue_url)
+        end
+      end
+
+      context 'when jira_multiple_project_keys feature is disabled' do
+        before do
+          stub_feature_flags(jira_multiple_project_keys: false)
+        end
+
+        context 'when project_key matches issue_key' do
+          let(:project_key) { 'JIRA' }
+
+          it 'calls the Jira API to get the issue' do
+            find_issue
+
+            expect(WebMock).to have_requested(:get, issue_url)
+          end
         end
       end
     end

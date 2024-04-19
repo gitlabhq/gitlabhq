@@ -80,6 +80,7 @@
   // Single code lines should wrap
   code {
     font-family: $monospace-font;
+    vertical-align: bottom;
     white-space: pre-wrap;
     // Safari
     word-wrap: break-word;

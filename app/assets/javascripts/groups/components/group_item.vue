@@ -248,7 +248,6 @@ export default {
               v-if="hasComplianceFramework"
               :framework="complianceFramework"
               :show-edit="false"
-              size="sm"
             />
           </div>
           <div v-if="group.description" class="description gl-font-sm gl-mt-1">

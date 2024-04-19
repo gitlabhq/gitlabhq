@@ -72,6 +72,8 @@ module API
             payload = {
               gl_repository: gl_repository,
               gl_project_path: gl_repository_path,
+              gl_project_id: project&.id,
+              gl_root_namespace_id: project&.root_namespace&.id,
               gl_id: Gitlab::GlId.gl_id(actor.user),
               gl_username: actor.username,
               git_config_options: ["uploadpack.allowFilter=true",

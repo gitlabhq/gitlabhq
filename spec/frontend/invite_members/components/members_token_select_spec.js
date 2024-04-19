@@ -222,43 +222,21 @@ describe('MembersTokenSelect', () => {
 
   describe('when component is mounted for a group using a SAML provider', () => {
     const searchParam = 'name';
+    const samlProviderId = 123;
 
     beforeEach(() => {
-      jest.spyOn(UserApi, 'getGroupUsers').mockResolvedValue({ data: allUsers });
+      jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
 
-      wrapper = createComponent({ usersFilter: 'saml_provider_id' }, { groupUserSaml: true });
+      wrapper = createComponent({ filterId: samlProviderId, usersFilter: 'saml_provider_id' });
 
       findTokenSelector().vm.$emit('text-input', searchParam);
     });
 
-    it('calls the group API with correct parameters', () => {
-      expect(UserApi.getGroupUsers).toHaveBeenCalledWith(searchParam, groupId, {
+    it('calls the API with the saml provider ID param', () => {
+      expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
         active: true,
-        include_saml_users: true,
-        include_service_accounts: true,
-      });
-    });
-  });
-
-  describe('when group_user_saml feature flag is disabled', () => {
-    describe('when component is mounted for a group using a SAML provider', () => {
-      const searchParam = 'name';
-      const samlProviderId = 123;
-
-      beforeEach(() => {
-        jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
-
-        wrapper = createComponent({ filterId: samlProviderId, usersFilter: 'saml_provider_id' });
-
-        findTokenSelector().vm.$emit('text-input', searchParam);
-      });
-
-      it('calls the API with the saml provider ID param', () => {
-        expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
-          active: true,
-          without_project_bots: true,
-          saml_provider_id: samlProviderId,
-        });
+        without_project_bots: true,
+        saml_provider_id: samlProviderId,
       });
     });
   });

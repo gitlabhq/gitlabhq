@@ -106,33 +106,41 @@ module Gitlab
       end
 
       def remaining
-        enqueued = Sidekiq::Queue.new(self.queue)
-        scheduled = Sidekiq::ScheduledSet.new
+        Sidekiq::Client.via(sidekiq_redis_pool) do
+          enqueued = Sidekiq::Queue.new(self.queue)
+          scheduled = Sidekiq::ScheduledSet.new
 
-        [enqueued, scheduled].sum do |set|
-          set.count do |job|
-            job.klass == worker_class.name
+          [enqueued, scheduled].sum do |set|
+            set.count do |job|
+              job.klass == worker_class.name
+            end
           end
         end
       end
 
       def exists?(migration_class, additional_queues = [])
-        enqueued = Sidekiq::Queue.new(self.queue)
-        scheduled = Sidekiq::ScheduledSet.new
+        Sidekiq::Client.via(sidekiq_redis_pool) do
+          enqueued = Sidekiq::Queue.new(self.queue)
+          scheduled = Sidekiq::ScheduledSet.new
 
-        enqueued_job?([enqueued, scheduled], migration_class)
+          enqueued_job?([enqueued, scheduled], migration_class)
+        end
       end
 
       def dead_jobs?(migration_class)
-        dead_set = Sidekiq::DeadSet.new
+        Sidekiq::Client.via(sidekiq_redis_pool) do
+          dead_set = Sidekiq::DeadSet.new
 
-        enqueued_job?([dead_set], migration_class)
+          enqueued_job?([dead_set], migration_class)
+        end
       end
 
       def retrying_jobs?(migration_class)
-        retry_set = Sidekiq::RetrySet.new
+        Sidekiq::Client.via(sidekiq_redis_pool) do
+          retry_set = Sidekiq::RetrySet.new
 
-        enqueued_job?([retry_set], migration_class)
+          enqueued_job?([retry_set], migration_class)
+        end
       end
 
       def migration_instance_for(class_name)

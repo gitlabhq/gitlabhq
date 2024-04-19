@@ -17445,7 +17445,7 @@ Returns [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep).
 | <a id="cirunnermanagerrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner manager. |
 | <a id="cirunnermanagerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner manager. |
 | <a id="cirunnermanagersystemid"></a>`systemId` | [`String!`](#string) | System ID associated with the runner manager. |
-| <a id="cirunnermanagerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in GitLab 16.1. **Status**: Experiment. Availability of upgrades for the runner manager. |
+| <a id="cirunnermanagerupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Availability of upgrades for the runner manager. |
 | <a id="cirunnermanagerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiRunnerUsage`

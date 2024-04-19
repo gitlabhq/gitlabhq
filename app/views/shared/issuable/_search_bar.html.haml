@@ -93,8 +93,7 @@
                     avatar: { lazy: true, url: '{{avatar_url}}' }
               = render_if_exists 'shared/issuable/approver_dropdown'
               = render_if_exists 'shared/issuable/approved_by_dropdown'
-              - if ::Feature.enabled?(:mr_merge_user_filter, type: :development)
-                = render_if_exists 'shared/issuable/merge_user_dropdown'
+              = render_if_exists 'shared/issuable/merge_user_dropdown'
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ data: { dropdown: true } }
                   %li.filter-dropdown-item{ data: { value: 'None' } }

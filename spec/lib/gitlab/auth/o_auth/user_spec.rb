@@ -908,6 +908,13 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
 
         expect(oauth_user2.gl_user.username).to eq('johngitlab-ETC1')
       end
+
+      it 'generates the username with a counter for special characters' do
+        oauth_user.save # rubocop:disable Rails/SaveBang -- not an ActiveRecord model, no save! method
+        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider, info: { nickname: 'johngitlab---ETC@othermail.com', email: 'john@othermail.com' }))
+
+        expect(oauth_user2.gl_user.username).to eq('johngitlab-ETC1')
+      end
     end
 
     context 'when username is a reserved word' do

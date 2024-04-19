@@ -14998,6 +14998,9 @@ msgstr ""
 msgid "Couldn't link epics. You must have at least the Guest role in the epic's group."
 msgstr ""
 
+msgid "Couldn't reorder child due to an internal error."
+msgstr ""
+
 msgid "Country / Region"
 msgstr ""
 
@@ -28375,6 +28378,9 @@ msgid "IssuesAnalytics|Opened"
 msgstr ""
 
 msgid "IssuesAnalytics|Overview"
+msgstr ""
+
+msgid "IssuesAnalytics|Raw text search is not supported. Please use the available filters."
 msgstr ""
 
 msgid "IssuesAnalytics|Sorry, your filter produced no results"

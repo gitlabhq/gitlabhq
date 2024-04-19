@@ -2,4 +2,7 @@
   = _('Already have an account?')
   - path_params = { redirect_to_referer: 'yes' }
   - path_params[:invite_email] = @invite_email if @invite_email.present?
-  = link_to _('Sign in'), new_session_path(:user, path_params)
+  = link_to _('Sign in'),
+    new_session_path(:user, path_params),
+    data: { track_action: local_assigns[:tracking_action],
+      track_label: local_assigns[:tracking_label] }

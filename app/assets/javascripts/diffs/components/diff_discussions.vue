@@ -75,7 +75,7 @@ export default {
             :label="index + 1"
             :is-resolved="discussion.resolved"
             size="sm"
-            class="js-diff-notes-toggle gl-translate-x-n50"
+            class="js-diff-notes-toggle -gl-translate-x-1/2"
             @click="toggleVisibility(discussion)"
           />
         </template>

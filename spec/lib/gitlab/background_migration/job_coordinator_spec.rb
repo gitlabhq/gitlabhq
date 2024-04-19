@@ -342,6 +342,12 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
   end
 
   describe '.remaining', :redis do
+    it 'is shard aware' do
+      expect(Sidekiq::Client).to receive(:via).with(coordinator.sidekiq_redis_pool).once
+
+      coordinator.remaining
+    end
+
     context 'when there are jobs remaining' do
       before do
         Sidekiq::Testing.disable! do
@@ -370,6 +376,12 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
   end
 
   describe '.exists?', :redis do
+    it 'is shard aware' do
+      expect(Sidekiq::Client).to receive(:via).with(coordinator.sidekiq_redis_pool).once
+
+      coordinator.exists?('Foo')
+    end
+
     context 'when there are enqueued jobs present' do
       before do
         Sidekiq::Testing.disable! do
@@ -434,6 +446,12 @@ RSpec.describe Gitlab::BackgroundMigration::JobCoordinator do
         double(args: ['Foo', [10, 20]], klass: worker_class.name),
         double(args: ['Bar'], klass: 'MergeWorker')
       ]
+    end
+
+    it 'is shard aware' do
+      expect(Sidekiq::Client).to receive(:via).with(coordinator.sidekiq_redis_pool).once
+
+      coordinator.retrying_jobs?('Foo')
     end
 
     context 'when there are dead jobs present' do

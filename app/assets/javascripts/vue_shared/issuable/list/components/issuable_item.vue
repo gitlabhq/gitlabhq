@@ -370,7 +370,6 @@ export default {
             :description="label.description"
             :scoped="scopedLabel(label)"
             :target="labelTarget(label)"
-            size="sm"
           />
         </p>
       </div>

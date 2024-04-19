@@ -328,6 +328,10 @@ RSpec.configure do |config|
 
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
+
+      # Disable license requirement for duo chat, which is subject to change.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/457090
+      stub_feature_flags(duo_chat_requires_licensed_seat: false)
     else
       unstub_all_feature_flags
     end

@@ -85,16 +85,9 @@ export default {
     },
     queryOptions() {
       if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID) {
-        if (!this.glFeatures.groupUserSaml) {
-          return {
-            saml_provider_id: this.filterId,
-            ...this.$options.defaultQueryOptions,
-          };
-        }
         return {
-          active: true,
-          include_saml_users: true,
-          include_service_accounts: true,
+          saml_provider_id: this.filterId,
+          ...this.$options.defaultQueryOptions,
         };
       }
       return this.$options.defaultQueryOptions;

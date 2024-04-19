@@ -232,7 +232,7 @@ export default {
           :background-color="label.color"
           :description="label.description"
           :scoped="showScopedLabel(label)"
-          class="gl-mt-2 gl-mr-2 gl-mb-auto gl-label-sm"
+          class="gl-mt-2 gl-mr-2 gl-mb-auto"
           tooltip-placement="top"
         />
       </div>
