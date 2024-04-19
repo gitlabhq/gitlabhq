@@ -27,9 +27,9 @@ module Groups
 
       def update
         if update_group_service.execute
-          flash[:notice] = s_('GroupSettings|Pipeline settings was updated for the group')
+          flash[:notice] = s_('GroupSettings|Group CI/CD settings were successfully updated.')
         else
-          flash[:alert] = format(s_("GroupSettings|There was a problem updating the pipeline settings: %{error_messages}."), error_messages: group.errors.full_messages)
+          flash[:alert] = format(s_("GroupSettings|There was a problem updating the group CI/CD settings: %{error_messages}."), error_messages: group.errors.full_messages)
         end
 
         redirect_to group_settings_ci_cd_path
@@ -59,11 +59,13 @@ module Groups
       end
 
       def authorize_admin_group!
-        return render_404 unless can?(current_user, :admin_group, group)
+        render_404 unless can?(current_user, :admin_group, group)
       end
 
       def authorize_update_max_artifacts_size!
-        return render_404 unless can?(current_user, :update_max_artifacts_size, group)
+        if update_group_params.has_key?(:max_artifacts_size) && !can?(current_user, :update_max_artifacts_size, group)
+          render_404
+        end
       end
 
       def auto_devops_params

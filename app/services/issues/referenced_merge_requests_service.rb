@@ -40,7 +40,10 @@ module Issues
 
       return [] if merge_requests.empty?
 
-      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: issue.id).pluck(:merge_request_id)
+      ids = MergeRequestsClosingIssues.closes_work_item.where(
+        merge_request_id: merge_requests.map(&:id),
+        issue_id: issue.id
+      ).pluck(:merge_request_id)
       merge_requests.select { |mr| mr.id.in?(ids) }
     end
     # rubocop: enable CodeReuse/ActiveRecord

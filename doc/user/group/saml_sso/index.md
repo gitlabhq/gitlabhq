@@ -531,7 +531,7 @@ SSO enforcement for web activity has the following effects when enabled:
   Git activity is under SSO enforcement. For example, creating or deleting a
   branch, commit, or tag. For Git activity over SSH and HTTPS, users must
   have at least one active session signed-in through SSO before they can push to or
-  pull from a GitLab repository.
+  pull from a GitLab repository. The active session can be on a different device.
 
 When SSO for web activity is enforced, non-SSO group members do not lose access
 immediately. If the user:

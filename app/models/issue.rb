@@ -610,7 +610,7 @@ class Issue < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def merge_requests_count(user = nil)
-    ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
+    ::MergeRequestsClosingIssues.closing_count_for_issue(self.id, user)
   end
 
   def previous_updated_at

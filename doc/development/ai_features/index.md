@@ -48,12 +48,6 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 In order to develop an AI feature that is compatible with both SaaS and Self-managed GitLab instances,
 the feature must request to the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md) instead of directly requesting to the 3rd party model providers.
 
-1. Setup CustomersDot (optional, not required for Chat feature):
-   1. Install CustomersDot: [internal video tutorial](https://youtu.be/_8wOMa_yGSw)
-      - This video loosely follows [official installation steps](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md)
-      - It also offers guidance on how to create a self-managed subscription. You will receive a *cloud activation code* in return.
-        - Bookmark [this link](http://localhost:5000/subscriptions/new?plan_id=2c92c0f976d721ed0176db74d74f4fd4&test=capabilities) for creating Ultimate Self-Managed Subscription locally.
-        - A list of other subscription plan ids are available [here](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/buy_subscription.md).
 1. Setup GitLab Development Kit (GDK): [internal video tutorial](https://youtu.be/rudS6KeQHcA)
    1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation) as a separate GDK instance.
    1. Run `gdk config set license.customer_portal_url 'http://localhost:5000'`
@@ -84,6 +78,14 @@ the feature must request to the [AI Gateway](../../architecture/blueprints/ai_ga
 ```ruby
 Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
 ```
+
+**Additional setup for testing subscriptions** (***not required for DuoChat setup***)
+
+1. Setup CustomersDot:
+   1. Install CustomersDot: [internal video tutorial](https://youtu.be/_8wOMa_yGSw) (replace inactive subscription plan ID URL provided in the video caption with an active one from the link containing plan ids below)
+      - This video loosely follows [official installation steps](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md)
+      - It also offers guidance on how to create a self-managed subscription. You will receive a *cloud activation code* in return.
+        - A list of subscription plan ids are available [here](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/buy_subscription.md) for creating a Self-Managed Subscription locally.
 
 #### Verify the setup with GraphQL
 

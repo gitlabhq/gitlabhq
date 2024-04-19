@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::Settings::CiCdController do
+RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_integration do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:group) { create(:group) }
@@ -126,33 +126,84 @@ RSpec.describe Groups::Settings::CiCdController do
   end
 
   describe 'PATCH #update' do
-    subject do
-      patch :update, params: {
-        group_id: group,
-        group: { max_artifacts_size: 10 }
-      }
+    subject(:response) { perform_request }
+
+    def perform_request
+      patch :update, params: params
     end
 
-    context 'when user is not an admin' do
-      before do
+    context 'when user is a group owner' do
+      before_all do
         group.add_owner(user)
       end
 
-      it { is_expected.to have_gitlab_http_status(:not_found) }
+      context 'when updating max_artifacts_size' do
+        let(:params) { { group_id: group, group: { max_artifacts_size: 10 } } }
+
+        it 'cannot update max_artifacts_size' do
+          expect { perform_request }.not_to change { group.reload.max_artifacts_size }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when updating allow_runner_registration_token' do
+        let(:params) { { group_id: group, group: { allow_runner_registration_token: false } } }
+
+        it 'can update allow_runner_registration_token' do
+          expect { perform_request }.to change { group.reload.allow_runner_registration_token? }.from(true).to(false)
+        end
+
+        context 'when user is not a group owner' do
+          before_all do
+            group.add_maintainer(user)
+          end
+
+          it 'cannot update allow_runner_registration_token?' do
+            expect { perform_request }.not_to change { group.reload.allow_runner_registration_token? }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+    end
+
+    context 'when user is a group maintainer' do
+      let_it_be(:user) { create(:user).tap { |user| group.add_maintainer(user) } }
+
+      context 'when updating allow_runner_registration_token' do
+        let(:params) { { group_id: group, group: { allow_runner_registration_token: false } } }
+
+        it 'cannot update allow_runner_registration_token?' do
+          expect { perform_request }.not_to change { group.reload.allow_runner_registration_token? }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     context 'when user is an admin' do
-      let(:user) { create(:admin) }
-
-      before do
-        group.add_owner(user)
-      end
+      let_it_be(:user) { create(:admin).tap { |user| group.add_owner(user) } }
 
       context 'when admin mode is disabled' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
+        context 'when updating max_artifacts_size' do
+          let(:params) { { group_id: group, group: { max_artifacts_size: 10 } } }
+
+          it { is_expected.to have_gitlab_http_status(:not_found) }
+        end
+
+        context 'when updating allow_runner_registration_token' do
+          let(:params) { { group_id: group, group: { allow_runner_registration_token: false } } }
+
+          it 'can update allow_runner_registration_token' do
+            expect { perform_request }.to change { group.reload.allow_runner_registration_token? }.from(true).to(false)
+          end
+        end
       end
 
       context 'when admin mode is enabled', :enable_admin_mode do
+        let(:params) { { group_id: group, group: { max_artifacts_size: 10 } } }
+
         it { is_expected.to redirect_to(group_settings_ci_cd_path) }
 
         context 'when service execution went wrong' do
@@ -164,21 +215,21 @@ RSpec.describe Groups::Settings::CiCdController do
             allow_any_instance_of(Group).to receive_message_chain(:errors, :full_messages)
               .and_return(['Error 1'])
 
-            subject
+            response
           end
 
           it 'returns a flash alert' do
             expect(controller).to set_flash[:alert]
-              .to eq("There was a problem updating the pipeline settings: [\"Error 1\"].")
+              .to eq("There was a problem updating the group CI/CD settings: [\"Error 1\"].")
           end
         end
 
         context 'when service execution was successful' do
           it 'returns a flash notice' do
-            subject
+            response
 
             expect(controller).to set_flash[:notice]
-              .to eq('Pipeline settings was updated for the group')
+              .to eq('Group CI/CD settings were successfully updated.')
           end
         end
       end

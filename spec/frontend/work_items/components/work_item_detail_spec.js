@@ -14,7 +14,6 @@ import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
-import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
@@ -75,7 +74,7 @@ describe('WorkItemDetail component', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findWorkItemLoading = () => wrapper.findComponent(WorkItemLoading);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
-  const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
+  const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitleWithEdit);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
@@ -92,7 +91,6 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
-  const findWorkItemTitleWithEdit = () => wrapper.findComponent(WorkItemTitleWithEdit);
 
   const createComponent = ({
     isGroup = false,
@@ -671,112 +669,66 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('work item two column view', () => {
-    describe('when `workItemsBeta` is false', () => {
-      beforeEach(async () => {
-        createComponent({ workItemsBeta: false });
-        await waitForPromises();
-      });
-
-      it('does not have the `work-item-overview` class', () => {
-        expect(findWorkItemTwoColumnViewContainer().classes()).not.toContain('work-item-overview');
-      });
-
-      it('does not have sticky header component', () => {
-        expect(findStickyHeader().exists()).toBe(false);
-      });
-
-      it('does not have right sidebar', () => {
-        expect(findRightSidebar().exists()).toBe(false);
-      });
+    beforeEach(async () => {
+      createComponent({ workItemsBeta: true });
+      await waitForPromises();
     });
 
-    describe('when `workItemsBeta` is true', () => {
+    it('has the `work-item-overview` class', () => {
+      expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
+    });
+
+    it('renders the work item sticky header component', () => {
+      expect(findStickyHeader().exists()).toBe(true);
+    });
+
+    it('has the right sidebar', () => {
+      expect(findRightSidebar().exists()).toBe(true);
+    });
+  });
+
+  describe('edit button for work item title and description', () => {
+    describe('with permissions to update', () => {
       beforeEach(async () => {
         createComponent({ workItemsBeta: true });
         await waitForPromises();
       });
 
-      it('has the `work-item-overview` class', () => {
-        expect(findWorkItemTwoColumnViewContainer().classes()).toContain('work-item-overview');
+      it('shows the edit button', () => {
+        expect(findEditButton().exists()).toBe(true);
       });
 
-      it('renders the work item sticky header component', () => {
-        expect(findStickyHeader().exists()).toBe(true);
-      });
-
-      it('has the right sidebar', () => {
-        expect(findRightSidebar().exists()).toBe(true);
-      });
-    });
-  });
-
-  describe('edit button for work item title and description', () => {
-    describe('when `workItemsBeta` is false', () => {
-      beforeEach(async () => {
-        createComponent({ workItemsBeta: false });
-        await waitForPromises();
-      });
-
-      it('does not show the edit button', () => {
-        expect(findEditButton().exists()).toBe(false);
-      });
-
-      it('renders the work item title inline editable component', () => {
+      it('renders the work item title with edit component', () => {
         expect(findWorkItemTitle().exists()).toBe(true);
+        expect(findWorkItemTitle().props('isEditing')).toBe(false);
       });
 
-      it('does not render the work item title with edit component', () => {
-        expect(findWorkItemTitleWithEdit().exists()).toBe(false);
+      it('work item description is not shown in edit mode by default', () => {
+        expect(findWorkItemDescription().props('editMode')).toBe(false);
+      });
+
+      describe('when edit is clicked', () => {
+        beforeEach(async () => {
+          findEditButton().vm.$emit('click');
+          await nextTick();
+        });
+
+        it('work item title component shows in edit mode', () => {
+          expect(findWorkItemTitle().props('isEditing')).toBe(true);
+        });
+
+        it('work item description component shows in edit mode', () => {
+          expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
+          expect(findWorkItemDescription().props('editMode')).toBe(true);
+        });
       });
     });
 
-    describe('when `workItemsBeta` is true', () => {
-      describe('with permissions to update', () => {
-        beforeEach(async () => {
-          createComponent({ workItemsBeta: true });
-          await waitForPromises();
-        });
-
-        it('shows the edit button', () => {
-          expect(findEditButton().exists()).toBe(true);
-        });
-
-        it('does not render the work item title inline editable component', () => {
-          expect(findWorkItemTitle().exists()).toBe(false);
-        });
-
-        it('renders the work item title with edit component', () => {
-          expect(findWorkItemTitleWithEdit().exists()).toBe(true);
-          expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(false);
-        });
-
-        it('work item description is not shown in edit mode by default', () => {
-          expect(findWorkItemDescription().props('editMode')).toBe(false);
-        });
-
-        describe('when edit is clicked', () => {
-          beforeEach(async () => {
-            findEditButton().vm.$emit('click');
-            await nextTick();
-          });
-
-          it('work item title component shows in edit mode', () => {
-            expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(true);
-          });
-
-          it('work item description component shows in edit mode', () => {
-            expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
-            expect(findWorkItemDescription().props('editMode')).toBe(true);
-          });
-        });
-      });
-
-      describe('without permissions', () => {
-        it('does not show edit button when user does not have the permissions for it', async () => {
-          createComponent({ handler: successHandlerWithNoPermissions });
-          await waitForPromises();
-          expect(findEditButton().exists()).toBe(false);
-        });
+    describe('without permissions', () => {
+      it('does not show edit button when user does not have the permissions for it', async () => {
+        createComponent({ handler: successHandlerWithNoPermissions });
+        await waitForPromises();
+        expect(findEditButton().exists()).toBe(false);
       });
     });
   });

@@ -236,10 +236,14 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         merge_request.target_branch = merge_request.target_project.default_branch
         merge_request.save!
 
-        execute_service
+        expect do
+          execute_service
+        end.to change { MergeRequestsClosingIssues.count }.by(2)
 
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+        expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          have_attributes(issue_id: first_issue.id, closes_work_item: true),
+          have_attributes(issue_id: second_issue.id, closes_work_item: true)
+        )
       end
     end
 

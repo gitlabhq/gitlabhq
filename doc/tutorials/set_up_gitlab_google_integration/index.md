@@ -104,56 +104,44 @@ You can use the library of components from GitLab and Google to make your GitLab
 interact with Google Cloud resources.
 See the [CI/CD components from Google](https://gitlab.com/google-gitlab-components).
 
-### Push container images to Google Artifact Registry
+### Copy container images to Google Artifact Registry
 
 Before you begin, you must have a working CI/CD configuration that builds and pushes container
-images to your GitLab Container Registry.
+images to your GitLab container registry.
 
-To push container images from your GitLab Container Registry to your Google Artifact Registry,
-you must add the specific configuration to your pipeline.
-After this step, whenever a new container image is pushed to your GitLab Container Registry,
+To copy container images from your GitLab container registry to your Google Artifact Registry,
+include the [CI/CD component from Google](https://gitlab.com/explore/catalog/google-gitlab-components/artifact-registry)
+in your pipeline.
+After this step, whenever a new container image is pushed to your GitLab container registry,
 it is also pushed to your Google Artifact Registry.
 
 1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
-1. In the existing configuration, add the following `copy-image` job.
-   - Replace the placeholders in the job:
-      - `<your_stage>`: Stage where this job runs.
-      - `<your_build_job>`: Job that builds and pushes the image to your GitLab Container Registry.
+1. In the existing configuration, add the component as follows.
+   - Replace `<your_stage>` with the stage where this job runs.
+     It must be after the image is built and pushed to the GitLab container registry.
 
    ```yaml
-   copy-image:
-    stage: <your_stage>
-    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:466.0.0-alpine
-    identity: google_cloud
-    services:
-      - docker:24.0.5-dind
-    variables:
-      SOURCE_IMAGE: $CI_REGISTRY_IMAGE:v0.1.0
-      TARGET_IMAGE: $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/app:v0.1.0
-      DOCKER_HOST: tcp://docker:2375
-    before_script:
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-      - gcloud auth configure-docker $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev
-    script:
-      - docker pull $SOURCE_IMAGE
-      - docker tag $SOURCE_IMAGE $TARGET_IMAGE
-      - docker push $TARGET_IMAGE
+   include:
+     - component: gitlab.com/google-gitlab-components/artifact-registry/upload-artifact-registry@main
+       inputs:
+         stage: <your_stage>
+         source: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+         target: $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
    ```
 
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.
 1. Go to **Build > Pipelines** and make sure a new pipeline runs.
-1. Select the pipeline, then select the `copy-image` job to view its log.
-1. After the job finishes successfully, to view the container image that was pushed to Google Artifact Registry,
+1. After the pipeline finishes successfully, to view the container image that was copied to Google Artifact Registry,
    on the left sidebar, select **Deploy > Google Artifact Registry**.
 
 ### Create a Google Cloud Deploy release
 
-To have your pipeline interact with Google Cloud Deploy, you can use the GitLab CI/CD components from Google.
+To integrate your pipeline with Google Cloud Deploy, include the [CI/CD component from Google](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy) in your pipeline.
 After this step, your pipeline creates a Google Cloud Deploy release with your application.
 
 1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
-1. In the existing configuration, add the [Google Cloud Deploy component](https://gitlab.com/google-gitlab-components/cloud-deploy).
+1. In the existing configuration, add the [Google Cloud Deploy component](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy).
 1. Edit the component `inputs`.
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.

@@ -6,8 +6,6 @@ describe('Work Item Loading spec', () => {
   let wrapper;
 
   const findWorkItemTwoColumnLoading = () => wrapper.findByTestId('work-item-two-column-loading');
-  const findWorkItemSingleColumnLoading = () =>
-    wrapper.findByTestId('work-item-single-column-loading');
   const findWorkItemTitleMetaLoading = () => wrapper.findByTestId('work-title-and-meta-loading');
   const findWorkItemDescriptionLoading = () =>
     wrapper.findByTestId('work-item-description-loading');
@@ -20,28 +18,13 @@ describe('Work Item Loading spec', () => {
   const findWorkItemNotesLoading = () => wrapper.findByTestId('work-item-notes-loading');
   const findLoaders = () => findWorkItemAttributesXsSmLoading().findAllComponents(GlSkeletonLoader);
 
-  const createComponent = ({ twoColumnView = false } = {}) => {
-    wrapper = shallowMountExtended(WorkItemLoading, {
-      propsData: {
-        twoColumnView,
-      },
-    });
+  const createComponent = () => {
+    wrapper = shallowMountExtended(WorkItemLoading);
   };
-
-  describe('Work Item Single Column loading view', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('renders the single column loading', () => {
-      expect(findWorkItemSingleColumnLoading().exists()).toBe(true);
-      expect(findWorkItemTwoColumnLoading().exists()).toBe(false);
-    });
-  });
 
   describe('Work Item Two Column loading view', () => {
     beforeEach(() => {
-      createComponent({ twoColumnView: true });
+      createComponent();
     });
 
     it('renders the two column loading', () => {

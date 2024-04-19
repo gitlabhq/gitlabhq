@@ -97,8 +97,12 @@ class MergeRequest < ApplicationRecord
   has_many :merge_requests_closing_issues,
     class_name: 'MergeRequestsClosingIssues',
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :merge_requests_closing_issues_closes_work_item,
+    -> { closes_work_item },
+    class_name: 'MergeRequestsClosingIssues',
+    inverse_of: :merge_request
 
-  has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
+  has_many :cached_closes_issues, through: :merge_requests_closing_issues_closes_work_item, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
   has_many :suggestions, through: :notes
   has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note', inverse_of: :noteable
@@ -1413,12 +1417,12 @@ class MergeRequest < ApplicationRecord
     return if closed? || merged?
 
     transaction do
-      self.merge_requests_closing_issues.delete_all
+      self.merge_requests_closing_issues.closes_work_item.delete_all
 
       closes_issues(current_user).each do |issue|
         next if issue.is_a?(ExternalIssue)
 
-        self.merge_requests_closing_issues.create!(issue: issue)
+        self.merge_requests_closing_issues.create!(issue: issue, closes_work_item: true)
       end
     end
   end

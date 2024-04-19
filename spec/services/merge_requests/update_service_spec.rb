@@ -1092,26 +1092,38 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:first_issue) { create(:issue, project: project) }
       let(:second_issue) { create(:issue, project: project) }
 
-      it 'creates a `MergeRequestsClosingIssues` record for each issue' do
+      it 'creates a `MergeRequestsClosingIssues` record marked as closes_work_item for each issue' do
         issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
         service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
         allow(service).to receive(:execute_hooks)
-        service.execute(merge_request)
 
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to match_array([first_issue.id, second_issue.id])
+        expect do
+          service.execute(merge_request)
+        end.to change { MergeRequestsClosingIssues.count }.by(2)
+
+        expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+          have_attributes(issue_id: first_issue.id, closes_work_item: true),
+          have_attributes(issue_id: second_issue.id, closes_work_item: true)
+        )
       end
 
-      it 'removes `MergeRequestsClosingIssues` records when issues are not closed anymore' do
+      it 'removes `MergeRequestsClosingIssues` records marked as closes_work_item' do
         create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
         create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
+        create(
+          :merge_requests_closing_issues,
+          issue: second_issue,
+          merge_request: merge_request,
+          closes_work_item: false
+        )
 
         service = described_class.new(project: project, current_user: user, params: { description: "not closing any issues" })
         allow(service).to receive(:execute_hooks)
-        service.execute(merge_request.reload)
 
-        issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-        expect(issue_ids).to be_empty
+        # Does not delete the one marked as closes_work_item: false
+        expect do
+          service.execute(merge_request.reload)
+        end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)
       end
     end
 

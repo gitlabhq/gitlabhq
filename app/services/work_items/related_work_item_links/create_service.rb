@@ -9,7 +9,7 @@ module WorkItems
         return error(_('No matching work item found.'), 404) unless can_admin_work_item_link?(issuable)
 
         response = super
-        create_notes_async if new_links.any?
+        after_execute
 
         if response[:status] == :success
           response[:message] = format(
@@ -30,6 +30,10 @@ module WorkItems
       end
 
       private
+
+      def after_execute
+        create_notes_async if new_links.any?
+      end
 
       def can_admin_work_item_link?(work_item)
         can?(current_user, :admin_work_item_link, work_item)

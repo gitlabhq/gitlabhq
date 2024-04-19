@@ -47,34 +47,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_button _('More actions')
     end
 
-    context 'when work_items_beta is disabled' do
-      before do
-        stub_feature_flags(work_items_beta: false)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'reassigns to another user',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        find_by_testid('work-item-assignees-input').fill_in(with: user.username)
-        wait_for_requests
-
-        send_keys(:enter)
-        find("body").click
-        wait_for_requests
-
-        find_by_testid('work-item-assignees-input').fill_in(with: user2.username)
-        wait_for_requests
-
-        send_keys(:enter)
-        find("body").click
-        wait_for_requests
-
-        expect(work_item.reload.assignees).to include(user2)
-      end
-    end
-
     context 'when work_items_beta is enabled' do
       before do
         stub_feature_flags(work_items_beta: true)
@@ -162,27 +134,6 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it 'award button is disabled and add reaction is not displayed' do
       expect(page).not_to have_button _('Add reaction')
       expect(page).to have_selector('[data-testid="award-button"].disabled')
-    end
-
-    context 'when work_items_beta is disabled' do
-      before do
-        stub_feature_flags(work_items_beta: false)
-
-        page.refresh
-        wait_for_all_requests
-      end
-
-      it 'disabled the assignees input field' do
-        within_testid('work-item-assignees-input') do
-          expect(page).to have_field(type: 'text', disabled: true)
-        end
-      end
-
-      it 'disables the labels input field' do
-        within_testid('work-item-labels-input') do
-          expect(page).to have_field(type: 'text', disabled: true)
-        end
-      end
     end
 
     context 'when work_items_beta is enabled' do

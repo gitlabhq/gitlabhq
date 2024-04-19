@@ -214,6 +214,7 @@ merge_requests:
 - merge_request_context_commit_diff_files
 - events
 - merge_requests_closing_issues
+- merge_requests_closing_issues_closes_work_item
 - cached_closes_issues
 - metrics
 - timelogs

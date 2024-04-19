@@ -24,10 +24,6 @@ Otherwise, to add your license:
 1. Select the **Terms of Service** checkbox.
 1. Select **Add license**.
 
-NOTE:
-In GitLab 14.7.x to 14.9.x, you can add the license file with the UI.
-In GitLab 14.1.x to 14.7, if you have already activated your subscription with an activation code, you cannot access **Add License** from the Admin Area. You must access **Add License** directly from the URL, `<YourGitLabURL>/admin/license/new`.
-
 ## Activate subscription during installation
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
@@ -117,12 +113,6 @@ When you add a future-dated license, it doesn't take effect until its applicable
 You can view all active subscriptions in the **Subscription history** table.
 
 You can also [export](../subscriptions/self_managed/index.md) your license usage information to a CSV file.
-
-NOTE:
-In GitLab 13.6 and earlier, a banner about an expiring license may continue to display
-when you add a new license. This happens when the start date of the new license
-is in the future and the expiring one is still active.
-The banner disappears after the new license becomes active.
 
 ## License commands in the Rails console
 

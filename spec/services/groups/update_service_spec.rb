@@ -440,6 +440,56 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  context 'when updating #max_artifacts_size' do
+    let(:params) { { max_artifacts_size: 10 } }
+
+    let(:service) do
+      described_class.new(internal_group, user, **params)
+    end
+
+    before do
+      internal_group.add_owner(user)
+    end
+
+    context 'for users who have the ability to update max_artifacts_size', :enable_admin_mode do
+      let(:user) { create(:admin) }
+
+      it 'updates max_artifacts_size' do
+        expect { service.execute }.to change { internal_group.max_artifacts_size }.from(nil).to(10)
+      end
+    end
+
+    context 'for users who do not have the ability to update max_artifacts_size' do
+      it 'does not update max_artifacts_size' do
+        expect { service.execute }.not_to change { internal_group.max_artifacts_size }
+      end
+    end
+  end
+
+  context 'when updating #allow_runner_registration_token' do
+    let(:params) { { allow_runner_registration_token: false } }
+
+    let(:service) do
+      described_class.new(internal_group, user, **params)
+    end
+
+    context 'for users who have the ability to update allow_runner_registration_token' do
+      before do
+        internal_group.add_owner(user)
+      end
+
+      it 'updates allow_runner_registration_token' do
+        expect { service.execute }.to change { internal_group.allow_runner_registration_token }.from(true).to(false)
+      end
+    end
+
+    context 'for users who do not have the ability to update allow_runner_registration_token' do
+      it 'does not update allow_runner_registration_token' do
+        expect { service.execute }.not_to change { internal_group.allow_runner_registration_token }
+      end
+    end
+  end
+
   context 'when updating #math_rendering_limits_enabled' do
     let(:service) { described_class.new(internal_group, user, math_rendering_limits_enabled: false) }
 

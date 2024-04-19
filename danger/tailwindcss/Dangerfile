@@ -46,6 +46,11 @@ module Danger
     def files_with_interpolated_utils(files, pattern)
       files.select do |file|
         diff = @git.diff_for_file(file)
+
+        # When a file is just moved around it appears in the changed files list
+        # but the diff is empty so we are skipping it.
+        next if diff.nil?
+
         diff.patch.each_line.any? do |line|
           line.start_with?('+') && line.match?(pattern)
         end

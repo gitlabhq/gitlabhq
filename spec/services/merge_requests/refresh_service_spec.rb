@@ -799,8 +799,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-          expect(issue_ids).to eq([issue.id])
+          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+            have_attributes(issue_id: issue.id, closes_work_item: true)
+          )
         end
       end
 
@@ -824,8 +825,9 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
           allow(refresh_service).to receive(:execute_hooks)
           refresh_service.execute(@oldrev, @newrev, 'refs/heads/close-by-commit')
 
-          issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
-          expect(issue_ids).to eq([issue.id])
+          expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
+            have_attributes(issue_id: issue.id, closes_work_item: true)
+          )
         end
       end
     end

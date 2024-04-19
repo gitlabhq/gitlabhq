@@ -55,6 +55,7 @@ describe('Work items router', () => {
         WorkItemHealthStatus: true,
         WorkItemNotes: true,
         WorkItemAwardEmoji: true,
+        WorkItemTimeTracking: true,
       },
     });
   };

@@ -173,11 +173,11 @@ To use the `upload-artifact-registry` component, add the following to your `.git
 
 ```yaml
 include:
-  - component: gitlab.com/google-gitlab-components/artifact-registry/upload-artifact-registry@<VERSION>
+  - component: gitlab.com/google-gitlab-components/artifact-registry/upload-artifact-registry@main
     inputs:
       stage: deploy
-      source: $CI_REGISTRY_IMAGE:v0.1.0
-      target: $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/app:v0.1.0
+      source: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+      target: $GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION-docker.pkg.dev/$GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID/$GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
 ```
 
 For details, see [the component documentation](https://gitlab.com/explore/catalog/google-gitlab-components/artifact-registry).

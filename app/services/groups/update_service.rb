@@ -138,6 +138,7 @@ module Groups
     # overridden in EE
     def remove_unallowed_params
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, group)
+      params.delete(:max_artifacts_size) unless can?(current_user, :update_max_artifacts_size, group)
 
       unless can?(current_user, :update_default_branch_protection, group)
         params.delete(:default_branch_protection)
@@ -147,6 +148,7 @@ module Groups
       unless can?(current_user, :admin_namespace, group)
         params.delete(:math_rendering_limits_enabled)
         params.delete(:lock_math_rendering_limits_enabled)
+        params.delete(:allow_runner_registration_token)
       end
     end
 

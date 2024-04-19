@@ -35,7 +35,6 @@ import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
 import WorkItemNotificationsWidget from './work_item_notifications_widget.vue';
-import WorkItemTitle from './work_item_title.vue';
 import WorkItemAttributesWrapper from './work_item_attributes_wrapper.vue';
 import WorkItemCreatedUpdated from './work_item_created_updated.vue';
 import WorkItemDescription from './work_item_description.vue';
@@ -64,7 +63,6 @@ export default {
     WorkItemCreatedUpdated,
     WorkItemDescription,
     WorkItemAwardEmoji,
-    WorkItemTitle,
     WorkItemAttributesWrapper,
     WorkItemTree,
     WorkItemNotes,
@@ -235,7 +233,7 @@ export default {
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && this.workItemsBetaEnabled && !this.editMode;
+      return !this.isModal && !this.editMode;
     },
     hasLinkedWorkItems() {
       return this.glFeatures.linkedWorkItems;
@@ -267,10 +265,7 @@ export default {
       };
     },
     shouldShowEditButton() {
-      return this.workItemsBetaEnabled && !this.editMode && this.canUpdate;
-    },
-    workItemsBetaEnabled() {
-      return this.glFeatures.workItemsBeta;
+      return !this.editMode && this.canUpdate;
     },
   },
   mounted() {
@@ -429,9 +424,7 @@ export default {
       </gl-alert>
     </section>
     <section :class="workItemBodyClass">
-      <div v-if="workItemLoading">
-        <work-item-loading :two-column-view="workItemsBetaEnabled" />
-      </div>
+      <work-item-loading v-if="workItemLoading" />
       <template v-else>
         <div class="gl-sm-display-none! gl-display-flex">
           <gl-button
@@ -454,20 +447,12 @@ export default {
             data-testid="work-item-type"
           >
             <work-item-title-with-edit
-              v-if="workItem.title && workItemsBetaEnabled"
+              v-if="workItem.title"
               ref="title"
               :is-editing="editMode"
               :title="workItem.title"
               @updateWorkItem="updateWorkItem"
               @updateDraft="updateDraft('title', $event)"
-            />
-            <work-item-title
-              v-else-if="workItem.title"
-              ref="title"
-              :work-item-id="workItem.id"
-              :work-item-title="workItem.title"
-              :work-item-type="workItemType"
-              :can-update="canUpdate"
               @error="updateError = $event"
             />
           </div>
@@ -531,24 +516,14 @@ export default {
         </div>
         <div>
           <work-item-title-with-edit
-            v-if="workItem.title && workItemsBetaEnabled && parentWorkItem"
+            v-if="workItem.title && parentWorkItem"
             ref="title"
             :is-editing="editMode"
             :class="titleClassComponent"
             :title="workItem.title"
+            @error="updateError = $event"
             @updateWorkItem="updateWorkItem"
             @updateDraft="updateDraft('title', $event)"
-          />
-          <work-item-title
-            v-else-if="workItem.title && parentWorkItem"
-            ref="title"
-            :class="titleClassComponent"
-            :work-item-id="workItem.id"
-            :work-item-title="workItem.title"
-            :work-item-type="workItemType"
-            :can-update="canUpdate"
-            :use-h1="!isModal"
-            @error="updateError = $event"
           />
           <work-item-created-updated
             v-if="!editMode"
@@ -575,23 +550,11 @@ export default {
           @error="updateError = $event"
           @promotedToObjective="$emit('promotedToObjective', workItemIid)"
         />
-        <div
-          data-testid="work-item-overview"
-          :class="{ 'work-item-overview': workItemsBetaEnabled }"
-        >
+        <div data-testid="work-item-overview" class="work-item-overview">
           <section>
-            <work-item-attributes-wrapper
-              v-if="!workItemsBetaEnabled"
-              :class="{ 'gl-md-display-none!': workItemsBetaEnabled }"
-              class="gl-border-b"
-              :full-path="fullPath"
-              :work-item="workItem"
-              @error="updateError = $event"
-            />
             <work-item-description
               v-if="hasDescriptionWidget"
-              :class="workItemsBetaEnabled ? '' : 'gl-pt-5'"
-              :disable-inline-editing="workItemsBetaEnabled"
+              disable-inline-editing
               :edit-mode="editMode"
               :full-path="fullPath"
               :work-item-id="workItem.id"
@@ -613,7 +576,6 @@ export default {
             />
           </section>
           <aside
-            v-if="workItemsBetaEnabled"
             data-testid="work-item-overview-right-sidebar"
             class="work-item-overview-right-sidebar"
             :class="{ 'is-modal': isModal }"
