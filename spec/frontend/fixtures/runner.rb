@@ -13,17 +13,15 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:project_2) { create(:project, :repository, :public) }
 
-  let_it_be(:runner) do
-    create(:ci_runner, :instance, :unregistered, description: 'My Runner', creator: admin, version: '1.0.0')
-  end
+  let_it_be(:runner) { create(:ci_runner, :instance, :unregistered, description: 'My Runner', creator: admin) }
 
-  let_it_be(:runner_manager_1) { create(:ci_runner_machine, runner: runner, contacted_at: Time.current) }
-  let_it_be(:runner_manager_2) { create(:ci_runner_machine, runner: runner, contacted_at: Time.current) }
+  let_it_be(:runner_mach_1) { create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current) }
+  let_it_be(:runner_mach_2) { create(:ci_runner_machine, runner: runner, version: '1.0.0', contacted_at: Time.current) }
 
-  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
-  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group], version: '2.0.0') }
+  let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+  let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group]) }
   let_it_be(:project_runner) do
-    create(:ci_runner, :project, :unregistered, projects: [project, project_2], version: '2.0.0')
+    create(:ci_runner, :project, :unregistered, projects: [project, project_2])
   end
 
   let_it_be(:build) { create(:ci_build, runner: runner) }

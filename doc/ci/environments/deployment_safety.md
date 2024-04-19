@@ -73,7 +73,6 @@ For more information, see [Resource Group documentation](../resource_groups/inde
 
 ## Prevent outdated deployment jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
 > - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
 
 The effective execution order of pipeline jobs can vary from run to run, which

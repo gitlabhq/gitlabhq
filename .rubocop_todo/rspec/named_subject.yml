@@ -3668,7 +3668,6 @@ RSpec/NamedSubject:
     - 'spec/workers/packages/npm/create_metadata_cache_worker_spec.rb'
     - 'spec/workers/packages/nuget/extraction_worker_spec.rb'
     - 'spec/workers/packages/rubygems/extraction_worker_spec.rb'
-    - 'spec/workers/partition_creation_worker_spec.rb'
     - 'spec/workers/pipeline_notification_worker_spec.rb'
     - 'spec/workers/pipeline_process_worker_spec.rb'
     - 'spec/workers/pipeline_schedule_worker_spec.rb'

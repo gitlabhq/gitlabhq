@@ -181,8 +181,6 @@ docker push $CONTAINER_TEST_IMAGE
 
 ## Pull packages from a package registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
-
 You can use a deploy token to pull packages from a package registry.
 
 Prerequisites:
@@ -201,8 +199,6 @@ nuget install mypkg.nupkg
 
 ## Push packages to a package registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
-
 You can use a deploy token to push packages to a GitLab package registry.
 
 Prerequisites:
@@ -220,8 +216,6 @@ nuget push mypkg.nupkg -Source GitLab
 ```
 
 ## Pull images from the dependency proxy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
 
 You can use a deploy token to pull images from the dependency proxy.
 

@@ -514,8 +514,6 @@ Example responses:
 
 ## List of merge requests associated with a deployment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35739) in GitLab 12.7.
-
 NOTE:
 Not all deployments can be associated with merge requests. See
 [Track what merge requests were deployed to an environment](../ci/environments/index.md#track-newly-included-merge-requests-per-deployment)

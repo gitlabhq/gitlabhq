@@ -9458,7 +9458,6 @@
 - './spec/workers/pages_domain_verification_cron_worker_spec.rb'
 - './spec/workers/pages_domain_verification_worker_spec.rb'
 - './spec/workers/pages_worker_spec.rb'
-- './spec/workers/partition_creation_worker_spec.rb'
 - './spec/workers/personal_access_tokens/expired_notification_worker_spec.rb'
 - './spec/workers/personal_access_tokens/expiring_worker_spec.rb'
 - './spec/workers/pipeline_hooks_worker_spec.rb'

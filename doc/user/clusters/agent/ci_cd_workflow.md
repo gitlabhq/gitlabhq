@@ -10,15 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
-> - The pre-configured variable `$KUBECONFIG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) the `ci_access` attribute in GitLab 14.3.
-> - The ability to authorize groups was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) to GitLab Free in 14.5.
-> - Support for Linux package installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
-> - The ability to switch between certificate-based clusters and agents was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335089) in GitLab 14.9. The certificate-based cluster context is always called `gitlab-deploy`.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80508) from _CI/CD tunnel_ to _CI/CD workflow_ in GitLab 14.9.
-> - The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
+> - Agent connection sharing limit [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0.
 
 You can use GitLab CI/CD to safely connect, deploy, and update your Kubernetes clusters.
 
@@ -63,7 +55,6 @@ Authorization configuration can take one or two minutes to propagate.
 
 ### Authorize the agent to access your projects
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/356831) to allow authorizing projects in a user namespace in GitLab 15.7.
 
@@ -89,7 +80,6 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 ### Authorize the agent to access projects in your groups
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 
 To authorize the agent to access all of the GitLab projects in a group or subgroup:
@@ -166,10 +156,8 @@ When you deploy to an environment that has both a
 
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.
-- In GitLab 14.9 and later, agent contexts are included in `$KUBECONFIG`.
+- Agent contexts are included in `$KUBECONFIG`.
   You can select them by using `kubectl config use-context <path/to/agent/project>:<agent-name>`.
-- In GitLab 14.8 and earlier, you can still use agent connections, but for environments that
-  already have a certificate-based cluster, the agent connections are not included in `$KUBECONFIG`.
 
 To use an agent connection when certificate-based connections are present, you can manually configure a new `kubectl`
 configuration context. For example:
@@ -207,7 +195,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.
 
 By default, your CI/CD job inherits all the permissions from the service account used to install the

@@ -15,8 +15,7 @@ When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
 
 The version of the chart used to provision PostgreSQL:
 
-- Is 0.7.1 in GitLab 12.8 and earlier.
-- Can be set to from 0.7.1 to 8.2.1 in GitLab 12.9 and later.
+- Can be set from 0.7.1 to 8.2.1.
 
 GitLab encourages users to migrate their database to the newer PostgreSQL chart.
 

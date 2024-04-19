@@ -64,8 +64,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.8.
-
 The [deployment frequency](dora_metrics.md#deployment-frequency) charts show information about the deployment
 frequency to the `production` environment. The environment must be part of the
 [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments)
@@ -88,8 +86,6 @@ To view the deployment frequency chart:
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250329) in GitLab 13.11.
 
 The [lead time for changes](dora_metrics.md#lead-time-for-changes) chart shows information about how long it takes for
 merge requests to be deployed to a production environment. This chart is available for groups and projects.

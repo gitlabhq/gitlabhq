@@ -22,7 +22,6 @@ The alert list displays the following information:
 
 - **Search**: The alert list supports a simple free text search on the title,
   description, monitoring tool, and service fields.
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213884) in GitLab 13.1.)
 - **Severity**: The current importance of a alert and how much attention it
   should receive. For a listing of all statuses, read [Alert Management severity](#alert-severity).
 - **Start time**: How long ago the alert fired. This field uses the standard
@@ -71,10 +70,7 @@ The **Alert details** tab has two sections. The top section provides a short lis
 
 ### Metrics tab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.2.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/340852) in GitLab 14.10. In GitLab 14.9 and earlier, this tab shows a metrics chart for alerts coming from Prometheus.
-
-In many cases, alerts are associated to metrics. You can upload screenshots of metric charts in the **Metrics** tab.
+This tab shows a metrics chart for alerts coming from Prometheus. In many cases, alerts are associated to metrics. You can upload screenshots of metric charts in the **Metrics** tab.
 
 To do so, either:
 
@@ -88,8 +84,6 @@ When you upload an image, you can add text to the image and link it to the origi
 If you add a link, it is shown above the uploaded image.
 
 ### Activity feed tab
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 The **Activity feed** tab is a log of activity on the alert. When you take action on an alert, this is logged as a system note. This gives you a linear timeline of the alert's investigation and assignment history.
 
@@ -160,8 +154,6 @@ In GitLab 15.1 and earlier, updating the status of an [alert with an associated 
 
 ### Assign an alert
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
-
 In large teams, where there is shared ownership of an alert, it can be difficult to track who is investigating and working on it. Assigning alerts eases collaboration and delegation by indicating which user is owning the alert. GitLab supports only a single assignee per alert.
 
 To assign an alert:
@@ -186,8 +178,6 @@ After completing their portion of investigating or fixing the alert, users can u
 
 ### Create a to-do item from an alert
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
-
 You can manually create a [to-do item](../../user/todos.md) for yourself from an alert, and view it later on your **To-Do List**.
 
 To add a to-do item, on the right sidebar, select **Add a to do**.
@@ -197,9 +187,6 @@ To add a to-do item, on the right sidebar, select **Add a to do**.
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - Introduced in GitLab 13.1: incidents are not created automatically by default.
-> - Mapping common severity values from the alert payload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9.
 
 Turn on creating [incidents](incidents.md) automatically whenever an alert is triggered.
 

@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38366) in GitLab 11.0.
-> - Support for the GitLab agent was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299350) in GitLab 14.5.
-
 GitLab Auto DevOps is a collection of pre-configured features and integrations
 that work together to support your software delivery process.
 
@@ -26,7 +23,8 @@ You can use default settings to quickly ship your apps, and iterate and [customi
 You can also [manage Auto DevOps with APIs](customize.md#extend-auto-devops-with-the-api).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an introduction to Auto DevOps, watch [Auto DevOps in GitLab 11.0](https://youtu.be/0Tc0YYBxqi4).
+For an introduction to Auto DevOps, watch [Auto DevOps](https://youtu.be/0Tc0YYBxqi4).
+<!-- Video published on 2018-06-22 -->
 
 ## Auto DevOps features
 
@@ -74,8 +72,7 @@ If you want to build, test, and deploy your app:
 
 ### Enable or disable Auto DevOps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41729) in GitLab 11.3, Auto DevOps is enabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26655) in GitLab 12.7, Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
+Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
 
 Depending on your instance type, you can enable or disable Auto DevOps at the
 following levels:
@@ -118,8 +115,6 @@ To disable it, follow the same process and clear the
 **Default to Auto DevOps pipeline** checkbox.
 
 #### At the group level
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
 
 When you enable Auto DevOps at the group level, the subgroups and
 projects in that group inherit the configuration. You can save time by

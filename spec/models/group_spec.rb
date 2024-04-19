@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Group, feature_category: :groups_and_projects do
   include ReloadHelpers
   include StubGitlabCalls
+  using RSpec::Parameterized::TableSyntax
 
   let!(:group) { create(:group) }
 
@@ -2835,8 +2836,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#first_auto_devops_config' do
-    using RSpec::Parameterized::TableSyntax
-
     let(:group) { create(:group) }
 
     subject(:fetch_config) { group.first_auto_devops_config }
@@ -3814,8 +3813,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#shared_with_group_links.of_ancestors' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:subject_group, :result) do
         ref(:group)         | []
         ref(:sub_group)     | lazy { [shared_group_1].map(&:id) }
@@ -3830,8 +3827,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#shared_with_group_links.of_ancestors_and_self' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:subject_group, :result) do
         ref(:group)         | lazy { [shared_group_1].map(&:id) }
         ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
@@ -3891,24 +3886,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#usage_quotas_enabled?', feature_category: :consumables_cost_management, unless: Gitlab.ee? do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:feature_enabled, :root_group, :result) do
-      false | true  | false
-      false | false | false
-      true  | false | false
-      true  | true  | true
-    end
+  describe '#usage_quotas_enabled?', feature_category: :consumables_cost_management do
+    where(root_group: [true, false])
 
     with_them do
       before do
-        stub_feature_flags(usage_quotas_for_all_editions: feature_enabled)
         allow(group).to receive(:root?).and_return(root_group)
       end
 
       it 'returns the expected result' do
-        expect(group.usage_quotas_enabled?).to eq result
+        expect(group.usage_quotas_enabled?).to be root_group
       end
     end
   end

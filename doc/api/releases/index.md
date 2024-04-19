@@ -10,10 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
-> - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447). You might also pass the `include_html_description` query string as a parameter.
-> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1. For more information, see [Release permissions](../../user/project/releases/index.md#release-permissions).
-
 Use this API to manipulate [release entries](../../user/project/releases/index.md).
 
 To manipulate links as a release asset, see [Release Links API](links.md).
@@ -28,8 +24,6 @@ For authentication, the Releases API accepts either:
   the `JOB-TOKEN` header.
 
 ## List Releases
-
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -256,8 +250,6 @@ Example response:
 ```
 
 ## Get a Release by a tag name
-
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Gets a release for the given tag.
 
@@ -608,8 +600,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
-
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
 API calls. Only milestones associated with the project's group may be specified, and
@@ -620,9 +610,6 @@ adding milestones for ancestor groups raises an error.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Creates an evidence for an existing release.
 
@@ -758,8 +745,6 @@ Example response:
 
 ## Delete a Release
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-
 Deletes a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
 
 ```plaintext
@@ -842,8 +827,6 @@ Example response:
 ```
 
 ## Upcoming Releases
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).

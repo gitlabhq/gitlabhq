@@ -10,12 +10,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab has two types of searches available: **basic** and **advanced**.
+GitLab has three types of search: basic search, [advanced search](advanced_search.md), and [exact code search](exact_code_search.md).
 
-Both types of search are the same, except when you are searching through code.
+All three types are available for code search. GitLab uses these types in this order of priority:
 
-- When you use basic search to search code, your search includes one project at a time.
-- When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
+- Exact code search: regular expressions and exact strings are supported.
+- Advanced search: when exact code search is not available.
+- Basic search: when exact code search and advanced search are not available
+  or when you search against a non-default branch.
+  This type does not support group or global search.
+
+You can search in all GitLab or in a specific project and filter the results.
+Autocomplete suggestions are displayed as you type.
 
 ## Global search scopes
 

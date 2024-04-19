@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22513) in GitLab 12.5.
-
 While GitLab offers a [built-in deployment solution](index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
 GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.
 For example, the following features are available by setting up tracking:

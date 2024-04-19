@@ -252,7 +252,6 @@ Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMEN
 
 ### Rename an environment
 
-> - Renaming an environment by using the UI was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68550) in GitLab 14.3.
 > - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
 > - Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
 
@@ -265,8 +264,6 @@ To achieve the same result as renaming an environment:
 1. [Create a new environment](#create-a-static-environment) with the desired name.
 
 ## Deployment tier of environments
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
 Sometimes, instead of using an [industry standard](https://en.wikipedia.org/wiki/Deployment_environment)
 environment name, like `production`, you might want to use a code name, like `customer-portal`.
@@ -647,7 +644,6 @@ To stop an environment in the GitLab UI:
 
 #### Multiple stop actions for an environment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
 
 To configure multiple **parallel** stop actions on an environment, specify the
@@ -717,8 +713,6 @@ To delete an environment:
 
 ### Access an environment for preparation or verification purposes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
-
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
 
@@ -780,8 +774,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
-
 If you [set up alerts for Prometheus metrics](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
 severity is shown, so you can identify which environments need immediate attention.
@@ -799,8 +791,6 @@ deployment tab from the environment page and select which deployment to roll bac
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -827,8 +817,6 @@ GitLab Auto Rollback is turned off by default. To turn it on:
 1. Select **Save changes**.
 
 ### Web terminals (deprecated)
-
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -881,10 +869,6 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
 ### Archive Old Deployments
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628) in GitLab 14.5.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345027) in GitLab 14.6.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73628) in GitLab 14.0. [Feature flag `deployments_archive`](https://gitlab.com/gitlab-org/gitlab/-/issues/345027) removed.
 
 When a new deployment happens in your project,
 GitLab creates [a special Git-ref to the deployment](#check-out-deployments-locally).
@@ -1057,8 +1041,6 @@ To ensure the `action: stop` can always run when needed, you can:
 
 ### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
-
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error because the dynamically generated parameter can't be used for creating an environment.
 
@@ -1113,7 +1095,7 @@ To fix this, use one of the following solutions:
 
 ### Deployment refs are not found
 
-Starting from GitLab 14.5, GitLab [deletes old deployment refs](#archive-old-deployments)
+GitLab [deletes old deployment refs](#archive-old-deployments)
 to keep your Git repository performant.
 
 If you have to restore archived Git-refs, ask an administrator of your self-managed GitLab instance

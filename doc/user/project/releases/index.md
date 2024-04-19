@@ -61,8 +61,6 @@ switch between ascending or descending order, select **Sort order**.
 
 ### Permanent link to latest release
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
-
 Latest release page is accessible through a permanent URL.
 GitLab redirects to the latest release page URL when it is visited.
 
@@ -191,8 +189,6 @@ project.
 
 ## Upcoming releases
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
-
 You can create a release ahead of time by using the [Releases API](../../../api/releases/index.md#upcoming-releases).
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
 release tag. When the `released_at` date and time has passed, the badge is automatically removed.
@@ -250,9 +246,6 @@ In the UI:
 
 ## Associate milestones with a release
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29020) in GitLab 12.5.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/39467) to edit milestones in the UI in GitLab 13.0.
-
 You can associate a release with one or more [project milestones](../milestones/index.md#project-milestones-and-group-milestones).
 
 [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify [group milestones](../milestones/index.md#project-milestones-and-group-milestones) to associate with a release.
@@ -286,8 +279,6 @@ more, read issue #328054,
 
 ## Get notified when a release is created
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26001) in GitLab 12.4.
-
 You can be notified by email when a new release is created for your project.
 
 To subscribe to notifications for releases:
@@ -299,9 +290,6 @@ To subscribe to notifications for releases:
 1. Close the dialog box to save.
 
 ## Prevent unintentional releases by setting a deploy freeze
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29382) in GitLab 13.0.
-> - The ability to delete freeze periods through the UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212451) in GitLab 14.3.
 
 Prevent unintended production releases during a period of time you specify by
 setting a [*deploy freeze* period](../../../ci/environments/deployment_safety.md).
@@ -363,11 +351,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ## Release permissions
 
-> - Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
-
 ### View a release and download assets
-
-> - Changes to the Guest role [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
 - Users with at least the Reporter role
   have read and download access to the project releases.

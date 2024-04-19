@@ -36,8 +36,6 @@ are documented.
 
 ## Integrate your project with Terraform
 
-> - IaC Scanning was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
-
 WARNING:
 The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
 See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.

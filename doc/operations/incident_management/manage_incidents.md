@@ -36,10 +36,6 @@ Alternatively, you can use the `/iteration` [quick action](../../user/project/qu
 
 ### From the incidents list
 
-> - [Moved](https://gitlab.com/gitlab-org/monitor/monitor/-/issues/24) to GitLab Free in 13.3.
-> - [Permission changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336624) from Guest to Reporter in GitLab 14.5.
-> - Automatic application of the `incident` label [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290964) in GitLab 14.8.
-
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
@@ -51,8 +47,6 @@ To create an incident from the incidents list:
 1. Select **Create incident**.
 
 ### From the issues list
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230857) in GitLab 13.4.
 
 Prerequisites:
 
@@ -67,8 +61,6 @@ To create an incident from the issues list:
 1. Select **Create issue**.
 
 ### From an alert
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
 
 Create an incident issue when viewing an [alert](alerts.md).
 The incident description is populated from the alert.
@@ -101,7 +93,6 @@ whenever an alert is triggered.
 
 ### Using the PagerDuty webhook
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.3.
 > - [PagerDuty V3 Webhook](https://support.pagerduty.com/docs/webhooks) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383029) in GitLab 15.7.
 
 You can set up a webhook with PagerDuty to automatically create a GitLab incident
@@ -159,8 +150,6 @@ To assign a user:
 1. Select any area outside the dropdown list.
 
 ## Change severity
-
-> - Editing severity on incident details page was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229402) in GitLab 13.4.
 
 See [incident list](incidents.md#incidents-list) for a full description of the severity levels available.
 
@@ -248,8 +237,6 @@ the linked alert's status changes to **Resolved**.
 You are then credited with the alert's status change.
 
 ### Automatically close incidents via recovery alerts
-
-> - [Introduced for HTTP integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
 Turn on closing an incident automatically when GitLab receives a recovery alert
 from a HTTP or Prometheus webhook.

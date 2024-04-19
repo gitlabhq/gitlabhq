@@ -5,6 +5,7 @@ import StatusBadge from '~/issuable/components/status_badge.vue';
 import MergeRequestHeader from '~/merge_requests/components/merge_request_header.vue';
 import mrStore from '~/mr_notes/stores';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 
@@ -14,11 +15,12 @@ describe('MergeRequestHeader component', () => {
   const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findStatusBadge = () => wrapper.findComponent(StatusBadge);
 
   const renderTestMessage = (renders) => (renders ? 'renders' : 'does not render');
 
-  const createComponent = ({ confidential, hidden, locked }) => {
+  const createComponent = ({ confidential, hidden, locked, isImported = false }) => {
     const store = mrStore;
     store.getters.getNoteableData = {};
     store.getters.getNoteableData.confidential = confidential;
@@ -34,6 +36,7 @@ describe('MergeRequestHeader component', () => {
       },
       propsData: {
         initialState: 'opened',
+        isImported,
       },
     });
   };
@@ -85,4 +88,18 @@ describe('MergeRequestHeader component', () => {
       });
     },
   );
+
+  describe('imported badge', () => {
+    it('renders when merge request is imported', () => {
+      createComponent({ isImported: true });
+
+      expect(findImportedBadge().props('importableType')).toBe('merge_request');
+    });
+
+    it('does not render when merge request is not imported', () => {
+      createComponent({ isImported: false });
+
+      expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
 });

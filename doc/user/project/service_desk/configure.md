@@ -50,7 +50,6 @@ To improve your Service Desk project's security, you should:
 
 ## Customize emails sent to the requester
 
-> - Moved from GitLab Premium to GitLab Free in 13.2.
 > - `UNSUBSCRIBE_URL`, `SYSTEM_HEADER`, `SYSTEM_FOOTER`, and `ADDITIONAL_TEXT` placeholders [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285512) in GitLab 15.9.
 > - `%{ISSUE_DESCRIPTION}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223751) in GitLab 16.0.
 > - `%{ISSUE_URL}` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408793) in GitLab 16.1.
@@ -460,9 +459,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
-
 You can use an additional alias email address for Service Desk on an instance level.
 
 To do this, you must configure
@@ -670,7 +666,6 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
 
 #### Microsoft Graph
 
-> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 > - [Introduced for self-compiled (source) installs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116494) in GitLab 15.11.
 
 `service_desk_email` can be configured to read Microsoft Exchange Online mailboxes with the Microsoft

@@ -54,17 +54,14 @@ GitLab CI/CD build environment to deployment jobs. Deployment jobs have
 | Deployment Variable        | Description |
 |----------------------------|-------------|
 | `KUBE_URL`                 | Equal to the API URL. |
-| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](cluster_access.md). Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main service account of the cluster integration. |
+| `KUBE_TOKEN`               | The Kubernetes token of the [environment service account](cluster_access.md). |
 | `KUBE_NAMESPACE`           | The namespace associated with the project's deployment service account. In the format `<project_name>-<project_id>-<environment>`. For GitLab-managed clusters, a matching namespace is automatically created by GitLab in the cluster. If your cluster was created before GitLab 12.2, the default `KUBE_NAMESPACE` is set to `<project_name>-<project_id>`. |
 | `KUBE_CA_PEM_FILE`         | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM`              | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG`               | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This configuration also embeds the same token defined in `KUBE_TOKEN` so you likely need only this variable. This variable name is also automatically picked up by `kubectl` so you don't need to reference it explicitly if using `kubectl`. |
-| `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](gitlab_managed_clusters.md#base-domain) for more information. |
+| `KUBE_INGRESS_BASE_DOMAIN` | This variable can be used to set a domain per cluster. See [cluster domains](gitlab_managed_clusters.md#base-domain) for more information. |
 
 ## Custom namespace
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
-> - An option to use project-wide namespaces [was added](https://gitlab.com/gitlab-org/gitlab/-/issues/38054) in GitLab 13.5.
 
 The Kubernetes integration provides a `KUBECONFIG` with an auto-generated namespace
 to deployment jobs. It defaults to using project-environment specific namespaces

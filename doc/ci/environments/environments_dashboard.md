@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3713) in GitLab 12.5.
-
 The Environments Dashboard provides a cross-project
 environment-based view that lets you see the big picture
 of what is going on in each environment. From a single

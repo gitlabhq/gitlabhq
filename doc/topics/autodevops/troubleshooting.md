@@ -93,7 +93,7 @@ with Auto DevOps:
 ```plaintext
 Detected an existing PostgreSQL database installed on the
 deprecated channel 1, but the current channel is set to 2. The default
-channel changed to 2 in of GitLab 13.0.
+channel changed to 2 in GitLab 13.0.
 [...]
 ```
 

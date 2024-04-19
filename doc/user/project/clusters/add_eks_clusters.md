@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-
 WARNING:
 This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md)
 to create new clusters.
@@ -266,10 +263,7 @@ IAM user in the Amazon AWS console, and follow these steps:
 
 #### EKS access key and ID
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) instance profiles in GitLab 13.7.
-
-If you're using GitLab 13.7 or later, you can use instance profiles to
-dynamically retrieve temporary credentials from AWS when needed.
+You can use instance profiles to dynamically retrieve temporary credentials from AWS when needed.
 In this case, leave the `Access key ID` and `Secret access key` fields blank
 and [pass an IAM role to an EC2 instance](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html).
 

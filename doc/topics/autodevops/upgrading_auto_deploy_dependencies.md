@@ -81,8 +81,6 @@ Kubernetes cluster, follow your cloud provider's instructions. Here's
 
 #### Helm v3
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228609) in GitLab 13.4.
-
 The `auto-deploy-image` uses the Helm binary to manipulate the releases.
 Previously, `auto-deploy-image` used Helm v2, which used Tiller in a cluster.
 In the v2 `auto-deploy-image`, it uses Helm v3 that doesn't require Tiller anymore.
@@ -129,8 +127,6 @@ with the [v1 auto-deploy-image](#use-a-specific-version-of-auto-deploy-dependenc
 
 #### Traffic routing change for canary deployments and incremental rollouts
 
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/109) in GitLab 13.4.
-
 Auto Deploy supports advanced deployment strategies such as [canary deployments](cicd_variables.md#deploy-policy-for-canary-environments)
 and [incremental rollouts](../../ci/environments/incremental_rollouts.md).
 
@@ -161,15 +157,13 @@ steps to upgrade to v2:
 To use a specific version of Auto Deploy dependencies, specify the previous Auto Deploy
 stable template that contains the [desired version of `auto-deploy-image` and `auto-deploy-app`](#verify-dependency-versions).
 
-For example, if the template is bundled in GitLab 13.3, change your `.gitlab-ci.yml` to:
+For example, if the template is bundled in GitLab 16.10, change your `.gitlab-ci.yml` to:
 
 ```yaml
 include:
   - template: Auto-DevOps.gitlab-ci.yml
-  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v13.3.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
+  - remote: https://gitlab.com/gitlab-org/gitlab/-/raw/v16.10.0-ee/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml
 ```
-
-Alternatively, you can use the [v13.12 Auto DevOps templates archive](https://gitlab.com/hfyngvason/auto-devops-v13-12).
 
 ### Ignore warnings and continue deploying
 
@@ -194,8 +188,6 @@ include:
 WARNING:
 Using a [Beta](../../policy/experiment-beta-support.md#beta) or unstable `auto-deploy-image` could cause unrecoverable damage to
 your environments. Do not test it with important projects or environments.
-
-The next stable template update is [planned for GitLab v14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/232788).
 
 ## Resource Architectures of the `auto-deploy-app` chart
 

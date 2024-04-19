@@ -49,6 +49,9 @@ export default {
     firstIpAddress() {
       return this.runner.managers?.nodes?.[0]?.ipAddress || null;
     },
+    firstVersion() {
+      return this.runner.managers?.nodes?.[0]?.version || null;
+    },
     additionalIpAddressCount() {
       return this.managersCount - 1;
     },
@@ -95,11 +98,11 @@ export default {
       v-if="runner.version || runner.description"
       class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
     >
-      <template v-if="runner.version">
+      <template v-if="firstVersion">
         <div class="gl-flex-shrink-0">
           <runner-upgrade-status-icon :upgrade-status="runner.upgradeStatus" />
           <gl-sprintf :message="$options.i18n.I18N_VERSION_LABEL">
-            <template #version>{{ runner.version }}</template>
+            <template #version>{{ firstVersion }}</template>
           </gl-sprintf>
         </div>
         <div v-if="runner.description" class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>

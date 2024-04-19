@@ -770,7 +770,6 @@ Gitlab/NamespacedClass:
     - 'app/workers/pages_domain_verification_cron_worker.rb'
     - 'app/workers/pages_domain_verification_worker.rb'
     - 'app/workers/pages_worker.rb'
-    - 'app/workers/partition_creation_worker.rb'
     - 'app/workers/pipeline_hooks_worker.rb'
     - 'app/workers/pipeline_metrics_worker.rb'
     - 'app/workers/pipeline_notification_worker.rb'

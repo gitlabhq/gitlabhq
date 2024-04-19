@@ -16,8 +16,6 @@ notifications using the methods described on this page.
 
 ## Slack notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
-
 The GitLab for Slack app can be used to receive important incident notifications.
 
 When [the GitLab for Slack app is configured](slack.md), incident responders are notified in Slack

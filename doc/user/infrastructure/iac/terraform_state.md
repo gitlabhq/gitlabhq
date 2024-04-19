@@ -10,7 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 > - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
 > - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
 
@@ -294,8 +293,6 @@ To read the Terraform state in the target project, you need at least the Develop
 
 ## Manage Terraform state files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
-
 To view Terraform state files:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -304,8 +301,6 @@ To view Terraform state files:
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
 
 ### Manage individual Terraform state versions
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207347) in GitLab 13.4.
 
 Individual state versions can be managed using the GitLab REST API.
 

@@ -30,8 +30,6 @@ see the [GitLab Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashbo
 
 ## Integrate with GitLab UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61005) in GitLab 12.1.
-
 After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 
@@ -45,8 +43,6 @@ GitLab sidebar:
 GitLab displays your link in the Admin Area under **Monitoring > Metrics Dashboard**.
 
 ## Required Scopes
-
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5822) in GitLab 13.10.
 
 When setting up Grafana through the process above, no scope shows in the screen in
 the Admin Area under **Applications > GitLab Grafana**. However, the `read_user` scope is

@@ -508,6 +508,8 @@
             position: sticky;
             padding: 0 15px;
             margin-bottom: calc((#{$content-wrapper-padding} * -1) + var(--mr-review-bar-height));
+            overflow-y: auto;
+            overscroll-behavior: contain;
           }
         }
       }

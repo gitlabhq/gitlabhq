@@ -1014,7 +1014,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/pages_domain_verification_cron_worker.rb'
     - 'app/workers/pages_domain_verification_worker.rb'
     - 'app/workers/pages_worker.rb'
-    - 'app/workers/partition_creation_worker.rb'
     - 'app/workers/pause_control/resume_worker.rb'
     - 'app/workers/personal_access_tokens/expired_notification_worker.rb'
     - 'app/workers/personal_access_tokens/expiring_worker.rb'

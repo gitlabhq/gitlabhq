@@ -18,6 +18,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import StatusBadge from '~/issuable/components/status_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
@@ -58,6 +59,7 @@ export default {
     GlIcon,
     DiscussionCounter,
     StatusBadge,
+    ImportedBadge,
     TodoWidget,
     SubscriptionsWidget,
     ClipboardButton,
@@ -75,6 +77,11 @@ export default {
     blocksMerge: { default: false },
   },
   props: {
+    isImported: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tabs: {
       type: Array,
       required: true,
@@ -160,18 +167,15 @@ export default {
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-w-full"
         :class="{ 'container-limited': !isFluidLayout }"
       >
-        <div class="gl-w-full gl-display-flex gl-align-items-baseline">
-          <status-badge
-            class="gl-align-self-center gl-mr-3"
-            :issuable-type="$options.TYPE_MERGE_REQUEST"
-            :state="badgeState.state"
-          />
+        <div class="gl-w-full gl-display-flex gl-align-items-center gl-gap-2">
+          <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
+          <imported-badge v-if="isImported" :importable-type="$options.TYPE_MERGE_REQUEST" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-mr-4 gl-text-black-normal"
+            class="gl-display-none gl-lg-display-block gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
           ></a>
-          <div class="gl-display-flex gl-align-items-baseline">
+          <div class="gl-display-flex gl-align-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
               <template #copyButton>
                 <clipboard-button

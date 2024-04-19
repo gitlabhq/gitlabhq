@@ -91,7 +91,7 @@ describe('RunnerTypeCell', () => {
   });
 
   it('Displays the runner version', () => {
-    expect(wrapper.text()).toContain(mockRunner.version);
+    expect(wrapper.text()).toContain(mockRunner.managers.nodes[0].version);
   });
 
   it('Displays the runner description', () => {

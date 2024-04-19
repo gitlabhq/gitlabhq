@@ -27,7 +27,7 @@ use the [GitLab agent](../../clusters/agent/index.md).
 
 ## Create a new GKE cluster from GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25925) in GitLab 12.4, all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+All GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md).
 
@@ -48,11 +48,9 @@ Note the following:
 - The [Google authentication integration](../../../integration/google.md) must be enabled in GitLab
   at the instance level. If that's not the case, ask your GitLab administrator to enable it. On
   GitLab.com, this is enabled.
-- In [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/55902) and later, all GKE clusters
-  created by GitLab are RBAC-enabled. Take a look at the [RBAC section](cluster_access.md#rbac-cluster-resources) for
+- All GKE clusters created by GitLab are RBAC-enabled. Take a look at the [RBAC section](cluster_access.md#rbac-cluster-resources) for
   more information.
-- In [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18341) and later, the
-  cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
+- The cluster's pod address IP range is set to `/16` instead of the regular `/14`. `/16` is a CIDR
   notation.
 - GitLab requires basic authentication enabled and a client certificate issued for the cluster to
   set up an [initial service account](cluster_access.md). In
@@ -92,8 +90,6 @@ cluster certificates:
 After a couple of minutes, your cluster is ready.
 
 ### Cloud Run for Anthos
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16566) in GitLab 12.4.
 
 You can choose to use Cloud Run for Anthos in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run

@@ -95,7 +95,8 @@ describe('RunnerList', () => {
   it('Displays details of a runner', () => {
     createComponent({}, mountExtended);
 
-    const { id, description, version, shortSha } = mockRunners[0];
+    const { id, description, shortSha } = mockRunners[0];
+
     const numericId = getIdFromGraphQLId(id);
 
     // Badges
@@ -109,11 +110,10 @@ describe('RunnerList', () => {
     expect(summary).toContain(`#${numericId} (${shortSha})`);
     expect(summary).toContain(I18N_PROJECT_TYPE);
 
-    expect(summary).toContain(version);
     expect(summary).toContain(description);
 
     expect(summary).toContain('Last contact');
-    expect(summary).toContain('0'); // job count
+    expect(summary).toContain('-'); // job count
     expect(summary).toContain('Created');
 
     // Actions

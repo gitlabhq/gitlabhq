@@ -11,9 +11,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
-
 You can require additional approvals for deployments to protected
 environments. Deployments are blocked until all required approvals are
 given.
@@ -56,7 +53,6 @@ The environments in your project require approval before deployment.
 
 ### Add multiple approval rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
 > - UI configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378445) in GitLab 15.11.
 
@@ -152,8 +148,6 @@ To allow self-approval of a deployment job:
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
 
 ## Approve or reject a deployment
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
 In an environment with multiple approval rules, you can:
 

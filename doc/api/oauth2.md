@@ -272,6 +272,10 @@ The Resource Owner Password Credentials is disabled for users with
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
 
+NOTE:
+Ensure the [**Allow password authentication for Git over HTTP(S)**](../administration/settings/sign_in_restrictions.md#password-authentication-enabled)
+checkbox is selected for the GitLab instance to support the password credentials flow.
+
 In this flow, a token is requested in exchange for the resource owner credentials
 (username and password).
 

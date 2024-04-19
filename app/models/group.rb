@@ -943,7 +943,7 @@ class Group < Namespace
   end
 
   def usage_quotas_enabled?
-    ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
+    root?
   end
 
   def supports_saved_replies?

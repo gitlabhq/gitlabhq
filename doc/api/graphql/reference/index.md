@@ -9190,7 +9190,6 @@ Input type: `VulnerabilityCreateInput`
 | <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
 | <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
 | <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
-| <a id="mutationvulnerabilitycreatemessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated:** message field has been removed from security reports schema. Deprecated in GitLab 16.1. |
 | <a id="mutationvulnerabilitycreatename"></a>`name` | [`String!`](#string) | Name of the vulnerability. |
 | <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
 | <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
@@ -17202,7 +17201,7 @@ Statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in GitLab 15.8. **Status**: Experiment. Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
+| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
 
 ### `CiManualVariable`
 
@@ -19580,7 +19579,6 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
 | <a id="dorametricsenvironmenttiers"></a>`environmentTiers` | [`[DeploymentTier!]`](#deploymenttier) | Deployment tiers of the environments to return. Defaults to `[PRODUCTION]`. |
 | <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
-| <a id="dorametricsmetric"></a>`metric` **{warning-solid}** | [`DoraMetricType`](#dorametrictype) | **Deprecated** in GitLab 15.10. Superseded by metrics fields. See `DoraMetric` type. |
 | <a id="dorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
 
 ### `DoraMetric`
@@ -19594,7 +19592,6 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametricdeploymentfrequency"></a>`deploymentFrequency` | [`Float`](#float) | Number of deployments per day. |
 | <a id="dorametricleadtimeforchanges"></a>`leadTimeForChanges` | [`Float`](#float) | Median time to deploy a merged merge request. |
 | <a id="dorametrictimetorestoreservice"></a>`timeToRestoreService` | [`Float`](#float) | Median time to close an incident. |
-| <a id="dorametricvalue"></a>`value` **{warning-solid}** | [`Float`](#float) | **Deprecated** in GitLab 15.10. Moved to corresponding metric field. |
 
 ### `DoraPerformanceScoreCount`
 
@@ -30409,7 +30406,6 @@ Represents a vulnerability.
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
-| <a id="vulnerabilitymessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.1. message field has been removed from security reports schema. |
 | <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
@@ -32625,17 +32621,6 @@ All possible ways that DORA metrics can be aggregated.
 | <a id="dorametricbucketingintervalall"></a>`ALL` | All data points are combined into a single value. |
 | <a id="dorametricbucketingintervaldaily"></a>`DAILY` | Data points are combined into chunks by day. |
 | <a id="dorametricbucketingintervalmonthly"></a>`MONTHLY` | Data points are combined into chunks by month. |
-
-### `DoraMetricType`
-
-All supported DORA metric types.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="dorametrictypechange_failure_rate"></a>`CHANGE_FAILURE_RATE` | Change failure rate. |
-| <a id="dorametrictypedeployment_frequency"></a>`DEPLOYMENT_FREQUENCY` | Deployment frequency. |
-| <a id="dorametrictypelead_time_for_changes"></a>`LEAD_TIME_FOR_CHANGES` | Lead time for changes. |
-| <a id="dorametrictypetime_to_restore_service"></a>`TIME_TO_RESTORE_SERVICE` | Time to restore service. |
 
 ### `EntryType`
 

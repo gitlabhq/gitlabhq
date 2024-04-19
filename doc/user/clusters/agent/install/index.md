@@ -10,10 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/594) multi-arch images in GitLab 14.8. The first multi-arch release is `v14.8.1`. It supports AMD64 and ARM64 architectures.
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/603) ARM architecture support in GitLab 14.9.
-
 To connect a Kubernetes cluster to GitLab, you must install an agent in your cluster.
 
 ## Prerequisites
@@ -37,13 +33,12 @@ To install the agent in your cluster:
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a GitLab 14.2 [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [walk-through of this process](https://www.youtube.com/watch?v=XuBpKtsgGkE).
+<!-- Video published on 2021-09-02 -->
 
 ### Create an agent configuration file
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259669) in GitLab 13.7, the agent configuration file can be added to multiple directories (or subdirectories) of the repository.
-> - Group authorization was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/5784) in GitLab 14.3.
-
+The agent configuration file can be added to multiple directories (or subdirectories) of the repository.
 For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
 
 - You use [a GitOps workflow](../gitops/agent.md#gitops-workflow-steps).
@@ -71,11 +66,11 @@ You can leave the file blank for now, and [configure it](#configure-your-agent) 
 
 ### Register the agent with GitLab
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5786) in GitLab 14.1, you can create a new agent record directly from the GitLab UI.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347240) in GitLab 14.9, the agent can be registered without creating an agent configuration file.
+You can create a new agent record directly from the GitLab UI.
+The agent can be registered without creating an agent configuration file.
 
 FLAG:
-In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 Prerequisites:
 
@@ -103,7 +98,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 ### Install the agent in the cluster
 
-> - Introduced in GitLab 14.10, GitLab recommends using Helm to install the agent.
+GitLab recommends using Helm to install the agent.
 
 To connect your cluster to GitLab, install the registered agent
 in your cluster. You can either:
@@ -246,7 +241,7 @@ The following example projects can help you get started with the agent.
 
 ## Updates and version compatibility
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
+GitLab warns you on the agent's list page to update the agent version installed on your cluster.
 
 For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous and next minor versions are also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x or v14.10.x version of the agent is also supported. See [the release page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of the GitLab agent.
 

@@ -51,6 +51,7 @@ requestIdleCallback(() => {
       isFluidLayout,
       sourceProjectPath,
       blocksMerge,
+      imported,
     } = JSON.parse(data);
 
     tabData.tabs = tabs;
@@ -58,6 +59,7 @@ requestIdleCallback(() => {
     // eslint-disable-next-line no-new
     new Vue({
       el,
+      name: 'MergeRequestStickyHeaderRoot',
       store,
       apolloProvider,
       provide: {
@@ -73,6 +75,7 @@ requestIdleCallback(() => {
         return h(StickyHeader, {
           props: {
             tabs: tabData.tabs,
+            isImported: parseBoolean(imported),
           },
         });
       },

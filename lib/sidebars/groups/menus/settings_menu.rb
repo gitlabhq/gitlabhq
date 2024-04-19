@@ -109,7 +109,7 @@ module Sidebars
         end
 
         def usage_quotas_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :usage_quotas) unless usage_quotas_menu_enabled?
+          return ::Sidebars::NilMenuItem.new(item_id: :usage_quotas) unless context.group.usage_quotas_enabled?
 
           ::Sidebars::MenuItem.new(
             title: s_('UsageQuota|Usage Quotas'),
@@ -117,10 +117,6 @@ module Sidebars
             active_routes: { path: 'usage_quotas#index' },
             item_id: :usage_quotas
           )
-        end
-
-        def usage_quotas_menu_enabled?
-          context.group.usage_quotas_enabled?
         end
 
         def packages_and_registries_menu_item

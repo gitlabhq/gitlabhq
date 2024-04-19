@@ -418,6 +418,34 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
+
+      context "when auto_stop_at is present" do
+        before do
+          environment.update!(auto_stop_at: Time.current)
+        end
+
+        it "returns the expected response" do
+          get api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['auto_stop_at']).to be_present
+        end
+      end
+
+      context "when auto_stop_at is not present" do
+        before do
+          environment.update!(auto_stop_at: nil)
+        end
+
+        it "returns the expected response" do
+          get api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(json_response['auto_stop_at']).to be_nil
+        end
+      end
     end
 
     context 'as non member' do

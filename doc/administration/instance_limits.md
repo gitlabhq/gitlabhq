@@ -574,57 +574,35 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
-### Number of instance level variables
+### CI/CD variable limits
 
-The total number of instance level CI/CD variables is limited at the instance level.
-This limit is checked each time a new instance level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable is not created.
+> - Group and project-level variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
-On self-managed instances this limit is defined for the `default` plan. By default,
-this limit is set to `25`.
+The number of [CI/CD variables](../ci/variables/index.md) that can be defined in project,
+group, and instance settings are all limited at the instance level. These limits are checked
+each time a new variable is created. If a new variable would cause the total number of variables
+to exceed the respective limit, the new variable is not created.
 
-To update this limit to a new value on a self-managed installation, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+To update the `default` plan of one of these limits on a self-managed installation, in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) run the following command:
 
-```ruby
-Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
-```
+- [Instance-level CI/CD variable](../ci/variables/index.md#for-an-instance) limit (default: `25`):
 
-### Number of group level variables
+  ```ruby
+  Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
+  ```
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+- [Group-level CI/CD variable](../ci/variables/index.md#for-a-group) limit per group (default: `30000`):
 
-The total number of group level CI/CD variables is limited at the instance level.
-This limit is checked each time a new group level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable is not created.
+  ```ruby
+  Plan.default.actual_limits.update!(group_ci_variables: 40000)
+  ```
 
-On self-managed instances this limit is defined for the `default` plan. By default,
-this limit is set to `30000`.
+- [Project-level CI/CD variable](../ci/variables/index.md#for-a-project) limit per project (default: `8000`):
 
-To update this limit to a new value on a self-managed installation, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-Plan.default.actual_limits.update!(group_ci_variables: 40000)
-```
-
-### Number of project level variables
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
-
-The total number of project level CI/CD variables is limited at the instance level.
-This limit is checked each time a new project level variable is created. If a new variable
-would cause the total number of variables to exceed the limit, the new variable is not created.
-
-On self-managed instances this limit is defined for the `default` plan. By default,
-this limit is set to `8000`.
-
-To update this limit to a new value on a self-managed installation, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
-
-```ruby
-Plan.default.actual_limits.update!(project_ci_variables: 10000)
-```
+  ```ruby
+  Plan.default.actual_limits.update!(project_ci_variables: 10000)
+  ```
 
 ### Maximum file size per type of artifact
 

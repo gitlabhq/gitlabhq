@@ -11,8 +11,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
-
 By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
 the feedback loop in merge requests, however, there are some situations that
 you may want to limit the concurrency on deployment
@@ -69,10 +67,6 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 Only one resource can be attached to a resource group.
 
 ## Process modes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.3.
-> - [Feature flag `ci_resource_group_process_modes`](https://gitlab.com/gitlab-org/gitlab/-/issues/340380) removed in GitLab 14.4.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/202186) in GitLab 14.4.
 
 You can choose a process mode to strategically control the job concurrency for your deployment preferences.
 The following modes are supported:
@@ -144,8 +138,6 @@ Depending on the process mode of the resource group:
   - `deploy-3` runs first, `deploy-2` runs second and `deploy-1` runs last.
 
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
 
 You can define `resource_group` for downstream pipelines that are sensitive to concurrent
 executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the

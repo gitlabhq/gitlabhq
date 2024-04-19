@@ -49,8 +49,6 @@ You can customize your buildpacks when either:
 
 ### Customize buildpacks with Cloud Native Buildpacks
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28165) in GitLab 12.10.
-
 Specify either:
 
 - The CI/CD variable `BUILDPACK_URL` with any of [`pack`'s URI specification formats](https://buildpacks.io/docs/app-developer-guide/specify-buildpacks/).
@@ -93,8 +91,6 @@ To use only a single custom buildpack, you should provide the project CI/CD vari
 `BUILDPACK_URL` instead.
 
 ## Custom Dockerfiles
-
-> - `DOCKERFILE_PATH` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2.
 
 If you have a Dockerfile in the root of your project repository, Auto
 DevOps builds a Docker image based on the Dockerfile. This can be
@@ -168,8 +164,6 @@ You can extend and manage your Auto DevOps configuration with GitLab APIs:
 
 ## Forward CI/CD variables to the build environment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25514) in GitLab 12.3.
-
 To forward CI/CD variables to the build environment, add the names of the variables
 you want to forward to the `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` CI/CD variable.
 Separate multiple variables with commas.
@@ -223,12 +217,10 @@ repository or by specifying a project CI/CD variable:
 
 ### Customize Helm chart values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30628) in GitLab 12.6, `.gitlab/auto-deploy-values.yaml` is used by default for Helm upgrades.
-
 To override the default values in the `values.yaml` file in the
 [default Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app), either:
 
-- Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. This file is automatically used.
+- Add a file named `.gitlab/auto-deploy-values.yaml` to your repository. This file is used by default for Helm upgrades.
 - Add a file with a different name or path to the repository. Set the
   `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](cicd_variables.md) with the path and name of the file.
 
@@ -298,17 +290,6 @@ include:
 
 For a list of available jobs, see the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
 
-WARNING:
-From [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/213336),
-Auto DevOps templates that use the [`only`](../../ci/yaml/index.md#only--except) or
-[`except`](../../ci/yaml/index.md#only--except) syntax have switched
-to the [`rules`](../../ci/yaml/index.md#rules) syntax.
-If your `.gitlab-ci.yml` extends these Auto DevOps templates and overrides `only` or
-`except`, migrate your templates to the
-[`rules`](../../ci/yaml/index.md#rules) syntax.
-If you cannot migrate, you can pin your templates to
-the [GitLab 12.10 based templates](https://gitlab.com/gitlab-org/auto-devops-v12-10).
-
 ## Use multiple Kubernetes clusters
 
 See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops.md).
@@ -377,8 +358,6 @@ To use the old PostgreSQL, set the `AUTO_DEVOPS_POSTGRES_CHANNEL` variable to
 `1`.
 
 ### Customize values for PostgreSQL Helm Chart
-
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/113) in GitLab 13.8 with auto-deploy-image v2.
 
 To set custom values, do one of the following:
 
