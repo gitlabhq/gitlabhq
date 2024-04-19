@@ -355,7 +355,6 @@ module SearchHelper
   end
 
   # Autocomplete results for the current user's projects
-  # rubocop: disable CodeReuse/ActiveRecord
   def projects_autocomplete(term, limit = 5)
     current_user.authorized_projects.order_id_desc.search(term, include_namespace: true, use_minimum_char_limit: false)
       .sorted_by_stars_desc.non_archived.limit(limit).map do |p|
@@ -391,13 +390,13 @@ module SearchHelper
   def recent_merge_requests_autocomplete(term)
     return [] unless current_user
 
-    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).search(term).map do |mr|
+    ::Gitlab::Search::RecentMergeRequests.new(user: current_user).search(term).preload_routables.map do |mr|
       {
         category: "Recent merge requests",
         id: mr.id,
         label: search_result_sanitize(mr.title),
         url: merge_request_path(mr),
-        avatar_url: mr.project.avatar_url || '',
+        avatar_url: mr.target_project.avatar_url || '',
         project_id: mr.target_project_id,
         project_name: mr.target_project.name
       }
@@ -407,7 +406,7 @@ module SearchHelper
   def recent_issues_autocomplete(term)
     return [] unless current_user
 
-    ::Gitlab::Search::RecentIssues.new(user: current_user).search(term).map do |i|
+    ::Gitlab::Search::RecentIssues.new(user: current_user).search(term).preload_namespace.preload_routables.map do |i|
       {
         category: "Recent issues",
         id: i.id,
@@ -419,7 +418,6 @@ module SearchHelper
       }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def search_result_sanitize(str)
     Sanitize.clean(str)

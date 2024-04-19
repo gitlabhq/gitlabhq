@@ -36,6 +36,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isImported: {
+      type: Boolean,
+      required: true,
+    },
     isLocked: {
       type: Boolean,
       required: true,
@@ -105,6 +109,7 @@ export default {
     :created-at="createdAt"
     :is-first-contribution="isFirstContribution"
     :is-hidden="isHidden"
+    :is-imported="isImported"
     :issuable-state="issuableState"
     :issuable-type="issuableType"
     :service-desk-reply-to="serviceDeskReplyTo"

@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { cloneDeep } from 'lodash';
 import { sortNameAlphabetically } from '~/work_items/utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
@@ -57,6 +58,10 @@ describe('WorkItemAssigneesWithEdit component', () => {
     findSidebarDropdownWidget().vm.$emit('dropdownShown');
   };
 
+  const hideDropdown = () => {
+    findSidebarDropdownWidget().vm.$emit('dropdownHidden');
+  };
+
   const createComponent = ({
     mountFn = shallowMountExtended,
     assignees = mockAssignees,
@@ -102,7 +107,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
       showDropdown();
       await waitForPromises();
 
-      expect(findSidebarDropdownWidget().props('listItems')).toHaveLength(0);
+      expect(findSidebarDropdownWidget().props('listItems')).toEqual([]);
     });
 
     it('emits error event if search users query fails', async () => {
@@ -113,7 +118,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
       expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
     });
 
-    it('passes the correct props to clear search text on item select', () => {
+    it('clears search text on item select', () => {
       createComponent();
 
       expect(findSidebarDropdownWidget().props('clearSearchOnItemSelect')).toBe(true);
@@ -253,7 +258,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
   });
 
   describe('sorting', () => {
-    it('always sorts assignees based on alphabetical order on the frontend', async () => {
+    it('sorts assignees based on alphabetical order on the frontend', async () => {
       createComponent({ mountFn: mountExtended });
       await waitForPromises();
 
@@ -262,6 +267,74 @@ describe('WorkItemAssigneesWithEdit component', () => {
       expect(findAssigneeList().props('users')).toStrictEqual(
         mockAssignees.sort(sortNameAlphabetically),
       );
+    });
+
+    it('sorts selected assignees first', async () => {
+      const [
+        unselected,
+        selected,
+      ] = projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users;
+
+      createComponent({
+        assignees: [selected],
+      });
+      showDropdown();
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toMatchObject(
+        cloneDeep([
+          { options: [selected], text: 'Selected' },
+          { options: [unselected], text: 'All users', textSrOnly: true },
+        ]),
+      );
+    });
+
+    it('shows current user above other users', async () => {
+      const [unselected, currentUser] = cloneDeep(
+        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+      );
+
+      createComponent({
+        assignees: [],
+      });
+      showDropdown();
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+
+      expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
+        { text: currentUser.name },
+        { text: unselected.name },
+      ]);
+    });
+
+    it('does not move newly selected assignees to the top until dropdown is closed', async () => {
+      const [unselected, currentUser] = cloneDeep(
+        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users,
+      );
+
+      createComponent({
+        assignees: [],
+      });
+      showDropdown();
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+
+      expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
+        { text: currentUser.name },
+        { text: unselected.name },
+      ]);
+
+      hideDropdown();
+      await waitForPromises();
+      showDropdown();
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
+        { options: [currentUser], text: 'Selected' },
+        { options: [unselected], text: 'All users', textSrOnly: true },
+      ]);
     });
   });
 

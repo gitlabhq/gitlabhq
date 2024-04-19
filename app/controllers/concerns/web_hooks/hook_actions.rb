@@ -10,14 +10,6 @@ module WebHooks
 
       before_action :hook_logs, only: :edit
       feature_category :webhooks
-
-      before_action only: %i[edit update] do
-        push_frontend_feature_flag(:custom_webhook_headers, hook.parent, type: :beta)
-      end
-
-      before_action only: :index do
-        push_frontend_feature_flag(:custom_webhook_headers, @project || @group, type: :beta)
-      end
     end
 
     def index

@@ -18,11 +18,11 @@ spec:
         - ".gitlab/ci/gitlab-gems.gitlab-ci.yml"
         - ".gitlab/ci/vendored-gems.gitlab-ci.yml"
         - ".gitlab/ci/templates/gem.gitlab-ci.yml"
-          # Ensure dependency updates don't fail child pipelines: https://gitlab.com/gitlab-org/gitlab/-/issues/417428
+        # Ensure dependency updates don't fail child pipelines: https://gitlab.com/gitlab-org/gitlab/-/issues/417428
         - "Gemfile.lock"
         - "gems/gem.gitlab-ci.yml"
         - "gems/gem-pg.gitlab-ci.yml"
-          # Ensure new cop in the monolith don't break internal gems Rubocop checks: https://gitlab.com/gitlab-org/gitlab/-/issues/419915
+        # Ensure new cop in the monolith don't break internal gems Rubocop checks: https://gitlab.com/gitlab-org/gitlab/-/issues/419915
         - ".rubocop.yml"
         - "rubocop/**/*"
         - ".rubocop_todo/**/*"

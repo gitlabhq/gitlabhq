@@ -4,6 +4,7 @@ import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { issuableStatusText, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 
 export default {
   WORKSPACE_PROJECT,
@@ -14,6 +15,7 @@ export default {
     GlIntersectionObserver,
     GlLink,
     HiddenBadge,
+    ImportedBadge,
     LockedBadge,
   },
   props: {
@@ -23,6 +25,11 @@ export default {
       default: false,
     },
     isHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isImported: {
       type: Boolean,
       required: false,
       default: false,
@@ -89,6 +96,8 @@ export default {
           />
           <locked-badge v-if="isLocked" :issuable-type="issuableType" />
           <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
+          <imported-badge v-if="isImported" :importable-type="issuableType" />
+
           <gl-link
             class="gl-font-weight-bold gl-text-black-normal gl-text-truncate"
             href="#top"

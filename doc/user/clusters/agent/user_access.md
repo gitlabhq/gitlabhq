@@ -14,6 +14,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
 > - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+> - The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
 
 As an administrator of Kubernetes clusters in an organization, you can grant Kubernetes access to members
 of a specific project or group.
@@ -39,8 +40,8 @@ To configure access:
 
 - In the agent configuration file, define a `user_access` keyword with the following parameters:
 
-  - `projects`: A list of projects whose members should have access.
-  - `groups`: A list of groups whose members should have access.
+  - `projects`: A list of projects whose members should have access. You can authorize up to 500 projects.
+  - `groups`: A list of groups whose members should have access. You can authorize up to 500 projects.
   - `access_as`: Required. For plain access, the value is `{ agent: {...} }`.
 
 After you configure access, requests are forwarded to the API server using

@@ -5104,6 +5104,9 @@ msgstr ""
 msgid "All threads resolved!"
 msgstr ""
 
+msgid "All users"
+msgstr ""
+
 msgid "All users in this group must set up two-factor authentication"
 msgstr ""
 
@@ -9614,6 +9617,9 @@ msgid "BulkImport|Source group"
 msgstr ""
 
 msgid "BulkImport|Template / File-based import / Direct transfer"
+msgstr ""
+
+msgid "BulkImport|This %{importable} was imported from another instance."
 msgstr ""
 
 msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."
@@ -26575,6 +26581,9 @@ msgid "ImportProjects|To import collaborators, you must use a classic personal a
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
+msgstr ""
+
+msgid "Imported"
 msgstr ""
 
 msgid "Imported relation must be one of %{relations}"

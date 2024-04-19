@@ -171,6 +171,9 @@ class Issue < ApplicationRecord
   end
 
   scope :preload_awardable, -> { preload(:award_emoji) }
+  scope :preload_namespace, -> { preload(:namespace) }
+  scope :preload_routables, -> { preload(project: [:route, { namespace: :route }]) }
+
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {

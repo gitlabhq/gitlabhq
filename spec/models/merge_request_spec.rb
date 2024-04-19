@@ -2145,50 +2145,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject.committers(lazy: true)).to eq(committers)
       end
     end
-
-    context 'when lazy_merge_request_committers feature flag is disabled' do
-      before do
-        stub_feature_flags(lazy_merge_request_committers: false)
-      end
-
-      context 'when not given with_merge_commits and lazy' do
-        it 'calls committers on the commits object with the expected param' do
-          expect(subject).to receive(:commits).and_return(commits)
-          expect(commits).to receive(:committers).with(with_merge_commits: false).and_return(committers)
-
-          expect(subject.committers).to eq(committers)
-        end
-
-        context 'when with_merge_commits and lazy arguments changes' do
-          it 'does not use memoized value' do
-            subject.committers # this memoizes the value with with_merge_commits and lazy as false
-
-            expect(subject).to receive(:commits).and_return(commits)
-            expect(commits).to receive(:committers).with(with_merge_commits: true).and_return(committers)
-
-            subject.committers(with_merge_commits: true, lazy: true)
-          end
-        end
-      end
-
-      context 'when given with_merge_commits true' do
-        it 'calls committers on the commits object with the expected param' do
-          expect(subject).to receive(:commits).and_return(commits)
-          expect(commits).to receive(:committers).with(with_merge_commits: true).and_return(committers)
-
-          expect(subject.committers(with_merge_commits: true)).to eq(committers)
-        end
-      end
-
-      context 'when given lazy true' do
-        it 'calls committers on the commits object with the expected param' do
-          expect(subject).to receive(:commits).and_return(commits)
-          expect(commits).to receive(:committers).with(with_merge_commits: false).and_return(committers)
-
-          expect(subject.committers(lazy: true)).to eq(committers)
-        end
-      end
-    end
   end
 
   describe '#diverged_commits_count' do

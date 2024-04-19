@@ -218,7 +218,6 @@ class WebHookService
 
   def build_custom_headers(values_redacted: false)
     return {} unless hook.custom_headers.present?
-    return {} unless Feature.enabled?(:custom_webhook_headers, hook.parent, type: :beta)
 
     return hook.custom_headers.transform_values { '[REDACTED]' } if values_redacted
 

@@ -207,6 +207,7 @@ export default {
         :multiple="multiSelect"
         :searchable="searchable"
         start-opened
+        block
         is-check-centered
         :infinite-scroll="infiniteScroll"
         :searching="loading"
@@ -217,7 +218,7 @@ export default {
         :selected="localSelectedItem"
         :reset-button-label="resetButton"
         :infinite-scroll-loading="infiniteScrollLoading"
-        toggle-class="gl-w-full! work-item-sidebar-dropdown-toggle"
+        toggle-class="work-item-sidebar-dropdown-toggle"
         @reset="unassignValue"
         @search="debouncedSearchKeyUpdate"
         @select="handleItemClick"

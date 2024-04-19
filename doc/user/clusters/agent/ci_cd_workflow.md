@@ -18,6 +18,7 @@ DETAILS:
 > - Support for Linux package installations was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5686) in GitLab 14.5.
 > - The ability to switch between certificate-based clusters and agents was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335089) in GitLab 14.9. The certificate-based cluster context is always called `gitlab-deploy`.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80508) from _CI/CD tunnel_ to _CI/CD workflow_ in GitLab 14.9.
+> - The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
 
 You can use GitLab CI/CD to safely connect, deploy, and update your Kubernetes clusters.
 
@@ -80,7 +81,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
 
    - Authorized projects must have the same root group or user namespace as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
-   - You can authorize up to 100 projects.
+   - You can authorize up to 500 projects.
 
 All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
 The `kubeconfig` path is available in the environment variable `$KUBECONFIG`.
@@ -106,7 +107,7 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
    - Authorized groups must have the same root group as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
-   - You can authorize up to 100 groups.
+   - You can authorize up to 500 groups.
 
 All the projects that belong to the group and its subgroups are now authorized to access the agent.
 All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.

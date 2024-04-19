@@ -340,6 +340,27 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe 'scopes for preloading' do
+    before_all do
+      create(:issue, project: reusable_project)
+    end
+
+    describe '.preload_namespace' do
+      subject(:preload_namespace) { described_class.in_projects(reusable_project).preload_namespace }
+
+      it { expect(preload_namespace.first.association(:namespace)).to be_loaded }
+    end
+
+    describe '.preload_routables' do
+      subject(:preload_routables) { described_class.in_projects(reusable_project).preload_routables }
+
+      it { expect(preload_routables.first.association(:project)).to be_loaded }
+      it { expect(preload_routables.first.project.association(:route)).to be_loaded }
+      it { expect(preload_routables.first.project.association(:namespace)).to be_loaded }
+      it { expect(preload_routables.first.project.namespace.association(:route)).to be_loaded }
+    end
+  end
+
   context 'order by upvotes' do
     let!(:issue) { create(:issue) }
     let!(:issue2) { create(:issue) }

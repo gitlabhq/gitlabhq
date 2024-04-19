@@ -73,7 +73,7 @@ compile-test-assets:
     expire_in: 7d
     paths:
       - public/assets/
-      - config/helpers/tailwind/ # Assets created during tailwind compilation
+      - config/helpers/tailwind/  # Assets created during tailwind compilation
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 

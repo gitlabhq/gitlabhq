@@ -464,19 +464,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             .with(headers: Gitlab::WebHooks::RecursionDetection.header(project_hook))
         end
       end
-
-      context 'when custom_webhook_headers feature flag is disabled' do
-        before do
-          stub_feature_flags(custom_webhook_headers: false)
-        end
-
-        it 'sends request without custom headers' do
-          service_instance.execute
-
-          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
-            .with(headers: headers)
-        end
-      end
     end
 
     it 'handles 200 status code' do

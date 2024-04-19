@@ -67,7 +67,8 @@ export default {
   },
   data() {
     return {
-      localAssigneeIds: this.assignees.map(({ id }) => id),
+      localAssigneeIds: [],
+      assigneeIdsToShowAtTopOfTheListbox: [],
       searchStarted: false,
       searchKey: '',
       users: [],
@@ -111,14 +112,51 @@ export default {
     },
   },
   computed: {
-    shouldShowParticipants() {
-      return this.searchKey === '';
-    },
     searchUsers() {
-      const allUsers = this.shouldShowParticipants
-        ? unionBy(this.users, this.participants, 'id')
-        : this.users;
-      return allUsers.map((user) => ({
+      // when there is no search text, then we show selected users first
+      // followed by participants, then all other users
+      if (this.searchKey === '') {
+        const alphabetizedUsers = unionBy(this.users, this.participants, 'id').sort(
+          sortNameAlphabetically,
+        );
+
+        if (alphabetizedUsers.length === 0) {
+          return [];
+        }
+
+        const currentUser = alphabetizedUsers.find(({ id }) => id === this.currentUser?.id);
+
+        const allUsers = unionBy([currentUser], alphabetizedUsers, 'id').map((user) => ({
+          ...user,
+          value: user?.id,
+          text: user?.name,
+        }));
+
+        const selectedUsers =
+          allUsers
+            .filter(({ id }) => this.assigneeIdsToShowAtTopOfTheListbox.includes(id))
+            .sort(sortNameAlphabetically) || [];
+
+        const unselectedUsers = allUsers.filter(
+          ({ id }) => !this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
+        );
+
+        // don't show the selected section if it's empty
+        if (selectedUsers.length === 0) {
+          return allUsers.map((user) => ({
+            ...user,
+            value: user?.id,
+            text: user?.name,
+          }));
+        }
+
+        return [
+          { options: selectedUsers, text: __('Selected') },
+          { options: unselectedUsers, text: __('All users'), textSrOnly: true },
+        ];
+      }
+
+      return this.users.map((user) => ({
         ...user,
         value: user?.id,
         text: user?.name,
@@ -174,8 +212,15 @@ export default {
     assignees: {
       handler(newVal) {
         this.localAssigneeIds = newVal.map(({ id }) => id);
+        this.assigneeIdsToShowAtTopOfTheListbox = this.localAssigneeIds;
       },
       deep: true,
+      immediate: true,
+    },
+    searchKey(newVal, oldVal) {
+      if (newVal === '' && oldVal !== '') {
+        this.assigneeIdsToShowAtTopOfTheListbox = this.localAssigneeIds;
+      }
     },
   },
   methods: {
@@ -241,7 +286,8 @@ export default {
       this.searchStarted = true;
     },
     onDropdownHide() {
-      this.setSearchKey('', false);
+      this.setSearchKey('');
+      this.assigneeIdsToShowAtTopOfTheListbox = this.localAssigneeIds;
     },
   },
 };
@@ -271,7 +317,7 @@ export default {
     @dropdownHidden="onDropdownHide"
   >
     <template #list-item="{ item }">
-      <sidebar-participant :user="item" />
+      <sidebar-participant v-if="item" :user="item" />
     </template>
     <template v-if="canInviteMembers" #footer>
       <gl-button category="tertiary" block class="gl-justify-content-start!">

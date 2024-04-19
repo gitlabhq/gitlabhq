@@ -26,7 +26,7 @@ variables:
 before_script:
   - apk add --no-cache go curl bash nodejs
   ## Uncomment the following if you use PostCSS. See https://gohugo.io/hugo-pipes/postcss/
-  #- npm install postcss postcss-cli autoprefixer
+  # - npm install postcss postcss-cli autoprefixer
 
 test:
   script:

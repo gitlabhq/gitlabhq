@@ -110,11 +110,7 @@ Otherwise, a `URI is invalid` error occurs.
 ## Custom headers
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_headers`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_headers`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/448604) in GitLab 17.0. Feature flag `custom_webhook_headers` removed.
 
 You can add up to 20 custom headers in the webhook configuration as part of the request.
 You can use these custom headers for authentication to external services.

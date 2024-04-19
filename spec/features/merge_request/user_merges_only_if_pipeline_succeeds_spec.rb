@@ -63,19 +63,6 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
         project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
       end
 
-      context 'when CI is running' do
-        let(:status) { :running }
-
-        it 'does not allow to merge immediately' do
-          visit project_merge_request_path(project, merge_request)
-
-          wait_for_requests
-
-          expect(page).to have_button 'Set to auto-merge'
-          expect(page).not_to have_button '.js-merge-moment'
-        end
-      end
-
       context 'when CI failed' do
         let(:status) { :failed }
 
@@ -131,6 +118,76 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           expect(page).not_to have_button('Merge', exact: true)
         end
       end
+
+      context 'when CI is running', :sidekiq_inline do
+        let(:status) { :running }
+
+        it 'does not allow to merge immediately' do
+          visit project_merge_request_path(project, merge_request)
+
+          wait_for_requests
+
+          expect(page).to have_button 'Set to auto-merge'
+          expect(page).not_to have_button '.js-merge-moment'
+        end
+
+        context 'when auto-merge is set' do
+          before do
+            visit project_merge_request_path(project, merge_request)
+
+            wait_for_requests
+
+            click_button('Set to auto-merge')
+            wait_for_requests
+          end
+
+          context 'when CI passes' do
+            before do
+              pipeline.set_status('success')
+            end
+
+            it 'the MR gets merged' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} passed")
+
+              wait_for_requests
+
+              expect(page).to have_content('Merged by')
+            end
+          end
+
+          context 'when CI fails' do
+            before do
+              pipeline.set_status('failed')
+            end
+
+            it 'MR is blocked' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} failed")
+
+              wait_for_requests
+
+              page.within('.mr-state-widget') do
+                expect(page).to have_content('Merge blocked')
+              end
+            end
+          end
+
+          context 'when CI is canceled' do
+            before do
+              pipeline.set_status('canceled')
+            end
+
+            it 'MR is blocked' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} canceled")
+
+              wait_for_requests
+
+              page.within('.mr-state-widget') do
+                expect(page).to have_content('Merge blocked')
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'when merge requests can be merged when the build failed' do
@@ -138,7 +195,21 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
         project.update_attribute(:only_allow_merge_if_pipeline_succeeds, false)
       end
 
-      context 'when CI is running' do
+      context 'when CI failed' do
+        let(:status) { :failed }
+
+        it 'allows MR to be merged' do
+          visit project_merge_request_path(project, merge_request)
+
+          wait_for_requests
+
+          page.within('.mr-state-widget') do
+            expect(page).to have_button 'Merge'
+          end
+        end
+      end
+
+      context 'when CI is running', :sidekiq_inline do
         let(:status) { :running }
 
         it 'allows MR to be merged immediately' do
@@ -151,17 +222,61 @@ RSpec.describe 'Merge request > User merges only if pipeline succeeds', :js, fea
           page.find('.js-merge-moment').click
           expect(page).to have_content 'Merge immediately'
         end
-      end
 
-      context 'when CI failed' do
-        let(:status) { :failed }
+        context 'when auto-merge is set' do
+          before do
+            visit project_merge_request_path(project, merge_request)
 
-        it 'allows MR to be merged' do
-          visit project_merge_request_path(project, merge_request)
+            wait_for_requests
 
-          wait_for_requests
-          page.within('.mr-state-widget') do
-            expect(page).to have_button 'Merge'
+            click_button('Set to auto-merge')
+            wait_for_requests
+          end
+
+          context 'when CI passes' do
+            before do
+              pipeline.set_status('success')
+            end
+
+            it 'the MR gets merged' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} passed")
+
+              wait_for_requests
+
+              expect(page).to have_content('Merged by')
+            end
+          end
+
+          context 'when CI fails' do
+            before do
+              pipeline.set_status('failed')
+            end
+
+            it 'MR remains set to auto-merge' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} failed")
+
+              wait_for_requests
+
+              page.within('.mr-state-widget') do
+                expect(page).to have_content('Ready to merge')
+              end
+            end
+          end
+
+          context 'when CI is canceled' do
+            before do
+              pipeline.set_status('canceled')
+            end
+
+            it 'MR remains set to auto-merge' do
+              expect(page).to have_content("Pipeline ##{pipeline.id} canceled")
+
+              wait_for_requests
+
+              page.within('.mr-state-widget') do
+                expect(page).to have_content('Ready to merge')
+              end
+            end
           end
         end
       end

@@ -7,7 +7,7 @@ module Clusters
         class RefreshService
           include Gitlab::Utils::StrongMemoize
 
-          AUTHORIZED_ENTITY_LIMIT = 100
+          AUTHORIZED_ENTITY_LIMIT = 500
 
           delegate :project, to: :agent, private: true
           delegate :root_ancestor, to: :project, private: true

@@ -91,6 +91,7 @@ Outputs can be the following types:
 - `struct`
 - `raw_string`
 - `step_result`
+
 Outputs are written to `${{ output_file }}` in the form `key=value` where `key` is the name of the output.
 The `value` should be written as JSON unless the type is `raw_string`.
 The value type written by the step must match the declared type. The default output type is `raw_string`.

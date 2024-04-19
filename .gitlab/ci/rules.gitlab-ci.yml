@@ -1393,7 +1393,7 @@
       changes: *frontend-dependency-patterns
       when: never
     - <<: *if-merge-request
-      changes: [".gitlab/ci/frontend.gitlab-ci.yml"] # When this file is modified, we run full Jest jobs
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]  # When this file is modified, we run full Jest jobs
       when: never
     - <<: *if-merge-request
       changes: *frontend-predictive-patterns
@@ -2855,7 +2855,7 @@
 
 .setup:rules:set-pipeline-name:
   rules:
-    - <<: *if-not-merge-request # This is only designed to run in a merge request
+    - <<: *if-not-merge-request  # This is only designed to run in a merge request
       when: never
     - if: '$PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE == null'
       when: never
