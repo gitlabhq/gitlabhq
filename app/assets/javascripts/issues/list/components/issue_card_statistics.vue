@@ -22,19 +22,9 @@ export default {
 <template>
   <ul class="gl-display-contents">
     <li
-      v-if="issue.mergeRequestsCount"
-      v-gl-tooltip
-      class="gl-display-none gl-sm-display-block gl-mr-3"
-      :title="$options.i18n.relatedMergeRequests"
-      data-testid="merge-requests"
-    >
-      <gl-icon name="merge-request" />
-      {{ issue.mergeRequestsCount }}
-    </li>
-    <li
       v-if="issue.upvotes"
       v-gl-tooltip
-      class="gl-display-none gl-sm-display-block gl-mr-3"
+      class="gl-display-none gl-sm-display-block"
       :title="$options.i18n.upvotes"
       data-testid="issuable-upvotes"
     >
@@ -44,12 +34,22 @@ export default {
     <li
       v-if="issue.downvotes"
       v-gl-tooltip
-      class="gl-display-none gl-sm-display-block gl-mr-3"
+      class="gl-display-none gl-sm-display-block"
       :title="$options.i18n.downvotes"
       data-testid="issuable-downvotes"
     >
       <gl-icon name="thumb-down" />
       {{ issue.downvotes }}
+    </li>
+    <li
+      v-if="issue.mergeRequestsCount"
+      v-gl-tooltip
+      class="gl-display-none gl-sm-display-block"
+      :title="$options.i18n.relatedMergeRequests"
+      data-testid="merge-requests"
+    >
+      <gl-icon name="merge-request" />
+      {{ issue.mergeRequestsCount }}
     </li>
     <slot></slot>
   </ul>

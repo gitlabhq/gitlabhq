@@ -79,6 +79,18 @@ RSpec.describe ApplicationSettingsHelper do
       expect(helper.visible_attributes).to include(:namespace_aggregation_schedule_lease_duration_in_seconds)
     end
 
+    it 'does not contain :container_registry_import_* and :container_registry_pre_import_*', :aggregate_failures do
+      expect(helper.visible_attributes).not_to include(:container_registry_import_max_tags_count)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_max_retries)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_start_max_retries)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_max_step_duration)
+      expect(helper.visible_attributes).not_to include(:container_registry_pre_import_tags_rate)
+      expect(helper.visible_attributes).not_to include(:container_registry_pre_import_timeout)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_timeout)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_target_plan)
+      expect(helper.visible_attributes).not_to include(:container_registry_import_created_before)
+    end
+
     it 'contains service ping settings' do
       expect(helper.visible_attributes).to include(
         *%i[
@@ -93,6 +105,18 @@ RSpec.describe ApplicationSettingsHelper do
 
       it 'does not contain :deactivate_dormant_users_period' do
         expect(helper.visible_attributes).not_to include(:deactivate_dormant_users_period)
+      end
+
+      it 'does contain :container_registry_import_* and :container_registry_pre_import_*', :aggregate_failures do
+        expect(helper.visible_attributes).to include(:container_registry_import_max_tags_count)
+        expect(helper.visible_attributes).to include(:container_registry_import_max_retries)
+        expect(helper.visible_attributes).to include(:container_registry_import_start_max_retries)
+        expect(helper.visible_attributes).to include(:container_registry_import_max_step_duration)
+        expect(helper.visible_attributes).to include(:container_registry_pre_import_tags_rate)
+        expect(helper.visible_attributes).to include(:container_registry_pre_import_timeout)
+        expect(helper.visible_attributes).to include(:container_registry_import_timeout)
+        expect(helper.visible_attributes).to include(:container_registry_import_target_plan)
+        expect(helper.visible_attributes).to include(:container_registry_import_created_before)
       end
     end
   end

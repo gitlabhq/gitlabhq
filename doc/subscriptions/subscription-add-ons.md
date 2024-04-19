@@ -147,15 +147,16 @@ Prerequisites:
 
 - You must have an active paid Premium or Ultimate subscription.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
-- The user who registers for the trial must be listed as the [subscription contact](customers_portal.md#change-your-subscription-contact) for the customer account and use same email address associated with that role.
 
-1. Find your subscription ID:
-   - In the Customers Portal, on the **Subscriptions & purchases** page.
-   - In the email sent after you purchased your subscription.
-
-   The ID usually looks like `A-S00123456`.
 1. Go to the [GitLab Duo Pro trial page](http://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial).
 1. Complete the fields.
+
+   - To find your subscription name:
+     1. In the Customers Portal, on the **Subscriptions & purchases** page, find the subscription you want to apply the trial to.
+     1. At the top of the page, the subscription name appears in a badge. 
+
+        ![Subscription name](img/subscription_name.png)
+   - Ensure the email you submit for trial registration matches the email of the [subscription contact](customers_portal.md#change-your-subscription-contact).
 1. Select **Submit**.
 
 The trial automatically syncs to your instance within 24 hours. After the trial has synced, [assign seats](#assign-gitlab-duo-pro-seats) to users that you want to access GitLab Duo Pro.

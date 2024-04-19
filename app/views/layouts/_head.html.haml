@@ -91,7 +91,7 @@
   = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   -# Apple Safari/iOS home screen icons
-  = favicon_link_tag 'apple-touch-icon.png', rel: 'apple-touch-icon'
+  = appearance_apple_touch_icon
 
   -# OpenSearch
   %link{ href: search_opensearch_path(format: :xml), rel: 'search', title: 'Search GitLab', type: 'application/opensearchdescription+xml' }

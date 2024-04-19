@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -17,6 +17,7 @@ import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import DeleteDisclosureDropdownItem from '~/ml/model_registry/components/delete_disclosure_dropdown_item.vue';
+import DeleteModel from '~/ml/model_registry/components/functional/delete_model.vue';
 import { destroyModelResponses } from '../graphql_mock_data';
 import { MODEL } from '../mock_data';
 
@@ -82,7 +83,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
       },
-      stubs: { GlTab },
+      stubs: { GlTab, DeleteModel },
     });
 
     return waitForPromises();
@@ -101,7 +102,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDeleteModel = () => wrapper.findComponent(DeleteModel);
 
   describe('Title', () => {
     beforeEach(() => createWrapper());
@@ -120,14 +121,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     it('renders the extra actions button', () => {
       expect(findActionsDropdown().exists()).toBe(true);
-    });
-  });
-
-  describe('Alert', () => {
-    it('is not rendered when errorMessage is empty', () => {
-      createWrapper();
-
-      expect(findAlert().exists()).toBe(false);
     });
   });
 
@@ -222,38 +215,23 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   });
 
   describe('Model deletion', () => {
+    it('sets up DeleteModel', () => {
+      createWrapper();
+
+      expect(findDeleteModel().props('modelId')).toBe('gid://gitlab/Ml::Model/1234');
+    });
+
     describe('When deletion is successful', () => {
       it('navigates to index page', async () => {
-        const resolver = jest.fn().mockResolvedValue(destroyModelResponses.success);
+        createWrapper();
 
-        createWrapper({ resolver });
-
-        findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
+        findDeleteModel().vm.$emit('model-deleted');
 
         await waitForPromises();
-
-        expect(resolver).toHaveBeenLastCalledWith({
-          id: 'gid://gitlab/Ml::Model/1234',
-          projectPath: 'project/path',
-        });
 
         expect(visitUrlWithAlerts).toHaveBeenCalledWith('index/path', [
           expect.objectContaining({ id: 'ml-model-deleted-successfully' }),
         ]);
-      });
-    });
-
-    describe('When deletion call fails', () => {
-      it('shows error message', async () => {
-        const error = new Error('Failure!');
-
-        createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
-
-        findDeleteButton().vm.$emit('confirm-deletion', { preventDefault: () => {} });
-
-        await waitForPromises();
-
-        expect(findAlert().text()).toContain('Failed to delete model with error: Failure!');
       });
     });
 
@@ -268,7 +246,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         await waitForPromises();
 
         expect(visitUrlWithAlerts).not.toHaveBeenCalled();
-        expect(findAlert().text()).toContain('Model not found');
       });
     });
   });

@@ -54,7 +54,7 @@ module Auth
     end
 
     def group_access_token
-      PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token)
+      PersonalAccessTokensFinder.new(state: 'active').find_by_token(raw_token.to_s)
     end
 
     def valid_deploy_token?

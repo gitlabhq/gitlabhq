@@ -152,6 +152,7 @@ module Gitlab
             variables.append(key: 'CI_JOB_STAGE', value: job.stage_name)
             variables.append(key: 'CI_JOB_MANUAL', value: 'true') if job.action?
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
+            variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job.trigger_short_token) if job.trigger_request
 
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job).to_s)

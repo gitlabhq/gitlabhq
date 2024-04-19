@@ -24065,6 +24065,9 @@ msgid_plural "GoogleArtifactRegistry|%d more tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "GoogleArtifactRegistry|%{linkStart}Install the Google Cloud CLI%{linkEnd}."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|After the policies have been created, select %{strongStart}Save changes%{strongEnd} to continue."
 msgstr ""
 
@@ -24074,7 +24077,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."
+msgid "GoogleArtifactRegistry|Before you begin:"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Built"
@@ -24104,7 +24107,10 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Digest"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|First, secure your usage with the %{strongStart}Google Cloud Identity and Access Management (IAM)%{strongEnd} integration. Simplify access without the need to manage accounts or keys."
+msgid "GoogleArtifactRegistry|Ensure you have the %{linkStart}permissions needed%{linkEnd} in your Google Cloud project."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|First, secure your usage with the %{strongStart}Google Cloud IAM%{strongEnd} integration. Simplify access without the need to manage accounts or keys."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Image"
@@ -24149,7 +24155,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Repository: %{repository}"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Run the following command to setup IAM read and write policies in your Google Cloud project."
+msgid "GoogleArtifactRegistry|Run the following command to set up IAM read and write policies in your Google Cloud project."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Set up Google Cloud IAM"
@@ -24188,10 +24194,10 @@ msgstr ""
 msgid "GoogleCloud|%{link_start}Explore Google Cloud integration with GitLab%{link_end}, for CI/CD and more."
 msgstr ""
 
-msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, enter the details in the following form."
+msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
 msgstr ""
 
-msgid "GoogleCloud|After Google Cloud workload identity federation has been set up, select %{strongStart}Continue%{strongEnd}."
+msgid "GoogleCloud|After the Google Cloud workload identity federation has been set up, complete the following fields."
 msgstr ""
 
 msgid "GoogleCloud|Before you begin, %{linkStart}install the Google Cloud CLI%{linkEnd}."

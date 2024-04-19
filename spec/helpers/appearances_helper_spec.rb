@@ -55,6 +55,32 @@ RSpec.describe AppearancesHelper do
     end
   end
 
+  describe '#appearance_apple_touch_icon' do
+    it 'returns the default icon' do
+      create(:appearance)
+
+      expect(helper.appearance_apple_touch_icon).to match(
+        "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+        "href=\"/assets/apple-touch-icon-b049d4bc0dd9626f31db825d61880737befc7835982586d015bded10b4435460.png\" />"
+      )
+    end
+
+    context 'with pwa icons defined' do
+      let!(:appearance) { create(:appearance, :with_pwa_icon) }
+
+      it 'returns the pwa icons' do
+        expect(helper.appearance_apple_touch_icon).to match(
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=192\" sizes=\"192x192\" />\n" \
+          "<link rel=\"apple-touch-icon\" type=\"image/x-icon\" " \
+          "href=\"#{appearance.pwa_icon_path}?width=512\" sizes=\"512x512\" />"
+        )
+      end
+    end
+  end
+
   describe '#appearance_pwa_name' do
     it 'returns the default value' do
       create(:appearance)

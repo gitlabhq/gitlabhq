@@ -10,13 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
-> - In [GitLab 12.9](https://gitlab.com/gitlab-org/gitlab/-/issues/5164) and later, the epic bars show epics' title, progress, and completed weight percentage.
-> - Milestones appear in roadmaps in [GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/6802), and later.
-> - Feature flag for milestones visible in roadmaps [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29641) in GitLab 13.0.
-> - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/214375) and later, the Roadmap also shows milestones in projects in a group.
-> - In [GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/issues/212494) and later, milestone bars can be collapsed and expanded.
-
 Epics and milestones in a group containing a start date or due date can be visualized in a form
 of a timeline (that is, a Gantt chart). The Roadmap page shows the epics and milestones in a
 group, one of its subgroups, or a project in one of the groups.
@@ -38,10 +31,6 @@ heading to toggle the list of the milestone bars.
 
 ## Sort and filter the Roadmap
 
-> - Filtering by milestone [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218621) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `roadmap_daterange_filter`. Enabled by default.
-> - Filtering by epic confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218624) in GitLab 13.9.
-> - Filtering by epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218623) in GitLab 13.11.
-> - Filtering by milestone [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.5.
 > - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 NOTE:
@@ -75,8 +64,6 @@ You can also [visualize roadmaps inside of an epic](../epics/index.md#roadmap-in
 
 ### Roadmap settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345158) in GitLab 14.8 [with a flag](../../../administration/feature_flags.md) named `roadmap_settings`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350830) in GitLab 14.9. Feature flag `roadmap_settings`removed.
 > - Labels visible on roadmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385231) in GitLab 15.9.
 
 When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
@@ -99,10 +86,6 @@ shared using URL parameters.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
 
 ### Date range presets
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/204994) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named `roadmap_daterange_filter`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/323917) in GitLab 14.3.
-> - Generally available in GitLab 14.5. [Feature flag `roadmap_daterange_filter`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72419) removed.
 
 Roadmap provides these date range options, each with a predetermined timeline duration:
 

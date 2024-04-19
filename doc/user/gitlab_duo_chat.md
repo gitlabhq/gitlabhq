@@ -32,14 +32,14 @@ Here are examples of common use cases:
 
 | Feature                                                    | Use case example                                     | Supported interfaces         | Supported deployments |
 | -------------------------------------                      | ----------------                                     | --------------------------   | --------------------- |
-| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, and Web IDE | GitLab.com            |
-| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
-| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about GitLab](#ask-about-gitlab)                      | I want to know how to create an issue in GitLab.     | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com            |
+| [Ask about a specific issue](#ask-about-a-specific-issue)  | I want to summarize this issue.                      | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about a specific epic](#ask-about-a-specific-epic)    | I want to summarize this epic.                       | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, JetBrains IDEs, and Web IDE | GitLab.com, self-managed, and GitLab Dedicated |
+| [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#refactor-code-in-the-ide)      | I want to refactor this code.                        | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Write tests in the IDE](#write-tests-in-the-ide)          | I want to write a test for this code.                | VS Code, JetBrains IDEs, and Web IDE          | GitLab.com, self-managed, and GitLab Dedicated |
 
 ## Watch a demo and get tips
 
@@ -159,7 +159,7 @@ For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.m
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed in GitLab 16.8.
 
 NOTE:
-This feature is available in VS Code and the Web IDE only.
+This feature is available in VS Code, JetBrains IDEs, and the Web IDE only.
 
 `/explain` is a special command to explain the selected code in your editor.
 You can also add additional instructions to be considered, for example: `/explain the performance`
@@ -181,7 +181,7 @@ For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.m
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed in GitLab 16.8.
 
 NOTE:
-This feature is available in VS Code and the Web IDE only.
+This feature is available in VS Code, JetBrains IDEs, and the Web IDE only.
 
 `/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
 You can include additional instructions to be considered. For example:
@@ -203,7 +203,7 @@ For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.m
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed in GitLab 16.8.
 
 NOTE:
-This feature is available in VS Code and the Web IDE only.
+This feature is available in VS Code, JetBrains IDEs, and the Web IDE only.
 
 `/tests` is a special command to generate a testing suggestion for the selected code in your editor.
 You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
@@ -248,7 +248,7 @@ To use Chat, use one of these editor extensions:
 |------------------|------------------------|
 | VSCode           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow) |
 | [GitLab WebIDE (VS Code in the Cloud)](project/web_ide/index.md) | No configuration required. |
-| JetBrains IDEs (Experiment) | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
+| JetBrains IDEs  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
 
 Visual Studio support is [under active development](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/22). You can express interest in other IDE extension support [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
@@ -381,7 +381,7 @@ When you use a slash command, you can also add additional instructions, for exam
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
 1. Install and set up the Workflow extension for VS Code:
-   1. In VS Code, download and Install the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md#download-the-extension).
+   1. In VS Code, download and install the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/index.md#download-the-extension).
    1. Configure the [GitLab Workflow extension](../editor_extensions/visual_studio_code/index.md#configure-the-extension).
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
@@ -398,7 +398,7 @@ If you have selected code in the editor, this selection is sent along with your 
 
 Get code explained, code refactored or get tests generated for code. To do so:
 
-1. Select code in your editor in VS Code or in the Web IDE.
+1. Select code in your editor in VS Code, JetBrains IDEs, or in the Web IDE.
 1. Type one the following slash commands into the chat field: [`/explain`](#explain-code-in-the-ide), [`/refactor`](#refactor-code-in-the-ide) or [`/tests`](#write-tests-in-the-ide). Alternatively, use the context menu to perform these tasks.
 
 When you use one of the slash commands you can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
@@ -409,6 +409,24 @@ To disable GitLab Duo Chat in VS Code:
 
 1. Go to **Settings > Extensions > GitLab Workflow (GitLab VS Code Extension)**.
 1. Clear the **Enable GitLab Duo Chat assistant** checkbox.
+
+## Use GitLab Duo Chat in JetBrains IDEs
+
+> - Introduced as Generally Available in GitLab 16.11.
+
+To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
+
+1. Install and set up the GitLab Duo plugin for JetBrains IDEs:
+   1. In the JetBrains marketplace, download and install the [GitLab Duo plugin](../editor_extensions/jetbrains_ide/index.md#download-the-extension).
+   1. Configure the [GitLab Duo plugin](../editor_extensions/jetbrains_ide/index.md#configure-the-extension).
+1. In a JetBrains IDE, open a project.
+1. Open Chat by using one of the following methods:
+   - On the right tool window bar, select **GitLab Duo Chat**.
+   - In the file that you have open in the editor, select some code.
+     1. Right-click and select **GitLab Duo Chat**.
+     1. Select **Explain Code** or **Generate Tests** or **Refactor Code**.
+   - Add keyboard or mouse shortcuts for each action under **Keymap** in the **Settings**.
+1. In the message box, enter your question and press **Enter** or select **Send**.
 
 ## Give feedback
 

@@ -8,7 +8,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/ci/components/#component-versions
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/component.png
+  image_url: https://about.gitlab.com/images/16_10/component.png
   published_at: 2024-03-21
   release: 16.10
 
@@ -20,7 +20,7 @@
   gitlab-com: false
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/administration/geo/secondary_proxy/runners.html
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/systems_geo_runner_acceleration.png
+  image_url: https://about.gitlab.com/images/16_10/systems_geo_runner_acceleration.png
   published_at: 2024-03-21
   release: 16.10
 
@@ -34,7 +34,7 @@
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/project/wiki/index.html#wiki-page-templates
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/wiki_templates.gif
+  image_url: https://about.gitlab.com/images/16_10/wiki_templates.gif
   published_at: 2024-03-21
   release: 16.10
 
@@ -48,7 +48,7 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/group/contribution_analytics/
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/ca_ch16.10_2.png
+  image_url: https://about.gitlab.com/images/16_10/ca_ch16.10_2.png
   published_at: 2024-03-21
   release: 16.10
 
@@ -62,7 +62,7 @@
   gitlab-com: true
   available_in: [Premium, Ultimate]
   documentation_link: https://docs.gitlab.com/ee/user/ai_features.html#disable-gitlab-duo-features
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/Turn-off-GitLab-Duo-features.png
+  image_url: https://about.gitlab.com/images/16_10/Turn-off-GitLab-Duo-features.png
   published_at: 2024-03-21
   release: 16.10
 
@@ -78,6 +78,6 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: https://docs.gitlab.com/ee/subscriptions/gitlab_dedicated/#available-features
-  image_url: https://release-16-10.about.gitlab-review.app/images/16_10/gitlab-dedicated.png
+  image_url: https://about.gitlab.com/images/16_10/gitlab-dedicated.png
   published_at: 2024-03-21
   release: 16.10

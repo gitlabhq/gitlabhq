@@ -2,27 +2,27 @@
 - issue_votes        = @issuable_meta_data[issuable.id]
 - upvotes            = issue_votes.upvotes
 - downvotes          = issue_votes.downvotes
-- issuable_path      = issuable_path(issuable, anchor: 'notes')
 - issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count
 
 - if issuable_mr > 0
-  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Related merge requests'), data: { testid: 'merge-requests' } }
+  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Related merge requests'), data: { testid: 'merge-requests' }, class: 'gl-mr-0!' }
     = sprite_icon('merge-request', css_class: "gl-vertical-align-middle")
     = issuable_mr
 
+- if note_count > 0
+  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Comments'), data: { testid: 'issuable-comments' }, class: 'gl-mr-0!' }
+    = sprite_icon('comments', css_class: "gl-vertical-align-middle")
+    = note_count
+
 - if upvotes > 0
-  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Upvotes'), data: { testid: 'issuable-upvotes' } }
+  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Upvotes'), data: { testid: 'issuable-upvotes' }, class: 'gl-mr-0!' }
     = sprite_icon('thumb-up', css_class: "gl-vertical-align-middle")
     = upvotes
 
 - if downvotes > 0
-  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Downvotes'), data: { testid: 'issuable-downvotes' } }
+  %li.gl-display-none.gl-sm-display-block.has-tooltip{ title: _('Downvotes'), data: { testid: 'issuable-downvotes' }, class: 'gl-mr-0!' }
     = sprite_icon('thumb-down', css_class: "gl-vertical-align-middle")
     = downvotes
 
 = render_if_exists 'shared/issuable/blocking_issues_count', issuable: issuable
 
-%li.gl-display-none.gl-sm-display-block
-  = link_to issuable_path, class: ['has-tooltip', ('no-comments' if note_count == 0)], title: _('Comments'), data: { testid: 'issuable-comments' } do
-    = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
-    = note_count

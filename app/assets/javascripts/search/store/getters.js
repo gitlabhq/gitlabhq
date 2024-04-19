@@ -3,6 +3,7 @@ import { languageFilterData } from '~/search/sidebar/components/language_filter/
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
 
+import { PROJECT_DATA } from '~/search/sidebar/constants';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[labelFilterData.filterParam] || [];
@@ -85,3 +86,5 @@ export const navigationItems = (state) =>
     pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
     items: [],
   }));
+
+export const showArchived = (state) => !state.query?.[PROJECT_DATA.queryParam];

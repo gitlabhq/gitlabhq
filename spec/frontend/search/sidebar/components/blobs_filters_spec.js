@@ -19,6 +19,7 @@ describe('GlobalSearch BlobsFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'blobs',
+    showArchived: () => true,
   };
 
   const createComponent = (initialState = { searchType: SEARCH_TYPE_ADVANCED }) => {
@@ -59,5 +60,16 @@ describe('GlobalSearch BlobsFilters', () => {
 
   it('renders ArchivedFilter', () => {
     expect(findArchivedFilter().exists()).toBe(true);
+  });
+
+  describe('ShowArchived getter', () => {
+    beforeEach(() => {
+      defaultGetters.showArchived = () => false;
+      createComponent();
+    });
+
+    it('hides archived filter', () => {
+      expect(findArchivedFilter().exists()).toBe(false);
+    });
   });
 });

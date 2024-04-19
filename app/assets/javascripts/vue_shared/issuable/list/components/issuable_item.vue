@@ -376,41 +376,38 @@ export default {
       </div>
     </div>
     <div class="issuable-meta">
-      <ul v-if="showIssuableMeta" class="controls">
+      <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-        <li v-if="$slots.status" data-testid="issuable-status">
+        <li v-if="$slots.status" data-testid="issuable-status" class="gl-mr-0!">
           <gl-badge v-if="isNotOpen" size="sm" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
         <slot name="pipeline-status"></slot>
-        <li v-if="assignees.length">
+        <li v-if="assignees.length" class="gl-mr-0!">
           <issuable-assignees
             :assignees="assignees"
             :icon-size="16"
             :max-visible="4"
-            img-css-classes="gl-mr-2!"
             class="gl-align-items-center gl-display-flex"
           />
         </li>
-        <slot name="statistics"></slot>
         <li
-          v-if="showDiscussions"
-          class="gl-display-none gl-sm-display-block"
+          v-if="showDiscussions && notesCount"
+          class="gl-display-none gl-sm-display-block gl-mr-0!"
           data-testid="issuable-comments"
         >
-          <gl-link
+          <div
             v-gl-tooltip.top
             :title="__('Comments')"
-            :href="issuableNotesLink"
-            :class="{ 'no-comments': !notesCount }"
-            class="gl-reset-color!"
+            class="gl-reset-color! gl-display-flex gl-align-items-center"
           >
-            <gl-icon name="comments" />
+            <gl-icon name="comments" class="gl-mr-2" />
             {{ notesCount }}
-          </gl-link>
+          </div>
         </li>
+        <slot name="statistics"></slot>
       </ul>
       <div
         v-gl-tooltip.bottom

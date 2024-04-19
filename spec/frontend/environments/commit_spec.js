@@ -37,8 +37,8 @@ describe('~/environments/components/commit.vue', () => {
       expect(avatar.attributes('src')).toBe(commit.author.avatarUrl);
     });
 
-    it('links the commit message to the commit', () => {
-      const message = wrapper.findByRole('link', { name: commit.message });
+    it('links the commit title to the commit', () => {
+      const message = wrapper.findByRole('link', { name: commit.title });
 
       expect(message.attributes('href')).toBe(commit.commitPath);
     });
@@ -62,10 +62,10 @@ describe('~/environments/components/commit.vue', () => {
       expect(avatar.attributes('src')).toBe(commit.authorGravatarUrl);
     });
 
-    it('displays the commit message', () => {
-      const message = wrapper.findByRole('link', { name: commit.message });
+    it('displays the commit title', () => {
+      const title = wrapper.findByRole('link', { name: commit.title });
 
-      expect(message.attributes('href')).toBe(commit.commitPath);
+      expect(title.attributes('href')).toBe(commit.commitPath);
     });
   });
 });

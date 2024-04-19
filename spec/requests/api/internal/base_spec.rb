@@ -618,7 +618,10 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context 'git push with personal snippet' do
-        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
+        # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
+        # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
+        # and thus no snapshot repository. Pass the original relative path.
+        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes, relative_path: "#{personal_snippet.repository.disk_path}.git") }
 
         it 'responds with success' do
           subject
@@ -650,7 +653,10 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context 'git push with project snippet' do
-        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes) }
+        # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
+        # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
+        # and thus no snapshot repository. Pass the original relative path.
+        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes, relative_path: "#{project_snippet.repository.disk_path}.git") }
 
         it 'responds with success' do
           subject

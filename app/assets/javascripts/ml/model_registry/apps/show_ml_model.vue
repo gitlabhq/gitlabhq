@@ -1,7 +1,7 @@
 <script>
 import { GlTab, GlTabs, GlBadge, GlAlert } from '@gitlab/ui';
 import VueRouter from 'vue-router';
-import { n__, s__, sprintf } from '~/locale';
+import { n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
@@ -9,23 +9,14 @@ import ModelVersionList from '~/ml/model_registry/components/model_version_list.
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import DeleteDisclosureDropdownItem from '../components/delete_disclosure_dropdown_item.vue';
-import destroyModelMutation from '../graphql/mutations/destroy_model.mutation.graphql';
+import DeleteModel from '../components/functional/delete_model.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
 const ROUTE_CANDIDATES = 'candidates';
-
-const makeDeleteModelErrorMessage = (message) => {
-  if (!message) return '';
-
-  return sprintf(s__('MlModelRegistry|Failed to delete model with error: %{message}'), {
-    message,
-  });
-};
 
 const deletionSuccessfulAlert = {
   id: 'ml-model-deleted-successfully',
@@ -63,6 +54,7 @@ export default {
     GlBadge,
     MetadataItem,
     GlAlert,
+    DeleteModel,
   },
   router: new VueRouter({
     routes,
@@ -70,6 +62,7 @@ export default {
   provide() {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
+      projectPath: this.projectPath,
     };
   },
   props: {
@@ -100,6 +93,9 @@ export default {
     };
   },
   computed: {
+    modelGid() {
+      return convertToGraphQLId('Ml::Model', this.model.id);
+    },
     versionCount() {
       return this.model.versionCount || 0;
     },
@@ -123,28 +119,8 @@ export default {
         this.$router.push({ name });
       }
     },
-    async deleteModel() {
-      this.errorMessage = '';
-      try {
-        const variables = {
-          projectPath: this.projectPath,
-          id: convertToGraphQLId('Ml::Model', this.model.id),
-        };
-
-        const { data } = await this.$apollo.mutate({
-          mutation: destroyModelMutation,
-          variables,
-        });
-
-        this.errorMessage = makeDeleteModelErrorMessage(data?.mlModelDestroy?.errors?.join(', '));
-
-        if (!this.errorMessage) {
-          visitUrlWithAlerts(this.indexModelsPath, [deletionSuccessfulAlert]);
-        }
-      } catch (error) {
-        Sentry.captureException(error);
-        this.errorMessage = makeDeleteModelErrorMessage(error.message);
-      }
+    modelDeleted() {
+      visitUrlWithAlerts(this.indexModelsPath, [deletionSuccessfulAlert]);
     },
   },
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
@@ -155,52 +131,56 @@ export default {
 </script>
 
 <template>
-  <div>
-    <title-area :title="model.name">
-      <template #metadata-versions-count>
-        <metadata-item icon="machine-learning" :text="versionsCountLabel" />
-      </template>
+  <delete-model :model-id="modelGid" @model-deleted="modelDeleted">
+    <template #default="{ deleteModel }">
+      <div>
+        <title-area :title="model.name">
+          <template #metadata-versions-count>
+            <metadata-item icon="machine-learning" :text="versionsCountLabel" />
+          </template>
 
-      <template #sub-header>
-        {{ model.description }}
-      </template>
-      <template #right-actions>
-        <actions-dropdown>
-          <delete-disclosure-dropdown-item
-            v-if="canWriteModelRegistry"
-            :action-primary-text="s__('MlModelRegistry|Delete model')"
-            :modal-title="s__('MlModelRegistry|Delete model?')"
-            :delete-confirmation-text="
-              s__(
-                'MlExperimentTracking|Deleting this model will delete the associated model versions, candidates and artifacts.',
-              )
-            "
-            @confirm-deletion="deleteModel"
-          />
-        </actions-dropdown>
-      </template>
-    </title-area>
+          <template #sub-header>
+            {{ model.description }}
+          </template>
+          <template #right-actions>
+            <actions-dropdown>
+              <delete-disclosure-dropdown-item
+                v-if="canWriteModelRegistry"
+                :action-primary-text="s__('MlModelRegistry|Delete model')"
+                :modal-title="s__('MlModelRegistry|Delete model?')"
+                :delete-confirmation-text="
+                  s__(
+                    'MlExperimentTracking|Deleting this model will delete the associated model versions, candidates and artifacts.',
+                  )
+                "
+                @confirm-deletion="deleteModel"
+              />
+            </actions-dropdown>
+          </template>
+        </title-area>
 
-    <gl-alert v-if="errorMessage" :dismissible="false" variant="danger" class="gl-mb-3">
-      {{ errorMessage }}
-    </gl-alert>
+        <gl-alert v-if="errorMessage" :dismissible="false" variant="danger" class="gl-mb-3">
+          {{ errorMessage }}
+        </gl-alert>
 
-    <gl-tabs class="gl-mt-4" :value="tabIndex">
-      <gl-tab :title="s__('MlModelRegistry|Details')" @click="goTo($options.ROUTE_DETAILS)" />
-      <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
-        <template #title>
-          {{ s__('MlModelRegistry|Versions') }}
-          <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
-        </template>
-      </gl-tab>
-      <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
-        <template #title>
-          {{ s__('MlModelRegistry|Version candidates') }}
-          <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
-        </template>
-      </gl-tab>
+        <gl-tabs class="gl-mt-4" :value="tabIndex">
+          <gl-tab :title="s__('MlModelRegistry|Details')" @click="goTo($options.ROUTE_DETAILS)" />
+          <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
+            <template #title>
+              {{ s__('MlModelRegistry|Versions') }}
+              <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+            </template>
+          </gl-tab>
+          <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
+            <template #title>
+              {{ s__('MlModelRegistry|Version candidates') }}
+              <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
+            </template>
+          </gl-tab>
 
-      <router-view :model-id="model.id" :model="model" />
-    </gl-tabs>
-  </div>
+          <router-view :model-id="model.id" :model="model" />
+        </gl-tabs>
+      </div>
+    </template>
+  </delete-model>
 </template>

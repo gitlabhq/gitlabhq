@@ -19,8 +19,8 @@ export default {
     },
   },
   computed: {
-    commitMessage() {
-      return this.commit?.message;
+    commitTitle() {
+      return this.commit?.title;
     },
     commitAuthorPath() {
       return this.commit?.author?.path || `mailto:${escape(this.commit?.authorEmail)}`;
@@ -42,13 +42,8 @@ export default {
     <gl-avatar-link v-gl-tooltip :title="commitAuthor" :href="commitAuthorPath">
       <gl-avatar :size="16" :src="commitAuthorAvatar" />
     </gl-avatar-link>
-    <gl-link
-      v-gl-tooltip
-      :title="commitMessage"
-      :href="commitPath"
-      class="gl-ml-3 gl-str-truncated"
-    >
-      {{ commitMessage }}
+    <gl-link v-gl-tooltip :title="commitTitle" :href="commitPath" class="gl-ml-3 gl-str-truncated">
+      {{ commitTitle }}
     </gl-link>
   </div>
 </template>

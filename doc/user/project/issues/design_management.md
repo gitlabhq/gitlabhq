@@ -18,7 +18,8 @@ You can share mockups of designs with your team, or visual regressions can be
 viewed and addressed.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.com/watch?v=CCMtCqdK_aM).
+For a video overview, see [Design Management](https://www.youtube.com/watch?v=CCMtCqdK_aM).
+<!-- Video published on 2019-07-11 -->
 
 ## Requirements
 

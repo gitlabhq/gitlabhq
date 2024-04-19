@@ -1,6 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { SEARCH_TYPE_ADVANCED } from '../constants';
 import LanguageFilter from './language_filter/index.vue';
 import ArchivedFilter from './archived_filter/index.vue';
@@ -15,6 +15,7 @@ export default {
   },
   computed: {
     ...mapState(['searchType']),
+    ...mapGetters(['showArchived']),
     showLanguageFilter() {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
@@ -25,6 +26,6 @@ export default {
 <template>
   <filters-template>
     <language-filter v-if="showLanguageFilter" class="gl-mb-5" />
-    <archived-filter class="gl-mb-5" />
+    <archived-filter v-if="showArchived" class="gl-mb-5" />
   </filters-template>
 </template>

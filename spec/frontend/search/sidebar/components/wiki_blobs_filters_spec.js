@@ -2,13 +2,13 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import NotesFilters from '~/search/sidebar/components/notes_filters.vue';
+import WikiBlobsFilters from '~/search/sidebar/components/wiki_blobs_filters.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import FiltersTemplate from '~/search/sidebar/components/filters_template.vue';
 
 Vue.use(Vuex);
 
-describe('GlobalSearch ProjectsFilters', () => {
+describe('GlobalSearch WikiBlobsFilters', () => {
   let wrapper;
 
   const defaultGetters = {
@@ -20,7 +20,7 @@ describe('GlobalSearch ProjectsFilters', () => {
       getters: defaultGetters,
     });
 
-    wrapper = shallowMount(NotesFilters, {
+    wrapper = shallowMount(WikiBlobsFilters, {
       store,
     });
   };

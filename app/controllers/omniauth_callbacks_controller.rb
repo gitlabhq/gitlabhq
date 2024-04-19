@@ -42,11 +42,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     update_login_counter_metric(failed_strategy.name, 'failed')
     log_saml_response if params['SAMLResponse']
 
-    if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
-      user = User.find_by_login(params[:username])
+    username = params[:username].to_s
+    if username.present? && AuthHelper.form_based_provider?(failed_strategy.name)
+      user = User.find_by_login(username)
 
       user&.increment_failed_attempts!
-      log_failed_login(params[:username], failed_strategy.name)
+      log_failed_login(username, failed_strategy.name)
     end
 
     super

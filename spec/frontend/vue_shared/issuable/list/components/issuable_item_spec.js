@@ -227,7 +227,7 @@ describe('IssuableItem', () => {
     describe('showDiscussions', () => {
       it.each`
         userDiscussionsCount | returnValue
-        ${0}                 | ${true}
+        ${0}                 | ${false}
         ${1}                 | ${true}
         ${undefined}         | ${false}
         ${null}              | ${false}
@@ -555,12 +555,9 @@ describe('IssuableItem', () => {
       const discussionsEl = wrapper.findByTestId('issuable-comments');
 
       expect(discussionsEl.exists()).toBe(true);
-      expect(discussionsEl.findComponent(GlLink).attributes()).toMatchObject({
-        title: 'Comments',
-        href: `${mockIssuable.webUrl}#notes`,
-      });
+
       expect(discussionsEl.findComponent(GlIcon).props('name')).toBe('comments');
-      expect(discussionsEl.findComponent(GlLink).text()).toContain('2');
+      expect(discussionsEl.text()).toBe('2');
     });
 
     it('renders issuable-assignees component', () => {

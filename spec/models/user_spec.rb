@@ -7185,6 +7185,17 @@ RSpec.describe User, feature_category: :user_profile do
 
       it { is_expected.to eq(false) }
     end
+
+    context 'using an array' do
+      let(:user) { create(:user) }
+      let(:password) { [user.password, 'WRONG PASSWORD'] }
+
+      it 'raises an error' do
+        expect do
+          validate_password
+        end.to raise_error(NoMethodError)
+      end
+    end
   end
 
   describe '#generate_otp_backup_codes!' do

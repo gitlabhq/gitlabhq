@@ -34,6 +34,6 @@ RSpec.describe 'New issue breadcrumb', feature_category: :team_planning do
     visit project_issues_path(project, assignee_id: user.id)
 
     expect(page).to have_content 'foobar'
-    expect(page.all('.no-comments').first.text).to eq "0"
+    expect(page).not_to have_selector("[data-testid='issuable-comments']")
   end
 end

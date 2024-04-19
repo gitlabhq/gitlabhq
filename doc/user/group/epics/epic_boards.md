@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5067) in GitLab 13.10.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290039) in GitLab 14.1.
 > - Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
 
 Epic boards build on the existing [epic tracking functionality](index.md) and
@@ -58,8 +56,6 @@ Now you can [add some lists](#create-a-new-list).
 To change these options later, [edit the board](#edit-the-scope-of-an-epic-board).
 
 ## Delete an epic board
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
 
 Prerequisites:
 
@@ -116,8 +112,6 @@ To remove a list from an epic board:
 
 ### Create an epic from an epic board
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
-
 Prerequisites:
 
 - You must have at least the Reporter role for a group.
@@ -133,8 +127,6 @@ To create an epic from a list in epic board:
 
 ### Filter epics
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
-
 Use the filters on top of your epic board to show only
 the results you want. It's similar to the filtering used in the epic list,
 as the metadata from the epics and labels is re-used in the epic board.
@@ -146,16 +138,12 @@ You can filter by the following:
 
 ### View count of issues, weight, and progress of an epic
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331330) in GitLab 14.1.
-
 Epics on an epic board show a summary of their issues, weight, and progress.
 To see the number of open and closed issues and the completed and incomplete
 weight, hover over the issues icon **{issues}**, weight icon **{weight}**, or
 progress icon **{progress}**.
 
 ### Move epics and lists
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
 
 You can move epics and lists by dragging them.
 

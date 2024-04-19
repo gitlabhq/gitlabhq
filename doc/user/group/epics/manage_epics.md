@@ -157,7 +157,7 @@ To update multiple epics at the same time:
 
 ## Delete an epic
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452189) in GitLab 16.11. In GitLab 16.10 and earlier, if you delete an epic, all its child epics and their descendants are deleted as well. If needed, you can [remove child epics](#remove-a-child-epic-from-a-parent-epic) from the parent epic before you delete it.
 
 Prerequisites:
 
@@ -233,20 +233,11 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 
 ### Cached epic count
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299540) in GitLab 13.11 [with a flag](../../../administration/feature_flags.md) named `cached_sidebar_open_epics_count`. Enabled by default.
-> - Enabled on self-managed and on GitLab.com in GitLab 14.0. [Feature flag `cached_sidebar_open_epics_count`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed.
-
 The total count of open epics displayed in the sidebar is cached if higher
 than 1000. The cached value is rounded to thousands or millions and updated every 24 hours.
 
 ## Filter the list of epics
 
-> - Filtering by child epics was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9029) in GitLab 13.0.
-> - Filtering by the user's reaction emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325630) in GitLab 13.11.
-> - Sorting by epic titles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.1.
-> - Filtering by milestone and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268372) in GitLab 14.2 [with a flag](../../../administration/feature_flags.md) named `vue_epics_list`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276189) in GitLab 14.7.
-> - [Feature flag `vue_epics_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/327320) removed in GitLab 14.8.
 > - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 You can filter the list of epics by:
@@ -304,8 +295,6 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ## Change activity sort order
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in GitLab 13.2.
-
 You can reverse the default order and interact with the activity feed sorted by most recent items
 at the top. Your preference is saved via local storage and automatically applied to every epic and issue
 you view.
@@ -316,10 +305,6 @@ or newest items to be shown first.
 ![Issue activity sort order dropdown list](img/epic_activity_sort_order_v13_2.png)
 
 ## Make an epic confidential
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213068) in GitLab 13.0 behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/224513) in GitLab 13.2.
-> - You can [use the Confidentiality option in the epic sidebar](https://gitlab.com/gitlab-org/gitlab/-/issues/197340) in GitLab 13.3 and later.
 
 If you're working on items that contain private information, you can make an epic confidential.
 
@@ -463,7 +448,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 New issues appear at the top of the list in the **Child issues and epics**
@@ -545,7 +529,6 @@ To add an existing epic as child epic:
 
 ### Move child epics between epics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 > - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 New child epics appear at the top of the list in the **Child issues and epics** section.

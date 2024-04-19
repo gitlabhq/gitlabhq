@@ -76,6 +76,15 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(@current_authenticated_job).to be_nil
         end
       end
+
+      context 'for an array of tokens' do
+        let(:token) { [job.token, 'invalid token'] }
+
+        it "returns an Unauthorized exception" do
+          expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          expect(@current_authenticated_job).to be_nil
+        end
+      end
     end
 
     context 'when route is not allowed to be authenticated', :request_store do
@@ -236,6 +245,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
           expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
         end
+
+        it 'returns exception if an array is passed' do
+          set_param(:feed_token, [feed_token, 'fake'])
+
+          expect { find_user_from_feed_token(:rss) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
       end
 
       context 'when old format rss_token param is provided' do
@@ -296,8 +311,16 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         context 'when token is incorrect' do
-          it 'returns the user' do
+          it 'returns an error' do
             request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
+
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+
+        context 'when token is an array' do
+          it 'returns an error' do
+            request.headers['X-Gitlab-Static-Object-Token'] = [user.static_object_token, 'foobar']
 
             expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end
@@ -314,8 +337,16 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         context 'when token is incorrect' do
-          it 'returns the user' do
+          it 'raises an error' do
             set_param(:token, 'foobar')
+
+            expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+
+        context 'when token is an array' do
+          it 'raises an error' do
+            set_param(:token, [user.static_object_token, 'foobar'])
 
             expect { find_user_from_static_object_token(format) }.to raise_error(Gitlab::Auth::UnauthorizedError)
           end

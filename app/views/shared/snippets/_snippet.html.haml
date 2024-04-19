@@ -14,8 +14,8 @@
         %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 border-radius-default gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
           = sprite_icon('spam', size: '16')
 
-      .snippet-info
-        .gl-display-inline.gl-text-secondary{ data: { testid: 'snippet-created-at'} }
+      .snippet-info.gl-font-sm.gl-text-gray-500!
+        .gl-display-inline{ data: { testid: 'snippet-created-at'} }
           - created_at = time_ago_with_tooltip(snippet.created_at, placement: 'bottom')
           - author = link_to(snippet.author_name, user_snippets_path(snippet.author), data: { user_id: snippet.author.id }, class: 'gl-text-black-normal')
           #{snippet.to_reference} &middot;
@@ -27,10 +27,11 @@
 
     .gl-sm-display-flex.gl-flex-direction-column.gl-align-items-flex-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
       .gl-display-flex.gl-gap-4.gl-align-items-center
+        - if notes_count > 0
+          %span.has-tooltip{ title: _('Comments') }
+            = sprite_icon('comments')
+            = notes_count
         = snippet_file_count(snippet)
-        = link_to gitlab_snippet_path(snippet, anchor: 'notes'), class: "#{'no-comments' if notes_count == 0} gl-text-black-normal" do
-          = sprite_icon('comments', css_class: 'gl-vertical-align-text-bottom')
-          = notes_count
         %span.has-tooltip{ title: visibility_level_label(snippet.visibility_level), data: { testid: 'snippet-visibility-content', qa_snippet_visibility: visibility_level_label(snippet.visibility_level) } }
           = visibility_level_icon(snippet.visibility_level)
-      .gl-white-space-nowrap.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }
+      .gl-white-space-nowrap.gl-font-sm.gl-text-secondary= _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

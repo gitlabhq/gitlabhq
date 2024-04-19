@@ -93,6 +93,22 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
+      context 'mass assignment' do
+        it 'does not authenticate with multiple usernames' do
+          expect do
+            post(:create, params: { user: { login: ['invalid', user.username], password: user.password } })
+          end.to raise_error(NoMethodError)
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+
+        it 'does not authenticate with multiple passwords' do
+          expect do
+            post(:create, params: { user: { login: user.username, password: ['aaaaaa', user.password] } })
+          end.to raise_error(NoMethodError)
+          expect(@request.env['warden']).not_to be_authenticated
+        end
+      end
+
       context 'when user with LDAP identity' do
         before do
           create(:identity, provider: 'ldapmain', user: user)
@@ -436,6 +452,16 @@ RSpec.describe SessionsController, feature_category: :system_access do
                 authenticate_2fa(otp_attempt: code)
               end
             end
+
+            context 'when OTP is an array' do
+              let(:code) { %w[000000 000001] }
+
+              it 'does not authenticate' do
+                authenticate_2fa(otp_attempt: code)
+
+                expect(subject.current_user).not_to eq user
+              end
+            end
           end
 
           context 'when the user is on their last attempt' do
@@ -568,6 +594,26 @@ RSpec.describe SessionsController, feature_category: :system_access do
         post_action
 
         expect(subject.current_user).to eq user
+      end
+
+      context 'when the verification token is invalid' do
+        let(:user_params) { { verification_token: 'not-the-token' } }
+
+        it 'does not log the user in' do
+          post_action
+
+          expect(subject.current_user).to eq nil
+        end
+      end
+
+      context 'when the verification token is an array' do
+        let(:user_params) { { verification_token: %w[not-the-token still-not-the-token] } }
+
+        it 'does not log the user in' do
+          post_action
+
+          expect(subject.current_user).to eq nil
+        end
       end
     end
   end

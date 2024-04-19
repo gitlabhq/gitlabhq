@@ -470,15 +470,6 @@ module ApplicationSettingsHelper
       :package_registry_cleanup_policies_worker_capacity,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
-      :container_registry_import_max_tags_count,
-      :container_registry_import_max_retries,
-      :container_registry_import_start_max_retries,
-      :container_registry_import_max_step_duration,
-      :container_registry_pre_import_tags_rate,
-      :container_registry_pre_import_timeout,
-      :container_registry_import_timeout,
-      :container_registry_import_target_plan,
-      :container_registry_import_created_before,
       :keep_latest_artifact,
       :whats_new_variant,
       :user_deactivation_emails_enabled,
@@ -523,10 +514,20 @@ module ApplicationSettingsHelper
       :downstream_pipeline_trigger_limit_per_project_user_sha,
       :asciidoc_max_includes
     ].tap do |settings|
-      next if Gitlab.com?
-
-      settings << :deactivate_dormant_users
-      settings << :deactivate_dormant_users_period
+      if Gitlab.com?
+        settings << :container_registry_import_max_tags_count
+        settings << :container_registry_import_max_retries
+        settings << :container_registry_import_start_max_retries
+        settings << :container_registry_import_max_step_duration
+        settings << :container_registry_pre_import_tags_rate
+        settings << :container_registry_pre_import_timeout
+        settings << :container_registry_import_timeout
+        settings << :container_registry_import_target_plan
+        settings << :container_registry_import_created_before
+      else
+        settings << :deactivate_dormant_users
+        settings << :deactivate_dormant_users_period
+      end
     end
   end
 
