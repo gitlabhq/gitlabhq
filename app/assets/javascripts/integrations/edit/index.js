@@ -40,6 +40,7 @@ function parseDatasetToProps(data) {
     artifactRegistryPath,
     personalAccessTokensPath,
     workloadIdentityFederationPath,
+    wlifIssuer,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -104,6 +105,7 @@ function parseDatasetToProps(data) {
     integrationLevel,
     id: parseInt(id, 10),
     projectId: parseInt(projectId, 10),
+    wlifIssuer,
     redirectTo,
     shouldUpgradeSlack,
     upgradeSlackUrl,

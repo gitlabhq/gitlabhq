@@ -9,6 +9,7 @@ import {
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_EPIC,
   I18N_WORK_ITEM_SHOW_LABELS,
   CHILD_ITEMS_ANCHOR,
 } from '../../constants';
@@ -18,6 +19,7 @@ import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
+import WorkItemTreeActions from './work_item_tree_actions.vue';
 
 export default {
   FORM_TYPES,
@@ -29,6 +31,7 @@ export default {
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
+    WorkItemTreeActions,
     GlToggle,
   },
   props: {
@@ -121,6 +124,14 @@ export default {
         };
       });
     },
+    /**
+     * Based on the type of work item, should the actions menu be rendered?
+     *
+     * Currently only renders for `epic` work items
+     */
+    canShowActionsMenu() {
+      return this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC && this.workItemIid;
+    },
   },
   methods: {
     genericActionItems(workItem) {
@@ -179,7 +190,12 @@ export default {
         label-id="relationship-toggle-labels"
         @change="showLabels = $event"
       />
-      <work-item-actions-split-button v-if="canUpdate" :actions="addItemsActions" />
+      <work-item-actions-split-button v-if="canUpdate" :actions="addItemsActions" class="gl-mr-3" />
+      <work-item-tree-actions
+        v-if="canShowActionsMenu"
+        :work-item-iid="workItemIid"
+        :full-path="fullPath"
+      />
     </template>
     <template #body>
       <div class="gl-new-card-content gl-px-0">

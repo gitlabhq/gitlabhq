@@ -8,13 +8,14 @@ module Gitlab
 
         def initialize(
           project, sha, custom_content, pipeline_source, pipeline_source_bridge,
-          triggered_for_branch = false)
+          triggered_for_branch = false, ref = nil)
           @project = project
           @sha = sha
           @custom_content = custom_content
           @pipeline_source = pipeline_source
           @pipeline_source_bridge = pipeline_source_bridge
           @triggered_for_branch = triggered_for_branch
+          @ref = ref
         end
 
         def exists?

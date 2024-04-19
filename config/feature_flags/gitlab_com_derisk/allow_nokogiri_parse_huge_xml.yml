@@ -1,0 +1,8 @@
+---
+name: allow_nokogiri_parse_huge_xml
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148779
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454797
+milestone: '17.0'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

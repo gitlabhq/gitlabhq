@@ -246,7 +246,8 @@ module.exports = (path, options = {}) => {
     resolver: './jest_resolver.js',
     setupFilesAfterEnv,
     restoreMocks: true,
-    slowTestThreshold: process.env.CI ? 6000 : 500,
+    // actual test timeouts
+    testTimeout: process.env.CI ? 10000 : 5000,
     transform: {
       '^.+\\.(gql|graphql)$': './spec/frontend/__helpers__/graphql_transformer.js',
       '^.+_worker\\.js$': './spec/frontend/__helpers__/web_worker_transformer.js',

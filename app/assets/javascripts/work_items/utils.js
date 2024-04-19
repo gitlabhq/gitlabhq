@@ -82,3 +82,15 @@ export const isReference = (input) => {
 export const sortNameAlphabetically = (a, b) => {
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 };
+
+/**
+ * Builds path to Roadmap page pre-filtered by
+ * work item iid
+ *
+ * @param {string} fullPath the path to the group
+ * @param {string} iid the iid of the work item
+ */
+export const workItemRoadmapPath = (fullPath, iid) => {
+  const domain = gon.relative_url_root || '';
+  return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}`;
+};

@@ -9,11 +9,14 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
+import WorkItemTreeActions from '~/work_items/components/work_item_links/work_item_tree_actions.vue';
 import getAllowedWorkItemChildTypes from '~/work_items//graphql/work_item_allowed_children.query.graphql';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '~/work_items/constants';
 import { childrenWorkItems, allowedChildrenTypesResponse } from '../../mock_data';
 
@@ -28,11 +31,13 @@ describe('WorkItemTree', () => {
   const findWidgetWrapper = () => wrapper.findComponent(WidgetWrapper);
   const findWorkItemLinkChildrenWrapper = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
+  const findTreeActions = () => wrapper.findComponent(WorkItemTreeActions);
 
   const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
 
   const createComponent = ({
     workItemType = 'Objective',
+    workItemIid = '2',
     parentWorkItemType = 'Objective',
     confidential = false,
     children = childrenWorkItems,
@@ -45,6 +50,7 @@ describe('WorkItemTree', () => {
       propsData: {
         fullPath: 'test/project',
         workItemType,
+        workItemIid,
         parentWorkItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
         confidential,
@@ -163,4 +169,19 @@ describe('WorkItemTree', () => {
       expect(findWorkItemLinkChildrenWrapper().props('showLabels')).toBe(toggleValue);
     },
   );
+
+  describe('action menu', () => {
+    it.each`
+      visible  | workItemType
+      ${true}  | ${WORK_ITEM_TYPE_VALUE_EPIC}
+      ${false} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
+    `(
+      'When displaying a $workItemType, it is $visible that the action menu is rendered',
+      ({ workItemType, visible }) => {
+        createComponent({ workItemType });
+
+        expect(findTreeActions().exists()).toBe(visible);
+      },
+    );
+  });
 });

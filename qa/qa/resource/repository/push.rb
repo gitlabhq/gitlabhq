@@ -6,7 +6,7 @@ module QA
       class Push < Base
         attr_accessor :file_name, :file_content, :commit_message,
           :branch_name, :new_branch, :output, :repository_http_uri,
-          :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name
+          :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name, :max_attempts
 
         attr_writer :remote_branch, :gpg_key_id, :merge_request_push_options
 
@@ -21,6 +21,7 @@ module QA
           @tag_name = nil
           @gpg_key_id = nil
           @merge_request_push_options = nil
+          @max_attempts = 3
         end
 
         def remote_branch
@@ -94,7 +95,7 @@ module QA
               end
 
               @output += commit_to repository
-              @output += repository.push_changes("#{branch_name}:#{remote_branch}", push_options: @merge_request_push_options)
+              @output += repository.push_changes("#{branch_name}:#{remote_branch}", push_options: @merge_request_push_options, max_attempts: @max_attempts)
             end
 
             repository.delete_ssh_key

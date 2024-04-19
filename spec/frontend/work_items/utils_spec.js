@@ -3,6 +3,7 @@ import {
   markdownPreviewPath,
   isReference,
   getWorkItemIcon,
+  workItemRoadmapPath,
 } from '~/work_items/utils';
 
 describe('autocompleteDataSources', () => {
@@ -70,5 +71,12 @@ describe('isReference', () => {
     ${'&gitlab-org101'}                        | ${false}
   `('returns $result for $referenceId', ({ referenceId, result }) => {
     expect(isReference(referenceId)).toBe(result);
+  });
+});
+
+describe('workItemRoadmapPath', () => {
+  it('constructs a path to the roadmap page', () => {
+    const path = workItemRoadmapPath('project/group', '2');
+    expect(path).toBe('/groups/project/group/-/roadmap?epic_iid=2');
   });
 });

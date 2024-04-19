@@ -381,6 +381,27 @@ sequenceDiagram
     end
 ```
 
+###### Web API
+
+The Web API provides both internal and public access to the back end implementation for diffs.
+
+Eventually, this diagram should expand (and possibly split) to show each endpoint that our application or a user could interface with, and what each of those endpoints expects and returns.
+
+Note that this is separate from the Back End diagrams, which elaborate on business logic and implementation details.
+The API endpoints are consumer-facing and so have different requirements and structures.
+
+```mermaid
+sequenceDiagram
+    actor Web User
+    participant Endpoints
+    participant Back end
+
+    Web User ->> Endpoints: Give me the diff for [x] file
+    Endpoints ->> Back end: User [u] is requesting [x] diff
+    Back end ->> Endpoints: Here is the resolved, rendered UI for that diff
+    Endpoints ->> Web User: "Do with this diff whatever you'd like to"
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

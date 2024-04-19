@@ -74,6 +74,31 @@ RSpec.describe QA::Git::Repository do
     end
   end
 
+  shared_examples 'command with no retries' do
+    let(:result_output) { +'Command successful' }
+    let(:result) { described_class::Result.new(any_args, 0, result_output) }
+    let(:command_return) { result_output }
+
+    context 'when command is successful' do
+      it 'returns the #run command Result output' do
+        expect(repository).to receive(:run).with(command, run_params.merge(max_attempts: 1)).and_return(result)
+
+        expect(call_method).to eq(command_return)
+      end
+    end
+
+    context 'when command is not successful' do
+      it 'raises a CommandError exception' do
+        expect(Open3).to receive(:capture2e).and_return([+'FAILURE', double(exitstatus: 42)]).once
+
+        expect do
+          call_method
+        end.to raise_error(QA::Support::Run::CommandError,
+          /The command .* failed \(42\) with the following output:\nFAILURE/)
+      end
+    end
+  end
+
   context 'with default credentials' do
     include_context 'unresolvable git directory' do
       before do
@@ -128,6 +153,12 @@ RSpec.describe QA::Git::Repository do
 
         it_behaves_like 'command with retries' do
           let(:call_method) { repository.push_changes(branch) }
+        end
+      end
+
+      context 'when max_attempts is exactly 1' do
+        it_behaves_like 'command with no retries' do
+          let(:call_method) { repository.push_changes(max_attempts: 1) }
         end
       end
 

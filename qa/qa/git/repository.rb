@@ -126,12 +126,12 @@ module QA
         run_git("git rev-parse --abbrev-ref HEAD").to_s
       end
 
-      def push_changes(branch = @default_branch, push_options: nil)
+      def push_changes(branch = @default_branch, push_options: nil, max_attempts: 3)
         cmd = ['git push']
         cmd << push_options_hash_to_string(push_options)
         cmd << uri
         cmd << branch
-        run_git(cmd.compact.join(' '), max_attempts: 3).to_s
+        run_git(cmd.compact.join(' '), max_attempts: max_attempts).to_s
       end
 
       def push_all_branches
