@@ -566,3 +566,16 @@ This task clones the remote repository, recursively walks the file system lookin
 ending in `.pub`, parses those files as SSH public keys, and then adds the public key fingerprints
 to `output_file`. The contents of `config/security/banned_ssh_keys.yml` is read by GitLab and kept
 in memory. It is not recommended to increase the size of this file beyond 1 megabyte in size.
+
+## Output current navigation structure to YAML
+
+_This task relies on your current environment setup (licensing, feature flags, projects/groups), so output may vary from run-to-run or environment-to-environment. We may look to standardize output in a future iteration._
+
+Product, UX, and tech writing need a way to audit the entire GitLab navigation,
+yet may not be comfortable directly reviewing the code in `lib/sidebars`. You
+can dump the entire nav structure to YAML via the `gitlab:nav:dump_structure`
+Rake task:
+
+```shell
+bundle exec rake gitlab:nav:dump_structure
+```

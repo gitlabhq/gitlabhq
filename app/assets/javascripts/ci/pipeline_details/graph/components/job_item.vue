@@ -344,7 +344,7 @@ export default {
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal"
+            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal gl-text-left"
           >
             {{ stageName }}
           </div>

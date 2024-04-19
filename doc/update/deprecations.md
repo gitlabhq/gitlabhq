@@ -1644,6 +1644,8 @@ In GitLab 17.0, PostgreSQL 14 becomes the minimum required PostgreSQL version.
 
 PostgreSQL 13 will be supported for the full GitLab 16 release cycle.
 PostgreSQL 14 will also be supported for instances that want to upgrade prior to GitLab 17.0.
+If you are running a single PostgreSQL instance you installed by using an Omnibus Linux package, an automatic upgrade may be attempted with 16.11.
+Make sure you have enough disk space to accommodate the upgrade. For more information, see the [Omnibus database documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
 </div>
 

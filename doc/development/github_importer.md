@@ -6,15 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitHub importer developer documentation
 
-The GitHub importer offers two different types of importers:
-
-- A sequential importer. Used by the `import:github` Rake task.
-- A parallel importer. Used by everything else.
-
-The difference between these two importers is:
-
-- The sequential importer does all the work in a single thread, so it's more suited for debugging purposes or Rake tasks.
-- The parallel importer uses Sidekiq.
+The GitHub importer is a parallel importer that uses Sidekiq.
 
 ## Prerequisites
 

@@ -337,6 +337,9 @@ To define a passthrough, add _one_ of the following to the
   """
   ```
 
+NOTE:
+The `file` passthrough only works with an external file that is committed to the current repository. It cannot be used to synthesize a custom configuration from [a remote configuration file](#specify-a-remote-configuration-file).
+
 - Using an external `file` committed to the current repository:
 
   ```toml
