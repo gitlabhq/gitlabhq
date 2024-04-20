@@ -241,17 +241,17 @@ In doing so we should follow [our engineering Open Source guidelines](https://ha
 including licensing and [code standards](../../development/go_guide/index.md).
 
 In addition, to write a custom analyzer that will integrate into the GitLab application
-a minimal featureset is required:
+a minimal feature set is required:
 
 ### Checklist
 
-#### Underlying tool
+Verify whether the underlying tool has:
 
-- [ ] Has [permissive software license](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software)
-- [ ] Headless execution (CLI tool)
-- [ ] Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
-- [ ] Compatible projects can be detected based on filenames or extensions
-- [ ] Offline execution (no Internet access) or can be configured to use custom proxies and/or CA certificates
+- A [permissive software license](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software).
+- Headless execution (CLI tool).
+- Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
+- Compatible projects that can be detected based on filenames or extensions.
+- Offline execution (no internet access) or can be configured to use custom proxies and/or CA certificates.
 
 #### Dockerfile
 

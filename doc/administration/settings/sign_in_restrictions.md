@@ -115,7 +115,7 @@ Go to your list of active sessions:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Active Sessions**.
 
-Sessions which have Admin Mode turned on display the text **Signed in on <date of session> with Admin Mode**.
+Sessions which have Admin Mode turned on display the text **Signed in on `date of session` with Admin Mode**.
 
 ### Turn off Admin Mode for your session
 
