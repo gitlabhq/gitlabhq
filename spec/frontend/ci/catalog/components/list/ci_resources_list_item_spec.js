@@ -105,7 +105,7 @@ describe('CiResourcesListItem', () => {
 
       it('renders the correct component names', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
-          '• Components: test-component and component_two',
+          '• Components: test-component, component_two',
         );
       });
 
@@ -135,7 +135,7 @@ describe('CiResourcesListItem', () => {
 
       it('renders the correct component names with a delimeter', () => {
         expect(findComponentNames().text()).toMatchInterpolatedText(
-          '• Components: test-component, component_two, test-component, component_two, and test-component',
+          '• Components: test-component, component_two, test-component, component_two, test-component',
         );
       });
     });

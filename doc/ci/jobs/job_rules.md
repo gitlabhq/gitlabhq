@@ -93,7 +93,7 @@ runs in branch and tag pipelines.
 
 ### Skip jobs if the branch is empty
 
-Use [`rules:changes:compare_to`](../yaml/index.md#ruleschangescompare_to) to 
+Use [`rules:changes:compare_to`](../yaml/index.md#ruleschangescompare_to) to
 skip a job when the branch is empty, which saves CI/CD resources. The configuration compares the
 branch to the default branch, and if the branch:
 

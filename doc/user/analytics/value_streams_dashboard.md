@@ -41,7 +41,7 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels). The Value Streams Dashboard includes four panels:
 
-- Overview 
+- Overview
 - DevSecOps metrics comparison
 - DORA Performers score
 - AI Impact analytics
@@ -185,7 +185,7 @@ Prerequisites:
 - You must have at least the Reporter role for the group.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
 - To view AI Impact analytics, you must:
-  - Enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md). 
+  - Enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
   - Configure [ClickHouse for contribution analytics](../../user/group/contribution_analytics/index.md#contribution-analytics-with-clickhouse).
 
 To view the value streams dashboard:

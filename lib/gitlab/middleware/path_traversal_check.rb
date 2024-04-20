@@ -66,8 +66,9 @@ module Gitlab
 
       def check(request, log_params)
         decoded_fullpath = CGI.unescape(request.fullpath)
-        ::Gitlab::PathTraversal.check_path_traversal!(decoded_fullpath, skip_decoding: true)
-      rescue ::Gitlab::PathTraversal::PathTraversalAttackError
+
+        return unless Gitlab::PathTraversal.path_traversal?(decoded_fullpath, match_new_line: false)
+
         log_params[:method] = request.request_method
         log_params[:fullpath] = request.fullpath
         log_params[:message] = PATH_TRAVERSAL_MESSAGE

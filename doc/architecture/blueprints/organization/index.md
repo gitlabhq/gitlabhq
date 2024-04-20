@@ -190,7 +190,7 @@ For a deeper exploration of the impact on select features, see the [list of feat
 
 ### Alignment between Organization and Fulfillment
 
-Fulfillment enhancements for Organizations will happen in a different timeline to the [Cells](../cells/index.md) project and should not be seen as blockers to any Cells timelines. 
+Fulfillment enhancements for Organizations will happen in a different timeline to the [Cells](../cells/index.md) project and should not be seen as blockers to any Cells timelines.
 
 For Cells 1.0, Billing remains at the top-level Group. Said otherwise, Billing will not occur at the Organization level. The guidance for Cells 1.0 is for GitLab.com SaaS customers to use a single top-level Group to keep Billing consolidated.
 

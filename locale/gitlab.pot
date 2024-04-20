@@ -2158,7 +2158,7 @@ msgstr ""
 msgid "AI|How was the AI content?"
 msgstr ""
 
-msgid "AI|I don't see how I can help. Please give better instructions!"
+msgid "AI|I'm sorry, I can't find the answer, but it's my fault, not yours. Please try something different."
 msgstr ""
 
 msgid "AI|Populate issue description"
@@ -30659,6 +30659,9 @@ msgstr ""
 msgid "Loading…"
 msgstr ""
 
+msgid "Local"
+msgstr ""
+
 msgid "Localization"
 msgstr ""
 
@@ -42452,6 +42455,9 @@ msgid "Remember me"
 msgstr ""
 
 msgid "Remind later"
+msgstr ""
+
+msgid "Remote"
 msgstr ""
 
 msgid "Remote object has no absolute path."

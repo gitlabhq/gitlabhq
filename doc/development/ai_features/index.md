@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Get started
 
-### Access 
+### Access
 
 #### GCP Vertex
 
@@ -502,7 +502,7 @@ TODO
 
 ## Embeddings database
 
-Embeddings are required to be generated for chat documentation tool to work. Documentation tool works on Saas only at this point. 
+Embeddings are required to be generated for chat documentation tool to work. Documentation tool works on Saas only at this point.
 
 Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings).
 
@@ -579,7 +579,7 @@ context 'when asking about how to use GitLab', :ai_embedding_fixtures do
 end
 ```
 
-## Monitoring 
+## Monitoring
 
 - Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under **SLI Detail: `llm_completion`**.
 - Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).

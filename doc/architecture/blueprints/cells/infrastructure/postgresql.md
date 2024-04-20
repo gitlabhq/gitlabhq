@@ -207,11 +207,11 @@ Most of the information above can be found in the official [Cloud SQL documentat
 
 #### Things to validate
 
-- Could we use the offered [logical replication feature](https://cloud.google.com/sql/docs/postgres/replication/configure-external-replica) ([pglogical](https://github.com/2ndQuadrant/pglogical)) for our migration needs? - estimate 2-4 weeks 
+- Could we use the offered [logical replication feature](https://cloud.google.com/sql/docs/postgres/replication/configure-external-replica) ([pglogical](https://github.com/2ndQuadrant/pglogical)) for our migration needs? - estimate 2-4 weeks
 - Can we access WAL and base_backups, as it appears in the [pitr documentation](https://cloud.google.com/sql/docs/postgres/backup-recovery/pitr#log-storage-for-pitr), in contrast to our meeting, where GCP denied it. - estimate < 1 week
 - How long does a major upgrade take for our 50k reference architecture? - estimate 4-5 weeks
 - Is [Query Insights](https://cloud.google.com/sql/docs/postgres/using-query-insights) a sufficient replacement for the current observability tooling.
-- How long does it take to create a read-replica? How long does it take to create a new cluster from backup? `10GB`, `100GB`, `1TB` - estimate 1 week 
+- How long does it take to create a read-replica? How long does it take to create a new cluster from backup? `10GB`, `100GB`, `1TB` - estimate 1 week
 
 ### k8s Operator
 

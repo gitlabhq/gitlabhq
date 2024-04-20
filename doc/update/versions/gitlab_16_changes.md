@@ -132,7 +132,7 @@ To workaround the problem:
    ```
 
 1. Remove the column. Using `gitlab-psql` or connecting to the database manually, run:
- 
+
    ```sql
    ALTER TABLE namespace_settings DROP COLUMN delayed_project_removal;
    ```
@@ -164,7 +164,7 @@ planned for release in 16.9.1.
 
 ### Geo installations
 
-- Due to a [bug in container replication](https://gitlab.com/gitlab-org/gitlab/-/issues/431944), a misconfigured secondary could mark a failed container replication as successful. Subsequent verification would mark the container as failed due to a checksum mismatch. The workaround is to fix the secondary configuration. 
+- Due to a [bug in container replication](https://gitlab.com/gitlab-org/gitlab/-/issues/431944), a misconfigured secondary could mark a failed container replication as successful. Subsequent verification would mark the container as failed due to a checksum mismatch. The workaround is to fix the secondary configuration.
   **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |

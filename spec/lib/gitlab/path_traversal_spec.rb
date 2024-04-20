@@ -93,12 +93,46 @@ RSpec.describe Gitlab::PathTraversal, feature_category: :shared do
     it 'raises for other non-strings' do
       expect { check_path_traversal!(%w[/tmp /tmp/../etc/passwd]) }.to raise_error(/Invalid path/)
     end
+  end
 
-    context 'when skip_decoding is used' do
-      it 'does not detect double encoded chars' do
-        expect(check_path_traversal!('foo%252F..%2Fbar', skip_decoding: true)).to eq('foo%252F..%2Fbar')
-        expect(check_path_traversal!('foo%252F%2E%2E%2Fbar', skip_decoding: true)).to eq('foo%252F%2E%2E%2Fbar')
-      end
+  describe '.path_traversal?' do
+    subject { described_class.path_traversal?(decoded_path, match_new_line: match_new_line) }
+
+    where(:decoded_path, :match_new_line, :result) do
+      nil                          | true  | false
+      '.'                          | true  | true
+      '..'                         | true  | true
+      '../foo'                     | true  | true
+      '..\\foo'                    | true  | true
+      '../'                        | true  | true
+      '..\\'                       | true  | true
+      '/../'                       | true  | true
+      '\\..\\'                     | true  | true
+      'foo/../../bar'              | true  | true
+      'foo\\..\\..\\bar'           | true  | true
+      'foo/..\\bar'                | true  | true
+      'foo\\../bar'                | true  | true
+      'foo/..\\..\\..\\..\\../bar' | true  | true
+      'foo/../'                    | true  | true
+      'foo\\..\\'                  | true  | true
+      'foo/..'                     | true  | true
+      'foo\\..'                    | true  | true
+      './foo'                      | true  | false
+      '.test/foo'                  | true  | false
+      '..test/foo'                 | true  | false
+      'dir/..foo.rb'               | true  | false
+      'dir/.foo.rb'                | true  | false
+
+      # single quotes will escape \n ('\\n') and will not get matched.
+      # we must use double quotes strings
+      "./foo\n"                    | true  | true
+      "..test/foo\n"               | true  | true
+      "./foo\n"                    | false | false
+      "..test/foo\n"               | false | false
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
     end
   end
 

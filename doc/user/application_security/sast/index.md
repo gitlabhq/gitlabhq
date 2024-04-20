@@ -662,7 +662,7 @@ removed, or promoted to regular features at any time.
 
 Experimental features available are:
 
-- Enable scanning of iOS and Android apps using the [MobSF analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/). This includes the automatic detection and scanning of Xcode projects, Android manifest files, `.ipa` (iOS) and `.apk` (Android) binary files. 
+- Enable scanning of iOS and Android apps using the [MobSF analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/). This includes the automatic detection and scanning of Xcode projects, Android manifest files, `.ipa` (iOS) and `.apk` (Android) binary files.
 
 These features were previously experimental, but are now generally available:
 

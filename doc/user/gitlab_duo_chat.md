@@ -479,3 +479,8 @@ This error occurs when you ask GitLab Duo Chat about resources you don't have ac
 or about resources that do not exist.
 
 Try again, asking about resources you have access to.
+
+### `I'm sorry, I can't find the answer, but it's my fault, not yours. Please try something different`
+
+This is a fallback error that occurs when there is a problem with GitLab Duo Chat.
+Please try your request again, or leave feedback to help us improve.

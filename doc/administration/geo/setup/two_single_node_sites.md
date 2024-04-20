@@ -62,7 +62,7 @@ Prerequisites:
    This command uses the `external_url` defined in `/etc/gitlab/gitlab.rb`.
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
-      
+
    NOTE:
    The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
    However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.

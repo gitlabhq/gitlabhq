@@ -7,6 +7,4 @@ feature_categories:
 description: Stores approval policy rules.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146504
 milestone: '16.11'
-gitlab_schema: gitlab_main_cell
-sharding_key:
-  security_policy_management_project_id: projects
+gitlab_schema: gitlab_main

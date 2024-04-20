@@ -59,6 +59,7 @@ export default {
     componentNamesSprintfMessage() {
       return toNounSeriesText(
         this.components.map((name, index) => `%{componentStart}${index}%{componentEnd}`),
+        { onlyCommas: true },
       );
     },
     detailsPageHref() {

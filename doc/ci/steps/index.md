@@ -127,7 +127,7 @@ Remote step references are the URL of a Git repo, the character `@`, and the tag
 Step runner looks for a file `step.yml` at the root of the repository.
 
 Local steps begin with `.` and point to a directory where step-runner looks for `step.yml`.
-Local references always use the path separator `/` regardless of operating system. 
+Local references always use the path separator `/` regardless of operating system.
 The OS appropriate separate is used when loading the file.
 
 ```yaml
@@ -142,7 +142,7 @@ my-job:
       step: ./my-local-steps/uname
 ```
 
-To use steps in a job, provide steps in a variable and invoke the step runner the job `script` keyword. Support to use steps in a job as a `run` keyword in a GitLab CI pipeline configuration is proposed in [epic 11525](https://gitlab.com/groups/gitlab-org/-/epics/11525). 
+To use steps in a job, provide steps in a variable and invoke the step runner the job `script` keyword. Support to use steps in a job as a `run` keyword in a GitLab CI pipeline configuration is proposed in [epic 11525](https://gitlab.com/groups/gitlab-org/-/epics/11525).
 
 ```yaml
 # Example work-around until run keyword is implemented

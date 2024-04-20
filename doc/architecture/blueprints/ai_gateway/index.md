@@ -568,7 +568,7 @@ AI Gateway aim is to become the primary method for the monolith to **access** ma
 
 ### Centralized Access Through AI Gateway
 
-The AI Gateway, a standalone service, is the sole access point for all communication between GitLab installations and third-party AI models. It is designed to centralize and manage access to all GitLab features, whether they are in-app functionalities or code suggestions, irrespective of their deployment methods. 
+The AI Gateway, a standalone service, is the sole access point for all communication between GitLab installations and third-party AI models. It is designed to centralize and manage access to all GitLab features, whether they are in-app functionalities or code suggestions, irrespective of their deployment methods.
 
 This strategy significantly simplifies enterprise management and abstracts machine learning away from the monolith. With future expansions including telemetry, embeddings API, and multi-region/customer-specific deployments, our goal is to provide a scalable, comprehensive AI solution for all GitLab users, regardless of their installation type.
 
@@ -580,9 +580,9 @@ This strategy significantly simplifies enterprise management and abstracts machi
 
 Unit Primitives are a fundamental part of our strategy for managing access to AI features through the AI Gateway. They represent the smallest unit of functionality that can be accessed and managed through the Gateway. This approach provides a more granular control over the functionalities exposed through the AI Gateway and simplifies the management of AI features. It also paves the way for future work on supporting user-deployed models and locally hosted models. From a business perspective, unit primitives are the smallest pieces that may be shuffled across various tiers or packaging models, providing flexibility and adaptability in our offerings.
 
-In the initial iteration, we will support two primitives: Code Suggestions and Chat. The latter will encompass all Chat features in one primitive. 
+In the initial iteration, we will support two primitives: Code Suggestions and Chat. The latter will encompass all Chat features in one primitive.
 
-In the next iteration, we plan to decompose the Chat primitive into multiple primitives based on top-level tools. This work is dependent on the completion of the task to move classification into the AI Gateway. 
+In the next iteration, we plan to decompose the Chat primitive into multiple primitives based on top-level tools. This work is dependent on the completion of the task to move classification into the AI Gateway.
 
 The introduction of Unit Primitives will simplify the management of AI features and provide a more granular control over the functionalities exposed through the AI Gateway. This will also pave the way for future work on supporting user-deployed models and locally hosted models.
 
@@ -609,7 +609,7 @@ While AI Gateway centralizes _access_ to AI features and models, it interacts wi
 
 ### AI Agents
 
-[AI Agents](https://gitlab.com/groups/gitlab-org/-/epics/12330) is a feature that allows users to implement and manage their own chats and AI features, managing prompts, models and tools. Development is currently in its early stages. Once mature, we intend to move GitLab feature to agents, but there are blockers that currently prevent us from doing so: 
+[AI Agents](https://gitlab.com/groups/gitlab-org/-/epics/12330) is a feature that allows users to implement and manage their own chats and AI features, managing prompts, models and tools. Development is currently in its early stages. Once mature, we intend to move GitLab feature to agents, but there are blockers that currently prevent us from doing so:
 
 - [Lack of prompt templating](https://gitlab.com/gitlab-org/gitlab/-/issues/441081).
 - Implement replication of user-defined prompts into ai-gateway.

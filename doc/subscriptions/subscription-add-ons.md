@@ -153,7 +153,7 @@ Prerequisites:
 
    - To find your subscription name:
      1. In the Customers Portal, on the **Subscriptions & purchases** page, find the subscription you want to apply the trial to.
-     1. At the top of the page, the subscription name appears in a badge. 
+     1. At the top of the page, the subscription name appears in a badge.
 
         ![Subscription name](img/subscription_name.png)
    - Ensure the email you submit for trial registration matches the email of the [subscription contact](customers_portal.md#change-your-subscription-contact).

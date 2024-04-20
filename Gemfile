@@ -399,6 +399,37 @@ gem 'snowplow-tracker', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
+# OpenTelemetry
+group :opentelemetry do
+  # Core OpenTelemetry gems
+  gem 'opentelemetry-sdk', feature_category: :tooling
+  gem 'opentelemetry-exporter-otlp', feature_category: :tooling
+
+  # OpenTelemetry gems selected from full set in `opentelemetry-instrumentation-all` metagem
+  gem 'opentelemetry-instrumentation-active_support', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-action_pack', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-active_job', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-active_record', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-action_view', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-aws_sdk', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-http', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-active_model_serializers', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-concurrent_ruby', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-ethon', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-excon', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-faraday', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-grape', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-graphql', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-http_client', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-net_http', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-pg', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-rack', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-rails', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-rake', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-redis', feature_category: :tooling
+  gem 'opentelemetry-instrumentation-sidekiq', feature_category: :tooling
+end
+
 gem 'warning', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 group :development do
