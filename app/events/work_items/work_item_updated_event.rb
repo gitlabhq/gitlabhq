@@ -9,6 +9,7 @@ module WorkItems
         'properties' => {
           'id' => { 'type' => 'integer' },
           'namespace_id' => { 'type' => 'integer' },
+          'previous_work_item_parent_id' => { 'type' => 'integer' },
           'updated_attributes' => {
             'type' => 'array',
             'items' => {

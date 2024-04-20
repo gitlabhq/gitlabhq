@@ -18,7 +18,6 @@ module WorkItems
       updated_work_item = super
 
       if updated_work_item.valid?
-        publish_event(work_item)
         success(payload(work_item))
       else
         error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))
@@ -57,6 +56,13 @@ module WorkItems
       super
     end
 
+    override :associations_before_update
+    def associations_before_update(work_item)
+      super.merge(
+        work_item_parent_id: work_item.work_item_parent&.id
+      )
+    end
+
     def transaction_update(work_item, opts = {})
       execute_widgets(work_item: work_item, callback: :before_update_in_transaction, widget_params: @widget_params)
 
@@ -68,6 +74,7 @@ module WorkItems
       super
 
       GraphqlTriggers.issuable_title_updated(work_item) if work_item.previous_changes.key?(:title)
+      publish_event(work_item, old_associations)
     end
 
     def payload(work_item)
@@ -82,10 +89,11 @@ module WorkItems
       )
     end
 
-    def publish_event(work_item)
+    def publish_event(work_item, old_associations)
       event = WorkItems::WorkItemUpdatedEvent.new(data: {
         id: work_item.id,
         namespace_id: work_item.namespace_id,
+        previous_work_item_parent_id: old_associations[:work_item_parent_id],
         updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
         updated_widgets: @widget_params&.keys&.map(&:to_s)
       }.tap(&:compact_blank!))

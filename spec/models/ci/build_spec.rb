@@ -5257,6 +5257,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
+
+    context 'when exit code is greater than 32767' do
+      let(:exit_code) { 32770 }
+
+      it 'wraps around to max size of a signed smallint' do
+        expect { drop_with_exit_code }
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(2)
+      end
+    end
   end
 
   describe '#exit_codes_defined?' do
