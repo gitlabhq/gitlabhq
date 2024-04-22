@@ -143,8 +143,6 @@ For example:
 
 ### Export seat usage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
-
 To export seat usage data as a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -452,8 +450,6 @@ The **Purchased storage available** total is incremented by the amount purchased
 state for all projects is removed, and their excess usage is deducted from the additional storage.
 
 #### For your group namespace
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
 
 If you're using GitLab.com, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your

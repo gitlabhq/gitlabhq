@@ -10,7 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8 [with a flag](feature_flags.md) named `ci_secure_files`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
 
 You can securely store up to 100 files for use in CI/CD pipelines as secure files.
