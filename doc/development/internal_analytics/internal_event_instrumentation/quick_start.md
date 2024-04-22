@@ -25,6 +25,8 @@ ruby scripts/internal_events/cli.rb
 
 This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.
 
+Events should be named in the format of `<action>_<target_of_action>_<where/when>`, valid examples are `create_ci_build` or `click_previous_blame_on_blob_page`.
+
 ## Trigger events
 
 Triggering an event and thereby updating a metric is slightly different on backend and frontend. Refer to the relevant section below.
@@ -44,14 +46,14 @@ To trigger an event, call the `track_internal_event` method from the `Gitlab::In
 include Gitlab::InternalEventsTracking
 
 track_internal_event(
-  "i_code_review_user_apply_suggestion",
+  "create_ci_build",
   user: user,
   namespace: namespace,
   project: project
 )
 ```
 
-This method automatically increments all RedisHLL metrics relating to the event `i_code_review_user_apply_suggestion`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
+This method automatically increments all RedisHLL metrics relating to the event `create_ci_build`, and sends a corresponding Snowplow event with all named arguments and standard context (SaaS only).
 In addition, the name of the class triggering the event is saved in the `category` property of the Snowplow event.
 
 If you have defined a metric with a `unique` property such as `unique: project.id` it is required that you provide the `project` argument.
@@ -80,10 +82,10 @@ Additional properties are passed by including the `additional_properties` hash i
 
 ```ruby
 Gitlab::InternalEvents.track_event(
-  "i_code_review_user_apply_suggestion",
+  "create_ci_build",
   user: user,
   additional_properties: {
-    label: 'admin',
+    label: 'scheduled',
     value: 20
   }
 )
@@ -97,7 +99,7 @@ There is a helper module `ProductAnalyticsTracking` for controllers you can use 
 class Projects::PipelinesController < Projects::ApplicationController
   include ProductAnalyticsTracking
 
-  track_internal_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
+  track_internal_event :charts, name: 'visit_charts_on_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
 
   def charts
     ...
@@ -172,7 +174,7 @@ To implement Vue component tracking:
 1. Call the `trackEvent` method. Tracking options can be passed as the second parameter:
 
    ```javascript
-   this.trackEvent('i_code_review_user_apply_suggestion');
+   this.trackEvent('click_previous_blame_on_blob_page');
    ```
 
    Or use the `trackEvent` method in the template:
@@ -184,7 +186,7 @@ To implement Vue component tracking:
 
        <div v-if="expanded">
          <p>Hello world!</p>
-         <button @click="trackEvent('i_code_review_user_apply_suggestion')">Track another event</button>
+         <button @click="trackEvent('click_previous_blame_on_blob_page')">Track another event</button>
        </div>
      </div>
    </template>
@@ -196,7 +198,7 @@ For tracking events directly from arbitrary frontend JavaScript code, a module f
 
 ```javascript
 import { InternalEvents } from '~/tracking';
-InternalEvents.trackEvent('i_code_review_user_apply_suggestion');
+InternalEvents.trackEvent('click_previous_blame_on_blob_page');
 ```
 
 #### Data-event attribute
@@ -205,7 +207,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
 
 ```html
   <gl-button
-    data-event-tracking="i_analytics_dev_ops_adoption"
+    data-event-tracking="click_previous_blame_on_blob_page"
   >
    Click Me
   </gl-button>
@@ -214,7 +216,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
 #### Haml
 
 ```haml
-= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action' }}) do
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'click_previous_blame_on_blob_page' }}) do
 ```
 
 #### Internal events on render
@@ -222,7 +224,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
 Sometimes we want to send internal events when the component is rendered or loaded. In these cases, we can add the `data-event-tracking-load="true"` attribute:
 
 ```haml
-= render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
+= render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'click_previous_blame_on_blob_page' } }) do
         = _("New project")
 ```
 
@@ -233,9 +235,9 @@ Additional properties can be passed when tracking events. They can be used to sa
 For Vue Mixin:
 
 ```javascript
-   this.trackEvent('i_code_review_user_apply_suggestion', {
-    label: 'push_event',
-    property: 'golang',
+   this.trackEvent('click_view_runners_button', {
+    label: 'group_runner_form',
+    property: dynamicPropertyVar,
     value: 20
    });
 ```
@@ -243,9 +245,9 @@ For Vue Mixin:
 For raw JavaScript:
 
 ```javascript
-   InternalEvents.trackEvent('i_code_review_user_apply_suggestion', {
-    label: 'admin',
-    property: 'system',
+   InternalEvents.trackEvent('click_view_runners_button', {
+    label: 'group_runner_form',
+    property: dynamicPropertyVar,
     value: 20
    });
 ```
@@ -253,10 +255,10 @@ For raw JavaScript:
 For data-event attributes:
 
 ```javascript
- <gl-button
-    data-event-tracking="i_analytics_dev_ops_adoption"
-    data-event-label="gitlab_devops_button_label"
-    data-event-property="nav_core_menu"
+  <gl-button
+    data-event-tracking="click_view_runners_button"
+    data-event-label="group_runner_form"
+    :data-event-property=dynamicPropertyVar
   >
    Click Me
   </gl-button>
@@ -265,5 +267,5 @@ For data-event attributes:
 For Haml:
 
 ```haml
-= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'gitlab_settings_button_label', event_property: 'settings_menu', event_value: 2 }}) do
+= render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action', event_label: 'group_runner_form', event_property: dynamic_property_var, event_value: 2 }}) do
 ```

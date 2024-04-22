@@ -37,7 +37,7 @@ describe('Work Item State toggle button component', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findModalLinkAt = (index) => findModal().findAllComponents(GlLink).at(index);
 
-  const { id, iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+  const { id, iid } = workItemQueryResponse.data.workspace.workItem;
 
   const createComponent = ({
     mutationHandler = mutationSuccessHandler,

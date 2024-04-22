@@ -1197,13 +1197,13 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('updates the upvotes count of active issuable', async () => {
-          const workItem = workItemByIidResponseFactory({
+          const { workItem } = workItemByIidResponseFactory({
             iid: '789',
             awardEmoji: {
               ...mockAwardsWidget,
               nodes: [mockAwardEmojiThumbsUp],
             },
-          }).data.workspace.workItems.nodes[0];
+          }).data.workspace;
 
           findDrawerWorkItem().vm.$emit('work-item-emoji-updated', workItem);
 

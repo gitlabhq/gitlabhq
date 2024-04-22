@@ -1,12 +1,10 @@
 #import "./work_item.fragment.graphql"
 
-query workItemByIid($fullPath: ID!, $iid: String) {
-  workspace: project(fullPath: $fullPath) @persist {
+query projectNamespaceLevel($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
     id
-    workItems(iid: $iid) {
-      nodes {
-        ...WorkItem
-      }
+    workItem(iid: $iid) {
+      ...WorkItem
     }
   }
 }

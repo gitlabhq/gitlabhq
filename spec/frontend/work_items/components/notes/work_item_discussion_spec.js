@@ -11,7 +11,7 @@ import {
 } from 'jest/work_items/mock_data';
 import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
 
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItems.nodes[0].widgets.find(
+const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItem.widgets.find(
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 

@@ -64,7 +64,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0] ?? {};
+        return data.workspace.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -167,7 +167,7 @@ export default {
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
                 const linkedItems =
-                  draftState.workspace.workItems.nodes[0].widgets?.find(
+                  draftState.workspace.workItem.widgets?.find(
                     (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
                   )?.linkedItems?.nodes || [];
                 const index = linkedItems.findIndex((item) => {

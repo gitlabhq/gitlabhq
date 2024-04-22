@@ -252,10 +252,8 @@ S-->>C: return Git response from primary
 
 ### Git push over HTTP(S)
 
-#### Git push over HTTP(S) unified URLs
-
-With unified URLs, a push redirects to a local path formatted as `/-/push_from_secondary/$SECONDARY_ID/*`. Further
-requests through this path are proxied to the primary, which will handle the push.
+If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, a push redirects to a local path formatted as `/-/push_from_secondary/$SECONDARY_ID/*`.
+Further, requests through this path are proxied to the primary, which will handle the push.
 
 ```mermaid
 sequenceDiagram
@@ -286,33 +284,4 @@ W->>G: Get connection details from Rails and connects to SmartHTTP Service, Rece
 G-->>W: Return a stream of Proto messages
 W-->>Wsec: Pipe messages to the Git client
 Wsec-->>C: Return piped messages from Git
-```
-
-#### Git push over HTTP(S) with separate URLs
-
-With separate URLs, the secondary will redirect to a URL formatted like `$PRIMARY/-/push_from_secondary/$SECONDARY_ID/*`.
-
-```mermaid
-sequenceDiagram
-participant Wsec as Workhorse (secondary)
-participant C as Git client
-participant W as Workhorse (primary)
-participant R as Rails (primary)
-participant G as Gitaly (primary)
-C->>Wsec: GET $SECONDARY/foo/bar.git/info/refs/?service=git-receive-pack
-Wsec->>C: 302 Redirect to $PRIMARY/-/push_from_secondary/2/foo/bar.git/info/refs?service=git-receive-pack
-C->>W: GET $PRIMARY/-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
-W->>R: <data>
-R-->>W: 401 Unauthorized
-W-->>C: <response>
-C->>W: GET /-/push_from_secondary/2/foo/bar.git/info/refs/?service=git-receive-pack
-W->>R: <data>
-R-->>W: Render Workhorse OK
-W-->>C: <response>
-C->>W: POST /-/push_from_secondary/2/foo/bar.git/git-receive-pack
-W->>R: GitHttpController:git_receive_pack
-R-->>W: Render Workhorse OK
-W->>G: Get connection details from Rails and connects to SmartHTTP Service, ReceivePack RPC
-G-->>W: Return a stream of Proto messages
-W-->>C: Pipe messages to the Git client
 ```

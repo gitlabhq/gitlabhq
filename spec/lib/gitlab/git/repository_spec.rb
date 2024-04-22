@@ -1857,9 +1857,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'with gitattributes' do
       before do
-        # this line can be removed once gitaly stops using info/attributes
-        repository.copy_gitattributes('gitattributes')
-
         # This line is added to make sure this test works when gitaly stops using
         # info/attributes. See https://gitlab.com/gitlab-org/gitaly/-/issues/5348 for details.
         repository.write_ref('HEAD', 'refs/heads/gitattributes')

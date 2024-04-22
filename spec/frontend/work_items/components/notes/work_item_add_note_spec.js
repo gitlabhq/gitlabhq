@@ -268,13 +268,11 @@ describe('Work item add note', () => {
 
         const {
           data: {
-            workspace: {
-              workItems: { nodes },
-            },
+            workspace: { workItem },
           },
         } = workItemByIidResponseFactory({ canUpdate: true, canCreateNote: true });
 
-        expect(findCommentForm().props('isWorkItemConfidential')).toBe(nodes[0].confidential);
+        expect(findCommentForm().props('isWorkItemConfidential')).toBe(workItem.confidential);
       });
     });
   });

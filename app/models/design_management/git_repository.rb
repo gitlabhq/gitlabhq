@@ -35,10 +35,5 @@ module DesignManagement
     def attributes_at(_ref = nil)
       info_attributes
     end
-
-    override :copy_gitattributes
-    def copy_gitattributes(_ref = nil)
-      true
-    end
   end
 end

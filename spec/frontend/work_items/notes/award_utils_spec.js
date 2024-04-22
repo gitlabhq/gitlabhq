@@ -13,7 +13,7 @@ import {
 } from '../mock_data';
 
 function getWorkItem(data) {
-  return data.workspace.workItems.nodes[0];
+  return data.workspace.workItem;
 }
 function getFirstNote(workItem) {
   return workItem.widgets.find((w) => w.type === 'NOTES').discussions.nodes[0].notes.nodes[0];

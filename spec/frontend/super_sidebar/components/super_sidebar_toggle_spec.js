@@ -79,27 +79,13 @@ describe('SuperSidebarToggle component', () => {
       unmockTracking();
     });
 
-    it('collapses the sidebar and focuses the other toggle', async () => {
+    it('collapses the sidebar and focuses the expand toggle', async () => {
       createWrapper({ type: 'collapse' });
       findButton().vm.$emit('click');
       await nextTick();
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(true, true);
       expect(document.activeElement).toEqual(document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`));
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_hide', {
-        label: 'nav_toggle',
-        property: 'nav_sidebar',
-      });
-    });
-
-    it('expands the sidebar and focuses the other toggle', async () => {
-      createWrapper();
-      findButton().vm.$emit('click');
-      await nextTick();
-      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
-      expect(document.activeElement).toEqual(
-        document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
-      );
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
         label: 'nav_toggle',
         property: 'nav_sidebar',
       });

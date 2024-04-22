@@ -368,7 +368,6 @@ RSpec.describe Gitlab::Diff::File do
           message: 'Add attributes',
           actions: [{ action: :update, file_path: '.gitattributes', content: "*.md -diff\n" }]
         )
-        project.repository.copy_gitattributes('master')
       end
 
       it "returns true for files that do not have attributes" do

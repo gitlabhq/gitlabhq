@@ -207,17 +207,13 @@ the webhooks yourself.
 > - Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
 
-If a webhook is failing, a banner displays at the top of the edit page explaining
-why the webhook is disabled and when it is automatically re-enabled. For example:
+When a webhook is temporarily disabled, a `Webhook fails to connect` error appears at the top
+with information on when the webhook is re-enabled automatically.
+When a webhook is permanently disabled, a `Webhook failed to connect` error appears at the top
+with information on how to re-enable the webhook yourself.
 
-![A banner for a failing webhook, warning it has failed to connect and is retrying in 60 minutes](img/failed_banner.png)
-
-In the case of a failed webhook, an error banner is displayed:
-
-![A banner for a failed webhook, showing an error state, and explaining how to re-enable it](img/failed_banner_error.png)
-
-To re-enable a failing or failed webhook, [send a test request](#test-a-webhook). If the test
-request succeeds, the webhook is re-enabled.
+To re-enable a temporarily or permanently disabled webhook manually, [send a test request](#test-a-webhook).
+If the test request returns a response code in the `2xx` range, the webhook is re-enabled.
 
 ## Test a webhook
 

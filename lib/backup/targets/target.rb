@@ -25,15 +25,6 @@ module Backup
       def restore(path, backup_id)
         raise NotImplementedError
       end
-
-      private
-
-      attr_reader :progress
-
-      def puts_time(msg)
-        progress.puts "#{Time.zone.now} -- #{msg}"
-        Gitlab::BackupLogger.info(message: Rainbow.uncolor(msg).to_s)
-      end
     end
   end
 end

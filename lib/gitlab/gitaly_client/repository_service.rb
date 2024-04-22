@@ -65,13 +65,6 @@ module Gitlab
         response.size
       end
 
-      def apply_gitattributes(revision)
-        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
-        gitaly_client_call(@storage, :repository_service, :apply_gitattributes, request, timeout: GitalyClient.fast_timeout)
-      rescue GRPC::InvalidArgument => ex
-        raise Gitlab::Git::Repository::InvalidRef, ex
-      end
-
       def info_attributes
         request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
 

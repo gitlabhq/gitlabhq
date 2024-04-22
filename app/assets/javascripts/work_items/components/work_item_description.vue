@@ -87,7 +87,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItems.nodes[0];
+        return data.workspace.workItem || {};
       },
       result() {
         if (this.isEditing) {

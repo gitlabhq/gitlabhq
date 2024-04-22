@@ -135,7 +135,7 @@ export default {
             cache.writeQuery({
               ...queryArgs,
               data: produce(sourceData, (draftState) => {
-                const linkedItemsWidget = draftState.workspace.workItems.nodes[0].widgets?.find(
+                const linkedItemsWidget = draftState.workspace.workItem?.widgets?.find(
                   (widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS,
                 );
 

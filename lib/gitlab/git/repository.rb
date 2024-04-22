@@ -788,12 +788,6 @@ module Gitlab
         gitaly_commit_client.ls_files(ref)
       end
 
-      def copy_gitattributes(ref)
-        wrapped_gitaly_errors do
-          gitaly_repository_client.apply_gitattributes(ref)
-        end
-      end
-
       def info_attributes
         return @info_attributes if @info_attributes
 
@@ -1326,10 +1320,6 @@ module Gitlab
       # Ref names must start with `refs/`.
       def gitaly_ref_exists?(ref_name)
         gitaly_ref_client.ref_exists?(ref_name)
-      end
-
-      def gitaly_copy_gitattributes(revision)
-        gitaly_repository_client.apply_gitattributes(revision)
       end
 
       def gitaly_delete_refs(*ref_names)

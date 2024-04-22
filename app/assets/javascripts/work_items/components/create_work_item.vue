@@ -126,9 +126,9 @@ export default {
                 workspace: {
                   __typename: TYPENAME_PROJECT,
                   id: workItem.namespace.id,
-                  workItems: {
-                    __typename: 'WorkItemConnection',
-                    nodes: [workItem],
+                  workItem: {
+                    __typename: 'WorkItem',
+                    ...workItem,
                   },
                 },
               },

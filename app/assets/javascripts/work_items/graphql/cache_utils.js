@@ -4,11 +4,11 @@ import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
-  draftData?.workspace?.workItems?.nodes[0]?.widgets.find(isNotesWidget);
+  draftData?.workspace?.workItem?.widgets.find(isNotesWidget);
 
 const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
-  const noteWidgetIndex = draftData.workspace.workItems.nodes[0].widgets.findIndex(isNotesWidget);
-  draftData.workspace.workItems.nodes[0].widgets[noteWidgetIndex] = notesWidget;
+  const noteWidgetIndex = draftData.workspace.workItem.widgets.findIndex(isNotesWidget);
+  draftData.workspace.workItem.widgets[noteWidgetIndex] = notesWidget;
 };
 
 /**
@@ -139,7 +139,7 @@ export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) =
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]).push(workItem);
+      findHierarchyWidgetChildren(draftState.workspace?.workItem).push(workItem);
     }),
   });
 };
@@ -158,7 +158,7 @@ export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const children = findHierarchyWidgetChildren(draftState.workspace.workItems.nodes[0]);
+      const children = findHierarchyWidgetChildren(draftState.workspace?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       children.splice(index, 1);
     }),

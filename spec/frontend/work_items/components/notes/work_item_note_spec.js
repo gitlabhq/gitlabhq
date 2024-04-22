@@ -399,7 +399,7 @@ describe('Work Item Note', () => {
     it('confidential information on note', async () => {
       createComponent();
       await findNoteActions().vm.$emit('startEditing');
-      const { confidential } = workItemByIidResponseFactory().data.workspace.workItems.nodes[0];
+      const { confidential } = workItemByIidResponseFactory().data.workspace.workItem;
       expect(findCommentForm().props('isWorkItemConfidential')).toBe(confidential);
     });
 

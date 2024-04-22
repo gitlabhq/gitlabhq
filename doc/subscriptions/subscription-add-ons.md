@@ -78,13 +78,25 @@ For all self-managed AI features:
   Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
   services. Consider policy updates to allow these services.
 
-### Assign seats in bulk
+## Assign and remove seats in bulk
 
-To assign seats in bulk, you can use [this GraphQL API endpoint](../api/graphql/reference/index.md#mutationuseraddonassignmentcreate).
+You can assign or remove seats in bulk for multiple users.
 
-This endpoint works for both self-managed and SaaS.
+### For GitLab.com
 
-Administrators of self-managed instances can also assign users by using a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro).
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. Select the **GitLab Duo Pro** tab.
+1. Select the users to assign or remove seats for:
+   - To select multiple users, to the left of each user, select the checkbox. 
+   - To select all, select the checkbox at the top of the table.
+1. Assign or remove seats:
+   - To assign seats, select **Assign seat**, then **Assign seats** to confirm.
+   - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
+
+### For self-managed
+
+Administrators of self-managed instances can use a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
 ## Purchase additional GitLab Duo Pro seats
 

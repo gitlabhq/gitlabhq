@@ -162,39 +162,6 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
     end
   end
 
-  describe "Updates git attributes" do
-    context "for default branch" do
-      context "when first push" do
-        let(:oldrev) { blankrev }
-
-        it "calls the copy attributes method for the first push to the default branch" do
-          expect(project.repository).to receive(:copy_gitattributes).with('master')
-
-          subject
-        end
-      end
-
-      it "calls the copy attributes method for changes to the default branch" do
-        expect(project.repository).to receive(:copy_gitattributes).with(ref)
-
-        subject
-      end
-    end
-
-    context "for non-default branch" do
-      before do
-        # Make sure the "default" branch is different
-        allow(project).to receive(:default_branch).and_return('not-master')
-      end
-
-      it "does not call copy attributes method" do
-        expect(project.repository).not_to receive(:copy_gitattributes)
-
-        subject
-      end
-    end
-  end
-
   describe "Webhooks" do
     before do
       create(:project_hook, push_events: true, project: project)

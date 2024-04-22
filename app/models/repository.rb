@@ -1079,16 +1079,6 @@ class Repository
     raw_repository.search_files_by_regexp("^#{regexp_string}$", ref)
   end
 
-  def copy_gitattributes(ref)
-    actual_ref = ref || root_ref
-    begin
-      raw_repository.copy_gitattributes(actual_ref)
-      true
-    rescue Gitlab::Git::Repository::InvalidRef
-      false
-    end
-  end
-
   def file_on_head(type, object_type = :blob)
     return unless head = tree(:head)
 
@@ -1224,7 +1214,6 @@ class Repository
     if branch_exists?(branch)
       before_change_head
       raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
-      copy_gitattributes(branch)
       after_change_head
     else
       container.after_change_head_branch_does_not_exist(branch)

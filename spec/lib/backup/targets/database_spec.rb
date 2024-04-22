@@ -9,6 +9,7 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
   let(:one_database_configured?) { base_models_for_backup.one? }
   let(:force) { true }
   let(:backup_options) { Backup::Options.new(force: force) }
+  let(:logger) { subject.logger }
   let(:timeout_service) do
     instance_double(Gitlab::Database::TransactionTimeoutSettings, restore_timeouts: nil, disable_timeouts: nil)
   end

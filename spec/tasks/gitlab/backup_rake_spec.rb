@@ -9,6 +9,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
+  let(:progress) { StringIO.new }
+
   let(:backup_task_ids) do
     %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
@@ -298,6 +300,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     context 'with specific backup tasks' do
       before do
         stub_env('SKIP', 'db')
+        allow_next_instance_of(Gitlab::BackupLogger) do |instance|
+          allow(instance).to receive(:info).and_call_original
+        end
       end
 
       it 'prints a progress message to stdout' do
@@ -307,27 +312,29 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       end
 
       it 'logs the progress to log file' do
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping database ... [SKIPPED]")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping repositories ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping uploads ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping builds ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping artifacts ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping pages ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping lfs objects ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping terraform states ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping container registry images ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping packages ... done")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... ")
-        expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... done")
+        expect_logger_to_receive_messages([
+          "Dumping database ... [SKIPPED]",
+          "Dumping repositories ... ",
+          "Dumping repositories ... done",
+          "Dumping uploads ... ",
+          "Dumping uploads ... done",
+          "Dumping builds ... ",
+          "Dumping builds ... done",
+          "Dumping artifacts ... ",
+          "Dumping artifacts ... done",
+          "Dumping pages ... ",
+          "Dumping pages ... done",
+          "Dumping lfs objects ... ",
+          "Dumping lfs objects ... done",
+          "Dumping terraform states ... ",
+          "Dumping terraform states ... done",
+          "Dumping container registry images ... ",
+          "Dumping container registry images ... done",
+          "Dumping packages ... ",
+          "Dumping packages ... done",
+          "Dumping ci secure files ... ",
+          "Dumping ci secure files ... done"
+        ])
 
         backup_rake_task_names.each do |task|
           run_rake_task("gitlab:backup:#{task}:create")
@@ -716,6 +723,14 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
       expect(backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
+    end
+  end
+
+  def expect_logger_to_receive_messages(messages)
+    expect_any_instance_of(Gitlab::BackupLogger) do |logger|
+      messages.each do |message|
+        allow(logger).to receive(:info).with(message).ordered
+      end
     end
   end
 end

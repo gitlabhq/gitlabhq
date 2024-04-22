@@ -156,7 +156,7 @@ export default {
           iid,
         },
         update(data) {
-          return data.workspace.workItems.nodes[0];
+          return data.workspace.workItem;
         },
       });
     },
@@ -234,7 +234,7 @@ export default {
               },
               (sourceData) =>
                 produce(sourceData, (draftData) => {
-                  const { widgets } = draftData.workspace.workItems.nodes[0];
+                  const { widgets } = draftData.workspace.workItem;
                   const hierarchyWidget = findHierarchyWidgets(widgets);
                   hierarchyWidget.children.nodes = updatedChildren;
                 }),

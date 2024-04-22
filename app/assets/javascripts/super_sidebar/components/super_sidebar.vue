@@ -81,7 +81,7 @@ export default {
       handler(collapsed) {
         this.setupFocusTrapListener();
 
-        if (this.isOverlappingAndNotPeeking() && !collapsed) {
+        if (this.isNotPeeking() && !collapsed) {
           this.$nextTick(() => {
             this.firstFocusableElement().focus();
           });
@@ -119,8 +119,8 @@ export default {
     isOverlapping() {
       return GlBreakpointInstance.windowWidth() < breakpoints.xl;
     },
-    isOverlappingAndNotPeeking() {
-      return this.isOverlapping() && !(sidebarState.isHoverPeek || sidebarState.isPeek);
+    isNotPeeking() {
+      return !(sidebarState.isHoverPeek || sidebarState.isPeek);
     },
     setupFocusTrapListener() {
       /**
@@ -137,7 +137,7 @@ export default {
       toggleSuperSidebarCollapsed(true, false);
     },
     handleEscKey() {
-      if (this.isOverlappingAndNotPeeking()) {
+      if (this.isOverlapping() && this.isNotPeeking()) {
         this.collapseSidebar();
         document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`)?.focus();
       }

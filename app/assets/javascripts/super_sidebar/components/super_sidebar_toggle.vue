@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
-import { JS_TOGGLE_COLLAPSE_CLASS, JS_TOGGLE_EXPAND_CLASS, sidebarState } from '../constants';
+import { JS_TOGGLE_EXPAND_CLASS, sidebarState } from '../constants';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 
 export default {
@@ -66,9 +66,9 @@ export default {
     },
     focusOtherToggle() {
       this.$nextTick(() => {
-        const classSelector = this.isTypeExpand ? JS_TOGGLE_COLLAPSE_CLASS : JS_TOGGLE_EXPAND_CLASS;
-        const otherToggle = document.querySelector(`.${classSelector}`);
-        otherToggle?.focus();
+        if (!this.isTypeExpand) {
+          document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`).focus();
+        }
       });
     },
     onTooltipShow(bvEvent) {

@@ -71,9 +71,7 @@ describe('WorkItemTodo component', () => {
         workspace: {
           __typename: 'Project',
           id: 'gid://gitlab/Project/1',
-          workItems: {
-            nodes: [workItemQueryResponse.data.workItem],
-          },
+          workItem: workItemQueryResponse.data.workItem,
         },
       },
     });

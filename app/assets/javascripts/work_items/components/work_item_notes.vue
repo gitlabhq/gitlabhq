@@ -196,7 +196,7 @@ export default {
         };
       },
       update(data) {
-        const widgets = data.workspace?.workItems?.nodes[0]?.widgets;
+        const widgets = data.workspace?.workItem?.widgets;
         return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
       },
       skip() {

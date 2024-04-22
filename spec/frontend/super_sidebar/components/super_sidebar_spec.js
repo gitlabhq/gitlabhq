@@ -388,22 +388,13 @@ describe('SuperSidebar component', () => {
       focusSpy = jest.spyOn(findFirstFocusableElement().element, 'focus');
     });
 
-    it('focuses the first focusable element when sidebar is overlapping and not peeking', async () => {
+    it('focuses the first focusable element when sidebar is not peeking', async () => {
       jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
 
       wrapper.vm.sidebarState.isCollapsed = false;
       await nextTick();
 
       expect(focusSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it("doesn't focus the first focusable element when sidebar is not overlapping", async () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
-
-      wrapper.vm.sidebarState.isCollapsed = false;
-      await nextTick();
-
-      expect(focusSpy).not.toHaveBeenCalled();
     });
 
     it("doesn't focus the first focusable element when sidebar is peeking", async () => {

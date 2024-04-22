@@ -12,7 +12,7 @@ identifiers:
 - namespace
 product_section: dev
 product_stage: plan
-product_group: group::product_planning
+product_group: product_planning
 milestone: "15.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90107
 distributions:

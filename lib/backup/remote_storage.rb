@@ -2,10 +2,10 @@
 
 module Backup
   class RemoteStorage
-    attr_reader :progress, :options, :backup_information
+    attr_reader :options, :backup_information, :logger
 
-    def initialize(progress:, options:)
-      @progress = progress
+    def initialize(logger:, options:)
+      @logger = logger
       @options = options
     end
 
@@ -16,26 +16,24 @@ module Backup
       if connection_settings.blank? ||
           options.skippable_operations.remote_storage ||
           options.skippable_operations.archive
-        puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) +
-          "[SKIPPED]".color(:cyan)
+        logger.info "Uploading backup archive to remote storage #{remote_directory} ... [SKIPPED]"
         return
       end
 
-      puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue)
+      logger.info "Uploading backup archive to remote storage #{remote_directory} ... "
 
       directory = connect_to_remote_directory
       upload = directory.files.create(create_attributes)
 
       if upload
         if upload.respond_to?(:encryption) && upload.encryption
-          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) +
-            "done (encrypted with #{upload.encryption})".color(:green)
+          logger.info "Uploading backup archive to remote storage #{remote_directory} ... " \
+                      "done (encrypted with #{upload.encryption})"
         else
-          puts_time "Uploading backup archive to remote storage #{remote_directory} ... ".color(:blue) +
-            "done".color(:green)
+          logger.info "Uploading backup archive to remote storage #{remote_directory} ... done"
         end
       else
-        puts_time "Uploading backup to #{remote_directory} failed".color(:red)
+        logger.error "Uploading backup to #{remote_directory} failed"
         raise Backup::Error, 'Backup failed'
       end
     end
@@ -125,13 +123,6 @@ module Backup
 
     def object_storage_config
       @object_storage_config ||= ObjectStorage::Config.new(Gitlab.config.backup.upload)
-    end
-
-    # TODO: This is a temporary workaround for bad design in Backup::Manager
-    # Output related code would be moved to a new location
-    def puts_time(msg)
-      progress.puts "#{Time.current} -- #{msg}"
-      Gitlab::BackupLogger.info(message: Rainbow.uncolor(msg))
     end
 
     # TODO: This is a temporary workaround for bad design in Backup::Manager

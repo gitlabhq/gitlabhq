@@ -41,7 +41,7 @@ describe('WorkItemAwardEmoji component', () => {
   const mutationErrorMessage = 'Failed to update the award';
 
   const workItemQueryResponse = workItemByIidResponseFactory();
-  const mockWorkItem = workItemQueryResponse.data.workspace.workItems.nodes[0];
+  const mockWorkItem = workItemQueryResponse.data.workspace.workItem;
 
   const groupAwardEmojiQuerySuccessHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const awardEmojiQuerySuccessHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
