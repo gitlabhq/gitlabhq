@@ -15,8 +15,8 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
     attributes_for(
       :container_registry_protection_rule,
       repository_path_pattern: "#{container_registry_protection_rule.repository_path_pattern}-updated",
-      delete_protected_up_to_access_level: 'owner',
-      push_protected_up_to_access_level: 'owner'
+      minimum_access_level_for_delete: 'owner',
+      minimum_access_level_for_push: 'owner'
     )
   end
 
@@ -77,8 +77,8 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
       { repository_path_pattern: '' }                                                    | include("Repository path pattern can't be blank")
       { repository_path_pattern: 'wrong-project-scope/repository-path' }                 | include("Repository path pattern should start with the project's full path")
       lazy { { repository_path_pattern: "#{project.full_path}/path-invalid-chars-#@" } } | include("Repository path pattern should be a valid container repository path with optional wildcard characters.")
-      { delete_protected_up_to_access_level: 1000 }                                      | /not a valid delete_protected_up_to_access_level/
-      { push_protected_up_to_access_level: 1000 }                                        | /not a valid push_protected_up_to_access_level/
+      { minimum_access_level_for_delete: 1000 }                                          | /not a valid minimum_access_level_for_delete/
+      { minimum_access_level_for_push: 1000 }                                            | /not a valid minimum_access_level_for_push/
     end
     # rubocop:enable Layout/LineLength
 

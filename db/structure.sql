@@ -7418,11 +7418,13 @@ CREATE TABLE container_registry_protection_rules (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    delete_protected_up_to_access_level smallint NOT NULL,
-    push_protected_up_to_access_level smallint NOT NULL,
     repository_path_pattern text,
+    minimum_access_level_for_push smallint,
+    minimum_access_level_for_delete smallint,
     CONSTRAINT check_3658b31291 CHECK ((repository_path_pattern IS NOT NULL)),
-    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255))
+    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255)),
+    CONSTRAINT check_d82c1eb825 CHECK ((minimum_access_level_for_delete IS NOT NULL)),
+    CONSTRAINT check_f684912b48 CHECK ((minimum_access_level_for_push IS NOT NULL))
 );
 
 CREATE SEQUENCE container_registry_protection_rules_id_seq

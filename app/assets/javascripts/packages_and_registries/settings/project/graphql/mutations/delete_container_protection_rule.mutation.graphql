@@ -5,8 +5,8 @@ mutation deleteContainerRegistryProtectionRule(
     containerRegistryProtectionRule {
       id
       repositoryPathPattern
-      pushProtectedUpToAccessLevel
-      deleteProtectedUpToAccessLevel
+      minimumAccessLevelForPush
+      minimumAccessLevelForDelete
     }
     errors
   }

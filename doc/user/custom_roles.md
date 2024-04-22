@@ -56,7 +56,7 @@ Prerequisites:
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
-1. Optional. In **Description**, enter a description for the custom role. 255 characters max.
+1. In **Description**, enter a description for the custom role. 255 characters max.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
@@ -80,7 +80,7 @@ After you create a custom role for your self-managed instance, you can assign th
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
 1. In **Role name**, enter the custom role's title.
-1. Optional. In **Description**, enter a description for the custom role. 255 characters max.
+1. In **Description**, enter a description for the custom role. 255 characters max.
 1. Select the **Permissions** for the new custom role.
 1. Select **Create role**.
 
@@ -92,6 +92,36 @@ In **Settings > Roles and Permissions**, the list of all custom roles displays t
 - Permissions.
 
 To create a custom role, you can also [use the API](../api/graphql/reference/index.md#mutationmemberrolecreate).
+
+## Edit a custom role
+
+Custom roles can be edited after they are created. The base role can't be changed. If you need to change the base role, you will need to create a new custom role.
+
+### GitLab SaaS
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Roles and Permissions**.
+1. Select the three dots for the custom role, then select **Edit role**.
+1. Modify the role as needed.
+1. Select **Save role** to update the role.
+
+### GitLab self-managed
+
+Prerequisites:
+
+- You must be an administrator for the self-managed instance.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Roles and Permissions**.
+1. Select the three dots for the custom role, then select **Edit role**.
+1. Modify the role as needed.
+1. Select **Save role** to update the role.
+
+To edit a custom role, you can also [use the API](../api/graphql/reference/index.md#mutationmemberroleupdate).
 
 ## Delete the custom role
 

@@ -21,14 +21,14 @@ RSpec.describe GitlabSchema.types['ContainerRegistryProtectionRule'], feature_ca
     it { is_expected.to have_non_null_graphql_type(GraphQL::Types::String) }
   end
 
-  describe 'push_protected_up_to_access_level' do
-    subject { described_class.fields['pushProtectedUpToAccessLevel'] }
+  describe 'minimum_access_level_for_push' do
+    subject { described_class.fields['minimumAccessLevelForPush'] }
 
     it { is_expected.to have_non_null_graphql_type(Types::ContainerRegistry::Protection::RuleAccessLevelEnum) }
   end
 
-  describe 'delete_protected_up_to_access_level' do
-    subject { described_class.fields['deleteProtectedUpToAccessLevel'] }
+  describe 'minimum_access_level_for_delete' do
+    subject { described_class.fields['minimumAccessLevelForDelete'] }
 
     it { is_expected.to have_non_null_graphql_type(Types::ContainerRegistry::Protection::RuleAccessLevelEnum) }
   end

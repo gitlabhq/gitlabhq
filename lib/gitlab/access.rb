@@ -75,6 +75,10 @@ module Gitlab
         sym_options.merge(owner: OWNER)
       end
 
+      def sym_options_with_admin
+        sym_options_with_owner.merge(admin: ADMIN)
+      end
+
       def protection_options
         [
           {

@@ -42,8 +42,8 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
       'containerRegistryProtectionRule' => {
         'id' => container_protection_rule.to_global_id.to_s,
         'repositoryPathPattern' => container_protection_rule.repository_path_pattern,
-        'deleteProtectedUpToAccessLevel' => container_protection_rule.delete_protected_up_to_access_level.upcase,
-        'pushProtectedUpToAccessLevel' => container_protection_rule.push_protected_up_to_access_level.upcase
+        'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,
+        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase
       }
     )
   end

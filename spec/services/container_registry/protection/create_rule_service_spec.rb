@@ -23,8 +23,8 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
             be_a(ContainerRegistry::Protection::Rule)
               .and(have_attributes(
                 repository_path_pattern: params[:repository_path_pattern],
-                push_protected_up_to_access_level: params[:push_protected_up_to_access_level].to_s,
-                delete_protected_up_to_access_level: params[:delete_protected_up_to_access_level].to_s
+                minimum_access_level_for_push: params[:minimum_access_level_for_push].to_s,
+                minimum_access_level_for_delete: params[:minimum_access_level_for_delete].to_s
               ))
         }
       )
@@ -37,7 +37,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
         ContainerRegistry::Protection::Rule.where(
           project: project,
           repository_path_pattern: params[:repository_path_pattern],
-          push_protected_up_to_access_level: params[:push_protected_up_to_access_level]
+          minimum_access_level_for_push: params[:minimum_access_level_for_push]
         )
       ).to exist
     end
@@ -58,7 +58,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
         ContainerRegistry::Protection::Rule.where(
           project: project,
           repository_path_pattern: params[:repository_path_pattern],
-          push_protected_up_to_access_level: params[:push_protected_up_to_access_level]
+          minimum_access_level_for_push: params[:minimum_access_level_for_push]
         )
       ).not_to exist
     end
@@ -75,20 +75,20 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       it { is_expected.to have_attributes(message: match(/Repository path pattern can't be blank/)) }
     end
 
-    context 'when delete_protected_up_to_access_level is invalid' do
-      let(:params) { super().merge(delete_protected_up_to_access_level: 1000) }
+    context 'when minimum_access_level_for_delete is invalid' do
+      let(:params) { super().merge(minimum_access_level_for_delete: 1000) }
 
       it_behaves_like 'an erroneous service response'
 
-      it { is_expected.to have_attributes(message: match(/is not a valid delete_protected_up_to_access_level/)) }
+      it { is_expected.to have_attributes(message: match(/is not a valid minimum_access_level_for_delete/)) }
     end
 
-    context 'when push_protected_up_to_access_level is invalid' do
-      let(:params) { super().merge(push_protected_up_to_access_level: 1000) }
+    context 'when minimum_access_level_for_push is invalid' do
+      let(:params) { super().merge(minimum_access_level_for_push: 1000) }
 
       it_behaves_like 'an erroneous service response'
 
-      it { is_expected.to have_attributes(message: match(/is not a valid push_protected_up_to_access_level/)) }
+      it { is_expected.to have_attributes(message: match(/is not a valid minimum_access_level_for_push/)) }
     end
   end
 
@@ -102,8 +102,8 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
         super().merge(
           # The field `repository_path_pattern` is unique; this is why we change the value in a minimum way
           repository_path_pattern: "#{existing_container_registry_protection_rule.repository_path_pattern}-unique",
-          push_protected_up_to_access_level:
-            existing_container_registry_protection_rule.push_protected_up_to_access_level
+          minimum_access_level_for_push:
+            existing_container_registry_protection_rule.minimum_access_level_for_push
         )
       end
 
@@ -114,7 +114,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       let(:params) do
         super().merge(
           repository_path_pattern: existing_container_registry_protection_rule.repository_path_pattern,
-          push_protected_up_to_access_level: :maintainer
+          minimum_access_level_for_push: :owner
         )
       end
 

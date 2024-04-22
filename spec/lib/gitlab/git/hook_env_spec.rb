@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Git::HookEnv do
+  let(:relative_path) { 'snapshot/relative-path.git' }
   let(:gl_repository) { 'project-123' }
 
   describe ".set" do
     context 'with RequestStore disabled' do
       it 'does not store anything' do
-        described_class.set(gl_repository, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
+        described_class.set(gl_repository, relative_path, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
 
         expect(described_class.all(gl_repository)).to be_empty
+        expect(described_class.get_relative_path).to be_nil
       end
     end
 
@@ -18,6 +20,7 @@ RSpec.describe Gitlab::Git::HookEnv do
       it 'whitelist some `GIT_*` variables and stores them using RequestStore' do
         described_class.set(
           gl_repository,
+          relative_path,
           GIT_OBJECT_DIRECTORY_RELATIVE: 'foo',
           GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: 'bar',
           GIT_EXEC_PATH: 'baz',
@@ -34,20 +37,27 @@ RSpec.describe Gitlab::Git::HookEnv do
     end
   end
 
-  describe ".all" do
-    context 'with RequestStore enabled', :request_store do
-      before do
-        described_class.set(
-          gl_repository,
-          GIT_OBJECT_DIRECTORY_RELATIVE: 'foo',
-          GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: ['bar'])
-      end
+  context 'with RequestStore enabled', :request_store do
+    before do
+      described_class.set(
+        gl_repository,
+        relative_path,
+        GIT_OBJECT_DIRECTORY_RELATIVE: 'foo',
+        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: ['bar'])
+    end
 
+    describe ".all" do
       it 'returns an env hash' do
         expect(described_class.all(gl_repository)).to eq({
           'GIT_OBJECT_DIRECTORY_RELATIVE' => 'foo',
           'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['bar']
         })
+      end
+    end
+
+    describe ".get_relative_path" do
+      it 'returns the relative path' do
+        expect(described_class.get_relative_path).to eq(relative_path)
       end
     end
   end
@@ -70,7 +80,7 @@ RSpec.describe Gitlab::Git::HookEnv do
 
       with_them do
         before do
-          described_class.set(gl_repository, key.to_sym => input)
+          described_class.set(gl_repository, relative_path, key.to_sym => input)
         end
 
         it 'puts the right value in the hash' do
@@ -86,26 +96,36 @@ RSpec.describe Gitlab::Git::HookEnv do
 
   describe 'thread-safety' do
     context 'with RequestStore enabled', :request_store do
+      let(:other_relative_path) { 'other_relative_path' }
+
       before do
         allow(RequestStore).to receive(:active?).and_return(true)
-        described_class.set(gl_repository, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
+        described_class.set(gl_repository, relative_path, GIT_OBJECT_DIRECTORY_RELATIVE: 'foo')
       end
 
       it 'is thread-safe' do
         another_thread = Thread.new do
-          described_class.set(gl_repository, GIT_OBJECT_DIRECTORY_RELATIVE: 'bar')
+          described_class.set(gl_repository, other_relative_path, GIT_OBJECT_DIRECTORY_RELATIVE: 'bar')
 
           Thread.stop
-          described_class.all(gl_repository)[:GIT_OBJECT_DIRECTORY_RELATIVE]
+
+          {
+            relative_path: described_class.get_relative_path,
+            GIT_OBJECT_DIRECTORY_RELATIVE: described_class.all(gl_repository)[:GIT_OBJECT_DIRECTORY_RELATIVE]
+          }
         end
 
         # Ensure another_thread runs first
         sleep 0.1 until another_thread.stop?
 
+        expect(described_class.get_relative_path).to eq(relative_path)
         expect(described_class.all(gl_repository)[:GIT_OBJECT_DIRECTORY_RELATIVE]).to eq('foo')
 
         another_thread.run
-        expect(another_thread.value).to eq('bar')
+        expect(another_thread.value).to eq({
+          relative_path: other_relative_path,
+          GIT_OBJECT_DIRECTORY_RELATIVE: 'bar'
+        })
       end
     end
   end

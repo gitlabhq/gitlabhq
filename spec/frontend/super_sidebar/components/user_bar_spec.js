@@ -134,12 +134,20 @@ describe('UserBar component', () => {
         expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
       });
 
-      it('should update todo counter when event is emitted', async () => {
+      it('should update todo counter when event with count is emitted', async () => {
         createWrapper();
         const count = 100;
         document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { count } }));
         await nextTick();
         expect(findTodosCounter().props('count')).toBe(count);
+      });
+
+      it('should update todo counter when event with diff is emitted', async () => {
+        createWrapper();
+        expect(findTodosCounter().props('count')).toBe(3);
+        document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: -2 } }));
+        await nextTick();
+        expect(findTodosCounter().props('count')).toBe(1);
       });
     });
 

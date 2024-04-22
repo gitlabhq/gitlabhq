@@ -17,17 +17,15 @@ import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
-const I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL = s__(
-  'ContainerRegistry|Push protected up to access level',
-);
-const I18N_DELETE_PROTECTED_UP_TO_ACCESS_LEVEL = s__(
-  'ContainerRegistry|Delete protected up to access level',
+const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('ContainerRegistry|Minimum access level for push');
+const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__(
+  'ContainerRegistry|Minimum access level for delete',
 );
 
 const ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL = {
-  DEVELOPER: __('Developer'),
   MAINTAINER: __('Maintainer'),
   OWNER: __('Owner'),
+  ADMIN: __('Admin'),
 };
 
 export default {
@@ -93,10 +91,10 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          deleteProtectedUpToAccessLevel:
-            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.deleteProtectedUpToAccessLevel],
-          pushProtectedUpToAccessLevel:
-            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.pushProtectedUpToAccessLevel],
+          minimumAccessLevelForDelete:
+            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.minimumAccessLevelForDelete],
+          minimumAccessLevelForPush:
+            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.minimumAccessLevelForPush],
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
       });
@@ -166,7 +164,7 @@ export default {
       this.protectionRuleMutationItem = null;
       this.protectionRuleMutationInProgress = false;
     },
-    isProtectionRulePushProtectedUpToAccessLevelFormSelectDisabled(item) {
+    isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item) {
       return this.isProtectionRuleMutationInProgress(item);
     },
     isProtectionRuleDeleteButtonDisabled(item) {
@@ -209,13 +207,13 @@ export default {
       tdClass: 'gl-vertical-align-middle!',
     },
     {
-      key: 'pushProtectedUpToAccessLevel',
-      label: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
+      key: 'minimumAccessLevelForPush',
+      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
       tdClass: 'gl-vertical-align-middle!',
     },
     {
-      key: 'deleteProtectedUpToAccessLevel',
-      label: I18N_DELETE_PROTECTED_UP_TO_ACCESS_LEVEL,
+      key: 'minimumAccessLevelForDelete',
+      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
       tdClass: 'gl-vertical-align-middle!',
     },
     {

@@ -3,6 +3,7 @@
 query getRunnerProjects(
   $id: CiRunnerID!
   $search: String
+  $sort: String
   $first: Int
   $last: Int
   $before: String
@@ -14,7 +15,14 @@ query getRunnerProjects(
       id
     }
     projectCount
-    projects(search: $search, first: $first, last: $last, before: $before, after: $after) {
+    projects(
+      search: $search
+      sort: $sort
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+    ) {
       nodes {
         id
         avatarUrl

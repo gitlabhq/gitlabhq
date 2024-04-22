@@ -4,8 +4,8 @@ import createProtectionRuleMutation from '~/packages_and_registries/settings/pro
 import { s__, __ } from '~/locale';
 
 const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER = 'DEVELOPER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
+const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export default {
   components: {
@@ -26,8 +26,8 @@ export default {
     return {
       protectionRuleFormData: {
         repositoryPathPattern: '',
-        pushProtectedUpToAccessLevel: GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER,
-        deleteProtectedUpToAccessLevel: GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER,
+        minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
       alertErrorMessage: '',
@@ -50,15 +50,15 @@ export default {
       return {
         projectPath: this.projectPath,
         repositoryPathPattern: this.protectionRuleFormData.repositoryPathPattern,
-        pushProtectedUpToAccessLevel: this.protectionRuleFormData.pushProtectedUpToAccessLevel,
-        deleteProtectedUpToAccessLevel: this.protectionRuleFormData.deleteProtectedUpToAccessLevel,
+        minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush,
+        minimumAccessLevelForDelete: this.protectionRuleFormData.minimumAccessLevelForDelete,
       };
     },
-    protectedUpToAccessLevelOptions() {
+    minimumAccessLevelOptions() {
       return [
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER, text: __('Developer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: __('Admin') },
       ];
     },
   },
@@ -130,28 +130,28 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        :label="s__('ContainerRegistry|Maximum access level prevented from pushing')"
-        label-for="input-push-protected-up-to-access-level"
+        :label="s__('ContainerRegistry|Minimum access level for push')"
+        label-for="input-minimum-access-level-for-push"
         :disabled="isFieldDisabled"
       >
         <gl-form-select
-          id="input-push-protected-up-to-access-level"
-          v-model="protectionRuleFormData.pushProtectedUpToAccessLevel"
-          :options="protectedUpToAccessLevelOptions"
+          id="input-minimum-access-level-for-push"
+          v-model="protectionRuleFormData.minimumAccessLevelForPush"
+          :options="minimumAccessLevelOptions"
           :disabled="isFieldDisabled"
           required
         />
       </gl-form-group>
 
       <gl-form-group
-        :label="s__('ContainerRegistry|Maximum access level prevented from deleting')"
-        label-for="input-delete-protected-up-to-access-level"
+        :label="s__('ContainerRegistry|Minimum access level for delete')"
+        label-for="input-minimum-access-level-for-delete"
         :disabled="isFieldDisabled"
       >
         <gl-form-select
-          id="input-delete-protected-up-to-access-level"
-          v-model="protectionRuleFormData.deleteProtectedUpToAccessLevel"
-          :options="protectedUpToAccessLevelOptions"
+          id="input-minimum-access-level-for-delete"
+          v-model="protectionRuleFormData.minimumAccessLevelForDelete"
+          :options="minimumAccessLevelOptions"
           :disabled="isFieldDisabled"
           required
         />

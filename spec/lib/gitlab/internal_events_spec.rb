@@ -397,6 +397,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       stub_env('GITLAB_ANALYTICS_ID', app_id)
       stub_env('GITLAB_ANALYTICS_URL', url)
+
+      stub_feature_flags(internal_events_batching: true)
+
       allow(GitlabSDK::Client)
         .to receive(:new)
         .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
@@ -464,6 +467,20 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:send_snowplow_event) { false }
 
       it_behaves_like 'does not send a Product Analytics event'
+    end
+
+    context 'with internal_events_batching FF off' do
+      before do
+        stub_feature_flags(internal_events_batching: false)
+      end
+
+      it 'passes buffer_size 1 to SDK client' do
+        expect(GitlabSDK::Client)
+          .to receive(:new)
+          .with(app_id: app_id, host: url, buffer_size: described_class::DEFAULT_BUFFER_SIZE)
+
+        track_event
+      end
     end
   end
 end

@@ -7,7 +7,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
 
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:container_registry_protection_rule) do
-    create(:container_registry_protection_rule, project: project, push_protected_up_to_access_level: :developer)
+    create(:container_registry_protection_rule, project: project, minimum_access_level_for_push: :maintainer)
   end
 
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
@@ -21,8 +21,8 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       <<~QUERY
       containerRegistryProtectionRule {
         repositoryPathPattern
-        deleteProtectedUpToAccessLevel
-        pushProtectedUpToAccessLevel
+        minimumAccessLevelForDelete
+        minimumAccessLevelForPush
       }
       clientMutationId
       errors
@@ -34,8 +34,8 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     {
       id: container_registry_protection_rule.to_global_id,
       repository_path_pattern: "#{container_registry_protection_rule.repository_path_pattern}-updated",
-      delete_protected_up_to_access_level: 'OWNER',
-      push_protected_up_to_access_level: 'MAINTAINER'
+      minimum_access_level_for_delete: 'OWNER',
+      minimum_access_level_for_push: 'MAINTAINER'
     }
   end
 
@@ -52,8 +52,8 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       expect(mutation_response).to include(
         'containerRegistryProtectionRule' => {
           'repositoryPathPattern' => input[:repository_path_pattern],
-          'deleteProtectedUpToAccessLevel' => input[:delete_protected_up_to_access_level],
-          'pushProtectedUpToAccessLevel' => input[:push_protected_up_to_access_level]
+          'minimumAccessLevelForDelete' => input[:minimum_access_level_for_delete],
+          'minimumAccessLevelForPush' => input[:minimum_access_level_for_push]
         }
       )
     end
@@ -62,7 +62,7 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
       subject.tap do
         expect(container_registry_protection_rule.reload).to have_attributes(
           repository_path_pattern: input[:repository_path_pattern],
-          push_protected_up_to_access_level: input[:push_protected_up_to_access_level].downcase
+          minimum_access_level_for_push: input[:minimum_access_level_for_push].downcase
         )
       end
     end
@@ -96,12 +96,12 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     end
   end
 
-  context 'with invalid input param `pushProtectedUpToAccessLevel`' do
-    let(:input) { super().merge(push_protected_up_to_access_level: nil) }
+  context 'with invalid input param `minimumAccessLevelForPush`' do
+    let(:input) { super().merge(minimum_access_level_for_push: nil) }
 
     it_behaves_like 'an erroneous response'
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/pushProtectedUpToAccessLevel can't be blank/) } }
+    it { is_expected.tap { expect_graphql_errors_to_include(/minimumAccessLevelForPush can't be blank/) } }
   end
 
   context 'with invalid input param `repositoryPathPattern`' do

@@ -3,6 +3,7 @@ import produce from 'immer';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import { s__ } from '~/locale';
 import Todo from '~/sidebar/components/todo_toggle/todo.vue';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import createAlertTodoMutation from '../../graphql/mutations/alert_todo_create.mutation.graphql';
 import alertQuery from '../../graphql/queries/alert_sidebar_details.query.graphql';
 
@@ -52,17 +53,6 @@ export default {
     },
   },
   methods: {
-    updateToDoCount(add) {
-      const oldCount = parseInt(document.querySelector('.js-todos-count').innerText, 10) || 0;
-      const count = add ? oldCount + 1 : oldCount - 1;
-      const headerTodoEvent = new CustomEvent('todo:toggle', {
-        detail: {
-          count: Math.max(count, 0),
-        },
-      });
-
-      document.dispatchEvent(headerTodoEvent);
-    },
     addToDo() {
       this.isUpdating = true;
       return this.$apollo
@@ -78,7 +68,7 @@ export default {
             this.throwError(errors[0]);
             return;
           }
-          this.updateToDoCount(true);
+          updateGlobalTodoCount(1);
         })
         .catch(() => {
           this.throwError();
@@ -102,7 +92,7 @@ export default {
             this.throwError(errors[0]);
             return;
           }
-          this.updateToDoCount(false);
+          updateGlobalTodoCount(-1);
         })
         .catch(() => {
           this.throwError();

@@ -3,8 +3,8 @@ mutation createContainerProtectionRule($input: CreateContainerRegistryProtection
     containerRegistryProtectionRule {
       id
       repositoryPathPattern
-      pushProtectedUpToAccessLevel
-      deleteProtectedUpToAccessLevel
+      minimumAccessLevelForPush
+      minimumAccessLevelForDelete
     }
     errors
   }

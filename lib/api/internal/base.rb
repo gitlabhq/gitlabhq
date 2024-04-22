@@ -52,13 +52,11 @@ module API
           end
 
           # Stores some Git-specific env thread-safely
-          env = parse_env
-          Gitlab::Git::HookEnv.set(gl_repository, env) if container
-
+          #
           # Snapshot repositories have different relative path than the main repository. For access
           # checks that need quarantined objects the relative path in also sent with Gitaly RPCs
           # calls as a header.
-          populate_relative_path(params[:relative_path])
+          Gitlab::Git::HookEnv.set(gl_repository, params[:relative_path], parse_env) if container
 
           actor.update_last_used_at!
 
@@ -103,12 +101,6 @@ module API
           end
         end
         # rubocop: enable Metrics/AbcSize
-
-        def populate_relative_path(relative_path)
-          return unless Gitlab::SafeRequestStore.active?
-
-          Gitlab::SafeRequestStore[:gitlab_git_relative_path] = relative_path
-        end
 
         def validate_actor(actor)
           return 'Could not find the given key' unless actor.key

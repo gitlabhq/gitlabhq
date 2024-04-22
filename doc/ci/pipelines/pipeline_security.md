@@ -23,7 +23,7 @@ that should be kept confidential. Examples of a secret include:
 
 Secrets that are the most sensitive and under the strictest policies should be stored
 in a secrets manager. When using a secrets manager solution, secrets are stored outside
-of the GitLab instance. There are a number of providres in this space, including
+of the GitLab instance. There are a number of providers in this space, including
 [HashiCorp's Vault](https://www.vaultproject.io), [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault),
 and [Google Cloud Secret Manager](https://cloud.google.com/security/products/secret-manager).
 

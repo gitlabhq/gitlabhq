@@ -7,6 +7,7 @@ module Gitlab
     InvalidPropertyTypeError = Class.new(StandardError)
 
     SNOWPLOW_EMITTER_BUFFER_SIZE = 100
+    DEFAULT_BUFFER_SIZE = 1
     ALLOWED_ADDITIONAL_PROPERTIES = {
       label: [String],
       property: [String],
@@ -161,7 +162,8 @@ module Gitlab
 
         return unless app_id.present? && host.present?
 
-        GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: SNOWPLOW_EMITTER_BUFFER_SIZE)
+        buffer_size = Feature.enabled?(:internal_events_batching) ? SNOWPLOW_EMITTER_BUFFER_SIZE : DEFAULT_BUFFER_SIZE
+        GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: buffer_size)
       end
       strong_memoize_attr :gitlab_sdk_client
     end

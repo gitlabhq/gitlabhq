@@ -1454,13 +1454,13 @@ RSpec.shared_examples 'a container registry auth service' do
 
     context 'for different repository_path_patterns and current user roles' do
       # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
-      where(:repository_path_pattern, :push_protected_up_to_access_level, :current_user, :shared_examples_name) do
-        ref(:container_repository_path)                  | :developer  | ref(:project_developer)  | 'a protected container repository'
-        ref(:container_repository_path)                  | :developer  | ref(:project_owner)      | 'a pushable'
-        ref(:container_repository_path)                  | :maintainer | ref(:project_maintainer) | 'a protected container repository'
-        ref(:container_repository_path)                  | :owner      | ref(:project_owner)      | 'a protected container repository'
-        ref(:container_repository_path_pattern_no_match) | :developer  | ref(:project_developer)  | 'a pushable'
-        ref(:container_repository_path_pattern_no_match) | :owner      | ref(:project_owner)      | 'a pushable'
+      where(:repository_path_pattern, :minimum_access_level_for_push, :current_user, :shared_examples_name) do
+        ref(:container_repository_path)                  | :maintainer | ref(:project_developer)  | 'a protected container repository'
+        ref(:container_repository_path)                  | :maintainer | ref(:project_owner)      | 'a pushable'
+        ref(:container_repository_path)                  | :owner      | ref(:project_maintainer) | 'a protected container repository'
+        ref(:container_repository_path)                  | :admin      | ref(:project_owner)      | 'a protected container repository'
+        ref(:container_repository_path_pattern_no_match) | :maintainer | ref(:project_developer)  | 'a pushable'
+        ref(:container_repository_path_pattern_no_match) | :admin      | ref(:project_owner)      | 'a pushable'
       end
       # rubocop:enable Layout/LineLength
 
@@ -1468,7 +1468,7 @@ RSpec.shared_examples 'a container registry auth service' do
         before do
           container_registry_protection_rule.update!(
             repository_path_pattern: repository_path_pattern,
-            push_protected_up_to_access_level: push_protected_up_to_access_level
+            minimum_access_level_for_push: minimum_access_level_for_push
           )
         end
 
@@ -1480,7 +1480,7 @@ RSpec.shared_examples 'a container registry auth service' do
       let_it_be(:current_user) { project_maintainer }
 
       before do
-        container_registry_protection_rule.update!(push_protected_up_to_access_level: :maintainer)
+        container_registry_protection_rule.update!(minimum_access_level_for_push: :owner)
       end
 
       where(:current_params_scopes, :shared_examples_name) do
@@ -1505,18 +1505,18 @@ RSpec.shared_examples 'a container registry auth service' do
       end
 
       context 'with matching package protection rule for all roles' do
-        where(:repository_path_pattern, :push_protected_up_to_access_level, :shared_examples_name) do
-          ref(:container_repository_path)                  | :developer | 'a pushable'
-          ref(:container_repository_path)                  | :owner     | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :developer | 'a pushable'
-          ref(:container_repository_path_pattern_no_match) | :owner     | 'a pushable'
+        where(:repository_path_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:container_repository_path)                  | :maintainer | 'a pushable'
+          ref(:container_repository_path)                  | :admin      | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :maintainer | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :admin      | 'a pushable'
         end
 
         with_them do
           before do
             container_registry_protection_rule.update!(
               repository_path_pattern: repository_path_pattern,
-              push_protected_up_to_access_level: push_protected_up_to_access_level
+              minimum_access_level_for_push: minimum_access_level_for_push
             )
           end
 

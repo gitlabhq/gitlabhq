@@ -407,6 +407,33 @@ To view your activity:
    - **Designs**: Designs you added, updated, and removed in your projects.
    - **Team**: Projects you joined and left.
 
+## Sign-in services
+
+Instead of using a regular username and password to sign in to GitLab, you can use a sign-in service instead.
+
+### Connect a sign-in service
+
+To connect a sign-in service to use for signing in to GitLab:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Account**.
+1. Locate the **Service sign-in** section.
+1. Under the **Connected Accounts** section, select the button that corresponds with the service you want to sign in
+   with.
+1. Follow the instructions for the selected service to start signing in with it.
+
+### Disconnect a sign-in service
+
+To disconnect a sign-in service used for signing in to GitLab:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Account**.
+1. Locate the **Service sign-in** section.
+1. Under the **Connected Accounts** section, select **Disconnect** next to the button that corresponds with the service
+   you no longer want to sign in with.
+
 ## Session duration
 
 ### Stay signed in for two weeks

@@ -52,7 +52,26 @@ RSpec.describe Gitlab::SidekiqSharding::ScheduledEnq, feature_category: :scalabi
       it_behaves_like 'uses sharding router'
     end
 
-    context 'with routable classes' do
+    context 'with ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper classes' do
+      let(:job_hash) { { class: ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper, args: [] } }
+      let(:store_name) { 'queues_shard_test' }
+
+      before do
+        # simulate routing rules in config/gitlab.yml
+        allow(ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper)
+          .to receive(:get_sidekiq_options).and_return({ 'store' => store_name })
+
+        # skip label creation to avoid calling .get_shard_instance
+        allow_next_instance_of(Gitlab::SidekiqMiddleware::ClientMetrics) do |mh|
+          allow(mh).to receive(:create_labels).and_return({ boundary: "", destination_shard_redis: "",
+external_dependencies: "", feature_category: "", queue: "", scheduling: "", urgency: "", worker: "" })
+        end
+      end
+
+      it_behaves_like 'uses sharding router'
+    end
+
+    context 'with ApplicationWorker classes' do
       let(:job_hash) { { class: Chaos::CpuSpinWorker, args: [] } }
       let(:store_name) { 'queues_shard_test' }
 

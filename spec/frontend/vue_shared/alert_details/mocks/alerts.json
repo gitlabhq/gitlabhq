@@ -8,20 +8,65 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "TRIGGERED",
-    "assignees": { "nodes": [] },
-    "notes": { "nodes": [] },
-    "todos": { "nodes": [] }
+    "assignees": {
+      "nodes": [
+
+      ]
+    },
+    "notes": {
+      "nodes": [
+
+      ]
+    },
+    "todos": {
+      "nodes": [
+
+      ]
+    }
   },
   {
+    "id": 5,
+    "__typename": "AlertManagementAlert",
     "iid": "1527543",
     "title": "Some other alert Some other alert Some other alert Some other alert Some other alert Some other alert",
+    "description": "So descriptive",
     "severity": "MEDIUM",
     "eventCount": 1,
     "startedAt": "2020-04-17T23:18:14.996Z",
-    "endedAt": "2020-04-17T23:18:14.996Z",
+    "details": 5,
+    "monitoringTool": "Eyes",
+    "service": "1984",
+    "runbook": "I am running",
+    "createdAt": "2020-04-17T23:20:14.996Z",
+    "updatedAt": "2020-04-17T23:23:14.996Z",
+    "endedAt": "2020-04-18T23:18:14.996Z",
+    "hosts": [
+      "127.0.0.1"
+    ],
+    "environment": {
+      "id": "gid://gitlab/Environment/29",
+      "name": "Alerta",
+      "path": "/path/to/alerta"
+    },
     "status": "ACKNOWLEDGED",
-    "assignees": { "nodes": [{ "username": "root", "avatarUrl": "/url", "name": "root" }] },
-    "issue": { "state" : "closed", "iid": "1", "title": "My test issue" },
+    "assignees": {
+      "nodes": [
+        {
+          "username": "root",
+          "avatarUrl": "/url",
+          "name": "root"
+        }
+      ]
+    },
+    "issue": {
+      "__typename": "Issue",
+      "id": "gid://gitlab/Issue/1",
+      "state": "closed",
+      "iid": "1",
+      "title": "My test issue",
+      "createdAt": "2020-04-17T23:18:14.996Z",
+      "webUrl": "http://192.168.1.4:3000/projectPath/-/issues/1"
+    },
     "notes": {
       "nodes": [
         {
@@ -30,7 +75,7 @@
             "id": "gid://gitlab/User/1",
             "state": "active",
             "__typename": "User",
-            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
             "name": "Administrator",
             "username": "root",
             "webUrl": "http://192.168.1.4:3000/root"
@@ -39,7 +84,11 @@
         }
       ]
     },
-    "todos": { "nodes": [] }
+    "todos": {
+      "nodes": [
+
+      ]
+    }
   },
   {
     "iid": "1527544",
@@ -49,7 +98,15 @@
     "startedAt": "2020-04-17T23:18:14.996Z",
     "endedAt": "2020-04-17T23:18:14.996Z",
     "status": "RESOLVED",
-    "assignees": { "nodes": [{ "username": "root", "avatarUrl": "/url", "name": "root" }] },
+    "assignees": {
+      "nodes": [
+        {
+          "username": "root",
+          "avatarUrl": "/url",
+          "name": "root"
+        }
+      ]
+    },
     "notes": {
       "nodes": [
         {
@@ -58,7 +115,7 @@
             "id": "gid://gitlab/User/2",
             "state": "active",
             "__typename": "User",
-            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+            "avatarUrl": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
             "name": "Administrator",
             "username": "root",
             "webUrl": "http://192.168.1.4:3000/root"
@@ -66,6 +123,10 @@
         }
       ]
     },
-    "todos": { "nodes": [] }
+    "todos": {
+      "nodes": [
+
+      ]
+    }
   }
 ]

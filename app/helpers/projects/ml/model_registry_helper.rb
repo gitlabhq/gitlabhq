@@ -39,6 +39,21 @@ module Projects
         to_json(data)
       end
 
+      def show_ml_model_version_data(model_version, user)
+        project = model_version.project
+
+        data = {
+          project_path: project.full_path,
+          model_id: model_version.model.id,
+          model_version_id: model_version.id,
+          model_name: model_version.name,
+          version_name: model_version.version,
+          can_write_model_registry: can_write_model_registry?(user, project)
+        }
+
+        to_json(data)
+      end
+
       private
 
       def can_write_model_registry?(user, project)

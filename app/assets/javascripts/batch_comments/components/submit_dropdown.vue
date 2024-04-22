@@ -126,7 +126,7 @@ export default {
     this.noteData.noteable_id = this.getNoteableData.id;
   },
   methods: {
-    ...mapActions('batchComments', ['publishReview']),
+    ...mapActions('batchComments', ['publishReview', 'clearDrafts']),
     repositionDropdown() {
       this.$refs.submitDropdown?.$refs.dropdown?.updatePopper();
     },
@@ -157,6 +157,8 @@ export default {
             scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`)),
           );
         }
+
+        this.clearDrafts();
       } catch (e) {
         if (e.data?.message) {
           createAlert({ message: e.data.message, captureError: true });

@@ -133,7 +133,7 @@ To create a group:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For details about groups, watch [GitLab Namespaces (users, groups and subgroups)](https://youtu.be/r0sJgjR2f5A).
 
-## Edit group name and description
+## Edit group name, description, and avatar
 
 You can edit your group details from the group general settings.
 
@@ -148,6 +148,7 @@ To edit group details:
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../../user/reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
    The description is limited to 500 characters.
+1. Optional. Under **Group avatar**, select **Choose file**, then select an image. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
 1. Select **Save changes**.
 
 ## Leave a group

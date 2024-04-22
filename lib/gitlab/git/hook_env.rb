@@ -19,13 +19,28 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
 
-      def self.set(gl_repository, env)
+      # set stores the quarantining variables into request store.
+      #
+      # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
+      # transaction's snapshot repository. Tests should pass the original relative path of the repository as
+      # Gitaly is stubbed out from the invokation loop and doesn't create a transaction snapshot.
+      def self.set(gl_repository, relative_path, env)
         return unless Gitlab::SafeRequestStore.active?
 
         raise "missing gl_repository" if gl_repository.blank?
 
         Gitlab::SafeRequestStore[:gitlab_git_env] ||= {}
         Gitlab::SafeRequestStore[:gitlab_git_env][gl_repository] = allowlist_git_env(env)
+        Gitlab::SafeRequestStore[:gitlab_git_relative_path] = relative_path
+      end
+
+      # get_relative_path returns the relative path of the repository this hook call is triggered for.
+      # This is the repository's relative path in the transaction's snapshot and is passed back to Gitaly
+      # in quarantined calls.
+      def self.get_relative_path
+        return unless Gitlab::SafeRequestStore.active?
+
+        Gitlab::SafeRequestStore.fetch(:gitlab_git_relative_path)
       end
 
       def self.all(gl_repository)

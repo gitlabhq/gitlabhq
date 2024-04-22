@@ -41,8 +41,17 @@ async function retrieveUserCountsFromApi() {
   }
 }
 
+function updateTodos(e) {
+  if (Number.isSafeInteger(e?.detail?.count)) {
+    userCounts.todos = Math.max(e.detail.count, 0);
+  } else if (Number.isSafeInteger(e?.detail?.delta)) {
+    userCounts.todos = Math.max(userCounts.todos + e.detail.delta, 0);
+  }
+}
+
 export function destroyUserCountsManager() {
   document.removeEventListener('userCounts:fetch', retrieveUserCountsFromApi);
+  document.removeEventListener('todo:toggle', updateTodos);
   broadcastChannel?.close();
   broadcastChannel = null;
 }
@@ -58,6 +67,7 @@ export function destroyUserCountsManager() {
 export function createUserCountsManager() {
   destroyUserCountsManager();
   document.addEventListener('userCounts:fetch', retrieveUserCountsFromApi);
+  document.addEventListener('todo:toggle', updateTodos);
 
   if (window.BroadcastChannel && gon?.current_user_id) {
     broadcastChannel = new BroadcastChannel(`user_counts_${gon?.current_user_id}`);

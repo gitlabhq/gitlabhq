@@ -1,0 +1,9 @@
+---
+name: internal_events_batching
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/413064
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149979
+rollout_issue_url: 
+milestone: '17.0'
+group: group::analytics instrumentation
+type: ops
+default_enabled: true

@@ -86,17 +86,10 @@ export default {
     Object.assign(userCounts, this.sidebarData.user_counts);
     createUserCountsManager();
   },
-  mounted() {
-    document.addEventListener('todo:toggle', this.updateTodos);
-  },
   beforeDestroy() {
-    document.removeEventListener('todo:toggle', this.updateTodos);
     destroyUserCountsManager();
   },
   methods: {
-    updateTodos(e) {
-      userCounts.todos = e.detail.count || 0;
-    },
     hideSearchTooltip() {
       this.searchTooltip = '';
     },

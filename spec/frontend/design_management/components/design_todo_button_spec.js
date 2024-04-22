@@ -70,9 +70,6 @@ describe('Design management design todo button', () => {
 
       beforeEach(async () => {
         dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-        jest.spyOn(document, 'querySelector').mockReturnValue({
-          innerText: 2,
-        });
 
         createComponent({ design: mockDesignWithPendingTodos }, { mountFn: mount });
         wrapper.trigger('click');
@@ -96,7 +93,7 @@ describe('Design management design todo button', () => {
         const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
 
         expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchedEvent.detail).toEqual({ count: 1 });
+        expect(dispatchedEvent.detail).toEqual({ delta: -1 });
         expect(dispatchedEvent.type).toBe('todo:toggle');
       });
     });
@@ -116,9 +113,6 @@ describe('Design management design todo button', () => {
 
       beforeEach(async () => {
         dispatchEventSpy = jest.spyOn(document, 'dispatchEvent');
-        jest.spyOn(document, 'querySelector').mockReturnValue({
-          innerText: 2,
-        });
 
         createComponent({}, { mountFn: mount });
         wrapper.trigger('click');
@@ -147,7 +141,7 @@ describe('Design management design todo button', () => {
         const dispatchedEvent = dispatchEventSpy.mock.calls[0][0];
 
         expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchedEvent.detail).toEqual({ count: 3 });
+        expect(dispatchedEvent.detail).toEqual({ delta: 1 });
         expect(dispatchedEvent.type).toBe('todo:toggle');
       });
     });

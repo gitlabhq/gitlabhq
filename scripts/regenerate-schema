@@ -8,6 +8,7 @@ require 'optparse'
 require 'open3'
 require 'fileutils'
 require 'uri'
+require 'rainbow/ext/string'
 
 class SchemaRegenerator
   ##

@@ -3352,6 +3352,9 @@ msgstr ""
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr ""
 
+msgid "Admin"
+msgstr ""
+
 msgid "Admin Area"
 msgstr ""
 
@@ -13970,9 +13973,6 @@ msgstr ""
 msgid "ContainerRegistry|Delete image repository?"
 msgstr ""
 
-msgid "ContainerRegistry|Delete protected up to access level"
-msgstr ""
-
 msgid "ContainerRegistry|Delete rule"
 msgstr ""
 
@@ -14039,10 +14039,10 @@ msgstr ""
 msgid "ContainerRegistry|Manifest digest: %{digest}"
 msgstr ""
 
-msgid "ContainerRegistry|Maximum access level prevented from deleting"
+msgid "ContainerRegistry|Minimum access level for delete"
 msgstr ""
 
-msgid "ContainerRegistry|Maximum access level prevented from pushing"
+msgid "ContainerRegistry|Minimum access level for push"
 msgstr ""
 
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
@@ -14076,9 +14076,6 @@ msgid "ContainerRegistry|Published to the %{repositoryPath} image repository at 
 msgstr ""
 
 msgid "ContainerRegistry|Push an image"
-msgstr ""
-
-msgid "ContainerRegistry|Push protected up to access level"
 msgstr ""
 
 msgid "ContainerRegistry|Remember to run %{docLinkStart}garbage collection%{docLinkEnd} to remove the stale data from storage."

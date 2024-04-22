@@ -37,11 +37,12 @@ If you have any new or updated prompts, ask members of AI Framework team to revi
 When working with Chat locally, you might run into an error. Most commons problems are documented in this section.
 If you find an undocumented issue, you should document it in this section after you find a solution.
 
-| Problem                                               | Solution |
-| ----------------------------------------------------- | -------- |
-| There is no Chat button in the GitLab UI.             | Make sure your user is a part of a group with enabled Experimental and Beta features. |
-| Chat replies with "Forbidden by auth provider" error. | Backend can't access LLMs. Make sure your [AI Gateway](index.md#local-setup) is setup correctly. |
-| Requests takes too long to appear in UI  | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
+| Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
+|-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with enabled Experimental and Beta features.                                                                                                                                                                                                 |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](index.md#local-setup) is set up correctly.                                                                                                                                                                                      |
+| Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
+| There is no chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
 ## Contributing to GitLab Duo Chat
 

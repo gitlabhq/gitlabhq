@@ -51,20 +51,16 @@ RSpec.describe Gitlab::Checks::ChangedBlobs, feature_category: :source_code_mana
       end
     end
 
-    context 'with quarantine directory' do
-      let_it_be(:project) { create(:project, :small_repo) }
+    context 'with quarantine directory', :request_store do
+      let_it_be_with_refind(:project) { create(:project, :small_repo) }
 
       let(:revisions) { [repository.commit.id] }
 
-      let(:git_env) do
-        {
-          'GIT_OBJECT_DIRECTORY_RELATIVE' => "objects",
-          'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two']
-        }
-      end
-
       before do
-        allow(Gitlab::Git::HookEnv).to receive(:all).with(repository.gl_repository).and_return(git_env)
+        ::Gitlab::Git::HookEnv.set(project.repository.gl_repository,
+          project.repository.raw_repository.relative_path,
+          'GIT_OBJECT_DIRECTORY_RELATIVE' => 'objects',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['/dir/one', '/dir/two'])
       end
 
       context 'when the blob does not exist in the repo' do
@@ -78,7 +74,7 @@ RSpec.describe Gitlab::Checks::ChangedBlobs, feature_category: :source_code_mana
         end
 
         context 'when the same file with different paths is committed' do
-          let_it_be(:commits) do
+          before_all do
             project.repository.commit_files(
               user,
               branch_name: project.repository.root_ref,

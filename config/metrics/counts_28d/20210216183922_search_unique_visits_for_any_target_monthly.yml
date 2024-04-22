@@ -1,15 +1,12 @@
 ---
 data_category: optional
 key_path: search_unique_visits.search_unique_visits_for_any_target_monthly
-description: Total unique users for i_search_total, i_search_advanced, i_search_paid
-  for recent 28 days. This metric is redundant because advanced will be a subset of
-  paid and paid will be a subset of total. i_search_total is more appropriate if you
-  just want the total
+description: Removed as duplicate of redis_hll_counters.search.search_total_unique_counts_monthly
 product_section: enablement
 product_stage: enablement
 product_group: global_search
 value_type: number
-status: active
+status: removed
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
@@ -28,3 +25,5 @@ tier:
 - premium
 - ultimate
 milestone: "<13.9"
+milestone_removed: "17.0"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150302

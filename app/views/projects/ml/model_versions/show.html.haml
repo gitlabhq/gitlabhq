@@ -3,4 +3,4 @@
 - breadcrumb_title @model_version.version
 - page_title "#{@model_version.name} / #{@model_version.version}"
 
-= render(Projects::Ml::ShowMlModelVersionComponent.new(model_version: @model_version, current_user: current_user))
+#js-mount-show-ml-model-version{ data: { view_model: show_ml_model_version_data(@model_version, @current_user) } }

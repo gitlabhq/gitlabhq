@@ -490,6 +490,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "access granted" do
+      let(:relative_path) { nil }
       let(:env) { {} }
 
       around do |example|
@@ -515,7 +516,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         include_context 'with env passed as a JSON'
 
         it 'sets env in RequestStore' do
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys)
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, relative_path, env.stringify_keys)
 
           subject
 
@@ -551,7 +552,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
 
         it 'sets env in RequestStore and routes gRPC messages to primary', :request_store do
-          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, env.stringify_keys).and_call_original
+          expect(Gitlab::Git::HookEnv).to receive(:set).with(gl_repository, relative_path, env.stringify_keys).and_call_original
 
           subject
 
@@ -560,21 +561,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
       end
 
-      context 'when Gitaly provides a relative_path argument', :request_store do
-        subject { push(key, project, relative_path: relative_path) }
-
-        let(:relative_path) { 'relative_path' }
-
-        it 'stores relative_path value in RequestStore' do
-          allow(Gitlab::SafeRequestStore).to receive(:[]=).and_call_original
-          expect(Gitlab::SafeRequestStore).to receive(:[]=).with(:gitlab_git_relative_path, relative_path)
-          subject
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
       context "git push with project.wiki" do
+        let(:relative_path) { project.wiki.repository.relative_path }
+
         subject { push(key, project.wiki, env: env.to_json) }
 
         it 'responds with success' do
@@ -625,7 +614,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
         # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
         # and thus no snapshot repository. Pass the original relative path.
-        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes, relative_path: "#{personal_snippet.repository.disk_path}.git") }
+        let(:relative_path) { personal_snippet.repository.relative_path }
+
+        subject { push(key, personal_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
           subject
@@ -664,7 +655,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         # relative_path is sent from Gitaly to Rails when invoking internal API. In production it points to the
         # transaction's snapshot repository. As Gitaly is stubbed out from the invocation loop, there is no transaction
         # and thus no snapshot repository. Pass the original relative path.
-        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes, relative_path: "#{project_snippet.repository.disk_path}.git") }
+        let(:relative_path) { project_snippet.repository.relative_path }
+
+        subject { push(key, project_snippet, env: env.to_json, changes: snippet_changes) }
 
         it 'responds with success' do
           subject

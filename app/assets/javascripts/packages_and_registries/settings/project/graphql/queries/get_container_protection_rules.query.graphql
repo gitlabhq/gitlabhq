@@ -13,8 +13,8 @@ query getProjectContainerProtectionRules(
       nodes {
         id
         repositoryPathPattern
-        pushProtectedUpToAccessLevel
-        deleteProtectedUpToAccessLevel
+        minimumAccessLevelForPush
+        minimumAccessLevelForDelete
       }
       pageInfo {
         ...PageInfo

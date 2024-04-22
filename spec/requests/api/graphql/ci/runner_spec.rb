@@ -818,8 +818,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
           'projectCount' => 2,
           'projects' => {
             'nodes' => [
-              a_graphql_entity_for(project1),
-              a_graphql_entity_for(project2)
+              a_graphql_entity_for(project2),
+              a_graphql_entity_for(project1)
             ]
           })
         expect(runner2_data).to match a_hash_including(

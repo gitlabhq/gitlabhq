@@ -1,0 +1,69 @@
+query getModelVersion($modelId: MlModelID!, $modelVersionId: MlModelVersionID!) {
+  mlModel(id: $modelId) {
+    id
+    name
+    version(modelVersionId: $modelVersionId) {
+      id
+      version
+      packageId
+      description
+      candidate {
+        id
+        name
+        iid
+        eid
+        status
+        params {
+          nodes {
+            id
+            name
+            value
+          }
+        }
+        metadata {
+          nodes {
+            id
+            name
+            value
+          }
+        }
+        metrics {
+          nodes {
+            id
+            name
+            value
+            step
+          }
+        }
+        ciJob {
+          id
+          webPath
+          name
+          pipeline {
+            id
+            mergeRequest {
+              id
+              iid
+              title
+              webUrl
+            }
+            user {
+              id
+              avatarUrl
+              webUrl
+              username
+              name
+            }
+          }
+        }
+        _links {
+          showPath
+          artifactPath
+        }
+      }
+      _links {
+        showPath
+      }
+    }
+  }
+}

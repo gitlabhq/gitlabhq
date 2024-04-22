@@ -25,10 +25,10 @@ describe('container Protection Rule Form', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findRepositoryPathPatternInput = () =>
     wrapper.findByRole('textbox', { name: /repository path pattern/i });
-  const findPushProtectedUpToAccessLevelSelect = () =>
-    wrapper.findByRole('combobox', { name: /maximum access level prevented from pushing/i });
-  const findDeleteProtectedUpToAccessLevelSelect = () =>
-    wrapper.findByRole('combobox', { name: /maximum access level prevented from deleting/i });
+  const findMinimumAccessLevelForPushSelect = () =>
+    wrapper.findByRole('combobox', { name: /minimum access level for push/i });
+  const findMinimumAccessLevelForDeleteSelect = () =>
+    wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
   const findSubmitButton = () => wrapper.findByRole('button', { name: /add rule/i });
 
   const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
@@ -52,21 +52,18 @@ describe('container Protection Rule Form', () => {
   };
 
   describe('form fields', () => {
-    describe('form field "pushProtectedUpToAccessLevelSelect"', () => {
-      const pushProtectedUpToAccessLevelSelectOptions = () =>
-        findPushProtectedUpToAccessLevelSelect()
+    describe('form field "minimumAccessLevelForPush"', () => {
+      const minimumAccessLevelForPushOptions = () =>
+        findMinimumAccessLevelForPushSelect()
           .findAll('option')
           .wrappers.map((option) => option.element.value);
 
-      it.each(['DEVELOPER', 'MAINTAINER', 'OWNER'])(
-        'includes the %s access level',
-        (accessLevel) => {
-          mountComponent();
+      it.each(['MAINTAINER', 'OWNER', 'ADMIN'])('includes the %s access level', (accessLevel) => {
+        mountComponent();
 
-          expect(findPushProtectedUpToAccessLevelSelect().exists()).toBe(true);
-          expect(pushProtectedUpToAccessLevelSelectOptions()).toContain(accessLevel);
-        },
-      );
+        expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
+        expect(minimumAccessLevelForPushOptions()).toContain(accessLevel);
+      });
     });
 
     describe('when graphql mutation is in progress', () => {
@@ -79,8 +76,8 @@ describe('container Protection Rule Form', () => {
       it('disables all form fields', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
         expect(findRepositoryPathPatternInput().attributes('disabled')).toBe('disabled');
-        expect(findPushProtectedUpToAccessLevelSelect().attributes('disabled')).toBe('disabled');
-        expect(findDeleteProtectedUpToAccessLevelSelect().attributes('disabled')).toBe('disabled');
+        expect(findMinimumAccessLevelForPushSelect().attributes('disabled')).toBe('disabled');
+        expect(findMinimumAccessLevelForDeleteSelect().attributes('disabled')).toBe('disabled');
       });
 
       it('displays a loading spinner', () => {
@@ -90,7 +87,7 @@ describe('container Protection Rule Form', () => {
   });
 
   describe('form actions', () => {
-    describe('button "Protect"', () => {
+    describe('button "Add rule"', () => {
       it.each`
         repositoryPathPattern                                               | submitButtonDisabled
         ${''}                                                               | ${true}

@@ -22,19 +22,19 @@ module Types
             'Container repository path pattern protected by the protection rule. ' \
             'For example `my-project/my-container-*`. Wildcard character `*` allowed.'
 
-        field :push_protected_up_to_access_level,
+        field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: false,
           description:
-            'Max GitLab access level to prevent from pushing container images to the container registry. ' \
-            'For example `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+            'Minimum GitLab access level to allow to push container images to the container registry. ' \
+            'For example `DEVELOPER`, `MAINTAINER`, or `OWNER`.'
 
-        field :delete_protected_up_to_access_level,
+        field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
           null: false,
           description:
-            'Max GitLab access level to prevent from pushing container images to the container registry. ' \
-            'For example `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+            'Minimum GitLab access level to allow to push container images to the container registry. ' \
+            'For example `DEVELOPER`, `MAINTAINER`, or `OWNER`.'
       end
     end
   end
