@@ -80,7 +80,7 @@ projects benefit from the new objects that got added to the pool.
 
 ## SQL model
 
-As of GitLab 11.8, project repositories in GitLab do not have their own
+Project repositories in GitLab do not have their own
 SQL table. They are indirectly identified by columns on the `projects`
 table. In other words, the only way to look up a project repository is to
 first look up its project, and then call `project.repository`.
@@ -145,7 +145,7 @@ are as follows:
   of the project's repository on the new storage shard.
 - If the source project of a pool gets moved to another Gitaly storage
   shard or is deleted the "source project" relation is not broken.
-  However, as of GitLab 12.0 a pool does not fetch from a source
+  However, a pool does not fetch from a source
   unless the source is on the same Gitaly shard.
 
 ## Consistency between the SQL pool relation and Gitaly

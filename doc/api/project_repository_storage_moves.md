@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
-
 Project repositories including wiki and design repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for example.
 
@@ -200,24 +198,16 @@ Example response:
 
 ## Schedule a repository storage move for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34119) in GitLab 13.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2618) in GitLab 13.3, original repository is automatically removed after successful move and integrity check.
-
-WARNING:
-Before GitLab 13.3, a repository move worked more like a repository copy as the
-original repository was not deleted from the original storage disk location and
-had to be manually cleaned up.
-
 ```plaintext
 POST /projects/:project_id/repository_storage_moves
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `project_id` | integer | yes | ID of the project |
-| `destination_storage_name` | string | no | Name of the destination storage shard. In [GitLab 13.5 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/3209), the storage is selected [automatically based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided |
+| Attribute | Type | Required | Description                                                                                                                                                                                                        |
+| --------- | ---- | -------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `project_id` | integer | yes | ID of the project                                                                                                                                                                                                  |
+| `destination_storage_name` | string | no | Name of the destination storage shard. The storage is selected [automatically based on storage weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) if not provided |
 
 Example request:
 
@@ -249,8 +239,6 @@ Example response:
 ```
 
 ## Schedule repository storage moves for all projects on a storage shard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
 
 Schedules repository storage moves for each project repository stored on the source storage shard.
 This endpoint migrates all projects at once. For more information, see

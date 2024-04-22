@@ -323,9 +323,6 @@ Configure Gitaly server.
    dir = '/var/log/gitaly'
    ```
 
-    For GitLab 14.9 and earlier, set `internal_socket_dir = '/var/opt/gitlab/gitaly'` instead
-    of `runtime_dir`.
-
 1. Append the following to `/home/git/gitaly/config.toml` for each respective Gitaly server:
 
    On `gitaly1.internal`:

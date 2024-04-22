@@ -15,8 +15,6 @@ see [Troubleshooting Gitaly](troubleshooting.md).
 
 ## Check cluster health
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5688) in GitLab 14.5.
-
 The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster.
 
 ```shell
@@ -78,8 +76,6 @@ If this check fails:
 
 ### Check clock synchronization
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4225) in GitLab 14.8.
-
 Authentication between Praefect and the Gitaly servers requires the server times to be
 in sync so the token check succeeds.
 
@@ -123,33 +119,16 @@ Here are common errors and potential causes:
 
 Some common reasons for the Praefect database to experience elevated CPU usage include:
 
-- Prometheus metrics scrapes [running an expensive query](https://gitlab.com/gitlab-org/gitaly/-/issues/3796). If you have GitLab 14.2
-  or above, set `praefect['configuration'][:prometheus_exclude_database_from_default_metrics] = true` in `gitlab.rb`.
+- Prometheus metrics scrapes [running an expensive query](https://gitlab.com/gitlab-org/gitaly/-/issues/3796). Set
+  `praefect['configuration'][:prometheus_exclude_database_from_default_metrics] = true` in `gitlab.rb`.
 - [Read distribution caching](praefect.md#reads-distribution-caching) is disabled, increasing the number of queries made to the
   database when user traffic is high. Ensure read distribution caching is enabled.
 
 ## Determine primary Gitaly node
 
-To determine the primary node of a repository:
-
-- In GitLab 14.6 and later, use the [`praefect metadata`](#view-repository-metadata) subcommand.
-- In GitLab 13.12 to GitLab 14.5 with [repository-specific primaries](praefect.md#repository-specific-primary-nodes),
-  use the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums).
-- With legacy election strategies in GitLab 13.12 and earlier, the primary was the same for all repositories in a virtual storage.
-  To determine the current primary Gitaly node for a specific virtual storage:
-
-  - (Recommended) Use the `Shard Primary Election` [Grafana chart](praefect.md#grafana) on the
-    [`Gitlab Omnibus - Praefect` dashboard](https://gitlab.com/gitlab-org/grafana-dashboards/-/blob/master/omnibus/praefect.json).
-  - If you do not have Grafana set up, use the following command on each host of each
-    Praefect node:
-
-    ```shell
-    curl localhost:9652/metrics | grep gitaly_praefect_primaries
-    ```
+To determine the primary node of a repository, use the [`praefect metadata`](#view-repository-metadata) subcommand.
 
 ## View repository metadata
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3481) in GitLab 14.6.
 
 Gitaly Cluster maintains a [metadata database](index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
 to inspect the metadata for troubleshooting.
@@ -161,7 +140,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 ```
 
 When the physical path on the physical storage starts with `@cluster`, you can
-[find the repository ID in the physical path](index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+[find the repository ID in the physical path](index.md#praefect-generated-replica-paths).
 
 You can also retrieve a repository's metadata by its virtual storage and relative path:
 

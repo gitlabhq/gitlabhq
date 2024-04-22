@@ -31,6 +31,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:fabrication_resources) { {} }
   let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
   let(:status) { :passed }
+  let(:retry_failed_specs) { false }
 
   let(:influx_client_args) do
     {
@@ -96,9 +97,10 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   end
 
   before do
+    allow(::Gitlab::QA::Runtime::Env).to receive(:retry_failed_specs?).and_return(retry_failed_specs)
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
     allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
-    allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf
+    allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf -- simplifies mocking runtime
   end
 
   context 'without influxdb variables configured' do
@@ -260,9 +262,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     end
 
     context 'with retry in separate process' do
-      before do
-        stub_env('QA_DISABLE_RSPEC_RETRY', 'true')
-      end
+      let(:retry_failed_specs) { true }
 
       context 'with initial run' do
         it 'skips failed spec' do
@@ -436,10 +436,25 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         allow(File).to receive(:write)
       end
 
-      it 'saves test metrics as json files' do
-        run_spec
+      context 'without retry enabled' do
+        let(:file) { 'tmp/test-metrics-test-job.json' }
 
-        expect(File).to have_received(:write).with("tmp/test-metrics-test-job-retry-false.json", [data].to_json)
+        it 'saves test metrics as json files' do
+          run_spec
+
+          expect(File).to have_received(:write).with(file, [data].to_json)
+        end
+      end
+
+      context 'with retry enabled' do
+        let(:retry_failed_specs) { true }
+        let(:file) { 'tmp/test-metrics-test-job-retry-false.json' }
+
+        it 'saves test metrics as json files' do
+          run_spec
+
+          expect(File).to have_received(:write).with(file, [data].to_json)
+        end
       end
     end
   end

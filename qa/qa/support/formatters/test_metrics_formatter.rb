@@ -33,8 +33,9 @@ module QA
           :ci_job_url,
           :ci_job_name,
           :rspec_retried?,
-          :disable_rspec_retry?,
-          to: "QA::Runtime::Env"
+          to: QA::Runtime::Env
+
+        delegate :retry_failed_specs?, to: ::Gitlab::QA::Runtime::Env
 
         # Save execution data for the run
         #
@@ -80,7 +81,9 @@ module QA
         def save_test_metrics
           return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
 
-          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}-retry-#{rspec_retried?}.json"
+          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}" \
+                 "#{retry_failed_specs? ? "-retry-#{rspec_retried?}" : ''}.json"
+
           File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
@@ -93,7 +96,7 @@ module QA
         # @return [Hash]
         def test_stats(example)
           # do not save failures from initial non retry run, as they will be retried and become flaky or failed
-          return if disable_rspec_retry? && (!rspec_retried? && example.execution_result.status == :failed)
+          return if retry_failed_specs? && (!rspec_retried? && example.execution_result.status == :failed)
 
           {
             name: 'test-stats',
@@ -228,18 +231,8 @@ module QA
         def status(example)
           rspec_status = example.execution_result.status
           return rspec_status if [:pending, :failed].include?(rspec_status)
-          # if rspec-retry gem is disabled, check for rspec retry process
-          return rspec_retried? && rspec_status == :passed ? :flaky : :passed if disable_rspec_retry?
 
-          retry_attempts(example.metadata) > 0 ? :flaky : :passed
-        end
-
-        # Retry attempts
-        #
-        # @param [Hash] metadata
-        # @return [Integer]
-        def retry_attempts(metadata)
-          metadata[:retry_attempts] || 0
+          rspec_retried? && rspec_status == :passed ? :flaky : :passed
         end
 
         # Additional custom metrics tags

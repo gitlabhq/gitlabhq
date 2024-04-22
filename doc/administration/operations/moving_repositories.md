@@ -38,20 +38,6 @@ GitLab repositories can be associated with projects, groups, and snippets. Each 
 has a separate API to schedule the respective repositories to move. To move all repositories
 on a GitLab instance, each of these types must be scheduled to move for each storage.
 
-WARNING:
-To move repositories into a [Gitaly Cluster](../gitaly/index.md#gitaly-cluster) in GitLab versions
-13.12 to 14.1, you must [enable the `gitaly_replicate_repository_direct_fetch` feature flag](../feature_flags.md).
-
-WARNING:
-Repositories can be **permanently deleted** by a call to `/projects/:project_id/repository_storage_moves`
-that attempts to move a project already stored in a Gitaly Cluster back into that cluster.
-See [this issue for more details](https://gitlab.com/gitlab-org/gitaly/-/issues/3752). This issue was fixed in
-GitLab 14.3.0 and backported to
-[14.2.4](https://about.gitlab.com/releases/2021/09/17/gitlab-14-2-4-released/),
-[14.1.6](https://about.gitlab.com/releases/2021/09/27/gitlab-14-1-6-released/),
-[14.0.11](https://about.gitlab.com/releases/2021/09/27/gitlab-14-0-11-released/), and
-[13.12.12](https://about.gitlab.com/releases/2021/09/22/gitlab-13-12-12-released/).
-
 Each repository is made read-only for the duration of the move. The repository is not writable
 until the move has completed.
 
@@ -200,7 +186,7 @@ For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capa
 should be used. Git repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
 can result from directly accessing and copying Gitaly files using tools like `rsync`.
 
-- From GitLab 13.3, backup performance can be improved by
+- Backup performance can be improved by
   [processing multiple repositories concurrently](../../administration/backup_restore/backup_gitlab.md#back-up-git-repositories-concurrently).
 - Backups can be created of just the repositories using the
   [skip feature](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).

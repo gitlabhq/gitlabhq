@@ -17792,6 +17792,9 @@ msgstr ""
 msgid "DeploymentApprovals|Approvals"
 msgstr ""
 
+msgid "DeploymentApprovals|Approve"
+msgstr ""
+
 msgid "DeploymentApprovals|Approved By"
 msgstr ""
 
@@ -17799,6 +17802,9 @@ msgid "DeploymentApprovals|Approvers"
 msgstr ""
 
 msgid "DeploymentApprovals|Developers + Maintainers"
+msgstr ""
+
+msgid "DeploymentApprovals|Give approval"
 msgstr ""
 
 msgid "DeploymentApprovals|Maintainers"

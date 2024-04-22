@@ -113,7 +113,7 @@ export default {
         />
         <gl-link
           :href="item.download_path"
-          class="gl-text-gray-500"
+          class="gl-text-secondary"
           data-testid="download-link"
           @click="$emit('download-file')"
         >
@@ -130,7 +130,7 @@ export default {
         <gl-link
           v-if="item.pipeline && item.pipeline.project"
           :href="item.pipeline.project.commit_url"
-          class="gl-text-gray-500"
+          class="gl-text-secondary"
           data-testid="commit-link"
           >{{ item.pipeline.git_commit_message }}</gl-link
         >
@@ -147,7 +147,7 @@ export default {
             @action="$emit('delete-file', item)"
           >
             <template #list-item>
-              {{ $options.i18n.deleteFile }}
+              <span class="gl-text-red-500">{{ $options.i18n.deleteFile }}</span>
             </template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown>

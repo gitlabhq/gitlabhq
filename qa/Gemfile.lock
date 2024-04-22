@@ -289,8 +289,6 @@ GEM
     rspec-parameterized-table_syntax (1.0.0)
       binding_of_caller
       rspec-parameterized-core (< 2)
-    rspec-retry (0.6.2)
-      rspec-core (> 3.3)
     rspec-support (3.13.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -376,7 +374,6 @@ DEPENDENCIES
   rotp (~> 6.3.0)
   rspec (~> 3.13)
   rspec-parameterized (~> 1.0.0)
-  rspec-retry (~> 0.6.2)
   rspec_junit_formatter (~> 0.6.0)
   ruby-debug-ide (~> 0.7.3)
   selenium-webdriver (= 4.19.0)

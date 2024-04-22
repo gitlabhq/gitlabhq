@@ -521,10 +521,6 @@ module QA
         ENV['QA_RUNTIME_SCENARIO_ATTRIBUTES']
       end
 
-      def disable_rspec_retry?
-        enabled?(ENV['QA_DISABLE_RSPEC_RETRY'], default: false)
-      end
-
       def simulate_slow_connection?
         enabled?(ENV['QA_SIMULATE_SLOW_CONNECTION'], default: false)
       end

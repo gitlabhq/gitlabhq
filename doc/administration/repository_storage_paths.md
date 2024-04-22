@@ -176,7 +176,7 @@ For example:
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
-[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths).
 
 ### Object storage support
 

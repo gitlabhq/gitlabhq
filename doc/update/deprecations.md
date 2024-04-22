@@ -451,6 +451,20 @@ If you are using `OUTBOUND` with the `direction` argument to control the directi
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Toggle notes confidentiality on APIs
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.10</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350670).
+</div>
+
+Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. Updating notes confidential attribute is no longer supported by any means. We are changing this to simplify the experience and prevent private information from being unintentionally exposed.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
 
 <div class="deprecation-notes">
@@ -3802,20 +3816,6 @@ To accommodate the changes, you might need to adjust the [`rules`](https://docs.
 </div>
 
 In order to make the behavior of toggling the draft status of a merge request more clear via a quick action, we're deprecating and removing the toggle behavior of the `/draft` quick action. Beginning with the 16.0 release of GitLab, `/draft` will only set a merge request to Draft and a new `/ready` quick action will be used to remove the draft status.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### Toggle notes confidentiality on APIs
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">14.10</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/350670).
-</div>
-
-Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. Updating notes confidential attribute is no longer supported by any means. We are changing this to simplify the experience and prevent private information from being unintentionally exposed.
 
 </div>
 

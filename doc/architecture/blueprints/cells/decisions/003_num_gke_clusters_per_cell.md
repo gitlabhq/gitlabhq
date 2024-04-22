@@ -20,7 +20,7 @@ The decision made in [ADR 002](002_gcp_project_boundary.md) to have one Cell per
 
 ## Consequences
 
-Having a single GKE cluster per Cell will provisioning and management of a Cell easier as there will be no need to build in complex routing logic between GKE clusters.
+Having a single GKE cluster per Cell will make provisioning and management of a Cell easier as there will be no need to build in complex routing logic between GKE clusters.
 
 Should we ever hit the limit on nodes per cluster ([currently 15000](https://cloud.google.com/kubernetes-engine/quotas)), we will be limited to vertically scaling nodes rather than being able to spread the workload over multiple clusters. However, since our current production setup for GitLab.com only uses around 300 nodes, this is unlikely to occur for quite some time, if ever.
 

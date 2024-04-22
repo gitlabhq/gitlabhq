@@ -407,6 +407,7 @@ export default {
           <gl-form-checkbox
             v-if="canDelete"
             :checked="rowSelected"
+            class="gl-min-h-0"
             data-testid="package-files-checkbox"
             @change="rowSelected ? unselectRow() : selectRow()"
           />
@@ -428,7 +429,7 @@ export default {
           />
           <gl-link
             :href="item.downloadPath"
-            class="gl-text-gray-500"
+            class="gl-text-secondary"
             data-testid="download-link"
             @click="track($options.trackingActions.DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION)"
           >
@@ -449,7 +450,8 @@ export default {
           <gl-disclosure-dropdown
             category="tertiary"
             icon="ellipsis_v"
-            placement="right"
+            placement="bottom-end"
+            class="gl-my-n3!"
             :toggle-text="$options.i18n.moreActionsText"
             text-sr-only
             no-caret
@@ -459,7 +461,7 @@ export default {
               @action="handleFileDelete([item])"
             >
               <template #list-item>
-                {{ $options.i18n.deleteFile }}
+                <span class="gl-text-red-500">{{ $options.i18n.deleteFile }}</span>
               </template>
             </gl-disclosure-dropdown-item>
           </gl-disclosure-dropdown>

@@ -174,7 +174,7 @@ Currently, there is no inherent shortcoming of PostgreSQL itself that justifies 
 
 Further details below:
 
-- [Alternatives To Postgres DB (Google Spanner vs AlloyDB)]([gitlab-com/gl-infra/production-engineering#24662](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24662))
+- [Alternatives To Postgres DB (Google Spanner vs AlloyDB)](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24662)
 - [Switching to a proprietary database, instead of PostgreSQL](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24673)
 
 ### Cloud SQL

@@ -251,10 +251,8 @@ server.
 
 ## Repository pushes fail with a `deny updating a hidden ref` error
 
-Due to [a change](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/3426)
-introduced in GitLab 13.12, Gitaly has read-only, internal GitLab references that users are not
-permitted to update. If you attempt to update internal references with `git push --mirror`, Git
-returns the rejection error, `deny updating a hidden ref`.
+Gitaly has read-only, internal GitLab references that users are not permitted to update. If you attempt to update
+internal references with `git push --mirror`, Git returns the rejection error, `deny updating a hidden ref`.
 
 The following references are read-only:
 
@@ -428,8 +426,8 @@ and:
 
 ## Gitaly fails to fork processes stored on `noexec` file systems
 
-Because of changes [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5999) in GitLab 14.10, applying the `noexec` option to a mount
-point (for example, `/var`) causes Gitaly to throw `permission denied` errors related to forking processes. For example:
+Applying the `noexec` option to a mount point (for example, `/var`) causes Gitaly to throw `permission denied` errors
+related to forking processes. For example:
 
 ```shell
 fork/exec /var/opt/gitlab/gitaly/run/gitaly-2057/gitaly-git2go: permission denied
