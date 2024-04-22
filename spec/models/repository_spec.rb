@@ -386,26 +386,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
-    context 'when Gitaly raises a CommandError error' do
-      let(:error_message) { 'Boom' }
-
-      before do
-        expect(Gitlab::Git::Commit).to receive(:where).and_raise(Gitlab::Git::CommandError, error_message)
-      end
-
-      it 're-raises an error' do
-        expect { repository.commits('master', limit: 60) }.to raise_error(Gitlab::Git::CommandError, error_message)
-      end
-
-      context 'when error contains "listing commits failed" message' do
-        let(:error_message) { 'listing commits failed' }
-
-        it 'returns an empty collection' do
-          expect(repository.commits('master', limit: 60).to_a).to eq([])
-        end
-      end
-    end
-
     context 'when ref is passed' do
       it 'returns every commit from the specified ref' do
         expect(repository.commits('master', limit: 60).size).to eq(37)

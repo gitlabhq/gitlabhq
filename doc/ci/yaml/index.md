@@ -997,6 +997,7 @@ in a header section.
 
 **Possible inputs**: Can be one of:
 
+- `array`, to accept an [array](../yaml/inputs.md#array-type) of inputs.
 - `string`, to accept string inputs (default when not defined).
 - `number`, to only accept numeric inputs.
 - `boolean`, to only accept `true` or `false` inputs.
@@ -1013,6 +1014,8 @@ spec:
       type: number
     available:
       type: boolean
+    array_input:
+      type: array  
 ---
 
 # The pipeline configuration would follow...

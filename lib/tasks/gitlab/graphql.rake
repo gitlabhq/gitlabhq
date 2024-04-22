@@ -20,13 +20,18 @@ namespace :gitlab do
     end
   end
 
+  task generous_gitlab_schema: :environment do
+    GitlabSchema.validate_timeout 1.second
+    puts "Validation timeout set to #{GitlabSchema.validate_timeout} second(s)"
+  end
+
   # Defines tasks for dumping the GraphQL schema:
   # - gitlab:graphql:schema:dump
   # - gitlab:graphql:schema:idl
   # - gitlab:graphql:schema:json
   GraphQL::RakeTask.new(
     schema_name: 'GitlabSchema',
-    dependencies: [:environment, :enable_feature_flags],
+    dependencies: [:environment, :enable_feature_flags, :generous_gitlab_schema],
     directory: TEMP_SCHEMA_DIR,
     idl_outfile: "gitlab_schema.graphql",
     json_outfile: "gitlab_schema.json"
@@ -70,13 +75,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | GraphQL | Validate queries'
-    task validate: [:environment, :enable_feature_flags] do |t, args|
-      class GenerousTimeoutSchema < GitlabSchema # rubocop:disable Gitlab/NamespacedClass
-        validate_timeout 1.second
-      end
-
-      puts "Validating GraphQL queries. Validation timeout set to #{GenerousTimeoutSchema.validate_timeout} second(s)"
-
+    task validate: [:environment, :enable_feature_flags, :generous_gitlab_schema] do |t, args|
       queries = if args.to_a.present?
                   args.to_a.flat_map { |path| Gitlab::Graphql::Queries.find(path) }
                 else
@@ -84,7 +83,7 @@ namespace :gitlab do
                 end
 
       failed = queries.flat_map do |defn|
-        summary, errs = defn.validate(GenerousTimeoutSchema)
+        summary, errs = defn.validate(GitlabSchema)
 
         case summary
         when :client_query

@@ -69,7 +69,7 @@ export default {
   <div
     v-if="isSignedIn"
     data-testid="signed-in-empty-state-block"
-    :data-track-action="isProject && 'render_project_issues_empty_list_page'"
+    :data-track-action="isProject && 'render'"
     :data-track-label="isProject && 'project_issues_empty_list'"
     :data-track-experiment="isProject && 'issues_mrs_empty_state'"
   >

@@ -11,11 +11,7 @@ module Gitlab
       #       old_name: 'RunnerMembershipFilter', new_name: 'CiRunnerMembershipFilter', milestone: '15.4'
       #     )
       #   ].freeze
-      DEPRECATIONS = [
-        Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
-          old_name: 'RunnerMembershipFilter', new_name: 'CiRunnerMembershipFilter', milestone: '15.4'
-        )
-      ].freeze
+      DEPRECATIONS = [].freeze
 
       def self.map_graphql_name(name)
         name

@@ -28,7 +28,7 @@ const configuration = {
 };
 const environmentName = 'environment_name';
 const kustomizationResourcePath =
-  'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
+  'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue', () => {
   let wrapper;
@@ -280,7 +280,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
           createWrapper({
             apolloProvider: createApolloProviderWithErrors(),
             fluxResourcePath:
-              'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app',
+              'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app',
           });
           await waitForPromises();
         });

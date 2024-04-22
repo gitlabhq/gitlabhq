@@ -105,8 +105,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/lib/gitlab/ci/templates/dast_latest_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/dependency_scanning_latest_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/license_scanning_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/license_scanning_latest_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/sast_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/sast_iac_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/ci/templates/sast_latest_gitlab_ci_yaml_spec.rb'

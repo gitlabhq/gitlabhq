@@ -12,22 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
-
-NOTE:
-The legacy License Compliance analyzer was deprecated in GitLab 15.9 and removed in GitLab 16.3.
-To continue using GitLab for License Compliance, remove the License Compliance template from your
-CI/CD pipeline and add the [Dependency Scanning template](../../application_security/dependency_scanning/index.md#configuration).
-The Dependency Scanning template is now capable of gathering the required license information so it
-is no longer necessary to run a separate License Compliance job. The License Compliance CI/CD
-template should not be removed prior to verifying that the instance has been upgraded to a version
-that supports the new method of license scanning. To begin using the Dependency Scanner quickly at
-scale, you may set up a [scan execution policy](../../application_security/policies/scan-execution-policies.md)
-at the group level to enforce the SBOM-based license scan for all projects in the group.
-Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your
-CI/CD configuration. If you wish to continue using the legacy License Compliance feature, you can do
-so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the
-[project](../../../ci/variables/index.md#for-a-project), [group](../../../ci/variables/index.md#for-a-group)
-or [instance](../../../ci/variables/index.md#for-an-instance) level.
+> - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),

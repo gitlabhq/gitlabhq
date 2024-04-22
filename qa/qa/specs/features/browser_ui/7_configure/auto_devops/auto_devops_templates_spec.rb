@@ -15,7 +15,6 @@ module QA
       # during the production run
       let(:optional_jobs) do
         %w[
-          LICENSE_MANAGEMENT_DISABLED
           SAST_DISABLED DAST_DISABLED
           DEPENDENCY_SCANNING_DISABLED
           CONTAINER_SCANNING_DISABLED

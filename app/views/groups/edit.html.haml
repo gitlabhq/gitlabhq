@@ -45,7 +45,10 @@
     .settings-content
       = render 'shared/badges/badge_settings'
 
+- if can?(current_user, :admin_compliance_framework, @group)
   = render_if_exists 'groups/compliance_frameworks', expanded: expanded
+
+- if can?(current_user, :admin_group, @group)
   = render_if_exists 'groups/custom_project_templates_setting'
   = render_if_exists 'groups/templates_setting', expanded: expanded
   = render_if_exists 'shared/groups/max_pages_size_setting'
@@ -60,6 +63,7 @@
         = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')
     .settings-content
       = render 'groups/settings/advanced'
+
 - elsif can?(current_user, :remove_group, @group)
   = render 'groups/settings/remove', group: @group, remove_form_id: 'js-remove-group-form'
   = render_if_exists 'groups/settings/restore', group: @group

@@ -249,7 +249,13 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. Complete the fields:
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
-1. In the **Default membership role** field, select the role to assign to new users.
+1. For groups on GitLab.com: in the **Default membership role** field, select:
+   1. The role to assign to new users.
+   1. The role to assign to
+      [users who are not members of a mapped SAML group](../saml_sso/group_sync.md#automatic-member-removal)
+      when SAML Group Links is configured for the group.
+1. For groups on self-managed instances: in the **Default membership role** field,
+   select the role to assign to new users.
    The default role is **Guest**. That role becomes the starting role of all users
    added to the group:
    - In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523) and

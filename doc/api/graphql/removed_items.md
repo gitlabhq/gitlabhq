@@ -14,6 +14,21 @@ GraphQL is a versionless API, unlike the REST API.
 Occasionally, items have to be updated or removed from the GraphQL API.
 According to our [process for removing items](index.md#deprecation-and-removal-process), here are the items that have been removed.
 
+## GitLab 17.0
+
+Fields removed in GitLab 17.0.
+
+### GraphQL Fields
+
+| Field name | GraphQL type | Deprecated in | Removal MR | Use instead |
+|---|---|---|---|---|
+| `architectureName` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+| `executorName` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+| `ipAddress` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+| `platformName` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+| `revision` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+| `version` | `CiRunner` | 16.2 | [!124751](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124751) | Use this field in `manager` object instead. |
+
 ## GitLab 16.0
 
 Fields removed in GitLab 16.0.

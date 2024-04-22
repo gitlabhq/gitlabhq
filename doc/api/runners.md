@@ -80,6 +80,14 @@ NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -89,7 +97,7 @@ Example response:
         "paused": false,
         "description": "test-1-20150125",
         "id": 6,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": false,
         "runner_type": "project_type",
         "name": null,
@@ -101,7 +109,7 @@ Example response:
         "paused": false,
         "description": "test-2-20150125",
         "id": 8,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": false,
         "runner_type": "group_type",
         "name": null,
@@ -150,6 +158,14 @@ NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -159,7 +175,7 @@ Example response:
         "paused": false,
         "description": "shared-runner-1",
         "id": 1,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": true,
         "runner_type": "instance_type",
         "name": null,
@@ -171,7 +187,7 @@ Example response:
         "paused": false,
         "description": "shared-runner-2",
         "id": 3,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": true,
         "runner_type": "instance_type",
         "name": null,
@@ -183,7 +199,7 @@ Example response:
         "paused": false,
         "description": "test-1-20150125",
         "id": 6,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": false,
         "runner_type": "project_type",
         "name": null,
@@ -195,7 +211,7 @@ Example response:
         "paused": false,
         "description": "test-2-20150125",
         "id": 8,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": false,
         "runner_type": "group_type",
         "name": null,
@@ -236,6 +252,22 @@ NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
+NOTE:
+The `version`, `revision`, `platform`, and `architecture` attributes in the response were deprecated
+[in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+These attributes will start returning an empty string in GitLab 18.0.
+The same attributes can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -245,7 +277,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125",
     "id": 6,
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "is_shared": false,
     "runner_type": "project_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
@@ -308,6 +340,14 @@ NOTE:
 The `active` query parameter was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -316,7 +356,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125-test",
     "id": 6,
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "is_shared": false,
     "runner_type": "group_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
@@ -507,6 +547,14 @@ NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -516,7 +564,7 @@ Example response:
         "paused": false,
         "description": "test-2-20150125",
         "id": 8,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": false,
         "runner_type": "project_type",
         "name": null,
@@ -528,7 +576,7 @@ Example response:
         "paused": false,
         "description": "development_runner",
         "id": 5,
-        "ip_address": "127.0.0.1",
+        "ip_address": "",
         "is_shared": true,
         "runner_type": "instance_type",
         "name": null,
@@ -556,6 +604,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
      --form "runner_id=9"
 ```
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -563,7 +619,7 @@ Example response:
     "active": true,
     "description": "test-2016-02-01",
     "id": 9,
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "is_shared": false,
     "runner_type": "project_type",
     "name": null,
@@ -624,6 +680,14 @@ NOTE:
 The `active` attribute in the response was deprecated [in GitLab 14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/347211)
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+NOTE:
+The `ip_address` attribute in the response was deprecated
+[in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
+[a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+This attribute will start returning an empty string in GitLab 17.0.
+The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
+[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+
 Example response:
 
 ```json
@@ -631,7 +695,7 @@ Example response:
   {
     "id": 3,
     "description": "Shared",
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "active": true,
     "paused": false,
     "is_shared": true,
@@ -643,7 +707,7 @@ Example response:
   {
     "id": 6,
     "description": "Test",
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "active": true,
     "paused": false,
     "is_shared": true,
@@ -655,7 +719,7 @@ Example response:
   {
     "id": 8,
     "description": "Test 2",
-    "ip_address": "127.0.0.1",
+    "ip_address": "",
     "active": true,
     "paused": false,
     "is_shared": false,

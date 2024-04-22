@@ -266,7 +266,7 @@ including a large number of false positives.
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:6` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
@@ -325,9 +325,9 @@ standard tag plus the `-fips` extension.
 
 | Scanner name    | `CS_ANALYZER_IMAGE` |
 | --------------- | ------------------- |
-| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:6-fips` |
-| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:6-fips` |
-| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:6-fips` |
+| Default (Trivy) | `registry.gitlab.com/security-products/container-scanning:7-fips` |
+| Grype           | `registry.gitlab.com/security-products/container-scanning/grype:7-fips` |
+| Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:7-fips` |
 
 NOTE:
 Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
@@ -384,9 +384,9 @@ The following options are available:
 
 | Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
 |----------------------------------------------------------|--------------------------------------------------------------------|
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:6`       |
-| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:6` |
-| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:6` |
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:7`       |
+| [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:7` |
+| Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:7` |
 
 WARNING:
 Do not use the `:latest` tag when selecting the scanner image.
@@ -584,9 +584,9 @@ For container scanning, import the following images from `registry.gitlab.com` i
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/container-scanning:6
-registry.gitlab.com/security-products/container-scanning/grype:6
-registry.gitlab.com/security-products/container-scanning/trivy:6
+registry.gitlab.com/security-products/container-scanning:7
+registry.gitlab.com/security-products/container-scanning/grype:7
+registry.gitlab.com/security-products/container-scanning/trivy:7
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on
@@ -626,7 +626,7 @@ following `.gitlab-ci.yml` example as a template.
 
 ```yaml
 variables:
-  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:6
+  SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:7
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
 image: docker:latest

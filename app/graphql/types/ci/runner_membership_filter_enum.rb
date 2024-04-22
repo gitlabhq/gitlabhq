@@ -4,8 +4,7 @@ module Types
   module Ci
     class RunnerMembershipFilterEnum < BaseEnum
       graphql_name 'CiRunnerMembershipFilter'
-      description 'Values for filtering runners in namespaces. ' \
-        'The previous type name `RunnerMembershipFilter` was deprecated in 15.4.'
+      description 'Values for filtering runners in namespaces.'
 
       value 'DIRECT',
             description: "Include runners that have a direct relationship.",

@@ -1,7 +1,6 @@
 - title: 'Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint'  # (required) The name of the feature to be deprecated
   announcement_milestone: '15.6'  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: '18.0'  # (required) The milestone when this feature is planned to be removed
-  removal_date: '2024-04-22'
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth

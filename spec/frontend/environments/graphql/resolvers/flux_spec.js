@@ -28,7 +28,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   describe('fluxKustomizationStatus', () => {
     const client = { writeQuery: jest.fn() };
     const fluxResourcePath =
-      'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
+      'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
     const endpoint = `${configuration.basePath}/apis/${fluxResourcePath}`;
 
     describe('when k8sWatchApi feature is disabled', () => {
@@ -84,7 +84,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
       const resourceName = 'custom-resource';
       const resourceNamespace = 'custom-namespace';
-      const apiVersion = 'kustomize.toolkit.fluxcd.io/v1beta1';
+      const apiVersion = 'kustomize.toolkit.fluxcd.io/v1';
 
       beforeEach(() => {
         gon.features = { k8sWatchApi: true };

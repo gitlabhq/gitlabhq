@@ -277,6 +277,29 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             end
           end
 
+          context 'with ref_name + path params' do
+            let(:params) { { ref_name: ref_name, path: 'files/ruby/popen.rb' } }
+            let(:ref_name) { 'master' }
+
+            it 'returns project commits matching provided path parameter' do
+              get api("/projects/#{project_id}/repository/commits", user), params: params
+
+              expect(json_response.size).to eq(3)
+              expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+              expect(response).to include_limited_pagination_headers
+            end
+
+            context 'when ref_name does not exist' do
+              let(:ref_name) { 'does-not-exist' }
+
+              it 'returns an empty response' do
+                get api("/projects/#{project_id}/repository/commits", user), params: params
+
+                expect(json_response).to eq([])
+              end
+            end
+          end
+
           context 'with pagination params' do
             let(:page) { 1 }
             let(:per_page) { 5 }

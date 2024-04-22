@@ -23,10 +23,6 @@ module Types
                                               deprecated: { reason: 'Use paused', milestone: '14.8' }
       field :admin_url, GraphQL::Types::String, null: true,
                                                 description: 'Admin URL of the runner. Only available for administrators.'
-      field :architecture_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Architecture provided by the the runner.',
-            method: :architecture
       field :contacted_at, Types::TimeType, null: true,
                                             description: 'Timestamp of last contact from this runner.',
                                             method: :contacted_at
@@ -46,17 +42,10 @@ module Types
       field :ephemeral_register_url, GraphQL::Types::String, null: true,
             description: 'URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration.',
             alpha: { milestone: '15.11' }
-      field :executor_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Executor last advertised by the runner.',
-            method: :executor_name
       field :groups, null: true,
                      resolver: ::Resolvers::Ci::RunnerGroupsResolver,
                      description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false, description: 'ID of the runner.'
-      field :ip_address, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
             description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
                          "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
@@ -86,10 +75,6 @@ module Types
                                                   resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
       field :paused, GraphQL::Types::Boolean, null: false,
                                               description: 'Indicates the runner is paused and not available to run jobs.'
-      field :platform_name, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Platform provided by the runner.',
-            method: :platform
       field :project_count, GraphQL::Types::Int, null: true,
                                                  description: 'Number of projects that the runner is associated with.'
       field :projects,
@@ -99,9 +84,6 @@ module Types
             description: 'Find projects the runner is associated with. For project runners only.'
       field :register_admin_url, GraphQL::Types::String, null: true,
                                                          description: 'URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators.'
-      field :revision, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Revision of the runner.'
       field :run_untagged, GraphQL::Types::Boolean, null: false,
                                                     description: 'Indicates the runner is able to run untagged jobs.'
       field :runner_type, ::Types::Ci::RunnerTypeEnum, null: false,
@@ -118,9 +100,6 @@ module Types
       field :token_expires_at, Types::TimeType, null: true,
                                                 description: 'Runner token expiration time.',
                                                 method: :token_expires_at
-      field :version, GraphQL::Types::String, null: true,
-            deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
-            description: 'Version of the runner.'
 
       markdown_field :maintenance_note_html, null: true
 

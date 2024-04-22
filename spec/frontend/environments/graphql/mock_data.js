@@ -822,7 +822,7 @@ export const fluxKustomizationsMock = [
   },
 ];
 
-export const fluxResourcePathMock = 'path/to/flux/resource';
+export const fluxResourcePathMock = 'kustomize.toolkit.fluxcd.io/v1/path/to/flux/resource';
 
 export const resolvedEnvironmentToDelete = {
   __typename: 'LocalEnvironment',

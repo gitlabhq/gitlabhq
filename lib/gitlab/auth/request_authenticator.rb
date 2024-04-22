@@ -38,7 +38,7 @@ module Gitlab
           find_user_from_web_access_token(request_format, scopes: [:api, :read_api]) ||
           find_user_from_feed_token(request_format) ||
           find_user_from_static_object_token(request_format) ||
-          find_user_from_basic_auth_job ||
+          find_user_from_job_token_basic_auth ||
           find_user_from_job_token ||
           find_user_from_personal_access_token_for_api_or_git ||
           find_user_for_git_or_lfs_request

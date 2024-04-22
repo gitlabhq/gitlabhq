@@ -8,7 +8,7 @@ import fluxKustomizationStatusQuery from '../queries/flux_kustomization_status.q
 import fluxHelmReleaseStatusQuery from '../queries/flux_helm_release_status.query.graphql';
 
 const helmReleasesApiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
-const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1beta1';
+const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1';
 
 const helmReleaseField = 'fluxHelmReleaseStatus';
 const kustomizationField = 'fluxKustomizationStatus';

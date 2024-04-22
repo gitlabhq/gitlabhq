@@ -1,5 +1,0 @@
-# This template moved to Jobs/License-Scanning.gitlab-ci.yml in GitLab 14.8
-# Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/292977
-
-include:
-  - template: Jobs/License-Scanning.gitlab-ci.yml

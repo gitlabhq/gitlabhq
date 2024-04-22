@@ -163,19 +163,37 @@ GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 
 The file context is served in the response body. The response content type is `application/octet-stream`.
 
+::Tabs
+
+:::TabTitle Personal access token
+
 Example request that uses a personal access token:
 
 ```shell
+# Header authentication
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
-```
 
-Example request that uses HTTP Basic authentication:
-
-```shell
+# Basic authentication
 curl --user "user:<your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
+
+:::TabTitle CI_JOB_TOKEN
+
+Example request that uses a `CI_JOB_TOKEN`:
+
+```shell
+# Header authentication
+curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+
+# Basic authentication
+curl --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+```
+
+::EndTabs
 
 ## Publish a generic package by using CI/CD
 

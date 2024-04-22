@@ -64,6 +64,10 @@ Meanwhile:
   - [Email contents and formatting](using_service_desk.md#email-contents-and-formatting)
   - [Convert a regular issue to a Service Desk ticket](using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket)
   - [Privacy considerations](using_service_desk.md#privacy-considerations)
+- [External Participants](external_participants.md)
+  - [Service Desk tickets](external_participants.md#service-desk-tickets)
+  - [As an external participant](external_participants.md#as-an-external-participant)
+  - [As a GitLab user](external_participants.md#as-a-gitlab-user)
 
 ## Troubleshooting Service Desk
 

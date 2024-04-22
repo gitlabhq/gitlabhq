@@ -25,12 +25,6 @@ requirements must be met:
 1. You must be generating an SBOM file with components from one of our [one of our supported languages](license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers).
 1. If using our [`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml) to generate the SBOM file, then your project must use at least one of the [supported languages and package managers](license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers).
 
-Alternatively, licenses will also appear under the license list when using our deprecated [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/License-Scanning.gitlab-ci.yml) as long as the following requirements are met:
-
-1. The Dependency Scanning CI/CD job must be [enabled](license_scanning_of_cyclonedx_files/index.md#configuration) for your project.
-1. Your project must use at least one of the
-   [supported languages and package managers](license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers).
-
 When everything is configured, on the left sidebar, select **Secure > License compliance**.
 
 The licenses are displayed, where:

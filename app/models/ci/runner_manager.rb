@@ -76,6 +76,7 @@ module Ci
     end
 
     scope :order_id_desc, -> { order(id: :desc) }
+    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
 
     scope :with_version_prefix, ->(value) do
       regex = version_regex_expression_for_version(value)

@@ -39,8 +39,8 @@ are sent as emails:
 
 Any responses they send via email are displayed in the issue itself.
 
-For information about headers used for treating email, see
-[the incoming email documentation](../../../administration/incoming_email.md#accepted-headers).
+For additional information see [External participants](external_participants.md) and the
+[headers used for treating email](../../../administration/incoming_email.md#accepted-headers).
 
 ### Create a Service Desk ticket in GitLab UI
 

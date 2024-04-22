@@ -111,7 +111,7 @@ Use these variables to disable CI/CD jobs.
 | `gemnasium-python-dependency_scanning` | `DEPENDENCY_SCANNING_DISABLED`  |                       | The job isn't created if the value is `"true"`. |
 | `kubesec-sast`                         | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `license_management`                   | `LICENSE_MANAGEMENT_DISABLED`   | GitLab 12.7 and earlier | If the variable is present, the job isn't created. Job deprecated [from GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) |
-| `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   |                       | The job isn't created if the value is `"true"`.|
+| `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   |                       | The job isn't created if the value is `"true"`. Job deprecated [from GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111071) |
 | `load_performance`                     | `LOAD_PERFORMANCE_DISABLED`     |                       | If the variable is present, the job isn't created. |
 | `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | The job isn't created if the value is `"true"`. |
 | `performance`                          | `PERFORMANCE_DISABLED`          | GitLab 13.12 and earlier | Browser performance. If the variable is present, the job isn't created. Replaced by `browser_performance`. |

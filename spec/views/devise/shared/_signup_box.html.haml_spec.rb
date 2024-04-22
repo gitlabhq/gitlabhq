@@ -110,10 +110,22 @@ RSpec.describe 'devise/shared/_signup_box', feature_category: :system_access do
       expect(rendered).to include(s_('SignUp|Contribute to a public project on GitLab'))
 
       expect(rendered).to have_css('select[name="signup_intent"]')
-      expect(rendered).to have_css('option[value="new_team"]')
-      expect(rendered).to have_css('option[value="new_personal_account"]')
-      expect(rendered).to have_css('option[value="join_existing_team"]')
-      expect(rendered).to have_css('option[value="contribute_public_project"]')
+
+      expect(rendered).to have_css(
+        'option[value="select_signup_intent_dropdown_new_team_registration_step_one"]'
+      )
+
+      expect(rendered).to have_css(
+        'option[value="select_signup_intent_dropdown_new_personal_account_registration_step_one"]'
+      )
+
+      expect(rendered).to have_css(
+        'option[value="select_signup_intent_dropdown_join_existing_team_registration_step_one"]'
+      )
+
+      expect(rendered).to have_css(
+        'option[value="select_signup_intent_dropdown_contribute_public_project_registration_step_one"]'
+      )
     end
   end
 

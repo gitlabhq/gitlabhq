@@ -30,6 +30,12 @@ These requirements are documented in the `Required permission` column in the fol
 | [`admin_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) |  | Allows approval of merge requests. | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/412708) |  |  |
 | [`read_code`](https://gitlab.com/gitlab-org/gitlab/-/issues/376180) |  | Allows read-only access to the source code. | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/20277) | `customizable_roles` | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) |
 
+## Compliance management
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144183) |  | Enables administrator access to the compliance framework. | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/411502) |  |  |
+
 ## Group and projects
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

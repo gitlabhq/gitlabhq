@@ -88,6 +88,7 @@ This feature is only compatible with the [product analytics](../product_analytic
 You can use the dashboard designer to:
 
 - [Create custom visualizations](#create-a-custom-visualization).
+- [Generate custom visualizations with GitLab Duo](#generate-a-custom-visualization-with-gitlab-duo).
 - Explore available data.
 
 ## View project dashboards
@@ -291,6 +292,38 @@ To create a custom visualization:
 
 After you saved a visualization, you can add it to a new or existing custom dashboard in the same project.
 
+### Generate a custom visualization with GitLab Duo
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+**Status:** Experiment
+
+> - Introduced in GitLab 16.11 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
+
+Prerequisites:
+
+- The parent group of the project must have [experiment and beta features enabled](../group/manage.md#enable-experiment-and-beta-features).
+
+To generate a custom visualization with GitLab Duo using a natural language query:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. Select **Visualization designer**.
+1. In the **Visualization title** field, enter the name of your visualization.
+1. From the **Visualization type** dropdown list, select a visualization type.
+1. In the **Generate with GitLab Duo** section, enter your prompt. For example:
+
+   - _Daily sessions_
+   - _Number of unique users, grouped weekly_
+   - _Which are the most popular pages?_
+   - _How many unique users does each browser have?_
+
+1. Select **Generate with GitLab Duo**.
+1. Select **Save**.
+
+After you saved a visualization, you can add it to a new or existing custom dashboard in the same project.
+
 ## Troubleshooting
 
 ### `Something went wrong while loading the dashboard.`
@@ -311,3 +344,11 @@ If a dashboard panel displays an error message:
 - Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
   configurations, and make sure they are set up correctly.
 - For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.
+
+### Generate visualization with GitLab Duo returns unexpected results
+
+If GitLab Duo doesn't return the expected or a useful result, try editing your query to:
+
+- Specify a date range. For example: _number of unique users in 2023 to 2024, grouped monthly_.
+- Use the same names for metrics and dimensions as shown in the visualization designer.
+For example: _returning users_ instead of _existing customers_.

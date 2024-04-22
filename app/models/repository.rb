@@ -170,11 +170,6 @@ class Repository
     commits = Commit.decorate(commits, container) if commits.present?
 
     CommitCollection.new(container, commits, ref)
-  rescue Gitlab::Git::CommandError => e
-    # Temporary fix to address a new Gitaly internal error: https://gitlab.com/gitlab-org/gitlab/-/issues/452488
-    return CommitCollection.new(container, [], ref) if e.message.include?('listing commits failed')
-
-    raise
   end
 
   def commits_between(from, to, limit: nil)

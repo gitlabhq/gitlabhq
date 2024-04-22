@@ -1,6 +1,8 @@
 module gitlab.com/gitlab-org/gitlab/workhorse
 
-go 1.20
+go 1.21
+
+toolchain go1.21.9
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.3.1

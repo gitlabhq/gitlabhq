@@ -33,6 +33,7 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 | Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
+| Processes and responds to your questions about your application's usage data. | [Product Analytics](analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)             | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 
 ## Controlling GitLab Duo features
 
@@ -317,7 +318,7 @@ language model referenced above.
 | [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
 | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) |Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
-| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
+| [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-3-Sonnet`](https://docs.anthropic.com/claude/docs/models-overview) |
 | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | GitLab creates a machine learning model for each project, which is used to generate reviewers    [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10) |
@@ -329,6 +330,7 @@ language model referenced above.
 | [GitLab Duo Chat](gitlab_duo_chat.md) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model)    Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings) |
 | [Root cause analysis](#root-cause-analysis) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text) |
 | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | Statistical forecasting |
+| [Product analytics](analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat) |
 
 ## Data usage
 

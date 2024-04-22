@@ -62,3 +62,4 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 - [Issues API](../../../api/issues.md)
 - [Configure an external issue tracker](../../../integration/external-issue-tracker.md)
 - [Tasks](../../tasks.md)
+- [External participants](../service_desk/external_participants.md)

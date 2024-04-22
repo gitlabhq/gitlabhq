@@ -786,8 +786,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
-  describe '#find_user_from_basic_auth_job' do
-    subject { find_user_from_basic_auth_job }
+  describe '#find_user_from_job_token_basic_auth' do
+    subject { find_user_from_job_token_basic_auth }
 
     context 'when the request does not have AUTHORIZATION header' do
       it { is_expected.to be_nil }
@@ -1034,6 +1034,60 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it_behaves_like 'find user from job token'
+      end
+    end
+
+    context 'for route_authentication_setting[job_token_allowed]' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:route_setting, :expect_user_via_request, :expect_user_via_basic_auth) do
+        true                    | true  | false
+        :request                | true  | false
+        [:request]              | true  | false
+        :basic_auth             | false | true
+        [:basic_auth]           | false | true
+        [:request, :basic_auth] | true  | true
+
+        # unexpected values
+        :foo                    | false | false
+        [:foo]                  | false | false
+        [:foo, :bar]            | false | false
+      end
+
+      with_them do
+        let(:route_authentication_setting) { { job_token_allowed: route_setting } }
+
+        context 'when the token is in the headers' do
+          before do
+            set_header(described_class::JOB_TOKEN_HEADER, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in the job_token param' do
+          before do
+            set_param(described_class::JOB_TOKEN_PARAM, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in the token param' do
+          before do
+            set_param(described_class::RUNNER_JOB_TOKEN_PARAM, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_request ? user : nil) }
+        end
+
+        context 'when the token is in basic auth header' do
+          before do
+            set_basic_auth_header(::Gitlab::Auth::CI_JOB_USER, token)
+          end
+
+          it { is_expected.to eq(expect_user_via_basic_auth ? user : nil) }
+        end
       end
     end
 

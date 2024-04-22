@@ -184,7 +184,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         const experimentTracking = { 'data-track-experiment': 'issues_mrs_empty_state' };
 
         const emptyStateBlockTracking = {
-          'data-track-action': 'render_project_issues_empty_list_page',
+          'data-track-action': 'render',
           'data-track-label': 'project_issues_empty_list',
         };
 

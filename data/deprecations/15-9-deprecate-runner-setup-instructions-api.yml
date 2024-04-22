@@ -1,8 +1,7 @@
 - title: 'GitLab Runner platforms and setup instructions in GraphQL API'
   announcement_milestone: '15.9'
   announcement_date: '2023-02-22'
-  removal_milestone: '17.0'
-  removal_date: '2024-05-22'
+  removal_milestone: '18.0'
   breaking_change: true
   reporter: mrincon
   body: |

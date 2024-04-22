@@ -6,8 +6,8 @@ module API
       class Runner < Grape::Entity
         expose :id, documentation: { type: 'integer', example: 8 }
         expose :description, documentation: { type: 'string', example: 'test-1-20150125' }
-        # TODO: return null in 17.0 and remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/415159
-        expose :ip_address, documentation: { type: 'string', example: '127.0.0.1' }
+        # TODO: remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/415159
+        expose(:ip_address, documentation: { type: 'string', example: '127.0.0.1' }) { |_runner, _options| nil }
         # TODO Remove in v5 in favor of `paused` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/375709
         expose :active, documentation: { type: 'boolean', example: true }
         expose :paused, documentation: { type: 'boolean', example: false } do |runner|
