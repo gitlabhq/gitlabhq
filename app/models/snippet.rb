@@ -247,7 +247,24 @@ class Snippet < ApplicationRecord
   end
 
   def hook_attrs
-    attributes.merge('url' => Gitlab::UrlBuilder.build(self))
+    if Feature.disabled?(:webhooks_static_snippet_hook_attrs, Project.actor_from_id(project_id))
+      return attributes.merge('url' => Gitlab::UrlBuilder.build(self))
+    end
+
+    {
+      id: id,
+      title: title,
+      description: description,
+      content: content,
+      author_id: author_id,
+      project_id: project_id,
+      created_at: created_at,
+      updated_at: updated_at,
+      file_name: file_name,
+      type: type,
+      visibility_level: visibility_level,
+      url: Gitlab::UrlBuilder.build(self)
+    }
   end
 
   def file_name

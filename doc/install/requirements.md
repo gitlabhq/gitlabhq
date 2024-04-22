@@ -139,6 +139,8 @@ when:
 - Upgrading your Linux distribution.
 - Updating or changing third party container images.
 
+For more information, see how to [upgrade operating systems for PostgreSQL](../administration/postgresql/upgrading_os.md).
+
 #### Gitaly Cluster database requirements
 
 [Read more in the Gitaly Cluster documentation](../administration/gitaly/praefect.md).

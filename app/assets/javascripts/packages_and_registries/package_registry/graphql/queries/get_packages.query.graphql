@@ -54,6 +54,11 @@ query getPackages(
       count
       nodes {
         ...PackageData
+        project {
+          id
+          name
+          webUrl
+        }
       }
       pageInfo {
         ...PageInfo

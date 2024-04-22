@@ -302,6 +302,49 @@ RSpec.describe Label, feature_category: :team_planning do
     end
   end
 
+  describe '#hook_attrs' do
+    let_it_be(:label) { build_stubbed(:label) }
+
+    subject(:attrs) { label.hook_attrs }
+
+    it 'has the expected attributes' do
+      is_expected.to match(
+        {
+          id: label.id,
+          title: label.title,
+          color: label.color,
+          project_id: label.project.id,
+          created_at: be_like_time(label.created_at),
+          updated_at: be_like_time(label.updated_at),
+          template: label.template,
+          description: label.description,
+          type: label.type,
+          group_id: nil
+        }
+      )
+    end
+
+    context 'when label has a group' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      before do
+        label.group_id = group.id
+      end
+
+      it 'has the group ID' do
+        is_expected.to include(group_id: group.id)
+      end
+    end
+
+    context 'when flag is disabled' do
+      before do
+        stub_feature_flags(webhooks_static_label_hook_attrs: false)
+      end
+
+      it { is_expected.to eq(label.attributes) }
+    end
+  end
+
   describe 'priorization' do
     subject(:label) { create(:label, project: project) }
 

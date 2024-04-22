@@ -93,7 +93,6 @@ export const dependencyLinks = () => [
 export const packageProject = () => ({
   id: '1',
   name: 'gitlab-test',
-  fullPath: 'gitlab-org/gitlab-test',
   webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test',
   __typename: 'Project',
 });
@@ -433,7 +432,7 @@ export const packagesListQuery = ({
             ...packageData(),
             packageProtectionRuleExists: false,
             ...linksData,
-            project: packageProject(),
+            ...(type === 'group' && { project: packageProject() }),
             tags: { nodes: packageTags() },
             pipelines: {
               nodes: packagePipelines(),
@@ -442,7 +441,7 @@ export const packagesListQuery = ({
           {
             ...packageData(),
             packageProtectionRuleExists: false,
-            project: packageProject(),
+            ...(type === 'group' && { project: packageProject() }),
             tags: { nodes: [] },
             pipelines: { nodes: [] },
             ...linksData,

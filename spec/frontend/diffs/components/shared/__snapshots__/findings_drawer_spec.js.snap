@@ -20,7 +20,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         >
           <svg
             aria-hidden="true"
-            class="gl-icon gl-text-orange-300 gl-vertical-align-baseline! inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >
@@ -240,7 +240,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         >
           <svg
             aria-hidden="true"
-            class="gl-icon gl-text-orange-300 gl-vertical-align-baseline! inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >

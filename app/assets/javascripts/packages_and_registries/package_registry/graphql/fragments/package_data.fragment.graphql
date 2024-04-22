@@ -24,12 +24,6 @@ fragment PackageData on Package {
       }
     }
   }
-  project {
-    id
-    name
-    fullPath
-    webUrl
-  }
   packageProtectionRuleExists
   _links {
     webPath

@@ -834,31 +834,43 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe '#hook_attrs' do
-    let_it_be(:snippet) { create(:personal_snippet, secret_token: 'foo') }
+    let_it_be(:snippet) { create(:personal_snippet) }
 
     subject(:attrs) { snippet.hook_attrs }
 
     it 'includes the expected attributes' do
       is_expected.to match(
-        'id' => snippet.id,
-        'title' => snippet.title,
-        'content' => snippet.content,
-        'description' => snippet.description,
-        'file_name' => snippet.file_name,
-        'author_id' => snippet.author_id,
-        'project_id' => snippet.project_id,
-        'visibility_level' => snippet.visibility_level,
-        'encrypted_secret_token' => snippet.encrypted_secret_token,
-        'encrypted_secret_token_iv' => snippet.encrypted_secret_token_iv,
-        'secret' => false,
-        'secret_token' => nil,
-        'repository_read_only' => snippet.repository_read_only?,
-        'url' => Gitlab::UrlBuilder.build(snippet),
-        'type' => 'PersonalSnippet',
-        'created_at' => be_like_time(snippet.created_at),
-        'updated_at' => be_like_time(snippet.updated_at),
-        'imported' => 0
+        id: snippet.id,
+        title: snippet.title,
+        description: snippet.description,
+        content: snippet.content,
+        file_name: snippet.file_name,
+        author_id: snippet.author.id,
+        project_id: nil,
+        visibility_level: snippet.visibility_level,
+        url: Gitlab::UrlBuilder.build(snippet),
+        type: 'PersonalSnippet',
+        created_at: snippet.created_at,
+        updated_at: snippet.updated_at
       )
+    end
+
+    context 'when snippet is for a project' do
+      let_it_be(:snippet) { create(:project_snippet) }
+
+      it { is_expected.to include(project_id: snippet.project.id) }
+    end
+
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(webhooks_static_snippet_hook_attrs: false)
+      end
+
+      it 'includes all snippet attributes' do
+        all_attributes = snippet.attributes.merge('url' => Gitlab::UrlBuilder.build(snippet))
+
+        is_expected.to match(all_attributes)
+      end
     end
   end
 

@@ -466,33 +466,9 @@ Geo uses PostgreSQL and Streaming Replication to replicate data across Geo sites
 For example, Ubuntu 18.04 (and earlier) and RHEL/Centos7 (and earlier) are incompatible with their later releases.
 See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Locale_data_changes).
 
-On all hosts running PostgreSQL, across all Geo sites, run the following shell command:
+You must also check `glibc` when using a mixture of GitLab deployments. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services.
 
-```shell
-( echo "1-1"; echo "11" ) | LC_COLLATE=en_US.UTF-8 sort
-```
-
-The output looks like either:
-
-```plaintext
-1-1
-11
-```
-
-or the reverse order:
-
-```plaintext
-11
-1-1
-```
-
-If the output is **identical** on all hosts, then they running compatible versions of locale data and you may proceed with Geo configuration.
-
-If the output **differs** on any hosts, PostgreSQL replication will not work properly: indexes will become corrupted on the database replicas. You **must** select operating system versions that are compatible.
-
-A full index rebuild is required if the on-disk data is transferred 'at rest' to an operating system with an incompatible locale, or through replication.
-
-This check is also required when using a mixture of GitLab deployments. The locale might be different between an Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services.
+See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md) for more details, including how to check `glibc` version compatibility.
 
 ## Fixing common errors
 

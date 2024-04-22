@@ -56,7 +56,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
     it 'navigate to tabs' do
       find('body').send_keys([:shift, 'G'])
 
-      expect(page).to have_content('No public groups')
+      expect(page).to have_content('No public or internal groups')
 
       find('body').send_keys([:shift, 'S'])
 

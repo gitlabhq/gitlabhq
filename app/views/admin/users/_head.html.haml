@@ -1,30 +1,23 @@
 .gl-display-flex.gl-flex-wrap.gl-justify-content-space-between.gl-align-items-center.gl-pt-3
-  .gl-my-3
+  .gl-my-3.gl-display-flex.gl-align-items-center.gl-gap-3
     %h1.page-title.gl-font-size-h-display.gl-m-0
       = @user.name
-      - if @user.blocked_pending_approval?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Pending approval)')
-      - elsif @user.banned?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Banned)')
-      - elsif @user.blocked?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Blocked)')
-      - if @user.internal?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Internal)')
-      - if @user.admin
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Admin)')
-      - if @user.deactivated?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Deactivated)')
-      - if @user.access_locked?
-        %span.gl-text-red-500
-          = s_('AdminUsers|(Locked)')
-      = render_if_exists 'admin/users/auditor_user_badge'
-      = render_if_exists 'admin/users/gma_user_badge'
+    - if @user.blocked_pending_approval?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Pending approval'), variant: :warning)
+    - elsif @user.banned?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Banned'), variant: :danger)
+    - elsif @user.blocked?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Blocked'), variant: :danger)
+    - if @user.internal?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Internal'), variant: :neutral)
+    - if @user.admin
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Admin'), variant: :success)
+    - if @user.deactivated?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Deactivated'), variant: :neutral)
+    - if @user.access_locked?
+      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Locked'), variant: :warning)
+    = render_if_exists 'admin/users/auditor_user_badge'
+    = render_if_exists 'admin/users/gma_user_badge'
 
   .gl-my-3.gl-display-flex.gl-flex-wrap.gl-my-n2.gl-mx-n2
     - if @user != current_user

@@ -114,7 +114,7 @@ export default {
           :size="12"
           :name="getSeverity(activeElement).name"
           :class="getSeverity(activeElement).class"
-          class="inline-findings-severity-icon gl-vertical-align-baseline!"
+          class="inline-findings-severity-icon !gl-align-baseline"
         />
         <span class="drawer-heading-severity">{{ activeElement.severity }}</span>
         {{ isCodeQuality ? $options.i18n.codeQualityFinding : $options.i18n.sastFinding }}

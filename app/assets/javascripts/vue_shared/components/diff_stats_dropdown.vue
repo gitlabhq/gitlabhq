@@ -100,7 +100,7 @@ export default {
           category="tertiary"
           variant="confirm"
           data-testid="diff-stats-dropdown"
-          class="gl-vertical-align-baseline"
+          class="gl-align-baseline"
           toggle-class="gl-px-0! gl-font-weight-bold!"
           fluid-width
           @shown="focusInput"

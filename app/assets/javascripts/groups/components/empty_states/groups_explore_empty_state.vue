@@ -1,21 +1,21 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   components: { GlEmptyState },
   inject: ['groupsEmptyStateIllustration'],
-  i18n: {
-    title: __('No public groups'),
+  computed: {
+    title() {
+      return window.gon?.dot_com
+        ? s__('GroupsEmptyState|No public groups')
+        : s__('GroupsEmptyState|No public or internal groups');
+    },
   },
 };
 </script>
 
 <template>
-  <gl-empty-state
-    :title="$options.i18n.title"
-    :svg-path="groupsEmptyStateIllustration"
-    :svg-height="null"
-  />
+  <gl-empty-state :title="title" :svg-path="groupsEmptyStateIllustration" :svg-height="null" />
 </template>

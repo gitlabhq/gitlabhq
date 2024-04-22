@@ -290,6 +290,15 @@ module GroupsHelper
     dropdown_data
   end
 
+  def groups_explore_app_data
+    {
+      endpoint: explore_groups_path(format: :json),
+      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
+      groups_empty_state_illustration: image_path('illustrations/empty-state/empty-groups-md.svg'),
+      initial_sort: project_list_sort_by
+    }.to_json
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false)

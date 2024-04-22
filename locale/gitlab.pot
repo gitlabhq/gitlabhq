@@ -1504,9 +1504,6 @@ msgstr ""
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
-msgid "(Group Managed Account)"
-msgstr ""
-
 msgid "(Limited to %{quota} pipeline minutes per month)"
 msgstr ""
 
@@ -4045,27 +4042,6 @@ msgstr ""
 msgid "AdminStatistics|Snippets"
 msgstr ""
 
-msgid "AdminUsers|(Admin)"
-msgstr ""
-
-msgid "AdminUsers|(Banned)"
-msgstr ""
-
-msgid "AdminUsers|(Blocked)"
-msgstr ""
-
-msgid "AdminUsers|(Deactivated)"
-msgstr ""
-
-msgid "AdminUsers|(Internal)"
-msgstr ""
-
-msgid "AdminUsers|(Locked)"
-msgstr ""
-
-msgid "AdminUsers|(Pending approval)"
-msgstr ""
-
 msgid "AdminUsers|2FA Disabled"
 msgstr ""
 
@@ -4222,6 +4198,9 @@ msgstr ""
 msgid "AdminUsers|For more information, please refer to the %{link_start}user account deletion documentation.%{link_end}"
 msgstr ""
 
+msgid "AdminUsers|Group Managed Account"
+msgstr ""
+
 msgid "AdminUsers|Here are some helpful links to help you manage your instance:"
 msgstr ""
 
@@ -4229,6 +4208,9 @@ msgid "AdminUsers|If you have any questions about this process please consult ou
 msgstr ""
 
 msgid "AdminUsers|Important information about usage on your GitLab instance"
+msgstr ""
+
+msgid "AdminUsers|Internal"
 msgstr ""
 
 msgid "AdminUsers|Is using seat"
@@ -7948,7 +7930,10 @@ msgstr ""
 msgid "Below are the settings for %{link_to_gitlab_pages}."
 msgstr ""
 
-msgid "Below you will find all the groups that are public."
+msgid "Below you will find all the groups that are public or internal. Contribute by requesting to join a group."
+msgstr ""
+
+msgid "Below you will find all the groups that are public. Contribute by requesting to join a group."
 msgstr ""
 
 msgid "Beta"
@@ -25217,6 +25202,12 @@ msgstr ""
 msgid "GroupsEmptyState|No inactive projects."
 msgstr ""
 
+msgid "GroupsEmptyState|No public groups"
+msgstr ""
+
+msgid "GroupsEmptyState|No public or internal groups"
+msgstr ""
+
 msgid "GroupsEmptyState|No shared projects."
 msgstr ""
 
@@ -34089,9 +34080,6 @@ msgid "No projects found"
 msgstr ""
 
 msgid "No public deploy keys"
-msgstr ""
-
-msgid "No public groups"
 msgstr ""
 
 msgid "No ref selected"
@@ -59044,9 +59032,6 @@ msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{
 msgstr ""
 
 msgid "You can create new ones at your Personal Access Tokens settings %{pat_link}"
-msgstr ""
-
-msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can enable group access token creation in %{link_start}group settings%{link_end}."

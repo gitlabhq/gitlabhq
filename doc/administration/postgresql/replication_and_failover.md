@@ -20,6 +20,12 @@ for the Linux packages.
 It's recommended to read this document fully before attempting to configure PostgreSQL with
 replication and failover for GitLab.
 
+## Operating system upgrades
+
+If you are failing over to a system with a different operating system,
+read the [documentation on upgrading operating systems for PostgreSQL](upgrading_os.md).
+Failing to account for local changes with operating system upgrades may result in data corruption.
+
 ## Architecture
 
 The Linux package-recommended configuration for a PostgreSQL cluster with

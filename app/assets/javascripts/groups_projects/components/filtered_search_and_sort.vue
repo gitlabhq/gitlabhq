@@ -111,6 +111,7 @@ export default {
           sync-filter-and-sort
           :recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
           :search-input-placeholder="$options.i18n.searchInputPlaceholder"
+          terms-as-tokens
           @onFilter="onFilter"
         />
       </div>

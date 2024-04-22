@@ -284,7 +284,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
           click_action_in_user_dropdown(locked_user.id, 'Unlock')
         end
 
-        expect(page).not_to have_content("#{locked_user.name} (Locked)")
+        expect(page).not_to have_content("#{locked_user.name} Locked")
       end
     end
 

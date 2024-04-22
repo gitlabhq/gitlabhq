@@ -89,7 +89,7 @@ export default {
           :value="commentLineStart"
           :options="commentLineOptions"
           width="sm"
-          class="gl-w-auto gl-vertical-align-baseline"
+          class="gl-w-auto gl-align-baseline"
           @change="updateCommentLineStart"
         />
       </template>

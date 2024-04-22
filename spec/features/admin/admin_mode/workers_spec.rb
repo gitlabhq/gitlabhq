@@ -56,7 +56,7 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
 
         visit admin_user_path(user_to_delete)
 
-        expect(find('h1.page-title')).to have_content('(Blocked)')
+        expect(page).to have_content("#{user_to_delete.name} Blocked")
       end
     end
   end

@@ -2,9 +2,10 @@
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
+import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 const importableTypeText = {
+  [TYPE_EPIC]: __('epic'),
   [TYPE_ISSUE]: __('issue'),
   [TYPE_MERGE_REQUEST]: __('merge request'),
 };
