@@ -98,24 +98,28 @@ export default {
       />
     </template>
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
+      <div
+        class="gl-display-flex gl-align-items-center gl-gap-3 gl-mr-5 gl-min-w-0"
+        data-testid="package-name"
+      >
         <gl-link
           v-if="containsWebPathLink"
-          class="gl-text-body gl-min-w-0"
+          class="gl-text-body gl-min-w-0 gl-word-break-all"
           :class="errorPackageStyle"
           :href="packageLink"
         >
-          <gl-truncate :text="packageEntity.name" />
+          {{ packageEntity.name }}
         </gl-link>
-        <gl-truncate v-else :class="errorPackageStyle" :text="packageEntity.name" />
+        <span v-else :class="errorPackageStyle">
+          {{ packageEntity.name }}
+        </span>
 
-        <package-tags
+        <div
           v-if="packageEntity.tags.nodes && packageEntity.tags.nodes.length"
-          class="gl-ml-3"
-          :tags="packageEntity.tags.nodes"
-          hide-label
-          :tag-display-limit="1"
-        />
+          class="gl-display-flex gl-gap-2"
+        >
+          <package-tags :tags="packageEntity.tags.nodes" hide-label :tag-display-limit="1" />
+        </div>
       </div>
     </template>
     <template #left-secondary>

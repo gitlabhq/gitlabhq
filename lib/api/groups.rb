@@ -227,7 +227,8 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
         optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
-        optional :organization_id, type: Integer, desc: 'The organization id for the group'
+        optional :organization_id, type: Integer, default: -> { Current.organization_id },
+          desc: 'The organization id for the group'
 
         use :optional_params
       end

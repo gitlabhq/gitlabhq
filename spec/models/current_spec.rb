@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Current, feature_category: :cell do
-  describe '#organization=' do
-    after do
-      described_class.reset
-    end
+  after do
+    described_class.reset
+  end
 
+  describe '.organization=' do
     context 'when organization has not been set yet' do
       where(:value) do
         [nil, '_value_']
@@ -54,6 +54,29 @@ RSpec.describe Current, feature_category: :cell do
 
           expect(described_class.organization).to eq(set_value)
         end
+      end
+    end
+  end
+
+  describe '.organization_id' do
+    let_it_be(:current_organization) { create(:organization) }
+
+    subject(:organization_id) { described_class.organization_id }
+
+    context 'when organization is set' do
+      before do
+        described_class.organization = current_organization
+      end
+
+      it 'returns the id of the organization' do
+        expect(organization_id).not_to be_nil
+        expect(organization_id).to eq(current_organization.id)
+      end
+    end
+
+    context 'when organization is not set' do
+      it 'returns nil' do
+        expect(organization_id).to be_nil
       end
     end
   end

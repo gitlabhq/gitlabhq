@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
-> - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
-
 The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
 team has identified four metrics that measure DevOps performance.
 Using these metrics helps improve DevOps efficiency and communicate performance to business stakeholders, which can accelerate business results.
@@ -225,14 +222,16 @@ and use it to automatically:
 
 GitLab supports the following DORA metrics:
 
-| Metric                    | Level             | API                                                 | UI chart               | Comments |
-|---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
-| `deployment_frequency`    | Project           | [GitLab 13.7 and later](../../api/dora/metrics.md)  | GitLab 14.8 and later  | The previous API endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/323713) in 13.10. |
-| `deployment_frequency`    | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.12 and later |          |
-| `lead_time_for_changes`   | Project           | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 13.11 and later | Unit in seconds. Aggregation method is median. |
-| `lead_time_for_changes`   | Group             | [GitLab 13.10 and later](../../api/dora/metrics.md) | GitLab 14.0 and later  | Unit in seconds. Aggregation method is median. |
-| `time_to_restore_service` | Project and group | [GitLab 14.9 and later](../../api/dora/metrics.md)  | GitLab 15.1 and later  | Unit in days. Aggregation method is median. |
-| `change_failure_rate`     | Project and group | [GitLab 14.10 and later](../../api/dora/metrics.md) | GitLab 15.2 and later  | Percentage of deployments. |
+| Metric                    | Level             | Comments |
+|---------------------------|-------------------|----------|
+| `deployment_frequency`    | Project           |          |
+| `deployment_frequency`    | Group             |          |
+| `lead_time_for_changes`   | Project           | Unit in seconds. Aggregation method is median. |
+| `lead_time_for_changes`   | Group             | Unit in seconds. Aggregation method is median. |
+| `time_to_restore_service` | Project and group | Unit in days. Aggregation method is median. (Available in UI chart in GitLab 15.1 and later) |
+| `change_failure_rate`     | Project and group | Percentage of deployments. (Available in UI chart in GitLab 15.2 and later) |
+
+All metrics are available for the [(DORA) key metrics API](../../api/dora/metrics.md).
 
 ### DORA metrics charts
 

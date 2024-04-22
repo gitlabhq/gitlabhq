@@ -417,7 +417,7 @@ export default {
 </script>
 
 <template>
-  <section>
+  <section class="work-item-view">
     <section v-if="updateError" class="flash-container flash-container-page sticky">
       <gl-alert class="gl-mb-3" variant="danger" @dismiss="updateError = undefined">
         {{ updateError }}

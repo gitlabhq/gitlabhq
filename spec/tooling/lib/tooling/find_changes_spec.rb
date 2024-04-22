@@ -27,6 +27,9 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   let(:gitlab_client)                      { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
   let(:file_filter)                        { ->(_) { true } }
   let(:only_new_paths)                     { false }
+  let(:find_changes_api_token)             { nil }
+  let(:find_changes_mr_project_path)       { nil }
+  let(:find_changes_mr_iid)                { nil }
 
   around do |example|
     self.changed_files_file             = Tempfile.new('changed_files_file')
@@ -52,7 +55,10 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       'CI_API_V4_URL' => 'gitlab_api_url',
       'CI_MERGE_REQUEST_IID' => '1234',
       'CI_MERGE_REQUEST_PROJECT_PATH' => 'dummy-project',
-      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token'
+      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token',
+      'FIND_CHANGES_API_TOKEN' => find_changes_api_token,
+      'FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH' => find_changes_mr_project_path,
+      'FIND_CHANGES_MERGE_REQUEST_IID' => find_changes_mr_iid
     )
   end
 
@@ -64,6 +70,56 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
         expect { instance }.to raise_error(
           ArgumentError, ":from can only be :api or :changed_files"
         )
+      end
+    end
+
+    describe '#gitlab_token' do
+      it 'sets to PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' do
+        expect(instance.__send__(:gitlab_token)).to eq('dummy-token')
+      end
+
+      context 'when FIND_CHANGES_API_TOKEN is set' do
+        let(:find_changes_api_token) { 'mummy-token' }
+
+        it 'sets to PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' do
+          expect(instance.__send__(:gitlab_token)).to eq('dummy-token')
+        end
+
+        context 'when FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH is set' do
+          let(:find_changes_mr_project_path) { 'mummy-project' }
+
+          it 'sets to PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' do
+            expect(instance.__send__(:gitlab_token)).to eq('mummy-token')
+          end
+        end
+      end
+    end
+
+    describe '#mr_project_path' do
+      it 'sets to CI_MERGE_REQUEST_PROJECT_PATH' do
+        expect(instance.__send__(:mr_project_path)).to eq('dummy-project')
+      end
+
+      context 'when FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH is set' do
+        let(:find_changes_mr_project_path) { 'mummy-project' }
+
+        it 'sets to FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH' do
+          expect(instance.__send__(:mr_project_path)).to eq('mummy-project')
+        end
+      end
+    end
+
+    describe '#mr_iid' do
+      it 'sets to CI_MERGE_REQUEST_PROJECT_PATH' do
+        expect(instance.__send__(:mr_iid)).to eq('1234')
+      end
+
+      context 'when FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH is set' do
+        let(:find_changes_mr_iid) { '1357' }
+
+        it 'sets to FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH' do
+          expect(instance.__send__(:mr_iid)).to eq('1357')
+        end
       end
     end
   end

@@ -21,6 +21,10 @@ class Current < ActiveSupport::CurrentAttributes # rubocop:disable Gitlab/Namesp
     super(value)
   end
 
+  def organization_id
+    organization&.id
+  end
+
   private
 
   # No unlock.

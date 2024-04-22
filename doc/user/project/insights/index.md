@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
-
 Configure insights for your projects and groups to explore data such as:
 
 - Issues created and closed during a specified period.

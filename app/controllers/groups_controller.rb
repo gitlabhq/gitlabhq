@@ -84,7 +84,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def create
-    response = Groups::CreateService.new(current_user, group_params).execute
+    response = Groups::CreateService.new(
+      current_user,
+      group_params.merge(organization_id: Current.organization_id)
+    ).execute
     @group = response[:group]
 
     if response.success?

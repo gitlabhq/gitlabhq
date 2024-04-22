@@ -6,8 +6,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Aggregated Value Stream Analytics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.7.
-
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
@@ -110,7 +108,7 @@ the service performs operations in batches and enforces strict application limit
 - Stop processing when a limit is reached, schedule a background job to continue the processing later.
 - Continue processing data from a specific point.
 
-As of GitLab 14.7, the data loading is done manually. Once the feature is ready, the service is
+The data loading is done manually. Once the feature is ready, the service is
 invoked periodically by the system via a cron job (this part is not implemented yet).
 
 #### Record iteration

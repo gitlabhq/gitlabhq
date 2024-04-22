@@ -103,7 +103,7 @@ RSpec.describe Projects::Ml::ExperimentsHelper, feature_category: :mlops do
   end
 
   describe '#experiment_as_data' do
-    subject { Gitlab::Json.parse(helper.experiment_as_data(experiment)) }
+    subject { Gitlab::Json.parse(helper.experiment_as_data(project, experiment)) }
 
     it do
       is_expected.to eq({

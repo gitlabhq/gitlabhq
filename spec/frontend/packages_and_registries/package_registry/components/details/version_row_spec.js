@@ -29,7 +29,7 @@ describe('VersionRow', () => {
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPublishMethod = () => wrapper.findComponent(PublishMethod);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findPackageName = () => wrapper.findComponent(GlTruncate);
+  const findPackageName = () => wrapper.findByTestId('package-name');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
   const findDeleteDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
@@ -162,7 +162,7 @@ describe('VersionRow', () => {
     });
 
     it('lists the package name', () => {
-      expect(findPackageName().props('text')).toBe('@gitlab-org/package-15');
+      expect(findPackageName().text()).toBe('@gitlab-org/package-15');
     });
 
     it('does not have a link to navigate to the details page', () => {
@@ -194,7 +194,7 @@ describe('VersionRow', () => {
     });
 
     it('lists the package name', () => {
-      expect(findPackageName().props('text')).toBe('@gitlab-org/package-15');
+      expect(findPackageName().text()).toBe('@gitlab-org/package-15');
     });
 
     it('does not have a link to navigate to the details page', () => {

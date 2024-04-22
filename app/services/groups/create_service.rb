@@ -52,7 +52,8 @@ module Groups
 
       set_visibility_level
 
-      @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))
+      except_keys = ::NamespaceSetting.allowed_namespace_settings_params + [:organization_id]
+      @group = Group.new(params.except(*except_keys))
 
       set_organization
 
@@ -180,7 +181,7 @@ module Groups
 
     def set_organization
       if params[:organization_id]
-        nil # nothing to do, already assigned from params
+        @group.organization_id = params[:organization_id]
       elsif @group.parent_id
         @group.organization = @group.parent.organization
       # Rely on middleware setting of the organization, but sometimes it won't be set, so we need to guard it here.

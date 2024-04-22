@@ -243,3 +243,5 @@ In progress.
 - 2023-06-30: The second largest table partitioned: `ci_builds`.
 - 2023-12-12: `ci_builds` and `ci_builds_metadata` growth is stopped by writing data to new partitions.
 - 2024-02-05: `ci_pipeline_variables` is partitioned.
+- 2024-03-26: `ci_job_artifacts` is partitioned.
+- 2024-04-26: `ci_stages` is partitioned.

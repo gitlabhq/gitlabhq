@@ -5,11 +5,11 @@ module Projects
       require 'json'
       include ActionView::Helpers::NumberHelper
 
-      def experiment_as_data(experiment)
+      def experiment_as_data(project, experiment)
         data = {
           name: experiment.name,
           metadata: experiment.metadata,
-          path: link_to_experiment(experiment.project, experiment)
+          path: link_to_experiment(project, experiment)
         }
 
         Gitlab::Json.generate(data)

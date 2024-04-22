@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41416) in GitLab 11.2.
-
 Instance-level analytics provide insights into the feature and data usage of your entire instance.
 
 ## View instance-level analytics

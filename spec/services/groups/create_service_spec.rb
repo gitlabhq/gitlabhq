@@ -244,8 +244,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     end
 
     context 'when organization is not set by params', :with_current_organization do
-      let_it_be(:default_organization) { create(:organization, :default) }
-
       context 'and the parent of the group has an organization' do
         let_it_be(:parent_group) { create(:group, organization: other_organization) }
 
@@ -260,6 +258,15 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         it 'creates group with the current organization' do
           expect(created_group.organization).to eq(current_organization)
         end
+      end
+    end
+
+    context 'when organization_id is set to nil' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+      let(:extra_params) { { organization_id: nil } }
+
+      it 'creates group in default organization' do
+        expect(created_group.organization).to eq(default_organization)
       end
     end
 

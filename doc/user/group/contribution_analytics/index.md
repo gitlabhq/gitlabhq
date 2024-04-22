@@ -9,8 +9,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
-
 Contribution analytics provide an overview of the
 [contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
 

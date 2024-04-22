@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)
@@ -37,7 +37,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       end
 
       context 'with current organization setting in middleware' do
-        let_it_be(:another_organization) { create(:organization) }
+        let_it_be(:another_organization) { create(:organization, users: [user]) }
 
         before_all do
           create(:organization, :default)

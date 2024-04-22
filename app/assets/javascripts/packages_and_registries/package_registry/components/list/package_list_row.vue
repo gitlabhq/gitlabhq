@@ -144,35 +144,40 @@ export default {
       />
     </template>
     <template #left-primary>
-      <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
+      <div
+        class="gl-display-flex gl-align-items-center gl-gap-3 gl-mr-5 gl-min-w-0"
+        data-testid="package-name"
+      >
         <router-link
           v-if="containsWebPathLink"
           :class="errorPackageStyle"
-          class="gl-text-body gl-min-w-0"
+          class="gl-text-body gl-min-w-0 gl-word-break-all"
           data-testid="details-link"
           :to="{ name: 'details', params: { id: packageId } }"
         >
-          <gl-truncate :text="packageEntity.name" />
+          {{ packageEntity.name }}
         </router-link>
-        <gl-truncate v-else :class="errorPackageStyle" :text="packageEntity.name" />
+        <span v-else :class="errorPackageStyle">
+          {{ packageEntity.name }}
+        </span>
 
-        <package-tags
-          v-if="showTags"
-          class="gl-ml-3"
-          :tags="packageEntity.tags.nodes"
-          hide-label
-          :tag-display-limit="1"
-        />
+        <div v-if="showTags || showBadgeProtected" class="gl-display-flex gl-gap-2">
+          <package-tags
+            v-if="showTags"
+            :tags="packageEntity.tags.nodes"
+            hide-label
+            :tag-display-limit="1"
+          />
 
-        <gl-badge
-          v-if="showBadgeProtected"
-          v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
-          class="gl-ml-3"
-          icon-size="sm"
-          size="sm"
-          variant="neutral"
-          >{{ __('protected') }}</gl-badge
-        >
+          <gl-badge
+            v-if="showBadgeProtected"
+            v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
+            icon-size="sm"
+            size="sm"
+            variant="neutral"
+            >{{ __('protected') }}</gl-badge
+          >
+        </div>
       </div>
     </template>
     <template #left-secondary>

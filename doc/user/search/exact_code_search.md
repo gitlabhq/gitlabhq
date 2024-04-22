@@ -23,7 +23,7 @@ WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-With exact code search, you can use regular expressions and exact strings to search for code in a project.
+With exact code search, you can use regular expressions and exact strings to search for code in one or more projects.
 You can use backslashes to escape special characters and double quotes to search for exact strings.
 
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)

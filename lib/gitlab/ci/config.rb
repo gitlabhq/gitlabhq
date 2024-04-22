@@ -37,16 +37,18 @@ module Gitlab
 
         @source = source
 
-        @config = self.logger.instrument(:config_expand, once: true) do
-          expand_config(config)
-        end
+        Gitlab::Ci::YamlProcessor::FeatureFlags.with_actor(project) do
+          @config = self.logger.instrument(:config_expand, once: true) do
+            expand_config(config)
+          end
 
-        @root = self.logger.instrument(:config_root, once: true) do
-          Entry::Root.new(@config, project: project, user: user, logger: self.logger)
-        end
+          @root = self.logger.instrument(:config_root, once: true) do
+            Entry::Root.new(@config, project: project, user: user, logger: self.logger)
+          end
 
-        self.logger.instrument(:config_root_compose, once: true) do
-          @root.compose!
+          self.logger.instrument(:config_root_compose, once: true) do
+            @root.compose!
+          end
         end
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message

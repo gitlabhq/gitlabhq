@@ -38,7 +38,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    response = ::Groups::CreateService.new(current_user, group_params).execute
+    response = ::Groups::CreateService.new(current_user, group_params.with_defaults(organization_id: Current.organization_id)).execute
     @group = response[:group]
 
     if response.success?
@@ -103,6 +103,7 @@ class Admin::GroupsController < Admin::ApplicationController
       :enabled_git_access_protocol,
       :project_creation_level,
       :subgroup_creation_level,
+      :organization_id,
       admin_note_attributes: [
         :note
       ]

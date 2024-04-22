@@ -8,13 +8,10 @@ module Gitlab
       #
       #   DEPRECATIONS = [
       #     Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
-      #       old_name: 'CiRunnerUpgradeStatusType', new_name: 'CiRunnerUpgradeStatus', milestone: '15.3'
+      #       old_name: 'RunnerMembershipFilter', new_name: 'CiRunnerMembershipFilter', milestone: '15.4'
       #     )
       #   ].freeze
       DEPRECATIONS = [
-        Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
-          old_name: 'CiRunnerUpgradeStatusType', new_name: 'CiRunnerUpgradeStatus', milestone: '15.3'
-        ),
         Gitlab::Graphql::DeprecationsBase::NameDeprecation.new(
           old_name: 'RunnerMembershipFilter', new_name: 'CiRunnerMembershipFilter', milestone: '15.4'
         )

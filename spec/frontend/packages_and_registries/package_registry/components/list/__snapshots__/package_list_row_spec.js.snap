@@ -23,24 +23,22 @@ exports[`packages_list_row renders 1`] = `
         class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-mb-3 gl-min-w-0 gl-sm-mb-0"
       >
         <div
-          class="gl-align-items-center gl-display-flex gl-font-weight-bold gl-min-h-6 gl-min-w-0 gl-text-body"
+          class="gl-align-items-center gl-display-flex gl-font-weight-semibold gl-min-h-6 gl-min-w-0 gl-text-body"
         >
           <div
-            class="gl-align-items-center gl-display-flex gl-min-w-0 gl-mr-3"
+            class="gl-align-items-center gl-display-flex gl-gap-3 gl-min-w-0 gl-mr-5"
+            data-testid="package-name"
           >
             <a
-              class="gl-min-w-0 gl-text-body"
+              class="gl-min-w-0 gl-text-body gl-word-break-all"
               data-testid="details-link"
             >
-              <gl-truncate-stub
-                position="end"
-                text="@gitlab-org/package-15"
-              />
+              @gitlab-org/package-15
             </a>
           </div>
         </div>
         <div
-          class="gl-align-items-center gl-display-flex gl-flex-grow-1 gl-min-h-6 gl-min-w-0 gl-text-gray-500"
+          class="gl-align-items-center gl-display-flex gl-flex-grow-1 gl-font-sm gl-min-h-6 gl-min-w-0 gl-text-secondary"
         >
           <div
             class="gl-align-items-center gl-display-flex"
@@ -62,15 +60,15 @@ exports[`packages_list_row renders 1`] = `
         </div>
       </div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-justify-content-space-between gl-sm-align-items-flex-end gl-text-gray-500"
+        class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-justify-content-space-between gl-sm-align-items-flex-end gl-text-secondary"
       >
         <div
-          class="gl-align-items-center gl-display-flex gl-min-h-6 gl-sm-font-weight-bold gl-sm-text-body"
+          class="gl-align-items-center gl-display-flex gl-min-h-6 gl-sm-font-weight-semibold gl-sm-text-body"
         >
           <publish-method-stub />
         </div>
         <div
-          class="gl-align-items-center gl-display-flex gl-min-h-6"
+          class="gl-align-items-center gl-display-flex gl-font-sm gl-min-h-6"
         >
           <span
             data-testid="right-secondary"

@@ -124,8 +124,7 @@ ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="fail
 
 If you are [Running GitLab Pages on a separate server](index.md#running-gitlab-pages-on-a-separate-server)
 you must copy the `/etc/gitlab/gitlab-secrets.json` file
-from the **GitLab server** to the **Pages server** after upgrading to GitLab 13.3,
-as described in that section.
+from the **GitLab server** to the **Pages server**.
 
 Other reasons may include network connectivity issues between your
 **GitLab server** and your **Pages server** such as firewall configurations or closed ports.
@@ -261,29 +260,6 @@ In that case, it's highly recommended you to configure
 
 Alternatively, you can mount the GitLab Pages shared directory to the same path on
 both servers.
-
-## GitLab Pages doesn't work after upgrading to GitLab 14.0 or above
-
-GitLab 14.0 introduces a number of changes to GitLab Pages which may require manual intervention.
-
-1. Firstly [follow the migration guide](https://archives.docs.gitlab.com/14.10/ee/administration/pages/#prepare-gitlab-pages-for-140).
-1. Try to upgrade to GitLab 14.3 or above. Some of the issues were fixed in GitLab 14.1, 14.2 and 14.3.
-1. If it doesn't work, see [GitLab Pages logs](#how-to-see-gitlab-pages-logs), and if you see any errors there then search them on this page.
-
-WARNING:
-In GitLab 14.0-14.2 you can temporarily enable legacy storage and configuration mechanisms.
-
-To do that:
-
-1. Describe the issue you're seeing in the [migration feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/331699).
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_pages['use_legacy_storage'] = true
-   ```
-
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## GitLab Pages deploy job fails with error "is not a recognized provider"
 

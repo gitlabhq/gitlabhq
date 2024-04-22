@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Issue analytics for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
-> - Issue analytics for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in GitLab 12.9.
-
 Issue analytics is a bar graph which illustrates the number of issues created each month.
 The default time span is 13 months, which includes the current month, and the 12 months prior.
 Issue analytics is available for projects and groups.
@@ -58,8 +55,6 @@ You can use this metric to improve the overall turn-around time and value delive
 ![Issues opened and closed per month](img/enhanced_issue_analytics_v16_7.png)
 
 ## Drill into the information
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196547) in GitLab 13.1.
 
 You can examine details of individual issues by browsing the table
 located below the chart.

@@ -6,7 +6,8 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
 
-  let_it_be_with_refind(:group) { create_default(:group, :public) }
+  let_it_be(:group_organization) { create(:organization) }
+  let_it_be_with_refind(:group) { create_default(:group, :public, organization: group_organization) }
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin_with_admin_mode) { create(:admin) }
@@ -279,6 +280,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
 
               expect(response).to be_redirect
               expect(response.location).to eq("http://test.host/#{group.path}/subgroup")
+              expect(Group.last.organization.id).to eq(group_organization.id)
             end
           end
 
@@ -299,9 +301,10 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
-    context 'when creating a top level group' do
+    context 'when creating a top level group', :with_current_organization do
       before do
         sign_in(developer)
+        Current.organization.users << developer
       end
 
       context 'and can_create_group is enabled' do
@@ -313,9 +316,9 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           original_group_count = Group.count
 
           post :create, params: { group: { path: 'subgroup' } }
-
           expect(Group.count).to eq(original_group_count + 1)
           expect(response).to be_redirect
+          expect(Group.last.organization.id).to eq(Current.organization.id)
         end
       end
 

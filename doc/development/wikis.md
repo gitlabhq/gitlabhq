@@ -7,8 +7,6 @@ description: "GitLab's development guidelines for Wikis"
 
 # Wikis development guidelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227027) in GitLab 13.5.
-
 The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/).
 It's used in the [Gitaly](gitaly.md) Ruby service, and accessed from the Rails app through Gitaly RPC calls.
 
@@ -17,9 +15,6 @@ Wikis use Git repositories as storage backend, and can be accessed through:
 - The [Web UI](../user/project/wiki/index.md)
 - The [REST API](../api/wikis.md)
 - [Git itself](../user/project/wiki/index.md#create-or-edit-wiki-pages-locally)
-
-[Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2214) in GitLab 13.5, wikis are also available
-for groups, in addition to projects.
 
 ## Involved Gems
 

@@ -507,7 +507,7 @@ environment variable is set correctly. Otherwise, your private SSH key might not
 Alternative tools include:
 
 - [Cygwin](https://www.cygwin.com)
-- [PuttyGen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
+- [PuTTYgen](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 0.81 and later (earlier versions are [vulnerable to disclosure attacks](https://www.openwall.com/lists/oss-security/2024/04/15/6))
 
 ## Overriding SSH settings on the GitLab server
 

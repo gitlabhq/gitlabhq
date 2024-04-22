@@ -46,7 +46,7 @@ describe('packages_list_row', () => {
   const findRightSecondary = () => wrapper.findByTestId('right-secondary');
   const findListItem = () => wrapper.findComponent(ListItem);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
-  const findPackageName = () => wrapper.findComponent(GlTruncate);
+  const findPackageName = () => wrapper.findByTestId('package-name');
 
   const mountComponent = ({
     packageEntity = packageWithoutTags,
@@ -88,9 +88,7 @@ describe('packages_list_row', () => {
   it('lists the package name', () => {
     mountComponent();
 
-    expect(findPackageName().props()).toMatchObject({
-      text: '@gitlab-org/package-15',
-    });
+    expect(findPackageName().text()).toBe('@gitlab-org/package-15');
   });
 
   describe('tags', () => {
@@ -168,9 +166,7 @@ describe('packages_list_row', () => {
     });
 
     it('lists the package name', () => {
-      expect(findPackageName().props()).toMatchObject({
-        text: '@gitlab-org/package-15',
-      });
+      expect(findPackageName().text()).toBe('@gitlab-org/package-15');
     });
 
     it('does not have a link to navigate to the details page', () => {

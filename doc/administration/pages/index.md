@@ -431,7 +431,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `namespace_in_path`                     | (Experimental) Enable or disable namespace in the URL path. This requires `pages_nginx[enable] = true`. Sets `rewrite` configuration in NGINX to support [without wildcard DNS setup](#for-namespace-in-url-path-without-wildcard-dns). Default: `false`                    |
 | `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain.                                                                                            |
 | `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners.                                                                                                                                                                                                                       |
-| `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5729) in GitLab 14.5. |
+| `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length.                                                                |
 | `metrics_address`                       | The address to listen on for metrics requests.                                                                                                                                                                                                                                                             |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false.                                                                                                                                                                                                                                                             |
 | `redirects_max_config_size`             | The maximum size of the `_redirects` file, in bytes (default: 65536).                                                                                                                                                                                                                                      |
@@ -575,8 +575,6 @@ verification requirement:
 
 ### Let's Encrypt integration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
-
 [GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 allows users to add Let's Encrypt SSL certificates for GitLab Pages
 sites served under a custom domain.
@@ -623,8 +621,6 @@ all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/423) in GitLab 13.10.
-
 By default, the Pages daemon uses the `api` scope to authenticate. You can configure this. For
 example, this reduces the scope to `read_api` in `/etc/gitlab/gitlab.rb`:
 
@@ -645,8 +641,6 @@ this:
 1. Select **Save changes**.
 
 #### Disable public access to all Pages sites
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
 
 You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
 on your GitLab instance. By doing so, only authenticated users have access to them.
@@ -693,8 +687,6 @@ For self-compiled installations, this can be fixed by installing the custom Cert
 Authority (CA) in the system certificate store.
 
 ### ZIP serving and cache configuration
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
 
 WARNING:
 These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
@@ -786,8 +778,6 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Propagating the correlation ID
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
 
 Setting the `propagate_correlation_id` to true allows installations behind a reverse proxy to generate
 and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
@@ -1015,23 +1005,15 @@ Pages server.
 When GitLab Pages daemon serves pages requests it firstly needs to identify which project should be used to
 serve the requested URL and how its content is stored.
 
-Before GitLab 13.3, all pages content was extracted to the special shared directory,
-and each project had a special configuration file.
-The Pages daemon was reading these configuration files and storing their content in memory.
-
-This approach had several disadvantages and was replaced with GitLab Pages using the internal GitLab API
-every time a new domain is requested.
+By default, GitLab Pages uses the internal GitLab API every time a new domain is requested.
+Pages fails to start if it can't connect to the API.
 The domain information is also cached by the Pages daemon to speed up subsequent requests.
 
-Starting from [GitLab 14.0](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5993) GitLab Pages uses API
-by default and fails to start if it can't connect to it.
 For common issues, see [troubleshooting](troubleshooting.md#failed-to-connect-to-the-internal-gitlab-api).
 
 For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/how-gitlab-pages-uses-the-gitlab-api-to-serve-content/).
 
 ### GitLab API cache configuration
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/520) in GitLab 13.10.
 
 API-based configuration uses a caching mechanism to improve performance and reliability of serving Pages.
 The cache behavior can be modified by changing the cache settings, however, the recommended values are set for you and should only be modified if needed.
@@ -1077,71 +1059,13 @@ The following [object storage](../object_storage.md) settings are:
 
 NOTE:
 If you want to stop using and disconnect the NFS server, you need to
-[explicitly disable local storage](#disable-pages-local-storage), and it's only possible after upgrading to GitLab 13.11.
+[explicitly disable local storage](#disable-pages-local-storage).
 
 ### S3-compatible connection settings
 
-In GitLab 13.2 and later, you should use the
-[consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
-This section describes the earlier configuration format.
+You should use the [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
 See [the available connection settings for different providers](../object_storage.md#configure-the-connection-settings).
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Add the following lines to `/etc/gitlab/gitlab.rb` and replace the values with the ones you want:
-
-   ```ruby
-   gitlab_rails['pages_object_store_enabled'] = true
-   gitlab_rails['pages_object_store_remote_directory'] = "pages"
-   gitlab_rails['pages_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',
-     'aws_secret_access_key' => 'AWS_SECRET_ACCESS_KEY'
-   }
-   ```
-
-   If you use AWS IAM profiles, be sure to omit the AWS access key and secret access key/value
-   pairs:
-
-   ```ruby
-   gitlab_rails['pages_object_store_connection'] = {
-     'provider' => 'AWS',
-     'region' => 'eu-central-1',
-     'use_iam_profile' => true
-   }
-   ```
-
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
-   for the changes to take effect.
-
-1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
-
-:::TabTitle Self-compiled (source)
-
-1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
-
-   ```yaml
-   pages:
-     object_store:
-       enabled: true
-       remote_directory: "pages" # The bucket name
-       connection:
-         provider: AWS # Only AWS supported at the moment
-         aws_access_key_id: AWS_ACCESS_KEY_ID
-         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-         region: eu-central-1
-   ```
-
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations)
-   for the changes to take effect.
-
-1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)
-
-::EndTabs
 
 ### Migrate Pages deployments to object storage
 
@@ -1159,8 +1083,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 You can track progress and verify that all Pages deployments migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Linux package installations running GitLab 14.1 and earlier.
-- `sudo gitlab-rails dbconsole --database main` for Linux package installations running 14.2 and later.
+- `sudo gitlab-rails dbconsole --database main` for Linux package installations.
 - `sudo -u git -H psql -d gitlabhq_production` for self-compiled installations.
 
 Verify `objectstg` below (where `store=2`) has count of all Pages deployments:
@@ -1185,8 +1108,6 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 ```
 
 ### Disable Pages local storage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
 If you use [object storage](#object-storage-settings), you can disable local storage to avoid unnecessary disk usage/writes:
 
@@ -1221,12 +1142,11 @@ mounted on your primary server, in case you must migrate back to a single-node e
 
 ## ZIP storage
 
-In GitLab 14.0 the underlying storage format of GitLab Pages changed from
-files stored directly in disk to a single ZIP archive per project.
+The underlying storage format of GitLab Pages is a single ZIP archive per project.
 
 These ZIP archives can be stored either locally on disk storage or on [object storage](#object-storage-settings) if it is configured.
 
-[Starting from GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/245308) ZIP archives are stored every time pages site is updated.
+The ZIP archives are stored every time pages site is updated.
 
 ## Backup
 
@@ -1268,8 +1188,6 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable HTTP requests rate limits by source-IP
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
-
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -1280,8 +1198,6 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable HTTP requests rate limits by domain
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
@@ -1294,8 +1210,6 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable TLS connections rate limits by source-IP
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
-
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -1306,8 +1220,6 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 #### Enable TLS connections rate limits by domain
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 

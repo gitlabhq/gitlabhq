@@ -2152,28 +2152,45 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when group is within a provided organization' do
+      let_it_be(:current_organization) { create(:organization, name: "Current Organization") }
       let_it_be(:organization) { create(:organization) }
+
+      before do
+        allow(Current).to receive(:organization).and_return(current_organization)
+      end
 
       context 'when user is an organization user' do
         before_all do
+          create(:organization_user, user: user3, organization: current_organization)
           create(:organization_user, user: user3, organization: organization)
         end
 
-        it 'creates group within organization' do
-          post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+        context 'and organization_id is not passed' do
+          it 'creates organization using current organization' do
+            post api('/groups', user3), params: attributes_for_group_api
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['organization_id']).to eq(organization.id)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['organization_id']).to eq(Current.organization.id)
+          end
         end
 
-        context 'when parent_group is not part of the organization' do
-          it 'does not create the group with not_found' do
-            post(
-              api('/groups', user3),
-              params: attributes_for_group_api(parent_id: group2.id, organization_id: organization.id)
-            )
+        context 'and organization_id is passed' do
+          it 'creates group within organization' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
 
-            expect(response).to have_gitlab_http_status(:not_found)
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['organization_id']).to eq(organization.id)
+          end
+
+          context 'when parent_group is not part of the organization' do
+            it 'does not create the group with not_found' do
+              post(
+                api('/groups', user3),
+                params: attributes_for_group_api(parent_id: group2.id, organization_id: organization.id)
+              )
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
           end
         end
       end

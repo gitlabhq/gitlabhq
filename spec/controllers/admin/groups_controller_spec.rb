@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::GroupsController do
+RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:admin) { create(:admin) }
@@ -140,6 +140,24 @@ RSpec.describe Admin::GroupsController do
       end
 
       post :create, params: { group: { path: 'test', name: 'test' } }
+    end
+
+    context 'when organization_id is not in params', :with_current_organization do
+      it 'assigns Current.organization to newly created group' do
+        post :create, params: { group: { path: 'test', name: 'test' } }
+
+        expect(Group.last.organization_id).to eq(Current.organization.id)
+      end
+    end
+
+    context 'when organization_id is set' do
+      let_it_be(:organization) { create(:organization) }
+
+      it 'assigns specified organization to newly created group' do
+        post :create, params: { group: { organization_id: organization.id, path: 'test', name: 'test' } }
+
+        expect(Group.last.organization_id).to eq(organization.id)
+      end
     end
   end
 

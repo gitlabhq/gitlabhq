@@ -38376,6 +38376,9 @@ msgstr ""
 msgid "Please try again"
 msgstr ""
 
+msgid "Please try again or reach out to %{support_link_start}GitLab Support%{support_link_end}."
+msgstr ""
+
 msgid "Please try and refresh the page. If the problem persists please contact support."
 msgstr ""
 
@@ -57293,9 +57296,6 @@ msgstr ""
 msgid "We found your token in a public project and have automatically revoked it to protect your account."
 msgstr ""
 
-msgid "We have found the following errors:"
-msgstr ""
-
 msgid "We heard back from your device. You have been authenticated."
 msgstr ""
 
@@ -57336,6 +57336,12 @@ msgid "We'll use this to help surface the right features and information to you.
 msgstr ""
 
 msgid "We're experiencing difficulties and this tab content is currently unavailable."
+msgstr ""
+
+msgid "We're sorry, your GitLab Duo Pro trial could not be created because our system did not respond successfully."
+msgstr ""
+
+msgid "We're sorry, your trial could not be created because our system did not respond successfully."
 msgstr ""
 
 msgid "We've detected some unusual activity"

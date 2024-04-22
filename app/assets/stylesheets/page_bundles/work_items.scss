@@ -431,3 +431,14 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     }
   }
 }
+
+.work-item-view.work-item-drawer {
+  container-name: view;
+  container-type: inline-size;
+}
+
+@container view (max-width: 40vw) {
+  .work-item-overview {
+    display: block !important;
+  }
+}

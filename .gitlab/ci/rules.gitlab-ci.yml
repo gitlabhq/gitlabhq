@@ -2421,6 +2421,11 @@
 .static-analysis:rules:rubocop:
   rules:
     - if: '$ENABLE_RUBOCOP == "true"'
+    # Do not run full rubocop if the merge request isn't approved
+    - <<: *if-merge-request-not-approved
+      changes: *rubocop-patterns
+      variables:
+        RUN_ALL_RUBOCOP: "false"
     - <<: *if-default-refs
       changes: *rubocop-patterns
       variables:

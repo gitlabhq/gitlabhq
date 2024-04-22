@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24) in GitLab Pages 1.25.0 and GitLab 13.4 behind a feature flag, disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/367) in GitLab 13.5.
-
 In GitLab Pages, you can configure rules to forward one URL to another using
 [Netlify style](https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file)
 HTTP redirects.
@@ -93,10 +90,6 @@ you can explicitly set your own. The following HTTP codes are supported:
 
 ## Redirects
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
-> - Enabled on GitLab.com.
-> - Enabled on self-managed in [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/618).
-
 To create a redirect, add a rule that includes a `from` path, a `to` path,
 and an [HTTP status code](#http-status-codes):
 
@@ -110,7 +103,6 @@ and an [HTTP status code](#http-status-codes):
 
 ## Rewrites
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3 [with a flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_PLACEHOLDERS`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
 
 Provide a status code of `200` to serve the content of the `to` path when the
@@ -155,8 +147,6 @@ Domain-level redirects can be used in combination with [splat rules](#splats) (i
 to dynamically rewrite the URL path.
 
 ## Splats
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
 
 A rule with an asterisk (`*`) in its `from` path, known as a splat, matches
 anything at the start, middle, or end of the requested path. This example
@@ -213,8 +203,6 @@ rule like:
 ```
 
 ## Placeholders
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
 
 Use placeholders in rules to match portions of the requested URL and use these
 matches when rewriting or redirecting to a new URL.
