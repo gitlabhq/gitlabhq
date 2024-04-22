@@ -19,16 +19,12 @@ To send an invitation, you must have access to the project or group you are send
 levels are defined in the `Gitlab::Access` module. Currently, these levels are valid:
 
 - No access (`0`)
-- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
+- Minimal access (`5`)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
 - Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
-
-NOTE:
-From [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects have a maximum role of Owner.
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects have a maximum role of Maintainer.
 
 ## Add a member to a group or project
 
@@ -43,11 +39,11 @@ POST /projects/:id/invitations
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `email` | string | yes (if `user_id` isn't provided) | The email of the new member or multiple emails separated by commas. |
-| `user_id`   | integer/string | yes (if `email` isn't provided) | The ID of the new member or multiple IDs separated by commas. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350999) in GitLab 14.10. |
+| `user_id`   | integer/string | yes (if `email` isn't provided) | The ID of the new member or multiple IDs separated by commas. |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327120). |
-| `member_role_id` | integer | no | Assigns the new member to the provided custom role. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100) in GitLab 16.6. Ultimate only. |
+| `member_role_id` | integer | no | Assigns the new member to the provided custom role. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100)) in GitLab 16.6. Ultimate only. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

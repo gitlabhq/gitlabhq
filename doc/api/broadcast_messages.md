@@ -15,7 +15,7 @@ DETAILS:
 
 Broadcast messages API operates on [broadcast messages](../administration/broadcast_messages.md).
 
-As of GitLab 12.8, GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
+GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
 
 - Guests result in `401 Unauthorized`.
 - Regular users result in `403 Forbidden`.

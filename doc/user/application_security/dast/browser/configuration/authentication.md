@@ -237,7 +237,7 @@ Selectors have the format `type`:`search string`. DAST searches for the selector
 Chrome DevTools element selector tool is an effective way to find a selector.
 
 1. Open Chrome and go to the page where you would like to find a selector, for example, the login page for your site.
-1. Open the `Elements` tab in Chrome DevTools with the keyboard shortcut `Command + Shift + c` in macOS or `Ctrl + Shift + c` in Windows.
+1. Open the `Elements` tab in Chrome DevTools with the keyboard shortcut `Command + Shift + c` in macOS or `Ctrl + Shift + c` in Windows or Linux.
 1. Select the `Select an element in the page to select it` tool.
    ![search-elements](../img/dast_auth_browser_scan_search_elements.png)
 1. Select the field on your page that you would like to know the selector for.
