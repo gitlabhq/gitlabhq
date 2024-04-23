@@ -55,14 +55,11 @@ export default {
     </template>
     <template #cell(status)="{ item = {} }">
       <runner-status-badge
-        class="gl-vertical-align-middle"
+        class="gl-align-middle"
         :contacted-at="item.contactedAt"
         :status="item.status"
       />
-      <runner-job-status-badge
-        class="gl-vertical-align-middle"
-        :job-status="item.jobExecutionStatus"
-      />
+      <runner-job-status-badge class="gl-align-middle" :job-status="item.jobExecutionStatus" />
     </template>
     <template #cell(version)="{ item = {} }">
       {{ item.version }}

@@ -75,7 +75,6 @@ gem 'ruby-saml', '~> 1.15.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-auth0', '~> 3.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-azure-activedirectory-v2', '~> 2.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'omniauth-azure-oauth2', '~> 0.0.9', path: 'vendor/gems/omniauth-azure-oauth2' # See gem README.md # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-dingtalk-oauth2', '~> 1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-alicloud', '~> 3.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-facebook', '~> 4.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -360,9 +359,9 @@ gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1', feature_category: :error_tracking
-gem 'sentry-ruby', '~> 5.10.0', feature_category: :error_tracking
-gem 'sentry-rails', '~> 5.10.0', feature_category: :error_tracking
-gem 'sentry-sidekiq', '~> 5.10.0', feature_category: :error_tracking
+gem 'sentry-ruby', '~> 5.11.0', feature_category: :error_tracking
+gem 'sentry-rails', '~> 5.11.0', feature_category: :error_tracking
+gem 'sentry-sidekiq', '~> 5.11.0', feature_category: :error_tracking
 
 # PostgreSQL query parsing
 #

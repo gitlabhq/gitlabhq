@@ -32,21 +32,21 @@
         %tbody
           - active_tokens.each do |token|
             %tr
-              %td{ data: { label: _('Name') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Name') }, class: '!gl-align-middle' }
                 = token.name
-              %td{ data: { label: _('Username') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Username') }, class: '!gl-align-middle' }
                 = token.username
-              %td{ data: { label: _('Created') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Created') }, class: '!gl-align-middle' }
                 = token.created_at.to_date.to_fs(:medium)
-              %td{ data: { label: _('Expires') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Expires') }, class: '!gl-align-middle' }
                 - if token.expires?
                   %span{ class: ('text-warning' if token.expires_soon?) }
                     = time_ago_with_tooltip(token.expires_at)
                 - else
                   %span.token-never-expires-label= _('Never')
-              %td{ data: { label: _('Scopes') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Scopes') }, class: '!gl-align-middle' }
                 = token.scopes.present? ? token.scopes.join(', ') : _('no scopes selected')
-              %td{ data: { label: _('Actions') }, class: 'gl-vertical-align-middle!' }
+              %td{ data: { label: _('Actions') }, class: '!gl-align-middle' }
                 .js-deploy-token-revoke-button{ data: deploy_token_revoke_button_data(token: token, group_or_project: group_or_project) }
 
     - else

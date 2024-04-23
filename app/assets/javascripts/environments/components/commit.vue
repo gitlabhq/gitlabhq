@@ -32,7 +32,7 @@ export default {
       return this.commit?.author?.name || this.commit?.authorName;
     },
     commitPath() {
-      return this.commit?.commitPath;
+      return this.commit?.webPath || this.commit?.commitPath;
     },
   },
 };

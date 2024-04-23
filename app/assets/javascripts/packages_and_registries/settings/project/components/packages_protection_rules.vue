@@ -232,23 +232,23 @@ export default {
     {
       key: 'col_1_package_name_pattern',
       label: s__('PackageRegistry|Name pattern'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'col_2_package_type',
       label: s__('PackageRegistry|Type'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'col_3_push_protected_up_to_access_level',
       label: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'col_4_actions',
       label: '',
       thClass: 'gl-display-none',
-      tdClass: 'gl-vertical-align-middle! gl-text-right',
+      tdClass: '!gl-align-middle gl-text-right',
     },
   ],
   modal: { id: 'delete-package-protection-rule-confirmation-modal' },

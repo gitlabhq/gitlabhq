@@ -383,7 +383,7 @@ export default {
     </form>
     <template #modal-footer>
       <div
-        class="gl-display-flex gl-flex-grow-1 gl-m-0 gl-vertical-align-middle gl-justify-content-space-between"
+        class="gl-display-flex gl-flex-grow-1 gl-m-0 gl-align-middle gl-justify-content-space-between"
       >
         <span class="gl-text-gray-500"
           >{{ $options.i18n.COMMAND_PALETTE_TIP }} <command-palette-lottery

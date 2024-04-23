@@ -132,7 +132,7 @@ export default {
         </runner-detail>
         <runner-detail :label="s__('Runners|Tags')">
           <template v-if="tagList.length" #value>
-            <runner-tags class="gl-vertical-align-middle" :tag-list="tagList" size="sm" />
+            <runner-tags class="gl-align-middle" :tag-list="tagList" size="sm" />
           </template>
         </runner-detail>
 

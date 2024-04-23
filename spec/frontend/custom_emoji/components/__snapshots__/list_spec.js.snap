@@ -138,7 +138,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
               >
                 <td
                   aria-colindex="1"
-                  class="gl-vertical-align-middle!"
+                  class="!gl-align-middle"
                   role="cell"
                 >
                   <div
@@ -149,7 +149,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 </td>
                 <td
                   aria-colindex="2"
-                  class="gl-font-monospace gl-vertical-align-middle!"
+                  class="!gl-align-middle gl-font-monospace"
                   role="cell"
                 >
                   <strong
@@ -160,7 +160,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 </td>
                 <td
                   aria-colindex="3"
-                  class="gl-vertical-align-middle!"
+                  class="!gl-align-middle"
                   role="cell"
                 >
                   created-at

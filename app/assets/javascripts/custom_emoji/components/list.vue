@@ -71,20 +71,20 @@ export default {
       key: 'emoji',
       label: __('Image'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
       columnWidth: '70px',
     },
     {
       key: 'name',
       label: __('Name'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle! gl-font-monospace',
+      tdClass: '!gl-align-middle gl-font-monospace',
     },
     {
       key: 'created_at',
       label: __('Created date'),
       thClass: 'gl-border-t-0!',
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
       columnWidth: '25%',
     },
     {

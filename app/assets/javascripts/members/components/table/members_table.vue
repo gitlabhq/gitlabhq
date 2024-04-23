@@ -128,15 +128,10 @@ export default {
     },
     actionsFieldTdClass(value, key, member) {
       if (this.hasActionButtons(member)) {
-        return ['col-actions', 'gl-vertical-align-middle!'];
+        return ['col-actions', '!gl-align-middle'];
       }
 
-      return [
-        'col-actions',
-        'gl-display-none!',
-        'gl-lg-display-table-cell!',
-        'gl-vertical-align-middle!',
-      ];
+      return ['col-actions', 'gl-display-none!', 'gl-lg-display-table-cell!', '!gl-align-middle'];
     },
     tbodyTrAttr(member) {
       return {

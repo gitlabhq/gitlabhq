@@ -264,7 +264,7 @@ export default {
         </template>
 
         <template #actions>
-          <div class="gl-vertical-align-middle">
+          <div class="gl-align-middle">
             <gl-button
               variant="confirm"
               :loading="state.isRunningMergeRequestPipeline"

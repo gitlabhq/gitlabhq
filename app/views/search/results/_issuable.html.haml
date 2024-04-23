@@ -26,6 +26,6 @@
     - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
       %li.gl-list-style-none
         %span.has-tooltip{ title: _('Upvotes') }
-          = sprite_icon('thumb-up', css_class: "gl-vertical-align-middle")
+          = sprite_icon('thumb-up', css_class: "gl-align-middle")
           = issuable.upvotes_count
     %span.gl-text-gray-500= sprintf(s_('updated %{time_ago}'), { time_ago: time_ago_with_tooltip(issuable.updated_at, placement: 'bottom') }).html_safe

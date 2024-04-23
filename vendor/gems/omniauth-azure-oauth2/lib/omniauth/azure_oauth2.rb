@@ -1,1 +1,0 @@
-require File.join('omniauth', 'strategies', 'azure_oauth2')

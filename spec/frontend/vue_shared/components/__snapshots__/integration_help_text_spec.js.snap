@@ -15,7 +15,7 @@ exports[`IntegrationHelpText component should render the help text 1`] = `
   >
     Bar
     <gl-icon-stub
-      class="gl-vertical-align-middle"
+      class="gl-align-middle"
       name="external-link"
       size="12"
     />

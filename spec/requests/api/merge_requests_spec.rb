@@ -3103,13 +3103,24 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           squash_commit_message: squash_commit_message
         }
 
+        expect(response).to have_gitlab_http_status(:ok)
         expect(squash_commit.message.chomp).to eq(squash_commit_message)
       end
 
       it "results in a default squash commit message when not set" do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true }
 
+        expect(response).to have_gitlab_http_status(:ok)
         expect(squash_commit.message.chomp).to eq(merge_request.default_squash_commit_message.chomp)
+      end
+
+      context 'when squash_commit_message is empty' do
+        it 'uses a default squash commit message' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { squash: true, squash_commit_message: '' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(squash_commit.message.chomp).to eq(merge_request.default_squash_commit_message.chomp)
+        end
       end
     end
 

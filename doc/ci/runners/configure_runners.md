@@ -501,7 +501,8 @@ to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
-rely on files brought into the local working copy from cache or artifacts.
+rely on files brought into the local working copy from cache or artifacts, and be
+aware that cache and artifact files from previous pipelines might still be present.
 
 ### Git submodule strategy
 

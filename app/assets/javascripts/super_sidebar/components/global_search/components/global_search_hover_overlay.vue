@@ -28,7 +28,7 @@ export default {
       <span class="gl-text-gray-700 gl-white-space-nowrap" data-testid="overlay-message">
         <gl-sprintf :message="textMessage">
           <template #kbd="{ content }">
-            <kbd class="gl-font-base gl-pb-3 vertical-align-normalization gl-vertical-align-middle">
+            <kbd class="gl-font-base gl-pb-3 vertical-align-normalization gl-align-middle">
               {{ content }}
             </kbd>
           </template>

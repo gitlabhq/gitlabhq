@@ -31,7 +31,7 @@ module Gitlab
               text: _('Available on demand'),
               tooltip_text: _(
                 'On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects'),
-              variant: 'info'
+              variant: 'neutral'
             },
             secondary: {
               type: 'dast_profiles',
@@ -108,7 +108,7 @@ module Gitlab
               text: s_('SecurityConfiguration|Incubating feature'),
               tooltip_text: s_('SecurityConfiguration|Breach and Attack Simulation is an incubating ' \
                                'feature extending existing security testing by simulating adversary activity.'),
-              variant: 'info'
+              variant: 'neutral'
             },
             description: s_('SecurityConfiguration|Simulate breach and attack scenarios against your ' \
                             'running application by attempting to detect and exploit known vulnerabilities.'),

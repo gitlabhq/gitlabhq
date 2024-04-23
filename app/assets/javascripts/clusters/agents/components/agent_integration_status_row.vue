@@ -57,7 +57,7 @@ export default {
     <gl-badge
       v-if="showPremiumBadge"
       size="md"
-      class="gl-ml-2 gl-vertical-align-middle"
+      class="gl-ml-2 gl-align-middle"
       icon="license"
       variant="tier"
       >{{ $options.i18n.premiumTitle }}</gl-badge

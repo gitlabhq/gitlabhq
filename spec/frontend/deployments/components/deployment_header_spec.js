@@ -59,7 +59,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
 
     it('shows a link to the commit', () => {
       const link = wrapper.findByRole('link', { name: deployment.commit.shortId });
-      expect(link.attributes('href')).toBe(deployment.commit.webUrl);
+      expect(link.attributes('href')).toBe(deployment.commit.webPath);
     });
 
     it('has a clipboard button that copies the commit SHA', () => {

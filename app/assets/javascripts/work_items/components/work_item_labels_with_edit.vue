@@ -254,7 +254,7 @@ export default {
         <span
           :style="{ background: item.color }"
           :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
-          class="gl-display-inline-block gl-rounded-base gl-mr-1 gl-w-5 gl-h-3 gl-vertical-align-middle gl-mt-n1"
+          class="gl-display-inline-block gl-rounded-base gl-mr-1 gl-w-5 gl-h-3 gl-align-middle gl-mt-n1"
         ></span>
         {{ item.text }}
       </span>

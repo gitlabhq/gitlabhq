@@ -43788,9 +43788,6 @@ msgstr ""
 msgid "Runners|A runner configuration is where you configure runners based on your requirements. Each runner in this table represents a %{linkStart}single runner entry%{linkEnd} in the %{codeStart}config.toml%{codeEnd}. Multiple runners can be linked to the same configuration. When there are multiple runners in a configuration, the one that contacted GitLab most recently displays here."
 msgstr ""
 
-msgid "Runners|Active"
-msgstr ""
-
 msgid "Runners|Active runners"
 msgstr ""
 
@@ -44184,9 +44181,6 @@ msgid "Runners|Most recent failures"
 msgstr ""
 
 msgid "Runners|Most used instance runners"
-msgstr ""
-
-msgid "Runners|Name"
 msgstr ""
 
 msgid "Runners|Never contacted"

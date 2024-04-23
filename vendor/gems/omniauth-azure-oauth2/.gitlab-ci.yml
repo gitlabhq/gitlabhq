@@ -1,5 +1,0 @@
-include:
-  - local: gems/gem.gitlab-ci.yml
-    inputs:
-      gem_name: "omniauth-azure-oauth2"
-      gem_path_prefix: "vendor/gems/"

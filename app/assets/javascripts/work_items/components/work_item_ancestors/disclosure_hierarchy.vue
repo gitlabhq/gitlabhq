@@ -111,7 +111,7 @@ export default {
                 <gl-icon
                   v-if="item.icon"
                   :name="item.icon"
-                  class="gl-mr-3 gl-vertical-align-middle gl-text-gray-600 gl-flex-shrink-0"
+                  class="gl-mr-3 gl-align-middle gl-text-gray-600 gl-flex-shrink-0"
                 />
                 {{ item.title }}
               </span>

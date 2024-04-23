@@ -291,6 +291,26 @@ describe('ImportProjectMembersModal', () => {
       });
     });
 
+    describe('when the api error includes an error message', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        findProjectSelect().vm.$emit('input', projectToBeImported);
+
+        jest.spyOn(ProjectsApi, 'importProjectMembers').mockRejectedValue({
+          response: { data: { success: false, message: 'Failure message' } },
+        });
+
+        clickImportButton();
+        await waitForPromises();
+      });
+
+      it('displays the error message from the api', () => {
+        expect(formGroupInvalidFeedback()).toBe('Failure message');
+        expect(formGroupErrorState()).toBe(false);
+      });
+    });
+
     describe('when the import fails with member import errors', () => {
       const mockInvitationsApi = (code, data) => {
         mock.onPost(IMPORT_PROJECT_MEMBERS_PATH).reply(code, data);

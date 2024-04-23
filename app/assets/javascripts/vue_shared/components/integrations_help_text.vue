@@ -27,7 +27,7 @@ export default {
       <template #link="{ content }">
         <gl-link :href="messageUrl" target="_blank">
           {{ content }}
-          <gl-icon name="external-link" class="gl-vertical-align-middle" :size="12" />
+          <gl-icon name="external-link" class="gl-align-middle" :size="12" />
         </gl-link>
       </template>
     </gl-sprintf>

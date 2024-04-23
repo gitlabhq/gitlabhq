@@ -447,7 +447,6 @@ RSpec/ExpectInHook:
     - 'spec/uploaders/file_mover_spec.rb'
     - 'spec/uploaders/gitlab_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
-    - 'spec/views/shared/runners/_runner_details.html.haml_spec.rb'
     - 'spec/workers/bulk_imports/pipeline_worker_spec.rb'
     - 'spec/workers/ci/build_finished_worker_spec.rb'
     - 'spec/workers/concerns/gitlab/github_import/object_importer_spec.rb'

@@ -13,10 +13,6 @@ include:
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "omniauth-azure-oauth2"
-      gem_path_prefix: "vendor/gems/"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "omniauth_crowd"
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml

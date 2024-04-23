@@ -129,7 +129,7 @@ export default {
           :data-name="user.name"
           :href="webUrl"
           target="_blank"
-          class="js-user-link gl-vertical-align-middle gl-mx-2 gl-align-items-center"
+          class="js-user-link gl-align-middle gl-mx-2 gl-align-items-center"
         >
           <gl-avatar-labeled
             :size="24"

@@ -41,7 +41,7 @@ RSpec.describe 'Projects > Members > Import project members', :js, feature_categ
     submit_import { project2.destroy! }
 
     within import_project_members_modal_selector do
-      expect(page).to have_content('Unable to import project members')
+      expect(page).to have_content('404 Project Not Found')
     end
   end
 

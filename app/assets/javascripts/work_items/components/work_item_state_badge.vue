@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge :variant="workItemStateVariant" class="gl-vertical-align-middle">
+  <gl-badge :variant="workItemStateVariant" class="gl-align-middle">
     <gl-icon :name="workItemStateIcon" :size="16" />
     <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ stateText }}</span>
   </gl-badge>

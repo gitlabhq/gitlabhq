@@ -7,6 +7,7 @@ module Ci
     self.table_name = :p_ci_runner_machine_builds
     self.primary_key = :build_id
 
+    query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true
 
     alias_attribute :runner_manager_id, :runner_machine_id
@@ -24,6 +25,10 @@ module Ci
       select(:build_id, :runner_manager_id)
         .pluck(:build_id, :runner_manager_id)
         .to_h
+    end
+
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
     end
   end
 end

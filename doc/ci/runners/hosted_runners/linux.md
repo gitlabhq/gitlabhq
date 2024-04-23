@@ -18,7 +18,7 @@ Each VM uses the Google Container-Optimized OS (COS) and the latest version of D
 
 ## Machine types available for Linux (x86-64)
 
-For the hosted runners on Linux, GitLab offers a range of machine types for use.
+GitLab offers a range of machine types for hosted runners on Linux.
 For Free, Premium, and Ultimate plan customers, jobs on these instances consume the compute quota allocated to your namespace.
 
 | Runner Tag                                    | vCPUs | Memory | Storage |

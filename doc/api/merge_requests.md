@@ -1308,7 +1308,7 @@ POST /projects/:id/merge_requests
 | `assignee_id`              | integer | No       | Assignee user ID. |
 | `assignee_ids`             | integer array | No | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `description`              | string  | No       | Description of the merge request. Limited to 1,048,576 characters. |
-| `labels`                   | string  | No       | Labels for the merge request, as a comma-separated list. |
+| `labels`                   | string  | No       | Labels for the merge request, as a comma-separated list. If a label does not already exist, this creates a new project label and assigns it to the merge request. |
 | `milestone_id`             | integer | No       | The global ID of a milestone. |
 | `remove_source_branch`     | boolean | No       | Flag indicating if a merge request should remove the source branch when merging. |
 | `reviewer_ids`             | integer array | No | The ID of the users added as a reviewer to the merge request. If set to `0` or left empty, no reviewers are added. |
@@ -1453,14 +1453,14 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | ---------                  | ----    | -------- | ----------- |
 | `id`                       | integer or string | Yes  | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `merge_request_iid`        | integer | Yes      | The ID of a merge request. |
-| `add_labels`               | string  | No       | Comma-separated label names to add to a merge request. |
+| `add_labels`               | string  | No       | Comma-separated label names to add to a merge request. If a label does not already exist, this creates a new project label and assigns it to the merge request. |
 | `allow_collaboration`      | boolean | No       | Allow commits from members who can merge to the target branch. |
 | `allow_maintainer_to_push` | boolean | No       | Alias of `allow_collaboration`. |
 | `assignee_id`              | integer | No       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `assignee_ids`             | integer array | No | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
 | `description`              | string  | No       | Description of the merge request. Limited to 1,048,576 characters. |
 | `discussion_locked`        | boolean | No       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
-| `labels`                   | string  | No       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
+| `labels`                   | string  | No       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels. If a label does not already exist, this creates a new project label and assigns it to the merge request. |
 | `milestone_id`             | integer | No       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `remove_labels`            | string  | No       | Comma-separated label names to remove from a merge request. |
 | `remove_source_branch`     | boolean | No       | Flag indicating if a merge request should remove the source branch when merging. |

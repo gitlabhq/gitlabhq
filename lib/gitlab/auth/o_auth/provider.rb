@@ -10,7 +10,7 @@ module Gitlab
           "github" => "GitHub",
           "gitlab" => "GitLab.com",
           "google_oauth2" => "Google",
-          "azure_oauth2" => "Azure AD",
+          "azure_oauth2" => "Azure AD (Obsolete)",
           "azure_activedirectory_v2" => "Azure AD v2",
           'atlassian_oauth2' => 'Atlassian'
         }.freeze

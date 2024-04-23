@@ -73,7 +73,7 @@ export default {
         v-else-if="release.historicalRelease"
         v-gl-tooltip
         :title="$options.i18n.historicalTooltip"
-        class="gl-vertical-align-middle"
+        class="gl-align-middle"
       >
         {{ $options.i18n.historical }}
       </gl-badge>

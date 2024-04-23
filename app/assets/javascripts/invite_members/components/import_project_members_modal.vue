@@ -177,8 +177,10 @@ export default {
         } else {
           this.onInviteSuccess();
         }
-      } catch {
-        this.showErrorAlert();
+      } catch (error) {
+        const message = error.response.data?.message;
+
+        this.showErrorAlert(message);
       } finally {
         this.isLoading = false;
         this.projectToBeImported = {};
@@ -201,8 +203,8 @@ export default {
       this.$toast.show(this.$options.i18n.successMessage, this.$options.toastOptions);
       this.closeModal();
     },
-    showErrorAlert() {
-      this.invalidFeedbackMessage = this.$options.i18n.defaultError;
+    showErrorAlert(message) {
+      this.invalidFeedbackMessage = message || this.$options.i18n.defaultError;
     },
     onCancel() {
       this.track('click_cancel');

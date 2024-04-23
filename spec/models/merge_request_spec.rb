@@ -387,20 +387,26 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#default_squash_commit_message' do
-    let(:project) { subject.project }
-    let(:is_multiline) { -> (c) { c.description.present? } }
-    let(:multiline_commits) { subject.commits.select(&is_multiline) }
-    let(:singleline_commits) { subject.commits.reject(&is_multiline) }
+    let(:default_squash_commit_message) { subject.default_squash_commit_message }
 
     it 'returns the merge request title' do
-      expect(subject.default_squash_commit_message).to eq(subject.title)
+      expect(default_squash_commit_message).to eq(subject.title)
     end
 
     it 'uses template from target project' do
       subject.target_project.squash_commit_template = 'Squashed branch %{source_branch} into %{target_branch}'
 
-      expect(subject.default_squash_commit_message)
-        .to eq('Squashed branch master into feature')
+      expect(default_squash_commit_message).to eq('Squashed branch master into feature')
+    end
+
+    context 'when squash commit message is empty after placeholders replacement' do
+      before do
+        subject.target_project.squash_commit_template = '%{approved_by}'
+      end
+
+      it 'returns the merge request title' do
+        expect(default_squash_commit_message).to eq(subject.title)
+      end
     end
   end
 

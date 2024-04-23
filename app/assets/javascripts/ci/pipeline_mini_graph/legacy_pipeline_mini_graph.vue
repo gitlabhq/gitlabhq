@@ -13,9 +13,7 @@ export default {
     LinkedPipelinesMiniList,
     PipelineStages,
   },
-  arrowStyles: [
-    'arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 gl-vertical-align-middle!',
-  ],
+  arrowStyles: ['arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
   props: {
     downstreamPipelines: {
       type: Array,

@@ -196,7 +196,7 @@ export default {
                   <span
                     v-if="isForked"
                     v-gl-tooltip
-                    class="gl-vertical-align-middle gl-mr-n2"
+                    class="gl-align-middle gl-mr-n2"
                     :title="__('The source project is a fork')"
                   >
                     <gl-icon name="fork" :size="12" class="gl-ml-1" />

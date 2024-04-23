@@ -25,6 +25,8 @@ You can follow our work towards this goal in the
 
 ## Machine types available for Windows
 
+GitLab offers the following machine type for hosted runners on Windows.
+
 | Runner Tag                  | vCPUs | Memory | Storage |
 | --------------------------- | ----- | ------ | ------- |
 | `saas-windows-medium-amd64` | 2     | 7.5 GB | 75 GB   |

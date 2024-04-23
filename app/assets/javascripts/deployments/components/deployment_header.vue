@@ -70,7 +70,7 @@ export default {
       return this.deployment.commit || {};
     },
     commitPath() {
-      return this.deployment.commit.webUrl || '';
+      return this.deployment.commit.webPath || '';
     },
     shortSha() {
       return this.deployment.commit?.shortId;

@@ -1530,11 +1530,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def default_squash_commit_message(user: nil)
-    if self.target_project.squash_commit_template.present?
-      return ::Gitlab::MergeRequests::MessageGenerator.new(merge_request: self, current_user: user).squash_commit_message
-    end
+    squash_commit_message = ::Gitlab::MergeRequests::MessageGenerator.new(merge_request: self, current_user: user).squash_commit_message.presence
 
-    title
+    squash_commit_message || title
   end
 
   # Returns the oldest multi-line commit

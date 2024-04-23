@@ -14,7 +14,7 @@ DETAILS:
 Hosted runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) for open source programs and customers in Premium and Ultimate plans.
 
 Hosted runners on macOS provide an on-demand macOS build environment integrated with
-GitLab SaaS [CI/CD](../../../ci/index.md).
+GitLab.com [CI/CD](../../../ci/index.md).
 Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS). You can take advantage
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment. Our [Mobile DevOps solution](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
@@ -26,7 +26,7 @@ You can follow our work towards this goal in the
 
 ## Machine types available for macOS
 
-GitLab SaaS provides macOS build machines on Apple silicon (M1) chips. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 build environment.
+GitLab offers the following machine type for hosted runners on macOS. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 build environment.
 
 | Runner Tag             | vCPUS | Memory | Storage |
 | ---------------------- | ----- | ------ | ------- |
@@ -35,7 +35,7 @@ GitLab SaaS provides macOS build machines on Apple silicon (M1) chips. To build 
 ## Supported macOS images
 
 In comparison to our hosted runners on Linux, where you can run any Docker image,
-GitLab SaaS provides a set of VM images for macOS.
+GitLab provides a set of VM images for macOS.
 
 You can execute your build in one of the following images, which you specify
 in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and Xcode.

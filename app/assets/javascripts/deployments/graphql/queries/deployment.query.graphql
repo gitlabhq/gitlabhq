@@ -26,7 +26,7 @@ query fetchDeployment($fullPath: ID!, $iid: ID!) {
         id
         shortId
         title
-        webUrl
+        webPath
         authorGravatar
         authorName
         authorEmail

@@ -204,23 +204,23 @@ export default {
     {
       key: 'repositoryPathPattern',
       label: s__('ContainerRegistry|Repository path pattern'),
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'minimumAccessLevelForPush',
       label: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'minimumAccessLevelForDelete',
       label: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
-      tdClass: 'gl-vertical-align-middle!',
+      tdClass: '!gl-align-middle',
     },
     {
       key: 'rowActions',
       label: '',
       thClass: 'gl-display-none',
-      tdClass: 'gl-vertical-align-middle! gl-text-right',
+      tdClass: '!gl-align-middle gl-text-right',
     },
   ],
   modal: { id: 'delete-protection-rule-confirmation-modal' },

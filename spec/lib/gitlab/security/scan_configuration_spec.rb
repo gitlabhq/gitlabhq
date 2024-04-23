@@ -109,7 +109,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         badge: { text: "Available on demand",
                  tooltip_text: "On-demand scans run outside of the DevOps " \
                                "cycle and find vulnerabilities in your projects",
-                 variant: "info" },
+                 variant: "neutral" },
         secondary: {
           type: "dast_profiles",
           name: "DAST profiles",
@@ -163,7 +163,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
                  tooltip_text: "Breach and Attack Simulation is an incubating feature " \
                                "extending existing security " \
                                "testing by simulating adversary activity.",
-                 variant: "info" },
+                 variant: "neutral" },
         description: "Simulate breach and attack scenarios against your running " \
                      "application by attempting to detect " \
                      "and exploit known vulnerabilities.",

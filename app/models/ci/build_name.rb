@@ -9,6 +9,7 @@ module Ci
     self.table_name = :p_ci_build_names
     self.primary_key = :build_id
 
+    query_constraints :build_id, :partition_id
     partitionable scope: :build, partitioned: true
 
     # rubocop:disable Rails/InverseOf -- Will be added once association on build is added
@@ -22,6 +23,10 @@ module Ci
 
     def name=(value)
       super(value&.truncate(MAX_JOB_NAME_LENGTH))
+    end
+
+    def self.use_partition_id_filter?
+      Ci::Pipeline.use_partition_id_filter?
     end
   end
 end

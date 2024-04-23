@@ -58,7 +58,7 @@ export default {
           key: 'active',
           label: '',
           thClass: 'gl-w-7',
-          tdClass: 'gl-vertical-align-middle!',
+          tdClass: '!gl-align-middle',
         },
         {
           key: 'title',
@@ -72,7 +72,7 @@ export default {
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
           thClass: 'gl-display-none d-sm-table-cell gl-text-right',
-          tdClass: 'gl-text-right gl-display-none d-sm-table-cell gl-vertical-align-middle!',
+          tdClass: 'gl-text-right gl-display-none d-sm-table-cell !gl-align-middle',
         });
       }
 

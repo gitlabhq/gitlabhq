@@ -150,7 +150,7 @@ export default {
               target="_blank"
             >
               {{ item.import_url }}
-              <gl-icon name="external-link" class="gl-vertical-align-middle" />
+              <gl-icon name="external-link" class="gl-align-middle" />
             </gl-link>
             <span v-else>{{ item.import_url }}</span>
           </template>

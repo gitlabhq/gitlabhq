@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     fields() {
-      const tdClass = 'gl-pt-3! gl-pb-4! gl-vertical-align-middle!';
+      const tdClass = 'gl-pt-3! gl-pb-4! !gl-align-middle';
       return [
         {
           key: 'name',
@@ -335,7 +335,7 @@ export default {
               :href="$options.configHelpLink"
               :title="$options.i18n.defaultConfigTooltip"
               :aria-label="$options.i18n.defaultConfigTooltip"
-              class="gl-vertical-align-middle"
+              class="gl-align-middle"
               ><gl-icon name="question-o" :size="14" /></gl-link
           ></span>
         </span>
