@@ -102,9 +102,11 @@ module ApplicationWorker
       validate_worker_attributes!
     end
 
-    %i[perform_async perform_at perform_in].each do |name|
+    # Only override perform_at and perform_in since perform_async calls Setter.new(..).perform_async
+    # which is handled in the Gitlab::Patch::SidekiqJobSetter.
+    %i[perform_at perform_in].each do |name|
       define_method(name) do |*args|
-        route_sidekiq_job do
+        Gitlab::SidekiqSharding::Router.route(self) do
           super(*args)
         end
       end
@@ -194,7 +196,7 @@ module ApplicationWorker
         schedule_at = bulk_schedule_at
       end
 
-      route_sidekiq_job do
+      Gitlab::SidekiqSharding::Router.route(self) do
         in_safe_limit_batches(args_list, schedule_at) do |args_batch, schedule_at_for_batch|
           Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch, 'at' => schedule_at_for_batch)
         end
@@ -204,21 +206,9 @@ module ApplicationWorker
     private
 
     def do_push_bulk(args_list)
-      route_sidekiq_job do
+      Gitlab::SidekiqSharding::Router.route(self) do
         in_safe_limit_batches(args_list) do |args_batch, _|
           Sidekiq::Client.push_bulk('class' => self, 'args' => args_batch)
-        end
-      end
-    end
-
-    def route_sidekiq_job
-      return yield unless Gitlab::SidekiqSharding::Router.enabled?
-
-      redis_name, shard_redis_pool = Gitlab::SidekiqSharding::Router.get_shard_instance(get_sidekiq_options['store'])
-
-      Gitlab::ApplicationContext.with_context(sidekiq_destination_shard_redis: redis_name) do
-        Sidekiq::Client.via(shard_redis_pool) do
-          yield
         end
       end
     end

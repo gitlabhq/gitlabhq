@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { ShowMlModelVersion } from '~/ml/model_registry/apps';
@@ -25,7 +25,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
     const requestHandlers = [[getModelVersionQuery, resolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
-    wrapper = mount(ShowMlModelVersion, {
+    wrapper = shallowMount(ShowMlModelVersion, {
       propsData: {
         modelName: 'blah',
         versionName: '1.2.3',
@@ -34,6 +34,9 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         projectPath: 'path/to/project',
       },
       apolloProvider,
+      stubs: {
+        LoadOrErrorOrShow,
+      },
     });
   };
 

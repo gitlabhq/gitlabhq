@@ -16,15 +16,6 @@ variables:
   TERRAFORM_MODULE_SYSTEM: local             # The system or provider your Terraform module targets (ex. local, aws, google).
   TERRAFORM_MODULE_VERSION: ${CI_COMMIT_TAG}  # The version - it's recommended to follow SemVer for Terraform Module Versioning.
 
-.terraform-module:fmt:
-  stage: validate
-  image: $CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/stable:latest
-  variables:
-    TF_ROOT: $TERRAFORM_MODULE_DIR
-  script:
-    - gitlab-terraform fmt
-  allow_failure: true
-
 .terraform-module:deploy:
   stage: deploy
   image: $CI_TEMPLATE_REGISTRY_HOST/gitlab-org/terraform-images/stable:latest

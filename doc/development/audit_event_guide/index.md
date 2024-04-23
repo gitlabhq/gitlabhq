@@ -239,7 +239,11 @@ bundle exec rake gitlab:audit_event_types:compile_docs
 ```
 
 Run the [`gitlab:audit_event_types:check_docs` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/audit_event_types/audit_event_types.rake)
-to check if the documentation is up-to-date.
+to check if the documentation is up-to-date:
+
+```shell
+bundle exec rake gitlab:audit_event_types:check_docs
+```
 
 ## Event streaming
 

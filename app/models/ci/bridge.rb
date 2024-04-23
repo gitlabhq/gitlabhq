@@ -25,6 +25,8 @@ module Ci
 
     validates :ref, presence: true
 
+    delegate :trigger_short_token, to: :trigger_request, allow_nil: true
+
     # rubocop:disable Cop/ActiveRecordSerialize
     serialize :options
     serialize :yaml_variables, ::Gitlab::Serializer::Ci::Variables

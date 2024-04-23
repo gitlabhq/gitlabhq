@@ -69,6 +69,13 @@ You can use the configuration change log to track the changes made to your GitLa
 - **Start time:** Start date and time when the configuration change is initiated, in UTC.
 - **End time:** End date and time when the configuration change is deployed, in UTC.
 
+Each configuration change has a status:
+
+- **Initiated:** Configuration change is made in Switchboard, but not yet deployed to the instance.
+- **In progress:** Configuration change is currently being deployed to the instance.
+- **Complete:** Configuration change has been deployed to the instance.
+- **Delayed** Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
+
 To view the configuration change log:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).

@@ -252,6 +252,14 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
     end
 
     describe "#sidekiq_queue_migrate" do
+      let(:job_hash) do
+        Sidekiq.dump_json({ retry: true,
+                  queue: "test",
+                  args: ['Something', [1]],
+                  class: WorkerClass,
+                  jid: 'random_jid' })
+      end
+
       it "migrates jobs from one sidekiq queue to another" do
         Sidekiq::Testing.disable! do
           worker.perform_async("Something", [1])
@@ -274,8 +282,10 @@ RSpec.describe Gitlab::Database::Migrations::SidekiqHelpers do
       shared_examples 'cross instance migration' do
         it 'migrates jobs from main and shard instances to main instance' do
           Sidekiq::Testing.disable! do
-            Sidekiq::Client.via(shard_instance.sidekiq_redis) { worker.perform_async("Something", [1]) }
-            Sidekiq::Client.via(Gitlab::Redis::Queues.sidekiq_redis) { worker.perform_async("Something", [2]) }
+            # .perform_async internally calls Sidekiq::Client.via and re-route the job to
+            # Gitlab::Redis::Queues's Redis instance.
+            shard_instance.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
+            Gitlab::Redis::Queues.sidekiq_redis.with { |c| c.lpush('queue:test', job_hash) }
 
             # 1 job in each instance's queue
             Sidekiq::Client.via(shard_instance.sidekiq_redis) do

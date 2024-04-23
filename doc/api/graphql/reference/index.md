@@ -1861,6 +1861,53 @@ Input type: `AuditEventsInstanceAmazonS3ConfigurationUpdateInput`
 | <a id="mutationauditeventsinstanceamazons3configurationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationauditeventsinstanceamazons3configurationupdateinstanceamazons3configuration"></a>`instanceAmazonS3Configuration` | [`InstanceAmazonS3ConfigurationType`](#instanceamazons3configurationtype) | Updated instance-level Amazon S3 configuration. |
 
+### `Mutation.auditEventsInstanceDestinationEventsAdd`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsInstanceDestinationEventsAddInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstancedestinationeventsaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstancedestinationeventsadddestinationid"></a>`destinationId` | [`AuditEventsInstanceExternalStreamingDestinationID!`](#auditeventsinstanceexternalstreamingdestinationid) | Destination id. |
+| <a id="mutationauditeventsinstancedestinationeventsaddeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters to add for streaming. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstancedestinationeventsaddclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstancedestinationeventsadderrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationauditeventsinstancedestinationeventsaddeventtypefilters"></a>`eventTypeFilters` | [`[String!]`](#string) | List of event type filters for the audit event external destination. |
+
+### `Mutation.auditEventsInstanceDestinationEventsDelete`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `AuditEventsInstanceDestinationEventsDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstancedestinationeventsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstancedestinationeventsdeletedestinationid"></a>`destinationId` | [`AuditEventsInstanceExternalStreamingDestinationID!`](#auditeventsinstanceexternalstreamingdestinationid) | Destination id. |
+| <a id="mutationauditeventsinstancedestinationeventsdeleteeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters to remove from streaming. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationauditeventsinstancedestinationeventsdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationauditeventsinstancedestinationeventsdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.auditEventsStreamingDestinationEventsAdd`
 
 Input type: `AuditEventsStreamingDestinationEventsAddInput`

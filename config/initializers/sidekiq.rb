@@ -136,3 +136,4 @@ end
 Sidekiq::Scheduled::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller
+Sidekiq::Job::Setter.prepend Gitlab::Patch::SidekiqJobSetter

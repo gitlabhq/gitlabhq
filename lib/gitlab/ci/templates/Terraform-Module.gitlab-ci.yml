@@ -8,13 +8,9 @@ include:
   - template: Jobs/SAST-IaC.gitlab-ci.yml          # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml
 
 stages:
-  - validate
   - build
   - test
   - deploy
-
-fmt:
-  extends: .terraform-module:fmt
 
 # See the included job template at `Terraform/Module-Base.gitlab-ci.yml` to learn about supported variables.
 deploy:

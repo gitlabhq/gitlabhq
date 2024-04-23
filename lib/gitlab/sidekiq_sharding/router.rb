@@ -24,6 +24,20 @@ module Gitlab
           ]
         end
 
+        def route(klass)
+          return yield unless enabled?
+          return yield unless klass.respond_to?(:get_sidekiq_options)
+
+          store_name = klass.get_sidekiq_options['store']
+          redis_name, shard_redis_pool = get_shard_instance(store_name)
+
+          Gitlab::ApplicationContext.with_context(sidekiq_destination_shard_redis: redis_name) do
+            Sidekiq::Client.via(shard_redis_pool) do
+              yield
+            end
+          end
+        end
+
         private
 
         def route_to(shard_name)

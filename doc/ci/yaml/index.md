@@ -4003,14 +4003,19 @@ Rules are evaluated when the pipeline is created, and evaluated *in order*
 until the first match. When a match is found, the job is either included or excluded from the pipeline,
 depending on the configuration.
 
-`rules` accepts an array of rules defined with:
+`rules` accepts an array of rules. Each rules must have at least one of:
 
 - `if`
 - `changes`
 - `exists`
-- `allow_failure`
-- `variables`
 - `when`
+
+Rules can also optionally be combined with:
+
+- `allow_failure`
+- `needs`
+- `variables`
+- `interruptible`
 
 You can combine multiple keywords together for [complex rules](../jobs/job_rules.md#complex-rules).
 
@@ -4330,6 +4335,49 @@ docker build:
 
 In this example, the `docker build` job is only included when the `Dockerfile` exists in
 the project `my-group/my-project` on the commit tagged with `v1.0.0`.
+
+#### `rules:when`
+
+Use `rules:when` alone or as part of another rule to control conditions for adding
+a job to a pipeline. `rules:when` is similar to [`when`](#when), but with slightly
+different input options.
+
+If a `rules:when` rule is not combined with `if`, `changes`, or `exists`, it always matches
+if reached when evaluating a job's rules.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `on_success` (default): Run the job only when no jobs in earlier stages fail
+  or are allowed to fail with [`allow_failure: true`](#allow_failure). `on_success`
+  is the default behavior when you combine `when` with `if`, `changes`, or `exists`.
+- `on_failure`: Run the job only when at least one job in an earlier stage fails.
+- `never`: Don't run the job regardless of the status of jobs in earlier stages.
+- `always`: Run the job regardless of the status of jobs in earlier stages.
+- `manual`: Add the job to the pipeline as a [manual job](../jobs/job_control.md#create-a-job-that-must-be-run-manually).
+  When using `rules:when` with `manual`, `allow_failure` defaults to `false`.
+- `delayed`: Add the job to the pipeline as a [delayed job](../jobs/job_control.md#run-a-job-after-a-delay).
+
+**Example of `rules:when`**:
+
+```yaml
+job1:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_REF_NAME =~ /feature/
+      when: delayed
+    - when: manual
+  script:
+    - echo
+```
+
+In this example, `job1` is added to pipelines:
+
+- For the default branch, with `when: on_success` which is the default behavior
+  when `when` is not defined.
+- For feature branches as a delayed job.
+- In all other cases as a manual job.
 
 #### `rules:allow_failure`
 
