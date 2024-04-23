@@ -84,7 +84,7 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 
 **Error message**
 
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
+- `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
   - `OpenAPI 2.0 schema validation error ...`
   - `OpenAPI 3.0.x schema validation error ...`
 
@@ -111,8 +111,7 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 
 **Error message**
 
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found.  Are you sure that you are connecting to the API Security server?`.
+- `Failed to start scanner session (version header not found).`
 
 **Solution**
 
@@ -216,7 +215,7 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 
 **Error message**
 
-- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
+- `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
 
 **Solution**
 

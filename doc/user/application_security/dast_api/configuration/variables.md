@@ -20,15 +20,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 |[`DAST_API_CONFIG`](#configuration-files)              | DAST API configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
 |[`DAST_API_EXCLUDE_PATHS`](customizing_analyzer_settings.md#exclude-paths)              | Exclude API URL paths from testing. |
-|[`DAST_API_EXCLUDE_URLS`](customizing_analyzer_settings.md#exclude-urls)               | Exclude API URL from testing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10. |
+|[`DAST_API_EXCLUDE_URLS`](customizing_analyzer_settings.md#exclude-urls)               | Exclude API URL from testing. |
 |[`DAST_API_EXCLUDE_PARAMETER_ENV`](customizing_analyzer_settings.md#exclude-parameters)       | JSON string containing excluded parameters. |
 |[`DAST_API_EXCLUDE_PARAMETER_FILE`](customizing_analyzer_settings.md#exclude-parameters)      | Path to a JSON file containing excluded parameters. |
 |[`DAST_API_REQUEST_HEADERS`](customizing_analyzer_settings.md#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request. Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions. |
 |[`DAST_API_REQUEST_HEADERS_BASE64`](customizing_analyzer_settings.md#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378440) in GitLab 15.6. |
 |[`DAST_API_OPENAPI`](enabling_the_analyzer.md#openapi-specification)           | OpenAPI specification file or URL. |
-|[`DAST_API_OPENAPI_RELAXED_VALIDATION`](enabling_the_analyzer.md#openapi-specification) | Relax document validation. Default is disabled. Introduced in GitLab 14.7. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/345950`  |
-|[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](enabling_the_analyzer.md#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
-|[`DAST_API_OPENAPI_MEDIA_TYPES`](enabling_the_analyzer.md#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
+|[`DAST_API_OPENAPI_RELAXED_VALIDATION`](enabling_the_analyzer.md#openapi-specification) | Relax document validation. Default is disabled. |
+|[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](enabling_the_analyzer.md#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. |
+|[`DAST_API_OPENAPI_MEDIA_TYPES`](enabling_the_analyzer.md#openapi-specification)  | Colon (`:`) separated media types accepted for testing. Default is disabled. |
 |[`DAST_API_HAR`](enabling_the_analyzer.md#http-archive-har)                    | HTTP Archive (HAR) file. |
 |[`DAST_API_GRAPHQL`](enabling_the_analyzer.md#graphql-schema)                  | Path to GraphQL endpoint, for example `/api/graphql`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
 |[`DAST_API_GRAPHQL_SCHEMA`](enabling_the_analyzer.md#graphql-schema)           | A URL or filename for a GraphQL schema in JSON format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4. |
@@ -37,7 +37,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 |[`DAST_API_OVERRIDES_FILE`](customizing_analyzer_settings.md#overrides)                | Path to a JSON file containing overrides. |
 |[`DAST_API_OVERRIDES_ENV`](customizing_analyzer_settings.md#overrides)                 | JSON string containing headers to override. |
 |[`DAST_API_OVERRIDES_CMD`](customizing_analyzer_settings.md#overrides)                 | Overrides command. |
-|[`DAST_API_OVERRIDES_CMD_VERBOSE`](customizing_analyzer_settings.md#overrides)         | When set to any value. It shows overrides command output as part of the job output. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.6. |
+|[`DAST_API_OVERRIDES_CMD_VERBOSE`](customizing_analyzer_settings.md#overrides)         | When set to any value. It shows overrides command output as part of the job output. |
 |`DAST_API_PRE_SCRIPT`                                  | Run user command or script before scan session starts. |
 |`DAST_API_POST_SCRIPT`                                 | Run user command or script after scan session has finished. |
 |[`DAST_API_OVERRIDES_INTERVAL`](customizing_analyzer_settings.md#overrides)            | How often to run overrides command in seconds. Defaults to `0` (once). |

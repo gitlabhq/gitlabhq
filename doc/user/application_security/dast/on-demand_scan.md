@@ -17,9 +17,6 @@ Only run DAST scans against a test server.
 
 ## On-demand scans
 
-> - Auditing for DAST profile management [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
-> - Scheduled on-demand DAST scans [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named `dast_on_demand_scans_scheduler`. Disabled by default.
-> - Scheduled on-demand DAST scans [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/328749) in GitLab 14.5. Feature flag `dast_on_demand_scans_scheduler` removed.
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 > - Browser based on-demand DAST scans [deployed behind the feature flag `dast_ods_browser_based_scanner`](https://gitlab.com/gitlab-org/gitlab/-/issues/430212) in GitLab 16.8.
 
@@ -168,8 +165,6 @@ This data can only be read and decrypted with a valid secrets file.
 
 ### Site profile validation
 
-> - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
-
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
 must be validated before an active scan can run against it. Each of the site validation methods are
 equivalent in functionality, so use whichever is most suitable:
@@ -270,10 +265,6 @@ The site is validated and an active scan can run against it. A site profile's va
 revoked only when it's revoked manually, or its file, header, or meta tag is edited.
 
 ### Retry a failed validation
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322609) in GitLab 14.3.
-> - [Deployed behind the `dast_failed_site_validations` flag](../../../administration/feature_flags.md), enabled by default.
-> - [Feature flag `dast_failed_site_validations` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323961) in GitLab 14.4.
 
 Failed site validation attempts are listed on the **Site profiles** tab of the **Manage profiles**
 page.
@@ -406,8 +397,6 @@ To delete a scanner profile:
 1. Select **Delete**.
 
 ## Auditing
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
 and DAST site profiles are included in the [audit log](../../../administration/audit_event_reports.md).

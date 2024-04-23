@@ -22,6 +22,7 @@ module Ci
         end
 
         component_path = component_path_class.new(address: address)
+
         result = component_path.fetch_content!(current_user: current_user)
 
         if result&.content
@@ -32,6 +33,11 @@ module Ci
             sha: component_path.sha,
             name: component_path.component_name
           })
+        elsif component_path.invalid_usage_for_latest?
+          ServiceResponse.error(
+            message: 'The ~latest version reference is not supported for non-catalog resources. ' \
+                     'Use a tag, branch, or SHA instead',
+            reason: :invalid_usage)
         else
           ServiceResponse.error(message: "#{error_prefix} content not found", reason: :content_not_found)
         end

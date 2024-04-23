@@ -193,7 +193,7 @@ Using a [Rails console](operations/rails_console.md), you can find projects that
 - No expiration date.
 - An expiration date more than 7 days in the future.
 
-Similar to [deleting artifacts](#delete-job-artifacts-from-jobs-completed-before-a-specific-date), use the following example time frames
+Similar to [deleting artifacts](#delete-old-builds-and-artifacts), use the following example time frames
 and alter them as needed:
 
 - `7.days.from_now`
@@ -267,124 +267,104 @@ end
 
 To change the number of job artifacts listed, change the number in `limit(50)`.
 
-### Delete job artifacts from jobs completed before a specific date
+### Delete old builds and artifacts
 
 WARNING:
 These commands remove data permanently from database and storage. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
-You can manually remove job artifacts associated with multiple completed jobs while
-**retaining their job logs** from the [Rails console](operations/rails_console.md).
-A completed job is any job with the status of success, failed, canceled, or skipped.
-
-To delete job artifacts from jobs completed before a specific date:
-
-1. Select the jobs with artifacts to be deleted:
-
-   To select all jobs with artifacts for a single project:
+#### Delete old artifacts for a project
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
    builds_with_artifacts =  project.builds.with_downloadable_artifacts
+   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        Ci::JobArtifacts::DeleteService.new(build).execute
+      end
+
+      batch.update_all(artifacts_expire_at: Time.current)
+    end
+
    ```
 
-   To select all jobs with artifacts across the entire GitLab instance:
-
-   ```ruby
-   builds_with_artifacts = Ci::Build.with_downloadable_artifacts
-   ```
-
-1. Delete job artifacts older than a specific date:
-
-   NOTE:
-   This step also erases artifacts that users have chosen to
-   ["keep"](../ci/jobs/job_artifacts.md#download-job-artifacts).
-
-   ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
-   builds_to_clear.find_each do |build|
-     Ci::JobArtifacts::DeleteService.new(build).execute
-     build.update!(artifacts_expire_at: Time.now)
-   end
-   ```
-
-   In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
-
-   ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
-   builds_to_clear.find_each do |build|
-     build.artifacts_expire_at = Time.now
-     build.erase_erasable_artifacts!
-   end
-   ```
-
-   `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
-   Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
-   Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
-
-   `erase_erasable_artifacts!` is a synchronous method, and upon execution the artifacts are immediately removed;
-   they are not scheduled by a background queue.
-
-### Delete job artifacts and logs from jobs completed before a specific date
-
-WARNING:
-These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
-
-You can manually remove job artifacts associated with multiple completed jobs while
-**retaining their job logs** from the [Rails console](operations/rails_console.md).
-A completed job is any job with the status of success, failed, canceled, or skipped.
-
-To delete job artifacts and logs from jobs completed before a specific date:
-
-1. Select the jobs with artifacts and logs to be deleted:
-
-   To select jobs with artifacts for a single project:
+In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
    builds_with_artifacts =  project.builds.with_downloadable_artifacts
-   ```
+   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        build.artifacts_expire_at = Time.current
+        build.erase_erasable_artifacts!
+      end
+   end
+```
 
-   To select jobs with artifacts across the entire GitLab instance:
+#### Delete old artifacts instance wide
 
    ```ruby
    builds_with_artifacts = Ci::Build.with_downloadable_artifacts
+   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        Ci::JobArtifacts::DeleteService.new(build).execute
+      end
+
+      batch.update_all(artifacts_expire_at: Time.current)
+    end
+
    ```
 
-   Occasionally, when choosing jobs with artifacts, there could be a risk of the process being terminated due to selecting a large number of rows. This can result in high memory usage and eventually lead to the process being killed due to an Out-of-Memory (OOM) error. To resolve this, you can run in small batches. The example below limits each batch to 1000.
+In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
 
-   To select jobs with artifacts for a single project:
+   ```ruby
+   builds_with_artifacts =  Ci::Build.with_downloadable_artifacts
+   builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        build.artifacts_expire_at = Time.current
+        build.erase_erasable_artifacts!
+      end
+   end
+```
+
+#### Delete old job logs and artifacts for a project
 
    ```ruby
    project = Project.find_by_full_path('path/to/project')
-   builds_with_artifacts =  project.builds.with_downloadable_artifacts.find_each(batch_size: 1000)
-   ```
-
-   To select jobs with artifacts across the entire GitLab instance:
-
-   ```ruby
-   builds_with_artifacts = Ci::Build.with_downloadable_artifacts.find_each(batch_size: 1000)
-   ```
-
-1. Select the user which is mentioned in the web UI as erasing the job:
-
-   ```ruby
+   builds =  project.builds
    admin_user = User.find_by(username: 'username')
+   builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        print "Ci::Build ID #{build.id}... "
+
+        if build.erasable?
+          Ci::BuildEraseService.new(build, admin_user).execute
+          puts "Erased"
+        else
+          puts "Skipped (Nothing to erase or not erasable)"
+        end
+      end
+   end
+
    ```
 
-1. Erase the job artifacts and logs older than a specific date:
+#### Delete old job logs and artifacts instance wide
 
    ```ruby
-   builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.year.ago)
-   builds_to_clear.find_each do |build|
-     print "Ci::Build ID #{build.id}... "
+   builds = Ci::Build.all
+   admin_user = User.find_by(username: 'username')
+   builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
+      batch.each do |build|
+        print "Ci::Build ID #{build.id}... "
 
-     if build.erasable?
-       Ci::BuildEraseService.new(build, admin_user).execute
-       puts "Erased"
-     else
-       puts "Skipped (Nothing to erase or not erasable)"
-     end
+        if build.erasable?
+          Ci::BuildEraseService.new(build, admin_user).execute
+          puts "Erased"
+        else
+          puts "Skipped (Nothing to erase or not erasable)"
+        end
+      end
    end
+
    ```
 
    In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
@@ -393,6 +373,9 @@ To delete job artifacts and logs from jobs completed before a specific date:
    `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
    Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.
    Rerun the deletion with shorter durations as needed, for example `3.months.ago`, `2.weeks.ago`, or `7.days.ago`.
+
+   The method `erase_erasable_artifacts!` is synchronous, and upon execution the artifacts are immediately removed;
+   they are not scheduled by a background queue.
 
 ## Job artifact upload fails with error 500
 

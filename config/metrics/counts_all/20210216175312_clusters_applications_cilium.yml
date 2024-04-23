@@ -17,8 +17,6 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- customer_health_score
 milestone: "<13.9"
 milestone_removed: "14.4"
 removed_by_url:

@@ -45,8 +45,7 @@ The DAST API engine outputs an error message when it cannot establish a connecti
 
 **Error message**
 
-- In [GitLab 13.11 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/323939), `Failed to start scanner session (version header not found).`
-- In GitLab 13.10 and earlier, `API Security version header not found. Are you sure that you are connecting to the DAST API server?`.
+- `Failed to start scanner session (version header not found).`
 
 **Solution**
 
@@ -190,7 +189,7 @@ DAST API uses the specified media types in the OpenAPI document to generate requ
 
 **Error message**
 
-- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
+- `Error, no operation in the OpenApi document is consuming any supported media type. Check 'OpenAPI Specification' to check the supported media types.`
 
 **Solution**
 

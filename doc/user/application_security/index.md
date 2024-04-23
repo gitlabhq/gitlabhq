@@ -368,7 +368,6 @@ For more details, see [extension page](https://marketplace.visualstudio.com/item
 
 ## Security approvals in merge requests
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
 
@@ -503,9 +502,6 @@ For self managed installations, you can choose to run most of the GitLab securit
 Self managed installations can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/index.md).
 
 ## Security report validation
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321918) in GitLab 13.11.
-> - Schema validation message [added](https://gitlab.com/gitlab-org/gitlab/-/issues/321730) in GitLab 14.0.
 
 GitLab 15.0 enforces validation of the security report artifacts before ingesting the vulnerabilities.
 This prevents ingestion of broken vulnerability data into the database. GitLab validates the

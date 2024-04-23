@@ -27,7 +27,7 @@ module QA
         Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
-      it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do
+      it 'user pushes to the repository', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do
         project = create(:project, name: 'git-protocol-project')
 
         file_name = 'README.md'

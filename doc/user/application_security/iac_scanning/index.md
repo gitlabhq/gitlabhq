@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
-
 Infrastructure as Code (IaC) scanning runs in your CI/CD pipeline, checking your infrastructure
 definition files for known vulnerabilities. Identify vulnerabilities before they're committed to
 the default branch to proactively address the risk to your application.
@@ -89,8 +87,6 @@ Supported configuration formats:
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 
 You can customize the default IaC scanning rules provided with GitLab.
 
@@ -216,8 +212,6 @@ kics-iac-sast:
 GitLab scanners are provided with a base Alpine image for size and maintainability.
 
 ### Use FIPS-enabled images
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 GitLab provides [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the scanners' images, in addition to the standard images.

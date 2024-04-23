@@ -15,7 +15,6 @@ To run a DAST scan:
 
 ## Create a DAST CI/CD job
 
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
 > - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 > - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
 
@@ -30,8 +29,7 @@ To create the CI/CD job:
     - [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
       Stable version of the DAST CI/CD template.
     - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
-      Latest version of the DAST template. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325)
-      in GitLab 13.8).
+      Latest version of the DAST template.
 
    WARNING:
    The latest version of the template may include breaking changes. Use the

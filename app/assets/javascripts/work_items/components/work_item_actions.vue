@@ -425,6 +425,7 @@ export default {
       <gl-disclosure-dropdown-item
         :data-testid="$options.copyReferenceTestId"
         :data-clipboard-text="workItemReference"
+        class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
       >
         <template #list-item>{{ $options.i18n.copyReference }}</template>

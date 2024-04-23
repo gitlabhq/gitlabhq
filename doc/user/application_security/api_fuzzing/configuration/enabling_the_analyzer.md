@@ -23,10 +23,7 @@ Prerequisites:
   the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
   data. Only run fuzzing against a test server.
 
-To enable Web API fuzzing:
-
-- Include the API fuzzing template in your `.gitlab-ci.yml` file.
-- From GitLab 13.10 and later, use the Web API fuzzing configuration form.
+To enable Web API fuzzing use the Web API fuzzing configuration form.
 
 - For manual configuration instructions, see the respective section, depending on the API type:
   - [OpenAPI Specification](#openapi-specification)
@@ -35,12 +32,9 @@ To enable Web API fuzzing:
   - [Postman Collection](#postman-collection)
 - Otherwise, see [Web API fuzzing configuration form](#web-api-fuzzing-configuration-form).
 
-In GitLab 14.0 and later, API fuzzing configuration files must be in your repository's
-`.gitlab` directory instead of your repository's root.
+API fuzzing configuration files must be in your repository's `.gitlab` directory.
 
 ## Web API fuzzing configuration form
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299234) in GitLab 13.10.
 
 The API fuzzing configuration form helps you create or modify your project's API fuzzing
 configuration. The form lets you choose values for the most common API fuzzing options and builds
@@ -68,12 +62,6 @@ When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include an
 
 ## OpenAPI Specification
 
-> - Support for OpenAPI Specification v3.0 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228652) in GitLab 13.9.
-> - Support for OpenAPI Specification using YAML format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330583) in GitLab 14.0.
-> - Support for OpenAPI Specification v3.1 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.2.
-> - Support to generate media type `application/xml` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327268) in GitLab 14.8.
-> - Support to select media types was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10.
-
 The [OpenAPI Specification](https://www.openapis.org/) (formerly the Swagger Specification) is an API description format for REST APIs.
 This section shows you how to configure API fuzzing using an OpenAPI Specification to provide information about the target API to test.
 OpenAPI Specifications are provided as a file system resource or URL. Both JSON and YAML OpenAPI formats are supported.
@@ -91,8 +79,7 @@ the body generation is limited to these body types:
 A media type (formerly known as MIME type) is an identifier for file formats and format contents transmitted. A OpenAPI document lets you specify that a given operation can accept different media types, hence a given request can send data using different file content. As for example, a `PUT /user` operation to update user data could accept data in either XML (media type `application/xml`) or JSON (media type `application/json`) format.
 OpenAPI 2.x lets you specify the accepted media types globally or per operation, and OpenAPI 3.x lets you specify the accepted media types per operation. API Fuzzing checks the listed media types and tries to produce sample data for each supported media type.
 
-- In [GitLab 14.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/333304), the default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
-- In GitLab 14.9 and earlier, the default behavior is to perform testing using all supported media types. This means if two media types are listed (for example, `application/json` and `application/xml`), tests are performed using JSON, and then the same tests using XML.
+- The default behavior is to select one of the supported media types to use. The first supported media type is chosen from the list. This behavior is configurable.
 
 Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
 For example, if the target application executes the same code regardless of the request content type, it takes longer to finish the test session, and it may report duplicate vulnerabilities related to the request body depending on the target app.
@@ -190,8 +177,7 @@ To configure API fuzzing to use a HAR file:
    ```
 
 1. Provide the location of the HAR specification. You can provide the specification as a file
-   or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
-   in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_HAR` variable.
+   or URL. Specify the location by adding the `FUZZAPI_HAR` variable.
 
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
    variable or an `environment_url.txt` file.
@@ -375,8 +361,7 @@ To configure API fuzzing to use a Postman Collection file:
    ```
 
 1. Provide the location of the Postman Collection specification. You can provide the specification
-   as a file or URL. URL support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285020)
-   in GitLab 13.10 and later. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
+   as a file or URL. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
    variable.
 
 1. Provide the target API instance's base URL. Use either the `FUZZAPI_TARGET_URL` variable or an
@@ -875,8 +860,6 @@ for information about configuration changes you can make to limit the number of 
 reported.
 
 ### View details of an API Fuzzing vulnerability
-
-> - Introduced in GitLab 13.7.
 
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a

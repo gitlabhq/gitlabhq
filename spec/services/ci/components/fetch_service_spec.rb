@@ -29,6 +29,7 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
     project.repository.add_tag(project.creator, 'v0.1', project.repository.commit.sha)
 
     create(:release, project: project, tag: 'v0.1', sha: project.repository.commit.sha)
+    create(:ci_catalog_resource, project: project)
 
     project
   end
@@ -93,6 +94,31 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
         it 'returns an error' do
           expect(result).to be_error
           expect(result.reason).to eq(:content_not_found)
+        end
+      end
+
+      context 'when version is ~latest' do
+        let(:version) { '~latest' }
+        let_it_be(:project) { create(:project) }
+
+        context 'and the project is not a catalog resource' do
+          it 'returns an error' do
+            expect(result).to be_error
+            expect(result.message).to eq(
+              'The ~latest version reference is not supported for non-catalog resources. ' \
+              'Use a tag, branch, or SHA instead'
+            )
+            expect(result.reason).to eq(:invalid_usage)
+          end
+        end
+
+        context 'and the project does not exist' do
+          let(:component_path) { 'unknown' }
+
+          it 'returns an error' do
+            expect(result).to be_error
+            expect(result.reason).to eq(:content_not_found)
+          end
         end
       end
 

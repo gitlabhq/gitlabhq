@@ -133,7 +133,7 @@ export default {
   <div class="work-item-attributes-wrapper">
     <template v-if="workItemAssignees">
       <work-item-assignees-with-edit
-        class="gl-mb-5"
+        class="gl-mb-5 js-assignee"
         :can-update="canUpdate"
         :full-path="fullPath"
         :work-item-id="workItem.id"
@@ -148,7 +148,7 @@ export default {
     </template>
     <template v-if="workItemLabels">
       <work-item-labels-with-edit
-        class="gl-mb-5"
+        class="gl-mb-5 js-labels"
         :can-update="canUpdate"
         :full-path="fullPath"
         :work-item-id="workItem.id"
@@ -184,7 +184,7 @@ export default {
     </template>
     <template v-if="workItemMilestone">
       <work-item-milestone-with-edit
-        class="gl-mb-5"
+        class="gl-mb-5 js-milestone"
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :work-item-milestone="workItemMilestone.milestone"

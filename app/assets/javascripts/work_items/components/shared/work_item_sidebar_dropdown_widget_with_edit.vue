@@ -182,7 +182,7 @@ export default {
         data-testid="edit-button"
         category="tertiary"
         size="small"
-        class="gl-ml-auto"
+        class="gl-ml-auto shortcut-sidebar-dropdown-toggle"
         :disabled="updateInProgress"
         @click="isEditing = true"
         >{{ $options.i18n.editButtonLabel }}</gl-button

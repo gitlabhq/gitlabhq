@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
-
 People sometimes accidentally commit secrets like keys or API tokens to Git repositories. After a
 sensitive value is pushed to a remote repository, anyone with access to the repository can
 impersonate the authorized user of the secret for malicious purposes. Most organizations require

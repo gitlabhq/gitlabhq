@@ -102,9 +102,9 @@ When you switch analyzers for a language, vulnerabilities may not match up.
 
 The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to Semgrep for certain languages:
 
-- For C, a vulnerability is moved if it has only ever been detected by Flawfinder in pipelines where Semgrep also detected it. Semgrep coverage for C was introduced by default into the CI/CD template in GitLab 14.4 (October 2021).
-- For Go, a vulnerability is moved if it has only ever been detected by Gosec in pipelines where Semgrep also detected it. Semgrep coverage for Go was introduced by default into the CI/CD template in GitLab 14.2 (August 2021).
-- For JavaScript and TypeScript, a vulnerability is moved if it has only ever been detected by ESLint in pipelines where Semgrep also detected it. Semgrep coverage for these languages was introduced into the CI/CD template in GitLab 13.12 (May 2021).
+- For C, a vulnerability is moved if it has only ever been detected by Flawfinder in pipelines where Semgrep also detected it.
+- For Go, a vulnerability is moved if it has only ever been detected by Gosec in pipelines where Semgrep also detected it.
+- For JavaScript and TypeScript, a vulnerability is moved if it has only ever been detected by ESLint in pipelines where Semgrep also detected it.
 
 However, old vulnerabilities re-created based on Semgrep results are visible if:
 

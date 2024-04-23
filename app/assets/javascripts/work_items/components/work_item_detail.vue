@@ -461,6 +461,7 @@ export default {
               v-if="shouldShowEditButton"
               category="secondary"
               data-testid="work-item-edit-form-button"
+              class="shortcut-edit-wi-description"
               @click="enableEditMode"
             >
               {{ __('Edit') }}

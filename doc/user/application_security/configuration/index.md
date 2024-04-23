@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> Security configuration page was [redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in GitLab 14.2.
-
 The **Security configuration** page lists the following for the security testing and compliance tools:
 
 - Name, description, and a documentation link.

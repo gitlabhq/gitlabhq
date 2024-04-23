@@ -369,7 +369,7 @@ puts(schema_validation_errors)
 
 This field specifies which [Security Report Schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas) version you are using. For information about the versions to use, see [releases](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/releases).
 
-In GitLab 14.10 and later, GitLab validates your report against the version of the schema specified by this value.
+GitLab validates your report against the version of the schema specified by this value.
 The versions supported by GitLab can be found in
 [`gitlab/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/lib/ee/gitlab/ci/parsers/security/validators/schemas).
 

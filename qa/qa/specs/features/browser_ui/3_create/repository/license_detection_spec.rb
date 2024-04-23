@@ -27,7 +27,7 @@ module QA
         end
       end
 
-      context 'on a project with a commonly used LICENSE',
+      context 'on a project with a commonly used LICENSE', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366842' do
         it_behaves_like 'project license detection' do
           let(:license_file_name) { 'bsd-3-clause' }

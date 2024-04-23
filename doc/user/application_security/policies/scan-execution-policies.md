@@ -176,6 +176,7 @@ When using the `schedule` rule type in conjunction with the `branches` field, no
 
 - The cron worker runs on 15 minute intervals and starts any pipelines that were scheduled to run during the previous 15 minutes.
 - Based on your rule, you might expect scheduled pipelines to run with an offset of up to 15 minutes.
+- If a policy is enforced on a large number of projects or branches, it will be processed in batches, and it may take some time to create all pipelines.
 - The CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server time zone](../../../administration/timezone.md), the CRON expression is evaluated with the new time zone.
 
 ![CRON worker diagram](img/scheduled_scan_execution_policies_diagram.png)

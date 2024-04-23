@@ -8,8 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 The API fuzzing behavior can be changed through CI/CD variables.
 
-From GitLab 13.12 and later, the default API fuzzing configuration file is `.gitlab/gitlab-api-fuzzing-config.yml`. In GitLab 14.0 and later, API fuzzing configuration files must be in your repository's
-`.gitlab` directory instead of your repository's root.
+The API fuzzing configuration files must be in your repository's `.gitlab` directory.
 
 WARNING:
 All customization of GitLab security scanning tools should be tested in a merge request before
@@ -459,8 +458,6 @@ variables:
 
 ### Debugging overrides
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334578) in GitLab 14.8.
-
 By default the output of the overrides command is hidden. If the overrides command returns a non zero exit code, the command is displayed as part of your job output. Optionally, you can set the variable `FUZZAPI_OVERRIDES_CMD_VERBOSE` to any value to display overrides command output as it is generated. This is useful when testing your overrides script, but should be disabled afterwards as it slows down testing.
 
 It is also possible to write messages from your script to a log file that is collected when the job completes or fails. The log file must be created in a specific location and follow a naming convention.
@@ -619,8 +616,6 @@ In the previous sample, you could use the script `user-pre-scan-set-up.sh` to al
 
 ## Exclude Paths
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211892) in GitLab 14.0.
-
 When testing an API it can be useful to exclude certain paths. For example, you might exclude testing of an authentication service or an older version of the API. To exclude paths, use the `FUZZAPI_EXCLUDE_PATHS` CI/CD variable . This variable is specified in your `.gitlab-ci.yml` file. To exclude multiple paths, separate entries using the `;` character. In the provided paths you can use a single character wildcard `?` and `*` for a multiple character wildcard.
 
 To verify the paths are excluded, review the `Tested Operations` and `Excluded Operations` portion of the job output. You should not see any excluded paths listed under `Tested Operations`.
@@ -659,8 +654,6 @@ variables:
 ```
 
 ## Exclude parameters
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292196) in GitLab 14.10.
 
 While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters you can use one of the following variables: `FUZZAPI_EXCLUDE_PARAMETER_ENV` or `FUZZAPI_EXCLUDE_PARAMETER_FILE`.
 
@@ -888,8 +881,6 @@ variables:
 The `api-fuzzing-exclude-parameters.json` is a JSON document that follows the structure of [exclude parameters document](#exclude-parameters-using-a-json-document).
 
 ## Exclude URLs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10.
 
 As an alternative to excluding by paths, you can filter by any other component in the URL by using the `FUZZAPI_EXCLUDE_URLS` CI/CD variable. This variable can be set in your `.gitlab-ci.yml` file. The variable can store multiple values, separated by commas (`,`). Each value is a regular expression. Because each entry is a regular expression, an entry such as `.*` excludes all URLs because it is a regular expression that matches everything.
 

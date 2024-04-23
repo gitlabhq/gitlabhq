@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
-
 GitLab Secret Detection automatically responds when it finds certain types of leaked secrets.
 Automatic responses can:
 

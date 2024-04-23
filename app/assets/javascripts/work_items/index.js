@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { WORKSPACE_GROUP } from '~/issues/constants';
+import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';
@@ -14,6 +16,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
   if (!el) {
     return undefined;
   }
+
+  addShortcutsExtension(ShortcutsWorkItems);
 
   const {
     fullPath,

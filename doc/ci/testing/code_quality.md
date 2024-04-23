@@ -68,11 +68,6 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267612) in GitLab 13.11, disabled by default behind the `codequality_mr_diff` [feature flag](../../administration/feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
-> - [Disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.0 due to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334116).
-> - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
-
 Code Quality results display in the merge request **Changes** view. Lines containing Code Quality
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
 
@@ -403,8 +398,6 @@ code_quality:
 ```
 
 ## Use a private container image registry
-
-> - [Introduced](https://gitlab.com/gitlab-org/ci-cd/codequality/-/merge_requests/30) in GitLab 13.7.
 
 Using a private container image registry can reduce the time taken to download images, and also
 reduce external dependencies. You must configure the registry prefix to be passed down
