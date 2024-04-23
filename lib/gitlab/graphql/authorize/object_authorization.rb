@@ -19,7 +19,7 @@ module Gitlab
           abilities.present?
         end
 
-        def ok?(object, current_user, scope_validator: nil)
+        def ok?(object, current_user, scope_validator:)
           scopes_ok?(scope_validator) && abilities_ok?(object, current_user)
         end
 
