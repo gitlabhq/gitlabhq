@@ -12,7 +12,7 @@ DETAILS:
 
 A 100 MiB per-file limit applies when pushing new files to any project in the Free tier.
 
-If a new file that is 100 MiB or large is pushed to a project in the Free tier, an error is displayed. For example:
+If a new file that is 100 MiB or larger is pushed to a project in the Free tier, an error is displayed. For example:
 
 ```shell
 Enumerating objects: 3, done.

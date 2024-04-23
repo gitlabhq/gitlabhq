@@ -83,7 +83,7 @@ plugins:
 ## No Code Quality appears on merge requests when using custom tool
 
 If your merge requests do not show any Code Quality changes when using a custom tool, ensure that
-the line property is an `integer`.
+*all* line properties in the JSON are `integer`.
 
 ## Error: `Could not analyze code quality`
 

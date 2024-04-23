@@ -162,7 +162,6 @@ class RegistrationsController < Devise::RegistrationsController
     {}
   end
 
-  # overridden in EE
   def track_successful_user_creation(user)
     label = user_invited? ? 'invited' : 'signup'
     Gitlab::Tracking.event(self.class.name, 'create_user', label: label, user: user)
