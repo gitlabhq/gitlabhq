@@ -33,7 +33,6 @@ module QA
 
         tags_for_rspec.push(%w[--tag ~geo]) unless QA::Runtime::Env.geo_environment?
         tags_for_rspec.push(%w[--tag ~skip_signup_disabled]) if QA::Runtime::Env.signup_disabled?
-        tags_for_rspec.push(%w[--tag ~smoke --tag ~reliable]) if QA::Runtime::Env.skip_smoke_reliable?
         tags_for_rspec.push(%w[--tag ~skip_live_env]) if QA::Specs::Helpers::ContextSelector.dot_com?
 
         QA::Runtime::Env.supported_features.each_key do |key|

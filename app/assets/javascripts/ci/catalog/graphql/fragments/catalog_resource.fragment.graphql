@@ -1,6 +1,7 @@
 fragment CatalogResourceFields on CiCatalogResource {
   id
   description
+  fullPath
   icon
   name
   starCount

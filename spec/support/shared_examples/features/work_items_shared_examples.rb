@@ -574,16 +574,14 @@ RSpec.shared_examples 'work items iteration' do
       expect(page).to be_axe_clean.within(work_item_iteration_selector)
     end
 
-    # TODO, add test for automated accessibility after it is fixed in GlCollapsibleListBox
-    # Invalid ARIA attribute value: aria-owns="listbox-##" when searchable
-    # it 'passes axe automated accessibility testing in open state' do
-    #   within(work_item_iteration) do
-    #     click_button _('Edit')
-    #     wait_for_requests
+    it 'passes axe automated accessibility testing in open state' do
+      within(work_item_iteration_selector) do
+        click_button _('Edit')
+        wait_for_requests
 
-    #     expect(page).to be_axe_clean.within(work_item_iteration)
-    #   end
-    # end
+        expect(page).to be_axe_clean.within(work_item_iteration_selector)
+      end
+    end
   end
 
   context 'when edit is clicked' do

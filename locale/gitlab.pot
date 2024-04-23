@@ -32404,9 +32404,6 @@ msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Milestone actions"
-msgstr ""
-
 msgid "Milestone due date"
 msgstr ""
 
@@ -32429,12 +32426,6 @@ msgid "MilestoneCombobox|Project milestones"
 msgstr ""
 
 msgid "MilestoneCombobox|Select milestone"
-msgstr ""
-
-msgid "MilestonePage|Copy milestone ID"
-msgstr ""
-
-msgid "MilestonePage|Milestone ID: %{milestone_id}"
 msgstr ""
 
 msgid "MilestoneSidebar|Closed:"
@@ -32503,9 +32494,6 @@ msgstr ""
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
-msgid "Milestones|Close"
-msgstr ""
-
 msgid "Milestones|Completed Issues (closed)"
 msgstr ""
 
@@ -32545,9 +32533,6 @@ msgstr ""
 msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged."
 msgstr ""
 
-msgid "Milestones|Reopen"
-msgstr ""
-
 msgid "Milestones|There are no closed milestones"
 msgstr ""
 
@@ -32564,6 +32549,15 @@ msgid "Milestones|Use milestones to track issues and merge requests over a fixed
 msgstr ""
 
 msgid "Milestone|%{percentage}%{percent} complete"
+msgstr ""
+
+msgid "Milestone|Copy milestone ID: %{id}"
+msgstr ""
+
+msgid "Milestone|Milestone ID copied to clipboard."
+msgstr ""
+
+msgid "Milestone|Milestone actions"
 msgstr ""
 
 msgid "Min Value"

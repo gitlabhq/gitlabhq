@@ -600,10 +600,6 @@ module QA
         enabled?(ENV['QA_VALIDATE_RESOURCE_REUSE'], default: false)
       end
 
-      def skip_smoke_reliable?
-        enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
-      end
-
       def fips?
         enabled?(ENV['FIPS'], default: false)
       end

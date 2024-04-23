@@ -48,39 +48,19 @@
       .float-lg-right.light
         = format(s_('Milestone|%{percentage}%{percent} complete'), percentage: milestone.percent_complete, percent: '%')
     - if can_admin_milestone
+      - show_delete = @project.present? || @group.present?
       .col-1.order-2.order-md-3
-        .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
-          = render Pajamas::ButtonComponent.new(category: :tertiary,
-            size: :small,
-            icon: 'ellipsis_v',
-            button_options: { class: 'gl-ml-3 has-tooltip', 'aria_label': _('Milestone actions'), title: _('Milestone actions'), data: { toggle: 'dropdown' } })
-          .dropdown-menu.dropdown-menu-right
-            .gl-dropdown-inner
-              .gl-dropdown-contents
-                %ul
-                  %li.gl-dropdown-item
-                    - if milestone.closed?
-                      = render Pajamas::ButtonComponent.new(category: :tertiary,
-                        href: milestone_path(milestone, milestone: { state_event: :activate }),
-                        method: :put,
-                        variant: :link) do
-                        = s_('Milestones|Reopen')
-                    - else
-                      = render Pajamas::ButtonComponent.new(category: :tertiary,
-                        href: milestone_path(milestone, milestone: { state_event: :close }),
-                        method: :put,
-                        variant: :link) do
-                        = s_('Milestones|Close')
-                  %li.gl-dropdown-item
-                    = render Pajamas::ButtonComponent.new(category: :tertiary,
-                      href: edit_milestone_path(milestone),
-                      variant: :link) do
-                      = _('Edit')
-                  - if can_promote
-                    %li.gl-dropdown-item
-                      = render Pajamas::ButtonComponent.new(category: :tertiary, variant: :link,
-                        button_options: { class: 'js-promote-project-milestone-button', disabled: true, data: { toggle: 'tooltip', container: 'body', url: promote_project_milestone_path(milestone.project, milestone), milestone_title: milestone.title, group_name: @project.group.name } }) do
-                        = s_('Promote')
-                  - if @project || @group
-                    %li.gl-dropdown-item
-                      = render 'shared/milestones/delete_button', milestone: milestone
+        .gl-display-flex.gl-justify-content-end
+          .js-vue-milestone-actions{ data: { id: milestone.id,
+            title: milestone.title,
+            is_active: milestone.active?.to_s,
+            show_delete: show_delete.to_s,
+            milestone_url: Gitlab::UrlBuilder.build(milestone, only_path: true),
+            edit_url: edit_milestone_path(milestone),
+            close_url: milestone_path(milestone, milestone: { state_event: :close }),
+            reopen_url: milestone_path(milestone, milestone: { state_event: :activate }),
+            promote_url: can_promote ? promote_project_milestone_path(milestone.project, milestone) : '',
+            group_name: can_promote ? @project.group.name : '',
+            issue_count: milestone.issues.count,
+            merge_request_count: milestone.merge_requests.count
+          } }

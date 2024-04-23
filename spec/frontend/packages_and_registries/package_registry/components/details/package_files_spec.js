@@ -397,6 +397,7 @@ describe('Package Files', () => {
               packageFilesQuery({
                 files: [file],
                 extendPagination: {
+                  hasPreviousPage: false,
                   hasNextPage: false,
                 },
               }),
@@ -422,6 +423,7 @@ describe('Package Files', () => {
             resolver: jest.fn().mockResolvedValue(
               packageFilesQuery({
                 extendPagination: {
+                  hasPreviousPage: false,
                   hasNextPage: false,
                 },
               }),

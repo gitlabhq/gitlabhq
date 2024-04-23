@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 import { update, cloneDeep } from 'lodash';
 import { GlAvatar, GlBadge, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -75,7 +74,7 @@ describe('CiResourcesListItem', () => {
 
     it('renders the resource name and link', () => {
       expect(findResourceName().exists()).toBe(true);
-      expect(findResourceName().attributes().href).toBe(defaultProps.resource.webPath);
+      expect(findResourceName().attributes().href).toBe(`/${defaultProps.resource.fullPath}`);
     });
 
     it('renders the resource version badge', () => {
@@ -229,7 +228,7 @@ describe('CiResourcesListItem', () => {
         await findResourceName().vm.$emit('click', defaultEvent);
 
         expect(routerPush).toHaveBeenCalledWith({
-          path: cleanLeadingSeparator(resource.webPath),
+          path: resource.fullPath,
         });
       });
     });
@@ -258,7 +257,7 @@ describe('CiResourcesListItem', () => {
     });
 
     it('navigates to the details page', () => {
-      expect(routerPush).toHaveBeenCalledWith({ path: cleanLeadingSeparator(resource.webPath) });
+      expect(routerPush).toHaveBeenCalledWith({ path: resource.fullPath });
     });
   });
 

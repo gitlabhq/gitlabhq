@@ -311,37 +311,27 @@ You can find the play button in the pipelines, environments, deployments, and jo
 
 ## Track newly included merge requests per deployment
 
-> - Feature flag `link_fast_forward_merge_requests_to_deployment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384104) in GitLab 16.10. Disabled by default.
-
 GitLab can track newly included merge requests per deployment.
 When a deployment succeeds, the system calculates commit-diffs between the latest deployment and the previous deployment.
 You can fetch tracking information with the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
 or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
 
-To enable tracking:
+To enable tracking configure your environment so either:
 
-1. Set your [project's merge method](../../user/project/merge_requests/methods/index.md).
-   The merge method:
+- The [environment name](../yaml/index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
+- The [environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
 
-   - Must _not_ be **Fast-forward merge**.
-   - Can be **Fast-forward merge** if the `link_fast_forward_merge_requests_to_deployment` feature flag is enabled.
+  Here are some example configurations using the [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
 
-1. Configure your environment so either:
+  ```yaml
+  # Trackable
+  environment: production
+  environment: production/aws
+  environment: development
 
-   - The [environment name](../yaml/index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
-   - The [environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
-
-   Here are some example configurations using the [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
-
-   ```yaml
-   # Trackable
-   environment: production
-   environment: production/aws
-   environment: development
-
-   # Non Trackable
-   environment: review/$CI_COMMIT_REF_SLUG
-   environment: testing/aws
+  # Non Trackable
+  environment: review/$CI_COMMIT_REF_SLUG
+  environment: testing/aws
    ```
 
 Configuration changes apply only to new deployments. Existing deployment records do not have merge requests linked or unlinked from them.

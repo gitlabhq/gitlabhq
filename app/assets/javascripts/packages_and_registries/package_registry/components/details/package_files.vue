@@ -139,6 +139,9 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageFiles.loading || this.mutationLoading;
     },
+    isLastPage() {
+      return !this.pageInfo.hasPreviousPage && !this.pageInfo.hasNextPage;
+    },
     filesTableHeaderFields() {
       return [
         {
@@ -263,7 +266,7 @@ export default {
     },
     handleFileDelete(files) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      if (files.length === this.packageFiles.length && !this.pageInfo.hasNextPage) {
+      if (files.length === this.packageFiles.length && this.isLastPage) {
         this.$emit(
           'delete-all-files',
           this.hasOneItem(files)

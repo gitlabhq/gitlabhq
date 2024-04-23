@@ -1,6 +1,0 @@
-- milestone_url = Gitlab::UrlBuilder.build(milestone, only_path: true)
-
-= render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: 'menu-item js-delete-milestone-button', data: { milestone_id: milestone.id, milestone_title: markdown_field(milestone, :title), milestone_url: milestone_url, milestone_issue_count: milestone.total_issues_count, milestone_merge_request_count: milestone.total_merge_requests_count }, disabled: true }) do
-  .gl-dropdown-item-text-wrapper.gl-text-red-500
-    = _('Delete')
-#js-delete-milestone-modal

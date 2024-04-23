@@ -28036,8 +28036,6 @@ CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_nam
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
-CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level) WHERE (status = 0);
-
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX unique_import_source_users_source_identifier_and_import_source ON import_source_users USING btree (source_user_identifier, namespace_id, source_hostname, import_type);
@@ -28047,6 +28045,8 @@ CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_i
 CREATE UNIQUE INDEX unique_index_for_credit_card_validation_payment_method_xid ON user_credit_card_validations USING btree (zuora_payment_method_xid) WHERE (zuora_payment_method_xid IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
+
+CREATE UNIQUE INDEX unique_index_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level, member_role_id) WHERE (status = 0);
 
 CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USING btree (model_id, name);
 

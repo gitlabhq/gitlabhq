@@ -243,18 +243,6 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
 
         expect(deploy.merge_requests).to match_array([merge_request_1, merge_request_2])
       end
-
-      context 'when :link_fast_forward_merge_requests_to_deployment FF is disabled' do
-        before do
-          stub_feature_flags(link_fast_forward_merge_requests_to_deployment: false)
-        end
-
-        it 'does not link merge requests' do
-          link_merge_requests_for_range
-
-          expect(deploy.merge_requests).to be_empty
-        end
-      end
     end
   end
 

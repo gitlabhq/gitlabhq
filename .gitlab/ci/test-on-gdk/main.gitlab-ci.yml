@@ -18,7 +18,7 @@ include:
 .rules:gdk:qa-parallel:
   rules:
     # To account for cases where a group label is set which may trigger selective execution
-    # But we want to execute full reliable suite on gdk in case of code-pattern-changes
+    # But we want to execute full blocking suite on gdk in case of code-pattern-changes
     - <<: *code-pattern-changes
       variables:
         QA_TESTS: ""

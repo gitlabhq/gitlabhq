@@ -23,9 +23,9 @@ module Types
 
       field :project, ::Types::ProjectType, null: true, description: 'Project of the pipeline schedule.'
 
-      field :next_run_at, Types::TimeType, null: false, description: 'Time when the next pipeline will run.'
+      field :next_run_at, Types::TimeType, null: true, description: 'Time when the next pipeline will run.'
 
-      field :real_next_run, Types::TimeType, null: false, description: 'Time when the next pipeline will run.'
+      field :real_next_run, Types::TimeType, null: true, description: 'Time when the next pipeline will run.'
 
       field :last_pipeline, PipelineType, null: true, description: 'Last pipeline object.'
 

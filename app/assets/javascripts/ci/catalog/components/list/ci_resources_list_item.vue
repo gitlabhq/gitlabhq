@@ -96,7 +96,7 @@ export default {
       return getTimeago().format(this.latestVersion?.createdAt);
     },
     resourceId() {
-      return cleanLeadingSeparator(this.resource.webPath);
+      return this.resource?.fullPath;
     },
     starCount() {
       return this.resource?.starCount || 0;

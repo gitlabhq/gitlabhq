@@ -102,6 +102,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-42',
+          fullPath: 'namespace/frontend-fixtures/project-42',
           __typename: 'CiCatalogResource',
         },
         {
@@ -117,6 +118,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-41',
+          fullPath: 'namespace/frontend-fixtures/project-41',
           __typename: 'CiCatalogResource',
         },
         {
@@ -132,6 +134,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-42',
+          fullPath: 'namespace/frontend-fixtures/project-42',
           __typename: 'CiCatalogResource',
         },
         {
@@ -147,6 +150,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-39',
+          fullPath: 'namespace/frontend-fixtures/project-39',
           __typename: 'CiCatalogResource',
         },
         {
@@ -162,6 +166,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-38',
+          fullPath: 'namespace/frontend-fixtures/project-38',
           __typename: 'CiCatalogResource',
         },
         {
@@ -177,6 +182,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-37',
+          fullPath: 'namespace/frontend-fixtures/project-37',
           __typename: 'CiCatalogResource',
         },
         {
@@ -192,6 +198,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-36',
+          fullPath: 'namespace/frontend-fixtures/project-36',
           __typename: 'CiCatalogResource',
         },
         {
@@ -207,6 +214,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-35',
+          fullPath: 'namespace/frontend-fixtures/project-35',
           __typename: 'CiCatalogResource',
         },
         {
@@ -222,6 +230,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-34',
+          fullPath: 'namespace/frontend-fixtures/project-34',
           __typename: 'CiCatalogResource',
         },
         {
@@ -237,6 +246,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-33',
+          fullPath: 'namespace/frontend-fixtures/project-33',
           __typename: 'CiCatalogResource',
         },
         {
@@ -252,6 +262,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-32',
+          fullPath: 'namespace/frontend-fixtures/project-32',
           __typename: 'CiCatalogResource',
         },
         {
@@ -267,6 +278,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-31',
+          fullPath: 'namespace/frontend-fixtures/project-31',
           __typename: 'CiCatalogResource',
         },
         {
@@ -282,6 +294,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-30',
+          fullPath: 'namespace/frontend-fixtures/project-30',
           __typename: 'CiCatalogResource',
         },
         {
@@ -297,6 +310,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-29',
+          fullPath: 'namespace/frontend-fixtures/project-29',
           __typename: 'CiCatalogResource',
         },
         {
@@ -312,6 +326,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-28',
+          fullPath: 'namespace/frontend-fixtures/project-28',
           __typename: 'CiCatalogResource',
         },
         {
@@ -327,6 +342,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-27',
+          fullPath: 'namespace/frontend-fixtures/project-27',
           __typename: 'CiCatalogResource',
         },
         {
@@ -342,6 +358,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-26',
+          fullPath: 'namespace/frontend-fixtures/project-26',
           __typename: 'CiCatalogResource',
         },
         {
@@ -357,6 +374,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-25',
+          fullPath: 'namespace/frontend-fixtures/project-25',
           __typename: 'CiCatalogResource',
         },
         {
@@ -372,6 +390,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-24',
+          fullPath: 'namespace/frontend-fixtures/project-24',
           __typename: 'CiCatalogResource',
         },
         {
@@ -387,6 +406,7 @@ export const catalogResponseBody = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-23',
+          fullPath: 'namespace/frontend-fixtures/project-23',
           __typename: 'CiCatalogResource',
         },
       ],
@@ -437,6 +457,7 @@ export const catalogSinglePageResponse = {
             ],
           },
           webPath: '/frontend-fixtures/project-45',
+          fullPath: 'namespace/frontend-fixtures/project-45',
           __typename: 'CiCatalogResource',
         },
         {
@@ -451,6 +472,7 @@ export const catalogSinglePageResponse = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-44',
+          fullPath: 'namespace/frontend-fixtures/project-44',
           __typename: 'CiCatalogResource',
         },
         {
@@ -465,6 +487,7 @@ export const catalogSinglePageResponse = {
             __typename: 'CiCatalogResourceVersionConnection',
           },
           webPath: '/frontend-fixtures/project-43',
+          fullPath: 'namespace/frontend-fixtures/project-43',
           __typename: 'CiCatalogResource',
         },
       ],
@@ -505,6 +528,7 @@ export const catalogSharedDataMock = {
         ],
       },
       webPath: '/path/to/project',
+      fullPath: 'namespace/path/to/project',
     },
   },
 };
@@ -554,6 +578,7 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
         ],
       },
       webPath: 'path/to/project',
+      fullPath: 'namespace/path/to/project',
     });
   }
 
