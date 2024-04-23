@@ -10,7 +10,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_category: :importers do
-  describe '#restore' do
+  describe '#restore', :clean_gitlab_redis_shared_state do
     let(:group) { create(:group, owners: user) }
     let(:importable) { create(:group, parent: group) }
 

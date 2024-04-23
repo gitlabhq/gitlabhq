@@ -23,7 +23,7 @@ export default {
   vueDraggableAttributes: {
     animation: 200,
     forceFallback: true,
-    ghostClass: 'gl-visibility-hidden',
+    ghostClass: 'gl-invisible',
     tag: 'ul',
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,

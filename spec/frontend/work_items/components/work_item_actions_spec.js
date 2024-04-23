@@ -8,6 +8,8 @@ import {
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
+import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 
@@ -36,7 +38,6 @@ import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.muta
 
 import {
   convertWorkItemMutationResponse,
-  projectWorkItemTypesQueryResponse,
   convertWorkItemMutationErrorResponse,
   updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,

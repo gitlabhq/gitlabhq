@@ -27,10 +27,10 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
     it "has users list" do
       admin.reload
 
-      expect(page).to have_content(admin.name)
-      expect(page).to have_content(admin.created_at.strftime('%b %d, %Y'))
-      expect(page).to have_content(user.email)
-      expect(page).to have_content(user.name)
+      expect(has_user?(text: admin.name)).to be(true)
+      expect(has_user?(text: admin.created_at.strftime('%b %d, %Y'))).to be(true)
+      expect(has_user?(text: user.email)).to be(true)
+      expect(has_user?(text: user.name)).to be(true)
       expect(page).to have_content('Projects')
 
       click_user_dropdown_toggle(user.id)
@@ -107,9 +107,9 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       it 'searches users by name' do
         visit admin_users_path(search_query: 'Foo')
 
-        expect(page).to have_content('Foo Bar')
-        expect(page).to have_content('Foo Baz')
-        expect(page).not_to have_content('Dmitriy')
+        expect(has_user?(text: 'Foo Bar')).to be(true)
+        expect(has_user?(text: 'Foo Baz')).to be(true)
+        expect(has_user?(text: 'Dmitriy')).to be(false)
       end
 
       it 'sorts users by name' do
@@ -125,7 +125,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         visit admin_users_path(search_query: 'Foo')
 
         sort_by('Name')
-        expect(page).not_to have_content('Dmitriy')
+        expect(has_user?(text: 'Dmitriy')).to be(false)
         expect(first_row.text).to include('Foo Bar')
         expect(second_row.text).to include('Foo Baz')
       end
@@ -162,15 +162,15 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         visit admin_users_path(filter: 'two_factor_enabled')
 
-        expect(page).to have_content(user_2fa.email)
+        expect(has_user?(text: user_2fa.email)).to be(true)
         expect(all_users.length).to be(1)
       end
 
       it 'filters users who have not enabled 2FA' do
         visit admin_users_path(filter: 'two_factor_disabled')
 
-        expect(page).to have_content(user.email)
-        expect(page).to have_content(admin.email)
+        expect(has_user?(text: user.email)).to be(true)
+        expect(has_user?(text: admin.email)).to be(true)
         expect(all_users.length).to be(2)
       end
     end
@@ -189,14 +189,14 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         visit admin_users_path(filter: 'blocked_pending_approval')
 
-        expect(page).to have_content(blocked_user.email)
+        expect(has_user?(text: blocked_user.email)).to be(true)
         expect(all_users.length).to be(1)
       end
     end
 
     context 'when blocking/unblocking a user' do
       it 'shows confirmation and allows blocking and unblocking', :js do
-        expect(page).to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(true)
 
         click_action_in_user_dropdown(user.id, 'Block')
 
@@ -212,13 +212,13 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         wait_for_requests
 
         expect(page).to have_content('Successfully blocked')
-        expect(page).not_to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(false)
 
         visit admin_users_path(filter: 'blocked')
 
         wait_for_requests
 
-        expect(page).to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(true)
 
         click_action_in_user_dropdown(user.id, 'Unblock')
 
@@ -230,13 +230,13 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         wait_for_requests
 
         expect(page).to have_content('Successfully unblocked')
-        expect(page).not_to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(false)
       end
     end
 
     context 'when deactivating/re-activating a user' do
       it 'shows confirmation and allows deactivating and re-activating', :js do
-        expect(page).to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(true)
 
         click_action_in_user_dropdown(user.id, 'Deactivate')
 
@@ -256,7 +256,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         wait_for_requests
 
-        expect(page).to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(true)
 
         click_action_in_user_dropdown(user.id, 'Activate')
 
@@ -268,7 +268,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         wait_for_requests
 
         expect(page).to have_content('Successfully activated')
-        expect(page).not_to have_content(user.email)
+        expect(has_user?(text: user.email)).to be(false)
       end
     end
 
@@ -635,6 +635,10 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   def all_users
     page.all('tbody[role="rowgroup"] > tr')
+  end
+
+  def has_user?(**kwargs)
+    page.has_selector?('tbody[role="rowgroup"] > tr', **kwargs)
   end
 
   def sort_by(option)

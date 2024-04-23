@@ -40,7 +40,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
 
   subject(:pipeline) { described_class.new(context) }
 
-  describe '#run', :clean_gitlab_redis_cache do
+  describe '#run', :clean_gitlab_redis_shared_state do
     before do
       group.add_owner(user)
       snippet_with_index = [exported_snippet.dup, 0]

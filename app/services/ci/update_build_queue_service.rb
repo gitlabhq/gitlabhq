@@ -54,7 +54,6 @@ module Ci
     #
     def track(build, transition)
       return if build.runner.nil?
-      return unless add_ci_running_build?(build)
 
       raise InvalidQueueTransition unless transition.to == 'running'
 
@@ -74,7 +73,6 @@ module Ci
     #
     def untrack(build, transition)
       return if build.runner.nil?
-      return unless remove_ci_running_build?(build)
 
       raise InvalidQueueTransition unless transition.from == 'running'
 
@@ -109,18 +107,6 @@ module Ci
 
         runner.pick_build!(build)
       end
-    end
-
-    def add_ci_running_build?(build)
-      return true if Feature.enabled?(:add_all_ci_running_builds, Project.actor_from_id(build.project_id))
-
-      build.shared_runner_build?
-    end
-
-    def remove_ci_running_build?(build)
-      return true if Feature.enabled?(:remove_all_ci_running_builds, Project.actor_from_id(build.project_id))
-
-      build.shared_runner_build?
     end
   end
 end

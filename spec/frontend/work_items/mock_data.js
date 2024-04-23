@@ -1040,36 +1040,6 @@ export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   },
 });
 
-export const projectWorkItemTypesQueryResponse = {
-  data: {
-    workspace: {
-      __typename: 'Project',
-      id: 'gid://gitlab/Project/2',
-      workItemTypes: {
-        nodes: [
-          { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
-          { id: 'gid://gitlab/WorkItems::Type/2', name: 'Incident' },
-          { id: 'gid://gitlab/WorkItems::Type/3', name: 'Task' },
-          { id: 'gid://gitlab/WorkItems::Type/4', name: 'Objective' },
-          { id: 'gid://gitlab/WorkItems::Type/5', name: 'Key Result' },
-        ],
-      },
-    },
-  },
-};
-
-export const groupWorkItemTypesQueryResponse = {
-  data: {
-    workspace: {
-      __typename: 'Group',
-      id: 'gid://gitlab/Group/2',
-      workItemTypes: {
-        nodes: [{ id: 'gid://gitlab/WorkItems::Type/6', name: 'Epic' }],
-      },
-    },
-  },
-};
-
 export const createWorkItemMutationResponse = {
   data: {
     workItemCreate: {

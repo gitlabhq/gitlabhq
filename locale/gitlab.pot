@@ -1104,6 +1104,9 @@ msgstr ""
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
+msgid "%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
+msgstr ""
+
 msgid "%{ref} cannot be added: %{error}"
 msgstr ""
 
@@ -5988,7 +5991,7 @@ msgstr ""
 msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
-msgid "Analytics|Statistics on top-level namespace usage. Usage data is a cumulative count, and updated monthly."
+msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr ""
 
 msgid "Analytics|Tables"
@@ -7094,6 +7097,9 @@ msgid "Assigned to %{assigneeName}"
 msgstr ""
 
 msgid "Assigned to %{assignee_name}"
+msgstr ""
+
+msgid "Assigned to %{assignee}"
 msgstr ""
 
 msgid "Assigned to me"
@@ -43583,6 +43589,9 @@ msgstr ""
 msgid "Review changes"
 msgstr ""
 
+msgid "Review requested %{reviewer}"
+msgstr ""
+
 msgid "Review requests"
 msgstr ""
 
@@ -55136,6 +55145,9 @@ msgid "Updated %{timeAgo}"
 msgstr ""
 
 msgid "Updated %{updated_at} by %{updated_by}"
+msgstr ""
+
+msgid "Updated at %{updatedAt}"
 msgstr ""
 
 msgid "Updated date"

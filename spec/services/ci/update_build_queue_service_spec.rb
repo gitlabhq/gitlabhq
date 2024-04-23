@@ -179,16 +179,6 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
             .not_to have_received(:increment_queue_operation)
             .with(:shared_runner_build_new)
         end
-
-        context 'with add_all_ci_running_builds FF disabled' do
-          before do
-            stub_feature_flags(add_all_ci_running_builds: false)
-          end
-
-          it 'does not create a new project runner build tracking entry' do
-            is_expected.to be_nil
-          end
-        end
       end
 
       context 'when runner is nil' do
@@ -272,16 +262,6 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
           expect(metrics)
             .not_to have_received(:increment_queue_operation)
             .with(:shared_runner_build_done)
-        end
-
-        context 'with remove_all_ci_running_builds FF disabled' do
-          before do
-            stub_feature_flags(remove_all_ci_running_builds: false)
-          end
-
-          it 'does not remove project runner build' do
-            is_expected.to be_nil
-          end
         end
       end
 

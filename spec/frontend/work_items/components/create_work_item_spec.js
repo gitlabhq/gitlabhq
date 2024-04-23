@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlFormSelect } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/group_work_item_types.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
@@ -10,11 +12,18 @@ import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import {
-  groupWorkItemTypesQueryResponse,
-  projectWorkItemTypesQueryResponse,
-  createWorkItemMutationResponse,
-} from '../mock_data';
+import { createWorkItemMutationResponse } from '../mock_data';
+
+const projectSingleWorkItemTypeQueryResponse = {
+  data: {
+    workspace: {
+      ...projectWorkItemTypesQueryResponse.data.workspace,
+      workItemTypes: {
+        nodes: [projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes[0]],
+      },
+    },
+  },
+};
 
 Vue.use(VueApollo);
 
@@ -24,6 +33,9 @@ describe('Create work item component', () => {
 
   const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
   const groupQuerySuccessHandler = jest.fn().mockResolvedValue(groupWorkItemTypesQueryResponse);
+  const singleWorkItemTypeSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(projectSingleWorkItemTypeQueryResponse);
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
@@ -121,7 +133,11 @@ describe('Create work item component', () => {
     });
     await waitForPromises();
 
-    expect(findSelect().attributes('options').split(',')).toHaveLength(6);
+    // +1 for the "None" option
+    const expectedOptions =
+      projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
+
+    expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
   });
 
   it('fetches group work item types when isGroup is true', async () => {
@@ -134,12 +150,11 @@ describe('Create work item component', () => {
     await waitForPromises();
 
     expect(groupQuerySuccessHandler).toHaveBeenCalled();
-    expect(findSelect().exists()).toBe(false);
   });
 
   it('hides the select field if there is only a single type', async () => {
     createComponent({
-      queryHandler: groupQuerySuccessHandler,
+      queryHandler: singleWorkItemTypeSuccessHandler,
     });
     await waitForPromises();
 

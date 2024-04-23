@@ -194,7 +194,7 @@ export default {
               data-testid="dropdown-item-checkbox"
               :class="[
                 'gl-dropdown-item-check-icon',
-                { 'gl-visibility-hidden': !isSortDropdownItemActive(key) },
+                { 'gl-invisible': !isSortDropdownItemActive(key) },
                 'gl-text-blue-400',
               ]"
             />
@@ -222,7 +222,7 @@ export default {
               data-testid="dropdown-item-checkbox"
               :class="[
                 'gl-dropdown-item-check-icon',
-                { 'gl-visibility-hidden': filter.value !== currentValue },
+                { 'gl-invisible': filter.value !== currentValue },
                 'gl-text-blue-400',
               ]"
             />

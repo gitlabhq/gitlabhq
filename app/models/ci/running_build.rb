@@ -17,10 +17,6 @@ module Ci
     enum runner_type: ::Ci::Runner.runner_types
 
     def self.upsert_build!(build)
-      unless add_ci_running_build?(build)
-        raise ArgumentError, 'build has not been picked by a shared runner'
-      end
-
       if build.runner.nil?
         raise ArgumentError, 'build has not been picked by a runner'
       end
@@ -35,12 +31,6 @@ module Ci
       entry.validate!
 
       self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
-    end
-
-    private_class_method def self.add_ci_running_build?(build)
-      return true if Feature.enabled?(:add_all_ci_running_builds, Project.actor_from_id(build.project_id))
-
-      build.shared_runner_build?
     end
   end
 end

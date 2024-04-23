@@ -84,7 +84,7 @@ RSpec.describe BulkImports::Projects::Pipelines::MergeRequestsPipeline, feature_
 
   subject(:pipeline) { described_class.new(context) }
 
-  describe '#run', :clean_gitlab_redis_cache do
+  describe '#run', :clean_gitlab_redis_shared_state do
     before do
       group.add_owner(user)
       group.add_maintainer(another_user)

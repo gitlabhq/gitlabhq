@@ -281,6 +281,12 @@ module.exports = (path, options = {}) => {
       ...(IS_EE ? ['<rootDir>/ee/app/assets/javascripts/', ...extRootsEE] : []),
       ...(IS_JH ? ['<rootDir>/jh/app/assets/javascripts/', ...extRootsJH] : []),
     ],
-    maxWorkers: process.env.CI ? '100%' : '60%',
+    /*
+    Reduce the amount of max workers in development mode.
+    If we use all available cores, on machines with efficiency cores, we actually will be slower
+
+    Set nothing for CI, because we want to use the auto-logic for the cores
+     */
+    maxWorkers: process.env.CI ? '' : '60%',
   };
 };

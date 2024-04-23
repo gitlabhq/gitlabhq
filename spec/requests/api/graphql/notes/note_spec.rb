@@ -7,7 +7,7 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:reporter_user) { create(:user) }
-  let_it_be(:project) { create(:project, :private) }
+  let_it_be(:project) { create(:project, :private, reporters: reporter_user) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:note) { create(:note, noteable: issue, project: project) }
   let_it_be(:system_note) { create(:note, :system, noteable: issue, project: project) }
@@ -18,10 +18,6 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
 
   let(:query) do
     graphql_query_for('note', note_params, note_fields)
-  end
-
-  before_all do
-    project.add_reporter(reporter_user)
   end
 
   it_behaves_like 'a working graphql query' do

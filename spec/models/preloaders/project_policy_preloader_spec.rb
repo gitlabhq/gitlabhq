@@ -7,25 +7,20 @@ RSpec.describe Preloaders::ProjectPolicyPreloader do
   let_it_be(:root_parent) { create(:group, :private, name: 'root-1', path: 'root-1') }
   let_it_be(:guest_project) { create(:project, name: 'public guest', path: 'public-guest', guests: user) }
   let_it_be(:private_maintainer_project) do
-    create(:project, :private, name: 'b private maintainer', path: 'b-private-maintainer', namespace: root_parent)
+    create(:project, :private, name: 'b private maintainer', path: 'b-private-maintainer', namespace: root_parent,
+      maintainers: user)
   end
 
   let_it_be(:private_developer_project) do
-    create(:project, :private, name: 'c public developer', path: 'c-public-developer')
+    create(:project, :private, name: 'c public developer', path: 'c-public-developer', developers: user)
   end
 
   let_it_be(:public_maintainer_project) do
-    create(:project, :private, name: 'a public maintainer', path: 'a-public-maintainer')
+    create(:project, :private, name: 'a public maintainer', path: 'a-public-maintainer', maintainers: user)
   end
 
   let(:base_projects) do
     Project.where(id: [guest_project, private_maintainer_project, private_developer_project, public_maintainer_project])
-  end
-
-  before_all do
-    private_maintainer_project.add_maintainer(user)
-    private_developer_project.add_developer(user)
-    public_maintainer_project.add_maintainer(user)
   end
 
   it 'avoids N+1 queries when authorizing a list of projects', :request_store do

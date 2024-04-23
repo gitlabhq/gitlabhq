@@ -126,9 +126,6 @@ export default {
       }
       return false;
     },
-    showRemove() {
-      return this.canUpdate;
-    },
     displayLabels() {
       return this.showLabels && this.labels.length;
     },
@@ -240,8 +237,7 @@ export default {
     <div v-if="canUpdate">
       <gl-button
         v-gl-tooltip
-        :class="{ 'gl-visibility-visible': showRemove }"
-        class="gl-visibility-hidden gl-mt-n2 gl-mr-n2"
+        class="gl-mt-n2 gl-mr-n2"
         category="tertiary"
         size="small"
         icon="close"

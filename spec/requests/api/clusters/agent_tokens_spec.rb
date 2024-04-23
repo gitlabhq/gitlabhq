@@ -8,11 +8,10 @@ RSpec.describe API::Clusters::AgentTokens, feature_category: :deployment_managem
   let_it_be(:revoked_agent_token) { create(:cluster_agent_token, :revoked, agent: agent) }
   let_it_be(:project) { agent.project }
   let_it_be(:user) { agent.created_by_user }
-  let_it_be(:unauthorized_user) { create(:user) }
+  let_it_be(:unauthorized_user) { create(:user, guest_of: project) }
 
   before_all do
     project.add_maintainer(user)
-    project.add_guest(unauthorized_user)
   end
 
   describe 'GET /projects/:id/cluster_agents/:agent_id/tokens' do

@@ -2,6 +2,8 @@ import { GlButton, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
+import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -12,10 +14,7 @@ import WorkItemNotificationsWidget from '~/work_items/components/work_item_notif
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 
-import {
-  projectWorkItemTypesQueryResponse,
-  updateWorkItemNotificationsMutationResponse,
-} from '../mock_data';
+import { updateWorkItemNotificationsMutationResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/vue_shared/plugins/global_toast');

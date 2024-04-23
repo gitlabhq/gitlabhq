@@ -344,7 +344,7 @@ export default {
   },
   dragOptions: {
     animation: 200,
-    ghostClass: 'gl-visibility-hidden',
+    ghostClass: 'gl-invisible',
   },
   i18n,
 };

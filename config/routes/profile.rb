@@ -67,5 +67,7 @@ resource :profile, only: [] do
     end
 
     resources :webauthn_registrations, only: [:destroy]
+
+    resources :usage_quotas, only: [:index]
   end
 end

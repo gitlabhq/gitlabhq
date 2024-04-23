@@ -13,7 +13,7 @@ RSpec.describe PersonalProjectsFinder, feature_category: :groups_and_projects do
   end
 
   let_it_be(:private_project_shared) do
-    create(:project, :private, namespace: source_user.namespace, last_activity_at: 2.hours.ago, path: 'mepmep')
+    create(:project, :private, namespace: source_user.namespace, last_activity_at: 2.hours.ago, path: 'mepmep', developers: current_user)
   end
 
   let_it_be(:internal_project) do
@@ -22,10 +22,6 @@ RSpec.describe PersonalProjectsFinder, feature_category: :groups_and_projects do
 
   let_it_be(:private_project_self) do
     create(:project, :private, namespace: source_user.namespace, last_activity_at: 4.hours.ago, path: 'D')
-  end
-
-  before_all do
-    private_project_shared.add_developer(current_user)
   end
 
   describe 'without a current user' do

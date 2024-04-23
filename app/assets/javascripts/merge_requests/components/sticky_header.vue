@@ -161,7 +161,7 @@ export default {
   >
     <div
       class="issue-sticky-header merge-request-sticky-header gl-fixed gl-bg-white gl-display-none gl-md-display-flex gl-flex-direction-column gl-justify-content-end gl-border-b"
-      :class="{ 'gl-visibility-hidden': !isStickyHeaderVisible }"
+      :class="{ 'gl-invisible': !isStickyHeaderVisible }"
     >
       <div
         class="issue-sticky-header-text gl-display-flex gl-flex-direction-column gl-align-items-center gl-mx-auto gl-w-full"

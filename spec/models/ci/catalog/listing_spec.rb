@@ -6,19 +6,19 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:group) }
   let_it_be(:public_namespace_project) do
-    create(:project, :public, namespace: namespace, name: 'A public namespace project', star_count: 10)
+    create(:project, :public, namespace: namespace, name: 'A public namespace project', star_count: 10, reporters: user)
   end
 
   let_it_be(:public_project) do
-    create(:project, :public, name: 'B public test project', star_count: 20)
+    create(:project, :public, name: 'B public test project', star_count: 20, reporters: user)
   end
 
   let_it_be(:namespace_project_a) do
-    create(:project, namespace: namespace, name: 'Test namespace project', star_count: 30)
+    create(:project, namespace: namespace, name: 'Test namespace project', star_count: 30, reporters: user)
   end
 
   let_it_be(:namespace_project_b) do
-    create(:project, namespace: namespace, name: 'X namespace Project', star_count: 40)
+    create(:project, namespace: namespace, name: 'X namespace Project', star_count: 40, reporters: user)
   end
 
   let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'Project with no access') }
@@ -29,13 +29,6 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   end
 
   let(:list) { described_class.new(user) }
-
-  before_all do
-    namespace_project_a.add_reporter(user)
-    namespace_project_b.add_reporter(user)
-    public_namespace_project.add_reporter(user)
-    public_project.add_reporter(user)
-  end
 
   describe '#resources' do
     subject(:resources) { list.resources(**params) }

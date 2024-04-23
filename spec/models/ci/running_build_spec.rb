@@ -35,16 +35,6 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       it 'returns a build id as a result' do
         expect(upsert_build.rows.dig(0, 0)).to eq build.id
       end
-
-      context 'with add_all_ci_running_builds FF disabled' do
-        before do
-          stub_feature_flags(add_all_ci_running_builds: false)
-        end
-
-        it 'raises an error' do
-          expect { upsert_build }.to raise_error(ArgumentError, 'build has not been picked by a shared runner')
-        end
-      end
     end
 
     context 'when build has not been picked by a runner yet' do
@@ -52,16 +42,6 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
 
       it 'raises an error' do
         expect { upsert_build }.to raise_error(ArgumentError, 'build has not been picked by a runner')
-      end
-
-      context 'with add_all_ci_running_builds FF disabled' do
-        before do
-          stub_feature_flags(add_all_ci_running_builds: false)
-        end
-
-        it 'raises an error' do
-          expect { upsert_build }.to raise_error(ArgumentError, 'build has not been picked by a shared runner')
-        end
       end
     end
   end

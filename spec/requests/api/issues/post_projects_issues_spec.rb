@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) do
-    create(:project, :public, creator_id: user.id, namespace: user.namespace)
+    create(:project, :public, creator_id: user.id, namespace: user.namespace, reporters: user)
   end
 
   let_it_be(:user2) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:author) { create(:author) }
   let_it_be(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   let_it_be(:assignee) { create(:assignee) }
@@ -63,11 +63,6 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
   let(:no_milestone_title) { 'None' }
   let(:any_milestone_title) { 'Any' }
-
-  before_all do
-    project.add_reporter(user)
-    project.add_guest(guest)
-  end
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
