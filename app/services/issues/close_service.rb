@@ -6,12 +6,7 @@ module Issues
     def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
       return issue unless can_close?(issue, skip_authorization: skip_authorization)
 
-      close_issue(
-        issue,
-        closed_via: commit,
-        notifications: notifications,
-        system_note: system_note
-      )
+      close_issue(issue, closed_via: commit, notifications: notifications, system_note: system_note)
     end
 
     # Closes the supplied issue without checking if the user is authorized to
@@ -26,37 +21,47 @@ module Issues
         return issue
       end
 
-      if issue.close(current_user)
-        event_service.close_issue(issue, current_user)
-        create_note(issue, closed_via) if system_note
+      return issue unless handle_closing_issue!(issue, current_user)
 
-        if current_user.project_bot?
-          log_audit_event(issue, current_user, "#{issue.issue_type}_closed_by_project_bot",
-            "Closed #{issue.issue_type.humanize(capitalize: false)} #{issue.title}")
-        end
-
-        closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
-
-        notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
-        todo_service.close_issue(issue, current_user)
-        perform_incident_management_actions(issue)
-        execute_hooks(issue, 'close')
-        invalidate_cache_counts(issue, users: issue.assignees)
-        issue.update_project_counter_caches
-        track_incident_action(current_user, issue, :incident_closed)
-
-        if closed_via.is_a?(MergeRequest)
-          store_first_mentioned_in_commit_at(issue, closed_via)
-          Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
-        end
-
-        Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
-      end
-
-      issue
+      after_close(issue, closed_via: closed_via, notifications: notifications, system_note: system_note)
     end
 
     private
+
+    # overriden in EE
+    def handle_closing_issue!(issue, current_user)
+      issue.close(current_user)
+    end
+
+    # overriden in EE
+    def after_close(issue, closed_via: nil, notifications: true, system_note: true)
+      event_service.close_issue(issue, current_user)
+      create_note(issue, closed_via) if system_note
+
+      if current_user.project_bot?
+        log_audit_event(issue, current_user, "#{issue.issue_type}_closed_by_project_bot",
+          "Closed #{issue.issue_type.humanize(capitalize: false)} #{issue.title}")
+      end
+
+      closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
+
+      notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
+      todo_service.close_issue(issue, current_user)
+      perform_incident_management_actions(issue)
+      execute_hooks(issue, 'close')
+      invalidate_cache_counts(issue, users: issue.assignees)
+      issue.update_project_counter_caches
+      track_incident_action(current_user, issue, :incident_closed)
+
+      if closed_via.is_a?(MergeRequest)
+        store_first_mentioned_in_commit_at(issue, closed_via)
+        Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
+      end
+
+      Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
+
+      issue
+    end
 
     def can_close?(issue, skip_authorization: false)
       skip_authorization || can?(current_user, :update_issue, issue) || issue.is_a?(ExternalIssue)

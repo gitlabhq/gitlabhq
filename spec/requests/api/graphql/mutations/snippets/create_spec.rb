@@ -17,6 +17,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
   let(:actions) { [{ action: action }.merge(file_1), { action: action }.merge(file_2)] }
   let(:project_path) { nil }
   let(:uploaded_files) { nil }
+  let(:category) { ::Mutations::Snippets::Create }
   let(:mutation_vars) do
     {
       description: description,

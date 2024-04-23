@@ -2985,7 +2985,7 @@ This example creates four paths of execution:
 - macOS path: The `mac:rspec` jobs runs as soon as the `mac:build`
   job finishes, without waiting for `linux:build` to finish.
 - The `production` job runs as soon as all previous jobs finish:
-  `linux:build`, `linux:rspec`, `mac:build`, `mac:rspec`.
+  `lint`, `linux:build`, `linux:rspec`, `mac:build`, `mac:rspec`.
 
 **Additional details**:
 

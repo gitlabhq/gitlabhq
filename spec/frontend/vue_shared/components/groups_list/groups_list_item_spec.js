@@ -2,6 +2,7 @@ import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import {
   VISIBILITY_TYPE_ICON,
   VISIBILITY_LEVEL_INTERNAL_STRING,
@@ -10,7 +11,6 @@ import {
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import DangerConfirmModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
 import { groups } from './mock_data';
 
 describe('GroupsListItem', () => {
@@ -33,7 +33,7 @@ describe('GroupsListItem', () => {
   const findGroupDescription = () => wrapper.findByTestId('group-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
-  const findConfirmationModal = () => wrapper.findComponent(DangerConfirmModal);
+  const findConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
 
   it('renders group avatar', () => {
@@ -260,6 +260,16 @@ describe('GroupsListItem', () => {
 
         it('emits `delete` event', () => {
           expect(wrapper.emitted('delete')).toMatchObject([[group]]);
+        });
+      });
+
+      describe('when change is fired', () => {
+        beforeEach(() => {
+          findConfirmationModal().vm.$emit('change', false);
+        });
+
+        it('updates visibility prop', () => {
+          expect(findConfirmationModal().props('visible')).toBe(false);
         });
       });
     });

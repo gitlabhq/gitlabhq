@@ -10,14 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-GitLab comes with its own application performance measuring system as of GitLab
-8.4, called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
-Community and Enterprise editions.
+GitLab comes with its own application performance measuring system , called "GitLab Performance Monitoring".
+GitLab Performance Monitoring is available in both the Community and Enterprise editions.
 
 Apart from this introduction, you are advised to read through the following
 documents to understand and properly configure GitLab Performance Monitoring:
 
-- [GitLab Configuration](gitlab_configuration.md)
 - [Prometheus documentation](../prometheus/index.md)
 - [Grafana Install/Configuration](grafana_configuration.md)
 - [Performance bar](performance_bar.md)

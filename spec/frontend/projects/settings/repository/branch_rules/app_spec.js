@@ -16,6 +16,7 @@ import getProtectableBranches from '~/projects/settings/graphql/queries/protecta
 import { createAlert } from '~/alert';
 import {
   branchRulesMockResponse,
+  predefinedBranchRulesMockResponse,
   appProvideMock,
   createBranchRuleMockResponse,
   protectableBranchesMockResponse,
@@ -44,6 +45,7 @@ describe('Branch rules app', () => {
   const protectableBranchesSuccessHandler = jest
     .fn()
     .mockResolvedValue(protectableBranchesMockResponse);
+  const addBranchRulesItems = [I18N.branchName, I18N.allBranches, I18N.allProtectedBranches];
 
   const createComponent = async ({
     glFeatures = { editBranchRules: true },
@@ -114,6 +116,28 @@ describe('Branch rules app', () => {
   describe('Add branch rule', () => {
     it('renders an Add branch rule dropdown', () => {
       expect(findAddBranchRuleDropdown().props('toggleText')).toBe('Add branch rule');
+    });
+
+    it('renders a dropdown containing predefined branch rules with actions', () => {
+      expect(findAddBranchRuleDropdown().props('items')).toEqual([
+        { action: expect.any(Function), text: 'Branch name or pattern' },
+        { action: expect.any(Function), text: 'All branches' },
+        { action: expect.any(Function), text: 'All protected branches' },
+      ]);
+    });
+
+    it('does not render predefined branch rules when they are already set', async () => {
+      const { nodes } = predefinedBranchRulesMockResponse.data.project.branchRules;
+
+      await createComponent({
+        queryHandler: jest.fn().mockResolvedValue(predefinedBranchRulesMockResponse),
+      });
+      await findAddBranchRuleDropdown().vm.$emit('shown');
+      await nextTick();
+
+      expect(findAddBranchRuleDropdown().props('items').length).toEqual(
+        addBranchRulesItems.length - nodes.length,
+      );
     });
 
     it('renders a modal with correct props/attributes', () => {

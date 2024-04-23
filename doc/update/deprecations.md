@@ -1674,7 +1674,7 @@ The [`project_fingerprint`](https://gitlab.com/groups/gitlab-org/-/epics/2791) a
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### PostgreSQL 13 deprecated
+### PostgreSQL 13 no longer supported
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.0</span>

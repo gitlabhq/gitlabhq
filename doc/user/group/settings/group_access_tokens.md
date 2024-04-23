@@ -111,7 +111,7 @@ or API. However, administrators can use a workaround:
       - [Create a project pipeline](../../../api/pipelines.md#create-a-new-pipeline) in one of the group's projects.
       - [Create an issue](../../../api/issues.md#new-issue) in one of the group's projects.
 
-   1. Use the group token to [clone a group's project](../../../topics/git/get_started.md#clone-with-https)
+   1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.
 
 ## Revoke a group access token using the UI

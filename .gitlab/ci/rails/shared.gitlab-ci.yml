@@ -107,15 +107,23 @@ include:
           --input-files "${input_file}" \
           --exclude-labels-for-search "QA,knapsack_report" \
           --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
+      else
+        echoinfo "Not reporting test failures because \$CREATE_RAILS_TEST_FAILURE_ISSUES != 'true'"
       fi
       section_end "failed-test-issues"
     - |
       section_start "flaky-test-issues" "Report test flakiness"
-      if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ] && [ -f "rspec/rspec-retry-${CI_JOB_ID}.json" ]; then
-        bundle exec flaky-test-issues \
-          --token "${TEST_FAILURES_PROJECT_TOKEN}" \
-          --project "gitlab-org/gitlab" \
-          --input-files "rspec/rspec-retry-${CI_JOB_ID}.json";
+      if [ "$CREATE_RAILS_FLAKY_TEST_ISSUES" == "true" ]; then
+        if [ -f "rspec/rspec-retry-${CI_JOB_ID}.json" ]; then
+          bundle exec flaky-test-issues \
+            --token "${TEST_FAILURES_PROJECT_TOKEN}" \
+            --project "gitlab-org/gitlab" \
+            --input-files "rspec/rspec-retry-${CI_JOB_ID}.json";
+        else
+          echoerr "Not reporting test flakiness because 'rspec/rspec-retry-${CI_JOB_ID}.json' is missing!"
+        fi
+      else
+        echoinfo "Not reporting test flakiness because \$CREATE_RAILS_FLAKY_TEST_ISSUES != 'true'"
       fi
       section_end "flaky-test-issues"
     - |
@@ -126,6 +134,8 @@ include:
           --project "gitlab-org/gitlab" \
           --input-files "rspec/rspec-*.json" \
           --related-issues-file "rspec/${CI_JOB_ID}-slow-test-issues.json";
+      else
+        echoinfo "Not reporting test slowness because \$CREATE_RAILS_SLOW_TEST_ISSUES != 'true'"
       fi
       section_end "slow-test-issues"
     - |
@@ -136,6 +146,8 @@ include:
           --project "gitlab-org/gitlab" \
           --input-files "rspec/rspec-*.json" \
           --merge_request_iid "$CI_MERGE_REQUEST_IID";
+      else
+        echoinfo "Not reporting test slowness in MR note because \$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST != 'true'"
       fi
       section_end "slow-test-merge-request-report-note"
     - |
@@ -146,6 +158,8 @@ include:
           --project "gitlab-org/gitlab" \
           --input-file knapsack/rspec*_report.json \
           --expected-report knapsack/node_specs_expected_duration.json;
+      else
+        echoinfo "Not reporting test files close to timing out because \$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES != 'true'"
       fi
       section_end "knapsack-report-issues"
     - tooling/bin/push_job_metrics || true

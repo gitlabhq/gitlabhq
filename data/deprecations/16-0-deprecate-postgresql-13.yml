@@ -1,4 +1,4 @@
-- title: "PostgreSQL 13 deprecated"
+- title: "PostgreSQL 13 no longer supported"
   removal_milestone: "17.0"
   announcement_milestone: "16.0"
   breaking_change: true

@@ -17,6 +17,8 @@ export const I18N = {
   createProtectedBranch: s__('BranchRules|Create protected branch'),
   createBranchRule: s__('BranchRules|Create branch rule'),
   branchName: s__('BranchRules|Branch name or pattern'),
+  allBranches: s__('BranchRules|All branches'),
+  allProtectedBranches: s__('BranchRules|All protected branches'),
   createBranchRuleError: s__('BranchRules|Something went wrong while creating branch rule.'),
   createBranchRuleSuccess: s__('BranchRules|Branch rule created.'),
 };

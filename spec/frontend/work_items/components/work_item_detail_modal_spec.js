@@ -61,6 +61,7 @@ describe('WorkItemDetailModal component', () => {
     expect(findWorkItemDetail().props()).toEqual({
       isModal: true,
       workItemIid: '1',
+      modalWorkItemFullPath: '',
     });
   });
 

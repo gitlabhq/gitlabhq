@@ -5,10 +5,14 @@ import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { deleteGroup } from '~/rest_api';
+import { deleteGroup } from 'ee_else_ce/rest_api';
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+  formatGroups,
+} from 'ee_else_ce/organizations/shared/utils';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
-import { formatGroups } from '../utils';
 import NewGroupButton from './new_group_button.vue';
 
 export default {
@@ -25,6 +29,7 @@ export default {
         'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
       ),
     },
+    group: __('Group'),
     prev: __('Prev'),
     next: __('Next'),
   },
@@ -168,8 +173,9 @@ export default {
 
       try {
         this.setGroupIsDeleting(nodeIndex, true);
-        await deleteGroup(group.id);
+        await deleteGroup(group.id, deleteParams(group));
         this.$apollo.queries.groups.refetch();
+        renderDeleteSuccessToast(group, this.$options.i18n.group);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {

@@ -12,7 +12,7 @@ module Import
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
 
-    state_machine :status, initial: :pending do
+    state_machine :status, initial: :pending_assignment do
       state :pending_assignment, value: 0
       state :awaiting_approval, value: 1
       state :rejected, value: 2

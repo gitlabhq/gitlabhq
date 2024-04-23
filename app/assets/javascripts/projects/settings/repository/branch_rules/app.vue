@@ -12,6 +12,7 @@ import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rul
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { expandSection } from '~/settings_panels';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRule from './components/branch_rule.vue';
@@ -59,8 +60,20 @@ export default {
     };
   },
   computed: {
-    addRuleItems() {
-      return [{ text: this.$options.i18n.branchName, action: () => this.openCreateRuleModal() }];
+    getAddRuleItems() {
+      const items = [
+        { text: this.$options.i18n.branchName, action: () => this.openCreateRuleModal() },
+      ];
+
+      [this.$options.i18n.allBranches, this.$options.i18n.allProtectedBranches].forEach(
+        (branch) => {
+          if (!this.hasPredefinedBranchRule(branch)) {
+            items.push(this.createPredefinedBrachRulesItem(branch));
+          }
+        },
+      );
+
+      return items;
     },
     createRuleItems() {
       return this.isWildcardAvailable ? [this.wildcardItem] : this.filteredOpenBranches;
@@ -97,6 +110,18 @@ export default {
     },
   },
   methods: {
+    createPredefinedBrachRulesItem(branchRuleName) {
+      return {
+        text: branchRuleName,
+        action: () => this.redirectToEdit(branchRuleName),
+      };
+    },
+    redirectToEdit(branch) {
+      visitUrl(`${this.branchRulesPath}?branch=${encodeURIComponent(branch)}`);
+    },
+    hasPredefinedBranchRule(branchName) {
+      return Boolean(this.branchRules.filter((rule) => rule.name === branchName).length);
+    },
     showProtectedBranches() {
       // Protected branches section is on the same page as the branch rules section.
       expandSection(this.$options.protectedBranchesAnchor);
@@ -115,7 +140,7 @@ export default {
           },
         })
         .then(() => {
-          window.location.assign(this.getBranchRuleEditPath(name));
+          visitUrl(this.getBranchRuleEditPath(name));
         })
         .catch(() => {
           createAlert({ message: this.$options.i18n.createBranchRuleError });
@@ -149,9 +174,8 @@ export default {
       <gl-disclosure-dropdown
         v-if="glFeatures.editBranchRules"
         :toggle-text="$options.i18n.addBranchRule"
-        :items="addRuleItems"
+        :items="getAddRuleItems"
         size="small"
-        no-caret
       />
       <gl-button
         v-else

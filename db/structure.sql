@@ -8494,6 +8494,28 @@ CREATE SEQUENCE draft_notes_id_seq
 
 ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
 
+CREATE TABLE early_access_program_tracking_events (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    event_name text NOT NULL,
+    event_label text,
+    category text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_4faf711d09 CHECK ((char_length(event_label) <= 255)),
+    CONSTRAINT check_573cf46c14 CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT check_e631e07806 CHECK ((char_length(category) <= 255))
+);
+
+CREATE SEQUENCE early_access_program_tracking_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE early_access_program_tracking_events_id_seq OWNED BY early_access_program_tracking_events.id;
+
 CREATE TABLE elastic_group_index_statuses (
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -17121,6 +17143,8 @@ CREATE TABLE user_preferences (
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
     use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
+    early_access_program_participant boolean DEFAULT false NOT NULL,
+    early_access_program_tracking boolean DEFAULT false NOT NULL,
     extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
@@ -19132,6 +19156,8 @@ ALTER TABLE ONLY dora_daily_metrics ALTER COLUMN id SET DEFAULT nextval('dora_da
 ALTER TABLE ONLY dora_performance_scores ALTER COLUMN id SET DEFAULT nextval('dora_performance_scores_id_seq'::regclass);
 
 ALTER TABLE ONLY draft_notes ALTER COLUMN id SET DEFAULT nextval('draft_notes_id_seq'::regclass);
+
+ALTER TABLE ONLY early_access_program_tracking_events ALTER COLUMN id SET DEFAULT nextval('early_access_program_tracking_events_id_seq'::regclass);
 
 ALTER TABLE ONLY elastic_index_settings ALTER COLUMN id SET DEFAULT nextval('elastic_index_settings_id_seq'::regclass);
 
@@ -21205,6 +21231,9 @@ ALTER TABLE ONLY dora_performance_scores
 
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT draft_notes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY early_access_program_tracking_events
+    ADD CONSTRAINT early_access_program_tracking_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY elastic_group_index_statuses
     ADD CONSTRAINT elastic_group_index_statuses_pkey PRIMARY KEY (namespace_id);
@@ -25280,6 +25309,14 @@ CREATE INDEX index_draft_notes_on_author_id ON draft_notes USING btree (author_i
 CREATE INDEX index_draft_notes_on_discussion_id ON draft_notes USING btree (discussion_id);
 
 CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (merge_request_id);
+
+CREATE INDEX index_early_access_program_tracking_events_on_category ON early_access_program_tracking_events USING btree (category);
+
+CREATE INDEX index_early_access_program_tracking_events_on_event_label ON early_access_program_tracking_events USING btree (event_label);
+
+CREATE INDEX index_early_access_program_tracking_events_on_event_name ON early_access_program_tracking_events USING btree (event_name);
+
+CREATE INDEX index_early_access_program_tracking_events_on_user_id ON early_access_program_tracking_events USING btree (user_id);
 
 CREATE UNIQUE INDEX index_elastic_index_settings_on_alias_name ON elastic_index_settings USING btree (alias_name);
 
@@ -31414,6 +31451,9 @@ ALTER TABLE ONLY note_diff_files
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY early_access_program_tracking_events
+    ADD CONSTRAINT fk_rails_3e8c32b3dd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_rails_3eaf4d88cc FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;

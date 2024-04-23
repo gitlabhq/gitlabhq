@@ -2,6 +2,7 @@
 import { GlAvatarLabeled, GlIcon, GlTooltipDirective, GlTruncateText, GlBadge } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
+import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
@@ -9,7 +10,6 @@ import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
-import DangerConfirmModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
 
 export default {
   i18n: {
@@ -26,7 +26,7 @@ export default {
     GlTruncateText,
     GlBadge,
     ListActions,
-    DangerConfirmModal,
+    GroupListItemDeleteModal,
     GroupListItemInactiveBadge: () =>
       import('ee_component/vue_shared/components/groups_list/group_list_item_inactive_badge.vue'),
   },
@@ -213,13 +213,14 @@ export default {
       />
     </div>
 
-    <danger-confirm-modal
+    <group-list-item-delete-modal
       v-if="hasActionDelete"
-      v-model="isDeleteModalVisible"
+      :visible="isDeleteModalVisible"
       :modal-id="modalId"
       :phrase="group.fullName"
       :confirm-loading="isActionDeleteLoading"
       @confirm.prevent="$emit('delete', group)"
+      @change="isDeleteModalVisible = arguments[0]"
     />
   </li>
 </template>

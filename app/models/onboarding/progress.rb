@@ -80,14 +80,14 @@ module Onboarding
       end
 
       def completed?(namespace, action)
-        return unless root_namespace?(namespace) && ACTIONS.include?(action)
+        return false unless root_namespace?(namespace) && ACTIONS.include?(action)
 
         action_column = column_name(action)
         where(namespace: namespace).where.not(action_column => nil).exists?
       end
 
       def not_completed?(namespace_id, action)
-        return unless ACTIONS.include?(action)
+        return false unless ACTIONS.include?(action)
 
         action_column = column_name(action)
         exists?(namespace_id: namespace_id, action_column => nil)

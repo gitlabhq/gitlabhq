@@ -108,7 +108,7 @@ Prerequisites:
 
 To edit an epic's title or description:
 
-1. Select **Edit title and description** **{pencil}**.
+1. Select **Edit**.
 1. Make your changes.
 1. Select **Save changes**.
 
@@ -163,10 +163,10 @@ Prerequisites:
 
 - You must have the Owner role for the epic's group.
 
-To delete the epic:
+To delete an epic:
 
-1. Select **Edit title and description** **{pencil}**.
-1. Select **Delete**. A modal appears to confirm your action.
+1. Select **Epic actions** (**{ellipsis_v}**), then **Delete epic**.
+1. Select **Delete**. On the confirmation dialog, select **Delete epic**.
 
 Deleting an epic releases all existing issues from their associated epic in the system.
 
@@ -176,7 +176,9 @@ Prerequisites:
 
 - You must have at least the Reporter role for the epic's group.
 
-To close an epic, in the upper-right corner, select **epic actions** (**{ellipsis_v}**) and then **Close epic**.
+To close an epic:
+
+- In the upper-right corner, select **Epic actions** (**{ellipsis_v}**), then **Close epic**.
 
 You can also use the `/close` [quick action](../../project/quick_actions.md).
 
@@ -190,7 +192,7 @@ Prerequisites:
 
 To do so, either:
 
-- In the upper-right corner, select **epic actions** (**{ellipsis_v}**) and then **Reopen epic**
+- In the upper-right corner, select **Epic actions** (**{ellipsis_v}**) and then **Reopen epic**.
 - Use the `/reopen` [quick action](../../project/quick_actions.md).
 
 You can also create an epic by
@@ -296,7 +298,7 @@ The sort option and order is saved and used wherever you browse epics, including
 ## Change activity sort order
 
 You can reverse the default order and interact with the activity feed sorted by most recent items
-at the top. Your preference is saved via local storage and automatically applied to every epic and issue
+at the top. Your preference is saved in local storage and automatically applied to every epic and issue
 you view.
 
 To change the activity sort order, select the **Oldest first** dropdown list and select either oldest
@@ -501,6 +503,18 @@ Prerequisites:
 - Multi-level child epics must be available for both the child and parent epics' groups.
 
 To add a child epic from another group, paste the epic's URL when [adding an existing epic](#add-a-child-epic-to-an-epic).
+
+### View child epics on a roadmap
+
+From an epic, view its child epics and related milestones on the [roadmap](../roadmap/index.md).
+
+Prerequisites:
+
+- You must have at least the Guest role for the parent epic's group.
+
+To view child epics from the parent:
+
+- In an epic, in the **Child issues and epics** section, select **Roadmap view**.
 
 ### Add a child epic to an epic
 

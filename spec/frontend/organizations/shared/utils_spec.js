@@ -71,6 +71,8 @@ describe('formatGroups', () => {
 
     expect(firstFormattedGroup).toMatchObject({
       id: getIdFromGraphQLId(firstMockGroup.id),
+      name: firstMockGroup.fullName,
+      fullName: firstMockGroup.fullName,
       parent: null,
       editPath: `${firstFormattedGroup.webUrl}/-/edit`,
       accessLevel: {
@@ -91,6 +93,8 @@ describe('formatGroups', () => {
 
     expect(nonDeletableFormattedGroup).toMatchObject({
       id: getIdFromGraphQLId(nonDeletableGroup.id),
+      name: nonDeletableGroup.fullName,
+      fullName: nonDeletableGroup.fullName,
       parent: null,
       editPath: `${nonDeletableFormattedGroup.webUrl}/-/edit`,
       accessLevel: {

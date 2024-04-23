@@ -36,6 +36,10 @@ module Gitlab
 
         trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
         send_application_instrumentation_event(event_name, additional_properties, kwargs) if send_snowplow_event
+
+        if Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
+          create_early_access_program_event(event_name, category, additional_properties[:label], kwargs[:user])
+        end
       rescue StandardError => e
         extra = {}
         kwargs.each_key do |k|
@@ -154,6 +158,14 @@ module Gitlab
         tracked_attributes = { project_id: kwargs[:project]&.id, namespace_id: kwargs[:namespace]&.id }
         tracked_attributes[:additional_properties] = additional_properties unless additional_properties.empty?
         gitlab_sdk_client.track(event_name, tracked_attributes)
+      end
+
+      def create_early_access_program_event(event_name, category, event_label, user)
+        return if user.nil? || !user.user_preference.early_access_event_tracking?
+
+        ::EarlyAccessProgram::TrackingEvent.create(
+          user: user, event_name: event_name.to_s, event_label: event_label, category: category
+        )
       end
 
       def gitlab_sdk_client

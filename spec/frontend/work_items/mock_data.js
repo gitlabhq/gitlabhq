@@ -207,6 +207,9 @@ export const workItemQueryResponse = {
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
                 reference: 'test-project-path#4',
+                namespace: {
+                  fullPath: 'test-project-path',
+                },
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -923,6 +926,9 @@ export const workItemResponseFactory = ({
                 state: 'OPEN',
                 webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
                 reference: 'test-project-path#5',
+                namespace: {
+                  fullPath: 'test-project-path',
+                },
                 workItemType: {
                   id: '1',
                   name: 'Task',
@@ -1299,6 +1305,9 @@ export const confidentialWorkItemTask = {
   state: 'OPEN',
   confidential: true,
   reference: 'test-project-path#2',
+  namespace: {
+    fullPath: 'test-project-path',
+  },
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/2',
@@ -1319,6 +1328,9 @@ export const closedWorkItemTask = {
   state: 'CLOSED',
   confidential: false,
   reference: 'test-project-path#3',
+  namespace: {
+    fullPath: 'test-project-path',
+  },
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: '2022-08-12T13:07:52Z',
   webUrl: '/gitlab-org/gitlab-test/-/work_items/3',
@@ -1366,6 +1378,9 @@ export const workItemTask = {
   state: 'OPEN',
   confidential: false,
   reference: 'test-project-path#4',
+  namespace: {
+    fullPath: 'test-project-path',
+  },
   createdAt: '2022-08-03T12:41:54Z',
   closedAt: null,
   webUrl: '/gitlab-org/gitlab-test/-/work_items/4',
@@ -1390,6 +1405,9 @@ export const childrenWorkItems = [
     state: 'OPEN',
     confidential: false,
     reference: 'test-project-path#1',
+    namespace: {
+      fullPath: 'test-project-path',
+    },
     createdAt: '2022-08-03T12:41:54Z',
     closedAt: null,
     webUrl: '/gitlab-org/gitlab-test/-/work_items/5',

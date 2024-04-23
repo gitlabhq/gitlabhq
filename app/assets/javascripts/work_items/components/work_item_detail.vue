@@ -87,6 +87,11 @@ export default {
       required: false,
       default: null,
     },
+    modalWorkItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -96,6 +101,7 @@ export default {
       updateInProgress: false,
       modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
+      modalWorkItemNamespaceFullPath: '',
       isReportDrawerOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
@@ -111,7 +117,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.modalWorkItemFullPath || this.fullPath,
           iid: this.workItemIid,
         };
       },
@@ -348,6 +354,7 @@ export default {
       }
       this.modalWorkItemId = modalWorkItem.id;
       this.modalWorkItemIid = modalWorkItem.iid;
+      this.modalWorkItemNamespaceFullPath = modalWorkItem.namespace?.fullPath;
       this.$refs.modal.show();
     },
     openReportAbuseDrawer(reply) {
@@ -641,6 +648,7 @@ export default {
         ref="modal"
         :work-item-id="modalWorkItemId"
         :work-item-iid="modalWorkItemIid"
+        :work-item-full-path="modalWorkItemNamespaceFullPath"
         :show="true"
         @close="updateUrl"
         @openReportAbuse="toggleReportAbuseDrawer(true, $event)"

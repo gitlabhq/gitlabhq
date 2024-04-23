@@ -127,6 +127,10 @@ class UserPreference < MainClusterwide::ApplicationRecord
     end
   end
 
+  def early_access_event_tracking?
+    early_access_program_participant? && early_access_program_tracking?
+  end
+
   private
 
   def user_belongs_to_home_organization

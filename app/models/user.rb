@@ -298,6 +298,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :issue_assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_assignment_events, class_name: 'ResourceEvents::MergeRequestAssignmentEvent', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :early_access_program_tracking_events, class_name: 'EarlyAccessProgram::TrackingEvent', inverse_of: :user
   has_many :namespace_commit_emails, class_name: 'Users::NamespaceCommitEmail'
   has_many :user_achievements, class_name: 'Achievements::UserAchievement', inverse_of: :user
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user

@@ -11,6 +11,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
     allow(redis).to receive(:incr)
+    allow(redis).to receive(:set)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
     allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties).and_return(unique_properties)
@@ -387,7 +388,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   describe 'Product Analytics tracking' do
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
-    let(:sdk_client) { instance_double('GitlabSDK::Client') }
+    let(:sdk_client) { instance_double('GitlabSDK::Client', identify: true) }
     let(:event_kwargs) { { user: user, project: project, send_snowplow_event: send_snowplow_event } }
     let(:additional_properties) { {} }
     let(:send_snowplow_event) { true }
@@ -404,6 +405,10 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         .to receive(:new)
         .with(app_id: app_id, host: url, buffer_size: described_class::SNOWPLOW_EMITTER_BUFFER_SIZE)
         .and_return(sdk_client)
+    end
+
+    after do
+      described_class.clear_memoization(:gitlab_sdk_client)
     end
 
     subject(:track_event) do
@@ -477,9 +482,82 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       it 'passes buffer_size 1 to SDK client' do
         expect(GitlabSDK::Client)
           .to receive(:new)
-          .with(app_id: app_id, host: url, buffer_size: described_class::DEFAULT_BUFFER_SIZE)
+                .with(app_id: app_id, host: url, buffer_size: described_class::DEFAULT_BUFFER_SIZE)
 
         track_event
+      end
+    end
+
+    context 'with early access program tracking' do
+      shared_examples 'does not create early access program tracking event' do
+        it do
+          track_event
+
+          expect(user&.early_access_program_tracking_events).to be_blank
+        end
+      end
+
+      before do
+        allow(sdk_client).to receive(:track)
+          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
+      end
+
+      context 'when early_access_program FF is enabled' do
+        before do
+          stub_feature_flags(early_access_program: true)
+        end
+
+        context 'without user' do
+          let(:user) { nil }
+
+          it_behaves_like 'does not create early access program tracking event'
+        end
+
+        context 'with user' do
+          context 'when user is not early access program participant' do
+            it_behaves_like 'does not create early access program tracking event'
+          end
+
+          context 'when user is early access program participant' do
+            let(:event_name) { 'g_edit_by_snippet_ide' }
+            let(:additional_properties) { { label: 'label_name' } }
+            let(:user) { create(:user) }
+
+            before do
+              preference_stub = instance_double(UserPreference, early_access_event_tracking?: true)
+              allow(user).to receive(:user_preference).and_return(preference_stub)
+              allow(sdk_client).to receive(:track)
+                .with(
+                  event_name,
+                  {
+                    project_id: project.id,
+                    namespace_id: project.namespace.id,
+                    additional_properties: additional_properties
+                  }
+                )
+            end
+
+            it 'creates user early access program event' do
+              described_class.track_event(
+                event_name, category: category, additional_properties: additional_properties, **event_kwargs
+              )
+
+              expect(user.early_access_program_tracking_events.size).to eq 1
+              expect(user.early_access_program_tracking_events.first)
+                .to have_attributes(
+                  event_name: 'g_edit_by_snippet_ide', event_label: 'label_name', category: 'InternalEventTracking'
+                )
+            end
+          end
+        end
+      end
+
+      context 'when early_access_program FF is disabled' do
+        before do
+          stub_feature_flags(early_access_program: false)
+        end
+
+        it_behaves_like 'does not create early access program tracking event'
       end
     end
   end

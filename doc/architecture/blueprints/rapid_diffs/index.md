@@ -402,6 +402,36 @@ sequenceDiagram
     Endpoints ->> Web User: "Do with this diff whatever you'd like to"
 ```
 
+###### A complete, single render
+
+```mermaid
+sequenceDiagram
+actor User
+participant UI
+participant UX as Interaction handlers
+participant FeApp as Front end behaviors
+participant FeData as Data abstraction
+participant FeNet as Network connectivity
+participant API as Web API
+participant BE as Back end
+participant xxx
+participant Cache
+participant Database
+participant Gitaly
+
+User -->> BE: (MR page load)
+BE ->> xxx: ???
+xxx ->> Cache: ???
+Cache ->> xxx: ???
+xxx ->> Database: ???
+Database ->> xxx: ???
+xxx ->> Gitaly: ???
+Gitaly ->> xxx: ???
+xxx ->> BE: Rendered HTML
+BE ->> User: A rendered diffs page for the MR
+
+```
+
 ### Accessibility
 
 Reusable Rapid Diffs should be displayed in a way that is compliant with [Web Content Accessibility Guidelines 2.1](https://www.w3.org/TR/WCAG21/) level AA for web-based content and [Authoring Tool Accessibility Guidelines 2.0](https://www.w3.org/TR/ATAG20/) level AA for user interface.

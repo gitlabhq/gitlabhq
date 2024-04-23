@@ -4,13 +4,17 @@ import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
-import { formatGroups } from '~/organizations/shared/utils';
+import {
+  renderDeleteSuccessToast,
+  deleteParams,
+  formatGroups,
+} from 'ee_else_ce/organizations/shared/utils';
+import { deleteGroup } from 'ee_else_ce/api/groups_api';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { deleteGroup } from '~/api/groups_api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -21,8 +25,17 @@ import {
   pageInfoOnePage,
 } from '~/organizations/mock_data';
 
+const MOCK_DELETE_PARAMS = {
+  testParam: true,
+};
+
+jest.mock('ee_else_ce/organizations/shared/utils', () => ({
+  ...jest.requireActual('ee_else_ce/organizations/shared/utils'),
+  renderDeleteSuccessToast: jest.fn(),
+  deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
+}));
 jest.mock('~/alert');
-jest.mock('~/api/groups_api');
+jest.mock('ee_else_ce/api/groups_api');
 
 Vue.use(VueApollo);
 
@@ -344,7 +357,8 @@ describe('GroupsView', () => {
       it('calls deleteGroup, properly sets loading state, and refetches list when promise resolves', async () => {
         findGroupsList().vm.$emit('delete', MOCK_GROUP);
 
-        expect(deleteGroup).toHaveBeenCalledWith(MOCK_GROUP.id);
+        expect(deleteParams).toHaveBeenCalledWith(MOCK_GROUP);
+        expect(deleteGroup).toHaveBeenCalledWith(MOCK_GROUP.id, MOCK_DELETE_PARAMS);
         expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
           true,
         );
@@ -356,6 +370,13 @@ describe('GroupsView', () => {
         );
         // Refetches list
         expect(successHandler).toHaveBeenCalledTimes(2);
+      });
+
+      it('does call renderDeleteSuccessToast', async () => {
+        findGroupsList().vm.$emit('delete', MOCK_GROUP);
+        await waitForPromises();
+
+        expect(renderDeleteSuccessToast).toHaveBeenCalledWith(MOCK_GROUP, 'Group');
       });
 
       it('does not call createAlert', async () => {
@@ -380,7 +401,8 @@ describe('GroupsView', () => {
       it('calls deleteGroup, properly sets loading state, and shows error alert', async () => {
         findGroupsList().vm.$emit('delete', MOCK_GROUP);
 
-        expect(deleteGroup).toHaveBeenCalledWith(MOCK_GROUP.id);
+        expect(deleteParams).toHaveBeenCalledWith(MOCK_GROUP);
+        expect(deleteGroup).toHaveBeenCalledWith(MOCK_GROUP.id, MOCK_DELETE_PARAMS);
         expect(findGroupsListByGroupId(MOCK_GROUP.id).actionLoadingStates[ACTION_DELETE]).toBe(
           true,
         );
@@ -398,6 +420,13 @@ describe('GroupsView', () => {
           error,
           captureError: true,
         });
+      });
+
+      it('does not call renderDeleteSuccessToast', async () => {
+        findGroupsList().vm.$emit('delete', MOCK_GROUP);
+        await waitForPromises();
+
+        expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
       });
     });
   });

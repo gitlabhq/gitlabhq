@@ -174,6 +174,12 @@ export default {
     statusChecksHeader() {
       return '';
     },
+    isPredefinedRule() {
+      return (
+        this.branch === this.$options.i18n.allBranches ||
+        this.branch === this.$options.i18n.allProtectedBranches
+      );
+    },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
@@ -241,7 +247,7 @@ export default {
       </gl-button>
     </div>
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
-    <div v-else-if="!branchRule">{{ $options.i18n.noData }}</div>
+    <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
     <div v-else>
       <gl-card
         class="gl-new-card"
@@ -251,7 +257,7 @@ export default {
         <template #header>
           <strong>{{ $options.i18n.ruleTarget }}</strong>
           <gl-button
-            v-if="glFeatures.editBranchRules"
+            v-if="glFeatures.editBranchRules && !isPredefinedRule"
             v-gl-modal="$options.editModalId"
             data-testid="edit-rule-button"
             size="small"
@@ -267,67 +273,69 @@ export default {
         </p>
       </gl-card>
 
-      <h2 class="h4 gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h2>
-      <gl-sprintf :message="$options.i18n.protectBranchDescription">
-        <template #link="{ content }">
-          <gl-link :href="$options.protectedBranchesHelpDocLink">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
+      <section v-if="!isPredefinedRule">
+        <h2 class="h4 gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h2>
+        <gl-sprintf :message="$options.i18n.protectBranchDescription">
+          <template #link="{ content }">
+            <gl-link :href="$options.protectedBranchesHelpDocLink">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
 
-      <!-- Allowed to push -->
-      <protection
-        class="gl-mt-3"
-        :header="allowedToPushHeader"
-        :header-link-title="$options.i18n.manageProtectionsLinkTitle"
-        :header-link-href="protectedBranchesPath"
-        :roles="pushAccessLevels.roles"
-        :users="pushAccessLevels.users"
-        :groups="pushAccessLevels.groups"
-        data-testid="allowed-to-push-content"
-      />
-
-      <!-- Allowed to merge -->
-      <protection
-        :header="allowedToMergeHeader"
-        :header-link-title="$options.i18n.manageProtectionsLinkTitle"
-        :header-link-href="protectedBranchesPath"
-        :roles="mergeAccessLevels.roles"
-        :users="mergeAccessLevels.users"
-        :groups="mergeAccessLevels.groups"
-        is-edit-available
-        data-testid="allowed-to-merge-content"
-      />
-
-      <!-- Force push -->
-      <div class="gl-display-flex gl-align-items-center">
-        <gl-icon
-          :size="14"
-          data-testid="force-push-icon"
-          :name="forcePushAttributes.icon"
-          :class="forcePushAttributes.iconClass"
+        <!-- Allowed to push -->
+        <protection
+          class="gl-mt-3"
+          :header="allowedToPushHeader"
+          :header-link-title="$options.i18n.manageProtectionsLinkTitle"
+          :header-link-href="protectedBranchesPath"
+          :roles="pushAccessLevels.roles"
+          :users="pushAccessLevels.users"
+          :groups="pushAccessLevels.groups"
+          data-testid="allowed-to-push-content"
         />
-        <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
-      </div>
 
-      <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+        <!-- Allowed to merge -->
+        <protection
+          :header="allowedToMergeHeader"
+          :header-link-title="$options.i18n.manageProtectionsLinkTitle"
+          :header-link-href="protectedBranchesPath"
+          :roles="mergeAccessLevels.roles"
+          :users="mergeAccessLevels.users"
+          :groups="mergeAccessLevels.groups"
+          is-edit-available
+          data-testid="allowed-to-merge-content"
+        />
 
-      <!-- EE start -->
-      <!-- Code Owners -->
-      <div v-if="showCodeOwners">
+        <!-- Force push -->
         <div class="gl-display-flex gl-align-items-center">
           <gl-icon
-            data-testid="code-owners-icon"
             :size="14"
-            :name="codeOwnersApprovalAttributes.icon"
-            :class="codeOwnersApprovalAttributes.iconClass"
+            data-testid="force-push-icon"
+            :name="forcePushAttributes.icon"
+            :class="forcePushAttributes.iconClass"
           />
-          <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+          <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
         </div>
 
-        <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
-      </div>
+        <div class="gl-text-gray-400 gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+
+        <!-- EE start -->
+        <!-- Code Owners -->
+        <div v-if="showCodeOwners">
+          <div class="gl-display-flex gl-align-items-center">
+            <gl-icon
+              data-testid="code-owners-icon"
+              :size="14"
+              :name="codeOwnersApprovalAttributes.icon"
+              :class="codeOwnersApprovalAttributes.iconClass"
+            />
+            <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
+          </div>
+
+          <div class="gl-text-gray-400">{{ codeOwnersApprovalAttributes.description }}</div>
+        </div>
+      </section>
 
       <!-- Approvals -->
       <template v-if="showApprovers">

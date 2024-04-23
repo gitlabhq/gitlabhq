@@ -359,9 +359,9 @@ gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1', feature_category: :error_tracking
-gem 'sentry-ruby', '~> 5.11.0', feature_category: :error_tracking
-gem 'sentry-rails', '~> 5.11.0', feature_category: :error_tracking
-gem 'sentry-sidekiq', '~> 5.11.0', feature_category: :error_tracking
+gem 'sentry-ruby', '~> 5.10.0', feature_category: :error_tracking
+gem 'sentry-rails', '~> 5.10.0', feature_category: :error_tracking
+gem 'sentry-sidekiq', '~> 5.10.0', feature_category: :error_tracking
 
 # PostgreSQL query parsing
 #
@@ -371,8 +371,7 @@ gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation' # rubocop:
 gem 'gitlab-http', path: 'gems/gitlab-http' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'premailer-rails', '~> 1.10.3' # rubocop:todo Gemfile/MissingFeatureCategory
-
-gem 'gitlab-labkit', '~> 0.35.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'gitlab-labkit', '~> 0.36.0', feature_category: :shared
 gem 'thrift', '>= 0.16.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # I18n
@@ -598,7 +597,7 @@ gem 'gitaly', '~> 16.11.0.pre.rc1', feature_category: :gitaly
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.4.0', feature_category: :deployment_management
 
-gem 'grpc', '~> 1.60.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'grpc', '~> 1.62', feature_category: :shared
 
 gem 'google-protobuf', '~> 3.25', '>= 3.25.3' # rubocop:todo Gemfile/MissingFeatureCategory
 

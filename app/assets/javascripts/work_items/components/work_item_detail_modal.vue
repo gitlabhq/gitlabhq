@@ -26,6 +26,11 @@ export default {
       required: false,
       default: null,
     },
+    workItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['workItemDeleted', 'close', 'update-modal'],
   data() {
@@ -121,6 +126,7 @@ export default {
     <work-item-detail
       is-modal
       :work-item-iid="displayedWorkItemIid"
+      :modal-work-item-full-path="workItemFullPath"
       class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolate"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"

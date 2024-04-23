@@ -1756,6 +1756,10 @@ To avoid this problem, you can write `binding.pry` on the line where you want Ca
 
 Inside the terminal, where capybara is running, you can also execute `next` which goes line by line through the test. This way you can check every single interaction one by one to see what might be causing an issue.
 
+### Improving execution time on the GDK
+
+Running the Jest test suite, the number of workers is set to use 60% of the available cores of your machine; this results in faster execution times but higher memory consumption. For more benchmarks on how this works please refer to this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456885).
+
 ### Updating ChromeDriver
 
 Starting from `Selenium` 4.6, ChromeDriver can be automatically managed by `Selenium Manager` which comes with the `selenium-webdriver` gem.

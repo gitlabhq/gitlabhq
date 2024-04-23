@@ -1,19 +1,20 @@
 import { s__ } from '~/locale';
 
 export const I18N = {
-  pageTitle: s__('BranchRules|Branch rules details'),
+  pageTitle: s__('BranchRules|Branch rule details'),
   deleteRule: s__('BranchRules|Delete rule'),
   manageProtectionsLinkTitle: s__('BranchRules|Manage in protected branches'),
   targetBranch: s__('BranchRules|Target branch'),
   ruleTarget: s__('BranchRules|Rule target'),
   branchNameOrPattern: s__('BranchRules|Branch name or pattern'),
   allBranches: s__('BranchRules|All branches'),
+  allProtectedBranches: s__('BranchRules|All protected branches'),
   matchingBranchesLinkTitle: s__('BranchRules|%{total} matching %{subject}'),
   protectBranchTitle: s__('BranchRules|Protect branch'),
   protectBranchDescription: s__(
     'BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}',
   ),
-  approvalsTitle: s__('BranchRules|Approvals'),
+  approvalsTitle: s__('BranchRules|Merge request approvals'),
   manageApprovalsLinkTitle: s__('BranchRules|Manage in merge request approvals'),
   approvalsDescription: s__(
     'BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}',

@@ -60,18 +60,22 @@ export const formatProjects = (projects) =>
   );
 
 export const formatGroups = (groups) =>
-  groups.map(({ id, webUrl, parent, maxAccessLevel: accessLevel, userPermissions, ...group }) => ({
-    ...group,
-    id: getIdFromGraphQLId(id),
-    webUrl,
-    parent: parent?.id || null,
-    accessLevel,
-    editPath: `${webUrl}/-/edit`,
-    availableActions: availableGroupActions(userPermissions),
-    actionLoadingStates: {
-      [ACTION_DELETE]: false,
-    },
-  }));
+  groups.map(
+    ({ id, fullName, webUrl, parent, maxAccessLevel: accessLevel, userPermissions, ...group }) => ({
+      ...group,
+      id: getIdFromGraphQLId(id),
+      name: fullName,
+      fullName,
+      webUrl,
+      parent: parent?.id || null,
+      accessLevel,
+      editPath: `${webUrl}/-/edit`,
+      availableActions: availableGroupActions(userPermissions),
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
+    }),
+  );
 
 export const onPageChange = ({
   startCursor,

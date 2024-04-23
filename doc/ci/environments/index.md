@@ -332,7 +332,7 @@ To enable tracking configure your environment so either:
   # Non Trackable
   environment: review/$CI_COMMIT_REF_SLUG
   environment: testing/aws
-   ```
+  ```
 
 Configuration changes apply only to new deployments. Existing deployment records do not have merge requests linked or unlinked from them.
 
@@ -593,7 +593,7 @@ To view an environment's expiration date and time:
 
 The expiration date and time is displayed in the upper-left corner, next to the environment's name.
 
-##### Override a environment's scheduled stop date and time
+##### Override an environment's scheduled stop date and time
 
 When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can override its expiration.
@@ -608,7 +608,7 @@ To override an environment's expiration in the UI:
 To override an environment's expiration in the `.gitlab-ci.yml`:
 
 1. Open the project's `.gitlab-ci.yml`.
-1. Update the `auto_stop_in` setting of the corresponding deploy job and set it to `auto_stop_in: never`
+1. Update the `auto_stop_in` setting of the corresponding deploy job to `auto_stop_in: never`.
 
 The `auto_stop_in` setting is overridden and the environment remains active until it's stopped
 manually.

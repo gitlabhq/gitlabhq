@@ -346,10 +346,10 @@ The workaround is to amend your group or instance push rules to allow branches f
 - When enforcing scan execution policies, security policies use a bot in the target project to
   trigger scheduled pipelines to ensure enforcement. When the bot is missing, it is automatically
   created, and the following scheduled scan uses it.
-- You should not link a security policy project to a development project and to the group or
-  subgroup the development project belongs to at the same time. Linking this way results in approval
-  rules from the Scan Result Policy not being applied to merge requests in the development project.
-- When creating a Scan Result Policy, neither the array `severity_levels` nor the array
+- You should not link a security policy project to both a development project and the group or
+  subgroup the development project belongs to. Linking this way results in approval
+  rules from the merge request approval policies not being applied to merge requests in the development project.
+- When creating a merge request approval policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist.
 - When merge request approval policies are enforced on projects containing manual jobs in their pipeline, policies evaluate the completed pipeline jobs and ignore the manual jobs. When the manual jobs are run, the policy re-evaluates the MR.

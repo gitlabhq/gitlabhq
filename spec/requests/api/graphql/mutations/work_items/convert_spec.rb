@@ -59,29 +59,4 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
       let(:mutation_class) { ::Mutations::WorkItems::Convert }
     end
   end
-
-  context 'when converting epic work item' do
-    let_it_be(:new_type) { create(:work_item_type, :issue, :default) }
-    let(:current_user) { developer }
-    let_it_be(:group) { create(:group, developers: developer) }
-
-    before do
-      allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(current_user, :create_issue, work_item).and_return(true)
-    end
-
-    context 'when epic work item does not have a synced epic' do
-      let_it_be(:work_item) { create(:work_item, :epic, namespace: group) }
-
-      it 'converts the work item type', :aggregate_failures do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { work_item.reload.work_item_type }.to(new_type)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(work_item.reload.work_item_type.base_type).to eq('issue')
-        expect(mutation_response['workItem']).to include('id' => work_item.to_global_id.to_s)
-      end
-    end
-  end
 end

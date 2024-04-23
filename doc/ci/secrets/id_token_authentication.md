@@ -139,7 +139,7 @@ manual_authentication:
   image: vault:latest
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: http://vault.example.com:8200
+      aud: http://vault.example.com
   script:
     - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-example jwt=$VAULT_ID_TOKEN)"
     - export PASSWORD="$(vault kv get -field=password secret/myproject/example/db)"
@@ -166,7 +166,7 @@ If one ID token is defined, the `secrets` keyword automatically uses it to authe
 job_with_secrets:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://example.vault.com
+      aud: https://vault.example.com
   secrets:
     PROD_DB_PASSWORD:
       vault: example/db/password # authenticates using $VAULT_ID_TOKEN

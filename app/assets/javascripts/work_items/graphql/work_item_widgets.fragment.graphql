@@ -75,6 +75,9 @@ fragment WorkItemWidgets on WorkItemWidget {
         closedAt
         webUrl
         reference(full: true)
+        namespace {
+          fullPath
+        }
         widgets {
           ... on WorkItemWidgetHierarchy {
             type

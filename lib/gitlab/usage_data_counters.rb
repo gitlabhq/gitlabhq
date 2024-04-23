@@ -13,7 +13,6 @@ module Gitlab
       WebIdeCounter,
       WikiPageCounter,
       SnippetCounter,
-      CycleAnalyticsCounter,
       ProductivityAnalyticsCounter,
       SourceCodeCounter,
       MergeRequestWidgetExtensionCounter

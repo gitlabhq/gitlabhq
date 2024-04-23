@@ -107,7 +107,7 @@ To update your fork from the command line, first ensure that you have configured
 an `upstream` remote repository for your fork:
 
 1. Clone your fork locally, if you have not already done so. For more information, see
-   [Cloning Git repositories](../../../topics/git/get_started.md#cloning-git-repositories).
+   [Cloning Git repositories](../../../topics/git/clone.md).
 1. View the remotes configured for your fork:
 
    ```shell

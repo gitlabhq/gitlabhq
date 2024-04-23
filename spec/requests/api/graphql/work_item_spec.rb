@@ -1075,7 +1075,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       context 'when work item base type is non issue' do
-        let_it_be(:epic) { create(:work_item, :epic, namespace: group) }
+        let_it_be(:epic) { create(:work_item, :task, namespace: group) }
         let_it_be(:global_id) { epic.to_gid.to_s }
 
         it 'returns without design' do

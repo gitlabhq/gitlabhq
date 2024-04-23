@@ -7,6 +7,7 @@ module Mutations
 
       include ServiceCompatibility
       include Mutations::SpamProtection
+      include Gitlab::InternalEventsTracking
 
       authorize :create_snippet
 
@@ -53,7 +54,7 @@ module Mutations
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?
-          Gitlab::InternalEvents.track_event(
+          track_internal_event(
             'g_edit_by_snippet_ide',
             user: current_user,
             project: project

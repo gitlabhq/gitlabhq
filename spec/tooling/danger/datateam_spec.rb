@@ -106,13 +106,28 @@ RSpec.describe Tooling::Danger::Datateam do
           mr_labels: ['type::maintenance'],
           impacted: false,
           impacted_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml]
+        },
+        'with database metric files added' => {
+          added_files: %w[config/metrics/20210216182127_users_all.yml],
+          changed_lines: ['+data_source: database'],
+          mr_labels: ['type::maintenance'],
+          impacted: true,
+          impacted_files: %w[config/metrics/20210216182127_users_all.yml]
+        },
+        'with non-database metric files added' => {
+          added_files: %w[config/metrics/20210216182127_users_all.yml],
+          changed_lines: ['+data_source: internal_events'],
+          mr_labels: ['type::maintenance'],
+          impacted: false,
+          impacted_files: %w[config/metrics/20210216182127_users_all.yml]
         }
       }
     end
 
     with_them do
       before do
-        allow(fake_helper).to receive(:modified_files).and_return(modified_files)
+        allow(fake_helper).to receive(:modified_files).and_return(modified_files || [])
+        allow(fake_helper).to receive(:added_files).and_return(added_files || [])
         allow(fake_helper).to receive(:changed_lines).and_return(changed_lines)
         allow(fake_helper).to receive(:mr_labels).and_return(mr_labels)
         allow(fake_helper).to receive(:markdown_list).with(impacted_files).and_return(impacted_files.map { |item| "* `#{item}`" }.join("\n"))

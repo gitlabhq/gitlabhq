@@ -40,7 +40,7 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        Gitlab::UsageDataCounters::CycleAnalyticsCounter.count(:views)
+        Gitlab::InternalEvents.track_event('view_cycle_analytics', project: @project, user: current_user)
 
         render :show
       end

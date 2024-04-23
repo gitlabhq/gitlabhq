@@ -29,6 +29,56 @@ module Danger
       MARKDOWN
     end
 
+    def report_legacy_utils_usage
+      `yarn tailwindcss:build`
+
+      legacy_utils = File
+        .read("./config/helpers/tailwind/css_in_js.js")
+        .scan(/'(\.[^\']*)'/).flatten.map do |legacy_util|
+          legacy_util.gsub('.', 'gl-').gsub('\\\\!', '!')
+        end
+
+      files_with_legacy_utils = @helper.all_changed_files.flat_map do |file|
+        diff = @git.diff_for_file(file)
+
+        # When a file is just moved around it appears in the changed files list
+        # but the diff is empty so we are skipping it.
+        next [] if diff.nil?
+
+        used_legacy_utils = diff.patch.each_line.flat_map do |line|
+          next [] unless line.start_with?('+')
+
+          legacy_utils.select do |legacy_util|
+            legacy_util_regex = if legacy_util.end_with?('!')
+                                  /#{legacy_util.gsub('\\\\!', '!')}/
+                                else
+                                  /#{legacy_util}(?!!)/
+                                end
+
+            line.match?(legacy_util_regex)
+          end
+        end
+
+        next [] if used_legacy_utils.empty?
+
+        [[file, used_legacy_utils]]
+      end
+
+      return "" if files_with_legacy_utils.empty?
+
+      <<~MARKDOWN
+      ### Legacy utils
+
+      The following files contain legacy utils:
+      #{format_files_with_legacy_utils_list(files_with_legacy_utils)}
+
+      Use the [Tailwind documentation](https://tailwindcss.com/docs/installation) to find the Tailwind
+      equivalent to these legacy utils. If the Tailwind equivalent is not available it is okay to use the
+      legacy util for now. The Tailwind equivalent will be made available when the corresponding migration issue
+      in [&13521](https://gitlab.com/groups/gitlab-org/-/epics/13521) is completed.
+      MARKDOWN
+    end
+
     private
 
     def frontend_tailwindy_files(files)
@@ -62,11 +112,17 @@ module Danger
         "- `#{file}`"
       end.join("\n")
     end
+
+    def format_files_with_legacy_utils_list(files)
+      files.map do |file, legacy_utils|
+        "- `#{file}`\n" + legacy_utils.map { |legacy_util| "  - `#{legacy_util}`" }.join("\n")
+      end.join("\n")
+    end
   end
 end
 
 danger_tailwind = Danger::Tailwind.new(helper, git)
-report = danger_tailwind.report_interpolated_utils
+report = danger_tailwind.report_interpolated_utils + danger_tailwind.report_legacy_utils_usage
 
 unless report.empty?
   markdown <<~MSG

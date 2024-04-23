@@ -4,230 +4,105 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with Git
+# Get started learning Git
 
-If you're new to Git and want to learn by working in your own project,
-[learn how to make your first commit](../../tutorials/make_first_git_commit/index.md).
+Git is a version control system you use to track changes to your code
+and collaborate with others. GitLab is a web-based Git repository manager
+that provides CI/CD and other features to help you manage your software development lifecycle.
 
-For a quick reference of Git commands, download a [Git Cheat Sheet](https://about.gitlab.com/images/press/git-cheat-sheet.pdf).
+To use GitLab, you don't need to know how to use Git. However, if you're going to
+use GitLab for source control, it can be useful to understand how to use Git.
 
-Learn how [GitLab became the backbone of the Worldline](https://about.gitlab.com/customers/worldline/) development environment.
+Learning Git is part of a larger workflow:
 
-To help you visualize what you're doing locally, you can install a
-[Git GUI app](https://git-scm.com/downloads/guis).
+![Workflow](img/get_started_git_v16_11.png)
 
-## Choose a repository
+## Step 1: Understand repositories and working directories
 
-Before you begin, choose the repository you want to work in. You can use any project you have permission to
-access on GitLab.com or any other GitLab instance.
+A Git repository is essentially a directory that contains all the files,
+folders, and version history of a project.
+It serves as a central hub where you can store, manage, and share your code or content.
 
-To use the repository in the examples on this page:
+When you initialize a Git repository or clone an existing one, Git
+creates a hidden directory called `.git` in the project directory.
+This hidden directory contains all the necessary metadata and objects
+that Git uses to manage the repository, including the complete history
+of changes made to the files. Git tracks changes at the file level, so you can
+view the modifications made to individual files over time.
 
-1. Go to [https://gitlab.com/gitlab-tests/sample-project/](https://gitlab.com/gitlab-tests/sample-project/).
-1. In the upper-right corner, select **Fork**.
-1. Choose a namespace for your fork.
+To create and change code, you clone a Git repository and work in the local copy,
+in your working directory. Then, to collaborate, you push your changes to a remote
+Git repository, which is hosted on GitLab. Then the changes are available
+to other team members. And you can pull changes made by others, so that your local repository
+stays up to date.
 
-The project becomes available at `https://gitlab.com/<your-namespace>/sample-project/`.
+For more information, see:
 
-You can [fork](../../user/project/repository/forking_workflow.md#create-a-fork) any project you have access to.
+- [Repositories](../../user/project/repository/index.md)
 
-## Cloning Git repositories
+## Step 2: Learn about branching and merging
 
-When you clone a repository, the files from the remote repository are downloaded to your computer,
-and a connection is created.
+In Git, you use branches so that you and your team can work on different features,
+bug fixes, or experiments simultaneously, without interfering with each other's work.
+You can then make changes, commit them, and test them in isolation without impacting
+the stability of the default branch. Branches can be created, merged, and deleted.
 
-This connection requires you to add credentials. You can either use SSH or HTTPS. SSH is recommended.
+The default branch is usually called `main` or `master`.
+After a feature is complete or a bug is fixed, you can merge the changes from your branch
+into the default branch. Merging combines the changes from one branch into another.
 
-### Clone with SSH
+If conflicts arise during the merge process (for example, if the same lines of code have been
+modified in both branches), the conflicts must be resolved manually. After a successful merge,
+the branch can be deleted if it is no longer needed. Deleting the branch helps keep the repository
+organized and maintainable.
 
-Clone with SSH when you want to authenticate only one time.
+For more information, see:
 
-1. Authenticate with GitLab by following the instructions in the [SSH documentation](../../user/ssh.md).
-1. On the left sidebar, select **Search or go to** and find the project you want to clone.
-1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
-1. Open a terminal and go to the directory where you want to clone the files.
-   Git automatically creates a folder with the repository name and downloads the files there.
-1. Run this command:
+- [Branches](../../user/project/repository/branches/index.md)
 
-   ```shell
-   git clone git@gitlab.com:gitlab-tests/sample-project.git
-   ```
+## Step 3: Understand the Git workflow
 
-1. To view the files, go to the new directory:
+A typical Git workflow involves the following steps:
 
-   ```shell
-   cd sample-project
-   ```
+1. Cloning a repository to your local machine.
+1. Creating a new branch for your changes.
+1. Making changes to files in your working directory.
+1. Staging the changes you want to commit.
+1. Committing the changes to your local repository.
+1. Pushing the changes to the remote repository.
+1. Merging your branch into the default branch.
 
-You can also
-[clone a repository and open it directly in Visual Studio Code](../../user/project/repository/index.md#clone-and-open-in-visual-studio-code).
+Your organization might use a slightly different workflow,
+including using forks. A fork is a personal copy of the repository
+and all its branches, which you create in a namespace of your choice.
+You might work on your changes in a fork before merging them to
+the default branch of the source project.
 
-### Clone with HTTPS
+For more information, see:
 
-Clone with HTTPS when you want to authenticate each time you perform an operation between your computer and GitLab.
-[OAuth credential helpers](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease
-the number of times you must manually authenticate, making HTTPS a seamless experience.
+- [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md)
+- [Forks](../../user/project/repository/forking_workflow.md)
 
-1. On the left sidebar, select **Search or go to** and find the project you want to clone.
-1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
-1. Open a terminal and go to the directory where you want to clone the files.
-1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
+## Step 4: Familiarize yourself with Git commands
 
-   ```shell
-   git clone https://gitlab.com/gitlab-tests/sample-project.git
-   ```
+To work with Git from the command line, you'll need to use various Git commands.
+Some of the most commonly used commands include:
 
-1. GitLab requests your username and password.
+- `git clone`: Clone a repository to your local machine
+- `git branch`: List, create, or delete branches
+- `git checkout`: Switch between branches
+- `git add`: Stage changes for commit
+- `git commit`: Commit staged changes to your local repository
+- `git push`: Push local commits to the remote repository
+- `git pull`: Fetch changes from the remote repository and merge them into your local branch
 
-   If you have enabled two-factor authentication (2FA) on your account, you cannot use your account password. Instead, you can do one of the following:
+For more information, see:
 
-   - [Clone using a token](#clone-using-a-token) with `read_repository` or `write_repository` permissions.
-   - Install an [OAuth credential helper](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
+- [Command line Git](../../gitlab-basics/start-using-git.md)
 
-   If you have not enabled 2FA, use your account password.
+## Step 5: Practice using Git
 
-1. To view the files, go to the new directory:
-
-   ```shell
-   cd sample-project
-   ```
-
-NOTE:
-On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
-add your namespace (username or group) to the path:
-`git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
-
-#### Clone using a token
-
-Clone with HTTPS using a token if:
-
-- You want to use 2FA.
-- You want to have a revocable set of credentials scoped to one or more repositories.
-
-You can use any of these tokens to authenticate when cloning over HTTPS:
-
-- [Personal access tokens](../../user/profile/personal_access_tokens.md).
-- [Deploy tokens](../../user/project/deploy_tokens/index.md).
-- [Project access tokens](../../user/project/settings/project_access_tokens.md).
-- [Group access tokens](../../user/group/settings/group_access_tokens.md).
-
-```shell
-git clone https://<username>:<token>@gitlab.example.com/tanuki/awesome_project.git
-```
-
-## Using Git branches
-
-A **branch** is a copy of the files in the repository at the time you create the branch.
-You can work in your branch without affecting other branches. When
-you're ready to add your changes to the main codebase, you can merge your branch into
-the default branch, for example, `main`.
-
-Use branches when you:
-
-- Want to add code to a project but you're not sure if it works properly.
-- Are collaborating on the project with others, and don't want your work to get mixed up.
-
-A new branch is often called **feature branch** to differentiate from the
-[default branch](../../user/project/repository/branches/default.md).
-
-### Create a branch
-
-To create a feature branch:
-
-```shell
-git checkout -b <name-of-branch>
-```
-
-GitLab enforces [branch naming rules](../../user/project/repository/branches/index.md#name-your-branch)
-to prevent problems, and provides
-[branch naming patterns](../../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers)
-to streamline merge request creation.
-
-### Switch to a branch
-
-All work in Git is done in a branch.
-You can switch between branches to see the state of the files and work in that branch.
-
-To switch to an existing branch:
-
-```shell
-git checkout <name-of-branch>
-```
-
-For example, to change to the `main` branch:
-
-```shell
-git checkout main
-```
-
-## Common terms
-
-If you're new to Git, start by reviewing some of the most commonly used terms.
-
-### Repository
-
-Files are stored in a **repository**. A repository is similar to how you
-store files in a folder or directory on your computer.
-
-- A **remote repository** refers to the files in GitLab.
-- A **local copy** refers to the files on your computer.
-
-The word **repository** is often shortened to **repo**.
-
-In GitLab, a repository is part of a **project**.
-
-**Get started:**
-
-- [Learn more about repositories](../../user/project/repository/index.md).
-- [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md).
-
-### Clone
-
-To create a copy of a remote repository's files on your computer, you **clone** it.
-When you clone a repository, you can sync the repository with the remote repository in GitLab.
-You can modify the files locally and upload the changes to the remote repository on GitLab.
-
-### Pull
-
-When the remote repository changes, your local copy is behind. You can update your local copy with the new
-changes in the remote repository.
-This action is known as **pulling** from the remote, because you use the command `git pull`.
-
-**Get started**:
-
-- [Download the latest changes in the project](../../gitlab-basics/start-using-git.md#download-the-latest-changes-in-the-project).
-
-### Push
-
-After you save a local copy of a repository and modify the files on your computer, you can upload the
-changes to GitLab. This action is known as **pushing** to the remote, because you use the command
-`git push`.
-
-**Get started**:
-
-- [Send changes to GitLab](../../gitlab-basics/add-file.md#send-changes-to-gitlab).
-
-### Fork
-
-When you want to contribute to someone else's repository, you make a copy of it.
-This copy is called a **fork**.
-
-When you create a fork of a repository, you create a copy of the project in your own
-namespace in the remote repository.
-You then have write permissions to modify the project files and settings.
-
-For example, you can fork this project in to your namespace:
-
-- <https://gitlab.com/gitlab-tests/sample-project/>
-
-You now have your own copy of the repository. You can view the namespace in the URL, for example:
-
-- `https://gitlab.com/your-namespace/sample-project/`
-
-Then you can clone the repository to your local machine, work on the files, and submit changes back to the
-original repository.
-
-**Get started**
-
-- [Learn more about forks](../../user/project/repository/forking_workflow.md).
-- [Learn more about namespaces](../../user/namespace/index.md).
+The best way to learn Git is by using it in practice. Create a test project,
+experiment with different commands, and try out various workflows.
+GitLab provides a web-based interface for many Git operations,
+but it's also useful to understand how to use Git from the command line.

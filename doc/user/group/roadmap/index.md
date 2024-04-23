@@ -10,8 +10,29 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Epics and milestones in a group containing a start date or due date can be visualized in a form
-of a timeline (that is, a Gantt chart). The Roadmap page shows the epics and milestones in a
+Epics in a group containing a start date or due date can be visualized in a form
+of a timeline.
+
+The roadmap in GitLab provides a high-level overview of the planned work and progress of epics and
+milestones in a timeline view (that is, a Gantt chart).
+Use the roadmap to visualize and communicate the strategic direction and dependencies of your projects.
+
+The epic roadmap offers the following benefits:
+
+- Aligns the team around a shared vision and goals.
+- Assists long-term planning and resource allocation.
+- Identifies potential blockers, dependencies, and risks early.
+- Provides stakeholders with a clear understanding of the project's timeline and milestones.
+- Helps track and update the project's progress.
+
+## View the roadmap
+
+To view the roadmap in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan > Roadmap**.
+
+The Roadmap page shows the epics and milestones in a
 group, one of its subgroups, or a project in one of the groups.
 
 On the epic bars, you can see each epic's title, progress, and completed weight percentage.

@@ -42,13 +42,19 @@ module WorkItems
           linked_item = link.try(direction)
 
           if can_admin_work_item_link?(linked_item)
-            link.destroy!
-            removed_ids << linked_item.id
-            create_notes(link)
+            create_notes(link) if perform_destroy_link(link, linked_item)
           else
             failed_ids << linked_item.id
           end
         end
+      end
+
+      # Overriden on EE to sync deletion with
+      # related epic links records
+      def perform_destroy_link(link, linked_item)
+        link.destroy!
+        removed_ids << linked_item.id
+        true
       end
 
       def create_notes(link)

@@ -281,5 +281,6 @@ module.exports = (path, options = {}) => {
       ...(IS_EE ? ['<rootDir>/ee/app/assets/javascripts/', ...extRootsEE] : []),
       ...(IS_JH ? ['<rootDir>/jh/app/assets/javascripts/', ...extRootsJH] : []),
     ],
+    maxWorkers: process.env.CI ? '100%' : '60%',
   };
 };

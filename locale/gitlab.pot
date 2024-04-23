@@ -8557,6 +8557,9 @@ msgstr ""
 msgid "BlockSeatOverages|Your top-level group %{root_namespace_name} is now read-only."
 msgstr ""
 
+msgid "BlockSeatOverages|Your top-level group is over the number of seats in its subscription and has been placed in a read-only state."
+msgstr ""
+
 msgid "Blocked"
 msgstr ""
 
@@ -8956,6 +8959,9 @@ msgstr ""
 msgid "BranchRules|All branches"
 msgstr ""
 
+msgid "BranchRules|All protected branches"
+msgstr ""
+
 msgid "BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}."
 msgstr ""
 
@@ -8986,9 +8992,6 @@ msgstr ""
 msgid "BranchRules|An error occurred while fetching branches."
 msgstr ""
 
-msgid "BranchRules|Approvals"
-msgstr ""
-
 msgid "BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -9004,7 +9007,7 @@ msgstr ""
 msgid "BranchRules|Branch rule created."
 msgstr ""
 
-msgid "BranchRules|Branch rules details"
+msgid "BranchRules|Branch rule details"
 msgstr ""
 
 msgid "BranchRules|Cancel"
@@ -9059,6 +9062,9 @@ msgid "BranchRules|Manage in protected branches"
 msgstr ""
 
 msgid "BranchRules|Manage in status checks"
+msgstr ""
+
+msgid "BranchRules|Merge request approvals"
 msgstr ""
 
 msgid "BranchRules|No data to display"
@@ -14966,6 +14972,9 @@ msgid "Couldn't create link due to an internal error."
 msgstr ""
 
 msgid "Couldn't delete link due to an internal error."
+msgstr ""
+
+msgid "Couldn't delete work item link due to an internal error."
 msgstr ""
 
 msgid "Couldn't fetch the pinned file."
