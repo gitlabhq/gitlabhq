@@ -7,14 +7,13 @@ import {
   GlModal,
   GlAlert,
   GlLink,
-  GlSprintf,
 } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { issuableTypeText, TYPE_ISSUE } from '~/issues/constants';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import createTimelogMutation from '../../queries/create_timelog.mutation.graphql';
 import { CREATE_TIMELOG_MODAL_ID } from './constants';
 
@@ -27,7 +26,6 @@ export default {
     GlModal,
     GlAlert,
     GlLink,
-    GlSprintf,
   },
   inject: {
     issuableType: {
@@ -50,6 +48,12 @@ export default {
     };
   },
   computed: {
+    modalText() {
+      const issuableTypeName = issuableTypeText[this.issuableType];
+      return sprintf(s__('TimeTracking|Track time spent on this %{issuableTypeName}.'), {
+        issuableTypeName,
+      });
+    },
     submitDisabled() {
       return this.isLoading || this.timeSpent.length === 0;
     },
@@ -70,11 +74,6 @@ export default {
     },
     timeTrackingDocsPath() {
       return joinPaths(gon.relative_url_root || '', '/help/user/project/time_tracking.md');
-    },
-    issuableTypeName() {
-      return this.isIssue()
-        ? s__('CreateTimelogForm|issue')
-        : s__('CreateTimelogForm|merge request');
     },
   },
   methods: {
@@ -129,11 +128,8 @@ export default {
           this.isLoading = false;
         });
     },
-    isIssue() {
-      return this.issuableType === TYPE_ISSUE;
-    },
     getGraphQLEntityType() {
-      return this.isIssue() ? TYPENAME_ISSUE : TYPENAME_MERGE_REQUEST;
+      return this.issuableType === TYPE_ISSUE ? TYPENAME_ISSUE : TYPENAME_MERGE_REQUEST;
     },
     updateSpentAtDate(val) {
       this.spentAt = val;
@@ -160,21 +156,8 @@ export default {
     @close="close"
     @hide="close"
   >
-    <p data-testid="timetracking-docs-link">
-      <gl-sprintf
-        :message="
-          s__(
-            'CreateTimelogForm|Track time spent on this %{issuableTypeNameStart}%{issuableTypeNameEnd}. %{timeTrackingDocsLinkStart}%{timeTrackingDocsLinkEnd}',
-          )
-        "
-      >
-        <template #issuableTypeName>{{ issuableTypeName }}</template>
-        <template #timeTrackingDocsLink>
-          <gl-link :href="timeTrackingDocsPath" target="_blank">{{
-            s__('CreateTimelogForm|How do I track and estimate time?')
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
+    <p>
+      {{ modalText }}
     </p>
     <form
       class="gl-display-flex gl-flex-direction-column js-quick-submit"
@@ -212,19 +195,17 @@ export default {
           />
         </gl-form-group>
       </div>
-      <gl-form-group
-        :label="s__('CreateTimelogForm|Summary')"
-        optional
-        label-for="summary"
-        class="gl-mb-0"
-      >
+      <gl-form-group :label="s__('CreateTimelogForm|Summary')" optional label-for="summary">
         <gl-form-textarea id="summary" v-model="summary" rows="3" :no-resize="true" />
       </gl-form-group>
-      <gl-alert v-if="saveError" variant="danger" class="gl-mt-5" :dismissible="false">
+      <gl-alert v-if="saveError" variant="danger" class="gl-mb-3" :dismissible="false">
         {{ saveError }}
       </gl-alert>
       <!-- This is needed to have the quick-submit behaviour (with Ctrl + Enter or Cmd + Enter) -->
       <input type="submit" hidden />
     </form>
+    <gl-link :href="timeTrackingDocsPath">
+      {{ s__('CreateTimelogForm|How do I track and estimate time?') }}
+    </gl-link>
   </gl-modal>
 </template>

@@ -251,7 +251,7 @@ export default {
         <template #header>
           <strong>{{ $options.i18n.ruleTarget }}</strong>
           <gl-button
-            v-if="glFeatures.addBranchRule || glFeatures.editBranchRules"
+            v-if="glFeatures.editBranchRules"
             v-gl-modal="$options.editModalId"
             data-testid="edit-rule-button"
             size="small"
@@ -296,6 +296,7 @@ export default {
         :roles="mergeAccessLevels.roles"
         :users="mergeAccessLevels.users"
         :groups="mergeAccessLevels.groups"
+        is-edit-available
         data-testid="allowed-to-merge-content"
       />
 

@@ -27,6 +27,7 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
   let(:gitlab_client)                      { double('GitLab') } # rubocop:disable RSpec/VerifiedDoubles
   let(:file_filter)                        { ->(_) { true } }
   let(:only_new_paths)                     { false }
+  let(:project_token)                      { 'dummy-token' }
   let(:find_changes_api_token)             { nil }
   let(:find_changes_mr_project_path)       { nil }
   let(:find_changes_mr_iid)                { nil }
@@ -55,7 +56,7 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       'CI_API_V4_URL' => 'gitlab_api_url',
       'CI_MERGE_REQUEST_IID' => '1234',
       'CI_MERGE_REQUEST_PROJECT_PATH' => 'dummy-project',
-      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'dummy-token',
+      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => project_token,
       'FIND_CHANGES_API_TOKEN' => find_changes_api_token,
       'FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH' => find_changes_mr_project_path,
       'FIND_CHANGES_MERGE_REQUEST_IID' => find_changes_mr_iid
@@ -91,6 +92,14 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
           it 'sets to PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' do
             expect(instance.__send__(:gitlab_token)).to eq('mummy-token')
           end
+        end
+      end
+
+      context 'when PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE is not set' do
+        let(:project_token) { nil }
+
+        it 'sets to an empty string' do
+          expect(instance.__send__(:gitlab_token)).to eq('')
         end
       end
     end

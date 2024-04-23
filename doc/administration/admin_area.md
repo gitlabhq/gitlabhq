@@ -115,7 +115,7 @@ For each user, the following are listed:
 1. Username
 1. Email address
 1. Project membership count
-1. Group membership count ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276215) in GitLab 13.12)
+1. Group membership count
 1. Date of account creation
 1. Date of last activity
 
@@ -171,9 +171,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
-
 An administrator can export user permissions for all users in the GitLab instance from the Admin Area's Users page.
 The export lists direct membership the users have in groups and projects.
 
@@ -184,7 +181,7 @@ The following data is included in the export:
 - Type
 - Path
 - Access level ([Project](../user/permissions.md#project-members-permissions) and [Group](../user/permissions.md#group-members-permissions))
-- Date of last activity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345388) in GitLab 14.6). For a list of activities that populate this column, see the [Users API documentation](../api/users.md#get-user-activities).
+- Date of last activity. For a list of activities that populate this column, see the [Users API documentation](../api/users.md#get-user-activities).
 
 Only the first 100,000 user accounts are exported.
 
@@ -254,7 +251,6 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 
 ## Administering topics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
 > - Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
 You can categorize and find similar projects with [topics](../user/project/project_topics.md).
@@ -473,7 +469,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-Since GitLab 13.0, **Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+**Log** view has been removed from the Admin Area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 
@@ -508,4 +504,3 @@ The **Instance overview** section of the Dashboard lists the current statistics 
 NOTE:
 These statistics show exact counts for values less than 10,000. For values of 10,000 and higher, these statistics show approximate data
 when [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16) and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads) strategies are used for calculations.
-.

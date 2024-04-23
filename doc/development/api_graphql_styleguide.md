@@ -45,8 +45,7 @@ with anyone who may work in this part of the codebase in the future. You can fin
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
 [Google Slides](https://docs.google.com/presentation/d/1qOTxpkTdHIp1CRjuTvO-aXg0_rUtzE3ETfLUdnBB5uQ/edit)
 and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/8e78ea7f326b2ef649e7d7d569c26d56/GraphQL_Deep_Dive__Create_.pdf).
-Everything covered in this deep dive was accurate as of GitLab 11.9, and while specific
-details may have changed after that release, it should still serve as a good introduction.
+Specific details may have changed since then, but it should still serve as a good introduction.
 
 ## GraphiQL
 

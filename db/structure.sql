@@ -12434,8 +12434,8 @@ ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id integer NOT NULL,
-    pipeline_id integer,
-    pipeline_id_convert_to_bigint bigint
+    pipeline_id_convert_to_bigint integer,
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE packages_build_infos_id_seq
@@ -17399,7 +17399,7 @@ CREATE TABLE vulnerability_feedback (
     category smallint NOT NULL,
     project_id integer NOT NULL,
     author_id integer NOT NULL,
-    pipeline_id integer,
+    pipeline_id_convert_to_bigint integer,
     issue_id integer,
     project_fingerprint character varying(40) NOT NULL,
     merge_request_id integer,
@@ -17409,7 +17409,7 @@ CREATE TABLE vulnerability_feedback (
     finding_uuid uuid,
     dismissal_reason smallint,
     migrated_to_state_transition boolean DEFAULT false,
-    pipeline_id_convert_to_bigint bigint
+    pipeline_id bigint
 );
 
 CREATE SEQUENCE vulnerability_feedback_id_seq
@@ -23998,8 +23998,6 @@ CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON merge_requests USING btre
 CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (id) WHERE (state_id = 3);
 
 CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON merge_requests USING btree (source_project_id, source_branch) WHERE (state_id = 1);
-
-CREATE INDEX idx_merge_requests_on_target_project_id_and_iid_opened ON merge_requests USING btree (target_project_id, iid) WHERE (state_id = 1);
 
 CREATE INDEX idx_merge_requests_on_target_project_id_and_locked_state ON merge_requests USING btree (target_project_id) WHERE (state_id = 4);
 

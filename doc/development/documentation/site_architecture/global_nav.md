@@ -7,11 +7,6 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 
 # Global navigation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/362) in GitLab 11.6.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/482) in GitLab 12.1.
-> - [Per-project](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/498) navigation added in GitLab 12.2.
-> - [Unified global navigation](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/1482) added in GitLab 13.11.
-
 Global navigation is the left-most pane in the documentation. You can use the
 "global nav" to browse the content.
 

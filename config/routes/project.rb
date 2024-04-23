@@ -68,6 +68,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :erase
             get :trace, defaults: { format: 'json' }
             get :raw
+            get :viewer
             get :terminal
             get :proxy
             get :test_report_summary

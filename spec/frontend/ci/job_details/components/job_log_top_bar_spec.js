@@ -21,6 +21,7 @@ describe('JobLogTopBar', () => {
 
   const defaultProps = {
     rawPath: '/raw',
+    logViewerPath: '/viewer',
     size: 511952,
     isScrollTopDisabled: false,
     isScrollBottomDisabled: false,
@@ -72,7 +73,21 @@ describe('JobLogTopBar', () => {
         expect(findShowingLast().text()).toMatch('Showing last 499.95 KiB of log.');
       });
 
-      it('renders link', () => {
+      it('renders links', () => {
+        expect(findShowingLastLinks()).toHaveLength(2);
+        expect(findShowingLastLinks().at(0).attributes('href')).toBe('/raw');
+        expect(findShowingLastLinks().at(1).attributes('href')).toBe('/viewer');
+      });
+    });
+
+    describe('with isJobLogSizeVisible and log viewer is not available', () => {
+      beforeEach(() => {
+        createWrapper({
+          logViewerPath: null,
+        });
+      });
+
+      it('renders size information', () => {
         expect(findShowingLastLinks()).toHaveLength(1);
         expect(findShowingLastLinks().at(0).attributes('href')).toBe('/raw');
       });

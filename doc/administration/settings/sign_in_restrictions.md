@@ -34,8 +34,6 @@ In the event of an external authentication provider outage, use the [GitLab Rail
 
 ## Admin Mode
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
-
 If you're an administrator, you might want to work in GitLab without administrator access.
 You could either create a separate user account that does not have
 administrator access or use Admin Mode.
@@ -172,8 +170,6 @@ period in hours.
 ![Two-factor grace period](img/two_factor_grace_period.png)
 
 ## Email notification for unknown sign-ins
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218457) in GitLab 13.2.
 
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../user/profile/notifications.md#notifications-for-unknown-sign-ins).

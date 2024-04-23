@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlModal, GlAlert, GlLink } from '@gitlab/ui';
 import setIssueTimeEstimateWithErrors from 'test_fixtures/graphql/issue_set_time_estimate_with_errors.json';
 import setIssueTimeEstimateWithoutErrors from 'test_fixtures/graphql/issue_set_time_estimate_without_errors.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -35,7 +35,7 @@ describe('Set Time Estimate Form', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findModalTitle = () => findModal().props('title');
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findDocsLink = () => wrapper.findByTestId('timetracking-docs-link');
+  const findDocsLink = () => wrapper.findComponent(GlLink);
   const findSaveButton = () => findModal().props('actionPrimary');
   const findSaveButtonLoadingState = () => findSaveButton().attributes.loading;
   const findSaveButtonDisabledState = () => findSaveButton().attributes.disabled;
@@ -414,7 +414,8 @@ describe('Set Time Estimate Form', () => {
     it('is present', async () => {
       await mountComponent();
 
-      expect(findDocsLink().exists()).toBe(true);
+      expect(findDocsLink().text()).toBe('How do I estimate and track time?');
+      expect(findDocsLink().attributes('href')).toBe('/help/user/project/time_tracking.md');
     });
   });
 });

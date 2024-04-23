@@ -1,5 +1,5 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick, GlSprintf } from '@gitlab/ui';
 import { scrollToElement, backOff } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { s__, sprintf } from '~/locale';
@@ -28,6 +28,7 @@ export default {
     GlLink,
     GlButton,
     GlSearchBoxByClick,
+    GlSprintf,
     HelpPopover,
   },
   directives: {
@@ -77,6 +78,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    logViewerPath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -190,7 +196,22 @@ export default {
     <div class="gl-display-none gl-sm-display-block gl-text-truncate" data-testid="showing-last">
       <template v-if="isJobLogSizeVisible">
         {{ jobLogSize }}
-        <gl-link v-if="rawPath" :href="rawPath">{{ s__('Job|View raw') }}</gl-link>
+        <gl-sprintf
+          v-if="rawPath && isComplete && logViewerPath"
+          :message="
+            s__(
+              'Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}view full log%{fullLinkEnd}.',
+            )
+          "
+        >
+          <template #rawLink="{ content }">
+            <gl-link :href="rawPath">{{ content }}</gl-link>
+          </template>
+          <template #fullLink="{ content }">
+            <gl-link :href="logViewerPath"> {{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
+        <gl-link v-else-if="rawPath" :href="rawPath">{{ s__('Job|View raw') }}</gl-link>
       </template>
     </div>
     <!-- eo truncated log information -->

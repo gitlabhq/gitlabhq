@@ -25,6 +25,7 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           'artifacts' => { 'enabled' => true },
           'external_diffs' => { 'enabled' => false },
           'pages' => { 'enabled' => true },
+          'ci_secure_files' => { 'enabled' => true },
           'object_store' => {
             'enabled' => true,
             'connection' => connection,
@@ -193,6 +194,13 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
         expect(settings.pages['object_store']).to eq(nil)
       end
 
+      it 'does not raise error if ci_secure_files config is missing' do
+        config['object_store']['objects'].delete('ci_secure_files')
+
+        expect { subject }.not_to raise_error
+        expect(settings.ci_secure_files['object_store']).to eq(nil)
+      end
+
       context 'GitLab Pages' do
         let(:pages_connection) { { 'provider' => 'Google', 'google_application_default' => true } }
 
@@ -237,6 +245,28 @@ RSpec.describe ObjectStoreSettings, feature_category: :shared do
           expect(settings.artifacts['object_store']['bucket_prefix']).to be_nil
           expect(settings.artifacts['object_store']['enabled']).to be_falsey
           expect(settings.artifacts['object_store']['consolidated_settings']).to be_falsey
+        end
+      end
+
+      context 'when object storage is disabled for ci_secure_files with no bucket' do
+        before do
+          config['ci_secure_files'] = {
+            'enabled' => true,
+            'object_store' => {}
+          }
+          config['object_store']['objects']['ci_secure_files'] = {
+            'enabled' => false
+          }
+        end
+
+        it 'does not enable consolidated settings for ci_secure_files' do
+          subject
+
+          expect(settings.ci_secure_files['enabled']).to be true
+          expect(settings.ci_secure_files['object_store']['remote_directory']).to be_nil
+          expect(settings.ci_secure_files['object_store']['bucket_prefix']).to be_nil
+          expect(settings.ci_secure_files['object_store']['enabled']).to be_falsey
+          expect(settings.ci_secure_files['object_store']['consolidated_settings']).to be_falsey
         end
       end
 

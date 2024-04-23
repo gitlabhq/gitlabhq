@@ -1,5 +1,5 @@
-import { GlLoadingIcon } from '@gitlab/ui';
-import { getAllByRole, getByRole, getAllByTestId } from '@testing-library/dom';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { getAllByRole, getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -25,7 +25,7 @@ describe('Issuable Time Tracking Report', () => {
   let wrapper;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findDeleteButton = () => wrapper.findByTestId('deleteButton');
+  const findDeleteButton = () => wrapper.findComponent(GlButton);
   const successIssueQueryHandler = jest.fn().mockResolvedValue(getIssueTimelogsQueryResponse);
   const successMrQueryHandler = jest.fn().mockResolvedValue(getMrTimelogsQueryResponse);
 
@@ -81,7 +81,9 @@ describe('Issuable Time Tracking Report', () => {
       expect(getAllByRole(wrapper.element, 'row', { name: /Administrator/i })).toHaveLength(2);
       expect(getAllByRole(wrapper.element, 'row', { name: /A note/i })).toHaveLength(1);
       expect(getAllByRole(wrapper.element, 'row', { name: /A summary/i })).toHaveLength(2);
-      expect(getAllByTestId(wrapper.element, 'deleteButton')).toHaveLength(1);
+      expect(getAllByRole(wrapper.element, 'button', { name: /Delete time spent/ })).toHaveLength(
+        1,
+      );
     });
   });
 
@@ -102,7 +104,9 @@ describe('Issuable Time Tracking Report', () => {
       await waitForPromises();
 
       expect(getAllByRole(wrapper.element, 'row', { name: /Administrator/i })).toHaveLength(3);
-      expect(getAllByTestId(wrapper.element, 'deleteButton')).toHaveLength(3);
+      expect(getAllByRole(wrapper.element, 'button', { name: /Delete time spent/ })).toHaveLength(
+        3,
+      );
     });
   });
 

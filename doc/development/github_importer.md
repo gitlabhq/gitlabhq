@@ -347,11 +347,6 @@ The code for this resides in:
 
 ## Logs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48512/diffs) in GitLab 13.7.
-> - Number of imported objects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64256) in GitLab 14.1.
-> - `Gitlab::GithubImport::Logger` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65968) in GitLab 14.2.
-> - `import_source` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67726) to `import_type` in GitLab 14.2.
-
 The import progress can be checked in the `logs/importer.log` file. Each relevant import is logged
 with `"import_type": "github"` and the `"project_id"`.
 

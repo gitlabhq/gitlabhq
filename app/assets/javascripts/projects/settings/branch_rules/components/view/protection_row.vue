@@ -1,5 +1,5 @@
 <script>
-import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { n__ } from '~/locale';
 
 const AVATAR_TOOLTIP_MAX_CHARS = 100;
@@ -11,7 +11,7 @@ export default {
   AVATAR_TOOLTIP_MAX_CHARS,
   MAX_VISIBLE_AVATARS,
   AVATAR_SIZE,
-  components: { GlAvatarsInline, GlAvatar, GlAvatarLink },
+  components: { GlAvatarsInline, GlAvatar, GlAvatarLink, GlBadge },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -54,9 +54,6 @@ export default {
         '%d additional users',
         this.users.length - this.$options.MAX_VISIBLE_AVATARS,
       );
-    },
-    commaSeparateList() {
-      return this.accessLevels.length > 1;
     },
     approvalsRequiredTitle() {
       return this.approvalsRequired
@@ -106,15 +103,15 @@ export default {
 
       <div v-if="statusCheckUrl" class="gl-ml-7 gl-flex-grow-1">{{ statusCheckUrl }}</div>
 
-      <div
+      <gl-badge
         v-for="(item, index) in accessLevels"
         :key="index"
+        class="gl-mr-2"
         data-testid="access-level"
         :data-qa-role="item.accessLevelDescription"
       >
-        <span v-if="commaSeparateList && index > 0" data-testid="comma-separator">,</span>
         {{ item.accessLevelDescription }}
-      </div>
+      </gl-badge>
 
       <div class="gl-ml-7 gl-flex-grow-1">{{ approvalsRequiredTitle }}</div>
     </div>

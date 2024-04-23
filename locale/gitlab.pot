@@ -15280,15 +15280,6 @@ msgstr ""
 msgid "CreateTimelogForm|Time spent"
 msgstr ""
 
-msgid "CreateTimelogForm|Track time spent on this %{issuableTypeNameStart}%{issuableTypeNameEnd}. %{timeTrackingDocsLinkStart}%{timeTrackingDocsLinkEnd}"
-msgstr ""
-
-msgid "CreateTimelogForm|issue"
-msgstr ""
-
-msgid "CreateTimelogForm|merge request"
-msgstr ""
-
 msgid "CreateValueStreamForm|%{name} (default)"
 msgstr ""
 
@@ -29292,6 +29283,9 @@ msgstr ""
 msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
 msgstr ""
 
+msgid "Job|%{rawLinkStart}View raw%{rawLinkEnd} or %{fullLinkStart}view full log%{fullLinkEnd}."
+msgstr ""
+
 msgid "Job|%{searchLength} results found for %{searchTerm}"
 msgstr ""
 
@@ -29328,7 +29322,13 @@ msgstr ""
 msgid "Job|Failed"
 msgstr ""
 
+msgid "Job|Feedback issue"
+msgstr ""
+
 msgid "Job|Finished at"
+msgstr ""
+
+msgid "Job|Full log viewer"
 msgstr ""
 
 msgid "Job|Full screen mode is not available"
@@ -29413,6 +29413,9 @@ msgid "Job|Showing last %{size} of log."
 msgstr ""
 
 msgid "Job|Skipped"
+msgstr ""
+
+msgid "Job|Something went wrong while loading the log."
 msgstr ""
 
 msgid "Job|Status"
@@ -39102,6 +39105,9 @@ msgstr ""
 msgid "ProductAnalytics|This table excludes projects that do not have product analytics onboarded."
 msgstr ""
 
+msgid "ProductAnalytics|To connect to your instance-level provider, you must first remove project-level provider configuration. You'll be redirected to the %{analyticsSettingsLink} page, which shows your provider's configuration settings and setup instructions."
+msgstr ""
+
 msgid "ProductAnalytics|To connect your own provider, you'll be redirected to the %{analyticsSettingsLink} page, which shows your provider's configuration settings and setup instructions."
 msgstr ""
 
@@ -39112,6 +39118,9 @@ msgid "ProductAnalytics|To instrument your application, select one of the option
 msgstr ""
 
 msgid "ProductAnalytics|Track your product's performance, and optimize your product and development processes."
+msgstr ""
+
+msgid "ProductAnalytics|Uncheck if you would like to configure a different provider for this project."
 msgstr ""
 
 msgid "ProductAnalytics|Unique Users"
@@ -39127,6 +39136,9 @@ msgid "ProductAnalytics|Use GitLab-managed provider"
 msgstr ""
 
 msgid "ProductAnalytics|Use a GitLab-managed infrastructure to process, store, and query analytics events data."
+msgstr ""
+
+msgid "ProductAnalytics|Use instance-level settings"
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
@@ -39154,6 +39166,9 @@ msgid "ProductAnalytics|What metric do you want to visualize?"
 msgstr ""
 
 msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."
+msgstr ""
+
+msgid "ProductAnalytics|Your instance will be created on the provider configured in your instance settings."
 msgstr ""
 
 msgid "ProductAnalytics|Your instance will be created on this provider:"
@@ -46016,9 +46031,6 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
-msgid "SecurityOrchestraation|(Formerly Scan result policy)"
-msgstr ""
-
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -46605,12 +46617,6 @@ msgstr ""
 msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
-msgid "SecurityOrchestration|The %{oldNameStart}Scan result policy%{oldNameEnd} is now called the %{newNameStart}Merge request approval policy%{newNameEnd} to better align with its purpose. For more details, see %{linkStart}the release notes%{linkEnd}."
-msgstr ""
-
-msgid "SecurityOrchestration|The Scan result policy is now called the Merge request approval policy to better align with its purpose. For more details, see %{linkStart}the release notes%{linkEnd}."
-msgstr ""
-
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
@@ -46678,9 +46684,6 @@ msgid "SecurityOrchestration|Unlinking a security project removes all policies s
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan policies"
-msgstr ""
-
-msgid "SecurityOrchestration|Updated policy name"
 msgstr ""
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
@@ -49552,9 +49555,6 @@ msgstr ""
 msgid "Speed up your pipelines with Needs relationships"
 msgstr ""
 
-msgid "Spent at"
-msgstr ""
-
 msgid "Spent at can't be a future date and time."
 msgstr ""
 
@@ -50389,9 +50389,6 @@ msgid "Summarize my pending comments"
 msgstr ""
 
 msgid "Summary"
-msgstr ""
-
-msgid "Summary / note"
 msgstr ""
 
 msgid "Summary comment (optional)"
@@ -53239,6 +53236,9 @@ msgid "TimeTracking|Time remaining: %{timeRemainingHumanReadable}"
 msgstr ""
 
 msgid "TimeTracking|To manage time, use /spend or /estimate."
+msgstr ""
+
+msgid "TimeTracking|Track time spent on this %{issuableTypeName}."
 msgstr ""
 
 msgid "Timeago|%s days ago"

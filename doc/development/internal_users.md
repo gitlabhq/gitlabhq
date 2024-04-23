@@ -27,7 +27,7 @@ they perform.
 
 For example, when we [migrated](https://gitlab.com/gitlab-org/gitlab/-/issues/216120)
 GitLab Snippets to [Versioned Snippets](../user/snippets.md#versioned-snippets)
-in GitLab 13.0, we used an internal user to attribute the authorship of
+we used an internal user to attribute the authorship of
 snippets to itself when a snippet's author wasn't available for creating
 repository commits, such as when the user has been disabled, so the Migration
 Bot was used instead.

@@ -45,6 +45,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       createHandRaiseLeadPath,
       trackAction,
       trackLabel,
+      productInteraction,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_popover_data_attrs);
 
     return {
@@ -63,7 +64,15 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trackLabel,
       trialEndDate: new Date(trialEndDate),
       trialDiscoverPagePath,
-      user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
+      user: {
+        namespaceId,
+        userName,
+        firstName,
+        lastName,
+        companyName,
+        glmContent,
+        productInteraction,
+      },
     };
   }
   return { showTrialStatusWidget: false };

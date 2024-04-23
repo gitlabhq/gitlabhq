@@ -14,28 +14,51 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
 
       subject(:assigner) { described_class.new(members, source: source, current_user: current_user) }
 
-      context 'for direct members' do
-        let_it_be(:source) { create(source_type) } # rubocop:disable Rails/SaveBang -- Using factory, not ActiveRecord
-        let_it_be(:direct_member) { source.add_developer(member_user) }
-        let(:members) { [direct_member] }
-
-        it 'sets is_source_accessible_to_current_user to true for all members' do
+      shared_examples 'sets is_source_accessible_to_current_user to true for all members' do
+        specify do
           assigner.execute
 
-          expect(members.map(&:is_source_accessible_to_current_user)).to all(be_truthy)
+          expect(members.first.is_source_accessible_to_current_user).to eq(true)
+        end
+      end
+
+      context 'for direct members' do
+        where(source_visibility: %i[public private])
+
+        with_them do
+          let(:source) { create(source_type, source_visibility) }
+          let(:direct_member) { source.add_developer(member_user) }
+          let(:members) { [direct_member] }
+          it_behaves_like 'sets is_source_accessible_to_current_user to true for all members'
+
+          context 'with webui_members_inherited_users feature flag disabled' do
+            before do
+              stub_feature_flags(webui_members_inherited_users: false)
+            end
+
+            it_behaves_like 'sets is_source_accessible_to_current_user to true for all members'
+          end
         end
       end
 
       context 'for inherited members' do
-        let_it_be(:parent) { create(:group) }
-        let_it_be(:source) { create(source_type, parent_key => parent) }
-        let_it_be(:inherited_member) { parent.add_developer(member_user) }
-        let(:members) { [inherited_member] }
+        where(source_visibility: %i[public private])
 
-        it 'sets is_source_accessible_to_current_user to true for all members' do
-          assigner.execute
+        with_them do
+          let(:parent) { create(:group, source_visibility) }
+          let(:source) { create(source_type, source_visibility, parent_key => parent) }
+          let(:inherited_member) { parent.add_developer(member_user) }
+          let(:members) { [inherited_member] }
 
-          expect(members.first.is_source_accessible_to_current_user).to eq(true)
+          it_behaves_like 'sets is_source_accessible_to_current_user to true for all members'
+
+          context 'with webui_members_inherited_users feature flag disabled' do
+            before do
+              stub_feature_flags(webui_members_inherited_users: false)
+            end
+
+            it_behaves_like 'sets is_source_accessible_to_current_user to true for all members'
+          end
         end
       end
 
@@ -54,6 +77,14 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
               assigner.execute
 
               expect(members.first.is_source_accessible_to_current_user).to eq(can_see_invited_members_source?)
+            end
+
+            context 'with webui_members_inherited_users feature flag disabled' do
+              before do
+                stub_feature_flags(webui_members_inherited_users: false)
+              end
+
+              it_behaves_like 'sets is_source_accessible_to_current_user to true for all members'
             end
 
             context 'with multiple members belonging to the same source' do
@@ -107,8 +138,7 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
 
         context 'when current user is a direct member of shared group and of invited group through sharing' do
           before do
-            group = create(:group, :private)
-            group.add_developer(current_user)
+            group = create(:group, :private, developers: current_user)
             create(:group_group_link, shared_group: invited_group, shared_with_group: group)
           end
 

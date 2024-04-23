@@ -1,0 +1,63 @@
+@import 'mixins_and_variables_and_functions';
+
+.job-log-viewer-top-bar {
+  @include job-log-top-bar;
+}
+
+.job-log-viewer {
+  background-color: $builds-log-bg; // stays the same in dark more
+  color: $white-contrast; // stays the same in dark more
+
+  .log-line {
+    display: flex;
+    position: relative;
+  }
+
+  .log-line-header {
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($white, 0.2);
+    }
+  }
+
+  // line number
+  .log-line div:first-child {
+    flex-shrink: 0;
+    flex-basis: $gl-spacing-scale-9;
+    text-align: right;
+    user-select: none;
+    margin-right: $gl-spacing-scale-3;
+    margin-left: $gl-spacing-scale-3;
+
+    .gl-icon {
+      position: absolute;
+      left: 0;
+    }
+
+    a {
+      color: $gray-500;
+
+      &:hover,
+      &:active,
+      &:visited {
+        text-decoration: underline;
+        color: $gray-500;
+      }
+    }
+  }
+
+  // line text
+  .log-line div:last-child {
+    white-space: pre;
+    text-wrap: wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+    flex-grow: 0;
+  }
+
+  .loader-animation {
+    @include build-loader-animation;
+  }
+}
+

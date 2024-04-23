@@ -88,8 +88,6 @@ other than the MR author can merge.
 
 ### Reviewer values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57293) in GitLab 14.1.
-
 As a reviewer or as a reviewee, make sure to familiarize yourself with
 the [reviewer values](https://handbook.gitlab.com/handbook/engineering/workflow/reviewer-values/) we strive for at GitLab.
 

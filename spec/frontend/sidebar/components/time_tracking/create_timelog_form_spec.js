@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlModal, GlFormInput, GlDatepicker, GlFormTextarea } from '@gitlab/ui';
+import { GlAlert, GlModal, GlFormInput, GlDatepicker, GlFormTextarea, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -41,12 +41,11 @@ describe('Create Timelog Form', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  let fakeApollo;
 
   const findForm = () => wrapper.find('form');
   const findModal = () => wrapper.findComponent(GlModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findDocsLink = () => wrapper.findByTestId('timetracking-docs-link');
+  const findDocsLink = () => wrapper.findComponent(GlLink);
   const findSaveButton = () => findModal().props('actionPrimary');
   const findSaveButtonLoadingState = () => findSaveButton().attributes.loading;
   const findSaveButtonDisabledState = () => findSaveButton().attributes.disabled;
@@ -60,8 +59,6 @@ describe('Create Timelog Form', () => {
     { props, providedProps } = {},
     mutationResolverMock = rejectedMutationMock,
   ) => {
-    fakeApollo = createMockApollo([[createTimelogMutation, mutationResolverMock]]);
-
     wrapper = shallowMountExtended(CreateTimelogForm, {
       provide: {
         issuableType: 'issue',
@@ -71,7 +68,7 @@ describe('Create Timelog Form', () => {
         issuableId: '1',
         ...props,
       },
-      apolloProvider: fakeApollo,
+      apolloProvider: createMockApollo([[createTimelogMutation, mutationResolverMock]]),
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: { close: modalCloseMock },
@@ -79,11 +76,6 @@ describe('Create Timelog Form', () => {
       },
     });
   };
-
-  afterEach(() => {
-    fakeApollo = null;
-    modalCloseMock.mockClear();
-  });
 
   describe('save button', () => {
     it('is disabled and not loading by default', () => {
@@ -227,7 +219,8 @@ describe('Create Timelog Form', () => {
     it('is present', () => {
       mountComponent();
 
-      expect(findDocsLink().exists()).toBe(true);
+      expect(findDocsLink().text()).toBe('How do I track and estimate time?');
+      expect(findDocsLink().attributes('href')).toBe('/help/user/project/time_tracking.md');
     });
   });
 });

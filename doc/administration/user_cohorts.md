@@ -29,8 +29,7 @@ How do we measure the activity of users? GitLab considers a user active if:
 
 - The user signs in.
 - The user has Git activity (whether push or pull).
-- The user visits pages related to dashboards, projects, issues, or merge
-  requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/54947) in GitLab 11.8).
+- The user visits pages related to dashboards, projects, issues, or merge requests.
 - The user uses the API.
 - The user uses the GraphQL API.
 

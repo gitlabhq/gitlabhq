@@ -276,8 +276,6 @@ After you change your calendar start day, refresh your user profile page.
 
 ### Show exact times instead of relative times
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65570) in GitLab 14.1.
-
 Customize the format used to display times of activities on your group and project overview pages and user profiles. You can display times in a:
 
 - Relative format, for example `30 minutes ago`.

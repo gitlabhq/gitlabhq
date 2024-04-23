@@ -32,6 +32,7 @@ export const initJobDetails = () => {
     aiRootCauseAnalysisAvailable,
     testReportSummaryUrl,
     pipelineTestReportUrl,
+    logViewerPath,
   } = el.dataset;
 
   const fullScreenAPIAvailable = document.fullscreenEnabled;
@@ -63,6 +64,7 @@ export const initJobDetails = () => {
           deploymentHelpUrl,
           runnerSettingsUrl,
           subscriptionsMoreMinutesUrl,
+          logViewerPath,
         },
       });
     },

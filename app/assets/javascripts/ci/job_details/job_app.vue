@@ -61,6 +61,11 @@ export default {
       required: false,
       default: null,
     },
+    logViewerPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -290,6 +295,7 @@ export default {
             }"
             :size="jobLogSize"
             :raw-path="job.raw_path"
+            :log-viewer-path="logViewerPath"
             :is-scroll-bottom-disabled="isScrollBottomDisabled"
             :is-scroll-top-disabled="isScrollTopDisabled"
             :is-job-log-size-visible="isJobLogSizeVisible"

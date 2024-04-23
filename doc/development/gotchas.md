@@ -11,7 +11,7 @@ might encounter or should avoid during development of GitLab CE and EE.
 
 ## Do not read files from app/assets directory
 
-In GitLab 10.8 and later, Omnibus has [dropped the `app/assets` directory](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2456),
+Omnibus GitLab has [dropped the `app/assets` directory](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/2456),
 after asset compilation. The `ee/app/assets`, `vendor/assets` directories are dropped as well.
 
 This means that reading files from that directory fails in Omnibus-installed GitLab instances:

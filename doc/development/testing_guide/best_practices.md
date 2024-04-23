@@ -94,8 +94,6 @@ This ensures that the application code is eagerly loaded before the test executi
 
 ### Ruby warnings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
-
 We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.4/Warning.html)
 by default when running specs. Making these warnings more visible to developers
 helps upgrading to newer Ruby versions.
@@ -1292,8 +1290,6 @@ for modifications. If you have no other choice, an `around` block like the globa
 variables example can be used, but avoid this if at all possible.
 
 #### Elasticsearch specs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
 
 Specs that require Elasticsearch must be marked with the `:elastic` trait. This
 creates and deletes indices before and after all examples.

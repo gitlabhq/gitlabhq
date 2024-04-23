@@ -598,12 +598,17 @@ The expiration date and time is displayed in the upper-left corner, next to the 
 When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can override its expiration.
 
-To override an environment's expiration:
+To override an environment's expiration in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the deployment name.
 1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
+
+To override an environment's expiration in the `.gitlab-ci.yml`:
+
+1. Open the project's `.gitlab-ci.yml`.
+1. Update the `auto_stop_in` setting of the corresponding deploy job and set it to `auto_stop_in: never`
 
 The `auto_stop_in` setting is overridden and the environment remains active until it's stopped
 manually.

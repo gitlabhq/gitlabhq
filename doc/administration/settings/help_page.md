@@ -70,10 +70,6 @@ You can specify a custom URL to which users are directed when they:
 
 ## Redirect `/help` pages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43157) in GitLab 13.5.
-> - [Feature flag `help_page_documentation_redirect`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71737) removed in GitLab 14.4.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71737) in GitLab 14.4.
-
 You can redirect all `/help` links to a destination that meets the [necessary requirements](#destination-requirements).
 
 1. On the left sidebar, at the bottom, select **Admin Area**.

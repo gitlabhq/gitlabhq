@@ -10,6 +10,10 @@ module Features
       context.find("[data-testid='#{testid}']", **kwargs)
     end
 
+    def all_by_testid(testid, context: page, **kwargs)
+      context.all("[data-testid='#{testid}']", **kwargs)
+    end
+
     def within_testid(testid, context: page, **kwargs, &block)
       context.within("[data-testid='#{testid}']", **kwargs, &block)
     end

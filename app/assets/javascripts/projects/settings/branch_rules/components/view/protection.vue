@@ -1,6 +1,7 @@
 <script>
-import { GlCard, GlLink } from '@gitlab/ui';
+import { GlCard, GlLink, GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ProtectionRow from './protection_row.vue';
 
 export const i18n = {
@@ -12,7 +13,8 @@ export const i18n = {
 export default {
   name: 'ProtectionDetail',
   i18n,
-  components: { GlCard, GlLink, ProtectionRow },
+  components: { GlCard, GlLink, GlButton, ProtectionRow },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     header: {
       type: String,
@@ -51,6 +53,11 @@ export default {
       required: false,
       default: () => [],
     },
+    isEditAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     showUsersDivider() {
@@ -71,7 +78,14 @@ export default {
   >
     <template #header>
       <strong>{{ header }}</strong>
-      <gl-link :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
+      <gl-button
+        v-if="glFeatures.editBranchRules && isEditAvailable"
+        size="small"
+        data-testid="edit-button"
+        @click="$emit('edit')"
+        >{{ __('Edit') }}</gl-button
+      >
+      <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
     </template>
 
     <!-- Roles -->

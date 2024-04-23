@@ -67,7 +67,7 @@ Since the migration files are not autoloaded by Rails, you must manually
 load the migration file. To do so, you can use the `require_migration!` helper method
 which can automatically load the correct migration file based on the spec filename.
 
-In GitLab 14.4 and later, you can use `require_migration!` to load migration files from spec files
+You can use `require_migration!` to load migration files from spec files
 that contain the schema version in the filename (for example,
 `2021101412150000_populate_foo_column_spec.rb`).
 

@@ -1370,8 +1370,6 @@ You can link any up-to-date video that's useful to the GitLab user.
 
 ### Embed videos
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
-
 The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.
 
@@ -1808,9 +1806,8 @@ sections are outlined in this section.
 
 ### Help and feedback section
 
-This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
-is displayed at the end of each document and can be omitted by adding a key into
-the front matter:
+This section is displayed at the end of each document and can be omitted
+by adding a key into the front matter:
 
 ```yaml
 ---

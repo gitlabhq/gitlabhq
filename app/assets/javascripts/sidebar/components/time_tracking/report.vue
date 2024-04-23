@@ -21,7 +21,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['issuableType'],
+  inject: {
+    issuableType: {
+      default: null,
+    },
+  },
   props: {
     limitToHours: {
       type: Boolean,
@@ -119,10 +123,10 @@ export default {
     },
   },
   fields: [
-    { key: 'spentAt', label: __('Spent at'), tdClass: 'gl-w-quarter' },
-    { key: 'user', label: __('User') },
+    { key: 'spentAt', label: __('Date'), tdClass: 'gl-w-quarter' },
     { key: 'timeSpent', label: __('Time spent'), tdClass: 'gl-w-15' },
-    { key: 'summary', label: __('Summary / note') },
+    { key: 'user', label: __('User') },
+    { key: 'summary', label: __('Summary') },
     { key: 'actions', label: '', tdClass: 'gl-w-10' },
   ],
 };
@@ -137,17 +141,17 @@ export default {
       </template>
       <template #foot(spentAt)>&nbsp;</template>
 
-      <template #cell(user)="{ item: { user } }">
-        <div>{{ user.name }}</div>
-      </template>
-      <template #foot(user)>&nbsp;</template>
-
       <template #cell(timeSpent)="{ item: { timeSpent } }">
         <div>{{ formatTimeSpent(timeSpent) }}</div>
       </template>
       <template #foot(timeSpent)>
         <div>{{ getTotalTimeSpent() }}</div>
       </template>
+
+      <template #cell(user)="{ item: { user } }">
+        <div>{{ user.name }}</div>
+      </template>
+      <template #foot(user)>&nbsp;</template>
 
       <template #cell(summary)="{ item: { summary, note } }">
         <div>{{ getSummary(summary, note) }}</div>
@@ -165,9 +169,10 @@ export default {
         <div v-if="adminTimelog">
           <gl-button
             v-gl-tooltip="{ title: deleteButtonTooltip }"
-            category="secondary"
+            category="tertiary"
             icon="remove"
-            data-testid="deleteButton"
+            variant="danger"
+            :aria-label="deleteButtonTooltip"
             :loading="isDeletingTimelog(id)"
             @click="deleteTimelog(id)"
           />

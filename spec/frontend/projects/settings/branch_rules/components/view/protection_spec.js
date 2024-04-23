@@ -7,10 +7,14 @@ import { protectionPropsMock } from './mock_data';
 describe('Branch rule protection', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (glFeatures = { editBranchRules: true }, props = {}) => {
     wrapper = shallowMountExtended(Protection, {
-      propsData: protectionPropsMock,
+      propsData: {
+        ...props,
+        ...protectionPropsMock,
+      },
       stubs: { GlCard },
+      provide: { glFeatures },
     });
   };
 
@@ -20,15 +24,39 @@ describe('Branch rule protection', () => {
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
+  const findEditButton = () => wrapper.findByTestId('edit-button');
 
   it('renders a card component', () => {
     expect(findCard().exists()).toBe(true);
   });
 
-  it('renders a header with a link', () => {
+  it('renders a header', () => {
     expect(findHeader().exists()).toBe(true);
+  });
+
+  it('renders link  when `edit_branch_rules` FF is enabled and `isEditAvailable` prop is false', () => {
     expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
     expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
+  });
+
+  describe('When `isEditAvailable` prop is set to true and `edit_branch_rules` FF is enabled', () => {
+    beforeEach(() => createComponent({ editBranchRules: true }, { isEditAvailable: true }));
+    it('renders `Edit` button', () => {
+      expect(findEditButton().exists()).toBe(true);
+    });
+  });
+
+  describe('When `edit_branch_rules` FF is disabled', () => {
+    beforeEach(() => createComponent({ editBranchRules: false }));
+
+    it('does not render `Edit` button', () => {
+      expect(findEditButton().exists()).toBe(false);
+    });
+
+    it('renders link to manage branch protections', () => {
+      expect(findLink().text()).toBe(protectionPropsMock.headerLinkTitle);
+      expect(findLink().attributes('href')).toBe(protectionPropsMock.headerLinkHref);
+    });
   });
 
   it('renders a protection row for roles', () => {

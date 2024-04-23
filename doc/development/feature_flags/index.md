@@ -255,8 +255,6 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 ## Feature flag definition and validation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
-
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
 This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:

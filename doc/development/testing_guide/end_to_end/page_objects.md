@@ -171,8 +171,6 @@ and we should use the `data-testid` method of definition.
 
 ### Dynamic element selection
 
-> - Introduced in GitLab 12.5
-
 A common occurrence in automated testing is selecting a single "one-of-many" element.
 In a list of several items, how do you differentiate what you are selecting on?
 The most common workaround for this is via text matching. Instead, a better practice is

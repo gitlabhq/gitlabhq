@@ -23,13 +23,14 @@ module Members
     end
 
     def execute
+      return if Feature.disabled?(:webui_members_inherited_users, current_user)
+
       # We don't need to calculate the access level of the current user in the invited groups if:
       #
       # 1. The current user can admin members then the user should be able to see the source of all memberships
       #    to enable management of group/project memberships.
       # 2. There are no members invited from a private group.
       return if can_admin_members? || private_invited_group_members.nil?
-      return if Feature.disabled?(:webui_members_inherited_users, current_user)
 
       private_invited_group_members.each do |member|
         member.is_source_accessible_to_current_user = authorized_groups.include?(member.source)
@@ -56,10 +57,19 @@ module Members
         member.is_a?(GroupMember) &&
           member.source.visibility_level != Gitlab::VisibilityLevel::PUBLIC &&
           member.source_id != source.id && # Exclude direct member
-          member.source.traversal_ids.exclude?(source.id) # Exclude inherited member
+          source_traversal_ids.exclude?(member.source_id) # Exclude inherited member
       end
     end
     strong_memoize_attr(:private_invited_group_members)
+
+    def source_traversal_ids
+      if source.is_a?(Project)
+        source.namespace.traversal_ids
+      else
+        source.traversal_ids
+      end
+    end
+    strong_memoize_attr(:source_traversal_ids)
 
     def can_admin_members?
       return can?(current_user, :admin_project_member, source) if source.is_a?(Project)

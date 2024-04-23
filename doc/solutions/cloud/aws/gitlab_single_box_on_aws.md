@@ -49,7 +49,3 @@ Because any given GitLab upgrade might involve data disk updates or database sch
 1. AMI IDs are unique per region. After you've loaded any of these editions, in the upper-right corner, select the desired target region of the console to see the appropriate AMIs.
 1. After the console is loaded, you can add additional search criteria to narrow further. For instance, type `13.` to find only 13.x versions.
 1. To launch an EC2 Machine with one of the listed AMIs, check the box at the start of the relevant row, and select **Launch** near the top of left of the page.
-
-NOTE:
-If you are trying to restore from an older version of GitLab while moving to AWS, find the
-[Enterprise and Community Editions before GitLab 11.10.3](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;ownerAlias=855262394183;sort=desc:name).
