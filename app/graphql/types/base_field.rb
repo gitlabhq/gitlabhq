@@ -97,7 +97,7 @@ module Types
     def field_authorized?(object, ctx)
       object = object.node if object.is_a?(GraphQL::Pagination::Connection::Edge)
 
-      authorization.ok?(object, ctx[:current_user])
+      authorization.ok?(object, ctx[:current_user], scope_validator: ctx[:scope_validator])
     end
 
     # Historically our resolvers have used declarative permission checks only

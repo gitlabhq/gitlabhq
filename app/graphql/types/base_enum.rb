@@ -65,7 +65,7 @@ module Types
       end
 
       def authorized?(object, context)
-        authorization.ok?(object, context[:current_user])
+        authorization.ok?(object, context[:current_user], scope_validator: context[:scope_validator])
       end
     end
   end
