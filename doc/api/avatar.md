@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19121) in GitLab 11.0.
-
 ## Get a single avatar URL
 
 Get a single [avatar](../user/profile/index.md#access-your-user-settings) URL for a user with the given email address.

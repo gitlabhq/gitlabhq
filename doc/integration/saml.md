@@ -397,8 +397,6 @@ Your IdP may need additional configuration. For more information, see
 
 ### Configure GitLab to use multiple SAML IdPs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
-
 You can configure GitLab to use multiple SAML IdPs if:
 
 - Each provider has a unique name set that matches a name set in `args`. At least
@@ -1259,8 +1257,6 @@ Example configuration:
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
-
-> Introduced in GitLab 11.4.
 
 Your IdP passes group information to GitLab in the SAML response. To use this
 response, configure GitLab to identify:

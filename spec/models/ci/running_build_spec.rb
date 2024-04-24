@@ -29,6 +29,21 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       end
     end
 
+    context 'when build has been picked by a group runner' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'returns a build id as a result' do
+        expect(upsert_build.rows.dig(0, 0)).to eq build.id
+      end
+
+      it 'returns a build id as a result' do
+        upsert_build
+
+        expect(described_class.find_by_build_id(build.id)&.runner_owner_namespace_xid).to eq(group.id)
+      end
+    end
+
     context 'when build has been picked by a project runner' do
       let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
 

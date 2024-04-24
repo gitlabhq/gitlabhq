@@ -63,6 +63,7 @@
 - Security::PipelineVulnerabilitiesFinder
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder
+- Security::PipelineExecutionPoliciesFinder
 - Security::SecurityPoliciesFinder
 - SentryIssueFinder
 - ServerlessDomainFinder

@@ -68,7 +68,7 @@
 
       = render_if_exists 'shared/projects/removed', project: project
 
-      .gl-display-flex.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
+      .gl-display-flex.gl-align-items-center.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
         .controls.gl-display-flex.gl-align-items-center
           - if show_pipeline_status_icon && last_pipeline.present?
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
@@ -84,6 +84,7 @@
           %span
             = _('Updated')
             = updated_tooltip
+        = render_if_exists 'shared/projects/actions', project: project
 
   .project-cell.project-controls{ class: "#{css_class} gl-display-none! gl-sm-display-table-cell!", data: { testid: 'project_controls'} }
     .controls.gl-display-flex.gl-align-items-center.gl-mb-2.gl-gap-4{ class: "#{css_controls_class} gl-pr-0! gl-justify-content-end!" }
@@ -109,6 +110,7 @@
         = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do
           = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
           = badge_count(project.open_issues_count)
+      = render_if_exists 'shared/projects/actions', project: project
     .updated-note.gl-font-sm.gl-white-space-nowrap.gl-justify-content-end
       %span
         = _('Updated')

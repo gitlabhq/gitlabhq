@@ -42,7 +42,7 @@ export default {
     <template #actions>
       <gl-button
         data-testid="jump-to-first"
-        class="gl-align-self-start gl-vertical-align-top"
+        class="gl-align-self-start gl-align-top"
         size="small"
         variant="confirm"
         category="primary"

@@ -44,12 +44,12 @@ Hovering over this icon tells you why the key is restricted.
 By default, the GitLab.com and self-managed settings for the
 [supported key types](../user/ssh.md#supported-ssh-key-types) are:
 
+- DSA SSH keys are forbidden. 
 - RSA SSH keys are allowed.
-- DSA SSH keys are forbidden ([since GitLab 11.0](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys)).
 - ECDSA SSH keys are allowed.
 - ED25519 SSH keys are allowed.
-- ECDSA_SK SSH keys are allowed (GitLab 14.8 and later).
-- ED25519_SK SSH keys are allowed (GitLab 14.8 and later).
+- ECDSA_SK SSH keys are allowed.
+- ED25519_SK SSH keys are allowed.
 
 ## Block banned or compromised keys
 

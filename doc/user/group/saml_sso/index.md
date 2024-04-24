@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-> - Introduced in GitLab 11.0.
-
 Users can sign in to GitLab through their SAML identity provider.
 
 [SCIM](scim_setup.md) synchronizes users with the group on GitLab.com.
@@ -258,9 +256,8 @@ After you set up your identity provider to work with GitLab, you must configure 
    select the role to assign to new users.
    The default role is **Guest**. That role becomes the starting role of all users
    added to the group:
-   - In [GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/issues/214523) and
-     later, group Owners can set a default membership role other than **Guest**.
    - In GitLab 16.7 and later, group Owners can set a [custom role](../../custom_roles.md)
+   - In GitLab 16.6 and earlier, group Owners can set a default membership role other than **Guest**.
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
 1. Optional. Select:
@@ -275,8 +272,6 @@ The certificate [fingerprint algorithm](../../../integration/saml.md#configure-s
 If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 
 ## User access and management
-
-> - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
 
 After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
 If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.
@@ -366,7 +361,6 @@ providers, see [set up your identity provider](#set-up-your-identity-provider).
 
 ### Configure enterprise user settings from SAML response
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263661) in GitLab 13.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/412898) to configure only enterprise user settings in GitLab 16.7.
 
 GitLab allows setting certain user attributes based on values from the SAML response.
@@ -459,12 +453,6 @@ For example, to unlink the `MyOrg` account:
 
 ## SSO enforcement
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5291) in GitLab 11.8.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9255) in GitLab 11.11 with ongoing enforcement in the GitLab UI.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/292811) in GitLab 13.8, with an updated timeout experience.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/211962) in GitLab 13.8 with allowing group owners to not go through SSO.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/9152) in GitLab 13.11 with enforcing open SSO session to use Git if this setting is switched on.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/339888) in GitLab 14.7 to not enforce SSO checks for Git activity originating from CI/CD jobs.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.

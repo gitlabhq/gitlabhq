@@ -142,8 +142,6 @@ When you deactivate a user, their projects, groups, and history remain.
 
 ### Deactivate a user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
-
 Prerequisites:
 
 - The user has had no activity in the last 90 days.
@@ -162,8 +160,6 @@ To deactivate users with the GitLab API, see [deactivate user](../api/users.md#d
 
 ### Automatically deactivate dormant users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320875) in GitLab 14.0.
-> - Exclusion of GitLab generate bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340346) in GitLab 14.5
 > - Customizable time period [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.4
 > - The lower limit for inactive period set to 90 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100793) in GitLab 15.5
 
@@ -222,8 +218,6 @@ A maximum of 240,000 users can be deleted per day.
 
 ### Activate a user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
-
 A deactivated user can be activated from the Admin Area.
 
 To do this:
@@ -242,8 +236,6 @@ Users can also be activated using the [GitLab API](../api/users.md#activate-user
 
 ## Ban and unban users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.2 [with a flag](../administration/feature_flags.md) named `ban_user_feature_flag`. Disabled by default.
-> - Ban and unban users [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/327353) in GitLab 14.8. Feature flag `ban_user_feature_flag` removed.
 > - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
 > - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `hidden_notes`. Disabled by default.
 > - Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `hide_projects_of_banned_users`. Disabled by default.

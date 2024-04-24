@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78364) in GitLab 14.8.
-
 You can configure the per user rate limit for requests to [Users API](../../api/users.md).
 
 To change the rate limit:

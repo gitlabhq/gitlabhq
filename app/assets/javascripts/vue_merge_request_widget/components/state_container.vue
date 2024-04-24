@@ -127,7 +127,7 @@ export default {
             :icon="collapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             size="small"
-            class="gl-vertical-align-top"
+            class="gl-align-top"
             data-testid="widget-toggle"
             @click="() => $emit('toggle')"
           />

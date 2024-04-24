@@ -54,8 +54,7 @@ Users are considered inactive in LDAP when they:
 
 GitLab checks LDAP users' status:
 
-- When signing in using any authentication provider. [In GitLab 14.4 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/343298), status was
-  checked only when signing in using LDAP directly.
+- When signing in using any authentication provider.
 - Once per hour for active web sessions or Git requests using tokens or SSH keys.
 - When performing Git over HTTP requests using LDAP username and password.
 - Once per day during [User Sync](ldap_synchronization.md#user-sync).
@@ -276,8 +275,6 @@ After configuring LDAP, to test the configuration, use the
 [LDAP check Rake task](../../raketasks/ldap.md#check).
 
 ### Basic configuration settings
-
-> - The `hosts` configuration setting was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/139) in GitLab 14.7.
 
 The following basic settings are available:
 
@@ -1244,8 +1241,6 @@ The updated user's previous email address becomes the secondary email address to
 You can find more details on the expected behavior of user updates in our [LDAP troubleshooting section](ldap-troubleshooting.md#user-dn-and-email-have-changed).
 
 ## Google Secure LDAP
-
-> - Introduced in GitLab 11.9.
 
 [Google Cloud Identity](https://cloud.google.com/identity/) provides a Secure
 LDAP service that can be configured with GitLab for authentication and group sync.

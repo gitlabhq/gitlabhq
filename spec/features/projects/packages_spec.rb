@@ -62,6 +62,13 @@ RSpec.describe 'Packages', feature_category: :package_registry do
         let_it_be(:package_one) { maven_package }
         let_it_be(:package_two) { npm_package }
       end
+
+      context 'filtering' do
+        it_behaves_like 'shared package filtering' do
+          let_it_be(:package_one) { maven_package }
+          let_it_be(:package_two) { npm_package }
+        end
+      end
     end
 
     it_behaves_like 'when there are no packages'

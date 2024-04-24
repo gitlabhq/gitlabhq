@@ -111,8 +111,6 @@ rules.
 
 ## Allow outbound requests to certain IP addresses and domains
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
-
 Prerequisites:
 
 - You must have administrator access to the instance.

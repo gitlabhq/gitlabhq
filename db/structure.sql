@@ -6856,7 +6856,8 @@ CREATE TABLE ci_running_builds (
     runner_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     runner_type smallint NOT NULL,
-    partition_id bigint NOT NULL
+    partition_id bigint NOT NULL,
+    runner_owner_namespace_xid bigint
 );
 
 CREATE SEQUENCE ci_running_builds_id_seq
@@ -23996,6 +23997,8 @@ CREATE INDEX idx_ci_pipelines_on_project_id_and_ref_and_status_and_id_bigint ON 
 CREATE INDEX idx_ci_pipelines_on_user_id_and_id_and_cancelable_status_bigint ON ci_pipelines USING btree (user_id, id_convert_to_bigint) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
 
 CREATE INDEX idx_ci_pipelines_on_user_id_and_user_not_verified_bigint ON ci_pipelines USING btree (user_id, id_convert_to_bigint DESC) WHERE (failure_reason = 3);
+
+CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
 
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
 

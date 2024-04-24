@@ -14,8 +14,6 @@ You can read more about [project access tokens](../user/project/settings/project
 
 ## List project access tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
-
 Get a list of [project access tokens](../user/project/settings/project_access_tokens.md).
 
 ```plaintext
@@ -49,8 +47,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ```
 
 ## Get a project access token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
 
 Get a [project access token](../user/project/settings/project_access_tokens.md) by ID.
 
@@ -86,8 +82,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a project access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
-> - The `token` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55408) in GitLab 13.10.
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Create a [project access token](../user/project/settings/project_access_tokens.md).
@@ -97,8 +91,6 @@ role that can be set is:
 
 - Owner (`50`), if you have the Owner role for the project.
 - Maintainer (`40`), if you have the Maintainer role on the project.
-
-In GitLab 14.8 and earlier, project access tokens have a maximum role of Maintainer.
 
 ```plaintext
 POST projects/:id/access_tokens
@@ -196,8 +188,6 @@ Refer to [automatic reuse detection for personal access tokens](personal_access_
 for more information.
 
 ## Revoke a project access token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Revoke a [project access token](../user/project/settings/project_access_tokens.md).
 

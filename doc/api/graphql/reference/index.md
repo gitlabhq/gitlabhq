@@ -13612,6 +13612,29 @@ The edge type for [`Pipeline`](#pipeline).
 | <a id="pipelineedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelineedgenode"></a>`node` | [`Pipeline`](#pipeline) | The item at the end of the edge. |
 
+#### `PipelineExecutionPolicyConnection`
+
+The connection type for [`PipelineExecutionPolicy`](#pipelineexecutionpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionpolicyconnectionedges"></a>`edges` | [`[PipelineExecutionPolicyEdge]`](#pipelineexecutionpolicyedge) | A list of edges. |
+| <a id="pipelineexecutionpolicyconnectionnodes"></a>`nodes` | [`[PipelineExecutionPolicy]`](#pipelineexecutionpolicy) | A list of nodes. |
+| <a id="pipelineexecutionpolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineExecutionPolicyEdge`
+
+The edge type for [`PipelineExecutionPolicy`](#pipelineexecutionpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelineexecutionpolicyedgenode"></a>`node` | [`PipelineExecutionPolicy`](#pipelineexecutionpolicy) | The item at the end of the edge. |
+
 #### `PipelineScheduleConnection`
 
 The connection type for [`PipelineSchedule`](#pipelineschedule).
@@ -21745,6 +21768,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
+##### `Group.pipelineExecutionPolicies`
+
+Pipeline Execution Policies of the namespace.
+
+Returns [`PipelineExecutionPolicyConnection`](#pipelineexecutionpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouppipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Group.projectComplianceStandardsAdherence`
 
 Compliance standards adherence for the projects in a group and its subgroups.
@@ -25098,6 +25137,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
 
+##### `Namespace.pipelineExecutionPolicies`
+
+Pipeline Execution Policies of the namespace.
+
+Returns [`PipelineExecutionPolicyConnection`](#pipelineexecutionpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacepipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Namespace.projects`
 
 Projects within this namespace.
@@ -26038,6 +26093,23 @@ Represents pipeline counts for the project.
 | <a id="pipelinecountsfinished"></a>`finished` | [`Int`](#int) | Number of pipelines with scope FINISHED for the project. |
 | <a id="pipelinecountspending"></a>`pending` | [`Int`](#int) | Number of pipelines with scope PENDING for the project. |
 | <a id="pipelinecountsrunning"></a>`running` | [`Int`](#int) | Number of pipelines with scope RUNNING for the project. |
+
+### `PipelineExecutionPolicy`
+
+Represents the pipeline execution policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="pipelineexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
+| <a id="pipelineexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="pipelineexecutionpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="pipelineexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
+| <a id="pipelineexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="pipelineexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="pipelineexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 ### `PipelineMessage`
 
@@ -27507,6 +27579,22 @@ Returns [`PipelineCounts`](#pipelinecounts).
 | <a id="projectpipelinecountsref"></a>`ref` | [`String`](#string) | Filter pipelines by the ref they are run for. |
 | <a id="projectpipelinecountssha"></a>`sha` | [`String`](#string) | Filter pipelines by the SHA of the commit they are run for. |
 | <a id="projectpipelinecountssource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
+
+##### `Project.pipelineExecutionPolicies`
+
+Pipeline Execution Policies of the project.
+
+Returns [`PipelineExecutionPolicyConnection`](#pipelineexecutionpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 
 ##### `Project.pipelineSchedules`
 
@@ -36000,6 +36088,7 @@ four standard [pagination arguments](#pagination-arguments):
 Implementations:
 
 - [`ApprovalPolicy`](#approvalpolicy)
+- [`PipelineExecutionPolicy`](#pipelineexecutionpolicy)
 - [`ScanExecutionPolicy`](#scanexecutionpolicy)
 - [`ScanResultPolicy`](#scanresultpolicy)
 

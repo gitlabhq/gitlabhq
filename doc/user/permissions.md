@@ -40,19 +40,16 @@ for the GitLab instance.
 
 ## Project members permissions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351919) in GitLab 14.9. Feature flag `personal_project_owner_with_owner_access` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/219299).
-
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
 
-- For group and project Owners. In GitLab 14.8 and earlier, the role is inherited for a group's projects.
+- For group and project Owners.
 - For Administrators.
 
 Personal [namespace](namespace/index.md) owners:
 
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
-- In GitLab 14.9 and later, for new projects in the namespace, are displayed as having the Owner role.
+- For new projects in the namespace, are displayed as having the Owner role.
 
 For more information about how to manage project members, see
 [members of a project](project/members/index.md).
@@ -382,7 +379,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 > - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
 
 Users with the Minimal Access role do not:

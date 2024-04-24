@@ -31,7 +31,7 @@ Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
 
 NOTE:
-[In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/344807), the rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
+The rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
 
 ## Configurable limits
 
@@ -82,8 +82,6 @@ For configuration information, see
 
 ### Repository archives
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25750) in GitLab 12.9.
-
 A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
 available. The limit applies to the project and to the user initiating the download either through
 the UI or the API.
@@ -92,15 +90,11 @@ The **rate limit** is 5 requests per minute per user.
 
 ### Webhook Testing
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/35bc85c3ca093fee58d60dacdc9ed1fd9a15adec) in GitLab 13.4.
-
 There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#test-a-webhook), which prevents abuse of the webhook functionality.
 
 The **rate limit** is 5 requests per minute per user.
 
 ### Users sign up
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339151) in GitLab 14.7.
 
 There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
 discover usernames or email addresses in use.
@@ -109,16 +103,12 @@ The **rate limit** is 20 calls per minute per IP address.
 
 ### Update username
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339152) in GitLab 14.7.
-
 There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
 which usernames are in use.
 
 The **rate limit** is 10 calls per minute per authenticated user.
 
 ### Username exists
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29040) in GitLab 14.7.
 
 There is a rate limit for the internal endpoint `/users/:username/exists`, used upon sign up to check if a chosen username has already been taken.
 This is to mitigate the risk of misuses, such as mass discovery of usernames in use.

@@ -63,10 +63,10 @@ To enable Beta and Experimental AI-powered features, use the [Experiment and Bet
 
 To enable Beta and Experimental AI-powered features for GitLab versions where GitLab Duo Chat is not yet generally available, see the [GitLab Duo Chat documentation](gitlab_duo_chat.md#for-self-managed).
 
-### Enable outbound connections to enable GitLab Duo features on Self-managed instances
+### Enable outbound connections to enable GitLab Duo features on self-managed instances
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
-  to `cloud.gitlab.com` on port `443`.
+  to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://` and `wws://`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary

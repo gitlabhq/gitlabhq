@@ -14,8 +14,6 @@ You can read more about [group access tokens](../user/group/settings/group_acces
 
 ## List group access tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
-
 Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
 
 ```plaintext
@@ -50,8 +48,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get a group access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
-
 Get a [group access token](../user/group/settings/group_access_tokens.md) by ID.
 
 ```plaintext
@@ -85,7 +81,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a group access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
 Create a [group access token](../user/group/settings/group_access_tokens.md). You must have the Owner role for the
@@ -187,8 +182,6 @@ Refer to [automatic reuse detection for personal access tokens](personal_access_
 for more information.
 
 ## Revoke a group access token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
 Revoke a [group access token](../user/group/settings/group_access_tokens.md).
 

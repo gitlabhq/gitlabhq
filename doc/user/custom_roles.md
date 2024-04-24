@@ -234,6 +234,23 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
+## Inheritance
+
+If a user belongs to a group, they are a _direct member_ of the group
+and an [inherited member](project/members/index.md#inherited-membership)
+of any subgroups or projects. If a user is assigned a custom role
+by the top-level group, the permissions of the role are also inherited by subgroups
+and projects.
+
+For example, assume the following structure exists:
+
+- Group A
+  - Subgroup B
+    - Project 1
+
+If a custom role with Developer + `Manage CI/CD variables` permission is assigned to Group A,
+the user also has `Manage CI/CD variables` permission for Subgroup B and Project 1.
+
 ## Billing and seat usage
 
 When you enable a custom role for a user with the Guest role, that user has
@@ -246,9 +263,28 @@ This does not apply when the user's custom role only has the `read_code` permiss
 enabled. Guest users with that specific permission only are not considered billable users
 and do not use a seat.
 
+## Supported objects
+
+You can assign custom roles and permissions to the following:
+
+| Object       | Version       | Issue                                                  |
+| ----         | ----          | ----                                                   |
+| Users        | 15.9          | Released                                               |
+| Groups       | Not supported | [Issue 443369](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) |
+| Tokens       | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
+
+## Supported group links
+
+You can sync users to custom roles with following authentication providers:
+
+- See [Configure SAML Group Links](group/saml_sso/group_sync.md#configure-saml-group-links).
+- LDAP Group Links are not supported, but [issue 435229](https://gitlab.com/gitlab-org/gitlab/-/issues/435229)
+  proposes to change this.
+
 ## Known issues
 
 - If a user with a custom role is shared with a group or project, their custom
   role is not transferred over with them. The user has the regular Guest role in
   the new group or project.
 - You cannot use an [Auditor user](../administration/auditor_users.md) as a template for a custom role.
+- There can be only 10 custom roles on your instance or namespace. See [issue 450929](https://gitlab.com/gitlab-org/gitlab/-/issues/450929) for more details.

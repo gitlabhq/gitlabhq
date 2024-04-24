@@ -384,8 +384,12 @@ module API
       authorize! :admin_group, user_group
     end
 
-    def authorize_admin_member_role!
+    def authorize_admin_member_role_on_group!
       authorize! :admin_member_role, user_group
+    end
+
+    def authorize_admin_member_role_on_instance!
+      authorize! :admin_member_role
     end
 
     def authorize_read_builds!

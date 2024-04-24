@@ -7,6 +7,8 @@ module Keeps
       Error = Class.new(StandardError)
 
       def group_for_feature_category(category)
+        return unless category
+
         groups.find do |_, group|
           group['categories'].present? && group['categories'].include?(category)
         end&.last
@@ -19,11 +21,30 @@ module Keeps
       end
 
       def pick_reviewer(group, identifiers)
+        return unless group
         return if group['backend_engineers'].empty?
 
+        # Use the change identifiers as a stable way to pick the same reviewer. Otherwise we'd assign a new reviewer
+        # every time we re-ran housekeeper.
         random_engineer = Digest::SHA256.hexdigest(identifiers.join).to_i(16) % group['backend_engineers'].size
 
         group['backend_engineers'][random_engineer]
+      end
+
+      def pick_reviewer_for_feature_category(category, identifiers, fallback_feature_category: nil)
+        pick_reviewer(
+          group_for_feature_category(category),
+          identifiers
+        ) || pick_reviewer(
+          group_for_feature_category(fallback_feature_category),
+          identifiers
+        )
+      end
+
+      def labels_for_feature_category(category)
+        Array(
+          group_for_feature_category(category)&.dig('label')
+        )
       end
 
       private

@@ -93,8 +93,7 @@ Project membership (where the group membership is already taken into account)
 is stored in the `project_authorizations` table.
 
 NOTE:
-In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have a maximum role of Owner.
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects in personal namespaces have a maximum role of Maintainer.
+Projects in personal namespaces have a maximum role of Owner.
 
 #### Guest role
 

@@ -57,7 +57,7 @@ export default {
           :aria-label="grade.title"
           @click="$emit('rate', grade.value)"
         >
-          <gl-icon class="gl-vertical-align-top" :name="grade.icon" :size="24" />
+          <gl-icon class="gl-align-top" :name="grade.icon" :size="24" />
         </gl-button>
       </li>
     </ul>

@@ -84,8 +84,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
-
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the group.
@@ -159,7 +157,7 @@ when they next sign in to GitLab.
 
 #### Administrators
 
-In GitLab 13.5 and later, use the [Rails console](../administration/operations/rails_console.md)
+It is possible to use the [Rails console](../administration/operations/rails_console.md)
 to disable 2FA for a single administrator:
 
 ```ruby
@@ -203,8 +201,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
 > - It's deployed behind a feature flag, disabled by default.
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 

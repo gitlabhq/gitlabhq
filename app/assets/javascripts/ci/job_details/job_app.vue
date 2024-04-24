@@ -284,7 +284,7 @@ export default {
           :class="{ 'sticky-top gl-border-bottom-0': hasJobLog }"
           data-testid="archived-job"
         >
-          <gl-icon name="lock" class="gl-vertical-align-bottom" />
+          <gl-icon name="lock" class="gl-align-bottom" />
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->

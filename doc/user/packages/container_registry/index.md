@@ -10,7 +10,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can use the integrated container registry to store container images for each GitLab project
+> - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
+
+You can use the integrated container registry to store container images for each GitLab project.
 
 To enable the container registry for your GitLab instance, see the [administrator documentation](../../../administration/packages/container_registry.md).
 
@@ -169,3 +171,39 @@ and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-sp
 image formats. Additionally, the container registry [conforms to the OCI distribution specification](https://conformance.opencontainers.org/#gitlab-container-registry).
 
 OCI support means that you can host OCI-based image formats in the registry, such as [Helm 3+ chart packages](https://helm.sh/docs/topics/registries/). There is no distinction between image formats in the GitLab [API](../../../api/container_registry.md) and the UI. [Issue 38047](https://gitlab.com/gitlab-org/gitlab/-/issues/38047) addresses this distinction, starting with Helm.
+
+## Container image signatures
+
+> - Container image signature display [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7856) in GitLab 17.0.
+
+In the GitLab container registry, you can use the [OCI 1.1 manifest `subject` field](https://github.com/opencontainers/image-spec/blob/v1.1.0/manifest.md)
+to associate container images with [Cosign signatures](../../../ci/yaml/signing_examples.md).
+You can then view signature information alongside its associated container image without having to
+search for that signature's tag.
+
+When [viewing a container image's tags](#view-the-tags-of-a-specific-container-image-in-the-container-registry), you see an icon displayed
+next to each tag that has an associated signature. To see the details of the signature, select the icon.
+
+Prerequisites:
+
+- To sign container images, Cosign v2.0 or later.
+- For self-managed GitLab instances, you need a
+  [GitLab container registry configured with a metadata database](../../../administration/packages/container_registry_metadata_database.md)
+  to display signatures.
+
+### Sign container images with OCI referrer data
+
+To add referrer data to signatures using Cosign, you must:
+
+- Set the `COSIGN_EXPERIMENTAL` environment variable to `1`.
+- Add `--registry-referrers-mode oci-1-1` to the signature command.
+
+For example:
+
+```shell
+COSIGN_EXPERIMENTAL=1 cosign sign --registry-referrers-mode oci-1-1 <container image>
+```
+
+NOTE:
+While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
+implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).

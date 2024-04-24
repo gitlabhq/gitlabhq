@@ -17,7 +17,7 @@ With group access tokens, you can use a single token to:
 You can use a group access token to authenticate:
 
 - With the [GitLab API](../../../api/rest/index.md#personalprojectgroup-access-tokens).
-- In [GitLab 14.2](https://gitlab.com/gitlab-org/gitlab/-/issues/330718) and later, authenticate with Git over HTTPS.
+- Authenticate with Git over HTTPS.
   Use:
 
   - Any non-blank value as a username.
@@ -46,7 +46,6 @@ configured for personal access tokens.
 
 ## Create a group access token using UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 
@@ -74,8 +73,7 @@ A group access token is displayed. Save the group access token somewhere safe. A
 
 ## Create a group access token using Rails console
 
-GitLab 14.6 and earlier doesn't support creating group access tokens using the UI
-or API. However, administrators can use a workaround:
+If you are an administrator, you can create group access tokens in the Rails console:
 
 1. Run the following commands in a [Rails console](../../../administration/operations/rails_console.md):
 
@@ -116,8 +114,6 @@ or API. However, administrators can use a workaround:
 
 ## Revoke a group access token using the UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
-
 To revoke a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -126,10 +122,8 @@ To revoke a group access token:
 
 ## Revoke a group access token using Rails console
 
-GitLab 14.6 and earlier doesn't support revoking group access tokens using the UI
-or API. However, administrators can use a workaround.
-
-To revoke a group access token, run the following command in a [Rails console](../../../administration/operations/rails_console.md):
+If you are a GitLab administrator, you can revoke a group access token.
+Run this command in a [Rails console](../../../administration/operations/rails_console.md):
 
 ```ruby
 bot = User.find_by(username: 'group_109_bot') # the owner of the token you want to revoke

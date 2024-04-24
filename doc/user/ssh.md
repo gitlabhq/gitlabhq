@@ -46,10 +46,9 @@ To view the version of SSH installed on your system, run `ssh -V`.
 To communicate with GitLab, you can use the following SSH key types:
 
 - [ED25519](#ed25519-ssh-keys)
-- [ED25519_SK](#ed25519_sk-ssh-keys) (Available in GitLab 14.8 and later.)
-- [ECDSA_SK](#ecdsa_sk-ssh-keys) (Available in GitLab 14.8 and later.)
+- [ED25519_SK](#ed25519_sk-ssh-keys)
+- [ECDSA_SK](#ecdsa_sk-ssh-keys)
 - [RSA](#rsa-ssh-keys)
-- DSA ([Deprecated](https://about.gitlab.com/releases/2018/06/22/gitlab-11-0-released/#support-for-dsa-ssh-keys) in GitLab 11.0.)
 - ECDSA (As noted in [Practical Cryptography With Go](https://leanpub.com/gocrypto/read#leanpub-auto-ecdsa), the security issues related to DSA also apply to ECDSA.)
 
 Administrators can [restrict which keys are permitted and their minimum lengths](../security/ssh_keys_restrictions.md).
@@ -64,14 +63,10 @@ operating systems.
 
 ### ED25519_SK SSH keys
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
-
 To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
 
 ### ECDSA_SK SSH keys
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
 
 To use ECDSA_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
@@ -344,12 +339,10 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `Home Workstation`.
 1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
-   In:
-   - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent
-     you from using the key. Administrators can view expiration dates and use them for
+   - Administrators can view expiration dates and use them for
      guidance when [deleting keys](../administration/credentials_inventory.md#delete-a-users-ssh-key).
-   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
-   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.11.)
+   - GitLab checks all SSH keys at 01:00 AM UTC every day. It emails an expiration notice for all SSH keys that are scheduled to expire seven days from now.
+   - GitLab checks all SSH keys at 02:00 AM UTC every day. It emails an expiration notice for all SSH keys that expire on the current date.
 1. Select **Add key**.
 
 ## Verify that you can connect

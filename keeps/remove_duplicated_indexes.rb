@@ -23,9 +23,9 @@ module Keeps
   # ```
   class RemoveDuplicatedIndexes < ::Gitlab::Housekeeper::Keep
     MIGRATION_TEMPLATE = 'generator_templates/active_record/migration/'
-    DEFAULT_REVIEWER_GROUP = 'database'
+    FALLBACK_REVIEWER_FEATURE_CATEGORY = 'database'
 
-    def initialize
+    def initialize(...)
       ::Gitlab::Application.load_tasks
       ::ActiveRecord::Generators::MigrationGenerator.source_root(MIGRATION_TEMPLATE)
 
@@ -162,19 +162,16 @@ module Keeps
       table_info = Gitlab::Database::Dictionary.entries.find_by_table_name(table_name)
 
       table_info.feature_categories.map do |feature_category|
-        group = groups_helper.group_for_feature_category(feature_category)
-
-        group = groups_helper.group_for_feature_category(DEFAULT_REVIEWER_GROUP) if group['backend_engineers'].empty?
-
-        groups_helper.pick_reviewer(group, identifiers)
+        groups_helper.pick_reviewer_for_feature_category(feature_category, identifiers,
+          fallback_feature_category: FALLBACK_REVIEWER_FEATURE_CATEGORY)
       end
     end
 
     def labels(table_name)
       table_info = Gitlab::Database::Dictionary.entries.find_by_table_name(table_name)
 
-      group_labels = table_info.feature_categories.map do |feature_category|
-        groups_helper.group_for_feature_category(feature_category)['label']
+      group_labels = table_info.feature_categories.flat_map do |feature_category|
+        groups_helper.labels_for_feature_category(feature_category)
       end
 
       group_labels + %w[maintenance::scalability type::maintenance Category:Database]
@@ -188,11 +185,11 @@ module Keeps
 
     def reset_db
       ApplicationRecord.clear_all_connections!
-      ::Gitlab::Housekeeper::Shell.execute({ 'RAILS_ENV' => 'test' }, 'rails', 'db:reset')
+      ::Gitlab::Housekeeper::Shell.execute('rails', 'db:reset', env: { 'RAILS_ENV' => 'test' })
     end
 
     def migrate
-      ::Gitlab::Housekeeper::Shell.execute({ 'RAILS_ENV' => 'test' }, 'rails', 'db:migrate')
+      ::Gitlab::Housekeeper::Shell.execute('rails', 'db:migrate', env: { 'RAILS_ENV' => 'test' })
     end
 
     def groups_helper

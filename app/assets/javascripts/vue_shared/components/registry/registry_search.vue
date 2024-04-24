@@ -46,12 +46,6 @@ export default {
     isSortAscending() {
       return this.sorting.sort === ASCENDING_ORDER;
     },
-    baselineQueryStringFilters() {
-      return this.tokens.reduce((acc, curr) => {
-        acc[curr.type] = '';
-        return acc;
-      }, {});
-    },
     sortDirectionData() {
       return this.isSortAscending ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
     },
@@ -63,20 +57,25 @@ export default {
     generateQueryData({ sorting = {}, filter = [] } = {}) {
       // Ensure that we clean up the query when we remove a token from the search
       const result = {
-        ...this.baselineQueryStringFilters,
         ...sorting,
-        search: [],
+        search: null,
         after: null,
         before: null,
       };
 
-      filter.forEach((f) => {
-        if (f.type === FILTERED_SEARCH_TERM) {
-          result.search.push(f.value.data);
-        } else {
-          result[f.type] = f.value.data;
-        }
-      });
+      filter
+        .filter((f) => f.value.data)
+        .forEach((f) => {
+          if (f.type === FILTERED_SEARCH_TERM) {
+            if (result.search === null) {
+              result.search = [f.value.data];
+            } else {
+              result.search.push(f.value.data);
+            }
+          } else {
+            result[f.type] = f.value.data;
+          }
+        });
       return result;
     },
     onDirectionChange() {

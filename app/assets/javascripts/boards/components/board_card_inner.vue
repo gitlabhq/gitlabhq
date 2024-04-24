@@ -408,13 +408,13 @@ export default {
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-display-inline-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-text-gray-500! gl-cursor-help! gl-vertical-align-bottom gl-mr-3"
+              class="gl-display-inline-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-text-gray-500! gl-cursor-help! gl-align-bottom gl-mr-3"
             />
             <issue-iteration
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-vertical-align-bottom gl-white-space-nowrap"
+              class="gl-align-bottom gl-white-space-nowrap"
             />
             <issue-due-date
               v-if="item.dueDate"

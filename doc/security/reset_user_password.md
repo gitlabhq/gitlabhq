@@ -33,8 +33,6 @@ A confirmation is displayed.
 
 ## Use a Rake task
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52347) in GitLab 13.9.
-
 Use the following Rake task to reset a user's password.
 
 ::Tabs

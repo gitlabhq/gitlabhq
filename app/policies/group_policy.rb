@@ -462,6 +462,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
 
+  # TODO: Remove this when we rollout the feature flag packages_dependency_proxy_pass_token_to_policy
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/441588
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end

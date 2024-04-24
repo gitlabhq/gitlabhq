@@ -21,11 +21,15 @@ module Ci
         raise ArgumentError, 'build has not been picked by a runner'
       end
 
+      # Owner namespace of the runner that executed the build
+      runner_owner_namespace_id = build.runner.owner_runner_namespace.namespace_id if build.runner.group_type?
+
       entry = self.new(
         build: build,
         project: build.project,
         runner: build.runner,
-        runner_type: build.runner.runner_type
+        runner_type: build.runner.runner_type,
+        runner_owner_namespace_xid: runner_owner_namespace_id
       )
 
       entry.validate!

@@ -292,8 +292,6 @@ omniauth:
 
 ## Link existing users to OmniAuth users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
-
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
 
 The following example enables automatic linking
@@ -428,8 +426,6 @@ omniauth:
 ::EndTabs
 
 ## Bypass two-factor authentication
-
-> - Introduced in GitLab 12.3.
 
 With certain OmniAuth providers, users can sign in without using two-factor authentication (2FA).
 

@@ -52,15 +52,12 @@ git-credential-oauth is an open-source project supported by the community.
 
 ## Enable two-factor authentication
 
-> - Account email confirmation requirement [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35102) in GitLab 14.3. [Deployed behind the `ensure_verified_primary_email_for_2fa` flag](../../../administration/feature_flags.md), enabled by default.
-> - Account email confirmation requirement generally available and [feature flag `ensure_verified_primary_email_for_2fa` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340151) in GitLab 14.4.
-
 You can enable 2FA using a:
 
 - One-time password authenticator. After you enable 2FA, back up your [recovery codes](#recovery-codes).
 - WebAuthn device.
 
-In GitLab 14.3 and later, your account email must be confirmed to enable 2FA.
+Your account email must be confirmed to enable 2FA.
 
 ### Enable one-time password
 
@@ -98,12 +95,9 @@ in a safe place.
 
 ### Enable one-time password using FortiAuthenticator
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `forti_authenticator`. Disabled by default.
-
-FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com and GitLab Dedicated, this
-feature is not available.
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. 
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. Users must:
 
@@ -113,7 +107,7 @@ You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. 
 You need a username and access token for FortiAuthenticator. The `access_token` shown below is the FortAuthenticator
 access key. To get the token, see the REST API Solution Guide at
 [Fortinet Document Library](https://docs.fortinet.com/document/fortiauthenticator/6.2.0/rest-api-solution-guide/158294/the-fortiauthenticator-api).
-GitLab 13.5 has been tested with FortAuthenticator version 6.2.0.
+Tested with FortAuthenticator version 6.2.0.
 
 Configure FortiAuthenticator in GitLab. On your GitLab server:
 
@@ -235,12 +229,11 @@ On your GitLab server:
 DETAILS:
 **Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
-
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com and GitLab Dedicated, this
-feature is not available. This feature is not ready for production use.
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
 
 You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must:
 
@@ -292,15 +285,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 ### Set up a WebAuthn device
 
-> - WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22506) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `webauthn`. Disabled by default.
-> - WebAuthn devices [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/232671) in GitLab 14.6.
 > - Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `webauthn_without_topt`. [Enabled on GitLab.com and self-managed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/232671).
-
-FLAG:
-On self-managed GitLab, by default, WebAuthn devices are available. To disable the feature, an administrator can
-[disable the feature flag](../../../administration/feature_flags.md) named `webauthn`. If you disable the WebAuthn
-feature flag after WebAuthn devices have been registered, these devices are not usable until you re-enable this feature.
-On GitLab.com, WebAuthn devices are available.
 
 FLAG:
 On self-managed GitLab, by default, optional one-time password authentication for WebAuthn devices is not available. To enable the feature, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
@@ -347,8 +332,6 @@ WARNING:
 You can lose access to your account if you clear your browser data.
 
 ## Recovery codes
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267730) in GitLab 13.7, **Copy codes** and **Print codes** buttons.
 
 Immediately after successfully enabling 2FA with a one-time password, you're prompted to download
 a set of generated recovery codes. If you ever lose access to your one-time password authenticator, you can use one of

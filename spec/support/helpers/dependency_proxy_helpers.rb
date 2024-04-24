@@ -32,13 +32,14 @@ module DependencyProxyHelpers
       .to_return(status: status, body: body)
   end
 
-  def build_jwt(user = nil, expire_time: nil)
+  def build_jwt(user_or_token = nil, expire_time: nil)
     JSONWebToken::HMACToken.new(::Auth::DependencyProxyAuthenticationService.secret).tap do |jwt|
       if block_given?
         yield(jwt)
       else
-        jwt['user_id'] = user.id if user.is_a?(User)
-        jwt['deploy_token'] = user.token if user.is_a?(DeployToken)
+        jwt['user_id'] = user_or_token.id if user_or_token.is_a?(User)
+        jwt['personal_access_token'] = user_or_token.token if user_or_token.is_a?(PersonalAccessToken)
+        jwt['deploy_token'] = user_or_token.token if user_or_token.is_a?(DeployToken)
         jwt.expire_time = expire_time || jwt.issued_at + 1.minute
       end
     end

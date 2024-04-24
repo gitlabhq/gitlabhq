@@ -129,8 +129,6 @@ user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
-
 You can add more information to your profile page with a README file. When you populate
 the README file with information, it's included on your profile page.
 
@@ -194,8 +192,6 @@ To show private contributions:
 
 ## Add your gender pronouns
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
-
 You can add your gender pronouns to your GitLab account to be displayed next to
 your name in your profile.
 
@@ -208,8 +204,6 @@ To specify your pronouns:
 
 ## Add your name pronunciation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
-
 You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
 your name.
 
@@ -221,8 +215,6 @@ To add your name pronunciation:
 1. Select **Update profile settings**.
 
 ## Set your current status
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -243,11 +235,6 @@ You can also set your current status from [your user settings](#access-your-user
 If you select the **Busy** checkbox, remember to clear it when you become available again.
 
 ## Set a busy status indicator
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259649) in GitLab 13.6.
-> - It was [deployed behind a feature flag](../feature_flags.md), disabled by default.
-> - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/281073) in GitLab 13.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329163) in GitLab 13.12.
 
 To indicate to others that you are busy, you can set an indicator.
 
@@ -271,7 +258,6 @@ You can set your local time zone to:
 
 - Display your local time on your profile, and in places where hovering over your name shows information about you.
 - Align your contribution calendar with your local time to better reflect when your contributions were made
-  ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335343) in GitLab 14.5).
 
 To set your time zone:
 
@@ -457,8 +443,6 @@ GitLab administrators can [turn off the **Remember me** setting](../../administr
 that require sessions to expire periodically for security or compliance purposes.
 
 ### Cookies used for sign-in
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
 When you sign in, three cookies are set:
 

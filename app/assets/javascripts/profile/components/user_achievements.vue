@@ -87,7 +87,7 @@ export default {
     <div
       v-for="userAchievement in userAchievements"
       :key="userAchievement.id"
-      class="gl-mr-2 gl-display-inline-block gl-vertical-align-top gl-text-center"
+      class="gl-mr-2 gl-display-inline-block gl-align-top gl-text-center"
       data-testid="user-achievement"
     >
       <gl-avatar

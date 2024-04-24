@@ -24,8 +24,22 @@ module Gitlab
       def initialize(
         project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
         triggered_for_branch: nil, ref: nil)
-        @config = find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge,
-          triggered_for_branch, ref)
+        @config = nil
+
+        sources.each do |source|
+          source_config = source.new(project: project,
+            sha: sha,
+            custom_content: custom_content,
+            pipeline_source: pipeline_source,
+            pipeline_source_bridge: pipeline_source_bridge,
+            triggered_for_branch: triggered_for_branch,
+            ref: ref)
+
+          if source_config.exists?
+            @config = source_config
+            break
+          end
+        end
       end
 
       delegate :content, :source, :url, to: :@config, allow_nil: true
@@ -36,16 +50,6 @@ module Gitlab
       end
 
       private
-
-      def find_config(project, sha, custom_content, pipeline_source, pipeline_source_bridge, triggered_for_branch, ref)
-        sources.each do |source|
-          config = source.new(project, sha, custom_content, pipeline_source, pipeline_source_bridge,
-            triggered_for_branch, ref)
-          return config if config.exists?
-        end
-
-        nil
-      end
 
       def sources
         SOURCES

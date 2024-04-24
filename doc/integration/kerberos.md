@@ -188,8 +188,6 @@ LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
 
 ### Custom allowed realms
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9962) in GitLab 13.5.
-
 You can configure custom allowed realms when the user's Kerberos realm doesn't
 match the domain from the user's LDAP DN. The configuration value must specify
 all domains that users may be expected to have. Any other domains are
@@ -311,53 +309,7 @@ Kerberos ticket-based authentication.
 In previous versions of GitLab users had to submit their
 Kerberos username and password to GitLab when signing in.
 
-We [deprecated](../update/deprecations.md#omniauth-kerberos-gem) password-based
-Kerberos sign-ins in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/2908)
-it in GitLab 15.0. You must switch to ticket-based sign in.
-
-Depending on your existing GitLab configuration, **Sign in with:
-Kerberos** may already be visible on your GitLab sign-in page.
-If not, then add the settings [described above](#configuration).
-
-To disable password-based Kerberos sign-ins, remove the OmniAuth provider
-`kerberos` from your `gitlab.yml`/`gitlab.rb` file.
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Edit `/etc/gitlab/gitlab.rb` and remove the `{ "name" => "kerberos" }` line
-   under `gitlab_rails['omniauth_providers']`:
-
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     { "name" => "kerberos" } # <-- remove this entry
-   ]
-   ```
-
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
-:::TabTitle Self-compiled (source)
-
-1. Edit [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) and remove the `- { name: 'kerberos' }` line under OmniAuth
-   providers:
-
-   ```yaml
-   omniauth:
-     # Rest of configuration omitted
-     # ...
-     providers:
-       - { name: 'kerberos' }  # <-- remove this line
-   ```
-
-1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
-
-::EndTabs
-
-NOTE:
-Removing the `kerberos` OmniAuth provider can also resolve a rare
-`Krb5Auth::Krb5::Exception (No credentials cache found)` error (`500` error in GitLab)
-when trying to clone via HTTPS.
+We [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/2908) password-based Kerberos sign-ins in GitLab 15.0.
 
 ## Support for Active Directory Kerberos environments
 

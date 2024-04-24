@@ -10,24 +10,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
-
 ## Roles
 
 The [role](../user/permissions.md) assigned to a user or group is defined
 in the `Gitlab::Access` module as `access_level`.
 
 - No access (`0`)
-- Minimal access (`5`) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220203) in GitLab 13.5.)
+- Minimal access (`5`)
 - Guest (`10`)
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
-
-NOTE:
-In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have an `access_level` of `50`(Owner).
-In GitLab 14.8 and earlier, projects in personal namespaces have an `access_level` of `40` (Maintainer) due to [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299)
+- Owner (`50`)
 
 ## Limitations
 
@@ -124,7 +118,6 @@ Gets a list of group or project members viewable by the authenticated user, incl
 
 If a user is a member of this group or project and also of one or more ancestor groups,
 only its membership with the highest `access_level` is returned.
-([Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56677) in GitLab 13.11.)
 This represents the effective permission of the user.
 
 Members from an invited group are returned if either:
@@ -334,16 +327,13 @@ Example response:
 
 ## List all billable members of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
-
 Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.
 
 This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
-[In GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/262875), use the `search` parameter
-to search for billable group members by name and `sort` to sort the results.
+Use the `search` parameter to search for billable group members by name and `sort` to sort the results.
 
 ```plaintext
 GET /groups/:id/billable_members
@@ -422,8 +412,6 @@ Example response:
 ```
 
 ## List memberships for a billable member of a group
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321560) in GitLab 13.11.
 
 Gets a list of memberships for a billable member of a group.
 
@@ -685,8 +673,6 @@ Example response:
 
 ### Set override flag for a member of a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
-
 By default, the access level of LDAP group members is set to the value specified
 by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
 
@@ -730,8 +716,6 @@ Example response:
 ```
 
 ### Remove override for a member of a group
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 Sets the override flag to false and allows LDAP Group Sync to reset the access
 level to the LDAP-prescribed value.
@@ -841,8 +825,6 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 ```
 
 ## List pending members of a group and its subgroups and projects
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332596) in GitLab 14.6.
 
 For a group and its subgroups and projects, get a list of all members in an `awaiting` state and those who are invited but do not have a GitLab account.
 

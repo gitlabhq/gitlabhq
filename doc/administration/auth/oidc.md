@@ -463,8 +463,6 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-> - Introduced in GitLab 14.2.
-
 WARNING:
 The following instructions are included for completeness, but only use symmetric key
 encryption if absolutely necessary.

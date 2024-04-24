@@ -103,6 +103,7 @@
   ],
   "OrchestrationPolicy": [
     "ApprovalPolicy",
+    "PipelineExecutionPolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy"
   ],
