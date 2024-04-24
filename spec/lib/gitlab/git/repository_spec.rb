@@ -2541,12 +2541,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   describe '#disconnect_alternates' do
     let(:project) { mutable_project }
     let(:repository) { mutable_repository }
-    let(:pool_repository) { create(:pool_repository) }
+    let(:pool_repository) { create(:pool_repository, :ready, source_project: project) }
     let(:object_pool) { pool_repository.object_pool }
-
-    before do
-      object_pool.create # rubocop:disable Rails/SaveBang
-    end
 
     it 'does not raise an error when disconnecting a non-linked repository' do
       expect { repository.disconnect_alternates }.not_to raise_error
@@ -2557,9 +2553,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       # Writing directly to an object pool fails as we don't support them in the
       # authorization checks. Gitaly's pre-receive hook fails as a gl_repository is
       # not set object pools.
-      source_project = create(:project, :repository)
-      new_commit_id = source_project.repository.commit_files(
-        source_project.owner,
+      #
+      # Write the commit into a fork of the project. Gitaly places the fork into the same partition
+      # with the main project and the object pool which enables fetching it later.
+      forked_project = create(:project, :fork_repository, forked_from_project: project)
+      new_commit_id = forked_project.repository.commit_files(
+        forked_project.owner,
         branch_name: object_pool.repository.root_ref,
         message: 'Add a file',
         actions: [{
@@ -2570,7 +2569,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       )
 
       # Fetch the new object into the object pool
-      Gitlab::GitalyClient::ObjectPoolService.new(object_pool).fetch(source_project.repository)
+      Gitlab::GitalyClient::ObjectPoolService.new(object_pool).fetch(forked_project.repository)
 
       object_pool.link(repository)
 

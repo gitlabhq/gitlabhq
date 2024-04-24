@@ -114,7 +114,6 @@ The importer attempts to find:
 
 ### User assignment by username
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218609) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 > - Not recommended for production use.
 
 FLAG:

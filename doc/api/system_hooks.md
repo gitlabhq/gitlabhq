@@ -52,8 +52,6 @@ Example response:
 
 ## Get system hook
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81595) in GitLab 14.9.
-
 Get a system hook by its ID.
 
 ```plaintext

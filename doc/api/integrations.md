@@ -12,11 +12,6 @@ DETAILS:
 
 This API enables you to work with external services that integrate with GitLab.
 
-NOTE:
-In GitLab 14.4, the `services` endpoint was [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/334500) to `integrations`.
-Calls to the integrations API can be made to both `/projects/:id/services` and `/projects/:id/integrations`.
-The examples in this document refer to the endpoint at `/projects/:id/integrations`.
-
 This API requires an access token with the Maintainer or Owner role.
 
 ## List all active integrations
@@ -447,10 +442,10 @@ Parameters:
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `api_key`              | string  | true     | API key used for authentication with Datadog.                                                                                                                                          |
 | `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
-| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                       |
-| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                               |
+| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
+| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
 | `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
-| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.).   |
+| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
 | `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
 
 ### Disable Datadog

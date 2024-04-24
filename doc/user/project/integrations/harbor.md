@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80999) in GitLab 14.9.
-
 You can use Harbor as the container registry for your GitLab project.
 
 [Harbor](https://goharbor.io/) is an open-source registry that can help you manage artifacts across cloud-native compute platforms like Kubernetes and Docker.

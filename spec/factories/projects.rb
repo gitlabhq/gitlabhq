@@ -424,6 +424,14 @@ FactoryBot.define do
       end
     end
 
+    trait :fork_repository do
+      after(:create) do |project|
+        project.repository.raw.gitaly_repository_client.fork_repository(
+          project.forked_from_project.repository.raw
+        )
+      end
+    end
+
     trait :design_repo do
       after(:create) do |project|
         raise 'Failed to create design repository!' unless project.design_repository.create_if_not_exists

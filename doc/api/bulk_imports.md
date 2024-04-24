@@ -10,7 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
@@ -27,7 +26,6 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/ind
 
 ## Start a new group or project migration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66353) in GitLab 14.2.
 > - `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 Use this endpoint to start a new group or project migration. Specify:
@@ -45,7 +43,7 @@ POST /bulk_imports
 | `configuration[url]`              | String | yes      | Source GitLab instance URL. |
 | `configuration[access_token]`     | String | yes      | Access token to the source GitLab instance. |
 | `entities`                        | Array  | yes      | List of entities to import. |
-| `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` (GitLab 14.2 and later) and `project_entity` (GitLab 15.11 and later). |
+| `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` and `project_entity` (GitLab 15.11 and later). |
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
 | `entities[destination_slug]`      | String | yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
 | `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |

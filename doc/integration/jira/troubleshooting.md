@@ -132,32 +132,21 @@ To change all Jira projects to use instance-level integration settings:
 
 1. In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run the following:
 
-   - In GitLab 15.0 and later:
+   ```ruby
+   Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
+     default_integration = Integration.default_integration(integration.type, integration.project)
 
-     ```ruby
-     Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
-       default_integration = Integration.default_integration(integration.type, integration.project)
+     integration.inherit_from_id = default_integration.id
 
-       integration.inherit_from_id = default_integration.id
-
-       if integration.save(context: :manual_change)
-         if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
-           Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
-         else
-           BulkUpdateIntegrationService.new(default_integration, [integration]).execute
-         end
+     if integration.save(context: :manual_change)
+       if Gitlab.version_info >= Gitlab::VersionInfo.new(16, 9)
+         Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+       else
+         BulkUpdateIntegrationService.new(default_integration, [integration]).execute
        end
      end
-     ```
-
-   - In GitLab 14.10 and earlier:
-
-     ```ruby
-     jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-     Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
-       integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
-     end
-     ```
+   end
+   ```
 
 1. Modify and save the instance-level integration from the UI to propagate the changes to all group-level and project-level integrations.
 

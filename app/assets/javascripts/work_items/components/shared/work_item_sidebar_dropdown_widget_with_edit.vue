@@ -3,7 +3,7 @@ import { GlButton, GlForm, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/u
 import { isEmpty, debounce } from 'lodash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 
 export default {
   i18n: {
@@ -116,6 +116,11 @@ export default {
     resetButton() {
       return this.resetButtonLabel || this.$options.i18n.resetButtonText;
     },
+    toggleText() {
+      return !this.toggleDropdownText && !this.hasValue
+        ? sprintf(__(`No %{label}`), { label: this.dropdownLabel.toLowerCase() })
+        : this.toggleDropdownText;
+    },
   },
   watch: {
     itemValue: {
@@ -212,7 +217,7 @@ export default {
         :infinite-scroll="infiniteScroll"
         :searching="loading"
         :header-text="headerText"
-        :toggle-text="toggleDropdownText"
+        :toggle-text="toggleText"
         :no-results-text="$options.i18n.noMatchingResults"
         :items="listItems"
         :selected="localSelectedItem"

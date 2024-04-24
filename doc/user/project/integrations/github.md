@@ -48,8 +48,6 @@ to configure pipelines to run for open pull requests.
 
 ### Static or dynamic status check names
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/9931) in GitLab 12.4 to make static status check names the default behavior for new projects.
-
 A status check name can be static or dynamic:
 
 - **Static**: The hostname of your

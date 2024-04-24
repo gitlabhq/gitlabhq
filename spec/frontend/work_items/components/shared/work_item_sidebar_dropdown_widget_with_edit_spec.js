@@ -220,5 +220,13 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
 
       expect(findCollapsibleListbox().props('infiniteScrollLoading')).toBe(true);
     });
+
+    it('displays default dropdown label when no value is selected', async () => {
+      createComponent({ isEditing: true });
+
+      await nextTick();
+
+      expect(findCollapsibleListbox().props('toggleText')).toBe('No iteration');
+    });
   });
 });

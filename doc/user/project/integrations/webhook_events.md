@@ -1143,9 +1143,6 @@ Payload example:
 
 Pipeline events are triggered when the status of a pipeline changes.
 
-In [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53159)
-and later, the pipeline webhook returns only the latest jobs.
-
 In [GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89546)
 and later, pipeline webhooks triggered by blocked users are not processed.
 
@@ -1546,7 +1543,7 @@ If the pipeline has a name, that name is the value of `commit.name`.
 
 Deployment events are triggered when a deployment:
 
-- Starts ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41214) in GitLab 13.5)
+- Starts
 - Succeeds
 - Fails
 - Is cancelled

@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
-> - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - New application setting `bulk_import_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. `bulk_import` feature flag removed.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
@@ -188,8 +185,7 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 ### Versions
 
-The source GitLab instance must be running GitLab 14.0 or later to import groups and GitLab 14.4 or later to import
-projects. However, to maximize the chance of a successful and performant migration, you should:
+To maximize the chance of a successful and performant migration, you should:
 
 - To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations,
   update the source and destinations instances to GitLab 16.2 or later.
@@ -247,7 +243,7 @@ Create the group you want to import to and connect the source GitLab instance:
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
      - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
-1. Enter the base URL of a GitLab instance running GitLab 14.0 or later.
+1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
@@ -390,7 +386,6 @@ Some group items are excluded from migration because they either:
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 > - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
@@ -544,8 +539,6 @@ You can also see all migrated entities with any failures related to them using a
 [API endpoint](../../../api/bulk_imports.md#list-all-group-or-project-migrations-entities).
 
 ### Stale imports
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
 
 When troubleshooting group migration, an import may not complete because the import workers took
 longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or

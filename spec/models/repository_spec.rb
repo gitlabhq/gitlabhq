@@ -3937,7 +3937,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#object_pool' do
     let_it_be(:primary_project) { create(:project, :empty_repo) }
-    let_it_be(:forked_project) { create(:project, :empty_repo) }
+    let_it_be(:forked_project) { create(:project, :fork_repository, forked_from_project: primary_project) }
 
     let(:repository) { primary_project.repository }
 

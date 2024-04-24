@@ -83,7 +83,8 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
 
     context 'when the second member leaves' do
       it 'does not schedule pool removal' do
-        other_project = create(:project, :repository, pool_repository: pool)
+        other_project = create(:project,
+          :fork_repository, forked_from_project: pool.source_project, pool_repository: pool)
         pool.link_repository(other_project.repository)
 
         expect(::ObjectPool::DestroyWorker).not_to receive(:perform_async).with(pool.id)

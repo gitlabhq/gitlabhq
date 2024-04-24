@@ -87,7 +87,7 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/3
 Occurrences of the `active` identifier in the GitLab Runner GraphQL API endpoints will be
 renamed to `paused` in GitLab 16.0.
 
-- In v4 of the REST API, starting in GitLab 14.8, you can use the `paused` property in place of `active`
+- In v4 of the REST API, you can use the `paused` property in place of `active`
 - In v5 of the REST API, this change will affect endpoints taking or returning `active` property, such as:
   - `GET /runners`
   - `GET /runners/all`

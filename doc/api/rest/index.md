@@ -518,10 +518,9 @@ The type of filter depends on the
 `order_by` option used, and we can have more than one additional filter.
 
 WARNING:
-The `Links` header was removed in GitLab 14.0 to be aligned with the
+The `Links` header was removed to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
-header was [added in GitLab 13.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33714)
-and should be used instead.
+header should be used instead.
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is
@@ -866,12 +865,9 @@ specifically used by GitLab.com, see
 The GitLab API supports the `application/json` content type by default, though
 some API endpoints also support `text/plain`.
 
-In [GitLab 13.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/250342),
 API endpoints do not support `text/plain` by default, unless it's explicitly documented.
 
 ## Resolve requests detected as spam
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352913) in GitLab 14.9.
 
 REST API requests can be detected as spam. If a request is detected as spam and:
 
