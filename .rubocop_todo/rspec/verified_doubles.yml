@@ -90,7 +90,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/requests/api/geo_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dast_site_profiles/delete_spec.rb'
     - 'ee/spec/requests/api/internal/base_spec.rb'
-    - 'ee/spec/requests/api/visual_review_discussions_spec.rb'
     - 'ee/spec/requests/callout_spec.rb'
     - 'ee/spec/requests/rack_attack_spec.rb'
     - 'ee/spec/serializers/blocking_merge_request_entity_spec.rb'

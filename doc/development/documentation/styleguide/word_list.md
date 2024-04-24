@@ -2040,6 +2040,21 @@ Use sentence case for **Value stream forecasting**. On first mention on a page, 
 
 Thereafter, use **Value stream forecasting** by itself.
 
+## version, v
+
+To describe versions of GitLab, use **GitLab `<version number>`**. For example:
+
+- You must have GitLab 16.0 or later.
+
+To describe other software, use the same style as the documentation for that software.
+For example:
+
+- In Kubernetes 1.4, you can...
+
+Pay attention to spacing by the letter **v**. In semantic versioning, no space exists after the **v**. For example:
+
+- v1.2.3
+
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))

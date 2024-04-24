@@ -1911,7 +1911,6 @@ Layout/LineLength:
     - 'ee/spec/requests/api/settings_spec.rb'
     - 'ee/spec/requests/api/status_checks_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'
-    - 'ee/spec/requests/api/visual_review_discussions_spec.rb'
     - 'ee/spec/requests/api/vulnerability_exports_spec.rb'
     - 'ee/spec/requests/api/vulnerability_findings_spec.rb'
     - 'ee/spec/requests/api/vulnerability_issue_links_spec.rb'

@@ -41,13 +41,6 @@ const copyFilesPatterns = [
     from: path.join(ROOT_PATH, 'node_modules', GITLAB_WEB_IDE_PACKAGE, 'dist', 'public'),
     to: GITLAB_WEB_IDE_OUTPUT_PATH,
   },
-  {
-    from: path.join(
-      ROOT_PATH,
-      'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
-    ),
-    to: WEBPACK_OUTPUT_PATH,
-  },
 ];
 
 module.exports = {

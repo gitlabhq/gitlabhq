@@ -9,7 +9,6 @@
   %body{ class: [body_classes, ff_simplified_badges_classes], data: body_data }
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
-    = render "layouts/visual_review" if review_apps_enabled?
     = render 'peek/bar'
     = header_message
 

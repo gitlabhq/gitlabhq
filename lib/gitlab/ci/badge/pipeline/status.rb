@@ -23,13 +23,11 @@ module Gitlab::Ci
           'pipeline'
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def status
           pipelines = @project.ci_pipelines.for_ref(@ref).order_id_desc
           pipelines = pipelines.without_statuses([:skipped]) if @ignore_skipped
           pipelines.pick(:status) || 'unknown'
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         def metadata
           @metadata ||= Pipeline::Metadata.new(self)

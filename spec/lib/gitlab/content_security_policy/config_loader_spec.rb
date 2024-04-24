@@ -530,26 +530,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
             expect(connect_src).not_to include(snowplow_micro_url)
           end
         end
-
-        context 'when REVIEW_APPS_ENABLED is set' do
-          before do
-            stub_env('REVIEW_APPS_ENABLED', 'true')
-          end
-
-          it "includes review app's merge requests API endpoint in the CSP" do
-            expect(connect_src).to include('https://gitlab.com/api/v4/projects/278964/merge_requests/')
-          end
-        end
-
-        context 'when REVIEW_APPS_ENABLED is blank' do
-          before do
-            stub_env('REVIEW_APPS_ENABLED', '')
-          end
-
-          it "does not include review app's merge requests API endpoint in the CSP" do
-            expect(connect_src).not_to include('https://gitlab.com/api/v4/projects/278964/merge_requests/')
-          end
-        end
       end
     end
 

@@ -2426,7 +2426,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/time_helper_spec.rb'
     - 'spec/helpers/time_zone_helper_spec.rb'
     - 'spec/helpers/todos_helper_spec.rb'
-    - 'spec/helpers/tooling/visual_review_helper_spec.rb'
     - 'spec/helpers/tracking_helper_spec.rb'
     - 'spec/helpers/tree_helper_spec.rb'
     - 'spec/helpers/users/callouts_helper_spec.rb'

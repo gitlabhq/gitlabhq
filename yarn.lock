@@ -1346,11 +1346,6 @@
     portal-vue "^2.1.6"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/visual-review-tools@1.7.3":
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.7.3.tgz#9ea641146436da388ffbad25d7f2abe0df52c235"
-  integrity sha512-NMV++7Ew1FSBDN1xiZaauU9tfeSfgDHcOLpn+8bGpP+O5orUPm2Eu66R5eC5gkjBPaXosNAxNWtriee+aFk4+g==
-
 "@gitlab/web-ide@^0.0.1-dev-20240416022245":
   version "0.0.1-dev-20240416022245"
   resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20240416022245.tgz#fe2ee0db0885e7b126d0c86976ebca6e338624ca"

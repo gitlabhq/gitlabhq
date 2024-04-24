@@ -2276,7 +2276,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/checks/matching_merge_request.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ci/ansi2json/parser.rb'
-    - 'lib/gitlab/ci/badge/pipeline/status.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'lib/gitlab/ci/charts.rb'
     - 'lib/gitlab/ci/components/instance_path.rb'

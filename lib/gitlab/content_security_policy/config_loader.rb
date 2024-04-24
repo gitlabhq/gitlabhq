@@ -27,7 +27,6 @@ module Gitlab
           allow_sentry(directives)
           allow_framed_gitlab_paths(directives)
           allow_customersdot(directives)
-          allow_review_apps(directives)
           csp_level_3_backport(directives)
           add_browsersdk_tracking(directives)
 
@@ -170,13 +169,6 @@ module Gitlab
           return unless customersdot_host
 
           append_to_directive(directives, 'frame_src', customersdot_host)
-        end
-
-        def allow_review_apps(directives)
-          return unless ENV['REVIEW_APPS_ENABLED'].presence
-
-          # Allow-listed to allow POSTs to https://gitlab.com/api/v4/projects/278964/merge_requests/:merge_request_iid/visual_review_discussions
-          append_to_directive(directives, 'connect_src', 'https://gitlab.com/api/v4/projects/278964/merge_requests/')
         end
 
         # The follow contains workarounds to patch Safari's lack of support for CSP Level 3

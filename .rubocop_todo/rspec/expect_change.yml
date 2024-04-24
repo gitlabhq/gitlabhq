@@ -63,7 +63,6 @@ RSpec/ExpectChange:
     - 'ee/spec/requests/api/internal/upcoming_reconciliations_spec.rb'
     - 'ee/spec/requests/api/issues_spec.rb'
     - 'ee/spec/requests/api/provider_identity_spec.rb'
-    - 'ee/spec/requests/api/visual_review_discussions_spec.rb'
     - 'ee/spec/requests/groups/epics/related_epic_links_controller_spec.rb'
     - 'ee/spec/requests/groups/protected_environments_controller_spec.rb'
     - 'ee/spec/requests/groups_controller_spec.rb'

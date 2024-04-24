@@ -6,7 +6,18 @@ require 'spec_helper'
 # NOTE: ONLY user related metrics to be added to the aggregates - otherwise add it to the exception list
 RSpec.describe 'Code review events' do
   it 'the aggregated metrics contain all the code review metrics' do
-    mr_related_events = %w[i_code_review_create_mr i_code_review_mr_diffs i_code_review_mr_with_invalid_approvers i_code_review_mr_single_file_diffs i_code_review_total_suggestions_applied i_code_review_total_suggestions_added i_code_review_create_note_in_ipynb_diff i_code_review_create_note_in_ipynb_diff_mr i_code_review_create_note_in_ipynb_diff_commit i_code_review_merge_request_widget_license_compliance_warning]
+    mr_related_events = %w[
+      i_code_review_create_mr
+      i_code_review_mr_diffs
+      i_code_review_mr_with_invalid_approvers
+      i_code_review_mr_single_file_diffs
+      i_code_review_total_suggestions_applied
+      i_code_review_total_suggestions_added
+      i_code_review_create_note_in_ipynb_diff
+      i_code_review_create_note_in_ipynb_diff_mr
+      i_code_review_create_note_in_ipynb_diff_commit
+      i_code_review_merge_request_widget_license_compliance_warning
+    ]
 
     all_code_review_events = Gitlab::Usage::MetricDefinition.all.flat_map do |definition|
       next [] unless definition.attributes[:key_path].include?('.code_review.') &&
