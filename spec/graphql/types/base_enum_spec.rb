@@ -139,4 +139,19 @@ RSpec.describe Types::BaseEnum, feature_category: :api do
       enum.values['TEST_VALUE']
     end
   end
+
+  describe '#authorized?' do
+    let(:object) { :object }
+    let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator) }
+    let(:user) { double }
+    let(:context) { { current_user: user, scope_validator: scope_validator } }
+
+    it 'delegates to authorization' do
+      expect(described_class.authorization).to be_kind_of(::Gitlab::Graphql::Authorize::ObjectAuthorization)
+      expect(described_class.authorization).to receive(:ok?)
+        .with(object, user, scope_validator: scope_validator)
+
+      described_class.authorized?(object, context)
+    end
+  end
 end

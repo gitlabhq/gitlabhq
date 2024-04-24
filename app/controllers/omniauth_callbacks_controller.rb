@@ -219,6 +219,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       fail_login(@user)
     end
+  rescue Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError
+    handle_identity_with_untrusted_extern_uid
   rescue Gitlab::Auth::OAuth::User::SigninDisabledForProviderError
     handle_disabled_provider
   rescue Gitlab::Auth::OAuth::User::SignupDisabledError
@@ -266,6 +268,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def redirect_unverified_saml_initiation
     redirect_to profile_account_path, notice: _('Request to link SAML account must be authorized')
+  end
+
+  def handle_identity_with_untrusted_extern_uid
+    label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
+    flash[:alert] = format(_("Signing in using your %{label} account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your %{label} account."), label: label)
+
+    redirect_to new_user_session_path
   end
 
   def handle_disabled_provider

@@ -5,14 +5,14 @@ require 'spec_helper'
 RSpec.describe DeviseEmailValidator do
   let!(:user) { build(:user, public_email: 'test@example.com') }
 
-  subject { validator.validate(user) }
+  subject(:validate) { validator.validate(user) }
 
   describe 'validations' do
     context 'by default' do
       let(:validator) { described_class.new(attributes: [:public_email]) }
 
       it 'allows when email is valid' do
-        subject
+        validate
 
         expect(user.errors).to be_empty
       end
@@ -20,7 +20,7 @@ RSpec.describe DeviseEmailValidator do
       it 'returns error when email is invalid' do
         user.public_email = 'invalid'
 
-        subject
+        validate
 
         expect(user.errors).to be_present
         expect(user.errors.added?(:public_email)).to be true
@@ -29,7 +29,7 @@ RSpec.describe DeviseEmailValidator do
       it 'returns error when email is nil' do
         user.public_email = nil
 
-        subject
+        validate
 
         expect(user.errors).to be_present
       end
@@ -37,10 +37,39 @@ RSpec.describe DeviseEmailValidator do
       it 'returns error when email is blank' do
         user.public_email = ''
 
-        subject
+        validate
 
         expect(user.errors).to be_present
         expect(user.errors.added?(:public_email)).to be true
+      end
+
+      context 'for email with invalid characters' do
+        %w[
+          lol!'+=?><#$%^&*()@gmail.com
+          test?invalidcharacter@example.com
+          test!invalidcharacter@example.com
+          test#invalidcharacter@example.com
+          test$invalidcharacter@example.com
+          test%invalidcharacter@example.com
+          test&invalidcharacter@example.com
+          test*invalidcharacter@example.com
+          test/invalidcharacter@example.com
+          test=invalidcharacter@example.com
+          test^invalidcharacter@example.com
+          test<invalidcharacter@example.com
+          test>invalidcharacter@example.com
+          =?iso-8859-1?q?testencodedformat=40new.example.com=3e=20?=testencodedformat@example.com
+          =?iso-8859-1?q?testencodedformat=40new.example.com?=testencodedformat@example.com
+        ].each do |invalid_email|
+          it "returns error as invalid email for '#{invalid_email}'" do
+            user.public_email = invalid_email
+
+            validate
+
+            expect(user.errors).to be_present
+            expect(user.errors.added?(:public_email)).to be true
+          end
+        end
       end
     end
   end
@@ -51,13 +80,13 @@ RSpec.describe DeviseEmailValidator do
     it 'allows when value match' do
       user.public_email = '1'
 
-      subject
+      validate
 
       expect(user.errors).to be_empty
     end
 
     it 'returns error when value does not match' do
-      subject
+      validate
 
       expect(user.errors).to be_present
     end
@@ -75,7 +104,7 @@ RSpec.describe DeviseEmailValidator do
     it 'allows when email is nil' do
       user.public_email = nil
 
-      subject
+      validate
 
       expect(user.errors).to be_empty
     end
@@ -87,9 +116,22 @@ RSpec.describe DeviseEmailValidator do
     it 'allows when email is blank' do
       user.public_email = ''
 
-      subject
+      validate
 
       expect(user.errors).to be_empty
+    end
+  end
+
+  context 'when attribute is already marked invalid' do
+    let(:validator) { described_class.new(attributes: [:email]) }
+
+    it 'does not add duplicate error' do
+      user.email = 'Invalid as per Devise::Models::Validatable'
+      user.validate
+
+      validate
+
+      expect(user.errors[:email].size).to eq 1
     end
   end
 end
