@@ -11,8 +11,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in GitLab 13.10.
-
 WARNING:
 The Ruby gems package registry for GitLab is under development and isn't ready for production use due to
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/3200) details the remaining

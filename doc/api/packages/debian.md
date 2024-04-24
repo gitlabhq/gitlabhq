@@ -8,10 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
-> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
-> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the API documentation for [Debian](../../user/packages/debian_repository/index.md).
@@ -50,7 +48,6 @@ See [Authenticate to the Debian Package Repositories](../../user/packages/debian
 
 ## Upload a package file
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62028) in GitLab 14.0.
 > - Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 Upload a Debian package file:
@@ -83,8 +80,6 @@ curl --request PUT \
 ```
 
 ## Download a package
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a package file.
 
@@ -146,8 +141,6 @@ The examples in this document all use the project-level prefix.
 
 ## Download a distribution Release file
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
-
 Download a Debian distribution file.
 
 ```plaintext
@@ -173,8 +166,6 @@ curl --header "Private-Token: <personal_access_token>" \
 This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a signed distribution Release file
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
 Download a signed Debian distribution file.
 
@@ -202,8 +193,6 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a release file signature
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
-
 Download a Debian release file signature.
 
 ```plaintext
@@ -229,8 +218,6 @@ curl --header "Private-Token: <personal_access_token>" \
 This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a packages index
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a packages index.
 

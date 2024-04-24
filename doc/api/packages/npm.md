@@ -209,8 +209,6 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### List tags
 
-> - Introduced in GitLab 12.7.
-
 Lists the dist-tags for the package.
 
 ```plaintext
@@ -239,8 +237,6 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### Create or update a tag
 
-> - Introduced in GitLab 12.7.
-
 Create or update a dist-tag.
 
 ```plaintext
@@ -260,8 +256,6 @@ curl --request PUT --header "Authorization: Bearer <personal_access_token>" "htt
 This endpoint responds successfully with `204 No Content`.
 
 ### Delete a tag
-
-> - Introduced in GitLab 12.7.
 
 Delete a dist-tag.
 

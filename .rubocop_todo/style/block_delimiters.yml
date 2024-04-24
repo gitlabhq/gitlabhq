@@ -65,4 +65,3 @@ Style/BlockDelimiters:
     - 'spec/requests/api/graphql/mutations/container_registry/protection/rule/create_spec.rb'
     - 'spec/requests/jira_connect/subscriptions_controller_spec.rb'
     - 'spec/services/packages/nuget/extract_remote_metadata_file_service_spec.rb'
-    - 'spec/services/packages/protection/delete_rule_service_spec.rb'

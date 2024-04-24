@@ -5,18 +5,13 @@ require 'spec_helper'
 RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, developers: developer, guests: guest) }
   let_it_be(:parent) { create(:work_item, project: project) }
   let_it_be_with_reload(:work_item) { create(:work_item, project: project, assignees: [developer]) }
 
   let(:widget_params) { {} }
   let(:opts) { {} }
   let(:current_user) { developer }
-
-  before do
-    project.add_developer(developer)
-    project.add_guest(guest)
-  end
 
   describe '#execute' do
     let(:service) do

@@ -9442,9 +9442,11 @@ Input type: `WorkItemCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemcreatecolorwidget"></a>`colorWidget` | [`WorkItemWidgetColorInput`](#workitemwidgetcolorinput) | Input for color widget. |
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemcreatedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in GitLab 16.9. |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
+| <a id="mutationworkitemcreatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
@@ -13237,29 +13239,6 @@ The edge type for [`NestedEnvironment`](#nestedenvironment).
 | ---- | ---- | ----------- |
 | <a id="nestedenvironmentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="nestedenvironmentedgenode"></a>`node` | [`NestedEnvironment`](#nestedenvironment) | The item at the end of the edge. |
-
-#### `NetworkPolicyConnection`
-
-The connection type for [`NetworkPolicy`](#networkpolicy).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="networkpolicyconnectionedges"></a>`edges` | [`[NetworkPolicyEdge]`](#networkpolicyedge) | A list of edges. |
-| <a id="networkpolicyconnectionnodes"></a>`nodes` | [`[NetworkPolicy]`](#networkpolicy) | A list of nodes. |
-| <a id="networkpolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `NetworkPolicyEdge`
-
-The edge type for [`NetworkPolicy`](#networkpolicy).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="networkpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="networkpolicyedgenode"></a>`node` | [`NetworkPolicy`](#networkpolicy) | The item at the end of the edge. |
 
 #### `NoteConnection`
 
@@ -23322,6 +23301,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
 | <a id="mergerequestmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the merge request. |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
+| <a id="mergerequestpolicyviolations"></a>`policyViolations` **{warning-solid}** | [`PolicyViolationDetails`](#policyviolationdetails) | **Introduced** in GitLab 17.0. **Status**: Experiment. Policy violations reported on the merge request. Returns `null` if `save_policy_violation_data` feature flag is disabled. |
 | <a id="mergerequestpreparedat"></a>`preparedAt` | [`Time`](#time) | Timestamp of when the merge request was prepared. |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
 | <a id="mergerequestprojectid"></a>`projectId` | [`Int!`](#int) | ID of the merge request project. |
@@ -25241,23 +25221,6 @@ Describes where code is deployed for a project organized by folder.
 | <a id="nestedenvironmentname"></a>`name` | [`String!`](#string) | Human-readable name of the environment. |
 | <a id="nestedenvironmentsize"></a>`size` | [`Int!`](#int) | Number of environments nested in the folder. |
 
-### `NetworkPolicy`
-
-Represents the network policy.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="networkpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
-| <a id="networkpolicyenvironments"></a>`environments` | [`EnvironmentConnection`](#environmentconnection) | Environments where this policy is applied. (see [Connections](#connections)) |
-| <a id="networkpolicyfromautodevops"></a>`fromAutoDevops` | [`Boolean!`](#boolean) | Indicates whether this policy is created from AutoDevops. |
-| <a id="networkpolicykind"></a>`kind` | [`NetworkPolicyKind!`](#networkpolicykind) | Kind of the policy. |
-| <a id="networkpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
-| <a id="networkpolicynamespace"></a>`namespace` | [`String!`](#string) | Namespace of the policy. |
-| <a id="networkpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
-| <a id="networkpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
-
 ### `Note`
 
 #### Fields
@@ -26208,6 +26171,17 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="pipelinetriggerowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline trigger token. |
 | <a id="pipelinetriggertoken"></a>`token` | [`String!`](#string) | Value of the pipeline trigger token. |
 
+### `PolicyAnyMergeRequestViolation`
+
+Represents policy violation for `any_merge_request` report_type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyanymergerequestviolationcommits"></a>`commits` | [`JSON`](#json) | List of unsigned commits causing the violation. If policy targets any commits, it returns `true`. |
+| <a id="policyanymergerequestviolationname"></a>`name` | [`String!`](#string) | Represents the policy name. |
+
 ### `PolicyApprovalGroup`
 
 #### Fields
@@ -26219,6 +26193,57 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="policyapprovalgroupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="policyapprovalgroupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
+### `PolicyComparisonPipeline`
+
+Represents the source and target pipelines used for comparison in the policy evaluation.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policycomparisonpipelinereporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type for which the pipeline IDs were evaluated. |
+| <a id="policycomparisonpipelinesource"></a>`source` | [`[CiPipelineID!]`](#cipipelineid) | Represents the list of pipeline GIDs for the source branch. |
+| <a id="policycomparisonpipelinetarget"></a>`target` | [`[CiPipelineID!]`](#cipipelineid) | Represents the list of pipeline GIDs for the target branch. |
+
+### `PolicyError`
+
+Represents an error that can occur during policy evaluation.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyerrordata"></a>`data` | [`JSON`](#json) | Represents the error-specific data. |
+| <a id="policyerrorerror"></a>`error` | [`PolicyViolationErrorType!`](#policyviolationerrortype) | Represents error code. |
+| <a id="policyerrormessage"></a>`message` | [`String!`](#string) | Represents the error message. |
+| <a id="policyerrorreporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report type. |
+
+### `PolicyLicenseScanningViolation`
+
+Represents policy violation for `license_scanning` report_type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policylicensescanningviolationdependencies"></a>`dependencies` | [`[String!]!`](#string) | List of dependencies using the violated license. |
+| <a id="policylicensescanningviolationlicense"></a>`license` | [`String!`](#string) | License name. |
+| <a id="policylicensescanningviolationurl"></a>`url` | [`String`](#string) | URL of the license. |
+
+### `PolicyScanFindingViolation`
+
+Represents policy violation for `scan_finding` report_type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyscanfindingviolationlocation"></a>`location` | [`JSON`](#json) | Location of the finding determined by the scanner. |
+| <a id="policyscanfindingviolationname"></a>`name` | [`String`](#string) | Represents the name of the finding. |
+| <a id="policyscanfindingviolationpath"></a>`path` | [`String`](#string) | Represents the URL path to the finding. |
+| <a id="policyscanfindingviolationreporttype"></a>`reportType` | [`VulnerabilityReportType!`](#vulnerabilityreporttype) | Represents the report type. |
+| <a id="policyscanfindingviolationseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the finding. |
+
 ### `PolicyScope`
 
 #### Fields
@@ -26228,6 +26253,33 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="policyscopecomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection!`](#complianceframeworkconnection) | Compliance Frameworks linked to the policy. (see [Connections](#connections)) |
 | <a id="policyscopeexcludingprojects"></a>`excludingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should not be applied to. (see [Connections](#connections)) |
 | <a id="policyscopeincludingprojects"></a>`includingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should be applied to. (see [Connections](#connections)) |
+
+### `PolicyViolationDetails`
+
+Represents the details of merge request approval policy violations.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyviolationdetailsanymergerequest"></a>`anyMergeRequest` | [`[PolicyAnyMergeRequestViolation!]!`](#policyanymergerequestviolation) | Represents the violations of `any_merge_request` rules. |
+| <a id="policyviolationdetailscomparisonpipelines"></a>`comparisonPipelines` | [`[PolicyComparisonPipeline!]!`](#policycomparisonpipeline) | Represents the pipelines used for comparison in the policy evaluation. |
+| <a id="policyviolationdetailserrors"></a>`errors` | [`[PolicyError!]!`](#policyerror) | Represents the policy errors. |
+| <a id="policyviolationdetailslicensescanning"></a>`licenseScanning` | [`[PolicyLicenseScanningViolation!]!`](#policylicensescanningviolation) | Represents the violations of `license_scanning` rules. |
+| <a id="policyviolationdetailsnewscanfinding"></a>`newScanFinding` | [`[PolicyScanFindingViolation!]!`](#policyscanfindingviolation) | Represents the newly detected violations of `scan_finding` rules. |
+| <a id="policyviolationdetailspolicies"></a>`policies` | [`[PolicyViolationInfo!]!`](#policyviolationinfo) | Information about policies that were violated. |
+| <a id="policyviolationdetailspreviousscanfinding"></a>`previousScanFinding` | [`[PolicyScanFindingViolation!]!`](#policyscanfindingviolation) | Represents the violations of `scan_finding` rules for previously existing vulnerabilities. |
+
+### `PolicyViolationInfo`
+
+Represents generic policy violation information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyviolationinfoname"></a>`name` | [`String!`](#string) | Represents the name of the violated policy. |
+| <a id="policyviolationinforeporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report type. |
 
 ### `PreviewBillableUserChange`
 
@@ -27407,26 +27459,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectnestedenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectnestedenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
 | <a id="projectnestedenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
-
-##### `Project.networkPolicies`
-
-Network Policies of the project.
-
-DETAILS:
-**Deprecated** in GitLab 14.8.
-Network policies are deprecated and will be removed in GitLab 17.0. This field returns no data in GitLab 15.0 and later.
-
-Returns [`NetworkPolicyConnection`](#networkpolicyconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectnetworkpoliciesenvironmentid"></a>`environmentId` | [`EnvironmentID`](#environmentid) | Global ID of the environment to filter policies. |
 
 ##### `Project.packages`
 
@@ -33465,15 +33497,6 @@ Negated Milestone ID wildcard values.
 | <a id="negatedmilestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and yet to be started (start date > today). |
 | <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is open but due in the past (due date <= today). |
 
-### `NetworkPolicyKind`
-
-Kind of the network policy.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="networkpolicykindciliumnetworkpolicy"></a>`CiliumNetworkPolicy` | Policy kind of Cilium Network Policy. |
-| <a id="networkpolicykindnetworkpolicy"></a>`NetworkPolicy` | Policy kind of Network Policy. |
-
 ### `NotesFilterType`
 
 Work item notes collection type.
@@ -33714,6 +33737,14 @@ Pipeline security report finding sort values.
 | <a id="pipelinestatusenumsuccess"></a>`SUCCESS` | Pipeline completed successfully. |
 | <a id="pipelinestatusenumwaiting_for_callback"></a>`WAITING_FOR_CALLBACK` | Pipeline is waiting for an external action. |
 | <a id="pipelinestatusenumwaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
+
+### `PolicyViolationErrorType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policyviolationerrortypeartifacts_missing"></a>`ARTIFACTS_MISSING` | Represents error which occurs when pipeline is misconfigured and does not include necessary artifacts to evaluate a policy. |
+| <a id="policyviolationerrortypescan_removed"></a>`SCAN_REMOVED` | Represents mismatch between the scans of the source and target pipelines. |
+| <a id="policyviolationerrortypeunknown"></a>`UNKNOWN` | Represents unknown error. |
 
 ### `ProductAnalyticsState`
 

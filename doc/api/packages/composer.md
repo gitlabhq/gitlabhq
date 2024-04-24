@@ -266,8 +266,6 @@ Example response:
 
 ## Download a package archive
 
-> - Authorization for this endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
-
 Download a Composer package. This URL is provided in the [v1](#v1-package-metadata)
 or [v2 package metadata](#v2-package-metadata)
 response. A `.zip` file extension must be in the request.
@@ -293,6 +291,3 @@ curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v
 ```
 
 This writes the downloaded file to `package.tar.gz` in the current directory.
-
-NOTE:
-This endpoint requires authorization in GitLab 14.10 and later. In GitLab 14.9 and earlier, it was publicly accessible.

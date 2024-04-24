@@ -26,8 +26,6 @@ for details on which headers and token types are supported. Undocumented authent
 
 ## Package index
 
-> - Introduced in GitLab 12.8.
-
 Returns the index for a given package, which includes a list of available versions:
 
 ```plaintext
@@ -54,8 +52,6 @@ Example response:
 ```
 
 ## Download a package file
-
-> - Introduced in GitLab 12.8.
 
 Download a NuGet package file. The [metadata service](#metadata-service) provides this URL.
 
@@ -84,7 +80,6 @@ This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current di
 
 ## Upload a package file
 
-> - Introduced in GitLab 12.8 for NuGet v3 feed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2 for NuGet v2 feed.
 
 Upload a NuGet package file:
@@ -127,8 +122,6 @@ Upload a NuGet package file:
   ```
 
 ## Upload a symbol package file
-
-> - Introduced in GitLab 12.8.
 
 Upload a NuGet symbol package file (`.snupkg`):
 
@@ -213,7 +206,6 @@ Example response:
 
 ### V3 source feed/protocol
 
-> - Introduced in GitLab 12.6.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) to be public in GitLab 16.1.
 
 Returns a list of available API resources.
@@ -289,8 +281,6 @@ the group-level route, the returned URLs contain `/groups/:id/-`.
 
 ## Metadata Service
 
-> - Introduced in GitLab 12.8.
-
 Returns metadata for a package:
 
 ```plaintext
@@ -341,8 +331,6 @@ Example response:
 
 ## Version Metadata Service
 
-> - Introduced in GitLab 12.8.
-
 Returns metadata for a specific package version:
 
 ```plaintext
@@ -380,8 +368,6 @@ Example response:
 ```
 
 ## Search Service
-
-> - Introduced in GitLab 12.8.
 
 Given a query, search for NuGet packages in the repository:
 

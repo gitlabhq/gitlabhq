@@ -441,25 +441,3 @@ This is also true even if the prior published package shares the same name, but 
 ### Package JSON file is too large
 
 Make sure that your `package.json` file does not exceed `20,000` characters.
-
-### `npm publish` returns `npm ERR! 500 Internal Server Error - PUT`
-
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/238950) in GitLab 13.3.x and later. The error in the logs appears as:
-
-```plaintext
->NoMethodError - undefined method `preferred_language' for #<Rack::Response
-```
-
-This might be accompanied by another error:
-
-```plaintext
->Errno::EACCES","exception.message":"Permission denied
-```
-
-This is usually a permissions issue with either:
-
-- `'packages_storage_path'` default `/var/opt/gitlab/gitlab-rails/shared/packages/`.
-- The remote bucket if [object storage](../../../administration/packages/index.md#use-object-storage)
-  is used.
-
-In the latter case, ensure the bucket exists and GitLab has write access to it.

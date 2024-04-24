@@ -14,7 +14,6 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS, VARIANT_WARNING } from '~/alert';
-import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
@@ -338,8 +337,6 @@ export default {
     deleteSelected: s__('PackageRegistry|Delete selected'),
     moreActionsText: __('More actions'),
     fetchPackageFilesErrorMessage: FETCH_PACKAGE_FILES_ERROR_MESSAGE,
-    prev: PREV,
-    next: NEXT,
   },
   modal: {
     fileDeletePrimaryAction: {
@@ -489,8 +486,6 @@ export default {
         <gl-keyset-pagination
           :disabled="isLoading"
           v-bind="pageInfo"
-          :prev-text="$options.i18n.prev"
-          :next-text="$options.i18n.next"
           class="gl-mt-3"
           @prev="fetchPreviousFilesPage"
           @next="fetchNextFilesPage"

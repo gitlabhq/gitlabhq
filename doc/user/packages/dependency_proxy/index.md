@@ -10,11 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) support for private groups in GitLab 13.7.
-> - Anonymous access to images in public groups is no longer available starting in GitLab 13.7.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290944) support for pull-by-digest and Docker version 20.x in GitLab 13.10.
-
 The GitLab Dependency Proxy is a local proxy you can use for your frequently-accessed
 upstream images.
 
@@ -32,7 +27,7 @@ The following images and packages are supported.
 
 | Image/Package    | GitLab version |
 | ---------------- | -------------- |
-| Docker           | 11.11+         |
+| Docker           | 14.0+         |
 
 For a list of planned additions, view the
 [direction page](https://about.gitlab.com/direction/package/#dependency-proxy).
@@ -71,7 +66,6 @@ Prerequisites:
 
 ### Authenticate with the Dependency Proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `dependency_proxy_for_private_groups`. Enabled by default.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 > - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
 
@@ -112,10 +106,6 @@ is enabled, users must be signed-in through SSO before they can pull images thro
 Proxy.
 
 #### Authenticate within CI/CD
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280582) in GitLab 13.7.
-> - Automatic runner authentication, when using the Dependency Proxy to pull the image for the job, was [added](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27302) in GitLab 13.9.
-> - The prefix for group names containing uppercase letters was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54559) in GitLab 13.10.
 
 Runners sign in to the Dependency Proxy automatically. To pull through
 the Dependency Proxy, use one of the [predefined variables](../../../ci/variables/predefined_variables.md):
@@ -224,8 +214,6 @@ For information on reducing your storage use on the Dependency Proxy, see
 [Reduce Dependency Proxy storage use](reduce_dependency_proxy_storage.md).
 
 ## Docker Hub rate limits and the Dependency Proxy
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241639) in GitLab 13.7.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch how to [use the Dependency Proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).

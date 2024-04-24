@@ -1055,13 +1055,14 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 1. Upgrade PostgreSQL on **the leader node** and make sure that the upgrade is completed successfully:
 
    ```shell
+   # Default command timeout is 600s, configurable with '--timeout'
    sudo gitlab-ctl pg-upgrade
    ```
 
    NOTE:
    `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
    does not work or you believe it did not detect the role correctly, you can use the `--leader` or
-   `--replica` arguments to manually override it.
+   `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
 
 1. Check the status of the leader and cluster. You can proceed only if you have a healthy leader:
 

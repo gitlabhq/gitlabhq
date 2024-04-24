@@ -309,11 +309,18 @@ function retry_failed_e2e_rspec_examples() {
   export QA_RSPEC_RETRIED="true"
   export NO_KNAPSACK="true"
 
-  eval "$QA_COMMAND --format RspecJunitFormatter --out ${junit_retry_file} --only-failures"
-  rspec_run_status=$?
+  echoinfo "Initial test run failed, retrying tests in new process" "yes"
 
-  install_junit_merge_gem
-  run_timed_command "junit_merge ${junit_retry_file} tmp/rspec-${CI_JOB_ID}.xml --update-only"
+  if eval "$QA_COMMAND --format RspecJunitFormatter --out ${junit_retry_file} --only-failures"; then
+    echosuccess "Retry run finished successfully" "yes"
+  else
+    rspec_run_status=$?
+    echoerr "Retry run did not finish successfully, job will be failed!" "yes"
+  fi
+
+  echoinfo "Merging junit reports" "yes"
+  bundle exec junit_merge ${junit_retry_file} tmp/rspec-${CI_JOB_ID}.xml --update-only
+  echosuccess " junit results merged successfully!"
 
   exit $rspec_run_status
 }

@@ -108,7 +108,7 @@ export default {
       },
       result() {
         this.breadCrumbState.updateName(
-          `${this.packageEntity?.name} v ${this.packageEntity?.version}`,
+          `${this.packageEntity?.name} v${this.packageEntity?.version}`,
         );
       },
     },

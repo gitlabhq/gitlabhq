@@ -46,7 +46,6 @@ Style/StringConcatenation:
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/lib/api/project_mirror.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/person.rb'
-    - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids.rb'
     - 'ee/lib/ee/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'ee/lib/gitlab/elastic/search_results.rb'

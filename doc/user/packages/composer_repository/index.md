@@ -11,11 +11,6 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
-> - Support for Composer 2.0 [added](https://gitlab.com/gitlab-org/gitlab/-/issues/259840) in GitLab 13.10.
-> - Deploy token support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/240897) in GitLab 14.6.
-
 WARNING:
 The Composer package registry for GitLab is under development and isn't ready for production use due to
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
@@ -125,8 +120,6 @@ When you publish:
 - The same package with the same data, a `400 Bad request` error occurs.
 
 ## Install a Composer package
-
-> - Authorization to [download a package archive](../../../api/packages/composer.md#download-a-package-archive) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
 
 Install a package from the package registry so you can use it as a dependency.
 
@@ -379,10 +372,7 @@ composer clearcache
 
 ### Authorization requirement when using `composer install`
 
-In GitLab 14.9 and earlier, you did not require authorization to use `composer install` if you already had a generated `composer.lock`.
-If you committed your `composer.lock`, you could do a `composer install` in CI without setting up credentials.
-
-In GitLab 14.10 and later, authorization is required for the [downloading a package archive](../../../api/packages/composer.md#download-a-package-archive) endpoint.
+Authorization is required for the [downloading a package archive](../../../api/packages/composer.md#download-a-package-archive) endpoint.
 If you encounter a credentials prompt when you are using `composer install`, follow the instructions in the [install a composer package](#install-a-composer-package) section to create an `auth.json` file.
 
 ### Publish fails with `The file composer.json was not found`

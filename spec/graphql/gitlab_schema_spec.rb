@@ -33,7 +33,7 @@ RSpec.describe GitlabSchema do
   end
 
   it 'sets an appropriate validation timeout' do
-    expect(described_class.validate_timeout).to be <= 0.5.seconds
+    expect(described_class.validate_timeout).to be <= 0.2.seconds
   end
 
   describe '.execute' do

@@ -175,13 +175,15 @@ The following example uses the GraphQL API to retrieve the monthly deployment fr
   project(fullPath: "gitlab-org/gitlab") {
     dora {
       metrics(
-        metric: DEPLOYMENT_FREQUENCY
         startDate: "2023-12-01"
-        endDate: "2024-02-01"
+        endDate: "2024-01-31"
         interval: MONTHLY
       ) {
         date
-        value
+        deploymentFrequency
+        leadTimeForChanges
+        timeToRestoreService
+        changeFailureRate
       }
     }
   }

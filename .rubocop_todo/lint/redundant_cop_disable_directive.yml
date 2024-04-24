@@ -157,7 +157,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/analytics/cycle_analytics/records_fetcher.rb'
     - 'lib/gitlab/application_context.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
-    - 'lib/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'lib/gitlab/background_migration/backfill_project_statistics_storage_size_without_uploads_size.rb'
     - 'lib/gitlab/background_migration/batching_strategies/loose_index_scan_batching_strategy.rb'
     - 'lib/gitlab/background_migration/fix_incoherent_packages_size_on_project_statistics.rb'

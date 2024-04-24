@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['PipelineCounts'] do
+RSpec.describe GitlabSchema.types['PipelineCounts'], feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

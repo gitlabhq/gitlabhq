@@ -8,9 +8,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the reference documentation for the Debian project distributions API. This API is behind a

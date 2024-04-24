@@ -46,3 +46,7 @@ group :development do
   gem 'pry-byebug', '~> 3.10.1', platform: :mri
   gem "ruby-debug-ide", "~> 0.7.3"
 end
+
+group :ci do
+  gem 'junit_merge', '~> 0.1.2'
+end

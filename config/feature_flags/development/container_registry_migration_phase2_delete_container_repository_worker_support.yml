@@ -1,8 +1,0 @@
----
-name: container_registry_migration_phase2_delete_container_repository_worker_support
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88997
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350543
-milestone: '15.1'
-type: development
-group: group::container registry
-default_enabled: false

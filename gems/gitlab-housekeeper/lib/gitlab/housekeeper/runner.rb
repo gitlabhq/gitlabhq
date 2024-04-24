@@ -68,9 +68,9 @@ module Gitlab
 
               # If no merge request exists yet, create an empty one to allow keeps to use the web URL.
               unless @dry_run
-                merge_reqeust = get_existing_merge_request(branch_name) || create(change, branch_name)
+                merge_request = get_existing_merge_request(branch_name) || create(change, branch_name)
 
-                change.mr_web_url = merge_reqeust['web_url']
+                change.mr_web_url = merge_request['web_url']
               end
 
               git.in_branch(branch_name) do

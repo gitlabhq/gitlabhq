@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['CiJobStatus'] do
+RSpec.describe GitlabSchema.types['CiJobStatus'], feature_category: :continuous_integration do
   it 'exposes all job status values' do
     expect(described_class.values.values).to contain_exactly(
       *::Ci::HasStatus::AVAILABLE_STATUSES.map do |status|

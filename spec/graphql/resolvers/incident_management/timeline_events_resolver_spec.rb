@@ -7,7 +7,7 @@ RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
 
   let_it_be(:described_class) { Resolvers::IncidentManagement::TimelineEventsResolver }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, guests: current_user) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:first_timeline_event) do
     create(:incident_management_timeline_event, project: project, incident: incident)
@@ -21,10 +21,6 @@ RSpec.describe 'Resolvers::IncidentManagement::TimelineEventsResolver' do
   let(:resolver) { described_class }
 
   subject(:resolved_timeline_events) { sync(resolve_timeline_events(args, current_user: current_user).to_a) }
-
-  before do
-    project.add_guest(current_user)
-  end
 
   specify do
     expect(resolver).to have_nullable_graphql_type(Types::IncidentManagement::TimelineEventType.connection_type)

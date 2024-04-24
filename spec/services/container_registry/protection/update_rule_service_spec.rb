@@ -22,21 +22,20 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
 
   subject(:service_execute) { service.execute }
 
-  shared_examples 'a successful service response' do
+  shared_examples 'a successful service response with side effect' do
     let(:expected_attributes) { params }
 
-    it { is_expected.to be_success }
-
-    it do
-      is_expected.to have_attributes(
-        errors: be_blank,
-        message: be_blank,
-        payload: {
-          container_registry_protection_rule:
+    it_behaves_like 'returning a success service response' do
+      it do
+        is_expected.to have_attributes(
+          errors: be_blank,
+          payload: {
+            container_registry_protection_rule:
             be_a(ContainerRegistry::Protection::Rule)
-              .and(have_attributes(expected_attributes))
-        }
-      )
+            .and(have_attributes(expected_attributes))
+          }
+        )
+      end
     end
 
     it { expect { subject }.not_to change { ContainerRegistry::Protection::Rule.count } }
@@ -44,27 +43,26 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
     it { subject.tap { expect(container_registry_protection_rule.reload).to have_attributes expected_attributes } }
   end
 
-  shared_examples 'an erroneous service response' do
-    it { is_expected.to be_error }
-
-    it do
-      is_expected.to have_attributes(
-        errors: be_present,
-        message: be_present,
-        payload: { container_registry_protection_rule: nil }
-      )
+  shared_examples 'an erroneous service response with side effect' do |message: nil|
+    it_behaves_like 'returning an error service response', message: message do
+      it do
+        is_expected.to have_attributes(
+          errors: be_present,
+          payload: { container_registry_protection_rule: nil }
+        )
+      end
     end
 
     it { expect { subject }.not_to change { ContainerRegistry::Protection::Rule.count } }
     it { expect { subject }.not_to change { container_registry_protection_rule.reload.updated_at } }
   end
 
-  it_behaves_like 'a successful service response'
+  it_behaves_like 'a successful service response with side effect'
 
   context 'with disallowed params' do
     let(:params) { super().merge!(project_id: 1, unsupported_param: 'unsupported_param_value') }
 
-    it_behaves_like 'a successful service response' do
+    it_behaves_like 'a successful service response with side effect' do
       let(:expected_attributes) { params.except(:project_id, :unsupported_param) }
     end
   end
@@ -72,22 +70,24 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
   context 'with invalid params' do
     using RSpec::Parameterized::TableSyntax
 
-    # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
+    # rubocop:disable Layout/LineLength, Layout/ArrayAlignment -- Avoid formatting to keep one-line table syntax
     where(:params_invalid, :message_expected) do
-      { repository_path_pattern: '' }                                                    | include("Repository path pattern can't be blank")
-      { repository_path_pattern: 'wrong-project-scope/repository-path' }                 | include("Repository path pattern should start with the project's full path")
-      lazy { { repository_path_pattern: "#{project.full_path}/path-invalid-chars-#@" } } | include("Repository path pattern should be a valid container repository path with optional wildcard characters.")
-      { minimum_access_level_for_delete: 1000 }                                          | /not a valid minimum_access_level_for_delete/
-      { minimum_access_level_for_push: 1000 }                                            | /not a valid minimum_access_level_for_push/
+      { repository_path_pattern: '' }                                                    | ["Repository path pattern can't be blank",
+                                                                                            "Repository path pattern should be a valid container repository path with optional wildcard characters.",
+                                                                                            "Repository path pattern should start with the project's full path"]
+      { repository_path_pattern: 'wrong-project-scope/repository-path' }                 | ["Repository path pattern should start with the project's full path"]
+      lazy { { repository_path_pattern: "#{project.full_path}/path-invalid-chars-#@" } } | ["Repository path pattern should be a valid container repository path with optional wildcard characters."]
+      { minimum_access_level_for_delete: 1000 }                                          | "'1000' is not a valid minimum_access_level_for_delete"
+      { minimum_access_level_for_push: 1000 }                                            | "'1000' is not a valid minimum_access_level_for_push"
     end
-    # rubocop:enable Layout/LineLength
+    # rubocop:enable Layout/LineLength, Layout/ArrayAlignment
 
     with_them do
       let(:params) do
         super().merge(params_invalid)
       end
 
-      it_behaves_like 'an erroneous service response'
+      it_behaves_like 'an erroneous service response with side effect', message: params[:message_expected]
 
       it { is_expected.to have_attributes message: message_expected }
     end
@@ -96,7 +96,7 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
   context 'with empty params' do
     let(:params) { {} }
 
-    it_behaves_like 'a successful service response' do
+    it_behaves_like 'a successful service response with side effect' do
       let(:expected_attributes) { container_registry_protection_rule.attributes }
     end
 
@@ -106,7 +106,7 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
   context 'with nil params' do
     let(:params) { nil }
 
-    it_behaves_like 'a successful service response' do
+    it_behaves_like 'a successful service response with side effect' do
       let(:expected_attributes) { container_registry_protection_rule.attributes }
     end
 
@@ -123,18 +123,12 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
       { repository_path_pattern: other_existing_container_registry_protection_rule.repository_path_pattern }
     end
 
-    it_behaves_like 'an erroneous service response'
+    it_behaves_like 'an erroneous service response with side effect',
+      message: ['Repository path pattern has already been taken']
 
     it do
       expect { service_execute }.not_to(
         change { other_existing_container_registry_protection_rule.reload.repository_path_pattern }
-      )
-    end
-
-    it do
-      is_expected.to have_attributes(
-        errors: match_array([/Repository path pattern has already been taken/]),
-        message: match_array([/Repository path pattern has already been taken/])
       )
     end
   end
@@ -150,9 +144,8 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
     end
 
     with_them do
-      it_behaves_like 'an erroneous service response'
-
-      it { is_expected.to have_attributes errors: match_array(/Unauthorized/), message: /Unauthorized/ }
+      it_behaves_like 'an erroneous service response with side effect',
+        message: 'Unauthorized to update a container registry protection rule'
     end
   end
 

@@ -85,7 +85,6 @@ the size value only changes when:
 
 ## Cleanup policy
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/218737) from "expiration policy" to "cleanup policy" in GitLab 13.2.
 > - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
 
 The cleanup policy is a scheduled job you can use to remove tags from the container registry.
@@ -96,22 +95,6 @@ To delete the underlying layers and images that aren't associated with any tags,
 [garbage collection](../../../administration/packages/container_registry.md#removing-untagged-manifests-and-unreferenced-layers) with the `-m` switch.
 
 ### Enable the cleanup policy
-
-You can run cleanup policies on all projects with these exceptions:
-
-- For self-managed GitLab instances, the project must have been created
-  in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
-  for all projects (even those created before GitLab 12.8) in
-  [GitLab application settings](../../../api/settings.md#change-application-settings)
-  by setting `container_expiration_policies_enable_historic_entries` to true.
-  Alternatively, you can execute the following command in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-  ```ruby
-  ApplicationSetting.last.update(container_expiration_policies_enable_historic_entries: true)
-  ```
-
-  Enabling cleanup policies on all projects can impact performance, especially if you
-  are using an [external registry](#use-with-external-container-registries).
 
 WARNING:
 For performance reasons, enabled cleanup policies are automatically disabled for projects on
@@ -258,8 +241,6 @@ Here are some examples of regex patterns you can use:
 
 ### Set cleanup limits to conserve resources
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/288812) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_expiration_policies_throttling`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/groups/gitlab-org/-/epics/2270) in GitLab 14.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84996) the feature flag `container_registry_expiration_policies_throttling` in GitLab 15.0.
 
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
@@ -340,8 +321,6 @@ When using an [external container registry](../../../administration/packages/con
 running a cleanup policy on a project may have some performance risks.
 If a project runs a policy to remove thousands of tags,
 the GitLab background jobs may get backed up or fail completely.
-For projects created before GitLab 12.8, you should enable container cleanup policies
-only if the number of tags being cleaned up is minimal.
 
 ## More container registry storage reduction options
 
@@ -366,21 +345,13 @@ View some common [regex pattern examples](#regex-pattern-examples).
 
 There can be different reasons behind this:
 
-- In GitLab 13.6 and earlier, when you run the cleanup policy you may expect it to delete tags and
-  it does not. This occurs when the cleanup policy is saved without editing the value in the
-  **Remove tags matching** field. This field has a grayed out `.*` value as a placeholder. Unless
-  `.*` (or another regex pattern) is entered explicitly into the field, a `nil` value is submitted.
-  This value prevents the saved cleanup policy from matching any tags. As a workaround, edit the
-  cleanup policy. In the **Remove tags matching** field, enter `.*` and save. This value indicates
-  that all tags should be removed.
-
 - If you are on GitLab self-managed instances and you have 1000+ tags in a container repository, you
   might run into a [Container Registry token expiration issue](https://gitlab.com/gitlab-org/gitlab/-/issues/288814),
   with `error authorizing context: invalid token` in the logs.
 
   To fix this, there are two workarounds:
 
-  - If you are on GitLab 13.9 or later, you can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
+  - You can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
   - Extend the expiration delay of the container registry authentication tokens. This defaults to 5

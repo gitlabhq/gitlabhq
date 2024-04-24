@@ -30,8 +30,6 @@ export default {
       ),
     },
     group: __('Group'),
-    prev: __('Prev'),
-    next: __('Next'),
   },
   components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList, NewGroupButton },
   inject: {
@@ -197,13 +195,7 @@ export default {
     />
 
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="$options.i18n.prev"
-        :next-text="$options.i18n.next"
-        @prev="onPrev"
-        @next="onNext"
-      />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
   <gl-empty-state v-else v-bind="emptyStateProps">

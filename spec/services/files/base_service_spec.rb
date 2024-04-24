@@ -5,14 +5,10 @@ require "spec_helper"
 RSpec.describe Files::BaseService, feature_category: :source_code_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: group) }
   let(:params) { {} }
 
   subject(:author_email) { described_class.new(project, user, params).instance_variable_get(:@author_email) }
-
-  before do
-    group.add_developer(user)
-  end
 
   context 'with no namespace_commit_emails' do
     it 'sets @author_email to user default email' do

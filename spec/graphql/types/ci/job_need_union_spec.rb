@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::JobNeedUnion do
+RSpec.describe Types::Ci::JobNeedUnion, feature_category: :continuous_integration do
   describe '.resolve_type' do
     context 'when resolving a build need' do
       it 'resolves to a BuildNeedType' do

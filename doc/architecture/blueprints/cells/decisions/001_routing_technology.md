@@ -20,7 +20,7 @@ and [routes learning](../rejected/proposal-stateless-router-with-routes-learning
 
 Use [Cloudflare Workers](https://workers.cloudflare.com/) written in JavaScript/TypeScript to route the request to the right cell, following the accepted [routing service blueprint](../routing-service.md).
 
-Cloudflare Workers meets all our [requirments](../routing-service.md#requirements) apart from the `self-managed`, which is a low priority requirment.
+Cloudflare Workers meets all our [requirements](../routing-service.md#requirements) apart from the `self-managed`, which is a low priority requirement.
 
 You can read a detailed analysis of Cloudflare workers in <https://gitlab.com/gitlab-org/gitlab/-/issues/433471#results>
 

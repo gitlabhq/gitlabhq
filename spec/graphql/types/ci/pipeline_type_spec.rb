@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::PipelineType do
+RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integration do
   specify { expect(described_class.graphql_name).to eq('Pipeline') }
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Ci::Pipeline) }

@@ -6,7 +6,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   include RepoHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_refind(:project) { create(:project, :repository) }
+  let_it_be_with_refind(:project) { create(:project, :repository, maintainers: user) }
 
   let(:blankrev) { Gitlab::Git::SHA1_BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
@@ -17,10 +17,6 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
   let(:service) do
     described_class
       .new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref }, push_options: push_options)
-  end
-
-  before do
-    project.add_maintainer(user)
   end
 
   subject(:execute_service) do

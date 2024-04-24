@@ -12,9 +12,6 @@ DETAILS:
 
 ## Purge the dependency proxy for a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11631) in GitLab 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
-
 Schedules for deletion the cached manifests and blobs for a group. This endpoint requires the
 Owner role for the group.
 

@@ -302,7 +302,6 @@ export default {
               v-bind="protectionRulesQueryPageInfo"
               class="gl-mb-3"
               :prev-text="__('Previous')"
-              :next-text="__('Next')"
               @prev="onPrevPage"
               @next="onNextPage"
             />

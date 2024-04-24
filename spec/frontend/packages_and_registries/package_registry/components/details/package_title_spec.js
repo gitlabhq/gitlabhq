@@ -123,7 +123,7 @@ describe('PackageTitle', () => {
     it('has a text showing version', async () => {
       await createComponent();
 
-      expect(findSubHeaderText().text()).toMatchInterpolatedText('v 1.0.0 published');
+      expect(findSubHeaderText().text()).toMatchInterpolatedText('v1.0.0 published');
     });
 
     it('has a time ago tooltip component', async () => {

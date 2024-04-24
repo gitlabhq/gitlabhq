@@ -6,7 +6,7 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:current_user) { create(:user) }
+  let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:reviewer) { create(:user) }
 
@@ -20,10 +20,6 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
       assignee: other_user,
       reviewers: [reviewer]
     )
-  end
-
-  before do
-    project.add_developer(current_user)
   end
 
   context 'by assignee' do

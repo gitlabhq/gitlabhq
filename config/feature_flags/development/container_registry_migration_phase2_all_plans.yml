@@ -1,8 +1,0 @@
----
-name: container_registry_migration_phase2_all_plans
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83135
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350543
-milestone: '14.10'
-type: development
-group: group::container registry
-default_enabled: false

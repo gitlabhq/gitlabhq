@@ -81,9 +81,7 @@ export default {
     <template #sub-header>
       <div data-testid="sub-header" class="gl-display-flex gl-flex-wrap gl-gap-3">
         <gl-sprintf :message="$options.i18n.packageInfo">
-          <template #version>
-            {{ packageEntity.version }}
-          </template>
+          <template #version>{{ packageEntity.version }}</template>
 
           <template #timeAgo>
             <time-ago-tooltip v-if="packageEntity.createdAt" :time="packageEntity.createdAt" />

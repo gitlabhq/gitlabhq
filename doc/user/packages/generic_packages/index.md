@@ -10,9 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
-> - [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed in GitLab 14.8.
-
 Publish generic files, like release binaries, in your project's package registry. Then, install the packages whenever you need to use them as a dependency.
 
 ## Authenticate to the package registry
@@ -123,7 +120,6 @@ API or the UI.
 
 #### Do not allow duplicate Generic packages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab 13.12.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 
 To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)

@@ -5991,7 +5991,7 @@ msgstr ""
 msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
-msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
+msgid "Analytics|Statistics on top-level namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr ""
 
 msgid "Analytics|Tables"
@@ -10696,9 +10696,6 @@ msgstr ""
 msgid "Checkout|Street address"
 msgstr ""
 
-msgid "Checkout|Submitting the credit card form failed with code %{errorCode}: %{errorMessage}"
-msgstr ""
-
 msgid "Checkout|Subscription contact"
 msgstr ""
 
@@ -12628,6 +12625,9 @@ msgid "Cohorts|Returning users"
 msgstr ""
 
 msgid "Collapse"
+msgstr ""
+
+msgid "Collapse %{section} merge requests"
 msgstr ""
 
 msgid "Collapse eligible approvers"
@@ -16237,6 +16237,9 @@ msgid "DORA4Metrics|To help us improve the Show forecast feature, please share f
 msgstr ""
 
 msgid "DORA4Metrics|To help us improve the Value Stream Management Dashboard, please share feedback about your experience in this %{linkStart}survey%{linkEnd}."
+msgstr ""
+
+msgid "DORA4Metrics|To see usage overview, you must %{linkStart}enable background aggregation%{linkEnd}"
 msgstr ""
 
 msgid "DORA4Metrics|Took 1 day or less to restore service when a service incident or a defect that impacts users occurs."
@@ -21071,6 +21074,9 @@ msgid "Existing projects will be able to use cleanup policies. Avoid enabling th
 msgstr ""
 
 msgid "Expand"
+msgstr ""
+
+msgid "Expand %{section} merge requests"
 msgstr ""
 
 msgid "Expand Readme"
@@ -36807,6 +36813,9 @@ msgstr ""
 msgid "Pagination|Next"
 msgstr ""
 
+msgid "Pagination|Pagination"
+msgstr ""
+
 msgid "Pagination|Prev"
 msgstr ""
 
@@ -41817,6 +41826,9 @@ msgstr ""
 msgid "PurchaseStep|An error occurred in the purchase step. If the problem persists please contact support at https://support.gitlab.com."
 msgstr ""
 
+msgid "Purchase|%{stripe3dsLinkStart}3D Secure authentication%{stripe3dsLinkEnd} is not supported. Please %{salesLinkStart}contact our sales team%{salesLinkEnd} to purchase, or try a different credit card."
+msgstr ""
+
 msgid "Purchase|A full name in your profile is required to make a purchase. Check that the full name field in your %{userProfileLinkStart}user profile%{userProfileLinkEnd} has both a first and last name, then retry the purchase. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
@@ -41824,6 +41836,9 @@ msgid "Purchase|An error occurred with your purchase because your group is curre
 msgstr ""
 
 msgid "Purchase|An error occurred with your purchase. We detected a %{customersPortalLinkStart}Customers Portal%{customersPortalLinkEnd} account that matches your email address, but it has not been linked to your GitLab.com account. Follow the %{linkCustomersPortalHelpLinkStart}instructions to link your Customers Portal account%{linkCustomersPortalHelpLinkEnd}, and retry the purchase. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "Purchase|Authentication required for this transaction"
 msgstr ""
 
 msgid "Purchase|Your card was declined due to insufficient funds. Make sure you have sufficient funds, then retry the purchase or use a different card. If the problem persists, %{supportLinkStart}contact support%{supportLinkEnd}."

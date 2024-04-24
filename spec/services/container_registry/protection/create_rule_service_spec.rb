@@ -9,25 +9,25 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
   let(:service) { described_class.new(project, current_user, params) }
   let(:params) { attributes_for(:container_registry_protection_rule, project: project) }
 
-  subject { service.execute }
+  subject(:service_execute) { service.execute }
 
-  shared_examples 'a successful service response' do
-    it { is_expected.to be_success }
+  shared_examples 'a successful service response with side effects' do
+    it_behaves_like 'returning a success service response' do
+      it { is_expected.to have_attributes(errors: be_blank) }
 
-    it { is_expected.to have_attributes(errors: be_blank) }
-
-    it do
-      is_expected.to have_attributes(
-        payload: {
-          container_registry_protection_rule:
+      it do
+        is_expected.to have_attributes(
+          payload: {
+            container_registry_protection_rule:
             be_a(ContainerRegistry::Protection::Rule)
-              .and(have_attributes(
-                repository_path_pattern: params[:repository_path_pattern],
-                minimum_access_level_for_push: params[:minimum_access_level_for_push].to_s,
-                minimum_access_level_for_delete: params[:minimum_access_level_for_delete].to_s
-              ))
-        }
-      )
+            .and(have_attributes(
+              repository_path_pattern: params[:repository_path_pattern],
+              minimum_access_level_for_push: params[:minimum_access_level_for_push].to_s,
+              minimum_access_level_for_delete: params[:minimum_access_level_for_delete].to_s
+            ))
+          }
+        )
+      end
     end
 
     it 'creates a new container registry protection rule in the database' do
@@ -43,9 +43,12 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     end
   end
 
-  shared_examples 'an erroneous service response' do
-    it { is_expected.to be_error }
-    it { is_expected.to have_attributes(errors: be_present, payload: include(container_registry_protection_rule: nil)) }
+  shared_examples 'an erroneous service response without side effects' do |message: nil|
+    it_behaves_like 'returning an error service response', message: message do
+      it do
+        is_expected.to have_attributes(errors: be_present, payload: include(container_registry_protection_rule: nil))
+      end
+    end
 
     it 'does not create a new container registry protection rule in the database' do
       expect { subject }.not_to change { ContainerRegistry::Protection::Rule.count }
@@ -64,31 +67,31 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     end
   end
 
-  it_behaves_like 'a successful service response'
+  it_behaves_like 'a successful service response with side effects'
 
   context 'when fields are invalid' do
     context 'when repository_path_pattern is invalid' do
       let(:params) { super().merge(repository_path_pattern: '') }
 
-      it_behaves_like 'an erroneous service response'
-
-      it { is_expected.to have_attributes(message: match(/Repository path pattern can't be blank/)) }
+      it_behaves_like 'an erroneous service response without side effects',
+        message:
+          "Repository path pattern can't be blank, " \
+          "Repository path pattern should be a valid container repository path with optional wildcard characters., " \
+          "and Repository path pattern should start with the project's full path"
     end
 
     context 'when minimum_access_level_for_delete is invalid' do
       let(:params) { super().merge(minimum_access_level_for_delete: 1000) }
 
-      it_behaves_like 'an erroneous service response'
-
-      it { is_expected.to have_attributes(message: match(/is not a valid minimum_access_level_for_delete/)) }
+      it_behaves_like 'an erroneous service response without side effects',
+        message: "'1000' is not a valid minimum_access_level_for_delete"
     end
 
     context 'when minimum_access_level_for_push is invalid' do
       let(:params) { super().merge(minimum_access_level_for_push: 1000) }
 
-      it_behaves_like 'an erroneous service response'
-
-      it { is_expected.to have_attributes(message: match(/is not a valid minimum_access_level_for_push/)) }
+      it_behaves_like 'an erroneous service response without side effects',
+        message: "'1000' is not a valid minimum_access_level_for_push"
     end
   end
 
@@ -107,7 +110,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
         )
       end
 
-      it_behaves_like 'a successful service response'
+      it_behaves_like 'a successful service response with side effects'
     end
 
     context 'when field `repository_path_pattern` is taken' do
@@ -118,18 +121,19 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
         )
       end
 
-      it_behaves_like 'an erroneous service response'
+      it_behaves_like 'an erroneous service response without side effects',
+        message: 'Repository path pattern has already been taken'
 
       it { is_expected.to have_attributes(errors: ['Repository path pattern has already been taken']) }
 
-      it { expect { subject }.not_to change { existing_container_registry_protection_rule.updated_at } }
+      it { expect { service_execute }.not_to change { existing_container_registry_protection_rule.updated_at } }
     end
   end
 
   context 'with disallowed params' do
     let(:params) { super().merge(project_id: 1, unsupported_param: 'unsupported_param_value') }
 
-    it_behaves_like 'a successful service response'
+    it_behaves_like 'a successful service response with side effects'
   end
 
   context 'with forbidden user access level (project developer role)' do
@@ -138,8 +142,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
     # create container registry protection rules.
     let_it_be(:current_user) { create(:user, developer_of: project) }
 
-    it_behaves_like 'an erroneous service response'
-
-    it { is_expected.to have_attributes(message: match(/Unauthorized/)) }
+    it_behaves_like 'an erroneous service response without side effects',
+      message: 'Unauthorized to create a container registry protection rule'
   end
 end

@@ -6,7 +6,6 @@ Style/NumericLiteralPrefix:
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'config/initializers/01_secret_token.rb'
     - 'config/initializers/1_settings.rb'
-    - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'ee/lib/gitlab/geo/replication/blob_downloader.rb'
     - 'ee/spec/lib/bulk_imports/groups/pipelines/iterations_pipeline_spec.rb'
     - 'ee/spec/models/analytics/devops_adoption/snapshot_spec.rb'

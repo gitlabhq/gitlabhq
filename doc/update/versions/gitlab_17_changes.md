@@ -25,3 +25,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register runners.
   The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and will be removed in GitLab 18.0.
   If registration tokens are still being used, upgrading to GitLab 17.0 will cause runner registration to fail.
+
+### Linux package installations
+
+Specific information applies to Linux package installations:
+
+- The binaries for PostgreSQL 13 have been removed.
+
+  Prior to upgrading, you must ensure your installation is using
+  [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).

@@ -13,15 +13,15 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
     described_class.new(container_registry_protection_rule, current_user: current_user).execute
   end
 
-  shared_examples 'a successful service response' do
-    it { is_expected.to be_success }
-
-    it do
-      is_expected.to have_attributes(
-        errors: be_blank,
-        message: be_blank,
-        payload: { container_registry_protection_rule: container_registry_protection_rule }
-      )
+  shared_examples 'a successful service response with side effect' do
+    it_behaves_like 'returning a success service response' do
+      it do
+        is_expected.to have_attributes(
+          errors: be_blank,
+          message: be_blank,
+          payload: { container_registry_protection_rule: container_registry_protection_rule }
+        )
+      end
     end
 
     it do
@@ -31,11 +31,11 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
     end
   end
 
-  shared_examples 'an erroneous service response' do
-    it { is_expected.to be_error }
-
-    it do
-      is_expected.to have_attributes(message: be_present, payload: { container_registry_protection_rule: be_blank })
+  shared_examples 'an erroneous service response with side effect'  do |message: nil|
+    it_behaves_like 'returning an error service response', message: message do
+      it do
+        is_expected.to have_attributes(message: be_present, payload: { container_registry_protection_rule: be_blank })
+      end
     end
 
     it do
@@ -45,7 +45,7 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
     end
   end
 
-  it_behaves_like 'a successful service response'
+  it_behaves_like 'a successful service response with side effect'
 
   it 'deletes the container registry protection rule in the database' do
     expect { service_execute }
@@ -61,7 +61,7 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
         repository_path_pattern: "#{project.full_path}/image-deleted").destroy!
     end
 
-    it_behaves_like 'a successful service response'
+    it_behaves_like 'a successful service response with side effect'
   end
 
   context 'when error occurs during delete operation' do
@@ -69,9 +69,7 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
       allow(container_registry_protection_rule).to receive(:destroy!).and_raise(StandardError.new('Some error'))
     end
 
-    it_behaves_like 'an erroneous service response'
-
-    it { is_expected.to have_attributes message: /Some error/ }
+    it_behaves_like 'an erroneous service response with side effect', message: 'Some error'
   end
 
   context 'when current_user does not have permission' do
@@ -85,9 +83,8 @@ RSpec.describe ContainerRegistry::Protection::DeleteRuleService, '#execute', fea
     end
 
     with_them do
-      it_behaves_like 'an erroneous service response'
-
-      it { is_expected.to have_attributes message: /Unauthorized to delete a container registry protection rule/ }
+      it_behaves_like 'an erroneous service response with side effect',
+        message: 'Unauthorized to delete a container registry protection rule'
     end
   end
 

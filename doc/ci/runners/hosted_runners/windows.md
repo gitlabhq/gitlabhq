@@ -44,7 +44,7 @@ You can execute your job in one of the following Windows versions:
 | Windows 2019 | `Deprecated` (Removal in 17.0) |
 
 You can find a full list of available pre-installed software in
-the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
+the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/attributes/default.rb).
 
 NOTE:
 We are only supporting a single version of Windows at this time.

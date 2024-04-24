@@ -5,7 +5,7 @@ module Issuable
     class Base
       include Gitlab::Allowable
 
-      def initialize(issuable:, current_user:, params:)
+      def initialize(issuable:, current_user:, params: {})
         @issuable = issuable
         @current_user = current_user
         @params = params

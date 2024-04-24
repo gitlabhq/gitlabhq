@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness,
   feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:ref_name) { 'master' }
 
@@ -16,10 +16,6 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
                commits: [{ message: 'some commit' }] }
 
     described_class.new(project, user, params)
-  end
-
-  before do
-    project.add_developer(user)
   end
 
   it_behaves_like 'creating a pipeline with environment keyword' do

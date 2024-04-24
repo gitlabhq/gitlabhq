@@ -1,6 +1,5 @@
 <script>
 import { GlKeysetPagination } from '@gitlab/ui';
-import { __ } from '~/locale';
 import OrganizationsListItem from './organizations_list_item.vue';
 
 export default {
@@ -8,10 +7,6 @@ export default {
   components: {
     OrganizationsListItem,
     GlKeysetPagination,
-  },
-  i18n: {
-    prev: __('Prev'),
-    next: __('Next'),
   },
   props: {
     organizations: {
@@ -42,8 +37,6 @@ export default {
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
       <gl-keyset-pagination
         v-bind="pageInfo"
-        :prev-text="$options.i18n.prev"
-        :next-text="$options.i18n.next"
         @prev="$emit('prev', $event)"
         @next="$emit('next', $event)"
       />

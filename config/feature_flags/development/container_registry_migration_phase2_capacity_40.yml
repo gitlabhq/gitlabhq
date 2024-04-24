@@ -1,8 +1,0 @@
----
-name: container_registry_migration_phase2_capacity_40
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86543
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350543
-milestone: '15.1'
-type: development
-group: group::container registry
-default_enabled: false

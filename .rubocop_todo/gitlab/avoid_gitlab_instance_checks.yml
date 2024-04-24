@@ -100,7 +100,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/lib/api/internal/upcoming_reconciliations.rb'
     - 'ee/lib/api/scim/instance_scim.rb'
     - 'ee/lib/ee/api/namespaces.rb'
-    - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_container_repository_size.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_storage_size_with_recent_size.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_storage_size_without_pipeline_artifacts_size_job.rb'
     - 'ee/lib/ee/gitlab/background_migration/backfill_project_statistics_storage_size_without_uploads_size.rb'

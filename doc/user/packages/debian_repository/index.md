@@ -11,8 +11,6 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
-> - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
 WARNING:

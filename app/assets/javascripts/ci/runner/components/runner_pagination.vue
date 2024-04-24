@@ -39,12 +39,6 @@ export default {
 
 <template>
   <div v-if="isShown" class="gl-text-center">
-    <gl-keyset-pagination
-      v-bind="paginationProps"
-      :prev-text="s__('Pagination|Prev')"
-      :next-text="s__('Pagination|Next')"
-      @prev="prevPage"
-      @next="nextPage"
-    />
+    <gl-keyset-pagination v-bind="paginationProps" @prev="prevPage" @next="nextPage" />
   </div>
 </template>

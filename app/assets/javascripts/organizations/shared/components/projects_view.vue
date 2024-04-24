@@ -30,8 +30,6 @@ export default {
       ),
     },
     project: __('Project'),
-    prev: __('Prev'),
-    next: __('Next'),
   },
   components: {
     ProjectsList,
@@ -202,13 +200,7 @@ export default {
       @delete="deleteProject"
     />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
-      <gl-keyset-pagination
-        v-bind="pageInfo"
-        :prev-text="$options.i18n.prev"
-        :next-text="$options.i18n.next"
-        @prev="onPrev"
-        @next="onNext"
-      />
+      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
   <gl-empty-state v-else v-bind="emptyStateProps">

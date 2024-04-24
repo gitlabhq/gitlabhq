@@ -461,6 +461,7 @@ module GraphqlHelpers
 
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth if max_depth > 1
+    allow_unlimited_validation_timeout
     allow_high_graphql_recursion
     allow_high_graphql_transaction_threshold
     allow_high_graphql_query_size
@@ -725,6 +726,11 @@ module GraphqlHelpers
   def allow_unlimited_graphql_depth
     allow_any_instance_of(GitlabSchema).to receive(:max_depth).and_return nil
     allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
+  end
+
+  def allow_unlimited_validation_timeout
+    allow_any_instance_of(GitlabSchema).to receive(:validate_timeout).and_return nil
+    allow(GitlabSchema).to receive(:validate_timeout).with(any_args).and_return nil
   end
 
   def allow_high_graphql_recursion

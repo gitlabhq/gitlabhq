@@ -9,7 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Beta
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.

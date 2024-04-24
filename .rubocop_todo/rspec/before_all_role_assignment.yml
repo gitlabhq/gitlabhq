@@ -703,7 +703,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/vulnerability_issue_links/bulk_create_service_spec.rb'
     - 'ee/spec/services/vulnerability_issue_links/delete_service_spec.rb'
     - 'ee/spec/services/vulnerability_merge_request_links/create_service_spec.rb'
-    - 'ee/spec/services/work_items/widgets/health_status_service/update_service_spec.rb'
     - 'ee/spec/services/work_items/widgets/iteration_service/update_service_spec.rb'
     - 'ee/spec/services/work_items/widgets/progress_service/update_service_spec.rb'
     - 'ee/spec/services/work_items/widgets/status_service/update_service_spec.rb'

@@ -422,7 +422,6 @@ export default {
         <gl-keyset-pagination
           v-bind="pageInfo"
           :prev-text="__('Previous')"
-          :next-text="__('Next')"
           @prev="$emit('handle-prev-page')"
           @next="$emit('handle-next-page')"
         />

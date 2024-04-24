@@ -14,7 +14,6 @@ module Projects
 
         @tag_names = params[:tags]
         return error('not tags specified') if @tag_names.blank?
-        return error('repository importing') if cancel_while_importing?
 
         delete_tags
       end
@@ -49,16 +48,6 @@ module Projects
           log_data[:message] = response[:message]
           log_error(log_data)
         end
-      end
-
-      def cancel_while_importing?
-        return true if @container_repository.importing?
-
-        if container_expiration_policy?
-          return @container_repository.pre_importing? || @container_repository.pre_import_done?
-        end
-
-        false
       end
 
       def container_expiration_policy?

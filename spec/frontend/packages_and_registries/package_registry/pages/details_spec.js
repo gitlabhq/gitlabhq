@@ -212,7 +212,7 @@ describe('PackagesApp', () => {
 
     await waitForPromises();
 
-    expect(breadCrumbState.updateName).toHaveBeenCalledWith(`${name} v ${version}`);
+    expect(breadCrumbState.updateName).toHaveBeenCalledWith(`${name} v${version}`);
   });
 
   describe('delete package', () => {

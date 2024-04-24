@@ -52,6 +52,23 @@ function getMessageFromType(errorAttributeMap = {}, errorDictionary = {}) {
 }
 
 /**
+ * @param {String} cause
+ * @param {Object} errorDictionary
+ * @returns {(null|string)} null or error message if found
+ */
+function getMessageFromCause(cause, errorDictionary = {}) {
+  if (!cause) {
+    return null;
+  }
+  const errorType = errorDictionary[cause];
+  if (!errorType) {
+    return null;
+  }
+
+  return errorType;
+}
+
+/**
  * @example "Email has already been taken, Email is invalid"
  * // returns `${UNLINKED_ACCOUNT_ERROR}`, i.e. the `EMAIL_TAKEN_ERROR_TYPE` error message
  *
@@ -105,10 +122,15 @@ export function mapSystemToFriendlyError(
     return defaultError;
   }
 
-  const { errorAttributeMap, message } = systemError;
+  const { errorAttributeMap, cause, message } = systemError;
   const messageFromType = getMessageFromType(errorAttributeMap, errorDictionary);
   if (messageFromType) {
     return messageFromType;
+  }
+
+  const messageFromCause = getMessageFromCause(cause, errorDictionary);
+  if (messageFromCause) {
+    return messageFromCause;
   }
 
   const messageFromErrorString = getMessageFromErrorString(message, errorDictionary);

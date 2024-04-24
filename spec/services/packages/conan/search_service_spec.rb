@@ -4,16 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Packages::Conan::SearchService, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:project) { create(:project, :public, developers: user) }
 
   let!(:conan_package) { create(:conan_package, project: project) }
   let!(:conan_package2) { create(:conan_package, project: project) }
 
   subject { described_class.new(project, user, query: query) }
-
-  before do
-    project.add_developer(user)
-  end
 
   describe '#execute' do
     context 'with wildcard' do

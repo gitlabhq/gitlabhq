@@ -4,13 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomEmoji::Create do
   let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: group) }
 
   let(:args) { { group_path: group.full_path, name: 'tanuki', file: 'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png' } }
-
-  before do
-    group.add_developer(user)
-  end
 
   describe '#resolve' do
     subject(:resolve) { described_class.new(object: nil, context: { current_user: user }, field: nil).resolve(**args) }

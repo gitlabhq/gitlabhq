@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'renders usage overview metrics' do |has_data: true|
+RSpec.shared_examples 'renders usage overview metrics' do
   let(:usage_overview) { find_by_testid('panel-usage-overview') }
 
   it 'renders the metrics panel' do
     expect(usage_overview).to be_visible
-    expect(usage_overview).to have_content format(_("Usage overview for %{title}"), title: panel_title)
+    expect(usage_overview).to have_content format(_("Usage overview for %{name} group"), name: group.name)
   end
 
   it 'renders each of the available metrics' do
     within usage_overview do
       [
-        ['groups', _('Groups'), has_data ? '5' : '0'],
-        ['projects', _('Projects'), has_data ? '10' : '0'],
-        ['users', _('Users'), has_data ? '100' : '0'],
-        ['issues', _('Issues'), has_data ? '1,500' : '0'],
-        ['merge_requests', _('Merge requests'), has_data ? '1,000' : '0'],
-        ['pipelines', _('Pipelines'), has_data ? '2,000' : '0']
+        ['groups', _('Groups'), '5'],
+        ['projects', _('Projects'), '10'],
+        ['users', _('Users'), '100'],
+        ['issues', _('Issues'), '1,500'],
+        ['merge_requests', _('Merge requests'), '1,000'],
+        ['pipelines', _('Pipelines'), '2,000']
       ].each do |id, name, value|
         stat = find_by_testid("usage-overview-metric-#{id}")
         expect(stat).to be_visible

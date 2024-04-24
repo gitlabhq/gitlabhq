@@ -343,10 +343,21 @@ end
 RSpec.shared_examples 'work items milestone' do
   let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
 
-  it 'passes axe automated accessibility testing in closed state' do
-    find(work_item_milestone_selector)
+  it 'has the work item milestone with edit' do
+    expect(page).to have_selector(work_item_milestone_selector)
+  end
 
+  it 'passes axe automated accessibility testing in closed state' do
     expect(page).to be_axe_clean.within(work_item_milestone_selector)
+  end
+
+  it 'passes axe automated accessibility testing in open state' do
+    within(work_item_milestone_selector) do
+      click_button _('Edit')
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within(work_item_milestone_selector)
+    end
   end
 
   context 'when edit is clicked' do
@@ -565,22 +576,20 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  context 'for accessibility' do
-    it 'has the work item iteration with edit' do
-      expect(page).to have_selector(work_item_iteration_selector)
-    end
+  it 'has the work item iteration with edit' do
+    expect(page).to have_selector(work_item_iteration_selector)
+  end
 
-    it 'passes axe automated accessibility testing in closed state' do
+  it 'passes axe automated accessibility testing in closed state' do
+    expect(page).to be_axe_clean.within(work_item_iteration_selector)
+  end
+
+  it 'passes axe automated accessibility testing in open state' do
+    within(work_item_iteration_selector) do
+      click_button _('Edit')
+      wait_for_requests
+
       expect(page).to be_axe_clean.within(work_item_iteration_selector)
-    end
-
-    it 'passes axe automated accessibility testing in open state' do
-      within(work_item_iteration_selector) do
-        click_button _('Edit')
-        wait_for_requests
-
-        expect(page).to be_axe_clean.within(work_item_iteration_selector)
-      end
     end
   end
 
@@ -636,19 +645,17 @@ RSpec.shared_examples 'work items rolled up dates' do
 
   include_context 'with work_items_rolledup_dates', true
 
-  context 'for accessibility' do
-    it 'passes axe automated accessibility testing in closed state' do
-      expect(page).to have_selector(work_item_rolledup_dates_selector)
+  it 'passes axe automated accessibility testing in closed state' do
+    expect(page).to have_selector(work_item_rolledup_dates_selector)
+    expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
+  end
+
+  it 'passes axe automated accessibility testing in open state' do
+    within(work_item_rolledup_dates_selector) do
+      click_button _('Edit')
+      wait_for_requests
+
       expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-    end
-
-    it 'passes axe automated accessibility testing in open state' do
-      within(work_item_rolledup_dates_selector) do
-        click_button _('Edit')
-        wait_for_requests
-
-        expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-      end
     end
   end
 

@@ -28,8 +28,6 @@ for details on which headers and token types are supported. Undocumented authent
 
 ## List
 
-> - Introduced in GitLab 13.1.
-
 Get all tagged versions for a given Go module:
 
 ```plaintext
@@ -52,8 +50,6 @@ Example output:
 ```
 
 ## Version metadata
-
-> - Introduced in GitLab 13.1.
 
 Get all tagged versions for a given Go module:
 
@@ -82,8 +78,6 @@ Example output:
 
 ## Download module file
 
-> - Introduced in GitLab 13.1.
-
 Fetch the `.mod` module file:
 
 ```plaintext
@@ -109,8 +103,6 @@ curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.c
 This writes to `foo.mod` in the current directory.
 
 ## Download module source
-
-> - Introduced in GitLab 13.1.
 
 Fetch the `.zip` of the module source:
 

@@ -30,8 +30,6 @@ is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled
 
 ## Download a package file from a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
-
 Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
 usually supplies this URL.
 
@@ -101,8 +99,6 @@ This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Group level simple API entry point
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
-
 Returns the package descriptor as an HTML file:
 
 ```plaintext
@@ -142,8 +138,6 @@ curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v
 This writes the downloaded file to `simple.html` in the current directory.
 
 ## Download a package file from a project
-
-> - Introduced in GitLab 12.10.
 
 Download a PyPI package file. The [simple API](#project-level-simple-api-entry-point)
 usually supplies this URL.
@@ -213,8 +207,6 @@ curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v
 This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Project-level simple API entry point
-
-> - Introduced in GitLab 12.10.
 
 Returns the package descriptor as an HTML file:
 

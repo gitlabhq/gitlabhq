@@ -68,8 +68,6 @@ export const translations = {
   emptyStateDescription: s__(
     'Deployments|Add an %{codeStart}environment:name%{codeEnd} to your CI/CD jobs to register a deployment action. %{linkStart}Learn more about environments.%{linkEnd}',
   ),
-  nextPageButtonLabel: __('Next'),
-  previousPageButtonLabel: __('Prev'),
   redeployButtonTitle: s__('Environments|Re-deploy to environment'),
   rollbackButtonTitle: s__('Environments|Rollback environment'),
 };

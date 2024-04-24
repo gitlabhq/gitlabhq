@@ -8,7 +8,7 @@ extra_properties:
 identifiers:
 product_section: dev
 product_stage: manage
-product_group: group::compliance
+product_group: compliance
 milestone: "13.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49510
 distributions:
