@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.6 (2024-04-24)
+
+### Security (5 changes)
+
+- [Validation for encoded formatting characters](gitlab-org/security/gitlab@de8dc151e5ef3f07cf50839e50645df6ec12f5a5) ([merge request](gitlab-org/security/gitlab!3951))
+- [Forbid untrusted sign-ins to GitLab with Bitbucket and fix related uid](gitlab-org/security/gitlab@94496a91c17a0f73202cd5c55abc93395825c68c) ([merge request](gitlab-org/security/gitlab!3985))
+- [Ensure PAT scope is validated everywhere for GraphQL/ActionCable](gitlab-org/security/gitlab@0dccf32b71614584e05a8590b21a902220e8c701) ([merge request](gitlab-org/security/gitlab!3977))
+- [Protect against ReDoS in FileFinder with wildcard filters](gitlab-org/security/gitlab@60a7418ec10f7c6f4ef9bcc75b2fec71255ddcc3) ([merge request](gitlab-org/security/gitlab!3961))
+- [fix: Validate security report version against schema during parsing](gitlab-org/security/gitlab@ce709ff78fd8f18024383085d6ac0bf43fa2efbb) ([merge request](gitlab-org/security/gitlab!3957))
+
 ## 16.9.5 (2024-04-12)
 
 No changes.
