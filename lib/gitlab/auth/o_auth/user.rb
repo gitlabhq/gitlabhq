@@ -11,16 +11,31 @@ module Gitlab
       class User
         class << self
           # rubocop: disable CodeReuse/ActiveRecord
-          def find_by_uid_and_provider(uid, provider)
+
+          # `auth_hash` argument should be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/456424
+          def find_by_uid_and_provider(uid, provider, auth_hash = nil)
             identity = ::Identity.with_extern_uid(provider, uid).take
 
-            identity && identity.user
+            # This fallback should be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/456424
+            if provider == 'bitbucket' && !auth_hash.nil?
+              identity ||= ::Identity.with_extern_uid(provider, auth_hash.username).take
+
+              if identity && !identity.trusted_extern_uid? && identity.user && identity.user.email == auth_hash.email
+                identity.update(extern_uid: uid, trusted_extern_uid: true)
+              end
+            end
+
+            return unless identity
+            raise IdentityWithUntrustedExternUidError unless identity.trusted_extern_uid?
+
+            identity.user
           end
           # rubocop: enable CodeReuse/ActiveRecord
         end
 
         SignupDisabledError = Class.new(StandardError)
         SigninDisabledForProviderError = Class.new(StandardError)
+        IdentityWithUntrustedExternUidError = Class.new(StandardError)
 
         attr_reader :auth_hash
 
@@ -212,7 +227,7 @@ module Gitlab
         end
 
         def find_by_uid_and_provider
-          self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider)
+          self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider, auth_hash)
         end
 
         def build_new_user(skip_confirmation: true)

@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.4 (2024-04-24)
+
+### Fixed (1 change)
+
+- [Update vulnerability_reads scanner in the ingestion pipeline](gitlab-org/security/gitlab@14b8876233e5dd29149426fd88bab0fc4f014d46) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Validation for encoded formatting characters](gitlab-org/security/gitlab@4cd13c705ce1a94152fb2fd6fcaa77e90e6441e5) ([merge request](gitlab-org/security/gitlab!3950))
+- [Forbid untrusted sign-ins to GitLab with Bitbucket and fix related uid](gitlab-org/security/gitlab@5d3c3a599cc5560dea2236474309537536428cdc) ([merge request](gitlab-org/security/gitlab!3984))
+- [Ensure PAT scope is validated everywhere for GraphQL/ActionCable](gitlab-org/security/gitlab@079dfee8cff9da9075eec7c03ce002e87eeebfff) ([merge request](gitlab-org/security/gitlab!3976))
+- [Protect against ReDoS in FileFinder with wildcard filters](gitlab-org/security/gitlab@0e7e54050f1c4829b1d55aac85bd4e9cd96f1580) ([merge request](gitlab-org/security/gitlab!3960))
+- [fix: Validate security report version against schema during parsing](gitlab-org/security/gitlab@217040b1062caad501d60af387c47cff758788a1) ([merge request](gitlab-org/security/gitlab!3956))
+
 ## 16.10.3 (2024-04-12)
 
 No changes.
