@@ -175,11 +175,12 @@ To view the **Branch rules overview** list:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 16.8 with a flag named `add_branch_rules`. Disabled by default.
 > - Feature flag `add_branch_rules` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) to `edit_branch_rules` in GitLab 16.11. Disabled by default.
+> - **All branches** and **All protected branches** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388129) in GitLab 17.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `edit_branch_rules`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Prerequisites:
 
@@ -190,8 +191,16 @@ To create a branch rule:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Branch rules**.
-1. In the **Add branch rule** dropdown list, select **Branch name or pattern**.
-1. In the dialog, from the **Create branch rule** dropdown list, select a branch name or create a wildcard by typing `*`.
+1. Then:
+   - To enter a specific branch name or pattern:
+     1. In the **Add branch rule** dropdown list, select **Branch name or pattern**.
+     1. On the dialog, from the **Create branch rule** dropdown list, select a branch name or create a wildcard by typing `*`.
+   - To protect all branches in the project:
+     1. In the **Add branch rule** dropdown list, select **All branches**.
+     1. On the rule's details page, under **Merge request approvals**, enter the required number of approvals for the rule.
+   - To protect all branches in the project that are already specified as protected:
+     1. In the **Add branch rule** dropdown list, select **All protected branches**.
+     1. On the rule's details page, under **Merge request approvals**, enter the required number of approvals for the rule.
 
 #### Edit a branch rule
 

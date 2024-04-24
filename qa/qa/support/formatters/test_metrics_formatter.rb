@@ -122,7 +122,6 @@ module QA
             file_path: file_path,
             status: status(example),
             smoke: example.metadata.key?(:smoke).to_s,
-            reliable: example.metadata.key?(:reliable).to_s,
             blocking: example.metadata.key?(:blocking).to_s,
             quarantined: quarantined(example),
             job_name: job_name,

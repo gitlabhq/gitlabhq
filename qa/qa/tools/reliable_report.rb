@@ -66,11 +66,11 @@ module QA
         puts "#{summary_table(stable: true)}\n\n"
         puts "Total amount: #{stable_test_runs.sum { |_k, v| v.count }}\n\n"
         print_results(stable_results_tables)
-        return puts("No unstable reliable tests present!".colorize(:yellow)) if unstable_reliable_test_runs.empty?
+        return puts("No unstable blocking tests present!".colorize(:yellow)) if unstable_blocking_test_runs.empty?
 
         puts "#{summary_table(stable: false)}\n\n"
-        puts "Total amount: #{unstable_reliable_test_runs.sum { |_k, v| v.count }}\n\n"
-        print_results(unstable_reliable_results_tables)
+        puts "Total amount: #{unstable_blocking_test_runs.sum { |_k, v| v.count }}\n\n"
+        print_results(unstable_blocking_results_tables)
       end
 
       # Create report issue
@@ -133,10 +133,10 @@ module QA
       end
 
       def write_specs_json
-        # 'unstable_specs.json' contain unstable specs tagged reliable
-        # 'stable_specs.json' contain stable specs not tagged reliable
-        File.write('tmp/unstable_specs.json', JSON.pretty_generate(specs_attributes(reliable: true)))
-        File.write('tmp/stable_specs.json', JSON.pretty_generate(specs_attributes(reliable: false)))
+        # 'unstable_specs.json' contain unstable specs tagged blocking
+        # 'stable_specs.json' contain stable specs not tagged blocking
+        File.write('tmp/unstable_specs.json', JSON.pretty_generate(specs_attributes(blocking: true)))
+        File.write('tmp/stable_specs.json', JSON.pretty_generate(specs_attributes(blocking: false)))
       end
 
       private
@@ -150,7 +150,7 @@ module QA
         @notifier ||= Slack::Notifier.new(
           slack_webhook_url,
           channel: slack_channel,
-          username: "Reliable Spec Report"
+          username: "Reliable Report"
         )
       end
 
@@ -183,20 +183,20 @@ module QA
 
         issue = []
         issue << "[[_TOC_]]"
-        issue << "# Candidates for promotion to reliable/blocking #{execution_interval}"
+        issue << "# Candidates for promotion to blocking #{execution_interval}"
         issue << "**Note: MRs will be auto-created for promoting the top #{PROMOTION_BATCH_LIMIT} " \
                  "specs sorted by most number of successful runs**"
         issue << "Total amount: **#{test_count(stable_test_runs)}**"
         issue << summary_table(markdown: true, stable: true).to_s
         issue << results_markdown(:stable)
-        return issue.join("\n\n") if unstable_reliable_test_runs.empty?
+        return issue.join("\n\n") if unstable_blocking_test_runs.empty?
 
-        issue << "# Reliable specs with failures #{execution_interval}"
+        issue << "# Blocking specs with failures #{execution_interval}"
         issue << "**Note:**"
         issue << "* Only failures from the nightly, e2e-package-and-test and e2e-test-on-gdk pipelines are considered"
         issue << "* Only specs that have a failure rate of equal or greater than 1 percent are considered"
         issue << "* Quarantine MRs will be created for all specs listed below"
-        issue << "Total amount: **#{test_count(unstable_reliable_test_runs)}**"
+        issue << "Total amount: **#{test_count(unstable_blocking_test_runs)}**"
         issue << summary_table(markdown: true, stable: false).to_s
         issue << results_markdown(:unstable)
         issue.join("\n\n")
@@ -208,7 +208,7 @@ module QA
       # @param [Boolean] stable
       # @return [Terminal::Table]
       def summary_table(markdown: false, stable: true)
-        test_runs = stable ? stable_test_runs : unstable_reliable_test_runs
+        test_runs = stable ? stable_test_runs : unstable_blocking_test_runs
         terminal_table(
           rows: test_runs.map do |stage, stage_specs|
             [stage, stage_specs.sum { |_k, group_specs| group_specs.length }]
@@ -231,7 +231,7 @@ module QA
       #
       # @param [Boolean] markdown
       # @return [Hash]
-      def unstable_reliable_results_tables(markdown: false)
+      def unstable_blocking_results_tables(markdown: false)
         results_tables(:unstable, markdown: markdown)
       end
 
@@ -240,7 +240,7 @@ module QA
       # @param [Symbol] type result type - :stable, :unstable
       # @return [String]
       def results_markdown(type)
-        runs = type == :stable ? stable_test_runs : unstable_reliable_test_runs
+        runs = type == :stable ? stable_test_runs : unstable_blocking_test_runs
         results_tables(type, markdown: true).map do |stage, group_tables|
           markdown = "## #{stage.capitalize} (#{runs[stage].sum { |_k, group_runs| group_runs.count }})\n\n"
 
@@ -270,7 +270,7 @@ module QA
       # @param [Boolean] markdown
       # @return [Hash<String, Hash<String, Terminal::Table>>] grouped by stage and product_group
       def results_tables(type, markdown: false)
-        (type == :stable ? stable_test_runs : unstable_reliable_test_runs).to_h do |stage, specs|
+        (type == :stable ? stable_test_runs : unstable_blocking_test_runs).to_h do |stage, specs|
           headings = ['NAME', 'RUNS', 'FAILURES', 'FAILURE RATE'].freeze
           [stage, specs.transform_values do |group_specs|
             terminal_table(
@@ -294,7 +294,7 @@ module QA
       # @return [Hash]
       def stable_test_runs
         @top_stable ||= begin
-          stable_specs = test_runs(reliable: false).each do |stage, stage_specs|
+          stable_specs = test_runs(blocking: false).each do |stage, stage_specs|
             stage_specs.transform_values! do |group_specs|
               group_specs.reject { |k, v| v[:failure_rate] != 0 }
                          .sort_by { |k, v| -v[:runs] }
@@ -305,12 +305,12 @@ module QA
         end
       end
 
-      # Unstable reliable specs
+      # Unstable blocking specs
       #
       # @return [Hash]
-      def unstable_reliable_test_runs
-        @top_unstable_reliable ||= begin
-          unstable = test_runs(reliable: true).each do |_stage, stage_specs|
+      def unstable_blocking_test_runs
+        @top_unstable_blocking ||= begin
+          unstable = test_runs(blocking: true).each do |_stage, stage_specs|
             stage_specs.transform_values! do |group_specs|
               group_specs.reject { |_, v| v[:failure_rate] == 0 }
                          .sort_by { |_, v| -v[:failure_rate] }
@@ -387,15 +387,15 @@ module QA
         end.join('')}"
       end
 
-      def api_query_unreliable
-        @api_query_unreliable ||= begin
+      def api_query_notblocking
+        @api_query_notblocking ||= begin
           log_fetching_query_data(true)
           query_api.query(query: query(false))
         end
       end
 
-      def api_query_reliable
-        @api_query_reliable ||= begin
+      def api_query_blocking
+        @api_query_blocking ||= begin
           log_fetching_query_data(true)
           query_api.query(query: query(true))
         end
@@ -405,8 +405,8 @@ module QA
         puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
       end
 
-      def specs_attributes(reliable:)
-        all_runs = query_for(reliable: reliable)
+      def specs_attributes(blocking:)
+        all_runs = query_for(blocking: blocking)
 
         specs_array = all_runs.each_with_object([]) do |table, arr|
           records = table.records.sort_by { |record| record.values["_time"] }
@@ -415,10 +415,10 @@ module QA
 
           result = spec_attributes_per_run(records)
 
-          # When collecting specs not in reliable bucket for promotion, skip specs with failures
-          next if !reliable && result[:failed] != 0
+          # When collecting specs not in blocking bucket for promotion, skip specs with failures
+          next if !blocking && result[:failed] != 0
 
-          next if reliable && skip_reliable_spec_record?(failed_count: result[:failed],
+          next if blocking && skip_blocking_spec_record?(failed_count: result[:failed],
             failure_issue: result[:failure_issue],
             failed_run_type: result[:failed_run_type],
             failure_rate: result[:failure_rate])
@@ -426,17 +426,17 @@ module QA
           arr << result
         end
 
-        specs_array = specs_array.sort_by { |item| item[:runs] }.reverse unless reliable
+        specs_array = specs_array.sort_by { |item| item[:runs] }.reverse unless blocking
 
         {
-          type: reliable ? 'Unstable Specs' : 'Stable Specs',
+          type: blocking ? 'Unstable Specs' : 'Stable Specs',
           report_issue: report_web_url,
           specs: specs_array
         }
       end
 
-      def skip_reliable_spec_record?(failed_count:, failure_issue:, failed_run_type:, failure_rate:)
-        # For unstable reliable specs, skip if no failures or
+      def skip_blocking_spec_record?(failed_count:, failure_issue:, failed_run_type:, failure_rate:)
+        # For unstable blocking specs, skip if no failures or
         return true if failed_count == 0 ||
           # skip if a failure issue does not exist or
           failure_issue&.exclude?('issues') ||
@@ -484,17 +484,17 @@ module QA
         }
       end
 
-      def query_for(reliable:)
-        reliable ? api_query_reliable : api_query_unreliable
+      def query_for(blocking:)
+        blocking ? api_query_blocking : api_query_notblocking
       end
 
       # rubocop:disable Metrics/AbcSize
       # Test executions grouped by name
       #
-      # @param [Boolean] reliable
+      # @param [Boolean] blocking
       # @return [Hash<String, Hash>]
-      def test_runs(reliable:)
-        all_runs = query_for(reliable: reliable)
+      def test_runs(blocking:)
+        all_runs = query_for(blocking: blocking)
 
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
@@ -521,7 +521,7 @@ module QA
 
           failure_rate = (failed_records.count.to_f / runs) * 100
 
-          next if reliable && skip_reliable_spec_record?(failed_count: failed_records.count,
+          next if blocking && skip_blocking_spec_record?(failed_count: failed_records.count,
             failure_issue: failure_issue, failed_run_type: failed_run_type, failure_rate: failure_rate)
 
           result[stage][product_group] ||= {}
@@ -584,9 +584,9 @@ module QA
 
       # Flux query
       #
-      # @param [Boolean] reliable
+      # @param [Boolean] blocking
       # @return [String]
-      def query(reliable)
+      def query(blocking)
         <<~QUERY
           from(bucket: "#{Support::InfluxdbTools::INFLUX_MAIN_TEST_METRICS_BUCKET}")
             |> range(start: -#{range}d)
@@ -606,7 +606,7 @@ module QA
               r.merge_request == "false" and
               r.quarantined == "false" and
               r.smoke == "false" and
-              (r.reliable == "#{reliable}" #{reliable ? 'or' : 'and'} r.blocking == "#{reliable}")
+              r.blocking == "#{blocking}"
             )
             |> filter(fn: (r) => r["_field"] == "job_url" or
               r["_field"] == "failure_exception" or

@@ -175,7 +175,6 @@
 - ee/spec/models/ee/project_wiki_spec.rb
 - ee/spec/models/elastic/migration_record_spec.rb
 - ee/spec/models/epic_spec.rb
-- ee/spec/models/factories_spec.rb
 - ee/spec/models/gitlab_subscription_spec.rb
 - ee/spec/models/iteration_spec.rb
 - ee/spec/models/member_spec.rb

@@ -144,15 +144,34 @@ tests = [
   },
 
   {
-    explanation: 'FOSS factory should map to factories spec',
+    explanation: 'FOSS factories map to FOSS/EE model specs plural',
     changed_file: 'spec/factories/users.rb',
-    expected: ['ee/spec/models/factories_spec.rb']
+    expected: %w[
+      spec/models/user_spec.rb
+      ee/spec/models/ee/user_spec.rb
+    ]
   },
-
   {
-    explanation: 'EE factory should map to factories spec',
+    explanation: 'FOSS factories map to FOSS/EE model specs singular',
+    changed_file: 'spec/factories/ci/build_name.rb',
+    expected: %w[
+      spec/models/ci/build_name_spec.rb
+    ]
+  },
+  {
+    explanation: 'EE factories for extensions map to FOSS/EE model specs',
     changed_file: 'ee/spec/factories/users.rb',
-    expected: ['ee/spec/models/factories_spec.rb']
+    expected: %w[
+      spec/models/user_spec.rb
+      ee/spec/models/ee/user_spec.rb
+    ]
+  },
+  {
+    explanation: 'EE factories map to FOSS/EE model specs',
+    changed_file: 'ee/spec/factories/licenses.rb',
+    expected: %w[
+      ee/spec/models/license_spec.rb
+    ]
   },
 
   {
@@ -408,7 +427,7 @@ if failed_tests.any?
 end
 
 bad_sources = YAML.load_file(mapping_file)['mapping'].filter_map do |map|
-  map['source'].match(/(?<!\\)\.\w+\z/)&.string
+  Array(map['source']).any? { |source| source.match(/(?<!\\)\.\w+\z/)&.string }
 end
 
 if bad_sources.any?

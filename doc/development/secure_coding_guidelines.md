@@ -11,12 +11,55 @@ vulnerabilities commonly identified in the GitLab codebase. They are intended
 to help developers identify potential security vulnerabilities early, with the
 goal of reducing the number of vulnerabilities released over time.
 
-## Contributing
+## SAST coverage
+
+For each of the guidelines listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a rubocop) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
+
+| Guideline | Rule | Status |
+|---|---|---|
+| [Regular Expressions](#regular-expressions-guidelines)  | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/issues/13) | ⏳ In progress |
+| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | Pending  | ❌ |
+| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_url.yml), [2](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
+| [XSS](#xss-guidelines) | Pending  | ❌ |
+| [Path traversal](#path-traversal-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_path_traversal.yml?ref_type=heads) | ✅ |
+| [Path traversal](#path-traversal-guidelines) (Go) | Pending  | ❌ |
+| [OS command injection](#os-command-injection-guidelines) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_command_injection.yml?ref_type=heads) | ✅ |
+| [OS command injection](#os-command-injection-guidelines) (Go) | Pending | ❌ |
+| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
+| [Archive operations](#working-with-archive-files) (Ruby) | [Link](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
+| [Archive operations](#working-with-archive-files) (Go) | Pending  | ❌ |
+| [URL spoofing](#url-spoofing) | Pending  | ❌ |
+| [GitLab internal authorization](#gitlab-internal-authorization) | N/A  | N/A |
+| [Insecure metaprogramming](#insecure-metaprogramming-example) | N/A  | N/A |
+| [Time of check time of use](#time-of-check-to-time-of-use-bugs) | N/A  | N/A |
+| [Handling credentials](#handling-credentials) | N/A  | N/A |
+| [Local storage](#local-storage) | N/A  | N/A |
+| [Logging](#logging) | N/A  | N/A |
+| [Artifical Intelligence feature](#artificial-intelligence-ai-features) | N/A  | N/A |
+
+## Process for creating new guidelines and accompanying rules
 
 If you would like to contribute to one of the existing documents, or add
 guidelines for a new vulnerability type, open an MR! Try to
 include links to examples of the vulnerability found, and link to any resources
 used in defined mitigations. If you have questions or when ready for a review, ping `gitlab-com/gl-security/appsec`.
+
+All guidelines should have supporting semgrep rules or rubocops. If you add
+a guideline, open an issue for this, and link to it in your Guidelines
+MR. Also add the Guideline to the "SAST Coverage" table above.
+
+### Creating new semgrep rules
+
+1. These should go in the [SAST custom rules](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines) project.
+1. Each rule should have a test file with the name set to `rule_name.rb` or `rule_name.go`.
+1. Each rule should have a well-defined `message` field in the YAML file, with clear instructions for the developer.
+1. The severity should be set to `INFO` for low-severity issues not requiring involvement from AppSec, and `WARNING` for issues that require AppSec review. The bot will ping AppSec accordingly.
+
+### Creating new rubocops
+
+1. Follow the [Rubocop development doc](rubocop_development_guide.md#creating-new-rubocop-cops).
+For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
+1. The cop itself should reside in the `gitlab-security` [gem project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/tree/master/lib/rubocop/cop/gitlab_security)
 
 ## Permissions
 

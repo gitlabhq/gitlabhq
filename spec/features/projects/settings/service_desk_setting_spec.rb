@@ -102,9 +102,10 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     end
   end
 
-  it 'pushes issue_email_participants feature flag to frontend' do
+  it 'pushes feature flags to frontend' do
     visit edit_project_path(project)
 
     expect(page).to have_pushed_frontend_feature_flags(issueEmailParticipants: true)
+    expect(page).to have_pushed_frontend_feature_flags(serviceDeskTicketsConfidentiality: true)
   end
 end

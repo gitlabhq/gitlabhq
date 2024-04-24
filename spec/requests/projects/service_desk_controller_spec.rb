@@ -78,7 +78,8 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       put project_service_desk_path(project, format: :json), params: {
         issue_template_key: 'service_desk',
         reopen_issue_on_external_participant_note: true,
-        add_external_participants_from_cc: true
+        add_external_participants_from_cc: true,
+        tickets_confidential_by_default: false
       }
 
       settings = project.service_desk_setting
@@ -86,12 +87,14 @@ RSpec.describe Projects::ServiceDeskController, feature_category: :service_desk 
       expect(settings).to have_attributes(
         issue_template_key: 'service_desk',
         reopen_issue_on_external_participant_note: true,
-        add_external_participants_from_cc: true
+        add_external_participants_from_cc: true,
+        tickets_confidential_by_default: false
       )
       expect(json_response).to include(
         'issue_template_key' => 'service_desk',
         'reopen_issue_on_external_participant_note' => true,
-        'add_external_participants_from_cc' => true
+        'add_external_participants_from_cc' => true,
+        'tickets_confidential_by_default' => false
       )
     end
 

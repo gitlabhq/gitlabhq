@@ -19,7 +19,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:ci_job_id) { '321' }
   let(:run_type) { 'staging-full' }
   let(:smoke) { 'false' }
-  let(:reliable) { 'false' }
   let(:blocking) { 'false' }
   let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
@@ -50,7 +49,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         file_path: file_path.gsub('./qa/specs/features', ''),
         status: status,
         smoke: smoke,
-        reliable: reliable,
         blocking: blocking,
         quarantined: quarantined,
         job_name: 'test-job',
@@ -143,19 +141,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('QA_RSPEC_RETRIED', "false")
     end
 
-    context 'with reliable spec' do
-      let(:reliable) { 'true' }
-
-      it 'exports data to influxdb with correct reliable tag' do
-        run_spec do
-          it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
-        end
-
-        expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
-      end
-    end
-
     context 'with blocking spec' do
       let(:blocking) { 'true' }
 
@@ -170,7 +155,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     end
 
     context 'with product group tag' do
-      it 'exports data to influxdb with correct reliable tag' do
+      it 'exports data to influxdb with correct blocking tag' do
         run_spec do
           it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end

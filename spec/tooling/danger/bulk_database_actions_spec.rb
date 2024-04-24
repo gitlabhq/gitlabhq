@@ -56,6 +56,7 @@ RSpec.describe Tooling::Danger::BulkDatabaseActions, feature_category: :tooling 
             'upsert_all',
             'User.upsert',
             'User.last.destroy',
+            'destroy',
             ' .destroy'
           ]
         end

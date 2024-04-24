@@ -1968,7 +1968,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/models/ee/ci/secure_file_spec.rb'
     - 'ee/spec/models/ee/groups/feature_setting_spec.rb'
     - 'ee/spec/models/elasticsearch_indexed_namespace_spec.rb'
-    - 'ee/spec/models/factories_spec.rb'
     - 'ee/spec/models/gitlab_subscription_spec.rb'
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/members/member_role_spec.rb'

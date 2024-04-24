@@ -10,11 +10,13 @@ module Tooling
       DOCUMENTATION_LINK = 'https://docs.gitlab.com/ee/development/database_review.html#preparation-when-using-bulk-update-operations'
 
       SUGGESTION = <<~MESSAGE_MARKDOWN.freeze
-        When using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`
-        you must include the full database query and query execution plan in the merge request description,
-        and request a ~database review.
+        When using `update`, `upsert`, `delete`, `destroy`, `update_all`,
+        `upsert_all`, `delete_all` or `destroy_all` you must include the full
+        database query and query execution plan in the merge request
+        description, and request a ~database review.
 
-        This comment can be ignored if the object is not an ActiveRecord class, since no database query would be generated.
+        This comment can be ignored if the object is not an ActiveRecord class,
+        since no database query would be generated.
 
         ----
 
