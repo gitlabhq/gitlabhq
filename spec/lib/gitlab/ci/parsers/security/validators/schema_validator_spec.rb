@@ -226,6 +226,30 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
       end
     end
 
+    context 'when given a malformed schema version' do
+      let(:security_report_failure) { 'using_unsupported_schema_version' }
+
+      [
+        '../../../../../../../../../spec/fixtures/security_reports/master/gl-secret-detection-report.json',
+        './fixtures/gl-secret-detection.json',
+        '%2e%2e%2f1.2.3'
+      ].each do |version|
+        context version do
+          let(:report_version) { version }
+
+          it { is_expected.to be_falsey }
+
+          it_behaves_like 'logs related information'
+
+          it 'ensures version is not passed to schemer' do
+            expect(JSONSchemer).not_to receive(:schema)
+
+            subject
+          end
+        end
+      end
+    end
+
     context 'when not given a schema version' do
       let(:report_version) { nil }
 
@@ -290,14 +314,13 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          valid_data['version'] = "V2.7.0"
+          valid_data['version'] = "2.7.0"
           valid_data.delete('vulnerabilities')
           valid_data
         end
 
         let(:expected_errors) do
           [
-            "property '/version' does not match pattern: ^[0-9]+\\.[0-9]+\\.[0-9]+$",
             "root is missing required keys: vulnerabilities"
           ]
         end
@@ -356,7 +379,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       let(:expected_errors) do
         [
-          "root is missing required keys: version",
           expected_missing_version_message
         ]
       end
@@ -398,7 +420,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
     context 'when given a deprecated schema version' do
       let(:deprecations_hash) do
         {
-          dast: %w[V2.7.0]
+          dast: %w[2.7.0]
         }
       end
 
@@ -426,7 +448,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Validators::SchemaValidator, featu
 
       context 'and the report does not pass schema validation' do
         let(:report_data) do
-          valid_data['version'] = "V2.7.0"
+          valid_data['version'] = "2.7.0"
           valid_data.delete('vulnerabilities')
           valid_data
         end

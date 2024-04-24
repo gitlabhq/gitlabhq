@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Resolvers::BaseResolver, feature_category: :api do
   include GraphqlHelpers
+  let_it_be(:user) { create(:user) }
 
   let(:resolver) do
     Class.new(described_class) do
@@ -247,8 +248,6 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
   end
 
   describe '#object' do
-    let_it_be(:user) { create(:user) }
-
     it 'returns object' do
       expect_next_instance_of(resolver) do |r|
         expect(r).to receive(:process).with(user)
@@ -273,6 +272,20 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
 
     it 'is sugar for OffsetPaginatedRelation.new' do
       expect(instance.offset_pagination(User.none)).to be_a(::Gitlab::Graphql::Pagination::OffsetPaginatedRelation)
+    end
+  end
+
+  describe '#authorized?' do
+    let(:object) { :object }
+    let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator) }
+    let(:context) { { current_user: user, scope_validator: scope_validator } }
+
+    it 'delegates to authorization' do
+      expect(resolver.authorization).to be_kind_of(::Gitlab::Graphql::Authorize::ObjectAuthorization)
+      expect(resolver.authorization).to receive(:ok?)
+        .with(object, user, scope_validator: scope_validator)
+
+      resolver.authorized?(object, context)
     end
   end
 end

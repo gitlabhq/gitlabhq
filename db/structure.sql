@@ -9750,7 +9750,8 @@ CREATE TABLE identities (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     secondary_extern_uid character varying,
-    saml_provider_id integer
+    saml_provider_id integer,
+    trusted_extern_uid boolean DEFAULT true
 );
 
 CREATE SEQUENCE identities_id_seq
@@ -25585,6 +25586,8 @@ CREATE INDEX index_groups_visits_on_user_id_and_entity_id_and_visited_at ON ONLY
 CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_http_integrations_on_project_and_endpoint ON alert_management_http_integrations USING btree (project_id, endpoint_identifier);
+
+CREATE INDEX index_identities_on_provider ON identities USING btree (provider);
 
 CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 

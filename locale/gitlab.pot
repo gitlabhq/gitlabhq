@@ -48451,6 +48451,9 @@ msgstr ""
 msgid "Signing in using %{label} has been disabled"
 msgstr ""
 
+msgid "Signing in using your %{label} account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your %{label} account."
+msgstr ""
+
 msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
 msgstr ""
 
