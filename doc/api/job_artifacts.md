@@ -316,9 +316,6 @@ If the artifacts were deleted successfully, a response with status `204 No Conte
 
 ## Delete project artifacts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223793) in GitLab 14.7 [with a flag](../administration/feature_flags.md) named `bulk_expire_project_artifacts`. Enabled by default on GitLab self-managed. Enabled on GitLab.com.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350609) in GitLab 14.10.
-
 Delete artifacts eligible for deletion in a project. By default, artifacts from
 [the most recent successful pipeline of each ref](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
 are not deleted.

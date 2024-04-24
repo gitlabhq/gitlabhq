@@ -553,6 +553,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :throttle_unauthenticated_deprecated_api_requests_per_period,
       :throttle_unauthenticated_files_api_period_in_seconds,
       :throttle_unauthenticated_files_api_requests_per_period,
+      :throttle_unauthenticated_git_http_period_in_seconds,
+      :throttle_unauthenticated_git_http_requests_per_period,
       :throttle_unauthenticated_packages_api_period_in_seconds,
       :throttle_unauthenticated_packages_api_requests_per_period,
       :throttle_unauthenticated_period_in_seconds,
@@ -611,6 +613,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]
+
+  jsonb_accessor :rate_limits_unauthenticated_git_http,
+    throttle_unauthenticated_git_http_enabled: [:boolean, { default: false }],
+    throttle_unauthenticated_git_http_requests_per_period: [:integer, { default: 3600 }],
+    throttle_unauthenticated_git_http_period_in_seconds: [:integer, { default: 3600 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 

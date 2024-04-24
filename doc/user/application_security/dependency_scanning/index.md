@@ -670,7 +670,7 @@ The following analyzers are executed, each of which have different behavior when
    Does not support multiple lockfiles. When multiple lockfiles exist, `Retire.js`
    analyzes the first lockfile discovered while traversing the directory tree in alphabetical order.
 
-From GitLab 14.8 the `gemnasium` analyzer scans supported JavaScript projects for vendored libraries
+The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
 
 #### Go
@@ -747,9 +747,6 @@ To enable dependency scanning:
 Pipelines now include a dependency scanning job.
 
 #### Use a preconfigured merge request
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4908) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md) named `sec_dependency_scanning_ui_enable`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/326005) in GitLab 14.2. Feature flag `sec_dependency_scanning_ui_enable` removed.
 
 This method automatically prepares a merge request that includes the dependency scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
@@ -837,7 +834,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
-| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
+| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
 | `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
@@ -925,7 +922,6 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 ### FIPS-enabled images
 
-> - Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
 > - Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
@@ -956,7 +952,6 @@ For more details of the dependency scanning report, see:
 
 ### CycloneDX Software Bill of Materials
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350509) in GitLab 14.8 in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Generally available in GitLab 15.7.
 
 Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)

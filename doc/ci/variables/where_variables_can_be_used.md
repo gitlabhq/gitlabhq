@@ -50,7 +50,7 @@ There are two places defined variables can be used. On the:
 | [`script`](../yaml/index.md#script)                                   | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment). |
 | [`services:name`](../yaml/index.md#services)                          | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`services`](../yaml/index.md#services)                               | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
-| [`tags`](../yaml/index.md#tags)                                       | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35742) in GitLab 14.1. |
+| [`tags`](../yaml/index.md#tags)                                       | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab.  |
 | [`trigger` and `trigger:project`](../yaml/index.md#trigger)           | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab. Variable expansion for `trigger:project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367660) in GitLab 15.3. |
 | [`variables`](../yaml/index.md#variables)                             | yes              | GitLab/Runner          | The variable expansion is first made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab, and then any unrecognized or unavailable variables are expanded by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`workflow:name`](../yaml/index.md#workflowname)                      | yes              | GitLab                 | The variable expansion is made by the [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism) in GitLab.<br/><br/>Supported are all variables available in `workflow`:<br/>- Project/Group variables.<br/>- Global `variables` and `workflow:rules:variables` (when matching the rule).<br/>- Variables inherited from parent pipelines.<br/>- Variables from triggers.<br/>- Variables from pipeline schedules.<br/><br/>Not supported are variables defined in the GitLab Runner `config.toml`, variables defined in jobs, or [Persisted variables](#persisted-variables). |
@@ -80,11 +80,6 @@ Each form is handled in the same way, no matter which OS/shell handles the job,
 because the expansion is done in GitLab before any runner gets the job.
 
 #### Nested variable expansion
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48627) in GitLab 13.10. [Deployed behind the `variable_inside_variable` feature flag](../../user/feature_flags.md), disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.3.
-- [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/297382) in GitLab 14.4.
-- Feature flag `variable_inside_variable` removed in GitLab 14.5.
 
 GitLab expands job variable values recursively before sending them to the runner. For example, in the following scenario:
 

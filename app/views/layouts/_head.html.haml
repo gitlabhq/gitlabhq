@@ -48,10 +48,8 @@
   = render 'layouts/loading_hints'
 
   = render_if_exists 'layouts/header/translations'
-  - if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
+  - if Gitlab::CurrentSettings.sentry_enabled
     = webpack_bundle_tag 'sentry'
-  - elsif Gitlab.config.sentry.enabled
-    = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
   = yield :page_specific_javascripts

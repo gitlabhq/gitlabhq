@@ -83,6 +83,10 @@ You can ask about a specific GitLab issue. For example:
 NOTE:
 If the issue contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For tips on how GitLab Duo Chat can improve your productivity with issues and epics, see [Boost your productivity with GitLab Duo Chat](https://youtu.be/RJezT5_V6dI).
+<!-- Video published on 2024-04-17 -->
+
 ### Ask about a specific epic
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for SaaS in GitLab 16.3.

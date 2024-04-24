@@ -13,6 +13,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 
@@ -30,6 +31,7 @@ export default {
     GlLink,
     GlSprintf,
     GlTruncate,
+    Markdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -183,7 +185,10 @@ export default {
         class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm"
       >
         <div>
-          <span class="gl-display-flex gl-flex-basis-two-thirds">{{ resource.description }}</span>
+          <markdown
+            class="gl-display-flex gl-flex-basis-two-thirds"
+            :markdown="resource.description"
+          />
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"

@@ -14,14 +14,13 @@ import Vue from 'vue';
  * @returns {HTMLElement}
  */
 export const renderVueComponentForLegacyJS = (Component, data, children) => {
-  const mountEl = document.createElement('div');
-
   const vm = new Vue({
-    el: mountEl,
     render(h) {
       return h(Component, data, children);
     },
   });
+
+  vm.$mount();
 
   // Ensure it's rendered
   vm.$forceUpdate();

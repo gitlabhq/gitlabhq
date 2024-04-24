@@ -238,148 +238,11 @@
 <h1 class="title">GitLab Flavored Markdown Internal Extensions</h1>
 <div class="version">Version alpha</div>
 
-<ul class="section-nav">
-<li>
-<a href="#preliminaries">Preliminaries</a><ul>
-<li><a href="#characters-and-lines">Characters and lines</a></li>
-<li><a href="#tabs">Tabs</a></li>
-<li><a href="#insecure-characters">Insecure characters</a></li>
-</ul>
-</li>
-<li>
-<a href="#blocks-and-inlines">Blocks and inlines</a><ul>
-<li><a href="#precedence">Precedence</a></li>
-<li><a href="#container-blocks-and-leaf-blocks">Container blocks and leaf blocks</a></li>
-</ul>
-</li>
-<li>
-<a href="#leaf-blocks">Leaf blocks</a><ul>
-<li><a href="#thematic-breaks">Thematic breaks</a></li>
-<li><a href="#atx-headings">ATX headings</a></li>
-<li><a href="#setext-headings">Setext headings</a></li>
-<li><a href="#indented-code-blocks">Indented code blocks</a></li>
-<li><a href="#fenced-code-blocks">Fenced code blocks</a></li>
-<li><a href="#html-blocks">HTML blocks</a></li>
-<li><a href="#link-reference-definitions">Link reference definitions</a></li>
-<li><a href="#paragraphs">Paragraphs</a></li>
-<li><a href="#blank-lines">Blank lines</a></li>
-<li><a href="#tables-extension">Tables (extension)</a></li>
-</ul>
-</li>
-<li>
-<a href="#container-blocks">Container blocks</a><ul>
-<li><a href="#block-quotes">Block quotes</a></li>
-<li>
-<a href="#list-items">List items</a><ul><li><a href="#motivation">Motivation</a></li></ul>
-</li>
-<li><a href="#task-list-items-extension">Task list items (extension)</a></li>
-<li><a href="#lists">Lists</a></li>
-</ul>
-</li>
-<li>
-<a href="#inlines">Inlines</a><ul>
-<li><a href="#backslash-escapes">Backslash escapes</a></li>
-<li><a href="#entity-and-numeric-character-references">Entity and numeric character references</a></li>
-<li><a href="#code-spans">Code spans</a></li>
-<li><a href="#emphasis-and-strong-emphasis">Emphasis and strong emphasis</a></li>
-<li><a href="#strikethrough-extension">Strikethrough (extension)</a></li>
-<li><a href="#links">Links</a></li>
-<li><a href="#images">Images</a></li>
-<li><a href="#autolinks">Autolinks</a></li>
-<li><a href="#autolinks-extension">Autolinks (extension)</a></li>
-<li><a href="#raw-html">Raw HTML</a></li>
-<li><a href="#disallowed-raw-html-extension">Disallowed Raw HTML (extension)</a></li>
-<li><a href="#hard-line-breaks">Hard line breaks</a></li>
-<li><a href="#soft-line-breaks">Soft line breaks</a></li>
-<li><a href="#textual-content">Textual content</a></li>
-</ul>
-</li>
-<li>
-<a href="#gitlab-official-specification-markdown">GitLab Official Specification Markdown</a><ul>
-<li><a href="#task-list-items">Task list items</a></li>
-<li><a href="#front-matter">Front matter</a></li>
-<li><a href="#table-of-contents">Table of contents</a></li>
-</ul>
-</li>
-<li>
-<a href="#gitlab-internal-extension-markdown">GitLab Internal Extension Markdown</a><ul>
-<li><a href="#audio">Audio</a></li>
-<li><a href="#video">Video</a></li>
-<li><a href="#markdown-preview-api-request-overrides">Markdown Preview API Request Overrides</a></li>
-<li>
-<a href="#migrated-golden-master-examples">Migrated golden master examples</a><ul>
-<li><a href="#attachment_image_for_group">attachment_image_for_group</a></li>
-<li><a href="#attachment_image_for_project">attachment_image_for_project</a></li>
-<li><a href="#attachment_image_for_project_wiki">attachment_image_for_project_wiki</a></li>
-<li><a href="#attachment_link_for_group">attachment_link_for_group</a></li>
-<li><a href="#attachment_link_for_project">attachment_link_for_project</a></li>
-<li><a href="#attachment_link_for_project_wiki">attachment_link_for_project_wiki</a></li>
-<li><a href="#attachment_link_for_group_wiki">attachment_link_for_group_wiki</a></li>
-<li><a href="#audio-1">audio</a></li>
-<li><a href="#audio_and_video_in_lists">audio_and_video_in_lists</a></li>
-<li><a href="#blockquote">blockquote</a></li>
-<li><a href="#bold">bold</a></li>
-<li><a href="#bullet_list_style_1">bullet_list_style_1</a></li>
-<li><a href="#bullet_list_style_2">bullet_list_style_2</a></li>
-<li><a href="#bullet_list_style_3">bullet_list_style_3</a></li>
-<li><a href="#code_block_javascript">code_block_javascript</a></li>
-<li><a href="#code_block_plaintext">code_block_plaintext</a></li>
-<li><a href="#code_block_unknown">code_block_unknown</a></li>
-<li><a href="#color_chips">color_chips</a></li>
-<li><a href="#description_list">description_list</a></li>
-<li><a href="#details">details</a></li>
-<li><a href="#diagram_kroki_nomnoml">diagram_kroki_nomnoml</a></li>
-<li><a href="#diagram_plantuml">diagram_plantuml</a></li>
-<li><a href="#diagram_plantuml_unicode">diagram_plantuml_unicode</a></li>
-<li><a href="#div">div</a></li>
-<li><a href="#emoji">emoji</a></li>
-<li><a href="#emphasis">emphasis</a></li>
-<li><a href="#figure">figure</a></li>
-<li><a href="#footnotes">footnotes</a></li>
-<li><a href="#frontmatter_json">frontmatter_json</a></li>
-<li><a href="#frontmatter_toml">frontmatter_toml</a></li>
-<li><a href="#frontmatter_yaml">frontmatter_yaml</a></li>
-<li><a href="#hard_break">hard_break</a></li>
-<li><a href="#headings">headings</a></li>
-<li><a href="#horizontal_rule">horizontal_rule</a></li>
-<li><a href="#html_marks">html_marks</a></li>
-<li><a href="#image">image</a></li>
-<li><a href="#inline_code">inline_code</a></li>
-<li><a href="#inline_diff">inline_diff</a></li>
-<li><a href="#label">label</a></li>
-<li><a href="#link">link</a></li>
-<li><a href="#math">math</a></li>
-<li><a href="#ordered_list">ordered_list</a></li>
-<li><a href="#ordered_list_with_start_order">ordered_list_with_start_order</a></li>
-<li><a href="#ordered_task_list">ordered_task_list</a></li>
-<li><a href="#ordered_task_list_with_order">ordered_task_list_with_order</a></li>
-<li><a href="#reference_for_project_wiki">reference_for_project_wiki</a></li>
-<li><a href="#strike">strike</a></li>
-<li><a href="#table">table</a></li>
-<li><a href="#table_of_contents">table_of_contents</a></li>
-<li><a href="#task_list">task_list</a></li>
-<li><a href="#video-1">video</a></li>
-<li><a href="#word_break">word_break</a></li>
-</ul>
-</li>
-<li><a href="#image-attributes">Image Attributes</a></li>
-<li><a href="#footnotes-1">Footnotes</a></li>
-</ul>
-</li>
-<li>
-<a href="#gfm-undocumented-extensions-and-more-robust-test">GFM undocumented extensions and more robust test</a><ul>
-<li><a href="#footnotes-2">Footnotes</a></li>
-<li><a href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs">When a footnote is used multiple times, we insert multiple backrefs.</a></li>
-<li><a href="#footnote-reference-labels-are-href-escaped">Footnote reference labels are href escaped</a></li>
-<li><a href="#interop">Interop</a></li>
-<li><a href="#task-lists">Task lists</a></li>
-</ul>
-</li>
-</ul>
+
 <h1 data-sourcepos="3:1-3:15" dir="auto">
-<a id="user-content-preliminaries" class="anchor" href="#preliminaries" aria-hidden="true"></a>Preliminaries</h1>
+<a href="#preliminaries" aria-hidden="true" class="anchor" id="user-content-preliminaries"></a>Preliminaries</h1>
 <h2 data-sourcepos="5:1-5:23" dir="auto">
-<a id="user-content-characters-and-lines" class="anchor" href="#characters-and-lines" aria-hidden="true"></a>Characters and lines</h2>
+<a href="#characters-and-lines" aria-hidden="true" class="anchor" id="user-content-characters-and-lines"></a>Characters and lines</h2>
 <p data-sourcepos="7:1-8:9" dir="auto">Any sequence of [characters] is a valid CommonMark
 document.</p>
 <p data-sourcepos="10:1-13:26" dir="auto">A <a data-sourcepos="10:3-10:16" href="@">character</a> is a Unicode code point.  Although some
@@ -422,7 +285,7 @@ is <code data-sourcepos="53:5-53:5">!</code>, <code data-sourcepos="53:10-53:10"
 punctuation character] or anything in
 the general Unicode categories  <code data-sourcepos="61:34-61:35">Pc</code>, <code data-sourcepos="61:40-61:41">Pd</code>, <code data-sourcepos="61:46-61:47">Pe</code>, <code data-sourcepos="61:52-61:53">Pf</code>, <code data-sourcepos="61:58-61:59">Pi</code>, <code data-sourcepos="61:64-61:65">Po</code>, or <code data-sourcepos="61:73-61:74">Ps</code>.</p>
 <h2 data-sourcepos="63:1-63:7" dir="auto">
-<a id="user-content-tabs" class="anchor" href="#tabs" aria-hidden="true"></a>Tabs</h2>
+<a href="#tabs" aria-hidden="true" class="anchor" id="user-content-tabs"></a>Tabs</h2>
 <p data-sourcepos="65:1-68:16" dir="auto">Tabs in lines are not expanded to [spaces].  However,
 in contexts where whitespace helps to define block structure,
 tabs behave as if they were replaced by spaces with a tab stop
@@ -607,11 +470,11 @@ code block starting with two spaces.</p>
 </div>
 </div>
 <h2 data-sourcepos="265:1-265:22" dir="auto">
-<a id="user-content-insecure-characters" class="anchor" href="#insecure-characters" aria-hidden="true"></a>Insecure characters</h2>
+<a href="#insecure-characters" aria-hidden="true" class="anchor" id="user-content-insecure-characters"></a>Insecure characters</h2>
 <p data-sourcepos="267:1-268:42" dir="auto">For security reasons, the Unicode character <code data-sourcepos="267:46-267:51">U+0000</code> must be replaced
 with the REPLACEMENT CHARACTER (<code data-sourcepos="268:34-268:39">U+FFFD</code>).</p>
 <h1 data-sourcepos="270:1-270:20" dir="auto">
-<a id="user-content-blocks-and-inlines" class="anchor" href="#blocks-and-inlines" aria-hidden="true"></a>Blocks and inlines</h1>
+<a href="#blocks-and-inlines" aria-hidden="true" class="anchor" id="user-content-blocks-and-inlines"></a>Blocks and inlines</h1>
 <p data-sourcepos="272:1-277:54" dir="auto">We can think of a document as a sequence of
 <a data-sourcepos="273:1-273:11" href="@">blocks</a>---structural elements like paragraphs, block
 quotations, lists, headings, rules, and code blocks.  Some blocks (like
@@ -619,7 +482,7 @@ block quotes and list items) contain other blocks; others (like
 headings and paragraphs) contain <a data-sourcepos="276:34-276:44" href="@">inline</a> content---text,
 links, emphasized text, images, code spans, and so on.</p>
 <h2 data-sourcepos="279:1-279:13" dir="auto">
-<a id="user-content-precedence" class="anchor" href="#precedence" aria-hidden="true"></a>Precedence</h2>
+<a href="#precedence" aria-hidden="true" class="anchor" id="user-content-precedence"></a>Precedence</h2>
 <p data-sourcepos="281:1-283:59" dir="auto">Indicators of block structure always take precedence over indicators
 of inline structure.  So, for example, the following is a list with
 two items, not a list with one item containing a code span:</p>
@@ -647,17 +510,17 @@ step.  Note that the first step requires processing lines in sequence,
 but the second can be parallelized, since the inline parsing of
 one block element does not affect the inline parsing of any other.</p>
 <h2 data-sourcepos="311:1-311:35" dir="auto">
-<a id="user-content-container-blocks-and-leaf-blocks" class="anchor" href="#container-blocks-and-leaf-blocks" aria-hidden="true"></a>Container blocks and leaf blocks</h2>
+<a href="#container-blocks-and-leaf-blocks" aria-hidden="true" class="anchor" id="user-content-container-blocks-and-leaf-blocks"></a>Container blocks and leaf blocks</h2>
 <p data-sourcepos="313:1-316:13" dir="auto">We can divide blocks into two types:
 <a data-sourcepos="314:1-314:21" href="@">container blocks</a>,
 which can contain other blocks, and <a data-sourcepos="315:37-315:52" href="@">leaf blocks</a>,
 which cannot.</p>
 <h1 data-sourcepos="318:1-318:13" dir="auto">
-<a id="user-content-leaf-blocks" class="anchor" href="#leaf-blocks" aria-hidden="true"></a>Leaf blocks</h1>
+<a href="#leaf-blocks" aria-hidden="true" class="anchor" id="user-content-leaf-blocks"></a>Leaf blocks</h1>
 <p data-sourcepos="320:1-321:18" dir="auto">This section describes the different kinds of leaf block that make up a
 Markdown document.</p>
 <h2 data-sourcepos="323:1-323:18" dir="auto">
-<a id="user-content-thematic-breaks" class="anchor" href="#thematic-breaks" aria-hidden="true"></a>Thematic breaks</h2>
+<a href="#thematic-breaks" aria-hidden="true" class="anchor" id="user-content-thematic-breaks"></a>Thematic breaks</h2>
 <p data-sourcepos="325:1-328:20" dir="auto">A line consisting of 0-3 spaces of indentation, followed by a sequence
 of three or more matching <code data-sourcepos="326:28-326:28">-</code>, <code data-sourcepos="326:33-326:33">_</code>, or <code data-sourcepos="326:41-326:41">*</code> characters, each followed
 optionally by any number of spaces or tabs, forms a
@@ -942,7 +805,7 @@ interpretations of a line, the thematic break takes precedence:</p>
 </div>
 </div>
 <h2 data-sourcepos="661:1-661:15" dir="auto">
-<a id="user-content-atx-headings" class="anchor" href="#atx-headings" aria-hidden="true"></a>ATX headings</h2>
+<a href="#atx-headings" aria-hidden="true" class="anchor" id="user-content-atx-headings"></a>ATX headings</h2>
 <p data-sourcepos="663:1-673:35" dir="auto">An <a data-sourcepos="663:4-663:19" href="@">ATX heading</a>
 consists of a string of characters, parsed as inline content, between an
 opening sequence of 1--6 unescaped <code data-sourcepos="665:37-665:37">#</code> characters and an optional
@@ -1219,7 +1082,7 @@ lines, and they can interrupt paragraphs:</p>
 </div>
 </div>
 <h2 data-sourcepos="991:1-991:18" dir="auto">
-<a id="user-content-setext-headings" class="anchor" href="#setext-headings" aria-hidden="true"></a>Setext headings</h2>
+<a href="#setext-headings" aria-hidden="true" class="anchor" id="user-content-setext-headings"></a>Setext headings</h2>
 <p data-sourcepos="993:1-1001:54" dir="auto">A <a data-sourcepos="993:3-993:21" href="@">setext heading</a> consists of one or more
 lines of text, each containing at least one [non-whitespace
 character], with no more than 3 spaces indentation, followed by
@@ -1720,7 +1583,7 @@ underline], such as</p>
 </div>
 </div>
 <h2 data-sourcepos="1572:1-1572:23" dir="auto">
-<a id="user-content-indented-code-blocks" class="anchor" href="#indented-code-blocks" aria-hidden="true"></a>Indented code blocks</h2>
+<a href="#indented-code-blocks" aria-hidden="true" class="anchor" id="user-content-indented-code-blocks"></a>Indented code blocks</h2>
 <p data-sourcepos="1574:1-1580:44" dir="auto">An <a data-sourcepos="1574:4-1574:27" href="@">indented code block</a> is composed of one or more
 [indented chunks] separated by blank lines.
 An <a data-sourcepos="1576:4-1576:22" href="@">indented chunk</a> is a sequence of non-blank lines,
@@ -1954,7 +1817,7 @@ are not included in it:</p>
 </div>
 </div>
 <h2 data-sourcepos="1844:1-1844:21" dir="auto">
-<a id="user-content-fenced-code-blocks" class="anchor" href="#fenced-code-blocks" aria-hidden="true"></a>Fenced code blocks</h2>
+<a href="#fenced-code-blocks" aria-hidden="true" class="anchor" id="user-content-fenced-code-blocks"></a>Fenced code blocks</h2>
 <p data-sourcepos="1846:1-1850:61" dir="auto">A <a data-sourcepos="1846:3-1846:17" href="@">code fence</a> is a sequence
 of at least three consecutive backtick characters (<code data-sourcepos="1847:54-1847:56">`</code>) or
 tildes (<code data-sourcepos="1848:10-1848:10">~</code>).  (Tildes and backticks cannot be mixed.)
@@ -2471,7 +2334,7 @@ of <code data-sourcepos="2334:5-2334:13">language-</code> followed by the langua
 </div>
 </div>
 <h2 data-sourcepos="2444:1-2444:14" dir="auto">
-<a id="user-content-html-blocks" class="anchor" href="#html-blocks" aria-hidden="true"></a>HTML blocks</h2>
+<a href="#html-blocks" aria-hidden="true" class="anchor" id="user-content-html-blocks"></a>HTML blocks</h2>
 <p data-sourcepos="2446:1-2447:53" dir="auto">An <a data-sourcepos="2446:4-2446:18" href="@">HTML block</a> is a group of lines that is treated
 as raw HTML (and will not be escaped in HTML output).</p>
 <p data-sourcepos="2449:1-2457:50" dir="auto">There are seven kinds of [HTML block], which can be defined by their
@@ -3388,7 +3251,7 @@ deleted.  The exception is inside <code data-sourcepos="3476:36-3476:40">&lt;pre
 [above][HTML blocks], raw HTML blocks starting with <code data-sourcepos="3477:54-3477:58">&lt;pre&gt;</code>
 <em data-sourcepos="3478:1-3478:5">can</em> contain blank lines.</p>
 <h2 data-sourcepos="3480:1-3480:29" dir="auto">
-<a id="user-content-link-reference-definitions" class="anchor" href="#link-reference-definitions" aria-hidden="true"></a>Link reference definitions</h2>
+<a href="#link-reference-definitions" aria-hidden="true" class="anchor" id="user-content-link-reference-definitions"></a>Link reference definitions</h2>
 <p data-sourcepos="3482:1-3490:61" dir="auto">A <a data-sourcepos="3482:3-3482:32" href="@">link reference definition</a>
 consists of a [link label], indented up to three spaces, followed
 by a colon (<code data-sourcepos="3484:14-3484:14">:</code>), optional [whitespace] (including up to one
@@ -3846,7 +3709,7 @@ no visible content:</p>
 </div>
 </div>
 <h2 data-sourcepos="4011:1-4011:13" dir="auto">
-<a id="user-content-paragraphs" class="anchor" href="#paragraphs" aria-hidden="true"></a>Paragraphs</h2>
+<a href="#paragraphs" aria-hidden="true" class="anchor" id="user-content-paragraphs"></a>Paragraphs</h2>
 <p data-sourcepos="4013:1-4018:13" dir="auto">A sequence of non-blank lines that cannot be interpreted as other
 kinds of blocks forms a <a data-sourcepos="4014:25-4014:38" href="@">paragraph</a>.
 The contents of the paragraph are the result of parsing the
@@ -3980,7 +3843,7 @@ break]:</p>
 </div>
 </div>
 <h2 data-sourcepos="4169:1-4169:14" dir="auto">
-<a id="user-content-blank-lines" class="anchor" href="#blank-lines" aria-hidden="true"></a>Blank lines</h2>
+<a href="#blank-lines" aria-hidden="true" class="anchor" id="user-content-blank-lines"></a>Blank lines</h2>
 <p data-sourcepos="4171:1-4173:22" dir="auto">[Blank lines] between block-level elements are ignored,
 except for the role they play in determining whether a [list]
 is [tight] or [loose].</p>
@@ -4006,7 +3869,7 @@ is [tight] or [loose].</p>
 </div>
 <div>
 <h2 data-sourcepos="4199:1-4199:21">
-<a id="user-content-tables-extension" class="anchor" href="#tables-extension" aria-hidden="true"></a>Tables (extension)</h2>
+<a href="#tables-extension" aria-hidden="true" class="anchor" id="user-content-tables-extension"></a>Tables (extension)</h2>
 <p data-sourcepos="4201:1-4202:10">GFM enables the <code data-sourcepos="4201:18-4201:22">table</code> extension, where an additional leaf block type is
 available.</p>
 <p data-sourcepos="4204:1-4206:23">A <a data-sourcepos="4204:3-4204:12" href="@">table</a> is an arrangement of data with rows and columns, consisting of a
@@ -4243,7 +4106,7 @@ cells are inserted.  If there are greater, the excess is ignored:</p>
 </div>
 </div>
 <h1 data-sourcepos="4455:1-4455:18" dir="auto">
-<a id="user-content-container-blocks" class="anchor" href="#container-blocks" aria-hidden="true"></a>Container blocks</h1>
+<a href="#container-blocks" aria-hidden="true" class="anchor" id="user-content-container-blocks"></a>Container blocks</h1>
 <p data-sourcepos="4457:1-4460:45" dir="auto">A <a data-sourcepos="4457:3-4457:38" href="#container-blocks">container block</a> is a block that has other
 blocks as its contents.  There are two basic kinds of container blocks:
 [block quotes] and [list items].
@@ -4261,7 +4124,7 @@ to define the syntax, although it does not give a recipe for <em data-sourcepos=
 these constructions.  (A recipe is provided below in the section entitled
 <a data-sourcepos="4473:1-4473:50" href="#appendix-a-parsing-strategy">A parsing strategy</a>.)</p>
 <h2 data-sourcepos="4475:1-4475:15" dir="auto">
-<a id="user-content-block-quotes" class="anchor" href="#block-quotes" aria-hidden="true"></a>Block quotes</h2>
+<a href="#block-quotes" aria-hidden="true" class="anchor" id="user-content-block-quotes"></a>Block quotes</h2>
 <p data-sourcepos="4477:1-4479:78" dir="auto">A <a data-sourcepos="4477:3-4477:25" href="@">block quote marker</a>
 consists of 0-3 spaces of initial indent, plus (a) the character <code data-sourcepos="4478:67-4478:67">&gt;</code> together
 with a following space, or (b) a single character <code data-sourcepos="4479:52-4479:52">&gt;</code> not followed by a space.</p>
@@ -4764,7 +4627,7 @@ the <code data-sourcepos="5028:6-5028:6">&gt;</code>:</p>
 </div>
 </div>
 <h2 data-sourcepos="5052:1-5052:13" dir="auto">
-<a id="user-content-list-items" class="anchor" href="#list-items" aria-hidden="true"></a>List items</h2>
+<a href="#list-items" aria-hidden="true" class="anchor" id="user-content-list-items"></a>List items</h2>
 <p data-sourcepos="5054:1-5055:49" dir="auto">A <a data-sourcepos="5054:3-5054:18" href="@">list marker</a> is a
 [bullet list marker] or an [ordered list marker].</p>
 <p data-sourcepos="5057:1-5058:32" dir="auto">A <a data-sourcepos="5057:3-5057:25" href="@">bullet list marker</a>
@@ -5857,7 +5720,7 @@ in the list item.</p>
 </div>
 </div>
 <h3 data-sourcepos="6274:1-6274:14" dir="auto">
-<a id="user-content-motivation" class="anchor" href="#motivation" aria-hidden="true"></a>Motivation</h3>
+<a href="#motivation" aria-hidden="true" class="anchor" id="user-content-motivation"></a>Motivation</h3>
 <p data-sourcepos="6276:1-6276:64" dir="auto">John Gruber's Markdown spec says the following about list items:</p>
 <ol data-sourcepos="6278:1-6297:0" dir="auto">
 <li data-sourcepos="6278:1-6281:0">
@@ -6034,7 +5897,7 @@ four-space rule in cases where the list marker plus its initial indentation
 takes four spaces (a common case), but diverge in other cases.</p>
 <div>
 <h2 data-sourcepos="6462:1-6462:30">
-<a id="user-content-task-list-items-extension" class="anchor" href="#task-list-items-extension" aria-hidden="true"></a>Task list items (extension)</h2>
+<a href="#task-list-items-extension" aria-hidden="true" class="anchor" id="user-content-task-list-items-extension"></a>Task list items (extension)</h2>
 <p data-sourcepos="6464:1-6465:26">GFM enables the <code data-sourcepos="6464:18-6464:25">tasklist</code> extension, where an additional processing step is
 performed on [list items].</p>
 <p data-sourcepos="6467:1-6469:46">A <a data-sourcepos="6467:3-6467:21" href="@">task list item</a> is a [list item][list items] where the first block in it
@@ -6091,7 +5954,7 @@ the final rendered document.</p>
 </div>
 </div>
 <h2 data-sourcepos="6529:1-6529:8" dir="auto">
-<a id="user-content-lists" class="anchor" href="#lists" aria-hidden="true"></a>Lists</h2>
+<a href="#lists" aria-hidden="true" class="anchor" id="user-content-lists"></a>Lists</h2>
 <p data-sourcepos="6531:1-6533:46" dir="auto">A <a data-sourcepos="6531:3-6531:11" href="@">list</a> is a sequence of one or more
 list items [of the same type].  The list items
 may be separated by any number of blank lines.</p>
@@ -6801,7 +6664,7 @@ two block elements in the list item:</p>
 </div>
 </div>
 <h1 data-sourcepos="7317:1-7317:9" dir="auto">
-<a id="user-content-inlines" class="anchor" href="#inlines" aria-hidden="true"></a>Inlines</h1>
+<a href="#inlines" aria-hidden="true" class="anchor" id="user-content-inlines"></a>Inlines</h1>
 <p data-sourcepos="7319:1-7321:21" dir="auto">Inlines are parsed sequentially from the beginning of the character
 stream to the end (left to right, in left-to-right languages).
 Thus, for example, in</p>
@@ -6819,7 +6682,7 @@ Thus, for example, in</p>
 <p data-sourcepos="7335:1-7336:9" dir="auto"><code data-sourcepos="7335:2-7335:3">hi</code> is parsed as code, leaving the backtick at the end as a literal
 backtick.</p>
 <h2 data-sourcepos="7339:1-7339:20" dir="auto">
-<a id="user-content-backslash-escapes" class="anchor" href="#backslash-escapes" aria-hidden="true"></a>Backslash escapes</h2>
+<a href="#backslash-escapes" aria-hidden="true" class="anchor" id="user-content-backslash-escapes"></a>Backslash escapes</h2>
 <p data-sourcepos="7341:1-7341:57" dir="auto">Any ASCII punctuation character may be backslash-escaped:</p>
 <div>
 <div><a href="#example-308">Example 308</a></div>
@@ -7002,7 +6865,7 @@ link references, and [info strings] in [fenced code blocks]:</p>
 </div>
 </div>
 <h2 data-sourcepos="7556:1-7556:42" dir="auto">
-<a id="user-content-entity-and-numeric-character-references" class="anchor" href="#entity-and-numeric-character-references" aria-hidden="true"></a>Entity and numeric character references</h2>
+<a href="#entity-and-numeric-character-references" aria-hidden="true" class="anchor" id="user-content-entity-and-numeric-character-references"></a>Entity and numeric character references</h2>
 <p data-sourcepos="7558:1-7560:30" dir="auto">Valid HTML entity references and numeric character references
 can be used in place of the corresponding Unicode character,
 with the following exceptions:</p>
@@ -7267,7 +7130,7 @@ documents.</p>
 </div>
 </div>
 <h2 data-sourcepos="7859:1-7859:13" dir="auto">
-<a id="user-content-code-spans" class="anchor" href="#code-spans" aria-hidden="true"></a>Code spans</h2>
+<a href="#code-spans" aria-hidden="true" class="anchor" id="user-content-code-spans"></a>Code spans</h2>
 <p data-sourcepos="7861:1-7863:36" dir="auto">A <a data-sourcepos="7861:3-7861:22" href="@">backtick string</a>
 is a string of one or more backtick characters (<code data-sourcepos="7862:51-7862:53">`</code>) that is neither
 preceded nor followed by a backtick.</p>
@@ -7576,7 +7439,7 @@ closing backtick strings to be equal in length:</p>
 </div>
 </div>
 <h2 data-sourcepos="8224:1-8224:31" dir="auto">
-<a id="user-content-emphasis-and-strong-emphasis" class="anchor" href="#emphasis-and-strong-emphasis" aria-hidden="true"></a>Emphasis and strong emphasis</h2>
+<a href="#emphasis-and-strong-emphasis" aria-hidden="true" class="anchor" id="user-content-emphasis-and-strong-emphasis"></a>Emphasis and strong emphasis</h2>
 <p data-sourcepos="8226:1-8227:73" dir="auto">John Gruber's original <a data-sourcepos="8227:24-8227:67" href="http://daringfireball.net/projects/markdown/syntax#em" rel="nofollow noreferrer noopener" target="_blank">Markdown syntax
 description</a> says:</p>
 <blockquote data-sourcepos="8229:1-8232:6" dir="auto">
@@ -9384,7 +9247,7 @@ delimiters:</p>
 </div>
 <div>
 <h2 data-sourcepos="10357:1-10357:28">
-<a id="user-content-strikethrough-extension" class="anchor" href="#strikethrough-extension" aria-hidden="true"></a>Strikethrough (extension)</h2>
+<a href="#strikethrough-extension" aria-hidden="true" class="anchor" id="user-content-strikethrough-extension"></a>Strikethrough (extension)</h2>
 <p data-sourcepos="10359:1-10360:10">GFM enables the <code data-sourcepos="10359:18-10359:30">strikethrough</code> extension, where an additional emphasis type is
 available.</p>
 <p data-sourcepos="10362:1-10362:59">Strikethrough text is any text wrapped in two tildes (<code data-sourcepos="10362:56-10362:56">~</code>).</p>
@@ -9417,7 +9280,7 @@ parsing to cease:</p>
 </div>
 </div>
 <h2 data-sourcepos="10396:1-10396:8" dir="auto">
-<a id="user-content-links" class="anchor" href="#links" aria-hidden="true"></a>Links</h2>
+<a href="#links" aria-hidden="true" class="anchor" id="user-content-links"></a>Links</h2>
 <p data-sourcepos="10398:1-10403:13" dir="auto">A link contains [link text] (the visible text), a [link destination]
 (the URI that is the link destination), and optionally a [link title].
 There are two basic kinds of links in Markdown.  In [inline links] the
@@ -10762,7 +10625,7 @@ is followed by a link label (even though <code data-sourcepos="11942:43-11942:47
 </div>
 </div>
 <h2 data-sourcepos="11961:1-11961:9" dir="auto">
-<a id="user-content-images" class="anchor" href="#images" aria-hidden="true"></a>Images</h2>
+<a href="#images" aria-hidden="true" class="anchor" id="user-content-images"></a>Images</h2>
 <p data-sourcepos="11963:1-11971:55" dir="auto">Syntax for images is like the syntax for links, with one
 difference. Instead of [link text], we have an
 <a data-sourcepos="11965:1-11965:22" href="@">image description</a>.  The rules for this are the
@@ -11065,7 +10928,7 @@ backslash-escape the opening <code data-sourcepos="12285:31-12285:31">[</code>:<
 </div>
 </div>
 <h2 data-sourcepos="12320:1-12320:12" dir="auto">
-<a id="user-content-autolinks" class="anchor" href="#autolinks" aria-hidden="true"></a>Autolinks</h2>
+<a href="#autolinks" aria-hidden="true" class="anchor" id="user-content-autolinks"></a>Autolinks</h2>
 <p data-sourcepos="12322:1-12324:18" dir="auto"><a data-sourcepos="12322:1-12322:13" href="@">Autolink</a>s are absolute URIs and email addresses inside
 <code data-sourcepos="12323:2-12323:2">&lt;</code> and <code data-sourcepos="12323:10-12323:10">&gt;</code>. They are parsed as links, with the URL or email address
 as the link label.</p>
@@ -11317,7 +11180,7 @@ spec</a>:</p>
 </div>
 <div>
 <h2 data-sourcepos="12622:1-12622:24">
-<a id="user-content-autolinks-extension" class="anchor" href="#autolinks-extension" aria-hidden="true"></a>Autolinks (extension)</h2>
+<a href="#autolinks-extension" aria-hidden="true" class="anchor" id="user-content-autolinks-extension"></a>Autolinks (extension)</h2>
 <p data-sourcepos="12624:1-12625:29">GFM enables the <code data-sourcepos="12624:18-12624:25">autolink</code> extension, where autolinks will be recognised in a
 greater number of conditions.</p>
 <p data-sourcepos="12627:1-12631:8">[Autolink]s can also be constructed without requiring the use of <code data-sourcepos="12627:67-12627:67">&lt;</code> and to <code data-sourcepos="12627:78-12627:78">&gt;</code>
@@ -11523,7 +11386,7 @@ the address:</p>
 </div>
 </div>
 <h2 data-sourcepos="12856:1-12856:11" dir="auto">
-<a id="user-content-raw-html" class="anchor" href="#raw-html" aria-hidden="true"></a>Raw HTML</h2>
+<a href="#raw-html" aria-hidden="true" class="anchor" id="user-content-raw-html"></a>Raw HTML</h2>
 <p data-sourcepos="12858:1-12861:57" dir="auto">Text between <code data-sourcepos="12858:15-12858:15">&lt;</code> and <code data-sourcepos="12858:23-12858:23">&gt;</code> that looks like an HTML tag is parsed as a
 raw HTML tag and will be rendered in HTML without escaping.
 Tag and attribute names are not limited to current HTML tags,
@@ -11846,7 +11709,7 @@ attributes:</p>
 </div>
 <div>
 <h2 data-sourcepos="13258:1-13258:34">
-<a id="user-content-disallowed-raw-html-extension" class="anchor" href="#disallowed-raw-html-extension" aria-hidden="true"></a>Disallowed Raw HTML (extension)</h2>
+<a href="#disallowed-raw-html-extension" aria-hidden="true" class="anchor" id="user-content-disallowed-raw-html-extension"></a>Disallowed Raw HTML (extension)</h2>
 <p data-sourcepos="13260:1-13261:36">GFM enables the <code data-sourcepos="13260:18-13260:26">tagfilter</code> extension, where the following HTML tags will be
 filtered when rendering HTML output:</p>
 <ul data-sourcepos="13263:1-13272:0">
@@ -11885,7 +11748,7 @@ usually undesireable in the context of other rendered Markdown content.</p>
 </div>
 </div>
 <h2 data-sourcepos="13301:1-13301:19" dir="auto">
-<a id="user-content-hard-line-breaks" class="anchor" href="#hard-line-breaks" aria-hidden="true"></a>Hard line breaks</h2>
+<a href="#hard-line-breaks" aria-hidden="true" class="anchor" id="user-content-hard-line-breaks"></a>Hard line breaks</h2>
 <p data-sourcepos="13303:1-13306:27" dir="auto">A line break (not in a code span or HTML tag) that is preceded
 by two or more spaces and does not occur at the end of a block
 is parsed as a <a data-sourcepos="13305:16-13305:35" href="@">hard line break</a> (rendered
@@ -12087,7 +11950,7 @@ other block element:</p>
 </div>
 </div>
 <h2 data-sourcepos="13541:1-13541:19" dir="auto">
-<a id="user-content-soft-line-breaks" class="anchor" href="#soft-line-breaks" aria-hidden="true"></a>Soft line breaks</h2>
+<a href="#soft-line-breaks" aria-hidden="true" class="anchor" id="user-content-soft-line-breaks"></a>Soft line breaks</h2>
 <p data-sourcepos="13543:1-13547:62" dir="auto">A regular line break (not in a code span or HTML tag) that is not
 preceded by two or more spaces or a backslash is parsed as a
 <a data-sourcepos="13545:1-13545:14" href="@">softbreak</a>.  (A softbreak may be rendered in HTML either as a
@@ -12126,7 +11989,7 @@ line break or as a space.</p>
 <p data-sourcepos="13585:1-13586:20" dir="auto">A renderer may also provide an option to render soft line breaks
 as hard line breaks.</p>
 <h2 data-sourcepos="13588:1-13588:18" dir="auto">
-<a id="user-content-textual-content" class="anchor" href="#textual-content" aria-hidden="true"></a>Textual content</h2>
+<a href="#textual-content" aria-hidden="true" class="anchor" id="user-content-textual-content"></a>Textual content</h2>
 <p data-sourcepos="13590:1-13591:35" dir="auto">Any characters not given an interpretation by the above rules will
 be parsed as plain textual content.</p>
 <div>
@@ -12164,14 +12027,14 @@ be parsed as plain textual content.</p>
 </div>
 </div>
 <h1 data-sourcepos="13634:1-13634:40" dir="auto">
-<a id="user-content-gitlab-official-specification-markdown" class="anchor" href="#gitlab-official-specification-markdown" aria-hidden="true"></a>GitLab Official Specification Markdown</h1>
+<a href="#gitlab-official-specification-markdown" aria-hidden="true" class="anchor" id="user-content-gitlab-official-specification-markdown"></a>GitLab Official Specification Markdown</h1>
 <p data-sourcepos="13636:1-13638:104" dir="auto">Note: This specification is a work in progress. Only some of the official GLFM extensions
 are defined. We will continue to add any additional ones found in the
 <a data-sourcepos="13638:1-13638:103" href="https://docs.gitlab.com/ee/user/markdown.html" rel="nofollow noreferrer noopener" target="_blank">user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <p data-sourcepos="13640:1-13641:69" dir="auto">There is currently only this single top-level heading, but the
 examples may be split into multiple top-level headings in the future.</p>
 <h2 data-sourcepos="13643:1-13643:18" dir="auto">
-<a id="user-content-task-list-items" class="anchor" href="#task-list-items" aria-hidden="true"></a>Task list items</h2>
+<a href="#task-list-items" aria-hidden="true" class="anchor" id="user-content-task-list-items"></a>Task list items</h2>
 <p data-sourcepos="13645:1-13646:117" dir="auto">See
 <a data-sourcepos="13646:1-13646:70" href="https://docs.gitlab.com/ee/user/markdown.html#task-lists" rel="nofollow noreferrer noopener" target="_blank">Task lists</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13648:1-13651:39" dir="auto">Task list items (checkboxes) are defined as a GitHub Flavored Markdown extension in a section above.
@@ -12265,7 +12128,7 @@ loose text; it has strikethrough applied with CSS.</p>
 </div>
 </div>
 <h2 data-sourcepos="13749:1-13749:15" dir="auto">
-<a id="user-content-front-matter" class="anchor" href="#front-matter" aria-hidden="true"></a>Front matter</h2>
+<a href="#front-matter" aria-hidden="true" class="anchor" id="user-content-front-matter"></a>Front matter</h2>
 <p data-sourcepos="13751:1-13752:121" dir="auto">See
 <a data-sourcepos="13752:1-13752:74" href="https://docs.gitlab.com/ee/user/markdown.html#front-matter" rel="nofollow noreferrer noopener" target="_blank">Front matter</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13754:1-13755:95" dir="auto">Front matter is metadata included at the beginning of a Markdown document, preceding the content.
@@ -12362,7 +12225,7 @@ This data can be used by static site generators like Jekyll, Hugo, and many othe
 </div>
 </div>
 <h2 data-sourcepos="13858:1-13858:20" dir="auto">
-<a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"></a>Table of contents</h2>
+<a href="#table-of-contents" aria-hidden="true" class="anchor" id="user-content-table-of-contents"></a>Table of contents</h2>
 <p data-sourcepos="13860:1-13862:46" dir="auto">See
 <a data-sourcepos="13861:1-13861:84" href="https://docs.gitlab.com/ee/user/markdown.html#table-of-contents" rel="nofollow noreferrer noopener" target="_blank">table of contents</a>
 in the GitLab Flavored Markdown documentation.</p>
@@ -12459,9 +12322,9 @@ line.</p>
 </div>
 </div>
 <h1 data-sourcepos="13964:1-13964:36" dir="auto">
-<a id="user-content-gitlab-internal-extension-markdown" class="anchor" href="#gitlab-internal-extension-markdown" aria-hidden="true"></a>GitLab Internal Extension Markdown</h1>
+<a href="#gitlab-internal-extension-markdown" aria-hidden="true" class="anchor" id="user-content-gitlab-internal-extension-markdown"></a>GitLab Internal Extension Markdown</h1>
 <h2 data-sourcepos="13966:1-13966:8" dir="auto">
-<a id="user-content-audio" class="anchor" href="#audio" aria-hidden="true"></a>Audio</h2>
+<a href="#audio" aria-hidden="true" class="anchor" id="user-content-audio"></a>Audio</h2>
 <p data-sourcepos="13968:1-13969:107" dir="auto">See
 <a data-sourcepos="13969:1-13969:60" href="https://docs.gitlab.com/ee/user/markdown.html#audio" rel="nofollow noreferrer noopener" target="_blank">audio</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="13971:1-13973:63" dir="auto">GLFM renders image elements as an audio player as long as the resource’s file extension is
@@ -12493,7 +12356,7 @@ Audio ignore the alternative text part of an image declaration.</p>
 </div>
 </div>
 <h2 data-sourcepos="14003:1-14003:8" dir="auto">
-<a id="user-content-video" class="anchor" href="#video" aria-hidden="true"></a>Video</h2>
+<a href="#video" aria-hidden="true" class="anchor" id="user-content-video"></a>Video</h2>
 <p data-sourcepos="14005:1-14006:109" dir="auto">See
 <a data-sourcepos="14006:1-14006:62" href="https://docs.gitlab.com/ee/user/markdown.html#videos" rel="nofollow noreferrer noopener" target="_blank">videos</a> in the GitLab Flavored Markdown documentation.</p>
 <p data-sourcepos="14008:1-14010:64" dir="auto">GLFM renders image elements as a video player as long as the resource’s file extension is
@@ -12525,7 +12388,7 @@ Videos ignore the alternative text part of an image declaration.</p>
 </div>
 </div>
 <h2 data-sourcepos="14041:1-14041:41" dir="auto">
-<a id="user-content-markdown-preview-api-request-overrides" class="anchor" href="#markdown-preview-api-request-overrides" aria-hidden="true"></a>Markdown Preview API Request Overrides</h2>
+<a href="#markdown-preview-api-request-overrides" aria-hidden="true" class="anchor" id="user-content-markdown-preview-api-request-overrides"></a>Markdown Preview API Request Overrides</h2>
 <p data-sourcepos="14043:1-14045:42" dir="auto">This section contains examples of all controllers which use <code data-sourcepos="14043:62-14043:76">PreviewMarkdown</code> module
 and use different <code data-sourcepos="14044:20-14044:42">markdown_context_params</code>. They exercise the various <code data-sourcepos="14044:73-14044:88">preview_markdown</code>
 endpoints via <code data-sourcepos="14045:16-14045:40">glfm_example_metadata.yml</code>.</p>
@@ -12606,9 +12469,9 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h2 data-sourcepos="14136:1-14136:34" dir="auto">
-<a id="user-content-migrated-golden-master-examples" class="anchor" href="#migrated-golden-master-examples" aria-hidden="true"></a>Migrated golden master examples</h2>
+<a href="#migrated-golden-master-examples" aria-hidden="true" class="anchor" id="user-content-migrated-golden-master-examples"></a>Migrated golden master examples</h2>
 <h3 data-sourcepos="14138:1-14138:30" dir="auto">
-<a id="user-content-attachment_image_for_group" class="anchor" href="#attachment_image_for_group" aria-hidden="true"></a>attachment_image_for_group</h3>
+<a href="#attachment_image_for_group" aria-hidden="true" class="anchor" id="user-content-attachment_image_for_group"></a>attachment_image_for_group</h3>
 <div>
 <div><a href="#example-697">Example 697</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12621,7 +12484,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14152:1-14152:32" dir="auto">
-<a id="user-content-attachment_image_for_project" class="anchor" href="#attachment_image_for_project" aria-hidden="true"></a>attachment_image_for_project</h3>
+<a href="#attachment_image_for_project" aria-hidden="true" class="anchor" id="user-content-attachment_image_for_project"></a>attachment_image_for_project</h3>
 <div>
 <div><a href="#example-698">Example 698</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12634,7 +12497,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14166:1-14166:37" dir="auto">
-<a id="user-content-attachment_image_for_project_wiki" class="anchor" href="#attachment_image_for_project_wiki" aria-hidden="true"></a>attachment_image_for_project_wiki</h3>
+<a href="#attachment_image_for_project_wiki" aria-hidden="true" class="anchor" id="user-content-attachment_image_for_project_wiki"></a>attachment_image_for_project_wiki</h3>
 <div>
 <div><a href="#example-699">Example 699</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12647,7 +12510,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14180:1-14180:29" dir="auto">
-<a id="user-content-attachment_link_for_group" class="anchor" href="#attachment_link_for_group" aria-hidden="true"></a>attachment_link_for_group</h3>
+<a href="#attachment_link_for_group" aria-hidden="true" class="anchor" id="user-content-attachment_link_for_group"></a>attachment_link_for_group</h3>
 <div>
 <div><a href="#example-700">Example 700</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12660,7 +12523,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14194:1-14194:31" dir="auto">
-<a id="user-content-attachment_link_for_project" class="anchor" href="#attachment_link_for_project" aria-hidden="true"></a>attachment_link_for_project</h3>
+<a href="#attachment_link_for_project" aria-hidden="true" class="anchor" id="user-content-attachment_link_for_project"></a>attachment_link_for_project</h3>
 <div>
 <div><a href="#example-701">Example 701</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12673,7 +12536,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14208:1-14208:36" dir="auto">
-<a id="user-content-attachment_link_for_project_wiki" class="anchor" href="#attachment_link_for_project_wiki" aria-hidden="true"></a>attachment_link_for_project_wiki</h3>
+<a href="#attachment_link_for_project_wiki" aria-hidden="true" class="anchor" id="user-content-attachment_link_for_project_wiki"></a>attachment_link_for_project_wiki</h3>
 <div>
 <div><a href="#example-702">Example 702</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12686,7 +12549,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14222:1-14222:34" dir="auto">
-<a id="user-content-attachment_link_for_group_wiki" class="anchor" href="#attachment_link_for_group_wiki" aria-hidden="true"></a>attachment_link_for_group_wiki</h3>
+<a href="#attachment_link_for_group_wiki" aria-hidden="true" class="anchor" id="user-content-attachment_link_for_group_wiki"></a>attachment_link_for_group_wiki</h3>
 <div>
 <div><a href="#example-703">Example 703</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12699,7 +12562,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14236:1-14236:9" dir="auto">
-<a id="user-content-audio-1" class="anchor" href="#audio-1" aria-hidden="true"></a>audio</h3>
+<a href="#audio-1" aria-hidden="true" class="anchor" id="user-content-audio-1"></a>audio</h3>
 <div>
 <div><a href="#example-704">Example 704</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12712,7 +12575,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14250:1-14250:28" dir="auto">
-<a id="user-content-audio_and_video_in_lists" class="anchor" href="#audio_and_video_in_lists" aria-hidden="true"></a>audio_and_video_in_lists</h3>
+<a href="#audio_and_video_in_lists" aria-hidden="true" class="anchor" id="user-content-audio_and_video_in_lists"></a>audio_and_video_in_lists</h3>
 <div>
 <div><a href="#example-705">Example 705</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12733,7 +12596,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14272:1-14272:14" dir="auto">
-<a id="user-content-blockquote" class="anchor" href="#blockquote" aria-hidden="true"></a>blockquote</h3>
+<a href="#blockquote" aria-hidden="true" class="anchor" id="user-content-blockquote"></a>blockquote</h3>
 <div>
 <div><a href="#example-706">Example 706</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12748,7 +12611,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14288:1-14288:8" dir="auto">
-<a id="user-content-bold" class="anchor" href="#bold" aria-hidden="true"></a>bold</h3>
+<a href="#bold" aria-hidden="true" class="anchor" id="user-content-bold"></a>bold</h3>
 <div>
 <div><a href="#example-707">Example 707</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12761,7 +12624,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14302:1-14302:23" dir="auto">
-<a id="user-content-bullet_list_style_1" class="anchor" href="#bullet_list_style_1" aria-hidden="true"></a>bullet_list_style_1</h3>
+<a href="#bullet_list_style_1" aria-hidden="true" class="anchor" id="user-content-bullet_list_style_1"></a>bullet_list_style_1</h3>
 <div>
 <div><a href="#example-708">Example 708</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12776,7 +12639,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14318:1-14318:23" dir="auto">
-<a id="user-content-bullet_list_style_2" class="anchor" href="#bullet_list_style_2" aria-hidden="true"></a>bullet_list_style_2</h3>
+<a href="#bullet_list_style_2" aria-hidden="true" class="anchor" id="user-content-bullet_list_style_2"></a>bullet_list_style_2</h3>
 <div>
 <div><a href="#example-709">Example 709</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12791,7 +12654,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14334:1-14334:23" dir="auto">
-<a id="user-content-bullet_list_style_3" class="anchor" href="#bullet_list_style_3" aria-hidden="true"></a>bullet_list_style_3</h3>
+<a href="#bullet_list_style_3" aria-hidden="true" class="anchor" id="user-content-bullet_list_style_3"></a>bullet_list_style_3</h3>
 <div>
 <div><a href="#example-710">Example 710</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12806,7 +12669,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14350:1-14350:25" dir="auto">
-<a id="user-content-code_block_javascript" class="anchor" href="#code_block_javascript" aria-hidden="true"></a>code_block_javascript</h3>
+<a href="#code_block_javascript" aria-hidden="true" class="anchor" id="user-content-code_block_javascript"></a>code_block_javascript</h3>
 <div>
 <div><a href="#example-711">Example 711</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12821,7 +12684,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14366:1-14366:24" dir="auto">
-<a id="user-content-code_block_plaintext" class="anchor" href="#code_block_plaintext" aria-hidden="true"></a>code_block_plaintext</h3>
+<a href="#code_block_plaintext" aria-hidden="true" class="anchor" id="user-content-code_block_plaintext"></a>code_block_plaintext</h3>
 <div>
 <div><a href="#example-712">Example 712</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12836,7 +12699,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14382:1-14382:22" dir="auto">
-<a id="user-content-code_block_unknown" class="anchor" href="#code_block_unknown" aria-hidden="true"></a>code_block_unknown</h3>
+<a href="#code_block_unknown" aria-hidden="true" class="anchor" id="user-content-code_block_unknown"></a>code_block_unknown</h3>
 <div>
 <div><a href="#example-713">Example 713</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12851,7 +12714,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14398:1-14398:15" dir="auto">
-<a id="user-content-color_chips" class="anchor" href="#color_chips" aria-hidden="true"></a>color_chips</h3>
+<a href="#color_chips" aria-hidden="true" class="anchor" id="user-content-color_chips"></a>color_chips</h3>
 <div>
 <div><a href="#example-714">Example 714</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12872,7 +12735,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14420:1-14420:20" dir="auto">
-<a id="user-content-description_list" class="anchor" href="#description_list" aria-hidden="true"></a>description_list</h3>
+<a href="#description_list" aria-hidden="true" class="anchor" id="user-content-description_list"></a>description_list</h3>
 <div>
 <div><a href="#example-715">Example 715</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12900,7 +12763,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14449:1-14449:11" dir="auto">
-<a id="user-content-details" class="anchor" href="#details" aria-hidden="true"></a>details</h3>
+<a href="#details" aria-hidden="true" class="anchor" id="user-content-details"></a>details</h3>
 <div>
 <div><a href="#example-716">Example 716</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12919,7 +12782,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14469:1-14469:25" dir="auto">
-<a id="user-content-diagram_kroki_nomnoml" class="anchor" href="#diagram_kroki_nomnoml" aria-hidden="true"></a>diagram_kroki_nomnoml</h3>
+<a href="#diagram_kroki_nomnoml" aria-hidden="true" class="anchor" id="user-content-diagram_kroki_nomnoml"></a>diagram_kroki_nomnoml</h3>
 <div>
 <div><a href="#example-717">Example 717</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12942,7 +12805,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14493:1-14493:20" dir="auto">
-<a id="user-content-diagram_plantuml" class="anchor" href="#diagram_plantuml" aria-hidden="true"></a>diagram_plantuml</h3>
+<a href="#diagram_plantuml" aria-hidden="true" class="anchor" id="user-content-diagram_plantuml"></a>diagram_plantuml</h3>
 <div>
 <div><a href="#example-718">Example 718</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12961,7 +12824,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14513:1-14513:28" dir="auto">
-<a id="user-content-diagram_plantuml_unicode" class="anchor" href="#diagram_plantuml_unicode" aria-hidden="true"></a>diagram_plantuml_unicode</h3>
+<a href="#diagram_plantuml_unicode" aria-hidden="true" class="anchor" id="user-content-diagram_plantuml_unicode"></a>diagram_plantuml_unicode</h3>
 <div>
 <div><a href="#example-719">Example 719</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12976,7 +12839,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14529:1-14529:7" dir="auto">
-<a id="user-content-div" class="anchor" href="#div" aria-hidden="true"></a>div</h3>
+<a href="#div" aria-hidden="true" class="anchor" id="user-content-div"></a>div</h3>
 <div>
 <div><a href="#example-720">Example 720</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -12994,7 +12857,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14548:1-14548:9" dir="auto">
-<a id="user-content-emoji" class="anchor" href="#emoji" aria-hidden="true"></a>emoji</h3>
+<a href="#emoji" aria-hidden="true" class="anchor" id="user-content-emoji"></a>emoji</h3>
 <div>
 <div><a href="#example-721">Example 721</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13007,7 +12870,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14562:1-14562:12" dir="auto">
-<a id="user-content-emphasis" class="anchor" href="#emphasis" aria-hidden="true"></a>emphasis</h3>
+<a href="#emphasis" aria-hidden="true" class="anchor" id="user-content-emphasis"></a>emphasis</h3>
 <div>
 <div><a href="#example-722">Example 722</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13020,7 +12883,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14576:1-14576:10" dir="auto">
-<a id="user-content-figure" class="anchor" href="#figure" aria-hidden="true"></a>figure</h3>
+<a href="#figure" aria-hidden="true" class="anchor" id="user-content-figure"></a>figure</h3>
 <div>
 <div><a href="#example-723">Example 723</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13048,7 +12911,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14605:1-14605:13" dir="auto">
-<a id="user-content-footnotes" class="anchor" href="#footnotes" aria-hidden="true"></a>footnotes</h3>
+<a href="#footnotes" aria-hidden="true" class="anchor" id="user-content-footnotes"></a>footnotes</h3>
 <div>
 <div><a href="#example-724">Example 724</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13067,7 +12930,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14625:1-14625:20" dir="auto">
-<a id="user-content-frontmatter_json" class="anchor" href="#frontmatter_json" aria-hidden="true"></a>frontmatter_json</h3>
+<a href="#frontmatter_json" aria-hidden="true" class="anchor" id="user-content-frontmatter_json"></a>frontmatter_json</h3>
 <div>
 <div><a href="#example-725">Example 725</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13084,7 +12947,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14643:1-14643:20" dir="auto">
-<a id="user-content-frontmatter_toml" class="anchor" href="#frontmatter_toml" aria-hidden="true"></a>frontmatter_toml</h3>
+<a href="#frontmatter_toml" aria-hidden="true" class="anchor" id="user-content-frontmatter_toml"></a>frontmatter_toml</h3>
 <div>
 <div><a href="#example-726">Example 726</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13099,7 +12962,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14659:1-14659:20" dir="auto">
-<a id="user-content-frontmatter_yaml" class="anchor" href="#frontmatter_yaml" aria-hidden="true"></a>frontmatter_yaml</h3>
+<a href="#frontmatter_yaml" aria-hidden="true" class="anchor" id="user-content-frontmatter_yaml"></a>frontmatter_yaml</h3>
 <div>
 <div><a href="#example-727">Example 727</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13114,7 +12977,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14675:1-14675:14" dir="auto">
-<a id="user-content-hard_break" class="anchor" href="#hard_break" aria-hidden="true"></a>hard_break</h3>
+<a href="#hard_break" aria-hidden="true" class="anchor" id="user-content-hard_break"></a>hard_break</h3>
 <div>
 <div><a href="#example-728">Example 728</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13128,7 +12991,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14690:1-14690:12" dir="auto">
-<a id="user-content-headings" class="anchor" href="#headings" aria-hidden="true"></a>headings</h3>
+<a href="#headings" aria-hidden="true" class="anchor" id="user-content-headings"></a>headings</h3>
 <div>
 <div><a href="#example-729">Example 729</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13151,7 +13014,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14714:1-14714:19" dir="auto">
-<a id="user-content-horizontal_rule" class="anchor" href="#horizontal_rule" aria-hidden="true"></a>horizontal_rule</h3>
+<a href="#horizontal_rule" aria-hidden="true" class="anchor" id="user-content-horizontal_rule"></a>horizontal_rule</h3>
 <div>
 <div><a href="#example-730">Example 730</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13164,7 +13027,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14728:1-14728:14" dir="auto">
-<a id="user-content-html_marks" class="anchor" href="#html_marks" aria-hidden="true"></a>html_marks</h3>
+<a href="#html_marks" aria-hidden="true" class="anchor" id="user-content-html_marks"></a>html_marks</h3>
 <div>
 <div><a href="#example-731">Example 731</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13191,7 +13054,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14756:1-14756:9" dir="auto">
-<a id="user-content-image" class="anchor" href="#image" aria-hidden="true"></a>image</h3>
+<a href="#image" aria-hidden="true" class="anchor" id="user-content-image"></a>image</h3>
 <div>
 <div><a href="#example-732">Example 732</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13204,7 +13067,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14770:1-14770:15" dir="auto">
-<a id="user-content-inline_code" class="anchor" href="#inline_code" aria-hidden="true"></a>inline_code</h3>
+<a href="#inline_code" aria-hidden="true" class="anchor" id="user-content-inline_code"></a>inline_code</h3>
 <div>
 <div><a href="#example-733">Example 733</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13217,7 +13080,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14784:1-14784:15" dir="auto">
-<a id="user-content-inline_diff" class="anchor" href="#inline_diff" aria-hidden="true"></a>inline_diff</h3>
+<a href="#inline_diff" aria-hidden="true" class="anchor" id="user-content-inline_diff"></a>inline_diff</h3>
 <div>
 <div><a href="#example-734">Example 734</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13231,7 +13094,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14799:1-14799:9" dir="auto">
-<a id="user-content-label" class="anchor" href="#label" aria-hidden="true"></a>label</h3>
+<a href="#label" aria-hidden="true" class="anchor" id="user-content-label"></a>label</h3>
 <div>
 <div><a href="#example-735">Example 735</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13244,7 +13107,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14813:1-14813:8" dir="auto">
-<a id="user-content-link" class="anchor" href="#link" aria-hidden="true"></a>link</h3>
+<a href="#link" aria-hidden="true" class="anchor" id="user-content-link"></a>link</h3>
 <div>
 <div><a href="#example-736">Example 736</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13257,7 +13120,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14827:1-14827:8" dir="auto">
-<a id="user-content-math" class="anchor" href="#math" aria-hidden="true"></a>math</h3>
+<a href="#math" aria-hidden="true" class="anchor" id="user-content-math"></a>math</h3>
 <div>
 <div><a href="#example-737">Example 737</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13276,7 +13139,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14847:1-14847:16" dir="auto">
-<a id="user-content-ordered_list" class="anchor" href="#ordered_list" aria-hidden="true"></a>ordered_list</h3>
+<a href="#ordered_list" aria-hidden="true" class="anchor" id="user-content-ordered_list"></a>ordered_list</h3>
 <div>
 <div><a href="#example-738">Example 738</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13291,7 +13154,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14863:1-14863:33" dir="auto">
-<a id="user-content-ordered_list_with_start_order" class="anchor" href="#ordered_list_with_start_order" aria-hidden="true"></a>ordered_list_with_start_order</h3>
+<a href="#ordered_list_with_start_order" aria-hidden="true" class="anchor" id="user-content-ordered_list_with_start_order"></a>ordered_list_with_start_order</h3>
 <div>
 <div><a href="#example-739">Example 739</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13306,7 +13169,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14879:1-14879:21" dir="auto">
-<a id="user-content-ordered_task_list" class="anchor" href="#ordered_task_list" aria-hidden="true"></a>ordered_task_list</h3>
+<a href="#ordered_task_list" aria-hidden="true" class="anchor" id="user-content-ordered_task_list"></a>ordered_task_list</h3>
 <div>
 <div><a href="#example-740">Example 740</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13324,7 +13187,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14898:1-14898:32" dir="auto">
-<a id="user-content-ordered_task_list_with_order" class="anchor" href="#ordered_task_list_with_order" aria-hidden="true"></a>ordered_task_list_with_order</h3>
+<a href="#ordered_task_list_with_order" aria-hidden="true" class="anchor" id="user-content-ordered_task_list_with_order"></a>ordered_task_list_with_order</h3>
 <div>
 <div><a href="#example-741">Example 741</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13339,7 +13202,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14914:1-14914:30" dir="auto">
-<a id="user-content-reference_for_project_wiki" class="anchor" href="#reference_for_project_wiki" aria-hidden="true"></a>reference_for_project_wiki</h3>
+<a href="#reference_for_project_wiki" aria-hidden="true" class="anchor" id="user-content-reference_for_project_wiki"></a>reference_for_project_wiki</h3>
 <div>
 <div><a href="#example-742">Example 742</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13352,7 +13215,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14928:1-14928:10" dir="auto">
-<a id="user-content-strike" class="anchor" href="#strike" aria-hidden="true"></a>strike</h3>
+<a href="#strike" aria-hidden="true" class="anchor" id="user-content-strike"></a>strike</h3>
 <div>
 <div><a href="#example-743">Example 743</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13365,7 +13228,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14942:1-14942:9" dir="auto">
-<a id="user-content-table" class="anchor" href="#table" aria-hidden="true"></a>table</h3>
+<a href="#table" aria-hidden="true" class="anchor" id="user-content-table"></a>table</h3>
 <div>
 <div><a href="#example-744">Example 744</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13383,7 +13246,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14961:1-14961:21" dir="auto">
-<a id="user-content-table_of_contents" class="anchor" href="#table_of_contents" aria-hidden="true"></a>table_of_contents</h3>
+<a href="#table_of_contents" aria-hidden="true" class="anchor" id="user-content-table_of_contents"></a>table_of_contents</h3>
 <div>
 <div><a href="#example-745">Example 745</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13408,7 +13271,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="14987:1-14987:13" dir="auto">
-<a id="user-content-task_list" class="anchor" href="#task_list" aria-hidden="true"></a>task_list</h3>
+<a href="#task_list" aria-hidden="true" class="anchor" id="user-content-task_list"></a>task_list</h3>
 <div>
 <div><a href="#example-746">Example 746</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13426,7 +13289,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="15006:1-15006:9" dir="auto">
-<a id="user-content-video-1" class="anchor" href="#video-1" aria-hidden="true"></a>video</h3>
+<a href="#video-1" aria-hidden="true" class="anchor" id="user-content-video-1"></a>video</h3>
 <div>
 <div><a href="#example-747">Example 747</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13439,7 +13302,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h3 data-sourcepos="15020:1-15020:14" dir="auto">
-<a id="user-content-word_break" class="anchor" href="#word_break" aria-hidden="true"></a>word_break</h3>
+<a href="#word_break" aria-hidden="true" class="anchor" id="user-content-word_break"></a>word_break</h3>
 <div>
 <div><a href="#example-748">Example 748</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13452,7 +13315,7 @@ also requires an EE license enabling the <code data-sourcepos="14122:43-14122:53
 </div>
 </div>
 <h2 data-sourcepos="15034:1-15034:19" dir="auto">
-<a id="user-content-image-attributes" class="anchor" href="#image-attributes" aria-hidden="true"></a>Image Attributes</h2>
+<a href="#image-attributes" aria-hidden="true" class="anchor" id="user-content-image-attributes"></a>Image Attributes</h2>
 <p data-sourcepos="15036:1-15038:46" dir="auto">See
 <a data-sourcepos="15037:1-15037:104" href="https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions" rel="nofollow noreferrer noopener" target="_blank">Change the image dimensions</a>
 in the GitLab Flavored Markdown documentation.</p>
@@ -13520,7 +13383,7 @@ where it makes sense.</p>
 </div>
 </div>
 <h2 data-sourcepos="15113:1-15113:12" dir="auto">
-<a id="user-content-footnotes-1" class="anchor" href="#footnotes-1" aria-hidden="true"></a>Footnotes</h2>
+<a href="#footnotes-1" aria-hidden="true" class="anchor" id="user-content-footnotes-1"></a>Footnotes</h2>
 <p data-sourcepos="15115:1-15116:143" dir="auto">See
 <a data-sourcepos="15116:1-15116:142" href="https://docs.gitlab.com/ee/user/markdown.html#footnotes" rel="nofollow noreferrer noopener" target="_blank">the footnotes section of the user-facing documentation for GitLab Flavored Markdown</a>.</p>
 <div>
@@ -13555,12 +13418,12 @@ where it makes sense.</p>
 </div>
 </div>
 <h1 data-sourcepos="15150:1-15150:50" dir="auto">
-<a id="user-content-gfm-undocumented-extensions-and-more-robust-test" class="anchor" href="#gfm-undocumented-extensions-and-more-robust-test" aria-hidden="true"></a>GFM undocumented extensions and more robust test</h1>
+<a href="#gfm-undocumented-extensions-and-more-robust-test" aria-hidden="true" class="anchor" id="user-content-gfm-undocumented-extensions-and-more-robust-test"></a>GFM undocumented extensions and more robust test</h1>
 <p data-sourcepos="15152:1-15154:16" dir="auto">This section contains tests borrowed from <a href="https://github.com/github/cmark-gfm/blob/master/test/extensions.txt" rel="nofollow noreferrer noopener" target="_blank">https://github.com/github/cmark-gfm/blob/master/test/extensions.txt</a>.
 It includes items not found in the official GFM specification, such as footnotes and additional tests for tables,
 task lists, etc.</p>
 <h2 data-sourcepos="15156:1-15156:12" dir="auto">
-<a id="user-content-footnotes-2" class="anchor" href="#footnotes-2" aria-hidden="true"></a>Footnotes</h2>
+<a href="#footnotes-2" aria-hidden="true" class="anchor" id="user-content-footnotes-2"></a>Footnotes</h2>
 <div>
 <div><a href="#example-755">Example 755</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13625,7 +13488,7 @@ task lists, etc.</p>
 </div>
 </div>
 <h2 data-sourcepos="15222:1-15222:71" dir="auto">
-<a id="user-content-when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs" class="anchor" href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs" aria-hidden="true"></a>When a footnote is used multiple times, we insert multiple backrefs.</h2>
+<a href="#when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs" aria-hidden="true" class="anchor" id="user-content-when-a-footnote-is-used-multiple-times-we-insert-multiple-backrefs"></a>When a footnote is used multiple times, we insert multiple backrefs.</h2>
 <div>
 <div><a href="#example-756">Example 756</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13650,7 +13513,7 @@ task lists, etc.</p>
 </div>
 </div>
 <h2 data-sourcepos="15248:1-15248:45" dir="auto">
-<a id="user-content-footnote-reference-labels-are-href-escaped" class="anchor" href="#footnote-reference-labels-are-href-escaped" aria-hidden="true"></a>Footnote reference labels are href escaped</h2>
+<a href="#footnote-reference-labels-are-href-escaped" aria-hidden="true" class="anchor" id="user-content-footnote-reference-labels-are-href-escaped"></a>Footnote reference labels are href escaped</h2>
 <div>
 <div><a href="#example-757">Example 757</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">
@@ -13672,7 +13535,7 @@ task lists, etc.</p>
 </div>
 </div>
 <h2 data-sourcepos="15271:1-15271:10" dir="auto">
-<a id="user-content-interop" class="anchor" href="#interop" aria-hidden="true"></a>Interop</h2>
+<a href="#interop" aria-hidden="true" class="anchor" id="user-content-interop"></a>Interop</h2>
 <p data-sourcepos="15273:1-15273:27" dir="auto">Autolink and strikethrough.</p>
 <div>
 <div><a href="#example-758">Example 758</a></div>
@@ -13716,7 +13579,7 @@ task lists, etc.</p>
 </div>
 </div>
 <h2 data-sourcepos="15319:1-15319:13" dir="auto">
-<a id="user-content-task-lists" class="anchor" href="#task-lists" aria-hidden="true"></a>Task lists</h2>
+<a href="#task-lists" aria-hidden="true" class="anchor" id="user-content-task-lists"></a>Task lists</h2>
 <div>
 <div><a href="#example-760">Example 760</a></div>
 <div class="gl-relative markdown-code-block js-markdown-code">

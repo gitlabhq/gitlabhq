@@ -4177,4 +4177,28 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { expect { file_attributes }.to raise_error(ArgumentError) }
     end
   end
+
+  describe '#commit_files' do
+    let(:project) { create(:project, :empty_repo) }
+
+    it 'calls UserCommitFiles RPC' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |client|
+        expect(client).to receive(:user_commit_files).with(
+          user, 'extra-branch', 'commit message', [],
+          'author email', 'author name', nil, nil, true, nil, false
+        )
+      end
+
+      repository.commit_files(
+        user,
+        branch_name: 'extra-branch',
+        message: 'commit message',
+        author_name: 'author name',
+        author_email: 'author email',
+        actions: [],
+        force: true,
+        sign: false
+      )
+    end
+  end
 end

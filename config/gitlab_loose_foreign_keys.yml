@@ -245,6 +245,16 @@ merge_request_metrics:
   - table: ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+merge_request_requested_changes:
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 merge_requests:
   - table: ci_pipelines
     column: head_pipeline_id

@@ -4,19 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, feature_category: :integrations do
   describe '.call' do
-    let(:raven_required_options) do
-      {
-        configuration: Raven.configuration,
-        context: Raven.context,
-        breadcrumbs: Raven.breadcrumbs
-      }
-    end
-
-    let(:raven_event) do
-      Raven::Event
-        .from_exception(exception, raven_required_options.merge(data))
-    end
-
     let(:sentry_event) do
       Sentry.get_current_client.event_from_exception(exception)
     end
@@ -50,12 +37,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, fe
 
       shared_examples 'leaves data unchanged' do
         it { expect(result_hash).to include(data) }
-      end
-
-      context 'with Raven event' do
-        let(:event) { raven_event }
-
-        it_behaves_like 'leaves data unchanged'
       end
 
       context 'with Sentry event' do
@@ -95,12 +76,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, fe
               .to include(caller: 'test', grpc_debug_error_string: '{"hello":1}')
           end
         end
-      end
-
-      context 'with Raven event' do
-        let(:event) { raven_event }
-
-        it_behaves_like 'processes the exception'
       end
 
       context 'with Sentry event' do
@@ -158,12 +133,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::GrpcErrorProcessor, :sentry, fe
               .to include(caller: 'test', grpc_debug_error_string: '{"hello":1}')
           end
         end
-      end
-
-      context 'with Raven event' do
-        let(:event) { raven_event }
-
-        it_behaves_like 'processes the exception'
       end
 
       context 'with Sentry event' do

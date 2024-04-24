@@ -13,6 +13,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
 import CiResourceAbout from './ci_resource_about.vue';
 import CiResourceHeaderSkeletonLoader from './ci_resource_header_skeleton_loader.vue';
@@ -35,6 +36,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlLink,
+    Markdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -198,9 +200,7 @@ export default {
       v-if="isLoadingSharedData"
       class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
     ></div>
-    <p v-else class="gl-mt-2">
-      {{ resource.description }}
-    </p>
+    <markdown v-else class="gl-mt-2" :markdown="resource.description" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"
       :reported-user-id="authorId"

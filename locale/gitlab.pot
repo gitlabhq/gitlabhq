@@ -3742,9 +3742,6 @@ msgstr ""
 msgid "AdminSettings|Git abuse rate limit"
 msgstr ""
 
-msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, enable the %{code_start}enable_new_sentry_integration%{code_end} feature flag and restart GitLab."
-msgstr ""
-
 msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
 msgstr ""
 
@@ -10002,9 +9999,6 @@ msgstr ""
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
 
-msgid "Can't find variable: ZiteReader"
-msgstr ""
-
 msgid "Can't scan the code?"
 msgstr ""
 
@@ -12687,9 +12681,6 @@ msgstr ""
 msgid "Colorize messages"
 msgstr ""
 
-msgid "ComboSearch is not defined"
-msgstr ""
-
 msgid "Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
 msgstr ""
 
@@ -13694,6 +13685,9 @@ msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
+msgstr ""
+
+msgid "Configure specific limits for Git HTTP requests."
 msgstr ""
 
 msgid "Configure specific limits for Git LFS requests that supersede the general user and IP rate limits."
@@ -19716,6 +19710,9 @@ msgstr ""
 msgid "Enable unauthenticated API request rate limit"
 msgstr ""
 
+msgid "Enable unauthenticated Git HTTP request rate limit"
+msgstr ""
+
 msgid "Enable unauthenticated web request rate limit"
 msgstr ""
 
@@ -23088,6 +23085,9 @@ msgstr ""
 msgid "Git"
 msgstr ""
 
+msgid "Git HTTP rate limits"
+msgstr ""
+
 msgid "Git LFS is not enabled on this GitLab server, contact your admin."
 msgstr ""
 
@@ -23664,7 +23664,7 @@ msgstr ""
 msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
-msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled"
+msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled."
 msgstr ""
 
 msgid "GlobalSearch|Aggregations load error."
@@ -23838,9 +23838,6 @@ msgstr ""
 msgid "GlobalSearch|Showing top %{maxItems}"
 msgstr ""
 
-msgid "GlobalSearch|Syntax options"
-msgstr ""
-
 msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
@@ -23872,6 +23869,9 @@ msgid "GlobalSearch|Type to filter labels."
 msgstr ""
 
 msgid "GlobalSearch|Users"
+msgstr ""
+
+msgid "GlobalSearch|View syntax options."
 msgstr ""
 
 msgid "GlobalSearch|What are you searching for?"
@@ -25681,6 +25681,9 @@ msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
 msgstr ""
 
 msgid "Helps reduce request volume for protected paths."
+msgstr ""
+
+msgid "Helps reduce unauthenticated Git HTTP request volume for git paths."
 msgstr ""
 
 msgid "Hi %{recipient_name},"
@@ -31403,6 +31406,9 @@ msgstr ""
 msgid "Maximum unauthenticated API requests per rate limit period per IP"
 msgstr ""
 
+msgid "Maximum unauthenticated Git HTTP requests per period per IP"
+msgstr ""
+
 msgid "Maximum unauthenticated web requests per rate limit period per IP"
 msgstr ""
 
@@ -34941,6 +34947,9 @@ msgstr ""
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
+msgid "ObservabilityLogs|Attribute"
+msgstr ""
+
 msgid "ObservabilityLogs|Attributes"
 msgstr ""
 
@@ -34962,6 +34971,9 @@ msgstr ""
 msgid "ObservabilityLogs|Fatal"
 msgstr ""
 
+msgid "ObservabilityLogs|Fingerprint"
+msgstr ""
+
 msgid "ObservabilityLogs|Info"
 msgstr ""
 
@@ -34980,19 +34992,43 @@ msgstr ""
 msgid "ObservabilityLogs|No logs to display."
 msgstr ""
 
+msgid "ObservabilityLogs|Resource Attribute"
+msgstr ""
+
 msgid "ObservabilityLogs|Resource attributes"
+msgstr ""
+
+msgid "ObservabilityLogs|Search logs..."
 msgstr ""
 
 msgid "ObservabilityLogs|Service"
 msgstr ""
 
+msgid "ObservabilityLogs|Severity"
+msgstr ""
+
 msgid "ObservabilityLogs|Showing %{count} logs"
+msgstr ""
+
+msgid "ObservabilityLogs|Span ID"
 msgstr ""
 
 msgid "ObservabilityLogs|Trace"
 msgstr ""
 
+msgid "ObservabilityLogs|Trace Flags"
+msgstr ""
+
+msgid "ObservabilityLogs|Trace ID"
+msgstr ""
+
 msgid "ObservabilityLogs|Warning"
+msgstr ""
+
+msgid "ObservabilityLogs|name"
+msgstr ""
+
+msgid "ObservabilityLogs|value"
 msgstr ""
 
 msgid "ObservabilityMetrics|+%{count} more"
@@ -39582,7 +39618,7 @@ msgstr ""
 msgid "Profiles|The ideal image size is 192 x 192 pixels."
 msgstr ""
 
-msgid "Profiles|The maximum file size allowed is 200KB."
+msgid "Profiles|The maximum file size allowed is 200 KiB."
 msgstr ""
 
 msgid "Profiles|This email will be displayed on your public profile."
@@ -47013,6 +47049,9 @@ msgstr ""
 msgid "SecurityReports|Confirm dismissal"
 msgstr ""
 
+msgid "SecurityReports|Container registry vulnerabilities"
+msgstr ""
+
 msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
@@ -48662,6 +48701,9 @@ msgid "Signed in with %{authentication} authentication"
 msgstr ""
 
 msgid "Signing in using %{label} has been disabled"
+msgstr ""
+
+msgid "Signing in using your %{label} account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your %{label} account."
 msgstr ""
 
 msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
@@ -54817,6 +54859,12 @@ msgstr ""
 msgid "Unauthenticated API rate limit period in seconds"
 msgstr ""
 
+msgid "Unauthenticated Git HTTP rate limit period in seconds"
+msgstr ""
+
+msgid "Unauthenticated Git HTTP request rate limit"
+msgstr ""
+
 msgid "Unauthenticated requests"
 msgstr ""
 
@@ -54914,9 +54962,6 @@ msgid "Unknown encryption strategy: %{encrypted_strategy}!"
 msgstr ""
 
 msgid "Unknown format"
-msgstr ""
-
-msgid "Unknown response text"
 msgstr ""
 
 msgid "Unknown user"
@@ -61144,9 +61189,6 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
-msgstr ""
-
-msgid "jigsaw is not defined"
 msgstr ""
 
 msgid "key result"

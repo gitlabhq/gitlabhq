@@ -72,6 +72,18 @@
   .settings-content
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
+%section.settings.as-git-http-limits.no-animate#js-git-http-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Git HTTP rate limits')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = _('Configure specific limits for Git HTTP requests.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'git_http_limits'
+
 %section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

@@ -38,7 +38,7 @@
         = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
       .gl-text-gray-500
         = s_("Profiles|The ideal image size is 192 x 192 pixels.")
-        = s_("Profiles|The maximum file size allowed is 200KB.")
+        = s_("Profiles|The maximum file size allowed is 200 KiB.")
       - if @user.avatar?
         = render Pajamas::ButtonComponent.new(variant: :danger,
           category: :secondary,

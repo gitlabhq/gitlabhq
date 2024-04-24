@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 import {
   BrowserClient,
   defaultStackParser,
@@ -8,8 +9,8 @@ import {
   // exports
   captureException,
   SDK_VERSION,
-} from 'sentrybrowser';
-import * as Sentry from 'sentrybrowser';
+} from '@sentry/browser';
+import * as Sentry from '@sentry/browser';
 
 import { initSentry } from '~/sentry/init_sentry';
 
@@ -23,14 +24,14 @@ const mockFeatureCategory = 'my_feature_category';
 const mockPage = 'index:page';
 const mockSentryClientsideTracesSampleRate = 0.1;
 
-jest.mock('sentrybrowser', () => {
+jest.mock('@sentry/browser', () => {
   return {
-    ...jest.createMockFromModule('sentrybrowser'),
+    ...jest.createMockFromModule('@sentry/browser'),
 
     // unmock actual configuration options
-    defaultStackParser: jest.requireActual('sentrybrowser').defaultStackParser,
-    makeFetchTransport: jest.requireActual('sentrybrowser').makeFetchTransport,
-    defaultIntegrations: jest.requireActual('sentrybrowser').defaultIntegrations,
+    defaultStackParser: jest.requireActual('@sentry/browser').defaultStackParser,
+    makeFetchTransport: jest.requireActual('@sentry/browser').makeFetchTransport,
+    defaultIntegrations: jest.requireActual('@sentry/browser').defaultIntegrations,
   };
 });
 

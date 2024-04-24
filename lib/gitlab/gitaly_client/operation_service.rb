@@ -479,11 +479,11 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository, force = false, start_sha = nil)
+        start_branch_name, start_repository, force = false, start_sha = nil, sign = true)
         req_enum = Enumerator.new do |y|
           header = user_commit_files_request_header(user, branch_name,
           commit_message, actions, author_email, author_name,
-          start_branch_name, start_repository, force, start_sha)
+          start_branch_name, start_repository, force, start_sha, sign)
 
           y.yield Gitaly::UserCommitFilesRequest.new(header: header)
 
@@ -575,7 +575,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def user_commit_files_request_header(
         user, branch_name, commit_message, actions, author_email, author_name,
-        start_branch_name, start_repository, force, start_sha)
+        start_branch_name, start_repository, force, start_sha, sign)
 
         Gitaly::UserCommitFilesRequestHeader.new(
           repository: @gitaly_repo,
@@ -588,6 +588,7 @@ module Gitlab
           start_repository: start_repository&.gitaly_repository,
           force: force,
           start_sha: encode_binary(start_sha),
+          sign: sign,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
       end

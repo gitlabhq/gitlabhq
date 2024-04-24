@@ -2,6 +2,11 @@
 
 require 'cgi/util'
 
+# TODO: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles adding anchors to headers.
+# The Ruby parser is now only for benchmarking purposes.
+# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
+
 # Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/table_of_contents.js
 module Banzai
   module Filter
@@ -25,6 +30,7 @@ module Banzai
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
       def call
+        return doc if MarkdownFilter.glfm_markdown?(context) && Feature.enabled?(:native_header_anchors)
         return doc if context[:no_header_anchors]
 
         result[:toc] = +""

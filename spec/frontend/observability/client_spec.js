@@ -1173,16 +1173,72 @@ describe('buildClient', () => {
         });
       });
 
+      describe('attributes filters', () => {
+        it('converts filter to proper query params', async () => {
+          await client.fetchLogs({
+            filters: {
+              attributes: {
+                service: [
+                  { operator: '=', value: 'serviceName' },
+                  { operator: '!=', value: 'serviceName2' },
+                ],
+                severityName: [
+                  { operator: '=', value: 'info' },
+                  { operator: '!=', value: 'warning' },
+                ],
+                traceId: [{ operator: '=', value: 'traceId' }],
+                spanId: [{ operator: '=', value: 'spanId' }],
+                fingerprint: [{ operator: '=', value: 'fingerprint' }],
+                traceFlags: [
+                  { operator: '=', value: '1' },
+                  { operator: '!=', value: '2' },
+                ],
+                attribute: [{ operator: '=', value: 'attr=bar' }],
+                resourceAttribute: [{ operator: '=', value: 'res=foo' }],
+                search: [{ value: 'some-search' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual(
+            `service_name=serviceName&not[service_name]=serviceName2` +
+              `&severity_name=info&not[severity_name]=warning` +
+              `&trace_id=traceId` +
+              `&span_id=spanId` +
+              `&fingerprint=fingerprint` +
+              `&trace_flags=1&not[trace_flags]=2` +
+              `&log_attr_name=attr&log_attr_value=bar` +
+              `&res_attr_name=res&res_attr_value=foo` +
+              `&body=some-search`,
+          );
+        });
+
+        it('ignores unsupported operators', async () => {
+          await client.fetchLogs({
+            filters: {
+              attributes: {
+                traceId: [{ operator: '!=', value: 'traceId2' }],
+                spanId: [{ operator: '!=', value: 'spanId2' }],
+                fingerprint: [{ operator: '!=', value: 'fingerprint2' }],
+                attribute: [{ operator: '!=', value: 'bar' }],
+                resourceAttribute: [{ operator: '!=', value: 'resourceAttribute2' }],
+                unsupported: [{ value: 'something', operator: '=' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual('');
+        });
+      });
+
       it('ignores empty filter', async () => {
         await client.fetchLogs({
-          filters: { dateRange: {} },
+          filters: { attributes: {}, dateRange: {} },
         });
         expect(getQueryParam()).toBe('');
       });
 
       it('ignores undefined filter', async () => {
         await client.fetchLogs({
-          filters: { dateRange: undefined },
+          filters: { dateRange: undefined, attributes: undefined },
         });
         expect(getQueryParam()).toBe('');
       });

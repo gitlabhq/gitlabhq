@@ -13,7 +13,6 @@ module Gitlab
       WebIdeCounter,
       WikiPageCounter,
       SnippetCounter,
-      ProductivityAnalyticsCounter,
       SourceCodeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze

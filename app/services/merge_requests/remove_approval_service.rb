@@ -15,7 +15,7 @@ module MergeRequests
       trigger_approval_hooks(merge_request, skip_notification) do
         next unless approval.destroy_all # rubocop: disable Cop/DestroyAll
 
-        update_reviewer_state(merge_request, current_user, :unapproved) unless skip_updating_state
+        update_reviewer_state(merge_request, current_user, 'unapproved') unless skip_updating_state
         reset_approvals_cache(merge_request)
 
         unless skip_system_note

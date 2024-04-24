@@ -23,8 +23,7 @@ reasons are:
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
   [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do, as it also removes empty directories (see above).
-- [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-146-to-152),
-  and you might need to enable a feature flag to use the updated system.
+- [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
 
@@ -37,15 +36,11 @@ space, and in some cases, manually delete job artifacts to reclaim disk space.
 Artifacts housekeeping is the process that identifies which artifacts are expired
 and can be deleted.
 
-#### Housekeeping disabled in GitLab 14.6 to 15.2
+#### Housekeeping disabled in GitLab 15.0 to 15.2
 
-Artifact housekeeping was disabled in GitLab 14.6. It was significantly improved
-in GitLab 14.10, and the changes were back ported to patch versions of GitLab 14.6 and later,
-introduced behind [feature flags](feature_flags.md) disabled by default. The flags were
-enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
+Artifact housekeeping was significantly improved in GitLab 15.0, introduced behind [feature flags](feature_flags.md) disabled by default. The flags were enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
 
-If artifacts housekeeping does not seem to be working in GitLab 14.6 to GitLab 15.2,
-you should check if the feature flags are enabled.
+If artifacts housekeeping does not seem to be working in GitLab 15.0 to GitLab 15.2, you should check if the feature flags are enabled.
 
 To check if the feature flags are enabled:
 
@@ -53,21 +48,11 @@ To check if the feature flags are enabled:
 
 1. Check if the feature flags are enabled.
 
-   - GitLab 14.10 and earlier:
-
-     ```ruby
-     Feature.enabled?(:ci_detect_wrongly_expired_artifacts, default_enabled: :yaml)
-     Feature.enabled?(:ci_update_unlocked_job_artifacts, default_enabled: :yaml)
-     Feature.enabled?(:ci_job_artifacts_backlog_work, default_enabled: :yaml)
-     ```
-
-   - GitLab 15.0 and later:
-
-     ```ruby
-     Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
-     Feature.enabled?(:ci_update_unlocked_job_artifacts)
-     Feature.enabled?(:ci_job_artifacts_backlog_work)
-     ```
+   ```ruby
+   Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
+   Feature.enabled?(:ci_update_unlocked_job_artifacts)
+   Feature.enabled?(:ci_job_artifacts_backlog_work)
+   ```
 
 1. If any of the feature flags are disabled, enable them:
 
@@ -154,23 +139,15 @@ GitLab 15.3 and later. It analyzes the artifacts returned by the above database 
 determines which should be `locked` or `unlocked`. Artifacts are then deleted
 by that worker if needed.
 
-The worker can be enabled on self-managed instances running GitLab 14.10 and later:
+The worker can be enabled on self-managed instances:
 
 1. Start a [Rails console](operations/rails_console.md#starting-a-rails-console-session).
 
 1. Check if the feature is enabled.
-
-   - GitLab 14.10:
-
-     ```ruby
-     Feature.enabled?(:ci_job_artifacts_backlog_work, default_enabled: :yaml)
-     ```
-
-   - GitLab 15.0 and later:
-
-     ```ruby
-     Feature.enabled?(:ci_job_artifacts_backlog_work)
-     ```
+   
+   ```ruby
+   Feature.enabled?(:ci_job_artifacts_backlog_work)
+   ```
 
 1. Enable the feature, if needed:
 
@@ -428,8 +405,6 @@ To work around this issue, you can try:
 For more information, [see the investigation details](https://gitlab.com/gitlab-org/gitlab/-/issues/389995).
 
 ## Usage quota shows incorrect artifact storage usage
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238536) in GitLab 14.10.
 
 Sometimes the [artifacts storage usage](../user/usage_quotas.md) displays an incorrect
 value for the total storage space used by artifacts. To recalculate the artifact

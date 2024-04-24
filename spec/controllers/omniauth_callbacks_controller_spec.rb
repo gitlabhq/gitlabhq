@@ -94,10 +94,11 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
   describe 'omniauth' do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+    let(:omniauth_email) { user.email }
     let(:additional_info) { {} }
 
     before do
-      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, extern_uid, user.email, additional_info: additional_info)
+      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, extern_uid, omniauth_email, additional_info: additional_info)
       stub_omniauth_provider(provider, context: request)
     end
 
@@ -578,6 +579,23 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             user: User.find_by(email: user.email)
           )
         end
+      end
+    end
+
+    context "when user's identity with untrusted extern_uid" do
+      let(:provider) { 'bitbucket' }
+      let(:extern_uid) { 'untrusted-uid' }
+      let(:omniauth_email) { 'bitbucketuser@example.com' }
+
+      before do
+        user.identities.with_extern_uid(provider, extern_uid).update!(trusted_extern_uid: false)
+      end
+
+      it 'shows warning when attempting login' do
+        post provider
+
+        expect(response).to redirect_to new_user_session_path
+        expect(flash[:alert]).to eq('Signing in using your Bitbucket account has been disabled for security reasons. Please sign in to your GitLab account using another authentication method and reconnect to your Bitbucket account.')
       end
     end
   end

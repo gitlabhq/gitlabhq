@@ -32,6 +32,10 @@ module Gitlab
 
             CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }
 
+            # Matches schema-defined pattern
+            # https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/e3d280d7f0862ca66a1555ea8b24016a004bb914/src/security-report-format.json#L151
+            SCHEMA_VERSION_REGEX = /^[0-9]+\.[0-9]+\.[0-9]+$/
+
             class Schema
               def root_path
                 File.join(__dir__, 'schemas')
@@ -97,7 +101,7 @@ module Gitlab
               @deprecation_warnings = []
 
               populate_schema_version_errors
-              populate_validation_errors
+              populate_validation_errors if report_version_matches_schema?
               populate_deprecation_warnings
             end
 
@@ -145,6 +149,10 @@ module Gitlab
               else
                 false
               end
+            end
+
+            def report_version_matches_schema?
+              report_version && report_version.match(SCHEMA_VERSION_REGEX)
             end
 
             def find_latest_patch_version

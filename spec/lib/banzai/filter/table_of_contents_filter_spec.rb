@@ -2,6 +2,10 @@
 
 require 'spec_helper'
 
+# TODO: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles adding anchors to headers.
+# The Ruby parser is now only for benchmarking purposes.
+# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
 RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
@@ -9,20 +13,28 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
     "<h#{level}>#{text}</h#{level}>\n"
   end
 
+  before do
+    stub_feature_flags(native_header_anchors: false)
+  end
+
+  # TODO: enable when feature flag is removed
+  # let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
+  let_it_be(:context) { {} }
+
   it 'does nothing when :no_header_anchors is truthy' do
     exp = act = header(1, 'Header')
-    expect(filter(act, no_header_anchors: 1).to_html).to eq exp
+    expect(filter(act, context.merge({ no_header_anchors: 1 })).to_html).to eq exp
   end
 
   it 'does nothing with empty headers' do
     exp = act = header(1, nil)
-    expect(filter(act).to_html).to eq exp
+    expect(filter(act, context).to_html).to eq exp
   end
 
   1.upto(6) do |i|
     it "processes h#{i} elements" do
       html = header(i, "Header #{i}")
-      doc = filter(html)
+      doc = filter(html, context)
 
       expect(doc.css("h#{i} a").first.attr('id')).to eq "user-content-header-#{i}"
     end
@@ -30,57 +42,57 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
 
   describe 'anchor tag' do
     it 'has an `anchor` class' do
-      doc = filter(header(1, 'Header'))
+      doc = filter(header(1, 'Header'), context)
       expect(doc.css('h1 a').first.attr('class')).to eq 'anchor'
     end
 
     it 'has a namespaced id' do
-      doc = filter(header(1, 'Header'))
+      doc = filter(header(1, 'Header'), context)
       expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-header'
     end
 
     it 'links to the non-namespaced id' do
-      doc = filter(header(1, 'Header'))
+      doc = filter(header(1, 'Header'), context)
       expect(doc.css('h1 a').first.attr('href')).to eq '#header'
     end
 
     describe 'generated IDs' do
       it 'translates spaces to dashes' do
-        doc = filter(header(1, 'This header has spaces in it'))
+        doc = filter(header(1, 'This header has spaces in it'), context)
         expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-has-spaces-in-it'
       end
 
       it 'squeezes multiple spaces and dashes' do
-        doc = filter(header(1, 'This---header     is poorly-formatted'))
+        doc = filter(header(1, 'This---header     is poorly-formatted'), context)
         expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-is-poorly-formatted'
       end
 
       it 'removes punctuation' do
-        doc = filter(header(1, "This, header! is, filled. with @ punctuation?"))
+        doc = filter(header(1, "This, header! is, filled. with @ punctuation?"), context)
         expect(doc.css('h1 a').first.attr('href')).to eq '#this-header-is-filled-with-punctuation'
       end
 
       it 'removes any leading or trailing spaces' do
-        doc = filter(header(1, " \r\n\tTitle with spaces\r\n\t "))
+        doc = filter(header(1, " \r\n\tTitle with spaces\r\n\t "), context)
         expect(doc.css('h1 a').first.attr('href')).to eq '#title-with-spaces'
       end
 
       it 'appends a unique number to duplicates' do
-        doc = filter(header(1, 'One') + header(2, 'One'))
+        doc = filter(header(1, 'One') + header(2, 'One'), context)
 
         expect(doc.css('h1 a').first.attr('href')).to eq '#one'
         expect(doc.css('h2 a').first.attr('href')).to eq '#one-1'
       end
 
       it 'prepends a prefix to digits-only ids' do
-        doc = filter(header(1, "123") + header(2, "1.0"))
+        doc = filter(header(1, "123") + header(2, "1.0"), context)
 
         expect(doc.css('h1 a').first.attr('href')).to eq '#anchor-123'
         expect(doc.css('h2 a').first.attr('href')).to eq '#anchor-10'
       end
 
       it 'supports Unicode' do
-        doc = filter(header(1, '한글'))
+        doc = filter(header(1, '한글'), context)
         expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-한글'
         # check that we encode the href to avoid issues with the
         # ExternalLinkFilter (see https://gitlab.com/gitlab-org/gitlab/issues/26210)
@@ -88,7 +100,7 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
       end
 
       it 'limits header href length with 255 characters' do
-        doc = filter(header(1, 'a' * 500))
+        doc = filter(header(1, 'a' * 500), context)
 
         expect(doc.css('h1 a').first.attr('href')).to eq "##{'a' * 255}"
       end
@@ -97,7 +109,7 @@ RSpec.describe Banzai::Filter::TableOfContentsFilter, feature_category: :team_pl
 
   describe 'result' do
     def result(html)
-      HTML::Pipeline.new([described_class]).call(html)
+      HTML::Pipeline.new([described_class], context).call(html)
     end
 
     let(:results) { result(header(1, 'Header 1') + header(2, 'Header 2')) }

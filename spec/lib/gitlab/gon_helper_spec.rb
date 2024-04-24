@@ -60,19 +60,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
       let(:environment) { 'staging' }
       let(:sentry_clientside_traces_sample_rate) { 0.5 }
 
-      context 'with legacy sentry configuration' do
-        before do
-          stub_config(sentry: { enabled: true, clientside_dsn: clientside_dsn, environment: environment })
-        end
-
-        it 'sets sentry dsn and environment from config' do
-          expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
-          expect(gon).to receive(:sentry_environment=).with(environment)
-
-          helper.add_gon_variables
-        end
-      end
-
       context 'with sentry settings' do
         before do
           stub_application_setting(sentry_enabled: true)
@@ -87,21 +74,6 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
           expect(gon).to receive(:sentry_clientside_traces_sample_rate=).with(sentry_clientside_traces_sample_rate)
 
           helper.add_gon_variables
-        end
-
-        context 'when enable_new_sentry_integration is disabled' do
-          before do
-            stub_feature_flags(enable_new_sentry_integration: false)
-          end
-
-          it 'does not set sentry dsn and environment from config' do
-            expect(gon).not_to receive(:sentry_dsn=).with(clientside_dsn)
-            expect(gon).not_to receive(:sentry_environment=).with(environment)
-            expect(gon).not_to receive(:sentry_clientside_traces_sample_rate=)
-              .with(sentry_clientside_traces_sample_rate)
-
-            helper.add_gon_variables
-          end
         end
       end
     end

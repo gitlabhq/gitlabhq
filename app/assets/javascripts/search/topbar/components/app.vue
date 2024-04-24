@@ -22,7 +22,7 @@ export default {
   i18n: {
     searchPlaceholder: s__(`GlobalSearch|Search for projects, issues, etc.`),
     searchLabel: s__(`GlobalSearch|What are you searching for?`),
-    syntaxOptionsLabel: s__('GlobalSearch|Syntax options'),
+    syntaxOptionsLabel: s__('GlobalSearch|View syntax options.'),
     groupFieldLabel: s__('GlobalSearch|Group'),
     projectFieldLabel: s__('GlobalSearch|Project'),
   },
@@ -102,43 +102,27 @@ export default {
 
 <template>
   <section>
-    <div
-      class="gl-lg-display-flex gl-flex-direction-row gl-py-5"
-      :class="{
-        'gl-justify-content-space-between': showSyntaxOptions,
-        'gl-justify-content-end': !showSyntaxOptions,
-      }"
-    >
+    <div class="search-page-form gl-mt-5">
+      <search-type-indicator />
       <template v-if="showSyntaxOptions">
-        <div>
-          <gl-button
-            category="tertiary"
-            variant="link"
-            size="small"
-            button-text-classes="gl-font-sm!"
-            @click="onToggleDrawer"
+        <div class="gl-display-inline-block">
+          <gl-button category="tertiary" variant="link" @click="onToggleDrawer"
             >{{ $options.i18n.syntaxOptionsLabel }}
           </gl-button>
         </div>
         <markdown-drawer ref="markdownDrawer" :document-path="documentBasedOnSearchType" />
       </template>
-      <search-type-indicator />
-    </div>
-    <div class="search-page-form gl-lg-display-flex gl-flex-direction-column">
-      <div class="gl-lg-display-flex gl-flex-direction-row gl-align-items-flex-start">
-        <div class="gl-flex-grow-1 gl-pb-8 gl-lg-mb-0 gl-lg-mr-2">
-          <gl-search-box-by-type
-            id="dashboard_search"
-            v-model="search"
-            name="search"
-            :regex-button-is-visible="isRegexButtonVisible"
-            :regex-button-state="regexEnabled"
-            :regex-button-handler="regexButtonHandler"
-            :placeholder="$options.i18n.searchPlaceholder"
-            @keydown.enter.stop.prevent="applyQuery"
-          />
-        </div>
-      </div>
+      <gl-search-box-by-type
+        id="dashboard_search"
+        v-model="search"
+        name="search"
+        class="gl-mt-2"
+        :regex-button-is-visible="isRegexButtonVisible"
+        :regex-button-state="regexEnabled"
+        :regex-button-handler="regexButtonHandler"
+        :placeholder="$options.i18n.searchPlaceholder"
+        @keydown.enter.stop.prevent="applyQuery"
+      />
     </div>
   </section>
 </template>

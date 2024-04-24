@@ -695,6 +695,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_56d49f4ed623() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "workspaces"
+  WHERE "workspaces"."id" = NEW."workspace_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4319,6 +4335,7 @@ CREATE TABLE application_settings (
     include_optional_metrics_in_service_ping boolean DEFAULT true NOT NULL,
     zoekt_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     service_ping_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    rate_limits_unauthenticated_git_http jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -4371,6 +4388,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_app_settings_sentry_clientside_traces_sample_rate_range CHECK (((sentry_clientside_traces_sample_rate >= (0)::double precision) AND (sentry_clientside_traces_sample_rate <= (1)::double precision))),
     CONSTRAINT check_application_settings_clickhouse_is_hash CHECK ((jsonb_typeof(clickhouse) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
+    CONSTRAINT check_application_settings_rate_limits_unauth_git_http_is_hash CHECK ((jsonb_typeof(rate_limits_unauthenticated_git_http) = 'object'::text)),
     CONSTRAINT check_application_settings_service_ping_settings_is_hash CHECK ((jsonb_typeof(service_ping_settings) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
     CONSTRAINT check_cdfbd99405 CHECK ((char_length(security_txt_content) <= 2048)),
@@ -9764,7 +9782,8 @@ CREATE TABLE identities (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     secondary_extern_uid character varying,
-    saml_provider_id integer
+    saml_provider_id integer,
+    trusted_extern_uid boolean DEFAULT true
 );
 
 CREATE SEQUENCE identities_id_seq
@@ -11249,6 +11268,24 @@ CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_predictions_merge_request_id_seq OWNED BY merge_request_predictions.merge_request_id;
+
+CREATE TABLE merge_request_requested_changes (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_request_requested_changes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_requested_changes_id_seq OWNED BY merge_request_requested_changes.id;
 
 CREATE TABLE merge_request_review_llm_summaries (
     id bigint NOT NULL,
@@ -18123,6 +18160,7 @@ CREATE TABLE workspace_variables (
     key text NOT NULL,
     encrypted_value bytea NOT NULL,
     encrypted_value_iv bytea NOT NULL,
+    project_id bigint,
     CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255))
 );
 
@@ -19402,6 +19440,8 @@ ALTER TABLE ONLY merge_request_diffs ALTER COLUMN id SET DEFAULT nextval('merge_
 ALTER TABLE ONLY merge_request_metrics ALTER COLUMN id SET DEFAULT nextval('merge_request_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_predictions_merge_request_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_request_requested_changes ALTER COLUMN id SET DEFAULT nextval('merge_request_requested_changes_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_review_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_review_llm_summaries_id_seq'::regclass);
 
@@ -21649,6 +21689,9 @@ ALTER TABLE ONLY merge_request_metrics
 
 ALTER TABLE ONLY merge_request_predictions
     ADD CONSTRAINT merge_request_predictions_pkey PRIMARY KEY (merge_request_id);
+
+ALTER TABLE ONLY merge_request_requested_changes
+    ADD CONSTRAINT merge_request_requested_changes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_review_llm_summaries
     ADD CONSTRAINT merge_request_review_llm_summaries_pkey PRIMARY KEY (id);
@@ -25656,6 +25699,8 @@ CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree
 
 CREATE UNIQUE INDEX index_http_integrations_on_project_and_endpoint ON alert_management_http_integrations USING btree (project_id, endpoint_identifier);
 
+CREATE INDEX index_identities_on_provider ON identities USING btree (provider);
+
 CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
 CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);
@@ -26067,6 +26112,12 @@ CREATE INDEX index_merge_request_metrics_on_merge_request_id_and_merged_at ON me
 CREATE INDEX index_merge_request_metrics_on_merged_at ON merge_request_metrics USING btree (merged_at);
 
 CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics USING btree (pipeline_id);
+
+CREATE INDEX index_merge_request_requested_changes_on_merge_request_id ON merge_request_requested_changes USING btree (merge_request_id);
+
+CREATE INDEX index_merge_request_requested_changes_on_project_id ON merge_request_requested_changes USING btree (project_id);
+
+CREATE INDEX index_merge_request_requested_changes_on_user_id ON merge_request_requested_changes USING btree (user_id);
 
 CREATE INDEX index_merge_request_review_llm_summaries_on_mr_diff_id ON merge_request_review_llm_summaries USING btree (merge_request_diff_id);
 
@@ -27837,6 +27888,8 @@ CREATE UNIQUE INDEX index_work_item_widget_definitions_on_default_witype_and_nam
 CREATE UNIQUE INDEX index_work_item_widget_definitions_on_namespace_type_and_name ON work_item_widget_definitions USING btree (namespace_id, work_item_type_id, name);
 
 CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_item_widget_definitions USING btree (work_item_type_id);
+
+CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
 
 CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
 
@@ -29722,6 +29775,8 @@ CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR 
 
 CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
 
+CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
+
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
 CREATE TRIGGER trigger_b2d852e1e2cb BEFORE INSERT OR UPDATE ON ci_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_b2d852e1e2cb();
@@ -30090,6 +30145,9 @@ ALTER TABLE ONLY todos
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspace_variables
+    ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;

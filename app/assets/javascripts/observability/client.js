@@ -9,6 +9,13 @@ function reportErrorAndThrow(e) {
   Sentry.captureException(e);
   throw e;
 }
+
+/** ****
+ *
+ * Provisioning API
+ *
+ * ***** */
+
 // Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L59
 async function enableObservability(provisioningUrl) {
   try {
@@ -40,6 +47,97 @@ async function isObservabilityEnabled(provisioningUrl) {
   return reportErrorAndThrow(new Error('Failed to check provisioning')); // eslint-disable-line @gitlab/require-i18n-strings
 }
 
+/** ****
+ *
+ * Common utils
+ *
+ * ***** */
+
+const FILTER_OPERATORS_PREFIX = {
+  '!=': 'not',
+  '>': 'gt',
+  '<': 'lt',
+  '!~': 'not_like',
+  '=~': 'like',
+};
+
+const SEARCH_FILTER_NAME = 'search';
+
+/**
+ * Return the query parameter name, given an operator and param key
+ *
+ * e.g
+ *    if paramKey is 'foo' and operator is "=", param name is 'foo'
+ *    if paramKey is 'foo' and operator is "!=", param name is 'not[foo]'
+ *
+ * @param {String} paramKey - The parameter name
+ * @param {String} operator - The operator
+ * @returns String | undefined - Query param name
+ */
+function getFilterParamName(filterName, operator, filterToQueryMapping) {
+  const paramKey = filterToQueryMapping[filterName];
+  if (!paramKey) return undefined;
+
+  if (operator === '=' || filterName === SEARCH_FILTER_NAME) {
+    return paramKey;
+  }
+
+  const prefix = FILTER_OPERATORS_PREFIX[operator];
+  if (prefix) {
+    return `${prefix}[${paramKey}]`;
+  }
+
+  return undefined;
+}
+
+/**
+ * Process `filterValue` and append the proper query params to the  `searchParams` arg, using `nameParam` and `valueParam`
+ *
+ * It mutates `searchParams`
+ *
+ * @param {String} filterValue The filter value, in the format `attribute_name=attribute_value`
+ * @param {String} filterOperator The filter operator
+ * @param {URLSearchParams} searchParams The URLSearchParams object where to append the proper query params
+ * @param {String} nameParam The query param name for the attribute name
+ * @param {String} nameParam The query param name for the attribute value
+ *
+ * e.g.
+ *
+ *    handleAttributeFilter('foo=bar', '=', searchParams, 'attr_name', 'attr_value')
+ *
+ *        it adds { attr_name: 'foo', attr_value: 'bar'} to `searchParams`
+ *
+ */
+function handleAttributeFilter(filterValue, filterOperator, searchParams, nameParam, valueParam) {
+  const [attrName, attrValue] = filterValue.split('=');
+  if (attrName && attrValue) {
+    if (filterOperator === '=') {
+      searchParams.append(nameParam, attrName);
+      searchParams.append(valueParam, attrValue);
+    }
+  }
+}
+
+function addDateRangeFilterToQueryParams(dateRangeFilter, params) {
+  if (!dateRangeFilter || !params) return;
+
+  const { value, endDate, startDate } = dateRangeFilter;
+  if (value === CUSTOM_DATE_RANGE_OPTION) {
+    if (isValidDate(startDate) && isValidDate(endDate)) {
+      params.append('start_time', startDate.toISOString());
+      params.append('end_time', endDate.toISOString());
+    }
+  } else if (typeof value === 'string') {
+    params.append('period', value);
+  }
+}
+
+/** ****
+ *
+ * Tracing API
+ *
+ * ***** */
+
 async function fetchTrace(tracingUrl, traceId) {
   try {
     if (!traceId) {
@@ -67,88 +165,23 @@ const SUPPORTED_TRACING_FILTERS = {
   traceId: ['=', '!='],
   attribute: ['='],
   status: ['=', '!='],
-  // free-text 'search' temporarily ignored https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2309
+  // 'search' temporarily ignored https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2309
 };
 
 /**
- * Mapping of filter name to query param
+ * Mapping of filter name to tracing query param
  */
 const TRACING_FILTER_TO_QUERY_PARAM = {
   durationMs: 'duration_nano',
   operation: 'operation',
   service: 'service_name',
-  period: 'period',
   traceId: 'trace_id',
-  attribute: 'attribute',
   status: 'status',
+  // `attribute` is handled separately, see `handleAttributeFilter` method
+  // `period` is handled separately, see `handleTracingPeriodFilter` method
 };
 
-const FILTER_OPERATORS_PREFIX = {
-  '!=': 'not',
-  '>': 'gt',
-  '<': 'lt',
-  '!~': 'not_like',
-  '=~': 'like',
-};
-
-/**
- * Return the query parameter name, given an operator and param key
- *
- * e.g
- *    if paramKey is 'foo' and operator is "=", param name is 'foo'
- *    if paramKey is 'foo' and operator is "!=", param name is 'not[foo]'
- *
- * @param {String} paramKey - The parameter name
- * @param {String} operator - The operator
- * @returns String | undefined - Query param name
- */
-function getFilterParamName(paramKey, operator) {
-  if (operator === '=') {
-    return paramKey;
-  }
-
-  const prefix = FILTER_OPERATORS_PREFIX[operator];
-  if (prefix) {
-    return `${prefix}[${paramKey}]`;
-  }
-
-  return undefined;
-}
-
-/**
- * Builds the tracing query param name for the given filter and operator
- *
- * @param {String} filterName - The filter name
- * @param {String} operator - The operator
- * @returns String | undefined - Query param name
- */
-function getTracingFilterParamName(filterName, operator) {
-  const paramKey = TRACING_FILTER_TO_QUERY_PARAM[filterName];
-  if (!paramKey) return undefined;
-
-  return getFilterParamName(paramKey, operator);
-}
-
-/**
- * Process `filterValue` and append the proper query params to the  `searchParams` arg
- *
- * It mutates `searchParams`
- *
- * @param {String} filterValue The filter value, in the format `attribute_name=attribute_value`
- * @param {String} filterOperator The filter operator
- * @param {URLSearchParams} searchParams The URLSearchParams object where to append the proper query params
- */
-function handleAttributeFilter(filterValue, filterOperator, searchParams) {
-  const [attrName, attrValue] = filterValue.split('=');
-  if (attrName && attrValue) {
-    if (filterOperator === '=') {
-      searchParams.append('attr_name', attrName);
-      searchParams.append('attr_value', attrValue);
-    }
-  }
-}
-
-function handlePeriodFilter(rawValue, filterName, filterParams) {
+function handleTracingPeriodFilter(rawValue, filterName, filterParams) {
   if (rawValue.trim().indexOf(' ') < 0) {
     filterParams.append(filterName, rawValue.trim());
     return;
@@ -189,13 +222,14 @@ function tracingFilterObjToQueryParams(filterObj) {
     const validFilters = filterValues.filter((f) =>
       SUPPORTED_TRACING_FILTERS[filterName].includes(f.operator),
     );
+
     validFilters.forEach(({ operator, value: rawValue }) => {
       if (filterName === 'attribute') {
-        handleAttributeFilter(rawValue, operator, filterParams);
+        handleAttributeFilter(rawValue, operator, filterParams, 'attr_name', 'attr_value');
       } else if (filterName === 'period') {
-        handlePeriodFilter(rawValue, filterName, filterParams);
+        handleTracingPeriodFilter(rawValue, filterName, filterParams);
       } else {
-        const paramName = getTracingFilterParamName(filterName, operator);
+        const paramName = getFilterParamName(filterName, operator, TRACING_FILTER_TO_QUERY_PARAM);
         let value = rawValue;
         if (filterName === 'durationMs') {
           // converting durationMs to duration_nano
@@ -318,6 +352,12 @@ function handleMetricsAttributeFilters(attributeFilters, params) {
   }
 }
 
+/** ****
+ *
+ * Metrics API
+ *
+ * ***** */
+
 async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   try {
     const params = new URLSearchParams();
@@ -359,6 +399,7 @@ const SUPPORTED_METRICS_DIMENSIONS_OPERATORS = {
   '=~': 're',
   '!~': 'nre',
 };
+
 function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   if (!dimensionFilter || !params) return;
 
@@ -374,21 +415,7 @@ function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   });
 }
 
-function addDateRangeFilterToQueryParams(dateRangeFilter, params) {
-  if (!dateRangeFilter || !params) return;
-
-  const { value, endDate, startDate } = dateRangeFilter;
-  if (value === CUSTOM_DATE_RANGE_OPTION) {
-    if (isValidDate(startDate) && isValidDate(endDate)) {
-      params.append('start_time', startDate.toISOString());
-      params.append('end_time', endDate.toISOString());
-    }
-  } else if (typeof value === 'string') {
-    params.append('period', value);
-  }
-}
-
-function addGroupByFilterToQueryParams(groupByFilter, params) {
+function addMetricsGroupByFilterToQueryParams(groupByFilter, params) {
   if (!groupByFilter || !params) return;
 
   const { func, attributes } = groupByFilter;
@@ -429,7 +456,7 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
     }
 
     if (groupBy) {
-      addGroupByFilterToQueryParams(groupBy, params);
+      addMetricsGroupByFilterToQueryParams(groupBy, params);
     }
 
     const { data } = await axios.get(searchUrl, {
@@ -470,13 +497,93 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
   }
 }
 
+/** ****
+ *
+ * Logs API
+ *
+ * ***** */
+
+/**
+ * Filters (and operators) allowed by logs query API
+ */
+const SUPPORTED_LOGS_FILTERS = {
+  service: ['=', '!='],
+  severityName: ['=', '!='],
+  traceId: ['='],
+  spanId: ['='],
+  fingerprint: ['='],
+  traceFlags: ['=', '!='],
+  attribute: ['='],
+  resourceAttribute: ['='],
+  search: [], // 'search' filter does not have any operator
+};
+
+/**
+ * Mapping of filter name to query param
+ */
+const LOGS_FILTER_TO_QUERY_PARAM = {
+  service: 'service_name',
+  severityName: 'severity_name',
+  traceId: 'trace_id',
+  spanId: 'span_id',
+  fingerprint: 'fingerprint',
+  traceFlags: 'trace_flags',
+  search: 'body',
+  // `attribute` and `resource_attribute` are handled separately
+};
+
+/**
+ * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
+ *  e.g:
+ *
+ *  filterObj =  {
+ *      severityName: [{operator: '=', value: 'info' }],
+ *      service: [{operator: '!=', value: 'foo' }]
+ *    }
+ *
+ * It handles converting the filter to the proper supported query params
+ *
+ * @param {Object} filterObj : An Object representing handleAttributeFilter
+ * @returns URLSearchParams
+ */
+function addLogsAttributesFiltersToQueryParams(filterObj, filterParams) {
+  Object.keys(SUPPORTED_LOGS_FILTERS).forEach((filterName) => {
+    const filterValues = Array.isArray(filterObj[filterName])
+      ? filterObj[filterName].filter(({ value }) => Boolean(value)) // ignore empty strings
+      : [];
+    const validFilters = filterValues.filter(
+      (f) =>
+        (filterName === SEARCH_FILTER_NAME && SUPPORTED_LOGS_FILTERS[filterName]) ||
+        SUPPORTED_LOGS_FILTERS[filterName].includes(f.operator),
+    );
+    validFilters.forEach(({ operator, value: rawValue }) => {
+      if (filterName === 'attribute') {
+        handleAttributeFilter(rawValue, operator, filterParams, 'log_attr_name', 'log_attr_value');
+      } else if (filterName === 'resourceAttribute') {
+        handleAttributeFilter(rawValue, operator, filterParams, 'res_attr_name', 'res_attr_value');
+      } else {
+        const paramName = getFilterParamName(filterName, operator, LOGS_FILTER_TO_QUERY_PARAM);
+        const value = rawValue;
+        if (paramName && value) {
+          filterParams.append(paramName, value);
+        }
+      }
+    });
+  });
+  return filterParams;
+}
+
 export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = {} } = {}) {
   try {
     const params = new URLSearchParams();
 
-    const { dateRange } = filters;
+    const { dateRange, attributes } = filters;
     if (dateRange) {
       addDateRangeFilterToQueryParams(dateRange, params);
+    }
+
+    if (attributes) {
+      addLogsAttributesFiltersToQueryParams(attributes, params);
     }
 
     if (pageToken) {
@@ -500,6 +607,12 @@ export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = 
     return reportErrorAndThrow(e);
   }
 }
+
+/** ****
+ *
+ * ObservabilityClient
+ *
+ * ***** */
 
 export function buildClient(config) {
   if (!config) {

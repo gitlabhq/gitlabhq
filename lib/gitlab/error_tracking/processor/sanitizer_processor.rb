@@ -15,9 +15,6 @@ module Gitlab
         # For more information, please visit:
         # https://docs.sentry.io/platforms/ruby/guides/rails/configuration/filtering/#using-beforesend
         def self.call(event)
-          # Raven::Event instances don't need this processing.
-          return event unless event.is_a?(Sentry::Event)
-
           if event.request.present?
             event.request.cookies = {}
             event.request.data = {}

@@ -7,6 +7,7 @@ import { createRouter } from '~/ci/catalog/router/index';
 import CiResourcesListItem from '~/ci/catalog/components/list/ci_resources_list_item.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { catalogSinglePageResponse } from '../../mock';
 
 Vue.use(VueRouter);
@@ -46,11 +47,11 @@ describe('CiResourcesListItem', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
   const findResourceName = () => wrapper.findByTestId('ci-resource-link');
-  const findResourceDescription = () => wrapper.findByText(defaultProps.resource.description);
   const findUserLink = () => wrapper.findByTestId('user-link');
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
+  const findMarkdown = () => wrapper.findComponent(Markdown);
 
   beforeEach(() => {
     routerPush = jest.spyOn(router, 'push').mockImplementation(() => {});
@@ -82,7 +83,9 @@ describe('CiResourcesListItem', () => {
     });
 
     it('renders the resource description', () => {
-      expect(findResourceDescription().exists()).toBe(true);
+      const markdown = findMarkdown();
+      expect(markdown.exists()).toBe(true);
+      expect(markdown.props().markdown).toBe(defaultProps.resource.description);
     });
   });
 

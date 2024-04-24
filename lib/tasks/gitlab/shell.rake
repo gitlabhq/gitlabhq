@@ -69,12 +69,12 @@ namespace :gitlab do
 
     Key.auth.find_in_batches(batch_size: 1000) do |keys|
       unless authorized_keys.batch_add_keys(keys)
-        puts "Failed to add keys...".color(:red)
+        puts Rainbow("Failed to add keys...").red
         exit 1
       end
     end
   rescue Gitlab::TaskAbortedByUserError
-    puts "Quitting...".color(:red)
+    puts Rainbow("Quitting...").red
     exit 1
   end
 end

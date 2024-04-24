@@ -194,7 +194,6 @@ job:
 
 ## View all job artifacts in a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31271) in GitLab 12.4 [with a flag](../../administration/feature_flags.md) named `artifacts_management_page`. Disabled by default.
 > - [Improved look](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
 > - [Improved performance](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
@@ -362,9 +361,6 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 ## Keep artifacts from most recent successful jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16267) in GitLab 13.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229936) in GitLab 13.4.
-> - [Made optional with a CI/CD setting](https://gitlab.com/gitlab-org/gitlab/-/issues/241026) in GitLab 13.8.
 > - Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines no longer kept indefinitely in GitLab 16.7.
 
 By default artifacts are always kept for successful pipelines for the most recent commit on each ref.

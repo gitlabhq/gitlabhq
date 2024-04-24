@@ -12,7 +12,11 @@ module MergeRequests
 
         trigger_merge_request_reviewers_updated(merge_request)
 
+        destroy_requested_changes(merge_request) if state == 'approved'
+
         return success if state != 'requested_changes'
+
+        create_requested_changes(merge_request)
 
         if merge_request.approved_by?(current_user) && !remove_approval(merge_request, current_user)
           return error("Failed to remove approval")
@@ -22,6 +26,18 @@ module MergeRequests
       else
         error("Reviewer not found")
       end
+    end
+
+    private
+
+    def create_requested_changes(merge_request)
+      merge_request.create_requested_changes(current_user)
+
+      trigger_merge_request_merge_status_updated(merge_request)
+    end
+
+    def destroy_requested_changes(merge_request)
+      merge_request.destroy_requested_changes(current_user)
     end
   end
 end

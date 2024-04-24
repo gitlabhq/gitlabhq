@@ -20,14 +20,10 @@ module Gitlab
 
       add_browsersdk_tracking
 
-      if Gitlab.config.sentry.enabled
-        gon.sentry_dsn         = Gitlab.config.sentry.clientside_dsn
-        gon.sentry_environment = Gitlab.config.sentry.environment
-      end
-
-      # Support for Sentry setup via configuration files will be removed in 17.0
-      # in favor of Gitlab::CurrentSettings.
-      if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
+      # Sentry configurations for the browser client are done
+      # via `Gitlab::CurrentSettings` from the Admin panel:
+      # `/admin/application_settings/metrics_and_profiling`
+      if Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
         gon.sentry_clientside_traces_sample_rate = Gitlab::CurrentSettings.sentry_clientside_traces_sample_rate

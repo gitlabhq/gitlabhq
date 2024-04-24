@@ -20,20 +20,6 @@ RSpec.describe Gitlab::ErrorTracking::Processor::SanitizeErrorMessageProcessor, 
       end
     end
 
-    context 'with Raven event' do
-      let(:raven_required_options) do
-        {
-          configuration: Raven.configuration,
-          context: Raven.context,
-          breadcrumbs: Raven.breadcrumbs
-        }
-      end
-
-      let(:event) { Raven::Event.from_exception(exception, raven_required_options) }
-
-      it_behaves_like 'processes the exception'
-    end
-
     context 'with Sentry event' do
       let(:event) { Sentry.get_current_client.event_from_exception(exception) }
 

@@ -3,7 +3,7 @@
 module Gitlab
   module ErrorTracking
     class LogFormatter
-      # Note: all the accesses to Raven's contexts here are to keep the
+      # Note: all the accesses to Sentry's contexts here are to keep the
       # backward-compatibility to Sentry's built-in integrations. In future,
       # they can be removed.
       def generate_log(exception, context_payload)
@@ -20,21 +20,24 @@ module Gitlab
       private
 
       def append_user_to_log!(payload, context_payload)
-        user_context = Raven.context.user.merge(context_payload[:user])
+        user_context = context_payload[:user]
+        user_context = Sentry.get_current_scope.user.merge(user_context) if Sentry.initialized?
         user_context.each do |key, value|
           payload["user.#{key}"] = value
         end
       end
 
       def append_tags_to_log!(payload, context_payload)
-        tags_context = Raven.context.tags.merge(context_payload[:tags])
+        tags_context = context_payload[:tags]
+        tags_context = Sentry.get_current_scope.tags.merge(tags_context) if Sentry.initialized?
         tags_context.each do |key, value|
           payload["tags.#{key}"] = value
         end
       end
 
       def append_extra_to_log!(payload, context_payload)
-        extra = Raven.context.extra.merge(context_payload[:extra])
+        extra = context_payload[:extra]
+        extra = Sentry.get_current_scope.extra.merge(extra) if Sentry.initialized?
         extra = extra.except(:server)
 
         # The extra value for sidekiq is a hash whose keys are strings.

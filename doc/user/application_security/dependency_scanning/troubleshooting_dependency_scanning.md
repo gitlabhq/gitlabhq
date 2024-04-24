@@ -99,10 +99,7 @@ gemnasium-maven-dependency_scanning:
 
 ## Dependency Scanning job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
 
-Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
-
-- Disabled by default in GitLab 13.0 and later.
-- Unsupported from GitLab 13.4 and later.
+Docker-in-Docker is unsupported, and attempting to invoke it is the likely cause of this error.
 
 To fix this error, disable Docker-in-Docker for dependency scanning. Individual
 `<analyzer-name>-dependency_scanning` jobs are created for each analyzer that runs in your CI/CD

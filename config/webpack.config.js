@@ -261,7 +261,6 @@ module.exports = {
      */
     return {
       default: defaultEntries,
-      legacy_sentry: './sentry/legacy_index.js',
       sentry: './sentry/index.js',
       performance_bar: './performance_bar/index.js',
       jira_connect_app: './jira_connect/subscriptions/index.js',

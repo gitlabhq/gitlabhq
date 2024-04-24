@@ -325,6 +325,24 @@ This change is a breaking change. You should [create a runner in the UI](https:/
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Runner `active` GraphQL fields replaced by `paused`
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.8</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
+</div>
+
+Occurrences of the `active` identifier in the GitLab GraphQL API endpoints will be renamed to `paused` in GitLab 18.0:
+
+- The `CiRunner` property.
+- The `RunnerUpdateInput` input type for the `runnerUpdate` mutation.
+- The `runners`, `Group.runners`, and `Project.runners` queries.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Running a single database is deprecated
 
 <div class="deprecation-notes">

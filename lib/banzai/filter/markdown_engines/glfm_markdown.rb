@@ -15,6 +15,7 @@ module Banzai
           full_info_string: true,
           github_pre_lang: true,
           hardbreaks: false,
+          header_ids: Banzai::Renderer::USER_CONTENT_ID_PREFIX,
           math_code: true,
           math_dollars: true,
           multiline_block_quotes: true,
@@ -35,7 +36,16 @@ module Banzai
         private
 
         def render_options
-          sourcepos_disabled? ? OPTIONS.merge(sourcepos: false) : OPTIONS
+          return OPTIONS unless sourcepos_disabled? || headers_disabled?
+
+          OPTIONS.merge(
+            sourcepos: !sourcepos_disabled?,
+            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids]
+          )
+        end
+
+        def headers_disabled?
+          context[:no_header_anchors] || Feature.disabled?(:native_header_anchors)
         end
       end
     end

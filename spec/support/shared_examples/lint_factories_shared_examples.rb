@@ -76,6 +76,7 @@ module Support
         [:ci_job_artifact, :gzip],
         [:ci_job_artifact, :correct_checksum],
         [:dependency_proxy_blob, :remote_store],
+        [:discussion_note_on_personal_snippet, Any],
         [:environment, :non_playable],
         [:issue_customer_relations_contact, :for_contact],
         [:issue_customer_relations_contact, :for_issue],

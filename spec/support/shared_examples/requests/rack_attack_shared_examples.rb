@@ -459,12 +459,19 @@ end
 # * requests_per_period
 # * period_in_seconds
 # * period
+# * headers
 RSpec.shared_examples 'rate-limited unauthenticated requests' do
+  let(:headers) { {} }
+
   before do
     # Set low limits
     settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
     settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
     travel_back
+  end
+
+  def do_request
+    get url_that_does_not_require_authentication, headers: headers
   end
 
   context 'when the throttle is enabled' do
@@ -476,12 +483,12 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
     it 'rejects requests over the rate limit' do
       # At first, allow requests under the rate limit.
       requests_per_period.times do
-        get url_that_does_not_require_authentication
+        do_request
         expect(response).to have_gitlab_http_status(:ok)
       end
 
       # the last straw
-      expect_rejection { get url_that_does_not_require_authentication }
+      expect_rejection { do_request }
     end
 
     context 'with custom response text' do
@@ -492,37 +499,37 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
       it 'rejects requests over the rate limit' do
         # At first, allow requests under the rate limit.
         requests_per_period.times do
-          get url_that_does_not_require_authentication
+          do_request
           expect(response).to have_gitlab_http_status(:ok)
         end
 
         # the last straw
-        expect_rejection { get url_that_does_not_require_authentication }
+        expect_rejection { do_request }
         expect(response.body).to eq("Custom response\n")
       end
     end
 
     it 'allows requests after throttling and then waiting for the next period' do
       requests_per_period.times do
-        get url_that_does_not_require_authentication
+        do_request
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      expect_rejection { get url_that_does_not_require_authentication }
+      expect_rejection { do_request }
 
       travel_to(period.from_now) do
         requests_per_period.times do
-          get url_that_does_not_require_authentication
+          do_request
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        expect_rejection { get url_that_does_not_require_authentication }
+        expect_rejection { do_request }
       end
     end
 
     it 'counts requests from different IPs separately' do
       requests_per_period.times do
-        get url_that_does_not_require_authentication
+        do_request
         expect(response).to have_gitlab_http_status(:ok)
       end
 
@@ -531,7 +538,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
       end
 
       # would be over limit for the same IP
-      get url_that_does_not_require_authentication
+      do_request
       expect(response).to have_gitlab_http_status(:ok)
     end
 
@@ -603,7 +610,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
 
     it 'logs RackAttack info into structured logs' do
       requests_per_period.times do
-        get url_that_does_not_require_authentication
+        do_request
         expect(response).to have_gitlab_http_status(:ok)
       end
 
@@ -619,12 +626,12 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
 
-      get url_that_does_not_require_authentication
+      do_request
     end
 
     it_behaves_like 'tracking when dry-run mode is set' do
       def do_request
-        get url_that_does_not_require_authentication
+        get url_that_does_not_require_authentication, headers: headers
       end
     end
   end
@@ -637,7 +644,7 @@ RSpec.shared_examples 'rate-limited unauthenticated requests' do
 
     it 'allows requests over the rate limit' do
       (1 + requests_per_period).times do
-        get url_that_does_not_require_authentication
+        do_request
         expect(response).to have_gitlab_http_status(:ok)
       end
     end

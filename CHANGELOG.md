@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.1 (2024-04-24)
+
+### Security (5 changes)
+
+- [Validation for encoded formatting characters](gitlab-org/security/gitlab@fc42e4b96ae1ac3cd766569d62d025cbf23ef16c) ([merge request](gitlab-org/security/gitlab!3979))
+- [Forbid untrusted sign-ins to GitLab with Bitbucket and fix related uid](gitlab-org/security/gitlab@ef083c319e67072029787cd5c6a588562984a58c) ([merge request](gitlab-org/security/gitlab!3983))
+- [Ensure PAT scope is validated everywhere for GraphQL/ActionCable](gitlab-org/security/gitlab@1847435210161d95b9c5fcd079380e7f2892195f) ([merge request](gitlab-org/security/gitlab!3975))
+- [Protect against ReDoS in FileFinder with wildcard filters](gitlab-org/security/gitlab@dc16f3baa640ca8d5b223782ef3d58369423a1dd) ([merge request](gitlab-org/security/gitlab!3969))
+- [fix: Validate security report version against schema during parsing](gitlab-org/security/gitlab@55e58d49051aa42938ec1d159b5e7eb3c47d2eb1) ([merge request](gitlab-org/security/gitlab!3967))
+
 ## 16.11.0 (2024-04-17)
 
 ### Added (121 changes)
@@ -604,6 +614,20 @@ entry.
 - [Drop promote_ultimate_features_at column](gitlab-org/gitlab@b5dbcc83686be21fbf90d176bfd07707f21d1518) ([merge request](gitlab-org/gitlab!145706))
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
+
+## 16.10.4 (2024-04-24)
+
+### Fixed (1 change)
+
+- [Update vulnerability_reads scanner in the ingestion pipeline](gitlab-org/security/gitlab@14b8876233e5dd29149426fd88bab0fc4f014d46) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Validation for encoded formatting characters](gitlab-org/security/gitlab@4cd13c705ce1a94152fb2fd6fcaa77e90e6441e5) ([merge request](gitlab-org/security/gitlab!3950))
+- [Forbid untrusted sign-ins to GitLab with Bitbucket and fix related uid](gitlab-org/security/gitlab@5d3c3a599cc5560dea2236474309537536428cdc) ([merge request](gitlab-org/security/gitlab!3984))
+- [Ensure PAT scope is validated everywhere for GraphQL/ActionCable](gitlab-org/security/gitlab@079dfee8cff9da9075eec7c03ce002e87eeebfff) ([merge request](gitlab-org/security/gitlab!3976))
+- [Protect against ReDoS in FileFinder with wildcard filters](gitlab-org/security/gitlab@0e7e54050f1c4829b1d55aac85bd4e9cd96f1580) ([merge request](gitlab-org/security/gitlab!3960))
+- [fix: Validate security report version against schema during parsing](gitlab-org/security/gitlab@217040b1062caad501d60af387c47cff758788a1) ([merge request](gitlab-org/security/gitlab!3956))
 
 ## 16.10.3 (2024-04-12)
 
@@ -1318,6 +1342,16 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.6 (2024-04-24)
+
+### Security (5 changes)
+
+- [Validation for encoded formatting characters](gitlab-org/security/gitlab@de8dc151e5ef3f07cf50839e50645df6ec12f5a5) ([merge request](gitlab-org/security/gitlab!3951))
+- [Forbid untrusted sign-ins to GitLab with Bitbucket and fix related uid](gitlab-org/security/gitlab@94496a91c17a0f73202cd5c55abc93395825c68c) ([merge request](gitlab-org/security/gitlab!3985))
+- [Ensure PAT scope is validated everywhere for GraphQL/ActionCable](gitlab-org/security/gitlab@0dccf32b71614584e05a8590b21a902220e8c701) ([merge request](gitlab-org/security/gitlab!3977))
+- [Protect against ReDoS in FileFinder with wildcard filters](gitlab-org/security/gitlab@60a7418ec10f7c6f4ef9bcc75b2fec71255ddcc3) ([merge request](gitlab-org/security/gitlab!3961))
+- [fix: Validate security report version against schema during parsing](gitlab-org/security/gitlab@ce709ff78fd8f18024383085d6ac0bf43fa2efbb) ([merge request](gitlab-org/security/gitlab!3957))
 
 ## 16.9.5 (2024-04-12)
 

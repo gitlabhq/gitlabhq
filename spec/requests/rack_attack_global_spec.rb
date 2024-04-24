@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_caching,
   feature_category: :system_access do
   include RackAttackSpecHelpers
+  include WorkhorseHelpers
   include SessionHelpers
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
@@ -27,6 +28,8 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       throttle_unauthenticated_packages_api_period_in_seconds: 1,
       throttle_authenticated_packages_api_requests_per_period: 100,
       throttle_authenticated_packages_api_period_in_seconds: 1,
+      throttle_unauthenticated_git_http_requests_per_period: 100,
+      throttle_unauthenticated_git_http_period_in_seconds: 1,
       throttle_authenticated_git_lfs_requests_per_period: 100,
       throttle_authenticated_git_lfs_period_in_seconds: 1,
       throttle_unauthenticated_files_api_requests_per_period: 100,
@@ -694,6 +697,45 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       let(:other_path) { "/v2/#{other_blob.group.path}/dependency_proxy/containers/alpine/blobs/sha256:a0d0a0d46f8b52473982a3c466318f479767577551a53ffc9074c9fa7035982e" }
 
       it_behaves_like 'rate-limited user based token-authenticated requests'
+    end
+  end
+
+  describe 'unauthenticated git http requests' do
+    let_it_be(:project) { create(:project, :repository, :public) }
+
+    let(:git_http_clone_path) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+
+    it_behaves_like 'rate-limited unauthenticated requests' do
+      let(:throttle_name) { 'throttle_unauthenticated_git_http' }
+      let(:throttle_setting_prefix) { 'throttle_unauthenticated_git_http' }
+      let(:url_that_does_not_require_authentication) { "/#{project.full_path}.git/info/refs?service=git-upload-pack" }
+      let(:url_that_is_not_matched) { '/users/sign_in' }
+      let(:headers) { WorkhorseHelpers.workhorse_internal_api_request_header }
+    end
+
+    context 'when authenticated' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:token) { create(:personal_access_token, user: user) }
+
+      let(:headers) { WorkhorseHelpers.workhorse_internal_api_request_header.merge(basic_auth_headers(user, token)) }
+
+      def do_request
+        get git_http_clone_path, headers: headers
+      end
+
+      before do
+        settings_to_set[:throttle_unauthenticated_git_http_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_unauthenticated_git_http_period_in_seconds] = period_in_seconds
+        settings_to_set[:throttle_unauthenticated_git_http_enabled] = true
+        stub_application_setting(settings_to_set)
+      end
+
+      it 'rejects requests over the rate limit' do
+        (requests_per_period + 1).times do
+          do_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 

@@ -358,7 +358,6 @@ gem 'gitlab-license', '~> 2.4', feature_category: :shared
 gem 'rack-attack', '~> 6.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Sentry integration
-gem 'sentry-raven', '~> 3.1', feature_category: :error_tracking
 gem 'sentry-ruby', '~> 5.10.0', feature_category: :error_tracking
 gem 'sentry-rails', '~> 5.10.0', feature_category: :error_tracking
 gem 'sentry-sidekiq', '~> 5.10.0', feature_category: :error_tracking
@@ -411,7 +410,6 @@ group :opentelemetry do
   gem 'opentelemetry-instrumentation-action_view', feature_category: :tooling
   gem 'opentelemetry-instrumentation-aws_sdk', feature_category: :tooling
   gem 'opentelemetry-instrumentation-http', feature_category: :tooling
-  gem 'opentelemetry-instrumentation-active_model_serializers', feature_category: :tooling
   gem 'opentelemetry-instrumentation-concurrent_ruby', feature_category: :tooling
   gem 'opentelemetry-instrumentation-ethon', feature_category: :tooling
   gem 'opentelemetry-instrumentation-excon', feature_category: :tooling
@@ -592,7 +590,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.11.0.pre.rc1', feature_category: :gitaly
+gem 'gitaly', '~> 17.0.0.pre.rc2', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.4.0', feature_category: :deployment_management

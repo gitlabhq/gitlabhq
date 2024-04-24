@@ -100,7 +100,7 @@ RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_manage
           MergeRequests::UpdateReviewerStateService,
           project: project, current_user: unapprover
         ) do |service|
-          expect(service).to receive(:execute).with(merge_request, :unapproved)
+          expect(service).to receive(:execute).with(merge_request, 'unapproved')
         end
 
         post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)

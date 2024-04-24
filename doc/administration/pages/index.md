@@ -119,28 +119,25 @@ If you need support for namespace in the URL path to remove the requirement for 
 
 1. Enable the GitLab Pages flag for this feature by adding
    `gitlab_pages["namespace_in_path"] = true` to `/etc/gitlab/gitlab.rb`.
-1. In your DNS provider, add entries for `example.io` and `projects.example.io`.
-   In both lines, replace `example.io` with your domain name, and `192.0.0.0` with
+1. In your DNS provider, add entries for `example.io`.
+   Replace `example.io` with your domain name, and `192.0.0.0` with
    the IPv4 version of your IP address. The entries look like this:
 
    ```plaintext
    example.io          1800 IN A    192.0.0.0
-   projects.example.io 1800 IN A    192.0.0.0
    ```
 
 1. Optional. If your GitLab instance has an IPv6 address, add entries for it.
-   In both lines, replace `example.io` with your domain name, and `2001:db8::1` with
+   Replace `example.io` with your domain name, and `2001:db8::1` with
    the IPv6 version of your IP address. The entries look like this:
 
    ```plaintext
    example.io          1800 IN AAAA 2001:db8::1
-   projects.example.io 1800 IN AAAA 2001:db8::1
    ```
 
 This example contains the following:
 
 - `example.io`: The domain GitLab Pages is served from.
-- `projects.example.io`: An additional subdomain for GitLab Pages default authentication flow.
 
 #### DNS configuration for custom domains
 
@@ -306,8 +303,7 @@ Prerequisites:
 - Your instance must use the Linux package installation method.
 - You have configured DNS setup
   [without a wildcard](#for-namespace-in-url-path-without-wildcard-dns).
-- You have a single TLS certificate that covers your domain (like `example.io`)
-  and the `projects.*` version of your domain, like `projects.example.io`.
+- You have a TLS certificate that covers your domain (like `example.io`).
 
 In this configuration, NGINX proxies all requests to the daemon. The GitLab Pages
 daemon doesn't listen to the outside world:
@@ -337,17 +333,18 @@ daemon doesn't listen to the outside world:
    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
    ```
 
-1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
+   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
+   to use the HTTPS protocol.
 
    WARNING:
-   GitLab Pages does not update the OAuth application if changes are made to the redirect URI.
+   GitLab Pages does not update the OAuth application, and
+   the default `auth_redirect_uri` is updated to `https://example.io/projects/auth`.
    Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitlab-secrets.json`,
    then run `gitlab-ctl reconfigure`. For more information, see
    [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
-1. If you're using [Pages Access Control](#access-control), update the redirect URI in the GitLab Pages
-   [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application)
-   to use the HTTPS protocol.
+1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 NGINX uses the custom proxy header `X-Gitlab-Namespace-In-Path`
 to send the namespace to the GitLab Pages daemon.

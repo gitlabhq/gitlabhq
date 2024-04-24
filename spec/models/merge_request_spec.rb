@@ -6425,22 +6425,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#has_changes_requested?' do
-    let_it_be(:merge_request) { create(:merge_request, reviewers: [create(:user)]) }
-
-    context 'reviews have requested changed' do
-      before_all do
-        merge_request.merge_request_reviewers.first.update!(state: :requested_changes)
-      end
-
-      it { expect(merge_request.has_changes_requested?).to be_truthy }
-    end
-
-    context 'reviews have not requested changed' do
-      it { expect(merge_request.has_changes_requested?).to be_falsey }
-    end
-  end
-
   describe '#batch_update_reviewer_state' do
     let_it_be(:merge_request) { create(:merge_request, reviewers: create_list(:user, 2)) }
 

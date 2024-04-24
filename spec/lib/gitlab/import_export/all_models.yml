@@ -256,6 +256,7 @@ merge_requests:
 - user_agent_detail
 - scan_result_policy_violations
 - applicable_post_merge_approval_rules
+- requested_changes
 external_pull_requests:
 - project
 merge_request_diff:

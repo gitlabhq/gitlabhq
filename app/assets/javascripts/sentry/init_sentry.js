@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 import {
   BrowserClient,
   getCurrentHub,
@@ -9,7 +10,7 @@ import {
   // exports
   captureException,
   SDK_VERSION,
-} from 'sentrybrowser';
+} from '@sentry/browser';
 
 const initSentry = () => {
   if (!gon?.sentry_dsn) {

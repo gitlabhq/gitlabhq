@@ -2148,8 +2148,12 @@ class MergeRequest < ApplicationRecord
     merge_request_reviewers.where(user_id: user_ids)
   end
 
-  def has_changes_requested?
-    merge_request_reviewers.exists?(state: :requested_changes)
+  def create_requested_changes(user)
+    # Overridden in EE
+  end
+
+  def destroy_requested_changes(user)
+    # Overridden in EE
   end
 
   def batch_update_reviewer_state(user_ids, state)

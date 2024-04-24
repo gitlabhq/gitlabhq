@@ -416,7 +416,6 @@ GET /projects/:id/releases/:tag_name/downloads/:direct_asset_path
 |----------------------------| -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`                       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding).  |
 | `tag_name`                 | string         | yes      | The Git tag the release is associated with.                                         |
-| `filepath`                 | string         | yes      | Deprecated: Use `direct_asset_path` instead.                                        |
 | `direct_asset_path`        | string         | yes      | Path to the release asset file as specified when [creating](links.md#create-a-release-link) or [updating](links.md#update-a-release-link) its link. |
 
 Example request:
@@ -476,7 +475,6 @@ POST /projects/:id/releases
 | `assets:links`     | array of hash   | no                          | An array of assets links.                                                                                                        |
 | `assets:links:name`| string          | required by: `assets:links` | The name of the link. Link names must be unique within the release.                                                              |
 | `assets:links:url` | string          | required by: `assets:links` | The URL of the link. Link URLs must be unique within the release.                                                                |
-| `assets:links:filepath` | string     | no | Deprecated: Use `direct_asset_path` instead. |
 | `assets:links:direct_asset_path` | string     | no | Optional path for a [direct asset link](../../user/project/releases/release_fields.md#permanent-links-to-release-assets). |
 | `assets:links:link_type` | string     | no | The type of the link: `other`, `runbook`, `image`, `package`. Defaults to `other`. |
 | `released_at`      | datetime        | no                          | Date and time for the release. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Only provide this field if creating an [upcoming](../../user/project/releases/index.md#upcoming-releases) or [historical](../../user/project/releases/index.md#historical-releases) release.  |

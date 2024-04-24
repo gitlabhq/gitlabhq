@@ -25,11 +25,16 @@ module Banzai
         # Remove any `style` properties not required for table alignment
         allowlist[:transformers].push(self.class.remove_unsafe_table_style)
 
-        # Allow `id` in a and li elements for footnotes
-        # and remove any `id` properties not matching for footnotes
+        # Allow `id` in `a` and `li` elements for footnotes
+        # and `a` elements for header anchors.
+        # Remove any `id` properties not matching
         allowlist[:attributes]['a'].push('id')
         allowlist[:attributes]['li'] = %w[id]
-        allowlist[:transformers].push(self.class.remove_non_footnote_ids)
+        allowlist[:transformers].push(self.class.remove_id_attributes)
+
+        # Remove any `class` property not required for `a`
+        allowlist[:attributes]['a'].push('class')
+        allowlist[:transformers].push(self.class.remove_unsafe_link_class)
 
         # Allow section elements with data-footnotes attribute
         allowlist[:elements].push('section')
@@ -55,18 +60,38 @@ module Banzai
           end
         end
 
-        def remove_non_footnote_ids
+        def remove_unsafe_link_class
+          lambda do |env|
+            node = env[:node]
+
+            return unless node.name == 'a'
+            return unless node.has_attribute?('class')
+
+            node.remove_attribute('class') if remove_link_class?(node)
+          end
+        end
+
+        def remove_link_class?(node)
+          return if node['class'] == 'anchor'
+
+          true
+        end
+
+        def remove_id_attributes
           lambda do |env|
             node = env[:node]
 
             return unless node.name == 'a' || node.name == 'li'
             return unless node.has_attribute?('id')
 
+            # footnote ids should not be removed
+            return if node.name == 'li' && node['id'].start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_ID_PREFIX)
             return if node.name == 'a' &&
               node['id'].start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_LINK_ID_PREFIX)
 
-            return if node.name == 'li' &&
-              node['id'].start_with?(Banzai::Filter::FootnoteFilter::FOOTNOTE_ID_PREFIX)
+            # links with generated header anchors should not be removed
+            return if node.name == 'a' && node['class'] == 'anchor' &&
+              node['id'].start_with?(Banzai::Renderer::USER_CONTENT_ID_PREFIX)
 
             node.remove_attribute('id')
           end

@@ -1023,10 +1023,32 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
   end
 
   describe '#user_commit_files' do
+    let(:force) { false }
+    let(:start_sha) { nil }
+    let(:sign) { true }
+
     subject do
       client.user_commit_files(
-        gitaly_user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
-        'master', repository)
+        user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
+        'master', repository, force, start_sha, sign)
+    end
+
+    context 'when UserCommitFiles RPC is called' do
+      let(:force) { true }
+      let(:start_sha) { project.commit.id }
+      let(:sign) { false }
+
+      it 'successfully builds the header' do
+        expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_commit_files) do |_, req_enum|
+          header = req_enum.first.header
+
+          expect(header.force).to eq(force)
+          expect(header.start_sha).to eq(start_sha)
+          expect(header.sign).to eq(sign)
+        end.and_return(Gitaly::UserCommitFilesResponse.new)
+
+        subject
+      end
     end
 
     context 'with unstructured errors' do

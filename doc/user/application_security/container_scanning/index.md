@@ -200,8 +200,6 @@ Authenticating to a remote registry is not supported when [FIPS mode](../../../d
 
 #### Dependency list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
-
 The `CS_DISABLE_DEPENDENCY_LIST` CI/CD variable controls whether the scan creates a
 [Dependency List](../dependency_list/index.md)
 report. This variable is currently only supported when the `trivy` analyzer is used. The variable's default setting of `"false"` causes the scan to create the report. To disable
@@ -219,8 +217,6 @@ container_scanning:
 ```
 
 #### Report language-specific findings
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7277) in GitLab 14.6.
 
 The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the scan reports
 findings related to programming languages. The languages supported depend on the
@@ -267,15 +263,15 @@ including a large number of false positives.
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
 | `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. | All |
-| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5. | All |
-| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
-| `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6. | All |
+| `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. | All |
+| `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | Disable Dependency Scanning for packages installed in the scanned image. | All |
+| `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. | All |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. | All |
 | `CS_DOCKERFILE_PATH`              | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. | All |
 | `CS_IGNORE_STATUSES`<sup><b><a href="#notes-regarding-cs-ignore-statuses">1</a></b></sup> | `""` | Force the analyzer to ignore vulnerability findings with specified statuses in a comma-delimited list. For `trivy`, the following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. For `grype`, the following values are allowed: `fixed,not-fixed,unknown,wont-fix` | All |
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
-| `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7630) in GitLab 14.10. | All |
+| `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. | All |
 | `CS_QUIET`                     | `""`          | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
 | `CS_REGISTRY_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
@@ -316,8 +312,6 @@ Support depends on which scanner is used:
 
 #### FIPS-enabled images
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in GitLab 14.1.
-
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
 images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
@@ -330,10 +324,8 @@ standard tag plus the `-fips` extension.
 | Trivy           | `registry.gitlab.com/security-products/container-scanning/trivy:7-fips` |
 
 NOTE:
-Prior to GitLab 15.0, the `-ubi` image extension is also available. GitLab 15.0 and later only
-support `-fips`.
 
-Starting with GitLab 14.10, `-fips` is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
+The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
 enabled in the GitLab instance.
 
 Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode)
@@ -341,8 +333,6 @@ is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `C
 the analyzer exits with an error and does not perform the scan.
 
 ### Enable Container Scanning through an automatic merge request
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6334) in GitLab 14.9.
 
 To enable Container Scanning in a project, create a merge request from the Security Configuration
 page:
@@ -392,8 +382,6 @@ WARNING:
 Do not use the `:latest` tag when selecting the scanner image.
 
 ### Setting the default branch image
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5.
 
 By default, container scanning assumes that the image naming convention stores any branch-specific
 identifiers in the image tag rather than the image name. When the image name differs between the

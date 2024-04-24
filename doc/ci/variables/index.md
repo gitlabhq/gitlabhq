@@ -201,9 +201,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
-
 You can make a CI/CD variable available to all projects and groups in a GitLab instance.
 
 Prerequisites:
@@ -216,9 +213,8 @@ To add an instance variable:
 1. Select **Settings > CI/CD** and expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
-   - **Value**: In [GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),
-     the value is limited to 10,000 characters, but also bounded by any limits in the
-     runner's operating system. In GitLab 13.0 to 13.2, the value is limited to 700 characters.
+   - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
+     runner's operating system.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
@@ -266,8 +262,6 @@ and stored in the database. This data can only be read and decrypted with a
 valid [secrets file](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Mask a CI/CD variable
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330650) in GitLab 13.12, the `~` character can be used in masked variables.
 
 WARNING:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
@@ -472,9 +466,6 @@ variables:
 ```
 
 ### Pass an environment variable to another job
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22638) in GitLab 13.0.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/217834) in GitLab 13.1.
 
 You can create a new environment variables in a job, and pass it to another job
 in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline,
@@ -712,8 +703,6 @@ can cause the pipeline to behave unexpectedly.
 
 ### Restrict who can override variables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
-
 You can limit the ability to override variables to only users with the Maintainer role.
 When other users try to run a pipeline with overridden variables, they receive the
 `Insufficient permissions to set pipeline variables` error message.
@@ -950,9 +939,6 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ```
 
 #### Restrict access to debug logging
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213159) in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292661) in GitLab 13.8.
 
 You can restrict access to debug logging. When restricted, only users with
 at least the Developer role

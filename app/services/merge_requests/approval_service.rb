@@ -13,7 +13,7 @@ module MergeRequests
 
       return success unless save_approval(approval)
 
-      update_reviewer_state(merge_request, current_user, :approved)
+      update_reviewer_state(merge_request, current_user, 'approved')
 
       reset_approvals_cache(merge_request)
 

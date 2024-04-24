@@ -7,7 +7,7 @@ import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 export default {
   i18n: {
     uploadText: __('Drop or %{linkStart}upload%{linkEnd} an avatar.'),
-    maxFileSize: s__('Profiles|The maximum file size allowed is 200KB.'),
+    maxFileSize: s__('Profiles|The maximum file size allowed is 200 KiB.'),
     imageDimensions: s__('Profiles|The ideal image size is 192 x 192 pixels.'),
     removeAvatar: __('Remove avatar'),
   },

@@ -132,24 +132,11 @@ module Gitlab
         end
 
         def allow_sentry(directives)
-          allow_legacy_sentry(directives) if legacy_sentry_configured?
           return unless sentry_client_side_dsn_enabled?
 
           sentry_uri = URI(Gitlab::CurrentSettings.sentry_clientside_dsn)
 
           append_to_directive(directives, 'connect_src', "#{sentry_uri.scheme}://#{sentry_uri.host}")
-        end
-
-        def allow_legacy_sentry(directives)
-          # Support for Sentry setup via configuration files will be removed in 16.0
-          # in favor of Gitlab::CurrentSettings.
-          sentry_uri = URI(Gitlab.config.sentry.clientside_dsn)
-
-          append_to_directive(directives, 'connect_src', "#{sentry_uri.scheme}://#{sentry_uri.host}")
-        end
-
-        def legacy_sentry_configured?
-          Gitlab.config.sentry&.enabled && Gitlab.config.sentry&.clientside_dsn
         end
 
         def sentry_client_side_dsn_enabled?

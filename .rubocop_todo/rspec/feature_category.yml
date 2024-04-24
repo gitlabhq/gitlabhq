@@ -3980,7 +3980,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/usage_data_counters/merge_request_widget_extension_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/note_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/package_event_counter_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/productivity_analytics_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/quick_action_activity_unique_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/redis_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/search_counter_spec.rb'

@@ -680,7 +680,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (16.11.0.pre.rc1)
+    gitaly (17.0.0.pre.rc2)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1253,9 +1253,6 @@ GEM
     opentelemetry-instrumentation-active_job (0.7.1)
       opentelemetry-api (~> 1.0)
       opentelemetry-instrumentation-base (~> 0.22.1)
-    opentelemetry-instrumentation-active_model_serializers (0.20.1)
-      opentelemetry-api (~> 1.0)
-      opentelemetry-instrumentation-base (~> 0.22.1)
     opentelemetry-instrumentation-active_record (0.7.0)
       opentelemetry-api (~> 1.0)
       opentelemetry-instrumentation-base (~> 0.22.1)
@@ -1669,8 +1666,6 @@ GEM
     sentry-rails (5.10.0)
       railties (>= 5.0)
       sentry-ruby (~> 5.10.0)
-    sentry-raven (3.1.2)
-      faraday (>= 1.0)
     sentry-ruby (5.10.0)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     sentry-sidekiq (5.10.0)
@@ -2008,7 +2003,7 @@ DEPENDENCIES
   gdk-toogle (~> 0.9)
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.12.0)
-  gitaly (~> 16.11.0.pre.rc1)
+  gitaly (~> 17.0.0.pre.rc2)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.7.0)
@@ -2142,7 +2137,6 @@ DEPENDENCIES
   opentelemetry-instrumentation-action_pack
   opentelemetry-instrumentation-action_view
   opentelemetry-instrumentation-active_job
-  opentelemetry-instrumentation-active_model_serializers
   opentelemetry-instrumentation-active_record
   opentelemetry-instrumentation-active_support
   opentelemetry-instrumentation-aws_sdk
@@ -2224,7 +2218,6 @@ DEPENDENCIES
   selenium-webdriver (~> 4.19)
   semver_dialects (~> 2.0, >= 2.0.2)
   sentry-rails (~> 5.10.0)
-  sentry-raven (~> 3.1)
   sentry-ruby (~> 5.10.0)
   sentry-sidekiq (~> 5.10.0)
   shoulda-matchers (~> 5.1.0)
