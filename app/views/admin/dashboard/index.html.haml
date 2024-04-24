@@ -149,7 +149,7 @@
             %p
               = _('GitLab KAS')
               %span.gl-float-right
-                = Gitlab::Kas.version
+                = Gitlab::Kas.display_version_info
 
           = render_if_exists 'admin/dashboard/geo'
 

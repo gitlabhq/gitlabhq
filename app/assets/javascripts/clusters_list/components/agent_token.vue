@@ -21,7 +21,7 @@ export default {
     GlIcon,
     ModalCopyButton,
   },
-  inject: ['kasAddress', 'kasVersion'],
+  inject: ['kasAddress', 'kasInstallVersion'],
   props: {
     agentName: {
       required: true,
@@ -41,7 +41,7 @@ export default {
       return generateAgentRegistrationCommand({
         name: this.agentName,
         token: this.agentToken,
-        version: this.kasVersion,
+        version: this.kasInstallVersion,
         address: this.kasAddress,
       });
     },

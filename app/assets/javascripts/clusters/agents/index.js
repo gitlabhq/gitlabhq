@@ -18,7 +18,7 @@ export default () => {
     emptyStateSvgPath,
     projectPath,
     kasAddress,
-    kasVersion,
+    kasInstallVersion,
     canAdminCluster,
   } = el.dataset;
 
@@ -33,7 +33,7 @@ export default () => {
       emptyStateSvgPath,
       projectPath,
       kasAddress,
-      kasVersion,
+      kasInstallVersion,
       canAdminCluster: parseBoolean(canAdminCluster),
     },
     render(createElement) {

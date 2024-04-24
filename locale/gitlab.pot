@@ -55926,6 +55926,15 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
+msgid "UserMapping|Awaiting reassignment"
+msgstr ""
+
+msgid "UserMapping|Placeholders"
+msgstr ""
+
+msgid "UserMapping|Reassigned"
+msgstr ""
+
 msgid "UserProfile|%{count} %{file}"
 msgstr ""
 

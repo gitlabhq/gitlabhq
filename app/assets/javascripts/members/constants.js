@@ -3,6 +3,8 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
+import PlaceholdersTabApp from './components/placeholders/app.vue';
+
 // Overridden in EE
 export const EE_GROUPS_APP_OPTIONS = {};
 export const EE_PROJECTS_APP_OPTIONS = {};
@@ -166,6 +168,7 @@ export const MEMBER_TYPES = Object.freeze({
   group: 'group',
   invite: 'invite',
   accessRequest: 'accessRequest',
+  placeholder: 'placeholder',
 });
 
 // `app/models/members/group_member.rb`
@@ -178,6 +181,7 @@ export const TAB_QUERY_PARAM_VALUES = Object.freeze({
   group: 'groups',
   invite: 'invited',
   accessRequest: 'access_requests',
+  placeholder: 'placeholders',
 });
 
 // Overridden in EE
@@ -203,6 +207,12 @@ export const TABS = [
     title: __('Access requests'),
     requiredPermissions: ['canManageAccessRequests'],
     queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
+  },
+  {
+    namespace: MEMBER_TYPES.placeholder,
+    title: s__('UserMapping|Placeholders'),
+    queryParamValue: TAB_QUERY_PARAM_VALUES.placeholder,
+    component: PlaceholdersTabApp,
   },
 ];
 
